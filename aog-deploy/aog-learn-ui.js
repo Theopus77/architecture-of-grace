@@ -22,7 +22,27 @@
    (keys, frets near the hand) in its own way. What the learner plays comes from the notes every room already reports
    (AOGRecorder.note, AOG-NOTES-V1: keys, chord pads, strums, a MIDI keyboard) and, on the guitar and bass, from a real
    instrument through aog-liveinput.js (AOGLive.listen, its pitch detector), while its input is on.
-   Nothing leaves the device. ══════════════════════════════════════════════════════════════════════════════════════════ */
+   Nothing leaves the device.
+
+   AOG-LEARN-V2 (2026-10-11, Jimmy: "Make it hit the ceiling … the world's best"). Each of these is off or closed until
+   the learner asks; nothing moves on its own but the playhead.
+   - Step up the speed: from 60 % (or the speed chosen), each pass Did I get it? finds 90 % or more on time goes 5 % faster,
+     up to 100 %, and says so ("Clean pass. Now 70 %.").
+   - The song's parts (lesson.sections, or AOGLearn.sections(lesson) for a song kept before): quiet labels on the bars, a
+     Go to a part menu, Loop this part.
+   - Easier chords (AOGLearn.simplify, else the plain triad): the names, the lit shape and Did I get it? use the easier
+     chord, and the full chord counts too. The Guitar: a capo line (AOGLearn.capo) and Use the capo: the shapes in the
+     bars and on the neck (the room lights the shape above the capo fret).
+   - The song's chords: small pictures (the guitar's own shapes, the bass's root, the piano's keys); tap one to see it.
+   - Quiet a part of the song: the bass (a gentle high-pass and low shelf on the player) or the voice (the middle of a
+     stereo song taken out, its low end kept so the bass and kick stay).
+   - A real guitar's strums (AOGLive.frames → AOGLearn.hearChord) count as chords in Did I get it?; single notes still
+     for the bass and the tunes.
+   - Your best, per part and speed, kept with the song. Print the chord sheet (a clean page, black on white).
+   - The slower copy is made in a Worker (the same WSOLA, from a Blob), else in slices as before; one at a time.
+   - MIDI songs: piano parts ring and fade, guitar and bass parts are plucked, the drums are drums.
+   A room may also say, for the pictures and the capo: shape:(chord)=>{ f:[fret per string, -1 muted], capo } (Guitar,
+   Bass). show() may carry chord.capo (the fret) and chord.shape {root, q, id} (what to finger above it). ══════════════ */
 (function () {
   "use strict";
   var D = document, H = null;
@@ -106,7 +126,29 @@
     tryBar: { en: " — try a loop on bar {b}.", es: ": prueba a repetir el compás {b}." },
     faster: { en: " Want to try it a little faster?", es: " ¿Probamos un poco más rápido?" },
     same: { en: " It sounds like the song.", es: " Suena como la canción." },
-    mOk: { en: "on time", es: "a tiempo" }, mTry: { en: "worth another go", es: "para probar otra vez" }
+    mOk: { en: "on time", es: "a tiempo" }, mTry: { en: "worth another go", es: "para probar otra vez" },
+    /* AOG-LEARN-V2 */
+    more: { en: "More ways to practise", es: "Más formas de practicar" },
+    stepUp: { en: "Step up the speed", es: "Subir la velocidad poco a poco" },
+    clean: { en: "Clean pass. Now {n} %.", es: "Pasada limpia. Ahora al {n} %." },
+    cleanTop: { en: "Clean pass. That's full speed.", es: "Pasada limpia. Ya es la velocidad completa." },
+    parts: { en: "Go to a part", es: "Ir a una parte" }, partPick: { en: "Choose a part", es: "Elige una parte" },
+    partBars: { en: "{p} · bars {a}–{b}", es: "{p} · compases {a}–{b}" }, partBar: { en: "{p} · bar {a}", es: "{p} · compás {a}" },
+    loopPart: { en: "Loop this part", es: "Repetir esta parte" },
+    sIntro: { en: "Intro", es: "Intro" }, sPart: { en: "Part", es: "Parte" }, sEnd: { en: "Ending", es: "Final" },
+    easy: { en: "Easier chords", es: "Acordes más fáciles" },
+    capoLine: { en: "Capo {n}: play these as {c}.", es: "Cejilla {n}: tócalos como {c}." },
+    useCapo: { en: "Use the capo", es: "Usar la cejilla" },
+    shapes: { en: "The song's chords", es: "Los acordes de la canción" },
+    shapesTap: { en: "Tap one to see it on the neck.", es: "Toca uno para verlo en el mástil." },
+    shapesTapK: { en: "Tap one to see it on the keys.", es: "Toca uno para verlo en el teclado." },
+    quiet: { en: "Quiet a part of the song", es: "Suavizar una parte de la canción" },
+    qNone: { en: "Nothing", es: "Nada" }, qBass: { en: "Quiet the bass", es: "Suavizar el bajo" }, qVoice: { en: "Quiet the voice", es: "Suavizar la voz" },
+    mono: { en: "This song has one channel, so the voice can't be quieted.", es: "Esta canción tiene un solo canal, así que la voz no se puede suavizar." },
+    best: { en: "Your best: {k} of {n} at {s} %.", es: "Tu mejor pasada: {k} de {n} al {s} %." },
+    print: { en: "Print the chord sheet", es: "Imprimir la hoja de acordes" },
+    sheet: { en: "Chord sheet", es: "Hoja de acordes" }, printNow: { en: "Print", es: "Imprimir" },
+    sheetEasy: { en: "Easier chords.", es: "Acordes más fáciles." }
   };
   var QM = { maj: { id: "maj", iv: [0, 4, 7], s: "" }, min: { id: "min", iv: [0, 3, 7], s: "m" }, "7": { id: "dom7", iv: [0, 4, 7, 10], s: "7" },
     maj7: { id: "maj7", iv: [0, 4, 7, 11], s: "maj7" }, m7: { id: "m7", iv: [0, 3, 7, 10], s: "m7" }, sus2: { id: "sus2", iv: [0, 2, 7], s: "sus2" },
@@ -116,7 +158,7 @@
     aug: { en: "Augmented (aug)", es: "Aumentado (aug)" }, "5": { en: "Power chord (5)", es: "Power chord (5)" }, N: { en: "No chord", es: "Sin acorde" } };
   var NM = { en: { s: ["C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B"], f: ["C", "D♭", "D", "E♭", "E", "F", "G♭", "G", "A♭", "A", "B♭", "B"] },
     es: { s: ["Do", "Do♯", "Re", "Re♯", "Mi", "Fa", "Fa♯", "Sol", "Sol♯", "La", "La♯", "Si"], f: ["Do", "Re♭", "Re", "Mi♭", "Mi", "Fa", "Sol♭", "Sol", "La♭", "La", "Si♭", "Si"] } };
-  var SPEEDS = [50, 60, 70, 75, 80, 90, 100];
+  var SPEEDS = [50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100];   /* AOG-LEARN-V2: steps of 5 for Step up the speed */
   function L() { try { if (H && H.lang) return H.lang() === "es" ? "es" : "en"; } catch (e) {} return (D.documentElement.getAttribute("lang") || "en").indexOf("es") === 0 ? "es" : "en"; }
   function w(k, v) { var x = W[k]; var s = x ? (x[L()] || x.en) : k; if (v) Object.keys(v).forEach(function (n) { s = s.split("{" + n + "}").join(v[n]); }); return s; }
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
@@ -147,7 +189,7 @@
     var bars = db.map(function (t, i) { return { i: i, t: t, e: i + 1 < db.length ? db[i + 1] : Math.max(t + 0.05, Math.min(sec || t + barLen, t + (i ? t - db[i - 1] : barLen))) }; });
     while (bars.length && sec && bars[bars.length - 1].e < sec - 0.05) { var lb = bars[bars.length - 1]; bars.push({ i: bars.length, t: lb.e, e: Math.min(sec, lb.e + barLen) }); }
     CUR.bars = bars; CUR.beats = beats; CUR.sec = sec || (bars.length ? bars[bars.length - 1].e : 0);
-    rebuildPart();
+    rebuildPart(); buildSections();
   }
   function barOf(t) { var b = CUR.bars, lo = 0, hi = b.length - 1; if (!b.length) return -1; if (t < b[0].t) return 0;
     while (lo < hi) { var mid = (lo + hi + 1) >> 1; if (b[mid].t <= t + 1e-6) lo = mid; else hi = mid - 1; } return lo; }
@@ -164,19 +206,42 @@
     var k = /^t:(\d+)$/.exec(f || ""); if (k && tr[+k[1]]) return (tr[+k[1]].notes || []).map(function (n) { return { t: n.t, d: n.d, m: n.m, conf: 1 }; }).sort(function (x, y) { return x.t - y.t || x.m - y.m; });
     return [];
   }
+  /* AOG-LEARN-V2: a chord written any way the engine gives it ({root, q} or a name like "F♯m7") */
+  var QALIAS = { "": "maj", M: "maj", m: "min", min: "min", maj: "maj", "7": "7", dom7: "7", maj7: "maj7", M7: "maj7", m7: "m7", min7: "m7", sus2: "sus2", sus4: "sus4", sus: "sus4", dim: "dim", "°": "dim", aug: "aug", "+": "aug", "5": "5", five: "5" };
+  function asChord(x) {
+    if (!x) return null;
+    if (typeof x === "object" && typeof x.root === "number") { if (x.root < 0 || x.q === "N") return null; return { root: pcOf(x.root), q: QM[x.q] ? x.q : (QALIAS[x.q] || "maj") }; }
+    var m = /^\s*([A-G])([#♯b♭]?)\s*(.*?)\s*$/.exec(String(x)); if (!m) return null;
+    var r = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 }[m[1]] + (/[#♯]/.test(m[2]) ? 1 : /[b♭]/.test(m[2]) ? -1 : 0), q = m[3].split("/")[0];
+    return { root: pcOf(r), q: QALIAS[q] || (QM[q] ? q : /^m(?!aj)/.test(q) ? "min" : "maj") };
+  }
+  /* Easier chords: the engine's simpler copy, else the plain major or minor chord */
+  var EASY = { maj: "maj", min: "min", "7": "maj", maj7: "maj", m7: "min", sus2: "maj", sus4: "maj", dim: "min", aug: "maj", "5": "maj" };
+  function enName(c) { return NM.en.s[pcOf(c.root)].replace("♯", "#") + (QM[c.q] ? QM[c.q].s : ""); }
+  function easier(c) {
+    var A = window.AOGLearn, k = CUR.L.key || {}, r = null;
+    if (A && typeof A.simplify === "function") { try { r = asChord(A.simplify({ t: c.t, d: c.d, root: c.root, q: c.q, name: enName(c), conf: c.conf }, k.key | 0, !!k.minor)); } catch (e) { r = null; } }
+    return r || { root: c.root, q: EASY[c.q] || c.q };
+  }
+  function shownChords() {
+    var cs = chordsFixed();
+    if (!CUR.rec.easy) return cs;
+    return cs.map(function (c) { if (c.root < 0 || !QM[c.q]) return c; var e = easier(c);
+      return e.root === c.root && e.q === c.q ? c : Object.assign({}, c, { root: e.root, q: e.q, full: { root: c.root, q: c.q } }); });
+  }
   function rebuildPart() {
-    var f = CUR.follow;
+    var f = CUR.follow; CUR.capoSig = null;
     if (f === "chords") {
-      var cs = chordsFixed(), ev = [];
+      var cs = shownChords(), ev = [];
       cs.forEach(function (c) { var last = ev[ev.length - 1];
         if (c.root < 0 || !QM[c.q]) return;
-        if (last && last.root === c.root && last.q === c.q && Math.abs(last.end - c.t) < 0.05) { last.end = c.t + c.d; return; }
-        ev.push({ t: c.t, end: c.t + c.d, root: c.root, q: c.q, pcs: chordPcs(c), ci: c.i }); });
+        if (last && last.root === c.root && last.q === c.q && Math.abs(last.end - c.t) < 0.05) { last.end = c.t + c.d; if (c.full && !last.alt) last.alt = chordPcs(c.full); return; }
+        ev.push({ t: c.t, end: c.t + c.d, root: c.root, q: c.q, pcs: chordPcs(c), alt: c.full ? chordPcs(c.full) : null, ci: c.i }); });
       CUR.ev = ev; CUR.notes = null; CUR.chords = cs; return;
     }
     var fx = fixes().notes[f] || {}, out = [];
     rawNotes(f).forEach(function (n, i) { var x = fx[i]; if (x && x.del) return; out.push({ t: num(n.t, 0), d: Math.max(0.03, num(n.d, 0.2)), m: x ? x.m : n.m, conf: x ? 1 : n.conf, i: i, fixed: !!x }); });
-    CUR.notes = out; CUR.chords = chordsFixed();
+    CUR.notes = out; CUR.chords = shownChords();
     var g = [];
     out.forEach(function (n) { var last = g[g.length - 1];
       if (last && n.t - last.t < 0.04) { if (last.ms.indexOf(n.m) < 0) last.ms.push(n.m); return; }
@@ -198,6 +263,52 @@
   function beatsTo(T, t) { var n = 0; CUR.beats.forEach(function (b) { if (b > T + 0.03 && b <= t + 0.03) n++; }); return n; }
   function notesAt(T) { var out = []; (CUR.notes || []).forEach(function (n) { if (n.t <= T + 0.02 && T < n.t + n.d - 0.01) out.push(n.m); }); return out; }
   function nextGroup(T) { var ev = CUR.ev || []; for (var i = 0; i < ev.length; i++) if (ev[i].t > T + 0.02) return ev[i]; return null; }
+
+  /* ── AOG-LEARN-V2: the song's parts (Intro, Part A, Part B, Ending), as bars ── */
+  function secWord(kind) {
+    var A = window.AOGLearn, x = A && A.words, lang = L(), key = kind === "intro" ? "intro" : kind === "end" ? "end" : "part", s = "";
+    try { if (x && x[lang] && typeof x[lang][key] === "string") s = x[lang][key]; } catch (e) { s = ""; }
+    if (key === "end" && /…/.test(s)) s = "";   /* not a label */
+    return s || w(kind === "intro" ? "sIntro" : kind === "end" ? "sEnd" : "sPart");
+  }
+  function buildSections() {
+    var Ls = CUR.L, raw = Array.isArray(Ls.sections) ? Ls.sections : null, A = window.AOGLearn;
+    if (!raw && A && typeof A.sections === "function") { try { raw = A.sections(Ls); } catch (e) { raw = null; } }
+    var out = [];
+    (raw || []).forEach(function (s) {
+      if (!s || !isFinite(s.t)) return;
+      var a = Math.max(0, barOf(num(s.t, 0) + 0.02)), end = num(s.t, 0) + Math.max(0.05, num(s.d, 0)), b = Math.max(a, barOf(end - 0.05));
+      if (out.length && out[out.length - 1].a === a) return;
+      if (out.length && out[out.length - 1].b >= a) out[out.length - 1].b = Math.max(out[out.length - 1].a, a - 1);
+      out.push({ a: a, b: b, kind: s.kind === "intro" || s.kind === "end" ? s.kind : "part", letter: String(s.letter || "").slice(0, 3) });
+    });
+    CUR.secs = out.length >= 2 ? out : [];
+  }
+  function secLabel(s) { return s.kind === "part" ? secWord("part") + (s.letter ? " " + s.letter : "") : secWord(s.kind); }
+  function secAt(bar) { var ss = CUR.secs || []; for (var i = ss.length - 1; i >= 0; i--) if (ss[i].a <= bar) return ss[i].b >= bar ? i : -1; return -1; }
+
+  /* ── AOG-LEARN-V2: the capo (the Guitar): the fret, and the shape to finger for each chord ── */
+  function capoInfo() {
+    if (!CUR || !H || H.room !== "guitar") return null;
+    var A = window.AOGLearn; if (!A || typeof A.capo !== "function") return null;
+    if (CUR.capoSig === "ok") return CUR.capo;
+    var r = null;
+    try { r = A.capo(Object.assign({}, CUR.L, { chords: (CUR.chords || []).filter(function (c) { return c.root >= 0 && QM[c.q]; }).map(function (c) { return { t: c.t, d: c.d, root: c.root, q: c.q, name: enName(c), conf: c.conf }; }) })); } catch (e) { r = null; }
+    var fret = r ? Math.round(num(+r.fret, 0)) : 0, map = [];
+    if (fret > 0 && fret < 12) (r.shapes || []).forEach(function (x) { var a = asChord(x && x.from), b = asChord(x && x.shape); if (a && b) map.push({ from: a, shape: b }); });
+    CUR.capo = fret > 0 && map.length ? { fret: fret, map: map } : null; CUR.capoSig = "ok";
+    return CUR.capo;
+  }
+  function capoOn() { return !!(CUR && CUR.rec.capo && capoInfo()); }
+  function capoShape(c) {
+    var ci = capoInfo(); if (!ci || !c) return null;
+    for (var i = 0; i < ci.map.length; i++) { var f = ci.map[i].from;
+      if ((f.root === c.root && f.q === c.q) || (c.full && f.root === c.full.root && f.q === c.full.q)) return ci.map[i].shape; }
+    return null;
+  }
+  function capoShapes() { var seen = [], out = []; (CUR.chords || []).forEach(function (c) { var s = capoShape(c); if (!s) return; var k = s.root + s.q; if (seen.indexOf(k) < 0) { seen.push(k); out.push(s); } }); return out; }
+  /* the name the learner reads: the shape to finger when the capo is on, else the chord */
+  function dispName(c) { var s = capoOn() ? capoShape(c) : null; return chordName(s || c); }
 
   /* ── keeping songs on the device ── */
   var DBN = "aog-learn", ST = "songs", MAXKEEP = 12;
@@ -322,74 +433,127 @@
   var PL = { ac: null, src: null, out: null, base: null, cache: {}, playing: false, counting: false, pos: 0, t0: 0, start: 0, speed: 1, tick: 0, clicks: [], making: 0, lastT: 0, ended: false };
   var TEST = { clock: null };
   function acx() {
-    if (!PL.ac) { var C = window.AudioContext || window.webkitAudioContext; PL.ac = new C(); PL.out = PL.ac.createGain(); PL.out.gain.value = 0.9; PL.out.connect(PL.ac.destination); }
+    if (!PL.ac) { var C = window.AudioContext || window.webkitAudioContext; PL.ac = new C(); PL.out = PL.ac.createGain(); PL.out.gain.value = 0.9; PL.out.connect(PL.ac.destination);
+      PL.fxIn = PL.ac.createGain(); try { PL.fxIn.channelCount = 2; PL.fxIn.channelCountMode = "explicit"; PL.fxIn.channelInterpretation = "speakers"; } catch (e) {}
+      PL.fx = []; quietWire(); }
     try { if (PL.ac.state !== "running") PL.ac.resume(); } catch (e) {}
     return PL.ac;
   }
   function decode(ab) { var c = acx(); return new Promise(function (ok, no) { var r = c.decodeAudioData(ab.slice(0), ok, no); if (r && r.then) r.then(ok, no); }); }
   function newBuf(nch, len, sr) { try { return new AudioBuffer({ numberOfChannels: nch, length: len, sampleRate: sr }); } catch (e) { return acx().createBuffer(nch, len, sr); } }
-  /* WSOLA, as the Mixing Desk makes a slower copy that keeps the pitch (music-studio.html AOG-STUDIO-EDIT-V1, wsola) */
-  function wsola(buf, sp, cancelled) {
-    var sr = buf.sampleRate, nch = buf.numberOfChannels, n = buf.length;
+  /* WSOLA, as the Mixing Desk makes a slower copy that keeps the pitch (music-studio.html AOG-STUDIO-EDIT-V1, wsola).
+     AOG-LEARN-V2: the work is one self-contained job (it uses nothing outside itself), so the very same code runs in a
+     Worker made from a Blob (a phone stays smooth while it works) or, where a Worker cannot start, here in slices of
+     12 ms as before. run(ms) works for about that long and says whether it is done; Y holds the channels. */
+  function wsolaJob(X, n, sr, sp) {
+    var nch = X.length;
     var Hh = Math.max(64, Math.round(0.02 * sr)), N = 2 * Hh, tol = Math.round(0.012 * sr), Ha = Hh * sp, outN = Math.max(1, Math.round(n / sp));
-    var X = [], Y = [], ch, j; for (ch = 0; ch < nch; ch++) { X.push(buf.getChannelData(ch)); Y.push(new Float32Array(outN + N)); }
+    var Y = [], ch, j; for (ch = 0; ch < nch; ch++) Y.push(new Float32Array(outN + N));
     var Wn = new Float32Array(N); for (j = 0; j < N; j++) Wn[j] = 0.5 - 0.5 * Math.cos(2 * Math.PI * j / N);
     var Q = 4, m = Math.floor(n / Q), Dq = new Float32Array(m + 1);
     for (var i = 0; i < m; i++) { var v = 0, o = i * Q; for (ch = 0; ch < nch; ch++) { var x = X[ch]; v += x[o] + x[o + 1] + x[o + 2] + x[o + 3]; } Dq[i] = v; }
     var Hq = Math.floor(Hh / Q), tq = Math.floor(tol / Q), prev = 0, k = 0, op = 0;
-    return new Promise(function (ok) {
-      function step() {
-        var until = Date.now() + 12;
-        for (; op < outN; op += Hh, k++) {
-          var nom = Math.round(k * Ha), pos;
-          if (k === 0) pos = 0;
+    function run(ms) {
+      var until = Date.now() + ms;
+      for (; op < outN; op += Hh, k++) {
+        var nom = Math.round(k * Ha), pos;
+        if (k === 0) pos = 0;
+        else {
+          var tgt = prev + Hh;
+          if (tgt + N >= n || nom + tol + N >= n) pos = Math.max(0, Math.min(nom, n - N));
           else {
-            var tgt = prev + Hh;
-            if (tgt + N >= n || nom + tol + N >= n) pos = Math.max(0, Math.min(nom, n - N));
-            else {
-              var tg = Math.floor(tgt / Q), lo = Math.max(0, Math.floor(nom / Q) - tq), hi = Math.min(m - Hq - 1, Math.floor(nom / Q) + tq), best = -Infinity, bq = Math.floor(nom / Q), q;
-              for (q = lo; q <= hi; q++) { var s = 0; for (j = 0; j < Hq; j++) s += Dq[tg + j] * Dq[q + j]; if (s > best) { best = s; bq = q; } }
-              var fb = -Infinity, fp = Math.max(0, Math.min(n - N - 1, bq * Q));
-              for (q = Math.max(0, bq * Q - Q); q <= Math.min(n - N - 1, bq * Q + Q); q++) {
-                var s2 = 0; for (j = 0; j < Hh; j += 2) { var a = 0, b = 0; for (ch = 0; ch < nch; ch++) { a += X[ch][tgt + j]; b += X[ch][q + j]; } s2 += a * b; }
-                if (s2 > fb) { fb = s2; fp = q; } }
-              pos = fp;
-            }
+            var tg = Math.floor(tgt / Q), lo = Math.max(0, Math.floor(nom / Q) - tq), hi = Math.min(m - Hq - 1, Math.floor(nom / Q) + tq), best = -Infinity, bq = Math.floor(nom / Q), q;
+            for (q = lo; q <= hi; q++) { var s = 0; for (j = 0; j < Hq; j++) s += Dq[tg + j] * Dq[q + j]; if (s > best) { best = s; bq = q; } }
+            var fb = -Infinity, fp = Math.max(0, Math.min(n - N - 1, bq * Q));
+            for (q = Math.max(0, bq * Q - Q); q <= Math.min(n - N - 1, bq * Q + Q); q++) {
+              var s2 = 0; for (j = 0; j < Hh; j += 2) { var a = 0, b = 0; for (ch = 0; ch < nch; ch++) { a += X[ch][tgt + j]; b += X[ch][q + j]; } s2 += a * b; }
+              if (s2 > fb) { fb = s2; fp = q; } }
+            pos = fp;
           }
-          for (ch = 0; ch < nch; ch++) { var xx = X[ch], y = Y[ch], Ln = Math.min(N, n - pos);
-            if (k === 0) { for (j = 0; j < Ln; j++) y[op + j] += xx[pos + j] * (j < Hh ? 1 : Wn[j]); }
-            else for (j = 0; j < Ln; j++) y[op + j] += xx[pos + j] * Wn[j]; }
-          prev = pos;
-          if ((k & 15) === 15 && Date.now() > until) { op += Hh; k++; if (cancelled()) { ok(null); return; } setTimeout(step, 0); return; }
         }
-        var out = newBuf(nch, outN, sr); for (ch = 0; ch < nch; ch++) out.getChannelData(ch).set(Y[ch].subarray(0, outN));
-        ok(out);
+        for (ch = 0; ch < nch; ch++) { var xx = X[ch], y = Y[ch], Ln = Math.min(N, n - pos);
+          if (k === 0) { for (j = 0; j < Ln; j++) y[op + j] += xx[pos + j] * (j < Hh ? 1 : Wn[j]); }
+          else for (j = 0; j < Ln; j++) y[op + j] += xx[pos + j] * Wn[j]; }
+        prev = pos;
+        if ((k & 15) === 15 && Date.now() > until) { op += Hh; k++; return false; }
       }
-      step();
+      return true;
+    }
+    return { run: run, Y: Y, outN: outN };
+  }
+  function bufOf(Y, outN, sr) { var out = newBuf(Y.length, outN, sr); for (var ch = 0; ch < Y.length; ch++) out.getChannelData(ch).set(Y[ch].subarray(0, outN)); return out; }
+  function wsolaSlices(buf, sp, cancelled) {
+    var X = []; for (var ch = 0; ch < buf.numberOfChannels; ch++) X.push(buf.getChannelData(ch));
+    var job = wsolaJob(X, buf.length, buf.sampleRate, sp);
+    PL.how = "slices";
+    return new Promise(function (ok) {
+      (function step() { if (!job.run(12)) { if (cancelled()) { ok(null); return; } setTimeout(step, 0); return; } ok(bufOf(job.Y, job.outN, buf.sampleRate)); })();
     });
   }
-  /* a MIDI song is played from its notes: soft tones for the parts, short taps for the drums, at the speed asked (so the
-     pitch never moves) */
+  /* one Worker, one slower copy at a time: a new speed (or a new song) stops the one being made */
+  var WK = { w: null, url: "", broken: false, id: 0, done: null };
+  function wsolaStop() { if (WK.w) { try { WK.w.terminate(); } catch (e) {} WK.w = null; } if (WK.done) { var d = WK.done; WK.done = null; d(null); } }
+  function wsola(buf, sp, cancelled) {
+    if (WK.broken || TEST.noWorker || typeof Worker === "undefined" || !window.Blob || !window.URL || !URL.createObjectURL) return wsolaSlices(buf, sp, cancelled);
+    wsolaStop();
+    try {
+      if (!WK.url) WK.url = URL.createObjectURL(new Blob(["var wsolaJob=" + wsolaJob.toString() + ";\nonmessage=function(e){var d=e.data,j=wsolaJob(d.X,d.n,d.sr,d.sp);j.run(1e15);postMessage({id:d.id,Y:j.Y,outN:j.outN},j.Y.map(function(y){return y.buffer;}));};"], { type: "text/javascript" }));
+      WK.w = new Worker(WK.url);
+    } catch (e) { WK.broken = true; return wsolaSlices(buf, sp, cancelled); }
+    var id = ++WK.id, wk = WK.w, X = [];
+    for (var ch = 0; ch < buf.numberOfChannels; ch++) X.push(buf.getChannelData(ch).slice());
+    return new Promise(function (ok) {
+      WK.done = ok;
+      wk.onmessage = function (e) { var d = e.data || {}; if (d.id !== id) return; WK.done = null; try { wk.terminate(); } catch (er) {} if (WK.w === wk) WK.w = null;
+        PL.how = "worker"; ok(cancelled() ? null : bufOf(d.Y, d.outN, buf.sampleRate)); };
+      wk.onerror = function (e) { if (e && e.preventDefault) e.preventDefault(); WK.done = null; try { wk.terminate(); } catch (er) {} if (WK.w === wk) WK.w = null; WK.broken = true;
+        wsolaSlices(buf, sp, cancelled).then(ok); };
+      try { wk.postMessage({ id: id, X: X, n: buf.length, sr: buf.sampleRate, sp: sp }, X.map(function (x) { return x.buffer; })); }
+      catch (e) { WK.done = null; WK.broken = true; wsolaSlices(buf, sp, cancelled).then(ok); }
+    });
+  }
+  /* a MIDI song is played from its notes, at the speed asked (so the pitch never moves). AOG-LEARN-V2: each part sounds
+     like what it is: a piano part rings and fades (two tones, a soft hammer), a guitar or bass part is plucked (bright,
+     then mellow), other parts are soft held tones, and the drums are a kick, a snare and a hi-hat */
   function renderMidi(sp) {
     var Ls = CUR.L, sr = 44100, sec = CUR.sec / sp + 1.5, OC = window.OfflineAudioContext || window.webkitOfflineAudioContext;
-    var oc = new OC(2, Math.ceil(sec * sr), sr), out = oc.createGain(), n = 0;
-    (Ls.tracks || []).forEach(function (T) { n += (T.notes || []).length; });
+    var oc = new OC(2, Math.ceil(sec * sr), sr), out = oc.createGain();
     out.gain.value = 0.22; out.connect(oc.destination);
     var noise = oc.createBuffer(1, Math.round(sr * 0.25), sr), nd = noise.getChannelData(0), x = 0x2f6b1a3d;
     for (var i = 0; i < nd.length; i++) { x ^= x << 13; x ^= x >>> 17; x ^= x << 5; nd[i] = ((x >>> 0) / 4294967296) * 2 - 1; }
+    function env(g, t, v, a) { g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(v, t + a); }
     (Ls.tracks || []).forEach(function (T) {
+      var p = T.program | 0, kind = T.drums ? "drums" : p <= 7 ? "piano" : (p >= 24 && p <= 39) ? "pluck" : "soft";
       (T.notes || []).forEach(function (nn) {
-        var t = num(nn.t, 0) / sp, d = Math.max(0.05, num(nn.d, 0.2) / sp), v = Math.max(0.1, Math.min(1, num(nn.v, 0.8))), g = oc.createGain();
+        var t = num(nn.t, 0) / sp, d = Math.max(0.05, num(nn.d, 0.2) / sp), v = Math.max(0.1, Math.min(1, num(nn.v, 0.8))), g = oc.createGain(), hz = 440 * Math.pow(2, (nn.m - 69) / 12), o, o2, f;
         g.connect(out);
-        if (T.drums) {
-          var b = oc.createBufferSource(); b.buffer = noise; var f = oc.createBiquadFilter(), low = nn.m <= 36;
-          f.type = low ? "lowpass" : nn.m <= 40 ? "bandpass" : "highpass"; f.frequency.value = low ? 180 : nn.m <= 40 ? 1800 : 7000;
-          b.connect(f); f.connect(g); var len = low ? 0.18 : nn.m <= 40 ? 0.14 : 0.06;
-          g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(v * (low ? 2.2 : 0.9), t + 0.003); g.gain.exponentialRampToValueAtTime(0.0001, t + len);
-          b.start(t); b.stop(t + len + 0.02); return;
+        if (kind === "drums") {
+          if (nn.m <= 36) {   /* the kick: a low tone that falls */
+            o = oc.createOscillator(); o.type = "sine"; o.frequency.setValueAtTime(140, t); o.frequency.exponentialRampToValueAtTime(48, t + 0.12); o.connect(g);
+            env(g, t, v * 1.6, 0.003); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.3); o.start(t); o.stop(t + 0.32); return;
+          }
+          var b = oc.createBufferSource(); b.buffer = noise; f = oc.createBiquadFilter(); var snare = nn.m <= 40, len = snare ? 0.16 : nn.m === 46 ? 0.22 : 0.05;
+          f.type = snare ? "bandpass" : "highpass"; f.frequency.value = snare ? 1800 : 7000; b.connect(f); f.connect(g);
+          env(g, t, v * (snare ? 0.9 : 0.5), 0.002); g.gain.exponentialRampToValueAtTime(0.0001, t + len); b.start(t); b.stop(t + len + 0.02);
+          if (snare) { o = oc.createOscillator(); o.type = "triangle"; o.frequency.value = 190; var g2 = oc.createGain(); o.connect(g2); g2.connect(out); env(g2, t, v * 0.5, 0.002); g2.gain.exponentialRampToValueAtTime(0.0001, t + 0.08); o.start(t); o.stop(t + 0.1); }
+          return;
         }
-        var o = oc.createOscillator(); o.type = "triangle"; o.frequency.value = 440 * Math.pow(2, (nn.m - 69) / 12); o.connect(g);
-        g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(v, t + 0.008); g.gain.setTargetAtTime(v * 0.55, t + 0.01, 0.25);
+        if (kind === "piano") {   /* rings, and fades even while held; a soft fall when let go */
+          o = oc.createOscillator(); o.type = "triangle"; o.frequency.value = hz; o2 = oc.createOscillator(); o2.type = "sine"; o2.frequency.value = hz * 2.001;
+          var g3 = oc.createGain(); g3.gain.value = 0.25; o.connect(g); o2.connect(g3); g3.connect(g);
+          var ring = Math.max(0.35, 1.6 - (nn.m - 48) * 0.02);
+          env(g, t, v, 0.004); g.gain.setTargetAtTime(v * 0.05, t + 0.005, ring);
+          g.gain.setTargetAtTime(0.0001, t + d, 0.08); o.start(t); o2.start(t); o.stop(t + d + 0.5); o2.stop(t + d + 0.5); return;
+        }
+        if (kind === "pluck") {   /* bright at the pluck, then mellow, and it dies away */
+          o = oc.createOscillator(); o.type = "sawtooth"; o.frequency.value = hz; f = oc.createBiquadFilter(); f.type = "lowpass"; f.Q.value = 0.8;
+          f.frequency.setValueAtTime(Math.min(9000, hz * 8), t); f.frequency.setTargetAtTime(Math.max(200, hz * 1.5), t + 0.005, 0.12);
+          o.connect(f); f.connect(g);
+          env(g, t, v * 0.8, 0.003); g.gain.setTargetAtTime(v * 0.08, t + 0.005, nn.m < 48 ? 0.6 : 0.4);
+          g.gain.setTargetAtTime(0.0001, t + d, 0.05); o.start(t); o.stop(t + d + 0.4); return;
+        }
+        o = oc.createOscillator(); o.type = "triangle"; o.frequency.value = hz; o.connect(g);
+        env(g, t, v, 0.008); g.gain.setTargetAtTime(v * 0.55, t + 0.01, 0.25);
         g.gain.setTargetAtTime(0.0001, t + d, 0.05); o.start(t); o.stop(t + d + 0.4);
       });
     });
@@ -397,9 +561,10 @@
   }
   function baseBuf() {
     if (PL.base) return Promise.resolve(PL.base);
-    if (CUR.L.src === "midi" || CUR.rec.src === "midi") return renderMidi(1).then(function (b) { PL.base = b; return b; });
+    var id = CUR.rec.id, keep = function (b) { if (CUR && CUR.rec.id === id) { PL.base = b; PL.stereo = stereoOf(b); if (PL.fxMode !== quietMode()) quietWire(); paintQuiet(); } return b; };
+    if (CUR.L.src === "midi" || CUR.rec.src === "midi") return renderMidi(1).then(keep);
     if (!CUR.rec.blob) return Promise.reject(new Error("gone"));
-    return CUR.rec.blob.arrayBuffer().then(decode).then(function (b) { PL.base = b; return b; });
+    return CUR.rec.blob.arrayBuffer().then(decode).then(keep);
   }
   function bufFor(sp) {
     var key = String(Math.round(sp * 100));
@@ -412,9 +577,46 @@
       return p.then(function (o) { PL.making--; paintStatus(); return o; }, function (e) { PL.making--; paintStatus(); throw e; });
     }).then(function (o) {
       if (!o || !CUR || CUR.rec.id !== id) return null;
-      Object.keys(PL.cache).forEach(function (k) { if (k !== "100") delete PL.cache[k]; });   /* a phone keeps one slower copy, the one in use */
-      PL.cache[key] = o; return o;
+      if (key === "100") return o;   /* the song itself is PL.base */
+      PL.cache = {}; PL.cache[key] = o; return o;   /* a phone keeps one slower copy, the one in use */
     });
+  }
+  /* ── AOG-LEARN-V2: quiet a part of the song while you play ──
+     the bass: a gentle high-pass (160 Hz) and a low shelf, so the low notes are yours to play;
+     the voice: the middle of a stereo song taken out (left minus right), with the middle's low end (under 180 Hz) kept,
+     so the bass and the kick stay. A song with one channel has no sides to keep, so its voice cannot be taken out. */
+  function quietChain(c, mode, input, output) {
+    var nodes = [];
+    function bq(type, f, q, gain) { var b = c.createBiquadFilter(); b.type = type; b.frequency.value = f; if (q != null) b.Q.value = q; if (gain != null) b.gain.value = gain; nodes.push(b); return b; }
+    if (mode === "bass") {
+      var hp = bq("highpass", 160, 0.6), ls = bq("lowshelf", 240, null, -6);
+      input.connect(hp); hp.connect(ls); ls.connect(output); return nodes;
+    }
+    if (mode === "voice") {
+      var sp = c.createChannelSplitter(2), side = c.createGain(), inv = c.createGain(), mid = c.createGain(), sum = c.createGain();
+      nodes.push(sp, side, inv, mid, sum);
+      inv.gain.value = -1; side.gain.value = 0.5; mid.gain.value = 0.5;
+      input.connect(sp); sp.connect(side, 0); sp.connect(inv, 1); inv.connect(side);
+      sp.connect(mid, 0); sp.connect(mid, 1);
+      var l1 = bq("lowpass", 180, 0.707), l2 = bq("lowpass", 180, 0.707);
+      mid.connect(l1); l1.connect(l2); l2.connect(sum); side.connect(sum); sum.connect(output);
+      return nodes;
+    }
+    input.connect(output); return nodes;
+  }
+  function quietMode() { var q = CUR && CUR.rec.quiet; if (q === "voice" && PL.stereo === false) return "none"; return q === "bass" || q === "voice" ? q : "none"; }
+  function quietWire() {
+    if (!PL.ac || !PL.fxIn) return;
+    try { PL.fxIn.disconnect(); } catch (e) {}
+    (PL.fx || []).forEach(function (n) { try { n.disconnect(); } catch (e) {} });
+    PL.fx = quietChain(PL.ac, quietMode(), PL.fxIn, PL.out); PL.fxMode = quietMode();
+  }
+  /* one channel, or two the same */
+  function stereoOf(b) {
+    if (!b || b.numberOfChannels < 2) return false;
+    var l = b.getChannelData(0), r = b.getChannelData(1), dif = 0, all = 0;
+    for (var i = 0; i < l.length; i += 7) { dif += Math.abs(l[i] - r[i]); all += Math.abs(l[i]) + Math.abs(r[i]); }
+    return all > 0 && dif / all > 0.01;
   }
   function songNow() {
     if (TEST.clock) return TEST.clock();
@@ -431,22 +633,22 @@
   function play(opts) {
     opts = opts || {};
     if (!CUR || PL.playing) return Promise.resolve();
-    acx();
+    acx(); PIN = null;
     var sp = (CUR.rec.speed || 100) / 100, id = CUR.rec.id, want = ++PL.want;
-    if (!PL.cache[String(Math.round(sp * 100))]) say2(w(sp < 1 ? "making" : "readying"));
+    if (sp < 1 ? !PL.cache[String(Math.round(sp * 100))] : !PL.base) say2(w(sp < 1 ? "making" : "readying"));
     return bufFor(sp).then(function (b) {
       if (!b || !CUR || CUR.rec.id !== id || want !== PL.want) return;
       var c = acx(), lp = loopTimes(), from = PL.pos;
       if (from >= CUR.sec - 0.05) from = 0;
       if (lp && (from < lp[0] - 0.01 || from >= lp[1])) from = lp[0];
-      var s = c.createBufferSource(); s.buffer = b; s.connect(PL.out);
+      var s = c.createBufferSource(); s.buffer = b; s.connect(PL.fxIn);
       if (lp) { s.loop = true; s.loopStart = lp[0] / sp; s.loopEnd = Math.min(b.duration, lp[1] / sp); }
       var now = c.currentTime + 0.06, nb = (CUR.L.meter && CUR.L.meter.num) || 4, per = 60 / (num(CUR.L.bpm, 0) > 0 ? CUR.L.bpm : 120) / sp;
       var count = !opts.noCount && CUR.rec.count !== false && !PL.resumeWait;
       if (count) { for (var k = 0; k < nb; k++) click(now + k * per, k === 0); now += nb * per; }
       PL.counting = count; PL.countAt = now; PL.countPer = per; PL.countN = nb;
       s.start(now, Math.max(0, from / sp));
-      s.onended = function () { if (PL.src !== s) return; PL.src = null; if (PL.playing) { PL.playing = false; PL.pos = CUR ? CUR.sec : 0; PL.ended = true; endPass(); stopTick(); paintLive(); } };
+      s.onended = function () { if (PL.src !== s) return; PL.src = null; if (PL.playing) { PL.playing = false; PL.pos = CUR ? CUR.sec : 0; PL.ended = true; endPass(null, true); stopTick(); paintLive(); } };
       PL.src = s; PL.t0 = now; PL.start = from; PL.speed = sp; PL.playing = true; PL.ended = false; PL.lastT = from;
       PL.resumeWait = false;
       if (!PL.inPass) startPass(from);
@@ -466,7 +668,7 @@
     stopTick(); paintLive();
   }
   function paintLive() { if (!CUR || !$("lgNow")) return; paintStatus(); paintNow(songNow(), true); }
-  function seek(T) { var was = PL.playing; if (was) pause(); PL.pos = Math.max(0, Math.min(CUR.sec, T)); PL.waiting = null; PL.waitDone = PL.pos - 0.001; paintLive(); if (was) play({ noCount: false }); }
+  function seek(T) { PIN = null; var was = PL.playing; if (was) pause(); PL.pos = Math.max(0, Math.min(CUR.sec, T)); PL.waiting = null; PL.waitDone = PL.pos - 0.001; paintLive(); if (was) play({ noCount: false }); }
   function startTick() { stopTick(); PL.tick = setInterval(tick, 30); }
   function stopTick() { clearInterval(PL.tick); PL.tick = 0; }
   function away() { try { var f = window.frameElement; return D.hidden || (!!f && (f.hidden || f.style.display === "none" || !f.getClientRects().length)); } catch (e) { return D.hidden; } }
@@ -476,7 +678,7 @@
     var T = songNow();
     if (PL.counting && PL.ac && PL.ac.currentTime >= PL.countAt) PL.counting = false;
     var lp = loopTimes();
-    if (lp && PL.playing && !PL.counting && T < PL.lastT - 0.2) { endPass(PL.lastT); startPass(lp[0]); PL.waitDone = lp[0] - 0.001; }   /* each time round the loop is a pass */
+    if (lp && PL.playing && !PL.counting && T < PL.lastT - 0.2) { endPass(PL.lastT, true); startPass(lp[0]); PL.waitDone = lp[0] - 0.001; }   /* each time round the loop is a pass */
     PL.lastT = T;
     if (CUR.rec.wait && PL.playing && !PL.counting) {
       var g = nextWait(PL.waitDone);
@@ -489,20 +691,27 @@
   /* ── what the learner plays: the room's notes (AOG-NOTES-V1), a MIDI keyboard through the room, a real instrument ── */
   var PASS = null, RESULT = null;
   function startPass(from) { PASS = { from: from, played: [] }; PL.inPass = true; clearMarks(); }
-  function heard(m, ahead) {
+  /* AOG-LEARN-V2: with Easier chords on, the easier chord and the full one both count */
+  function setsOf(e) { return e.alt ? [e.pcs, e.alt] : [e.pcs]; }
+  function haveOf(e, pcs) { return Math.max.apply(null, setsOf(e).map(function (set) { var s = []; pcs.forEach(function (pc) { if (set.indexOf(pc) >= 0 && s.indexOf(pc) < 0) s.push(pc); }); return s.length; })); }
+  function inAny(e, pc) { return setsOf(e).some(function (set) { return set.indexOf(pc) >= 0; }); }
+  /* notes played together (a key, a fret, a strum heard as a chord) at song time T */
+  function heardAt(ms, T) {
     if (!CUR) return;
     if (PL.waiting) {
-      var g = PL.waiting; PL.got.push(pcOf(m));
-      var need = needOf(g), have = g.pcs.filter(function (p) { return PL.got.indexOf(p) >= 0; }).length;
-      if (have >= need) { PL.waiting = null; PL.waitDone = g.t; PL.resumeWait = true; play({ noCount: true }); }
+      var g = PL.waiting; ms.forEach(function (m) { PL.got.push(pcOf(m)); });
+      if (haveOf(g, PL.got) >= needOf(g)) { PL.waiting = null; PL.waitDone = g.t; PL.resumeWait = true; play({ noCount: true }); }
       else paintNow(PL.pos);
       return;
     }
     if (!PASS || !(PL.playing || TEST.clock)) return;
-    var T = songNow() - lat() + (ahead > 0 && ahead < 1 ? ahead * PL.speed : 0);
-    PASS.played.push({ t: T, m: m });
+    ms.forEach(function (m) { PASS.played.push({ t: T, m: m }); });
   }
-  function needOf(e) { if (CUR.follow !== "chords") return Math.min(3, e.pcs.length); return (H && H.room === "bass") || LIVE.on ? 1 : Math.min(2, e.pcs.length); }
+  function heard(m, ahead) {
+    if (!CUR) return;
+    heardAt([m], PL.waiting ? PL.pos : songNow() - lat() + (ahead > 0 && ahead < 1 ? ahead * PL.speed : 0));
+  }
+  function needOf(e) { if (CUR.follow !== "chords") return Math.min(3, e.pcs.length); return (H && H.room === "bass") || LIVE.kind === "notes" ? 1 : Math.min(2, e.pcs.length); }
   function wrapNote() {
     var R = window.AOGRecorder; if (!R || !R.note || R.note.__lg) return;
     var orig = R.note, wr = function (c, vc, e) {
@@ -510,20 +719,48 @@
       return orig.apply(this, arguments); };
     wr.__lg = 1; R.note = wr;
   }
-  var LIVE = { off: null, on: false };
+  /* a real instrument (aog-liveinput.js), only while its input is on. The Guitar following the chords: short frames of
+     the sound (AOGLive.frames) go to AOGLearn.hearChord, so a strum counts as the chord it is; a fresh strum is found by
+     the sound jumping up, and its chord is read a moment later, once it rings. Otherwise one note at a time (AOGLive.listen). */
+  var LIVE = { off: null, on: false, kind: "" }, STRUM = {};
   function listenLive(on) {
-    if (LIVE.off) { try { LIVE.off(); } catch (e) {} LIVE.off = null; LIVE.on = false; }
-    if (!on || !window.AOGLive || !AOGLive.listen) return;
-    try { LIVE.off = AOGLive.listen(function (m) { heard(m, 0); }); LIVE.on = !!LIVE.off; } catch (e) { LIVE.off = null; }
+    if (LIVE.off) { try { LIVE.off(); } catch (e) {} }
+    LIVE.off = null; LIVE.on = false; LIVE.kind = "";
+    if (!on || !window.AOGLive || !CUR) return;
+    var A = window.AOGLearn;
+    try {
+      if (CUR.follow === "chords" && H && H.room === "guitar" && A && typeof A.hearChord === "function" && typeof AOGLive.frames === "function") {
+        STRUM = { rms: 0, pend: null, last: "", cand: "", candT: 0 }; LIVE.off = AOGLive.frames(onFrame) || null; if (LIVE.off) LIVE.kind = "chords"; }
+      if (!LIVE.off && AOGLive.listen) { LIVE.off = AOGLive.listen(function (m) { heard(m, 0); }) || null; if (LIVE.off) LIVE.kind = "notes"; }
+    } catch (e) { LIVE.off = null; LIVE.kind = ""; }
+    LIVE.on = !!LIVE.off;
   }
+  function onFrame(buf, sr) {
+    if (!CUR || !buf || !buf.length || (H && H.busy && H.busy())) return;
+    var A = window.AOGLearn, n = buf.length, tail = Math.max(1, Math.min(n, Math.round(0.05 * sr))), r = 0, i;
+    for (i = n - tail; i < n; i++) r += buf[i] * buf[i];
+    r = Math.sqrt(r / tail);
+    var prev = STRUM.rms; STRUM.rms = r;
+    var T = songNow() - lat();
+    var read = function () { var k = CUR.L.key || {}, c = null; try { c = A.hearChord(buf, sr, k.key | 0, !!k.minor); } catch (e) { c = null; }
+      return c && (c.conf == null || c.conf >= 0.3) ? asChord(c) : null; };
+    if (r > 0.02 && r > prev * 1.8) { STRUM.pend = { t: T - 0.05 * (PL.speed || 1), k: 0 }; STRUM.cand = ""; return; }
+    if (STRUM.pend) { if (++STRUM.pend.k < 2) return; var c = read(), t = STRUM.pend.t; STRUM.pend = null; if (c) strum(c, t); return; }
+    if (r <= 0.02) { STRUM.last = ""; STRUM.cand = ""; return; }
+    var c2 = read(); if (!c2) return;
+    var sig = c2.root + c2.q;
+    if (sig === STRUM.last) { STRUM.cand = ""; return; }
+    if (STRUM.cand === sig) { strum(c2, STRUM.candT); STRUM.cand = ""; } else { STRUM.cand = sig; STRUM.candT = T; }
+  }
+  function strum(c, t) { STRUM.last = c.root + c.q; heardAt(chordPcs(c).map(function (pc) { return 48 + pc; }), t); }
   /* how a pass went: each chord change (or note) due, against what was played near it (±120 ms on time) */
   var WIN = 0.12, NEAR = 0.45;
   function judge(due, played, follow) {
     return due.map(function (e) {
       var need = needOf(e), near = played.filter(function (p) { return Math.abs(p.t - e.t) <= NEAR; });
       var inW = near.filter(function (p) { return Math.abs(p.t - e.t) <= WIN; });
-      var okPcs = function (list) { var s = []; list.forEach(function (p) { var pc = pcOf(p.m); if (e.pcs.indexOf(pc) >= 0 && s.indexOf(pc) < 0) s.push(pc); }); return s.length; };
-      var bad = inW.filter(function (p) { return e.pcs.indexOf(pcOf(p.m)) < 0; }).length, good = inW.length - bad;
+      var okPcs = function (list) { return haveOf(e, list.map(function (p) { return pcOf(p.m); })); };
+      var bad = inW.filter(function (p) { return !inAny(e, pcOf(p.m)); }).length, good = inW.length - bad;
       var how;
       if (okPcs(inW) >= need && bad <= good) how = "on";
       else if (okPcs(near.filter(function (p) { return p.t - e.t > WIN; })) >= need) how = "late";
@@ -533,7 +770,8 @@
       return { t: e.t, how: how, e: e, bar: barOf(e.t) };
     });
   }
-  function endPass(to) {
+  /* full: a whole time round the loop, or the song to its end (Step up the speed moves only then) */
+  function endPass(to, full) {
     PL.inPass = false;
     var P = PASS; PASS = null;
     if (!P || !CUR || CUR.rec.wait) return null;
@@ -542,17 +780,39 @@
     if (due.length < 2 || !P.played.length) return null;   /* just listening: nothing to say */
     var res = judge(due, P.played, CUR.follow), k = res.filter(function (r) { return r.how === "on"; }).length, chords = CUR.follow === "chords";
     var msg = k === res.length ? w(chords ? "resAllC" : "resAllN", { n: res.length }) : w(chords ? "resC" : "resN", { k: k, n: res.length });
-    var sp = CUR.rec.speed || 100, first = res.filter(function (r) { return r.how !== "on"; })[0];
-    if (first) {
-      var nm = chords ? chordName(first.e) : first.e.ms.map(noteName).join(" + "), key = (chords ? "c" : "n") + { late: "Late", early: "Early", other: "Other", missed: "Missed" }[first.how];
-      msg += " " + w(key, { c: nm, b: first.bar + 1 }) + (sp > 75 ? w("tryAt", { n: 75 }) : sp > 50 ? w("tryAt", { n: 50 }) : w("tryBar", { b: first.bar + 1 }));
-    } else msg += sp < 100 ? w("faster") : w("same");
+    var sp = CUR.rec.speed || 100, first = res.filter(function (r) { return r.how !== "on"; })[0], clean = k / res.length >= 0.9, step = 0;
+    if (CUR.rec.stepUp && clean && full) {
+      if (sp < 100) { step = Math.min(100, sp + 5); msg += " " + w("clean", { n: step }); } else msg += " " + w("cleanTop");
+    } else if (first) {
+      var nm = chords ? dispName(first.e) : first.e.ms.map(noteName).join(" + "), key = (chords ? "c" : "n") + { late: "Late", early: "Early", other: "Other", missed: "Missed" }[first.how];
+      msg += " " + w(key, { c: nm, b: first.bar + 1 }) + (CUR.rec.stepUp ? "." : sp > 75 ? w("tryAt", { n: 75 }) : sp > 50 ? w("tryAt", { n: 50 }) : w("tryBar", { b: first.bar + 1 }));
+    } else msg += CUR.rec.stepUp ? "" : sp < 100 ? w("faster") : w("same");
     var marks = {};
     res.forEach(function (r) { if (r.bar < 0) return; marks[r.bar] = marks[r.bar] === "try" || r.how !== "on" ? "try" : "ok"; });
-    RESULT = { k: k, n: res.length, res: res.map(function (r) { return { t: r.t, how: r.how, bar: r.bar }; }), msg: msg, marks: marks };
+    RESULT = { k: k, n: res.length, res: res.map(function (r) { return { t: r.t, how: r.how, bar: r.bar }; }), msg: msg, marks: marks, speed: sp, step: step };
+    /* Your best, for this part at this speed, kept with the song */
+    var bk = CUR.follow + "|" + sp, bs = CUR.rec.best || (CUR.rec.best = {}), old = bs[bk];
+    if (!old || k / res.length > old.k / old.n + 1e-9 || (Math.abs(k / res.length - old.k / old.n) < 1e-9 && res.length > old.n)) { bs[bk] = { k: k, n: res.length, at: Date.now() }; keepSoon(); }
     var s = $("lgSaid"); if (s) s.textContent = msg;
-    paintMarks();
+    paintMarks(); paintBest();
+    if (step) stepTo(step);
     return RESULT;
+  }
+  /* Step up the speed: the next pass at the new speed (round the loop, it carries on from the loop's start) */
+  function stepTo(n) {
+    CUR.rec.speed = n; keepSoon();
+    var sel = $("lgSpeed"); if (sel) sel.value = String(n);
+    paintBest();
+    if (!PL.playing) return;
+    setTimeout(function () { if (!PL.playing || !CUR) return; var lp = loopTimes(); pause(true); PL.pos = lp ? lp[0] : PL.pos; PL.waitDone = PL.pos - 0.001; play({ noCount: true }); }, 0);
+  }
+  function paintBest() {
+    var el = $("lgBest"); if (!el || !CUR) return;
+    /* the best at this speed; else the best up to it (the fastest speed below, as Step up the speed climbs) */
+    var sp = CUR.rec.speed || 100, all = CUR.rec.best || {}, b = all[CUR.follow + "|" + sp], at = sp;
+    if (!b) { at = 0; Object.keys(all).forEach(function (k) { var x = k.split("|"), s = +x[1]; if (x[0] === CUR.follow && s < sp && s > at) { b = all[k]; at = s; } }); }
+    var t = b ? w("best", { k: b.k, n: b.n, s: at }) : "";
+    if (el.textContent !== t) el.textContent = t;
   }
   function clearMarks() { RESULT = RESULT ? Object.assign({}, RESULT, { marks: {} }) : null; paintMarks(); var s = $("lgSaid"); if (s && PL.playing) s.textContent = ""; }
 
@@ -597,6 +857,23 @@
     ".lg-ph{position:absolute;top:0;bottom:0;width:2px;background:#f0c26e;pointer-events:none}",
     ".lg-fix{display:grid;gap:.6rem;padding:.7rem .8rem;border:1px solid #3a3e44;border-radius:12px;background:#17191c}",
     ".lg-said{font-weight:700;color:#f1ebdf}.lg-said:empty{display:none}",
+    /* AOG-LEARN-V2 */
+    ".lg-best{color:#e3dac9;font-weight:700}.lg-best:empty{display:none}",
+    ".lg-bar .lg-sec{display:block;font:800 .7rem/1.1 var(--sans,system-ui,sans-serif);color:#9fe0d6;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}",
+    ".lg-bar[aria-current=true] .lg-sec{color:#fff3d1}.lg-bar.in .lg-sec{color:#eafaf6}",
+    ".lg-sub{border:1px solid #3a3e44;border-radius:12px;background:#17191c}",
+    ".lg-sub>summary{min-height:48px;display:flex;align-items:center;gap:.5rem;padding:0 14px;cursor:pointer;list-style:none;font:800 .98rem/1.2 var(--sans,system-ui,sans-serif);color:#f3efe6}",
+    ".lg-sub>summary::-webkit-details-marker{display:none}.lg-sub>summary::before{content:'\\25B8';color:#f0c26e}.lg-sub[open]>summary::before{content:'\\25BE'}",
+    ".lg-sub>summary:focus-visible{outline:3px solid #f0c26e;outline-offset:2px;border-radius:12px}",
+    ".lg-subin{padding:0 12px 14px;display:grid;gap:.6rem}",
+    ".lg-shapes{display:grid;grid-template-columns:repeat(auto-fill,minmax(5.6rem,1fr));gap:8px}",
+    ".lg-shape{min-height:44px;border-radius:10px;border:1px solid #3a3e44;background:#1c1f23;color:#f3efe6;padding:6px 4px 4px;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;font:800 .95rem/1.15 var(--sans,system-ui,sans-serif)}",
+    ".lg-shape[aria-pressed=true]{border:2px solid #f0c26e;background:#2b2416;color:#fff3d1}",
+    ".lg-shape:focus-visible{outline:3px solid #f0c26e;outline-offset:1px}",
+    ".lg-shape svg{width:100%;max-width:84px;height:auto;display:block}.lg-shapes.keys{grid-template-columns:repeat(auto-fill,minmax(7rem,1fr))}.lg-shapes.keys svg{max-width:150px}",
+    ".lg-shape .ln{stroke:#d8cfbf;stroke-width:1.2;fill:none}.lg-shape .nut{stroke:#f3efe6;stroke-width:4}.lg-shape .cp{stroke:#f0c26e;stroke-width:5;stroke-linecap:round}",
+    ".lg-shape .dt{fill:#f0c26e}.lg-shape .dr{fill:#9fe0d6}.lg-shape .mk2{fill:none;stroke:#d8cfbf;stroke-width:1.4}.lg-shape .tx{fill:#e3dac9;font:700 9px/1 var(--sans,system-ui,sans-serif)}",
+    ".lg-shape .wk{fill:#ece6da;stroke:#0f1012;stroke-width:1}.lg-shape .bk{fill:#2a2d33;stroke:#0f1012;stroke-width:1}",
     "@media print{.lg{display:none}}"
   ].join("\n");
   var BOX = null;
@@ -639,17 +916,19 @@
     return out;
   }
   function openRec(rec, fresh) {
-    pause(); PL.base = null; PL.cache = {}; PL.pos = 0; PL.waiting = null; PL.waitDone = -1; RESULT = null; FIXN = null;
+    pause(); wsolaStop(); PL.base = null; PL.cache = {}; PL.stereo = null; PL.pos = 0; PL.waiting = null; PL.waitDone = -1; RESULT = null; FIXN = null; PIN = null;
     CUR = { rec: rec, L: rec.lesson };
     var fl = follows().map(function (f) { return f[0]; });
     CUR.follow = rec.follow && fl.indexOf(rec.follow) >= 0 ? rec.follow : (fl.indexOf(defaultFollow(rec.lesson)) >= 0 ? defaultFollow(rec.lesson) : fl[0]);
     if (SPEEDS.indexOf(rec.speed) < 0) rec.speed = 100;
-    build();
+    build(); quietWire();
     try { localStorage.setItem(LASTKEY(), rec.id); } catch (e) {}
     paintAll();
     say(fresh ? w("kept") : "");
     if (BOX && !BOX.open) BOX.open = true;
     show();
+    /* AOG-LEARN-V2: a song kept before opens at once; the engine follows quietly for its parts, easier chords and capo */
+    if (!window.AOGLearn) engine().then(function () { if (CUR && CUR.rec === rec) { rebuildPart(); buildSections(); paintAll(); SHOWN = "?"; show(); } }, function () {});
     return rec;
   }
   function paintAll() {
@@ -684,9 +963,16 @@
         '<p class="line" id="lgStatus" aria-live="polite"></p>' +
         (lowConf ? '<p class="line note" id="lgGuide">' + esc(w("guide")) + "</p>" : "") +
         (notesView ? '<div class="lg-roll" id="lgRoll" role="group" aria-label="' + esc(w("noteTap")) + '"></div><p class="line" id="lgRollLine">' + esc((CUR.notes || []).length ? w("noteTap") : w("noNotes")) + "</p>" : "") +
+        ((CUR.secs || []).length ? '<div class="row" id="lgParts"><label class="field"><span class="plab">' + esc(w("parts")) + '</span><select id="lgPart"><option value="">' + esc(w("partPick")) + "</option>" +
+          CUR.secs.map(function (x, i) { return '<option value="' + i + '">' + esc(partText(x)) + "</option>"; }).join("") + "</select></label>" +
+          '<button type="button" class="pbtn" id="lgLoopPart">' + esc(w("loopPart")) + "</button></div>" : "") +
         '<span class="plab" id="lgBarsLab">' + esc(w("barsLab")) + "</span>" +
         '<div class="lg-bars" id="lgBars" role="group" aria-labelledby="lgBarsLab">' + CUR.bars.map(function (b, i) { return '<button type="button" class="lg-bar" data-b="' + i + '"></button>'; }).join("") + "</div>" +
         '<p class="line lg-said" id="lgSaid" aria-live="polite">' + esc(RESULT ? RESULT.msg : "") + "</p>" +
+        '<p class="line lg-best" id="lgBest"></p>' +
+        (notesView ? "" : '<details class="lg-sub" id="lgShapesBox"' + (UI.shapes ? " open" : "") + '><summary>' + esc(w("shapes")) + '</summary><div class="lg-subin">' +
+          '<p class="line">' + esc(w(H && H.room === "piano" ? "shapesTapK" : "shapesTap")) + '</p><div class="lg-shapes' + (H && H.room === "piano" ? " keys" : "") + '" id="lgShapes" role="group" aria-label="' + esc(w("shapes")) + '"></div></div></details>') +
+        moreHtml(notesView) +
         '<div class="lg-ctl">' + (notesView ? "" : '<button type="button" class="pbtn" id="lgFix">' + esc(w("fix")) + "</button>") +
         '<button type="button" class="pbtn" id="lgKey">' + esc(w("useKey", { k: keyName() })) + "</button>" +
         '<button type="button" class="pbtn" id="lgOther">' + esc(w("other")) + "</button></div>" +
@@ -697,7 +983,60 @@
     $("lgSay").textContent = keepSay;
     bindAll();
     paintList();
-    if (CUR) { paintBars(); paintStatus(); paintRoll(true); paintNow(songNow(), true); if (FIXN != null) openNoteFix(FIXN); }
+    if (CUR) { paintBars(); paintStatus(); paintRoll(true); paintNow(songNow(), true); paintBest(); paintShapes(); paintQuiet(); if (FIXN != null) openNoteFix(FIXN); }
+  }
+  /* AOG-LEARN-V2: More ways to practise (closed): Step up the speed, Easier chords, the capo, Quiet a part, the chord sheet */
+  var UI = { shapes: false, more: false };
+  function partText(x) { var p = secLabel(x); return x.a === x.b ? w("partBar", { p: p, a: x.a + 1 }) : w("partBars", { p: p, a: x.a + 1, b: x.b + 1 }); }
+  function capoText() { var ci = capoInfo(); if (!ci) return ""; return w("capoLine", { n: ci.fret, c: capoShapes().map(chordName).join(", ") }); }
+  function hasChords() { return (CUR.chords || []).some(function (c) { return c.root >= 0 && QM[c.q]; }); }
+  function moreHtml(notesView) {
+    var r = CUR.rec, bass = H && H.room === "bass", q = r.quiet === "bass" || r.quiet === "voice" ? r.quiet : "none";
+    var opts = (bass ? ["none", "bass", "voice"] : ["none", "voice", "bass"]).map(function (k) { return '<option value="' + k + '"' + (k === q ? " selected" : "") + ">" + esc(w(k === "none" ? "qNone" : k === "bass" ? "qBass" : "qVoice")) + "</option>"; }).join("");
+    var capo = !notesView && capoInfo();
+    return '<details class="lg-sub" id="lgMore"' + (UI.more ? " open" : "") + '><summary>' + esc(w("more")) + '</summary><div class="lg-subin">' +
+      '<label class="lg-chk"><input type="checkbox" id="lgStep"' + (r.stepUp ? " checked" : "") + ">" + esc(w("stepUp")) + "</label>" +
+      (notesView ? "" : '<label class="lg-chk"><input type="checkbox" id="lgEasy"' + (r.easy ? " checked" : "") + ">" + esc(w("easy")) + "</label>") +
+      (capo ? '<p class="line" id="lgCapoLine">' + esc(capoText()) + '</p><label class="lg-chk"><input type="checkbox" id="lgCapo"' + (r.capo ? " checked" : "") + ">" + esc(w("useCapo")) + "</label>" : "") +
+      '<div class="row"><label class="field"><span class="plab">' + esc(w("quiet")) + '</span><select id="lgQuiet">' + opts + "</select></label></div>" +
+      '<p class="line note" id="lgQuietLine" hidden>' + esc(w("mono")) + "</p>" +
+      (hasChords() ? '<div class="lg-ctl"><button type="button" class="pbtn" id="lgPrint">' + esc(w("print")) + "</button></div>" : "") +
+      "</div></details>";
+  }
+  function paintQuiet() { var el = $("lgQuietLine"); if (!el || !CUR) return; var h = !(CUR.rec.quiet === "voice" && PL.stereo === false); if (el.hidden !== h) el.hidden = h; }
+  function setLoop(a, b) {
+    CUR.rec.loop = [a, b]; LOOPPICK.on = false; LOOPPICK.a = null; keepSoon();
+    var lb = $("lgLoop"); if (lb) { lb.textContent = w("loopOff"); lb.setAttribute("aria-pressed", "true"); }
+    var was = PL.playing; if (was) pause(); PL.pos = CUR.bars[a].t; PL.waitDone = PL.pos - 0.001; if (was) play(); else paintNow(PL.pos);
+    paintBars(); paintStatus();
+  }
+  function bindMore() {
+    [["lgShapesBox", "shapes"], ["lgMore", "more"]].forEach(function (x) { var d = $(x[0]); if (d) d.addEventListener("toggle", function () { UI[x[1]] = d.open; }); });
+    var b;
+    if ((b = $("lgPart"))) b.onchange = function () {
+      var x = CUR.secs[+this.value]; if (this.value === "" || !x) return;
+      var lp = CUR.rec.loop; if (lp && (x.a < lp[0] || x.a > lp[1])) { CUR.rec.loop = null; keepSoon(); var lb = $("lgLoop"); if (lb) { lb.textContent = w("loop"); lb.setAttribute("aria-pressed", "false"); } }
+      seek(CUR.bars[x.a].t); paintBars(); paintStatus(); };
+    if ((b = $("lgLoopPart"))) b.onclick = function () {
+      var sel = $("lgPart"), i = sel && sel.value !== "" ? +sel.value : secAt(barOf(songNow())); if (i < 0) i = 0;
+      var x = CUR.secs[i]; if (x) setLoop(x.a, x.b); };
+    if ((b = $("lgStep"))) b.onchange = function () {
+      CUR.rec.stepUp = this.checked; keepSoon();
+      if (this.checked && (CUR.rec.speed || 100) >= 100) { var was = PL.playing; pause(); CUR.rec.speed = 60; $("lgSpeed").value = "60"; keepSoon(); paintStatus(); paintBest(); if (was) play(); else bufFor(0.6).then(paintStatus, paintStatus); }
+    };
+    if ((b = $("lgEasy"))) b.onchange = function () {
+      var on = this.checked, go = function () { if (!CUR) return; CUR.rec.easy = on; keepSoon(); RESULT = null; PIN = null; rebuildPart(); paintAll(); SHOWN = "?"; show(); };
+      if (window.AOGLearn) go(); else engine().then(go, go); };
+    if ((b = $("lgCapo"))) b.onchange = function () { CUR.rec.capo = this.checked; keepSoon(); PIN = null; paintAll(); SHOWN = "?"; show(); };
+    if ((b = $("lgQuiet"))) b.onchange = function () {
+      CUR.rec.quiet = this.value; keepSoon();
+      if (CUR.rec.quiet === "voice" && PL.stereo == null) baseBuf().then(function () { quietWire(); paintQuiet(); }, paintQuiet); else { quietWire(); paintQuiet(); } };
+    if ((b = $("lgPrint"))) b.onclick = function () { printSheet(); };
+    if ((b = $("lgShapes"))) b.onclick = function (e) {
+      var t = e.target.closest && e.target.closest(".lg-shape"); if (!t) return;
+      var c = SHAPES[+t.getAttribute("data-k")]; if (!c) return;
+      PIN = c; SHOWN = "?"; show();
+      [].forEach.call(this.children, function (el) { el.setAttribute("aria-pressed", el === t ? "true" : "false"); }); };
   }
   function bindAll() {
     var f = $("lgFile"); if (f) f.onchange = function () { var x = f.files && f.files[0]; if (x) chooseFile(x); f.value = ""; };
@@ -706,7 +1045,7 @@
     if ((b = $("lgStopWork"))) b.onclick = stopWork;
     if (!CUR) return;
     $("lgFollow").onchange = function () { pause(); CUR.follow = this.value; CUR.rec.follow = CUR.follow; PL.waiting = null; PL.waitDone = PL.pos - 0.001; RESULT = null; FIXN = null; rebuildPart(); keepSoon(); paintAll(); show(); };
-    $("lgSpeed").onchange = function () { var was = PL.playing; pause(); CUR.rec.speed = +this.value; keepSoon(); paintStatus(); if (was) play(); else bufFor(CUR.rec.speed / 100).then(paintStatus, paintStatus); };
+    $("lgSpeed").onchange = function () { var was = PL.playing; pause(); CUR.rec.speed = +this.value; keepSoon(); paintStatus(); paintBest(); if (was) play(); else bufFor(CUR.rec.speed / 100).then(paintStatus, paintStatus); };
     $("lgPlay").onclick = function () { if (PL.playing || PL.counting) pause(); else { if (PL.waiting) { PL.waitDone = PL.waiting.t; PL.waiting = null; } play(); } paintPlay(); };
     $("lgStart").onclick = function () { var lp = loopTimes(); seek(lp ? lp[0] : 0); };
     $("lgLoop").onclick = function () {
@@ -721,16 +1060,13 @@
     $("lgKey").onclick = function () { var k = CUR.L.key || {}; if (window.AOGSong) AOGSong.set({ bpm: Math.round(num(CUR.L.bpm, 0)) || undefined, key: k.key | 0, minor: !!k.minor }); $("lgStatus").textContent = w("keyDone", { k: keyName() }); };
     $("lgOther").onclick = function () { pause(); CUR = null; FIXN = null; if (H && H.show) H.show(null); try { localStorage.removeItem(LASTKEY()); } catch (e) {} paintAll(); refreshList(); };
     var r = $("lgRoll"); if (r) r.onclick = function (e) { var n = e.target.closest && e.target.closest(".lg-n"); if (n) openNoteFix(+n.getAttribute("data-i")); };
+    bindMore();
   }
   var LOOPPICK = { on: false, a: null };
   function barTap(i) {
     if (LOOPPICK.on) {
       if (LOOPPICK.a == null) { LOOPPICK.a = i; paintBars(); paintStatus(); return; }
-      var a = Math.min(LOOPPICK.a, i), b = Math.max(LOOPPICK.a, i); LOOPPICK.on = false; LOOPPICK.a = null;
-      CUR.rec.loop = [a, b]; keepSoon();
-      var lb = $("lgLoop"); lb.textContent = w("loopOff"); lb.setAttribute("aria-pressed", "true");
-      var was = PL.playing; if (was) pause(); PL.pos = CUR.bars[a].t; PL.waitDone = PL.pos - 0.001; if (was) play(); else paintNow(PL.pos);
-      paintBars(); paintStatus(); return;
+      setLoop(Math.min(LOOPPICK.a, i), Math.max(LOOPPICK.a, i)); return;
     }
     seek(CUR.bars[i].t);
   }
@@ -745,22 +1081,27 @@
   function paintBars() {
     var box = $("lgBars"); if (!box || !CUR) return;
     var cs = CUR.chords || [], lp = CUR.rec.loop, cur = barOf(songNow());
+    var starts = {}; (CUR.secs || []).forEach(function (x) { starts[x.a] = secLabel(x); });
     [].forEach.call(box.children, function (el, i) {
-      var b = CUR.bars[i], names = [];
-      cs.forEach(function (c) { if (c.t >= b.t - 0.03 && c.t < b.e - 0.03 && c.root >= 0) names.push(chordName(c)); });
-      if (!names.length) { var at = chordAt(b.t + 0.01); if (at) names.push(chordName(at)); }
-      var shown = names.filter(function (n, k) { return k === 0 || n !== names[k - 1]; }).slice(0, 3).join(" ");
-      var mk = RESULT && RESULT.marks && RESULT.marks[i], html = "<small>" + (i + 1) + (mk ? ' <span class="mk ' + mk + '" aria-hidden="true">' + (mk === "ok" ? "●" : "○") + "</span>" : "") + "</small>" + esc(shown || "·");
+      var shown = barChords(i, cs), sec = starts[i] || "";
+      var mk = RESULT && RESULT.marks && RESULT.marks[i], html = (sec ? '<span class="lg-sec">' + esc(sec) + "</span>" : "") + "<small>" + (i + 1) + (mk ? ' <span class="mk ' + mk + '" aria-hidden="true">' + (mk === "ok" ? "●" : "○") + "</span>" : "") + "</small>" + esc(shown || "·");
       if (el.__h !== html) { el.innerHTML = html; el.__h = html; }
       var inl = lp ? i >= lp[0] && i <= lp[1] : LOOPPICK.on && LOOPPICK.a === i;
       el.classList.toggle("in", !!inl);
-      var lab = w("bar", { n: i + 1 }) + (shown ? ", " + shown : "") + (mk ? ", " + w(mk === "ok" ? "mOk" : "mTry") : "");
+      var lab = (sec ? sec + ", " : "") + w("bar", { n: i + 1 }) + (shown ? ", " + shown : "") + (mk ? ", " + w(mk === "ok" ? "mOk" : "mTry") : "");
       if (el.getAttribute("aria-label") !== lab) el.setAttribute("aria-label", lab);
       var on = i === cur; if ((el.getAttribute("aria-current") === "true") !== on) { if (on) el.setAttribute("aria-current", "true"); else el.removeAttribute("aria-current"); }
     });
     paintBars.cur = cur;
     var el = box.children[cur];
     if (el && box.scrollHeight > box.clientHeight) { var top = el.offsetTop - box.offsetTop; if (top < box.scrollTop || top + el.offsetHeight > box.scrollTop + box.clientHeight) box.scrollTop = Math.max(0, top - 6); }
+  }
+  /* the chords of a bar, as the learner reads them (the easier chord, the shape above the capo) */
+  function barChords(i, cs) {
+    var b = CUR.bars[i], names = []; cs = cs || CUR.chords || [];
+    cs.forEach(function (c) { if (c.t >= b.t - 0.03 && c.t < b.e - 0.03 && c.root >= 0) names.push(dispName(c)); });
+    if (!names.length) { var at = chordAt(b.t + 0.01); if (at) names.push(dispName(at)); }
+    return names.filter(function (n, k) { return k === 0 || n !== names[k - 1]; }).slice(0, 3).join(" ");
   }
   function paintMarks() { if (CUR && BOX) paintBars(); }
   /* the notes of the part: this bar and the next, stepped a bar at a time; on a computer (no reduce-motion) a thin line
@@ -801,8 +1142,8 @@
     if (PL.counting && PL.ac) { var nb0 = PL.countN || 4, left = Math.max(1, Math.min(nb0, nb0 - Math.floor((PL.ac.currentTime - (PL.countAt - nb0 * PL.countPer)) / PL.countPer))); bigT = String(left); nextT = w("ready", { n: left }); }
     else if (CUR.follow === "chords") {
       var c = chordAt(T), nx = nextChord(T, c);
-      bigT = c ? chordName(c) : (T >= CUR.sec - 0.05 ? "·" : w("noChord"));
-      if (nx) { var n = beatsTo(T, nx.t); nextT = n > 0 && n <= 4 ? w("next", { c: chordName(nx), n: n }) : w("nextFar", { c: chordName(nx) }); }
+      bigT = c ? dispName(c) : (T >= CUR.sec - 0.05 ? "·" : w("noChord"));
+      if (nx) { var n = beatsTo(T, nx.t); nextT = n > 0 && n <= 4 ? w("next", { c: dispName(nx), n: n }) : w("nextFar", { c: dispName(nx) }); }
       else if (T >= CUR.sec - 0.05 || PL.ended) nextT = w("end");
     } else {
       var ms = notesAt(T), g = nextGroup(T);
@@ -811,8 +1152,8 @@
       else if (T >= CUR.sec - 0.05 || PL.ended) nextT = w("end");
     }
     if (PL.waiting) {
-      var gw = PL.waiting; turnT = w("yourTurn", { n: CUR.follow === "chords" ? chordName(gw) : gw.ms.map(noteName).join(" + ") });
-      if (CUR.follow === "chords") bigT = chordName(gw);
+      var gw = PL.waiting; turnT = w("yourTurn", { n: CUR.follow === "chords" ? dispName(gw) : gw.ms.map(noteName).join(" + ") });
+      if (CUR.follow === "chords") bigT = dispName(gw);
     }
     var key = bigT + "|" + nextT + "|" + turnT;
     if (force || NOW.k !== key) { NOW.k = key; $("lgNow").textContent = bigT; $("lgNext").textContent = nextT; $("lgTurn").textContent = turnT; }
@@ -829,9 +1170,9 @@
     if (T == null) T = songNow();
     var what = null, sig;
     if (CUR.follow === "chords") {
-      var c = PL.waiting || chordAt(T) || (!PL.playing ? nextChord(T, null) : null);
-      if (c && c.root >= 0 && QM[c.q]) what = { chord: { root: c.root, q: c.q, id: QM[c.q].id, pcs: chordPcs(c) } };
-      sig = what ? "c" + c.root + c.q : "";
+      var c = (!PL.playing && PIN) || PL.waiting || chordAt(T) || (!PL.playing ? nextChord(T, null) : null);
+      if (c && c.root >= 0 && QM[c.q]) what = { chord: roomChord(c) };
+      sig = what ? "c" + c.root + c.q + (what.chord.capo ? "k" + what.chord.capo + what.chord.shape.root + what.chord.shape.q : "") : "";
     } else {
       var ms = PL.waiting ? PL.waiting.ms : notesAt(T);
       if (!ms.length && !PL.playing) { var g = nextGroup(T - 0.03); if (g) ms = g.ms; }
@@ -840,11 +1181,108 @@
     }
     if (sig !== SHOWN) { SHOWN = sig; try { H.show(what); } catch (e) {} }
   }
+  /* what the room is asked to light for a chord; with the capo on, the shape to finger above the capo fret */
+  function roomChord(c) {
+    var o = { root: c.root, q: c.q, id: QM[c.q].id, pcs: chordPcs(c) }, sh = capoOn() ? capoShape(c) : null;
+    if (sh && QM[sh.q]) { o.capo = CUR.capo.fret; o.shape = { root: sh.root, q: sh.q, id: QM[sh.q].id, pcs: chordPcs(sh) }; }
+    return o;
+  }
+
+  /* ── AOG-LEARN-V2: the song's chords as small pictures (the guitar's shapes, the bass's root, the piano's keys) ── */
+  var PIN = null, SHAPES = [];
+  var TUN = { guitar: [40, 45, 50, 55, 59, 64], bass: [28, 33, 38, 43] };
+  function paintShapes() {
+    var box = $("lgShapes"); if (!box || !CUR) return;
+    var seen = [], room = (H && H.room) || "piano";
+    SHAPES = [];
+    (CUR.chords || []).forEach(function (c) { if (c.root < 0 || !QM[c.q]) return; var k = c.root + "|" + c.q; if (seen.indexOf(k) < 0) { seen.push(k); SHAPES.push({ root: c.root, q: c.q, full: c.full, t: c.t }); } });
+    box.innerHTML = SHAPES.map(function (c, i) {
+      var nm = dispName(c), svg = "";
+      if (room === "piano") svg = keysSvg(c);
+      else { var rc = roomChord(c), sh = null; try { sh = H.shape ? H.shape(rc) : null; } catch (e) { sh = null; }
+        if (sh && sh.f) svg = neckSvg(sh.f, sh.capo | 0, sh.tuning || TUN[room] || TUN.guitar, rc); }
+      var pressed = PIN && PIN.root === c.root && PIN.q === c.q;
+      return '<button type="button" class="lg-shape" data-k="' + i + '" aria-pressed="' + (pressed ? "true" : "false") + '" aria-label="' + esc(nm) + '">' + svg + "<span>" + esc(nm) + "</span></button>";
+    }).join("");
+  }
+  /* a chord box: the strings up and down (the low one on the left), four frets, a dot for each finger, o open, × not played;
+     above the capo the frets count from the capo (its gold bar on top) */
+  function neckSvg(f, capo, tun, rc) {
+    var ns = f.length, fr = f.filter(function (x) { return x > 0; }), hi = fr.length ? Math.max.apply(null, fr) : 0, lo = fr.length ? Math.min.apply(null, fr) : 0;
+    var base = capo || hi <= 4 ? 1 : lo, rows = Math.max(4, Math.min(5, hi - base + 1)), W = 84, x0 = 16, x1 = W - 8, top = 16, fy = 12, Hh = top + rows * fy + 6;
+    var sx = ns > 1 ? (x1 - x0) / (ns - 1) : 0, X = function (i) { return (x0 + i * sx).toFixed(1); }, out = "";
+    for (var r = 0; r <= rows; r++) out += '<line class="ln" x1="' + x0 + '" y1="' + (top + r * fy) + '" x2="' + x1 + '" y2="' + (top + r * fy) + '"/>';
+    for (var i = 0; i < ns; i++) out += '<line class="ln" x1="' + X(i) + '" y1="' + top + '" x2="' + X(i) + '" y2="' + (top + rows * fy) + '"/>';
+    if (capo) out += '<line class="cp" x1="' + (x0 - 3) + '" y1="' + top + '" x2="' + (x1 + 3) + '" y2="' + top + '"/>';
+    else if (base === 1) out += '<line class="nut" x1="' + x0 + '" y1="' + top + '" x2="' + x1 + '" y2="' + top + '"/>';
+    else out += '<text class="tx" x="2" y="' + (top + fy * 0.5 + 3) + '">' + base + "</text>";
+    f.forEach(function (x, i) {
+      var cx = X(i), m = x >= 0 ? tun[i] + x + capo : -1, root = m >= 0 && pcOf(m) === rc.root;
+      if (x < 0) out += '<path class="mk2" d="M' + (cx - 3.5) + " " + (top - 11) + "l7 7m0-7l-7 7" + '"/>';
+      else if (x === 0) out += '<circle class="' + (root ? "dr" : "mk2") + '" cx="' + cx + '" cy="' + (top - 7) + '" r="3.6"/>';
+      else out += '<circle class="' + (root ? "dr" : "dt") + '" cx="' + cx + '" cy="' + (top + (x - base + 0.5) * fy).toFixed(1) + '" r="4.4"/>';
+    });
+    return '<svg viewBox="0 0 ' + W + " " + Hh + '" aria-hidden="true" focusable="false">' + out + "</svg>";
+  }
+  /* two octaves of keys from C, the chord's notes from its root up, the root in the other colour */
+  function keysSvg(c) {
+    var ms = QM[c.q].iv.map(function (iv) { return c.root + iv; }), W = 112, Hh = 40, ww = W / 14, out = "", BL = [1, 3, 6, 8, 10];
+    var WH = [0, 2, 4, 5, 7, 9, 11], xOf = function (m) { var o = Math.floor(m / 12), pc = m % 12, wi = WH.indexOf(pc); return wi >= 0 ? (o * 7 + wi) * ww + ww / 2 : (o * 7 + WH.indexOf(pc - 1) + 1) * ww; };
+    for (var i = 0; i < 14; i++) out += '<rect class="wk" x="' + (i * ww).toFixed(1) + '" y="1" width="' + ww.toFixed(1) + '" height="' + (Hh - 2) + '"/>';
+    for (var o = 0; o < 2; o++) BL.forEach(function (pc) { var x = xOf(o * 12 + pc); out += '<rect class="bk" x="' + (x - ww * 0.32).toFixed(1) + '" y="1" width="' + (ww * 0.64).toFixed(1) + '" height="' + (Hh * 0.6).toFixed(1) + '"/>'; });
+    ms.forEach(function (m, j) { if (m > 23) m -= 12; var blk = BL.indexOf(m % 12) >= 0; out += '<circle class="' + (j === 0 ? "dr" : "dt") + '" cx="' + xOf(m).toFixed(1) + '" cy="' + (blk ? Hh * 0.45 : Hh * 0.8).toFixed(1) + '" r="4"/>'; });
+    return '<svg viewBox="0 0 ' + W + " " + Hh + '" aria-hidden="true" focusable="false">' + out + "</svg>";
+  }
+
+  /* ── AOG-LEARN-V2: the chord sheet: a clean page, black on white, four bars to a line, the parts as headings ── */
+  function sheetBody() {
+    var info = w("songLine", { key: keyName(), bpm: Math.round(num(CUR.L.bpm, 120)), bars: CUR.bars.length }) + ".";
+    if (capoOn()) info += " " + capoText();
+    if (CUR.rec.easy) info += " " + w("sheetEasy");
+    var starts = {}; (CUR.secs || []).forEach(function (x) { starts[x.a] = secLabel(x); });
+    var html = "<h1>" + esc(CUR.rec.name) + "</h1><p class=\"info\">" + esc(info) + "</p>", row = [], rows = [];
+    var flush = function () { if (!row.length) return; while (row.length < 4) row.push("<td class=\"e\"></td>"); rows.push("<tr>" + row.join("") + "</tr>"); row = []; };
+    var table = function () { flush(); if (rows.length) { html += "<table>" + rows.join("") + "</table>"; rows = []; } };
+    CUR.bars.forEach(function (b, i) {
+      if (starts[i]) { table(); html += "<h2>" + esc(starts[i]) + "</h2>"; }
+      row.push("<td><small>" + (i + 1) + "</small>" + esc(barChords(i) || "·") + "</td>");
+      if (row.length === 4) flush();
+    });
+    table();
+    return html;
+  }
+  var SHEETCSS = "body{margin:24px;background:#fff;color:#000;font:16px/1.4 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}" +
+    "h1{font-size:24px;margin:0 0 4px}h2{font-size:17px;margin:18px 0 6px}.info{margin:0 0 14px}" +
+    "table{width:100%;border-collapse:collapse;table-layout:fixed;margin:0 0 6px}td{border:1.5px solid #000;padding:6px 8px;height:48px;vertical-align:top;font-weight:700;font-size:19px;word-break:break-word}" +
+    "td small{display:block;font-weight:400;font-size:11px}td.e{border-style:dotted}" +
+    ".go{margin:18px 0 0;min-height:44px;padding:0 18px;font:700 16px/1 system-ui,sans-serif;border:2px solid #000;border-radius:10px;background:#fff;color:#000}" +
+    "@media print{body{margin:0}.go{display:none}h2{break-after:avoid}tr{break-inside:avoid}}@page{margin:14mm}";
+  function sheetDoc() {
+    return "<!doctype html><html lang=\"" + L() + "\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>" + esc(CUR.rec.name + " · " + w("sheet")) + "</title><style>" + SHEETCSS + "</style></head><body>" +
+      sheetBody() + "<button type=\"button\" class=\"go\" onclick=\"print()\">" + esc(w("printNow")) + "</button>" +
+      "<script>addEventListener(\"load\",function(){setTimeout(function(){try{print()}catch(e){}},300)})<\/script></body></html>";
+  }
+  function printSheet() {
+    if (!CUR) return "";
+    var win = null; if (!TEST.noPopup) { try { win = window.open("", "_blank"); } catch (e) { win = null; } }
+    if (win && win.document) { try { win.document.open(); win.document.write(sheetDoc()); win.document.close(); try { win.focus(); } catch (e) {} return "window"; } catch (e) {} }
+    /* no new window here: a part of this page that only prints */
+    var el = $("lgPrintSheet"); if (!el) { el = D.createElement("div"); el.id = "lgPrintSheet"; D.body.appendChild(el); }
+    var P = "#lgPrintSheet";
+    el.innerHTML = "<style>@media screen{" + P + "{display:none!important}}@media print{html,body{background:#fff!important}body>*:not(" + P + "){display:none!important}" +
+      P + "{display:block!important;background:#fff;color:#000;font:16px/1.4 system-ui,sans-serif}" + P + " h1{font-size:24px;margin:0 0 4px;color:#000}" + P + " h2{font-size:17px;margin:18px 0 6px;color:#000;break-after:avoid}" +
+      P + " .info{margin:0 0 14px}" + P + " table{width:100%;border-collapse:collapse;table-layout:fixed}" + P + " tr{break-inside:avoid}" +
+      P + " td{border:1.5px solid #000;padding:6px 8px;height:48px;vertical-align:top;font-weight:700;font-size:19px;color:#000}" + P + " td small{display:block;font-weight:400;font-size:11px}" + P + " td.e{border-style:dotted}}</style>" + sheetBody();
+    try { if (!TEST.noPopup) window.print(); } catch (e) {}
+    return "page";
+  }
+
   /* ── Fix this chord / Fix this note ── */
   var FIXN = null;
   function fixTarget() { var T = songNow(); return chordAt(T) || nextChord(T, null) || (CUR.chords || []).filter(function (c) { return c.t <= T; }).pop() || (CUR.chords || [])[0]; }
   function openChordFix() {
     var c = fixTarget(), box = $("lgFixBox"); if (!c || !box) return;
+    if (c && c.full) c = Object.assign({}, c, c.full);   /* Easier chords on: fix the chord itself */
     var root = c.root >= 0 ? c.root : 0, q = QM[c.q] ? c.q : "N";
     box.innerHTML = '<span class="plab">' + esc(w("fix")) + " · " + esc(w("bar", { n: barOf(c.t) + 1 })) + "</span>" +
       '<div class="row"><label class="field small"><span class="plab">' + esc(w("fixRoot")) + '</span><select id="lgFixRoot">' +
@@ -895,9 +1333,28 @@
     /* for the tests: an offline clock, a pass, the state, a slower copy */
     test: {
       clock: function (fn) { TEST.clock = fn || null; },
-      at: function (T) { pause(); PL.pos = T; PL.waitDone = T - 0.001; paintNow(T, true); return api().state(); },
+      at: function (T) { pause(); PIN = null; PL.pos = T; PL.waitDone = T - 0.001; paintNow(T, true); return api().state(); },
       pass: function (from) { startPass(from || 0); },
-      endPass: function (to) { return endPass(to); },
+      endPass: function (to, full) { return endPass(to, full); },
+      /* AOG-LEARN-V2 */
+      live: function (on) { listenLive(on); return LIVE.kind; }, stepTo: function (n) { stepTo(n); },
+      noWorker: function (b) { TEST.noWorker = !!b; }, noPopup: function (b) { TEST.noPopup = !!b; },
+      how: function () { return { how: PL.how || "", cache: Object.keys(PL.cache), making: PL.making, worker: !!WK.w }; },
+      sheet: function () { return CUR ? sheetDoc() : ""; }, print: function () { return printSheet(); },
+      chain: function () { return { mode: PL.fxMode || "", stereo: PL.stereo, nodes: (PL.fx || []).map(function (n) { return n.type || n.constructor.name; }) }; },
+      /* a stereo test signal (a low tone and a voice-like tone in the middle, another tone on one side) through a way of
+         quieting, offline; how strong each tone comes out (a Goertzel filter at each frequency) */
+      quietTest: function (mode) {
+        var sr = 44100, n = sr, OC = window.OfflineAudioContext || window.webkitOfflineAudioContext, oc = new OC(2, n, sr), b = oc.createBuffer(2, n, sr), l = b.getChannelData(0), r = b.getChannelData(1);
+        for (var i = 0; i < n; i++) { var t = i / sr, mid = 0.3 * Math.sin(2 * Math.PI * 60 * t) + 0.3 * Math.sin(2 * Math.PI * 1000 * t), side = 0.3 * Math.sin(2 * Math.PI * 2500 * t); l[i] = mid + side; r[i] = mid - side; }
+        var src = oc.createBufferSource(); src.buffer = b; var inp = oc.createGain(); inp.channelCount = 2; inp.channelCountMode = "explicit"; src.connect(inp);
+        quietChain(oc, mode, inp, oc.destination); src.start(0);
+        return oc.startRendering().then(function (out) { var y = out.getChannelData(0), res = {};
+          [60, 1000, 2500].forEach(function (f) { var k = 2 * Math.cos(2 * Math.PI * f / sr), s1 = 0, s2 = 0, a = Math.round(sr * 0.3); for (var j = a; j < n; j++) { var s0 = y[j] + k * s1 - s2; s2 = s1; s1 = s0; }
+            res[f] = Math.sqrt(s1 * s1 + s2 * s2 - k * s1 * s2) / ((n - a) / 2); });
+          return res; });
+      },
+      rms: function (a, b) { return baseBuf().then(function (buf) { var x = buf.getChannelData(0), i0 = Math.round(a * buf.sampleRate), i1 = Math.min(x.length, Math.round(b * buf.sampleRate)), s = 0; for (var i = i0; i < i1; i++) s += x[i] * x[i]; return Math.sqrt(s / Math.max(1, i1 - i0)); }); },
       judge: function (due, played, follow) { return judge(due, played, follow || "chords"); },
       buffer: function (speed) { return bufFor(speed / 100).then(function (b) { return b ? { len: b.length, sr: b.sampleRate, ch0: b.getChannelData(0) } : null; }); },
       base: function () { return baseBuf().then(function (b) { return { len: b.length, sr: b.sampleRate }; }); },
@@ -909,7 +1366,10 @@
     open: !!CUR, id: CUR && CUR.rec.id, name: CUR && CUR.rec.name, follow: CUR && CUR.follow, speed: CUR && CUR.rec.speed, loop: CUR && CUR.rec.loop, wait: !!(CUR && CUR.rec.wait),
     playing: PL.playing, counting: PL.counting, waiting: PL.waiting ? { t: PL.waiting.t, ms: PL.waiting.ms || null, pcs: PL.waiting.pcs } : null, T: CUR ? songNow() : 0,
     now: $("lgNow") ? $("lgNow").textContent : "", next: $("lgNext") ? $("lgNext").textContent : "", bars: CUR ? CUR.bars.length : 0,
-    fixes: CUR ? JSON.parse(JSON.stringify(CUR.rec.fixes || {})) : null, result: RESULT, ev: CUR ? (CUR.ev || []).length : 0 }; } }; }
+    fixes: CUR ? JSON.parse(JSON.stringify(CUR.rec.fixes || {})) : null, result: RESULT, ev: CUR ? (CUR.ev || []).length : 0,
+    secs: CUR ? (CUR.secs || []).map(function (x) { return { a: x.a, b: x.b, label: secLabel(x) }; }) : [], easy: !!(CUR && CUR.rec.easy), capo: CUR && capoOn() ? CUR.capo.fret : 0,
+    stepUp: !!(CUR && CUR.rec.stepUp), quiet: CUR ? CUR.rec.quiet || "none" : "", best: CUR ? JSON.parse(JSON.stringify(CUR.rec.best || {})) : null, live: LIVE.kind,
+    pin: PIN ? chordName(PIN) : "" }; } }; }
   /* a room that set its hooks before this file ran */
   if (window.AOGLearnRoom) attach(window.AOGLearnRoom);
 })();
