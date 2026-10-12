@@ -59,7 +59,7 @@
   function view(L, lang) {
     const o = info(L), R = { state: "ok", sky: "night", glow: 1, skyAdd: 0, seeingMul: 1, bright: false };
     const isSun = L.target === "sun";
-    if (!o.sid) { R.state = "nopos"; R.draw = (ctx) => { if (window.DRAW_REAL_FALLBACK) window.DRAW_REAL_FALLBACK(ctx); }; R.atmosphere = () => {}; return R; }
+    if (!o.sid) { R.state = "nopos"; R.draw = (ctx) => { drawStars(ctx); if (DRAW[L.target]) DRAW[L.target](ctx); }; R.atmosphere = () => {}; return R; }
     if (o.alt < 0) R.state = "below";
     if (o.sunAlt > -0.5) { R.sky = "day"; R.bright = true; }
     else if (o.sunAlt > -12) { R.sky = twilightCss(o.sunAlt); R.bright = o.sunAlt > -4; }

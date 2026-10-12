@@ -2368,8 +2368,27 @@ function tick(){
 function centerTarget(id){
   /* the Moon sits a little right of centre, so the 6 mm lands on the terminator with Copernicus in view */
   const spots={moon:[-3.2,-1.2],sea:[6.4,0.8],pleiades:[-11,-6],dcluster:[-14,3]};
-  const p=spots[id]||[0,0];
+  const p=realOn()?window.AOGReal.spot(id):(spots[id]||[0,0]);
   S.lab.panX=-p[0]; S.lab.panY=-p[1]; S.lab.mA=S.lab.mB=null;
+}
+/* the star map: its own file, loaded the first time it is opened; WebGL is let go when you leave it */
+function paintSkyPage(view, again){
+  if (again && window.AOGMap && window.AOGMap.isOpen()){ window.AOGMap.relabel(S.lang); return; }
+  view.innerHTML=`<div class="skypage" id="skypage"><p class="note-line" style="padding:2rem 0">${t("loadingSky")}</p></div>`;
+  loadSky(["/aog-telescope-map.js"]).then(()=>{
+    if (S.page!=="sky") return;
+    window.AOGMap.open(document.getElementById("skypage"), { lang:S.lang, fov:()=>tfovArcmin(magOf(S.lab))/60, scopeName:()=>S.lang==="es"?INSTR[SCOPE.id].es:INSTR[SCOPE.id].en,
+      bortle:()=>OPT.bortle, setBortle:b=>{ OPT.bortle=b; persistOpt(); },
+      onPoint:sid=>{
+        const L=S.lab, bid=window.AOGSkyData.benchId(sid);
+        OPT.real=true; persistOpt();
+        L.target=bid||("x:"+sid); centerTarget(L.target);
+        L.locked=true;
+        if (L.target==="sun" && !L.filter) L.cap=true; else L.cap=false;
+        if (bid && ["moon","sea"].includes(bid)) L.sky="night";
+        location.hash="#lab";
+      } });
+  }).catch(()=>{ const el=document.getElementById("skypage"); if(el) el.innerHTML=`<p class="note-line">${S.lang==="es"?"No se pudo abrir el mapa. Revisa la conexión y vuelve a intentarlo.":"The map could not open. Check the connection and try again."}</p>`; });
 }
 function paint(){
   cancelAnimationFrame(eyeRaf); eyeRaf=0; eyeDraw=null;
