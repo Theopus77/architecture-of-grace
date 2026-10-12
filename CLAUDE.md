@@ -188,7 +188,9 @@ Guide, Pilot, Start Here, Workplace and Store are wired up as the page starts, s
 
 ## The Cube Lab (Jimmy, 2026-10-11: "how to take this to the ceiling … DO them all")
 
-`cube-lab.html` (/cube) and its solver `aog-cube.js`. After any change to either, run
+`cube-lab.html` (/cube), its solver `aog-cube.js` (the beginner's way the steps teach) and `aog-cube-short.js` (the
+short way: Kociemba's two-phase search, about 20 moves, run in a worker; Jimmy, 2026-10-12: "Big leap"). After any
+change to any of them, run
 
     node tools/check-cube.js
 

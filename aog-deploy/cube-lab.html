@@ -256,6 +256,9 @@ footer p { margin-top:2rem; font-size:.9rem; color:var(--muted); max-width:70ch;
 .cam .rname { margin:0; font-weight:700; }
 .cam .rgrid { display:grid; grid-template-columns:repeat(3,44px); gap:4px; background:#14161a; padding:5px; border-radius:10px; }
 .cam .rgrid button { width:44px; height:44px; border-radius:7px; border:0; font:800 1.1rem/1 var(--sans); padding:0; }
+.cam .vfy { display:flex; gap:1.2rem; justify-content:center; flex-wrap:wrap; }
+.cam .vfy .rgrid span { width:44px; height:44px; border-radius:7px; display:grid; place-items:center; font:800 1.2rem/1 var(--sans); }
+.cam .vfy .rgrid span.off { box-shadow:0 0 0 4px #14161a, 0 0 0 6px #fff; }
 .cam .lastside { display:flex; align-items:center; gap:.7rem; }
 .cam .lastside p { margin:0; }
 .cam .rgrid.small { grid-template-columns:repeat(3,26px); gap:3px; padding:3px; }
@@ -444,6 +447,15 @@ const T={
   printCard:["Print a move card","Imprimir una tarjeta de movimientos"], cardH:["The Cube Lab · move card","El laboratorio del cubo · tarjeta de movimientos"],
   cardMoves:["The moves","Los movimientos"], cardTricks:["The moves for each step","Los movimientos de cada paso"], cardHold:["Hold the cube with white on the bottom. A letter turns that side clockwise, as if you look straight at it. ' turns it the other way. 2 turns it twice.","Sostén el cubo con el blanco abajo. Una letra gira ese lado como las agujas del reloj, mirándolo de frente. ' lo gira al revés. 2 lo gira dos veces."],
   camBtn:["Use the camera","Usar la cámara"],
+  camCheck:["Check with the camera","Comprobar con la cámara"],
+  vfyH:["Check a side with the camera","Comprueba un lado con la cámara"],
+  vfyLine:["Hold any side of your cube up to the camera, fingers on the edges.","Muestra cualquier lado de tu cubo a la cámara, con los dedos en los bordes."],
+  vfySide:["Side: {s}","Lado: {s}"], vfyOk:["It matches the screen. ✓","Coincide con la pantalla. ✓"],
+  vfyDiff:["{n} squares look different. They are marked.","{n} cuadros se ven distintos. Están marcados."], vfyDiff1:["1 square looks different. It is marked.","1 cuadro se ve distinto. Está marcado."],
+  vfyScreen:["On the screen","En la pantalla"], vfyYours:["Your cube","Tu cubo"], vfyAgain:["Check another side","Comprobar otro lado"], vfyDone:["Done","Listo"],
+  shortBtn:["Show me the short way","Muéstrame el camino corto"], shortFinding:["Finding the short way…","Buscando el camino corto…"],
+  shortK:["The short way","El camino corto"], shortNone:["The short way could not be found this time. The steps still work.","No se encontró el camino corto esta vez. Los pasos siguen funcionando."],
+  shortMade:["The short way: {n} moves. Follow them one by one.","El camino corto: {n} movimientos. Síguelos uno por uno."],
   kWhole:["Whole cube","Cubo entero"], kWholeLine:["Turn the whole cube in your hands. Every square moves together.","Gira todo el cubo en tus manos. Todos los cuadros se mueven juntos."],
   kSide:["One side","Un lado"], kSideLine:["Only the {s} moves. Hold the rest still.","Solo se mueve {s}. Sostén el resto quieto."],
   mineShort:["Show your cube to the camera, or tap in its colors.","Muestra tu cubo a la cámara o toca para poner sus colores."],
@@ -511,7 +523,8 @@ const AIM={
   sune0:["Make the whole top yellow.","Haz toda la cara de arriba amarilla."], sune1:["Make the whole top yellow.","Haz toda la cara de arriba amarilla."], sune2:["Make the whole top yellow.","Haz toda la cara de arriba amarilla."],
   aperm:["Put the top corners in their places.","Pon las esquinas de arriba en su lugar."], aperm0:["Put the top corners in their places.","Pon las esquinas de arriba en su lugar."],
   lineUp:["Line the corners up with their sides.","Alinea las esquinas con sus lados."],
-  uperm:["Put the last edges in their places. Almost done.","Pon las últimas aristas en su lugar. Ya casi."], uperm0:["Put the last edges in their places. Almost done.","Pon las últimas aristas en su lugar. Ya casi."]
+  uperm:["Put the last edges in their places. Almost done.","Pon las últimas aristas en su lugar. Ya casi."], uperm0:["Put the last edges in their places. Almost done.","Pon las últimas aristas en su lugar. Ya casi."],
+  short:["The short way: every move brings the whole cube closer.","El camino corto: cada movimiento acerca todo el cubo."]
 };
 /* why the moves of each part work, in one plain sentence */
 const WHY={
@@ -535,7 +548,8 @@ const WHY={
   aperm0:["Doing the moves once makes a pair of headlights to work from.","Hacer los movimientos una vez forma un par de faros para trabajar."],
   lineUp:["The top layer turns freely now, so it just needs lining up.","La capa de arriba gira libre ahora, solo hay que alinearla."],
   uperm:["With the finished side at the back, the moves cycle the last three edges home.","Con el lado terminado atrás, los movimientos llevan las últimas tres aristas a su lugar."],
-  uperm0:["Doing the moves once finishes one side to work from.","Hacer los movimientos una vez termina un lado para trabajar."]
+  uperm0:["Doing the moves once finishes one side to work from.","Hacer los movimientos una vez termina un lado para trabajar."],
+  short:["It looks at the whole cube at once and searches millions of positions for a short path. It is not a way to learn by heart; it shows how few moves a cube needs.","Mira todo el cubo a la vez y busca entre millones de posiciones un camino corto. No es para aprender de memoria; muestra los pocos movimientos que necesita un cubo."]
 };
 const NOTES={
   holdWhite:["Turn the whole cube so the white center is on the bottom.","Gira el cubo entero para que el centro blanco quede abajo."],
@@ -558,7 +572,8 @@ const NOTES={
   aperm0:["No headlights yet. Do R' F R' B2 R F' R' B2 R2 once. Then look again.","Aún no hay faros. Haz R' F R' B2 R F' R' B2 R2 una vez. Luego mira otra vez."],
   lineUp:["Turn the top until the corners match their sides.","Gira la cara de arriba hasta que las esquinas coincidan con sus lados."],
   uperm:["One side is all done. Turn the whole cube so that side is at the back. Do R2 U R U R' U' R' U' R' U R'.","Un lado está terminado. Gira el cubo entero para que ese lado quede atrás. Haz R2 U R U R' U' R' U' R' U R'."],
-  uperm0:["No side is all done yet. Do R2 U R U R' U' R' U' R' U R' once. Then look again.","Aún no hay un lado terminado. Haz R2 U R U R' U' R' U' R' U R' una vez. Luego mira otra vez."]
+  uperm0:["No side is all done yet. Do R2 U R U R' U' R' U' R' U R' once. Then look again.","Aún no hay un lado terminado. Haz R2 U R U R' U' R' U' R' U R' una vez. Luego mira otra vez."],
+  short:["No mixed cube ever needs more than 20 moves. This one takes {n}.","Ningún cubo mezclado necesita más de 20 movimientos. Este necesita {n}."]
 };
 
 /* ── the ten steps ── */
@@ -642,7 +657,7 @@ const L=[
 ];
 
 /* ── saved place ── */
-const S={real:false, lang:"en", view:"learn", lesson:0, done:{}, speed:"normal", letters:true, cube:"", hist:[], paint:{}, brush:"W", tried:{}, mix:null, result:null, level:"every", drill:null, realStage:0, symbols:false, voice:false, scheme:{U:"Y",D:"W",F:"G",B:"B",R:"O",L:"R"}};
+const S={real:false, lang:"en", view:"learn", lesson:0, done:{}, speed:"normal", letters:true, cube:"", hist:[], paint:{}, brush:"W", tried:{}, mix:null, result:null, level:"every", drill:null, camRef:null, realStage:0, symbols:false, voice:false, scheme:{U:"Y",D:"W",F:"G",B:"B",R:"O",L:"R"}};
 try{
   const st=JSON.parse(localStorage.getItem(KEY)||"null");
   if(st){ Object.keys(S).forEach(k => { if(st[k]!==undefined) S[k]=st[k]; }); }
@@ -1055,16 +1070,45 @@ function solveHtml(){
       <button type="button" class="btn big" data-act="undrill">${esc(t("wholeAgain"))}</button></div>`; }
   const n=guideNow(), key=n ? n.st.key : "done", si=Math.max(0, C.STAGES.indexOf(key));
   /* AOG-CUBE-CHECKIN-V1 — with a real cube, after each step: does yours look like the screen? */
-  const ci=(S.real && checkIn) ? `<div class="note checkin"><p>${esc(t("checkIn"))}</p><div class="btn-row"><button type="button" class="btn btn-good" data-act="checkYes">${esc(t("checkYes"))}</button><button type="button" class="btn" data-act="repaint">${esc(t("repaint"))}</button></div></div>` : "";
+  const ci=(S.real && checkIn) ? `<div class="note checkin"><p>${esc(t("checkIn"))}</p><div class="btn-row"><button type="button" class="btn btn-good" data-act="checkYes">${esc(t("checkYes"))}</button><button type="button" class="btn" data-act="camCheck">${esc(t("camCheck"))}</button><button type="button" class="btn" data-act="repaint">${esc(t("repaint"))}</button></div></div>` : "";
   const lvSel=`<label class="startat"><span>${esc(t("levelH"))}</span><select id="levelSel">${[["every","lvEvery"],["hint","lvHint"],["own","lvOwn"]].map(([v,k])=>`<option value="${v}" ${(S.level||"every")===v?"selected":""}>${esc(t(k))}</option>`).join("")}</select></label>`;
   const dots=C.STAGES.map((k,i)=>`<span class="dot ${i<at?"done":i===si?"now":""}"></span>`).join("");
+  if(key==="short") return `${ci}<p class="kicker">${esc(t("shortK"))}</p>${partCard()}${quietRow(lvSel)}`;
   return `${ci}<p class="kicker">${esc(S.drill!=null ? t("drillK",{s:tx(STAGE_NAMES[C.STAGES[S.drill]])}) : t("stepOf",{i:si+1, name:tx(STAGE_NAMES[key==="hold"?"cross":key])}))}</p>
     <div class="dots" role="img" aria-label="${esc(t("stepOf",{i:si+1, name:tx(STAGE_NAMES[key==="hold"?"cross":key])}))}">${dots}</div>
     ${(()=>{ const pr=stageProgress(key==="hold"?"cross":key); return pr?`<p class="progress">${esc(pr)}</p>`:""; })()}
     ${partCard()}
+    ${quietRow(lvSel)}`;
+}
+/* the quiet buttons under the card: the short way, the kind of help, start over, a new mix, a step to start from */
+function quietRow(lvSel){
+  const sh = shortState==="finding" ? `<p class="muted">${esc(t("shortFinding"))}</p>`
+    : shortState==="none" ? `<p class="muted">${esc(t("shortNone"))}</p>`
+    : (guide && guide.short) ? "" : `<button type="button" class="btn btn-steel" data-act="short">${esc(t("shortBtn"))}</button>`;
+  return `<div class="btn-row quiet">${sh}</div>
     <div class="btn-row quiet">${lvSel}</div>
     <div class="btn-row quiet"><button type="button" class="btn" data-act="fresh">${esc(t("startOver"))}</button><button type="button" class="btn" data-act="mix">${esc(t("newMix"))}</button>
     ${S.real?"":`<label class="startat"><span>${esc(t("startAtH"))}</span><select id="startAt"><option value="">${esc(t("startAtPick"))}</option>${C.STAGES.map((k,i)=>`<option value="${i}">${i+1}. ${esc(tx(STAGE_NAMES[k]))}</option>`).join("")}</select></label>`}</div>`;
+}
+/* AOG-CUBE-SHORT-V1 — the short way, found off the page (aog-cube-short.js in a worker), then followed like the steps */
+let shortState="", shortWorker=null, shortAsk=0;
+function findShort(){
+  if(cube.solved() || shortState==="finding") return;
+  shortState="finding"; panel();
+  const id=++shortAsk, json=cube.toJSON();
+  const done=moves => { if(id!==shortAsk) return; shortState="";
+    if(!moves || cube.toJSON()!==json){ shortState=moves ? "" : "none"; panel(); return; }
+    const flat=moves.map((tok,mi) => ({tok, si:0, pi:0, mi}));
+    guide={r:{stages:[{key:"short", parts:[{note:"short", vars:{n:moves.length}, moves}]}]}, flat, i:0, key:json, short:true};
+    offPath=false; $("live").textContent=t("shortMade",{n:moves.length}); panel(); };
+  const inline=() => { const go=() => setTimeout(() => done(window.AOGShort.solve(cube, {ms:2500})), 30);
+    if(window.AOGShort) go(); else { const sc=document.createElement("script"); sc.src="/aog-cube-short.js"; sc.onload=go; sc.onerror=() => done(null); document.head.appendChild(sc); } };
+  try{
+    if(!shortWorker){ shortWorker=new Worker("/aog-cube-short.js"); }
+    shortWorker.onmessage=e => done(e.data.moves);
+    shortWorker.onerror=() => { shortWorker=null; inline(); };
+    shortWorker.postMessage({id, cube:json, ms:2500});
+  }catch(e){ inline(); }
 }
 /* AOG-CUBE-MINE-V2 (2026-10-11) — Jimmy (iPhone): "the color icons are too far from the cube and too much scrolling."
    The camera comes first, the colors sit right under the cube, and the longer how-to waits behind a fold. */
@@ -1134,8 +1178,8 @@ function act(a){
   if(a==="ready"){ S.done[i]=1; save(); panel(); bar(); }
   else if(a==="prev"){ pick(i-1); }
   else if(a==="nextLesson"){ pick(i+1); }
-  else if(a==="mix"){ S.drill=null; checkIn=false; stopQueue(); cube=new C.Cube().run(C.scramble()); S.real=false; setTimeout(showBench, 0); S.hist=[]; S.mix={t0:null,moves:0}; S.result=null; S.showHint=false; guide=null; S.practice=S.lesson; save(); render(); panel(); }
-  else if(a==="fresh"){ S.drill=null; checkIn=false; stopQueue(); cube=new C.Cube(); S.hist=[]; S.mix=null; S.result=null; guide=null; save(); render(); panel(); }
+  else if(a==="mix"){ shortAsk++; shortState=""; S.drill=null; checkIn=false; stopQueue(); cube=new C.Cube().run(C.scramble()); S.real=false; setTimeout(showBench, 0); S.hist=[]; S.mix={t0:null,moves:0}; S.result=null; S.showHint=false; guide=null; S.practice=S.lesson; save(); render(); panel(); }
+  else if(a==="fresh"){ shortAsk++; shortState=""; S.drill=null; checkIn=false; stopQueue(); cube=new C.Cube(); S.hist=[]; S.mix=null; S.result=null; guide=null; save(); render(); panel(); }
   else if(a==="setup"){ setup(L[i].stage); }
   else if(a==="hint"){ S.showHint=true; panel(); }
   else if(a==="gnext"){ const n=guideNow(); if(n && !busy && !queue.length) enqueue([n.f.tok],"guide"); }
@@ -1145,6 +1189,8 @@ function act(a){
   else if(a==="undrill"){ S.drill=null; act("mix"); }
   else if(a==="checkYes"){ checkIn=false; panel(); }
   else if(a==="camera"){ camOpen(); }
+  else if(a==="short"){ findShort(); }
+  else if(a==="camCheck"){ camOpen("verify"); }
   else if(a==="print"){ printCard(); }
   else if(a==="startAt"){ /* handled by the select */ }
   else if(a==="goal"){ goalView = goalView ? null : goalOf(); render(); panel(); }
@@ -1600,21 +1646,66 @@ function readColors(samples){   /* samples: {F:[9 rgb], R:…, B:…, L:…, U:�
     if(!place || n>place.n) place={n, names, rots, mir};
     if(n===20) break search;
   }
+  camRef={}; centers.forEach((c,b) => { camRef[best.pick[b]]=c.rgb; });
   const out={}; place.names.forEach((f,si) => { turn(lab[si], place.rots[si], place.mir).forEach((b,j) => { const [pos]=C.facelets(f)[j]; out[pos.join(",")+"|"+f]=best.pick[b]; }); });
   return out;
 }
 const CAM_ORDER=["F","R","B","L","U","D"];
+let camRef=null;
+/* AOG-CUBE-CAMCHECK-V1 (2026-10-12) — after a step, hold any side of the real cube up to the camera: it is compared
+   with the same side on the screen, and any square that differs is marked. (Watching the hands the whole time was
+   tried on paper and set aside: the front camera sees the far side of the cube, where the fingers are while turning.) */
+function nameSquare(rgb){
+  const letters=[...new Set(Object.values(S.scheme||{}))];
+  const ref=S.camRef || camRef;
+  if(ref && letters.every(l => ref[l])){ const lab=toLab(rgb); return letters.slice().sort((a,b) => { const A=toLab(ref[a]), B=toLab(ref[b]); return Math.hypot(lab[0]-A[0],lab[1]-A[1],lab[2]-A[2])-Math.hypot(lab[0]-B[0],lab[1]-B[1],lab[2]-B[2]); })[0]; }
+  return letters.slice().sort((a,b) => nameCenter(rgb,a)-nameCenter(rgb,b))[0];
+}
+function verifyRead(rgb9){
+  const got=rgb9.map(nameSquare), turnG=(g,k) => { let a=g.slice(); for(let r=0;r<k;r++){ const b=[]; for(let y=0;y<3;y++) for(let x=0;x<3;x++) b[y*3+x]=a[(2-x)*3+y]; a=b; } return a; };
+  let best=null;
+  C.FACE_NAMES.forEach(f => { const exp=C.facelets(f).map(([pos,dir]) => disp(cube.colorAt(pos,dir)));
+    for(let k=0;k<4;k++){ const g=turnG(got,k), diff=[]; g.forEach((c,j) => { if(c!==exp[j]) diff.push(j); });
+      const score=diff.length+(g[4]===exp[4] ? 0 : 20);   /* the middle square says which side it is */
+      if(!best || score<best.score) best={score, f, exp, got:g, diff}; } });
+  cam.result=best; camDraw();
+}
+function camVerifyDraw(){
+  const R=cam.result, sq=(cols, diff) => `<div class="rgrid">${cols.map((c,j) => `<span class="${diff && diff.includes(j)?"off":""}" style="background:${COL[c]};color:${INK[c]}">${diff && diff.includes(j)?"✕":""}</span>`).join("")}</div>`;
+  if(R){
+    const nm=tx(T.sideName[R.f]).replace(/^./,x=>x.toUpperCase()), n=R.diff.length;
+    cam.box.innerHTML=`<div class="in"><h2>${esc(t("vfyH"))}</h2><p class="kicker">${esc(t("vfySide",{s:nm}))}</p>
+      <p class="state ${n?"warn":"ok"}">${esc(n ? (n===1 ? t("vfyDiff1") : t("vfyDiff",{n})) : t("vfyOk"))}</p>
+      <div class="vfy"><div><p class="rname">${esc(t("vfyScreen"))}</p>${sq(R.exp, R.diff)}</div><div><p class="rname">${esc(t("vfyYours"))}</p>${sq(R.got, R.diff)}</div></div>
+      <div class="btn-row start"><button type="button" class="btn btn-good big" data-cam="close">${esc(t("vfyDone"))}</button>
+      <button type="button" class="btn" data-cam="again">${esc(t("vfyAgain"))}</button>
+      ${n?`<button type="button" class="btn" data-cam="repaint">${esc(t("repaint"))}</button>`:""}</div></div>`;
+    camStop();
+  } else {
+    cam.box.innerHTML=`<div class="in"><h2>${esc(t("vfyH"))}</h2><p class="muted">${esc(t("camPrivacy"))}</p><p class="say">${esc(t("vfyLine"))}</p>
+      ${cam.msg?`<p class="state warn">${esc(cam.msg)}</p>`:""}
+      <div class="box"><video playsinline muted autoplay class="${cam.facing==="user"?"mirror":""}"></video><div class="grid" aria-hidden="true">${"<span></span>".repeat(9)}</div></div>
+      <div class="btn-row"><button type="button" class="btn btn-good big" data-cam="take">${esc(t("camTake"))}</button></div>
+      <div class="btn-row quiet"><button type="button" class="btn" data-cam="switch">${esc(t("camSwitch"))}</button><button type="button" class="btn" data-cam="close">${esc(t("camClose"))}</button></div></div>`;
+    const v=cam.box.querySelector("video"); if(cam.stream){ v.srcObject=cam.stream; v.play && v.play().catch(()=>{}); }
+  }
+  cam.box.querySelectorAll("[data-cam]").forEach(b => b.onclick=() => { const k=b.getAttribute("data-cam");
+    if(k==="take") camTake(); else if(k==="again"){ cam.result=null; cam.msg=""; camDraw(); camStart(); }
+    else if(k==="switch"){ cam.facing=cam.facing==="user"?"environment":"user"; camStop(); camStart(); camDraw(); }
+    else if(k==="repaint"){ camClose(); act("repaint"); } else camClose(); });
+}
 let cam=null;
-function camOpen(){
+function camOpen(mode){
   camClose();
   const box=document.createElement("div"); box.className="cam"; box.setAttribute("role","dialog"); box.setAttribute("aria-modal","true"); box.setAttribute("aria-label", t("camH"));
   document.body.appendChild(box); document.body.style.overflow="hidden";
-  cam={box, i:0, samples:{}, facing:"user", stream:null};
+  cam={box, i:0, samples:{}, facing:"user", stream:null, mode:mode==="verify" ? "verify" : "shoot"};
   camDraw(); camStart();
 }
 function camDraw(){
   if(!cam) return;
   if(cam.mode==="review"){ cam.box.innerHTML=camReviewHtml(); camReviewWire(); return; }
+  if(cam.mode==="verify"){ camVerifyDraw(); return; }
   const i=cam.i;
   cam.box.innerHTML=`<div class="in"><h2>${esc(t("camH"))}</h2><p class="muted">${esc(t("camPrivacy"))}</p>
     <div class="sides" aria-hidden="true">${CAM_ORDER.map((f,k)=>`<span class="${k<i?"done":""}"></span>`).join("")}</div>
@@ -1699,8 +1790,8 @@ function camTake(){
    the way the camera sees the side, left to right */
 function camRead(img){
   const out=sampleFace(img);
-  if(!out){ cam.msg=t("camLost"); camDraw(); return; }
-  cam.msg=""; camSide(out);
+  if(!out){ cam.msg=t("camLost"); if(cam.mode==="verify") cam.result=null; camDraw(); return; }
+  cam.msg=""; if(cam.mode==="verify"){ verifyRead(out); return; } camSide(out);
 }
 /* the nine colors of the cube side in a picture, or null when no cube is in it */
 function sampleFace(img){
@@ -1749,11 +1840,11 @@ function camReviewWire(){
   B.querySelector('[data-cam="go"]').onclick=() => {
     const off=camOffList();
     if(off){ const st=B.querySelector("#revState"); st.textContent=t("revFix",{list:off}); st.className="state warn"; B.scrollTop=0; return; }
-    S.paint=camCols(); camClose(); doctor=null; flags=[]; peek=false; mineMsg=null; save(); checkMine();
+    S.paint=camCols(); if(camRef) S.camRef=camRef; camClose(); doctor=null; flags=[]; peek=false; mineMsg=null; save(); checkMine();
   };
   B.querySelector('[data-cam="close"]').onclick=() => { S.paint=camCols(); camClose(); doctor=null; flags=[]; peek=false; mineMsg={ok:true, text:t("camDone")}; save(); render(); panel(); };
 }
-window.AOGCubeLab={pick:pickSticker, get cube(){ return cube; }, readColors, sampleFace, camSide:rgb => { if(!cam) camOpen(); camSide(rgb); }, get cam(){ return cam; }};   /* for the site's checks */
+window.AOGCubeLab={pick:pickSticker, get cube(){ return cube; }, readColors, sampleFace, verifyRead:rgb => { if(!cam) camOpen("verify"); verifyRead(rgb); return cam.result; }, camSide:rgb => { if(!cam) camOpen(); camSide(rgb); }, get cam(){ return cam; }};   /* for the site's checks */
 $("langBtn").onclick=()=>{ S.lang=es()?"en":"es"; save(); paintAll(); };
 $("themeBtn").onclick=()=>{
   const next=document.documentElement.getAttribute("data-theme")==="dark"?"light":"dark";
