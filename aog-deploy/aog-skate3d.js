@@ -142,14 +142,14 @@ export async function create(kit) {
     set("truck", C.truck); set("wheel", C.wheel); set("core", C.ke); set("bush", C.ke, 0.1);
     set("ground", dark ? "#8a8f98" : "#f2eee6"); set("ramp", dark ? "#b8a888" : "#f6ead2"); set("deckTop", dark ? "#a89878" : "#e9dcc0"); set("rampSide", dark ? "#4f5866" : "#6d7f8e");
     set("coping", "#d4d9e0"); set("curb", dark ? "#a3a199" : "#e2ddd2"); set("concrete", dark ? "#9a9890" : "#d9d4c8"); set("metal", "#a9b2bc"); set("wax", dark ? "#c9c2b5" : "#ece6da"); set("paint", C.pe, dark ? -0.05 : 0.1);
-    set("grass", dark ? "#8fa07f" : "#ffffff"); set("prop", dark ? "#7a7f88" : "#d7d0c3"); set("propDk", dark ? "#565a62" : "#a39b8c"); set("bench", dark ? "#8a6a4a" : "#a77a4e"); set("pole", dark ? "#4a5059" : "#59626d");
+    set("grass", dark ? "#8fa07f" : "#e6eedc"); set("prop", dark ? "#7a7f88" : "#d7d0c3"); set("propDk", dark ? "#565a62" : "#a39b8c"); set("bench", dark ? "#8a6a4a" : "#a77a4e"); set("pole", dark ? "#4a5059" : "#59626d");
     set("trunk", dark ? "#5a4636" : "#6b5340"); set("far", dark ? "#3c4252" : "#d3d8dc");
     ["pe", "ke", "heat", "pump", "force", "good", "friction", "path"].forEach(k => { set(k, C[k] || C.steel); M[k].emissive = M[k].color.clone(); });
     set("ink", C.ink); set("mark", C.ink); set("glass", dark ? "#cfe3ff" : "#ffffff");
     M.lamp.color.set(dark ? "#fff1c9" : "#f4f4f4"); M.lamp.emissive = new THREE.Color(dark ? "#ffd98a" : "#000000");
     const hz = new THREE.Color(dark ? "#1c2433" : "#e4ecf0");
     skyU.top.value.set(dark ? "#0b1220" : "#8fb8d8"); skyU.mid.value.copy(hz); skyU.bot.value.set(dark ? "#141a24" : "#d9d6cc");
-    scene.background = hz; scene.fog = new THREE.Fog(hz, dark ? 16 : 26, dark ? 60 : 110);
+    scene.background = hz; scene.fog = new THREE.Fog(hz, dark ? 16 : 30, dark ? 70 : 125);
     hemi.color.set(dark ? "#6f7f9f" : "#ffffff"); hemi.groundColor.set(dark ? "#2a2620" : "#b9a98f"); hemi.intensity = dark ? 0.55 : 0.35;
     sun.color.set(dark ? "#9fb0e0" : "#fff2dc"); sun.intensity = dark ? 0.75 : 2.6;
     lampLights.forEach(l => l.intensity = dark ? 30 : 0);
@@ -449,7 +449,7 @@ export async function create(kit) {
     opts = opts || {};
     const c = document.createElement("canvas"), g = c.getContext("2d");
     const tex = track(new THREE.CanvasTexture(c)); tex.colorSpace = THREE.SRGBColorSpace;
-    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthWrite: false, depthTest: opts.depthTest !== false, fog: false }));
+    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthWrite: false, depthTest: false, fog: false, sizeAttenuation: false }));
     sp.renderOrder = 5;
     let last = "";
     sp.redraw = () => {
@@ -463,7 +463,7 @@ export async function create(kit) {
       g.beginPath(); g.moveTo(r, 0); g.arcTo(w, 0, w, h, r); g.arcTo(w, h, 0, h, r); g.arcTo(0, h, 0, 0, r); g.arcTo(0, 0, w, 0, r); g.closePath(); g.fill();
       g.globalAlpha = 1; g.fillStyle = opts.color ? (C[opts.color] || opts.color) : (C.ink || "#111"); g.textBaseline = "middle"; g.fillText(txt, pad, h / 2 + 2);
       tex.needsUpdate = true;
-      const H = opts.h || 0.09; sp.scale.set(H * w / h, H, 1);
+      const H = (opts.h || 0.09) * (phone ? 0.42 : 0.36); sp.scale.set(H * w / h, H, 1);   // a steady size on the screen, whatever the distance
       sp.center.set(opts.cx != null ? opts.cx : 0.5, opts.cy != null ? opts.cy : 0.5);
     };
     sp.redraw(); labels.push(sp);
@@ -522,7 +522,7 @@ export async function create(kit) {
   const link = mesh(new THREE.PlaneGeometry(72, 1.7), linkMat, 6, 0.97, -9.4, dress); link.castShadow = false;
   // the town far away
   const city = new THREE.Group(); world.add(city);
-  for (let i = 0; i < 30; i++) { const h = 5 + rand() * 16, w = 4 + rand() * 7; const b = mesh(rbox(w, h, 5, 0.6), M.far, -70 + i * 5.2 + rand() * 2, h / 2, -48 - rand() * 14, city); b.castShadow = false; }
+  for (let i = 0; i < 30; i++) { const h = 8 + rand() * 22, w = 5 + rand() * 9; const b = mesh(rbox(w, h, 5, 0.6), M.far, -90 + i * 6.5 + rand() * 2, h / 2, -95 - rand() * 20, city); b.castShadow = false; }
   for (let i = 0; i < 16; i++) tree(-60 + i * 8 + rand() * 3, 14 + rand() * 6, 1.2 + rand() * 0.4, i % 3, city);
 
   /* the free-skate park (AOG-SKATE-FREE-V1): the same places the ride's physics uses */
@@ -792,7 +792,7 @@ export async function create(kit) {
     } else if (spec.kind === "grind") {
       setScene("room:grind:" + d.key, () => grindMesh(d)); slideWorld(0);
       if (fr) t = pose(fr);
-      viewPad = d.bottom || 0;
+      viewPad = (d.bottom || 0) * 0.75;
       if (d.x > 0) { heatBar.visible = true; heatBar.position.set(0, d.rh + (d.surface === "metal" ? 0.026 : 0.003), d.surface === "metal" ? 0 : 0.17); heatBar.scale.set(Math.max(0.001, Math.min(d.x, d.len)), 1, 1); }
       if (d.d < d.len + 1.4) { stopPost.visible = true; stopPost.position.set(d.d, 0, -0.42); labStop.visible = true; labStop.position.set(d.d, 0.82, -0.42); }
       if (d.onIt && d.v > 0) { arrowC.set(V(d.x - 0.05, d.rh + 0.06, 0.25), V(-1, 0, 0), 0.25 + 0.7 * d.mu); }
@@ -800,7 +800,7 @@ export async function create(kit) {
       const span = d.len + 2.8, cx = d.len / 2;
       if (camMode === "orbit") orbitCam(V(t.x, 0.6, 0));
       else if (camMode === "follow") frameCam(40, V(t.x + 1.0, 1.2, 3.2), V(t.x + 0.2, 0.55, 0));
-      else { const dist = fitDist(span, 40); frameCam(40, V(cx + span * 0.08, 0.9 + dist * 0.22, dist), V(cx, 0.45, 0)); }
+      else { const dist = fitDist(span * 0.9, 40); frameCam(40, V(cx + span * 0.06, 0.75 + dist * 0.13, dist), V(cx, 0.42, 0)); }
       sunAt(cx, 0, true);
     } else if (spec.kind === "free") {
       setScene("free", null); world.position.x = 0;
@@ -817,7 +817,7 @@ export async function create(kit) {
       if (!d.reduce && camMode !== "orbit") {
         const now = performance.now(), dt = lastFree ? Math.min(0.1, (now - lastFree) / 1000) : 1; lastFree = now;
         const k = 1 - Math.exp(-dt * 4.5);
-        if (camPos.lengthSq() === 0) camPos.copy(camTgtPos);
+        if (camPos.distanceTo(camTgtPos) > 5 || camLook.distanceTo(camTgtLook) > 5) { camPos.copy(camTgtPos); camLook.copy(camTgtLook); }   // a new start: cut, never sweep through the park
         camPos.lerp(camTgtPos, k); camLook.lerp(camTgtLook, k);
         camMoving = camPos.distanceTo(camTgtPos) > 0.01 || camLook.distanceTo(camTgtLook) > 0.01;
         camSnap = false;

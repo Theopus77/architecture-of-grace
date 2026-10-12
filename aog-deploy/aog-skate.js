@@ -2229,7 +2229,7 @@ function drawFreeMap() {
   });
   // the path ridden, then the board and rider from above
   if (st.trail.length > 1) { ctx.save(); ctx.strokeStyle = C.path; ctx.globalAlpha = .55; ctx.lineWidth = 2.5; ctx.setLineDash([6, 5]); ctx.beginPath(); st.trail.forEach((p, i) => i ? ctx.lineTo(X(p[0]), Z(p[1])) : ctx.moveTo(X(p[0]), Z(p[1]))); ctx.lineTo(X(st.x), Z(st.z)); ctx.stroke(); ctx.restore(); }
-  const nose = st.h + (st.fakie ? Math.PI : 0), bs = Math.max(sc, 22), up = st.mode === "air" ? 1 + boardRel(st.air) * 0.8 : 1;
+  const nose = st.h + (st.fakie ? Math.PI : 0), bs = Math.max(sc * 1.5, 30), up = st.mode === "air" ? 1 + boardRel(st.air) * 0.8 : 1;
   ctx.save(); ctx.translate(X(st.x), Z(st.z));
   ctx.fillStyle = alpha(C.ink, 0.18); ctx.beginPath(); ctx.ellipse(0, 0, 0.45 * bs, 0.14 * bs, nose, 0, 7); ctx.fill();
   ctx.rotate(nose + (st.mode === "grind" && st.grind.kind === "board" || st.mode === "stall" ? Math.PI / 2 : 0)); ctx.scale(up, up);

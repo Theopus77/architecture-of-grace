@@ -250,7 +250,9 @@ export async function create(opt) {
     // arms that reach for a spot (a punch's target, the chin for a guard): IK to the spot, the elbow toward its pole
     if (k.arm) ["L", "R"].forEach(s => {
       const a = k.arm[s]; if (!a) return;
-      const to = new THREE.Vector3(a.to[0] + offset.x, a.to[1], a.to[2] + offset.z), pole = new THREE.Vector3(a.pole[0] + offset.x, a.pole[1], a.pole[2] + offset.z);
+      // a target is measured from where the key stands (its root's x and z), so a move that travels keeps its aim
+      const ox = offset.x + (k.root ? k.root.pos[0] : 0), oz = offset.z + (k.root ? k.root.pos[2] : 0);
+      const to = new THREE.Vector3(a.to[0] + ox, a.to[1], a.to[2] + oz), pole = new THREE.Vector3(a.pole[0] + ox, a.pole[1], a.pole[2] + oz);
       F.ik.arm(s, to, pole);
       const el = F.J("elbow" + s);
       if (a.twist) el.quaternion.multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), a.twist * DEG));

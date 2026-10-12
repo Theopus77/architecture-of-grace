@@ -229,6 +229,18 @@ check for anything new the hands can do.
   lets go of the 3D drawing and the graphics chip. Nothing asks for animation frames while idle. check-skate tests all of it.
   Add new trick words to `aog-skate-book.js`, not to `aog-skate.js`.
 
+## Silent until used (standing order from Jimmy, 2026-10-12)
+
+"This has to be silent when not being used … lighting fast connectivity." Every page, now and later: nothing moves,
+redraws or makes a sound while nobody touches it, and a page that is not itself a 3D room loads no 3D (three.js,
+`aog-*3d.js`, `aog-figure3d.js`, `aog-3dkit.js`, star catalogues) until someone taps for it. The 3D rooms (the Dojo,
+the Kitchen, the Sewing Room) may build their scene as they open, then must be still. Leaving 3D frees the graphics
+chip. After any change to a page with animation, 3D or sound, run
+
+    node tools/check-silent.js <the pages you changed>     # or with no pages, every page in its list
+
+and add new pages and rooms to its PAGES list. Do not push while it fails.
+
 ## Housekeeping
 
 - Bump `const CACHE` in `aog-deploy/sw.js` whenever a page changes, so browsers

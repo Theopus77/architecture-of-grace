@@ -268,7 +268,6 @@ function deriveHand(H, pre) {
       if (e.s <= sEye + 1e-7) { nodes.push(...e.nodes); lastS = e.s; }
       else { if (!pending) pending = e; }
     }
-    if (st.endKnotNode) nodes.push(st.endKnotNode);
     if (st.cutAfter) nodes.push({ L: "cut" });
     st.nodes = nodes;
     const lines = routeLines(nodes, st);
@@ -395,7 +394,7 @@ BUILD["slip-stitch"] = () => {
   const sp = 0.0095, x = k => 0.04 - k * sp, dir = -1, zf = 0.0012, zc = -0.0028, n = 6;
   // the needle starts inside the fold and comes out of it (the knot stays hidden in the fold)
   const P0 = [x(0), 1.5 * LT + surf(x(0), zf), zf];
-  const i0 = H.pt(add(P0, [-dir * 0.045, 0, 0])); H.pt(add(P0, [-dir * 0.012, 0, 0]));
+  H.pt(add(P0, [-dir * 0.045, 0, 0])); const i0 = H.pt(add(P0, [-dir * 0.012, 0, 0]));
   H.pt(P0, [knotNode(x(0) - dir * 0.008, zf, null, true), { L: "IF", x: x(0), z: zf }, { L: "F", x: x(0), z: zf }]);
   H.pt(H.S(x(0) + dir * 0.004, zf, 0.0025)); const iE0 = H.pt(H.S(x(0) + dir * 0.012, zf + 0.002, 0.006));
   H.last = i0;
@@ -577,11 +576,11 @@ BUILD["tie-off"] = () => {
     const n = [knotNode(x(0), z, null)];
     n[0].hang = null;
     n.push({ L: "B", x: x(0), z }, { L: "F", x: x(0), z });
-    for (let k = 1; k <= 8; k++) n.push({ L: k % 2 ? "F" : "B", x: x(k), z }, { L: k % 2 ? "B" : "F", x: x(k), z });
+    for (let k = 1; k <= 9; k++) n.push({ L: k % 2 ? "F" : "B", x: x(k), z }, { L: k % 2 ? "B" : "F", x: x(k), z });
     return n;
   };
   const tl = TL("tie-off", "hand", workInit("pair")), H = Track("pair");
-  const xe = x(8);                                        // the thread is at the back at x(8)
+  const xe = x(9);                                        // the thread is at the back at x(9)
   const pB = [xe - 0.0012, 0.0014], pB2 = [xe - 0.0036, 0.0014];
   // the needle starts under the work, hanging from the last stitch
   const i0 = H.pt([xe + 0.004, -0.06 + surf(xe, z), z + 0.012]);
@@ -636,9 +635,7 @@ BUILD["thread-needle"] = () => {
     const eye = [0, eyeY, 0.004 - 0.01 * q.lift];
     const dir = nrm([0, 1, -0.25 * q.lift]);
     const tipP = add(eye, mul(dir, -NL));
-    st.needle = [tipP, eye];  // tip … eye
-    st.needle = [eye, tipP].reverse();
-    st.needleTipFirst = true;
+    st.needle = [eye, tipP];
     st.eye = eye;
     // the thread: from the spool on the right, its end coming to the eye
     const far = [0.2, -0.05, 0.02];
@@ -753,9 +750,8 @@ function turnWheel(st, dw) {
     if (e.pen) {
       if (mf.show && m.foot > 0.5 && m.threadU >= 1 && mf.under) {
         const p = w2f(mf, [MX, MZ]);
-        const L = mf.st[mf.st.length - 1];
-        if (!L || Math.hypot(L[0] - p[0], L[1] - p[1]) > 1e-6 || mf.st.length === 0) mf.st.push(p);
-        else mf.st.push(p);
+        if (m.reverse) p[0] += 0.0004;          // stitches sewn back over others sit a hair beside them
+        mf.st.push(p);
       }
     } else if (mf.show && m.foot > 0.5 && mf.under && !m.noFeed) {
       const d = ML.l * e.feed * (m.reverse ? -1 : 1);
@@ -802,12 +798,12 @@ function deriveMachine(st) {
   st.stitches = mf ? mf.st : [];
 }
 function seamStart(tl) {
-  tl.init = machineInit(() => ({ mf: { show: 1, T: [MX + 0.015, MZ - 0.05], rot: 0, st: [], pins: [0.04, 0.09, 0.14, 0.185], under: 0 } }));
+  tl.init = machineInit(() => ({ mf: { show: 1, T: [MX + 0.015, MZ + 0.04], rot: 0, st: [], pins: [0.04, 0.09, 0.14, 0.185], under: 0 } }));
 }
 BUILD["straight-seam"] = () => {
   const tl = TL("straight-seam", "machine"); seamStart(tl);
   tl.add(0, 2.2, (st, u) => { st.mf.pinShow = u; });
-  tl.add(1, 2.0, (st, u) => { st.mf.T = [MX + 0.015, lerp(MZ - 0.05, MZ - 0.012, u)]; st.mf.under = u > 0.99 ? 1 : 0; });
+  tl.add(1, 2.0, (st, u) => { st.mf.T = [MX + 0.015, lerp(MZ + 0.04, MZ - 0.012, u)]; st.mf.under = u > 0.99 ? 1 : 0; });
   tl.add(2, 0.01, st => { st.mf.under = 1; });
   wheelSeg(tl, 2, 180, 1.8);
   footSeg(tl, 3, 1, 1.2);
@@ -822,7 +818,8 @@ BUILD["straight-seam"] = () => {
 };
 BUILD["backstitch-machine"] = () => {
   const tl = TL("backstitch-machine", "machine"); seamStart(tl);
-  tl.add(0, 1.4, (st, u) => { st.mf.T = [MX + 0.015, lerp(MZ - 0.05, MZ - 0.022, u)]; st.mf.under = 1; });
+  tl.add(0, 1.4, (st, u) => { st.mf.T = [MX + 0.015, lerp(MZ + 0.04, MZ - 0.012, u)]; st.mf.under = u > 0.99 ? 1 : 0; });
+  tl.add(0, 0.01, st => { st.mf.under = 1; });
   wheelSeg(tl, 0, 180, 1.2); footSeg(tl, 0, 1, 0.8);
   sewSeg(tl, 1, 4, 2.4);
   sewSeg(tl, 2, 4, 2.8, { rev: 1 });
@@ -835,12 +832,12 @@ BUILD["backstitch-machine"] = () => {
 };
 BUILD["pivot-corner"] = () => {
   const tl = TL("pivot-corner", "machine");
-  tl.init = machineInit(() => ({ mf: { show: 1, T: [MX + 0.015, MZ - 0.12], rot: 0, st: [], pins: [], under: 1 }, m: { w: 180, foot: 1, reverse: 0, threadU: 1, bobbinIn: 1, tails: 0, pedal: 0, footOnPedal: 1 } }));
+  tl.init = machineInit(() => ({ mf: { show: 1, T: [MX + 0.015, MZ - 0.122], rot: 0, st: [], pins: [], under: 1 }, m: { w: 180, foot: 1, reverse: 0, threadU: 1, bobbinIn: 1, tails: 0, pedal: 0, footOnPedal: 1 } }));
   // the seam has started earlier: stitches from lz = 0.012 to the needle
   tl.init0 = tl.init;
-  tl.init = () => { const st = tl.init0(); for (let z = 0.012; z <= ML.Lh - 0.12 - 0.012 + 0.108 + 1e-9; z += ML.l) st.mf.st.push([-0.015, z]); return st; };
-  sewSeg(tl, 0, 18, 5);
-  sewSeg(tl, 1, 8, 4.2);
+  tl.init = () => { const st = tl.init0(); for (let i = 0; i <= 37; i++) st.mf.st.push([-0.015, 0.011 + i * ML.l]); return st; };
+  sewSeg(tl, 0, 14, 4.6);
+  sewSeg(tl, 1, 7, 4.4);
   tl.add(1, 0.01, null);
   footSeg(tl, 2, 0, 1.0);
   pivotSeg(tl, 3, -90, 3.2);
@@ -855,10 +852,10 @@ BUILD["pivot-corner"] = () => {
 };
 BUILD["seam-allowance"] = () => {
   const tl = TL("seam-allowance", "machine"); seamStart(tl);
-  tl.init = machineInit(() => ({ mf: { show: 1, T: [MX + 0.04, MZ - 0.05], rot: 0, st: [], pins: [], under: 0 } }));
+  tl.init = machineInit(() => ({ mf: { show: 1, T: [MX + 0.04, MZ + 0.04], rot: 0, st: [], pins: [], under: 0 } }));
   tl.add(0, 2.4, (st, u) => { st.hl = { k: "allow", u }; });
   tl.add(1, 2.4, (st, u) => { st.hl = { k: "guide", u }; });
-  tl.add(2, 2.4, (st, u) => { st.mf.T = [lerp(MX + 0.04, MX + 0.015, u), lerp(MZ - 0.05, MZ - 0.012, u)]; st.mf.under = u > 0.99 ? 1 : 0; st.hl = { k: "guide", u: 1 }; });
+  tl.add(2, 2.4, (st, u) => { st.mf.T = [lerp(MX + 0.04, MX + 0.015, u), lerp(MZ + 0.04, MZ - 0.012, u)]; st.mf.under = u > 0.99 ? 1 : 0; st.hl = { k: "guide", u: 1 }; });
   tl.add(3, 0.01, st => { st.mf.under = 1; });
   wheelSeg(tl, 3, 180, 1.0); footSeg(tl, 3, 1, 0.7); sewSeg(tl, 3, 40, 9);
   wheelSeg(tl, 4, 180, 0.8); footSeg(tl, 4, 0, 0.6);
@@ -1089,19 +1086,16 @@ function needleCheck(id, samples) {
     const holes = [];
     // the needle's tip has passed these points of its track: every place on the track where it went through the cloth
     const sp = H.sp, upTo = st.tipS;
-    for (let k = 1; k < sp.pts.length && sp.s[k] <= upTo; k++) {
-      const r0 = region(sp.pts[k - 1], H.kind), r1 = region(sp.pts[k], H.kind);
-      if (r0 !== r1 && (r0 === "in" || r1 === "in")) holes.push(sp.pts[k]);
-    }
+    for (let k = 0; k < sp.pts.length && sp.s[k] <= upTo; k++) if (region(sp.pts[k], H.kind) === "in") holes.push(sp.pts[k]);
     // pre-made stitches (tie-off) were made by a needle earlier: their holes count
     if (tl.pre) tl.pre(st).forEach(n => { if (CLOTH[n.L]) holes.push([n.x, 0, n.z]); });
     for (const line of st.threads || []) {
       for (let k = 1; k < line.length; k++) {
         const a = line[k - 1], b = line[k], ra = region(a, H.kind), rb = region(b, H.kind);
-        const crosses = (ra === "a" && rb === "b") || (ra === "b" && rb === "a") || ra === "in" || rb === "in";
+        const crosses = ra !== rb && ra !== "o" && rb !== "o";     // past a cut edge is not through the cloth
         if (!crosses) continue;
         const m = mix(a, b, 0.5);
-        const near = holes.some(h => Math.hypot(h[0] - m[0], h[2] - m[2]) < 0.0022);
+        const near = holes.some(h => Math.hypot(h[0] - m[0], h[2] - m[2]) < 0.0015);
         if (!near) bad.push({ t: +st.t.toFixed(2), at: [+m[0].toFixed(4), +m[1].toFixed(4), +m[2].toFixed(4)] });
       }
     }

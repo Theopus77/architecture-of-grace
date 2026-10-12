@@ -278,7 +278,7 @@ export function makeFigure(opts) {
     ["mid", 0.0105, -0.096, [0.041, 0.026, 0.020], 0.0097, 0.0081],
     ["rng", -0.0095, -0.094, [0.038, 0.024, 0.019], 0.0091, 0.0076],
     ["lit", -0.0275, -0.088, [0.030, 0.019, 0.017], 0.0081, 0.0068]];
-  const TH_O = [0.0065, -0.024, 0.023], TH_L = [0.044, 0.032, 0.027];
+  const TH_O = [0.005, -0.03, 0.019], TH_L = [0.044, 0.032, 0.027];
   const thDir = sx => V3(-sx * 0.26, -0.66, 0.56).normalize();
   const HB = {};   // side → { idx: [b1,b2,b3], …, thb: [...], palmN, anchor }
   ["L", "R"].forEach(S => {
@@ -339,7 +339,7 @@ export function makeFigure(opts) {
     [1.33, 0.182, 0.11, 0.095, 0, -0.005, 2.6], [1.385, 0.19, 0.088, 0.09, 0, -0.01, 2.8], [1.425, 0.16, 0.07, 0.075, 0, -0.012, 2.6],
     [1.455, 0.09, 0.055, 0.06, 0, -0.012, 2.2], [1.48, 0.055, 0.05, 0.052, 0, -0.008, 2], [1.52, 0.05, 0.048, 0.05, 0, 0, 2],
     [1.56, 0.046, 0.046, 0.048, 0, 0.005, 2], [1.578, 0.012, 0.012, 0.012, 0, 0.005, 2]];
-  const ARM = [[1.478, 0.01, 0.01, 0.01], [1.468, 0.034, 0.034, 0.034], [1.445, 0.05, 0.05, 0.052], [1.41, 0.056, 0.055, 0.058], [1.36, 0.054, 0.05, 0.052],
+  const ARM = [[1.45, 0.003, 0.003, 0.003, -0.09, 0], [1.444, 0.03, 0.03, 0.03, -0.07, 0], [1.428, 0.049, 0.049, 0.051, -0.035, 0], [1.395, 0.056, 0.055, 0.058], [1.36, 0.054, 0.05, 0.052],
     [1.30, 0.047, 0.047, 0.045], [1.22, 0.044, 0.048, 0.042], [1.16, 0.04, 0.042, 0.04], [1.12, 0.037, 0.038, 0.038], [1.08, 0.041, 0.043, 0.041],
     [1.02, 0.039, 0.04, 0.038], [0.95, 0.03, 0.033, 0.031], [0.895, 0.022, 0.028, 0.027], [0.87, 0.021, 0.026, 0.025], [0.85, 0.02, 0.024, 0.024]];
   const LEG = [[1.0, 0.015, 0.015, 0.015], [0.985, 0.06, 0.06, 0.06], [0.95, 0.085, 0.085, 0.09], [0.90, 0.09, 0.09, 0.088], [0.82, 0.083, 0.086, 0.08],
@@ -355,18 +355,18 @@ export function makeFigure(opts) {
   const torsoFrom = outfit === "gi" ? 0.835 : 1.40;
   add(skinM, shell(torsoS, { cols: TSEG, s0: torsoFrom, s1: 1.578, step: STEP }), torsoW);
   // arms: all of them under short or pushed-up sleeves, none under the hoodie
-  const armFrom = { skate: null, gi: 1.478, plain: 1.32, apron: 1.2 }[outfit];
+  const armFrom = { skate: null, gi: 1.45, plain: 1.32, apron: 1.2 }[outfit];
   if (armFrom) SIDES.forEach(S => add(skinM, shell(armS(S), { cols: SEG, s0: 0.85, s1: armFrom, step: STEP }), armW(S)));
   if (outfit === "gi") SIDES.forEach(S => add(skinM, shell(legS(S), { cols: SEG, s0: 0.045, s1: 0.5, step: STEP }), legW(S)));
 
   /* ── the head: skull, jaw and chin turned from a profile; ears; no face ── */
   const hy = AT.head[1];
-  const HEAD = [[-0.072, 0.012, 0.012, 0.012, 0, 0.062], [-0.062, 0.036, 0.028, 0.03, 0, 0.05], [-0.04, 0.055, 0.045, 0.055, 0, 0.032],
-    [-0.01, 0.066, 0.064, 0.075, 0, 0.02], [0.03, 0.073, 0.084, 0.09, 0, 0.012], [0.07, 0.077, 0.092, 0.097, 0, 0.005],
-    [0.105, 0.076, 0.091, 0.096, 0, 0], [0.135, 0.068, 0.08, 0.086, 0, -0.003], [0.16, 0.05, 0.06, 0.065, 0, -0.005],
-    [0.176, 0.026, 0.031, 0.034, 0, -0.006], [0.183, 0.003, 0.003, 0.003, 0, -0.006]];
+  const HEAD = [[-0.06, 0.016, 0.012, 0.012, 0, 0.042], [-0.053, 0.042, 0.03, 0.034, 0, 0.036], [-0.036, 0.06, 0.047, 0.058, 0, 0.026],
+    [-0.005, 0.067, 0.066, 0.076, 0, 0.018], [0.03, 0.073, 0.083, 0.09, 0, 0.011], [0.07, 0.077, 0.09, 0.097, 0, 0.005],
+    [0.103, 0.076, 0.089, 0.096, 0, 0], [0.132, 0.068, 0.079, 0.086, 0, -0.003], [0.155, 0.051, 0.06, 0.066, 0, -0.005],
+    [0.171, 0.026, 0.031, 0.034, 0, -0.006], [0.178, 0.003, 0.003, 0.003, 0, -0.006]];
   const headS = makeSurf(HEAD, (a, s, b, o) => o.set(a, hy + s, b));
-  add(skinM, shell(headS, { cols: HSEG, s0: -0.072, s1: 0.183, step: phone ? 0.014 : 0.007 }), one(BI.head));
+  add(skinM, shell(headS, { cols: HSEG, s0: -0.06, s1: 0.178, step: phone ? 0.014 : 0.007 }), one(BI.head));
   SIDES.forEach(S => {   // an ear: a soft rim around a shallow bowl, tipped back a little
     const sx = S === "L" ? 1 : -1, c = V3(sx * 0.074, hy + 0.03, -0.012);
     const pts = []; for (let k = 0; k <= 10; k++) { const a = -0.4 + k / 10 * 4.0; pts.push(V3(c.x + sx * 0.004 * Math.sin(a), c.y + 0.028 * Math.cos(a) * (a < 1.6 ? 1 : 0.75), c.z - 0.017 * Math.sin(a) + 0.004)); }
@@ -376,8 +376,8 @@ export function makeFigure(opts) {
     add(skinM, lobe, one(BI.head));
   });
   // hair: a close cut that follows the skull, thin at the hairline
-  const hairline = th => 0.06 + 0.075 * Math.cos(th) - 0.015 * Math.cos(2 * th);
-  add(hairM, shell(headS, { cols: HSEG, s0: hairline, s1: 0.183, step: phone ? 0.014 : 0.008, lip0: 0.003, uu: 3, vv: 2,
+  const hairline = th => 0.058 + 0.07 * Math.cos(th) - 0.016 * Math.cos(2 * th);
+  add(hairM, shell(headS, { cols: HSEG, s0: hairline, s1: 0.178, step: phone ? 0.014 : 0.008, lip0: 0.003, uu: 3, vv: 2,
     d: (th, s) => 0.0035 + 0.007 * sstep(hairline(th), hairline(th) + 0.06, s) }), one(BI.head));
 
   /* ── hands: palm, four fingers and a thumb, all one smooth skin on their own joints ── */
@@ -407,12 +407,12 @@ export function makeFigure(opts) {
       const D = H.thD, T0 = V3(O.x - sx * TH_O[0], O.y + TH_O[1], O.z + TH_O[2]);
       const Ax = new THREE.Vector3().crossVectors(D, Bp).normalize(), Bx = new THREE.Vector3().crossVectors(Ax, D).normalize();
       const L = TH_L, len = L[0] + L[1] + L[2], r1 = 0.0088;
-      const keys = [[-0.02, 0.012, 0.012, 0.011], [0, 0.0165, 0.016, 0.014], [L[0] * 0.55, 0.0145, 0.0135, 0.012], [L[0], 0.0112, 0.0108, 0.0104],
+      const keys = [[-0.008, 0.008, 0.008, 0.008], [0.004, 0.0145, 0.0142, 0.0125], [L[0] * 0.55, 0.0145, 0.0135, 0.012], [L[0], 0.0112, 0.0108, 0.0104],
         [L[0] + L[1] * 0.5, 0.0102, 0.0098, 0.0094], [L[0] + L[1], 0.0096, 0.0092, 0.009]];
       const le = len - r1 * 0.8;
       for (let k = 0; k <= 4; k++) { const f = k / 4 * Math.PI / 2, c = Math.max(Math.cos(f), 0.04); keys.push([le + r1 * 0.95 * Math.sin(f), r1 * 0.95 * c, r1 * 0.9 * c, r1 * 0.85 * c]); }
       const ts = makeSurf(keys, frameMap(T0, D, Ax, Bx));
-      add(skinM, shell(ts, { cols: phone ? 8 : 12, s0: -0.02, s1: le + r1 * 0.95, step: phone ? 0.008 : 0.004 }),
+      add(skinM, shell(ts, { cols: phone ? 8 : 12, s0: -0.008, s1: le + r1 * 0.95, step: phone ? 0.008 : 0.004 }),
         (p, s) => chainW(s, [[wb, 0.004, 0.012], [bi(H.thb[0]), L[0], 0.007], [bi(H.thb[1]), L[0] + L[1], 0.005], [bi(H.thb[2]), 9, 0]]));
     }
   });
@@ -471,9 +471,9 @@ export function makeFigure(opts) {
     add(C.top, shell(hS, { cols: TSEG, s0: 0.905, s1: 1.478, step: STEP, d: hoodD, lip1: 0.012, uu: 3, vv: 3 }), skirtW(0.35));
     add(C.trim, shell(hS, { cols: TSEG, s0: 0.866, s1: 0.906, step: STEP / 2, d: hoodD, lip0: 0.01, uu: 8, vv: 1 }), skirtW(0.35));
     // the hood's rim around the neck, meeting at the chest, and the two drawstrings
-    const rim = [V3(0, 1.505, -0.092), V3(0.072, 1.49, -0.064), V3(0.1, 1.46, -0.005), V3(0.08, 1.425, 0.068), V3(0.032, 1.392, 0.112),
-      V3(-0.032, 1.392, 0.112), V3(-0.08, 1.425, 0.068), V3(-0.1, 1.46, -0.005), V3(-0.072, 1.49, -0.064)];
-    add(C.top, sweep(rim, { loop: true, rings: phone ? 24 : 48, cols: phone ? 8 : 12, r: () => [0.026, 0.015], n: 2.4,
+    const rim = [V3(0, 1.49, -0.094), V3(0.074, 1.475, -0.066), V3(0.1, 1.452, -0.006), V3(0.082, 1.42, 0.066), V3(0.034, 1.39, 0.11),
+      V3(-0.034, 1.39, 0.11), V3(-0.082, 1.42, 0.066), V3(-0.1, 1.452, -0.006), V3(-0.074, 1.475, -0.066)];
+    add(C.top, sweep(rim, { loop: true, rings: phone ? 24 : 48, cols: phone ? 8 : 12, r: () => [0.03, 0.011], n: 2.4,
       up: (t, P) => V3(P.x, 0, P.z).normalize().multiplyScalar(0.8).add(V3(0, 0.6, 0)) }), torsoW);
     mats.strings = new THREE.MeshStandardMaterial({ roughness: 0.75, metalness: 0, normalMap: tWeave }); mats.strings.userData.key = "strings";
     [-1, 1].forEach(k => {
@@ -481,11 +481,11 @@ export function makeFigure(opts) {
       add(mats.strings, sweep(pts, { rings: phone ? 8 : 14, cols: 6, r: t => t > 0.9 ? [0.0046, 0.0046] : [0.0034, 0.0034] }), torsoW);
     });
     // sleeves: roomy, bunching above the cuff
-    const SLV = [[1.485, 0.03, 0.03, 0.03], [1.468, 0.058, 0.058, 0.06], [1.41, 0.075, 0.074, 0.077], [1.33, 0.069, 0.068, 0.068], [1.22, 0.064, 0.066, 0.062],
+    const SLV = [[1.455, 0.003, 0.003, 0.003, -0.1, 0], [1.449, 0.035, 0.035, 0.036, -0.08, 0], [1.432, 0.058, 0.058, 0.06, -0.04, 0], [1.395, 0.072, 0.071, 0.074], [1.33, 0.069, 0.068, 0.068], [1.22, 0.064, 0.066, 0.062],
       [1.12, 0.063, 0.064, 0.062], [1.02, 0.057, 0.058, 0.056], [0.94, 0.05, 0.052, 0.05], [0.91, 0.046, 0.048, 0.047], [0.9, 0.038, 0.04, 0.04], [0.862, 0.032, 0.035, 0.034]];
     SIDES.forEach(S => {
       const s = armS(S, SLV), dS = (th, y) => 0.004 * Math.sin(y * 75 + 1.7 * Math.sin(th * 2 + y * 9)) * sstep(1.06, 0.95, y) * sstep(0.9, 0.93, y);
-      add(C.top, shell(s, { cols: SEG, s0: 0.9, s1: 1.485, step: STEP, d: dS }), armW(S));
+      add(C.top, shell(s, { cols: SEG, s0: 0.9, s1: 1.455, step: STEP, d: dS }), armW(S));
       add(C.trim, shell(s, { cols: SEG, s0: 0.862, s1: 0.902, step: STEP / 2, lip0: 0.008, uu: 6, vv: 1 }), armW(S));
     });
     // baggy cargo pants, stacked over the shoes, with a pocket and flap on each thigh
@@ -505,11 +505,15 @@ export function makeFigure(opts) {
     // the helmet: a smooth shell with a little gloss, a rolled rim, and its strap along the jaw
     const helM = new Std(Object.assign({ roughness: 0.32, metalness: 0, envMapIntensity: 1 }, phone ? {} : { clearcoat: 0.7, clearcoatRoughness: 0.18 }));
     helM.userData.key = "helmet"; mats.helmet = helM;
-    const hEdge = th => 0.04875 + 0.0525 * Math.cos(th) + 0.00375 * Math.cos(2 * th);
-    add(helM, shell(headS, { cols: HSEG, s0: hEdge, s1: 0.183, step: phone ? 0.014 : 0.007, lip0: 0.02,
-      d: (th, s) => 0.03 + 0.006 * sstep(0.1, 0.17, s) + 0.004 * Math.cos(th) * sstep(0.05, 0.12, s) }), one(BI.head));
+    const HELM = [[-0.03, 0.09, 0.104, 0.112, 0, 0.004, 2.1], [0.02, 0.096, 0.112, 0.119, 0, 0.004, 2.1], [0.07, 0.099, 0.115, 0.12, 0, 0, 2.1],
+      [0.115, 0.095, 0.111, 0.115, 0, -0.002, 2.1], [0.152, 0.08, 0.094, 0.098, 0, -0.004, 2], [0.18, 0.052, 0.062, 0.064, 0, -0.005, 2],
+      [0.195, 0.024, 0.028, 0.03, 0, -0.006, 2], [0.2, 0.003, 0.003, 0.003, 0, -0.006, 2]];
+    const helS = makeSurf(HELM, (a, s, b, o) => o.set(a, hy + s, b));
+    const hEdge = th => 0.03 + 0.048 * Math.cos(th) + 0.004 * Math.cos(2 * th);
+    helM.side = THREE.DoubleSide;
+    add(helM, shell(helS, { cols: HSEG, s0: hEdge, s1: 0.2, step: phone ? 0.014 : 0.007, lip0: 0.016 }), one(BI.head));
     mats.strap = new THREE.MeshStandardMaterial({ roughness: 0.7, metalness: 0, normalMap: tWeave }); mats.strap.userData.key = "strap";
-    const strap = [V3(0.088, hy + 0.045, -0.02), V3(0.074, hy - 0.01, 0.0), V3(0.05, hy - 0.058, 0.03), V3(0.0, hy - 0.077, 0.052), V3(-0.05, hy - 0.058, 0.03), V3(-0.074, hy - 0.01, 0.0), V3(-0.088, hy + 0.045, -0.02)];
+    const strap = [V3(0.09, hy + 0.04, -0.02), V3(0.074, hy - 0.01, 0.0), V3(0.05, hy - 0.048, 0.024), V3(0.0, hy - 0.065, 0.042), V3(-0.05, hy - 0.048, 0.024), V3(-0.074, hy - 0.01, 0.0), V3(-0.09, hy + 0.04, -0.02)];
     add(mats.strap, sweep(strap, { rings: phone ? 16 : 32, cols: 6, r: () => [0.007, 0.0016], n: 3, caps: 0,
       up: (t, P) => V3(P.x, (P.y - hy) * 0.5, P.z - 0.01).normalize() }), one(BI.head));
   }
@@ -522,7 +526,7 @@ export function makeFigure(opts) {
       [1.2, 0.183, 0.127, 0.108, 0, 0, 2.3], [1.28, 0.191, 0.133, 0.11, 0, 0, 2.4], [1.34, 0.201, 0.13, 0.112, 0, -0.005, 2.6],
       [1.39, 0.208, 0.108, 0.108, 0, -0.01, 2.8], [1.43, 0.173, 0.088, 0.09, 0, -0.012, 2.6], [1.46, 0.102, 0.072, 0.074, 0, -0.012, 2.2], [1.482, 0.07, 0.065, 0.067, 0, -0.008, 2]];
     const jS = makeSurf(JK, vertMap(0, 0, 1));
-    const tV = 1.05, ANG = 1.0;
+    const tV = 1.2, ANG = 0.62;
     const top = th => { const a = Math.abs(th); return a >= ANG ? 1.482 : tV + (1.482 - tV) * Math.pow(a / ANG, 1.35); };
     const slope = th => { const h = 0.01; return (top(th + h) - top(th - h)) / (2 * h * 0.18); };
     const jD = (th, s) => {
@@ -533,9 +537,9 @@ export function makeFigure(opts) {
       return collar + flap + 0.003 * Math.sin(th * 4 + s * 11) * sstep(0.95, 0.8, s);
     };
     add(C.top, shell(jS, { cols: TSEG + 8, s0: 0.76, s1: top, step: STEP, d: jD, lip0: 0.01, lip1: 0.012, uu: 3, vv: 3 }), skirtW(0.55));
-    const GS = [[1.485, 0.03, 0.03, 0.03], [1.468, 0.064, 0.064, 0.066], [1.41, 0.081, 0.08, 0.082], [1.33, 0.075, 0.075, 0.075], [1.22, 0.071, 0.072, 0.07],
+    const GS = [[1.458, 0.003, 0.003, 0.003, -0.1, 0], [1.452, 0.038, 0.038, 0.04, -0.08, 0], [1.435, 0.063, 0.063, 0.065, -0.04, 0], [1.4, 0.078, 0.077, 0.079], [1.33, 0.075, 0.075, 0.075], [1.22, 0.071, 0.072, 0.07],
       [1.12, 0.069, 0.07, 0.068], [1.04, 0.068, 0.069, 0.067], [0.97, 0.066, 0.067, 0.066]];
-    SIDES.forEach(S => add(C.top, shell(armS(S, GS), { cols: SEG, s0: 0.97, s1: 1.485, step: STEP, lip0: 0.01,
+    SIDES.forEach(S => add(C.top, shell(armS(S, GS), { cols: SEG, s0: 0.97, s1: 1.458, step: STEP, lip0: 0.01,
       d: (th, y) => 0.003 * Math.sin(y * 40 + th * 2) * sstep(1.2, 1.0, y) }), armW(S)));
     // wide trousers ending above the ankle
     pantsSeat([[0.84, 0.05, 0.04, 0.05], [0.86, 0.16, 0.1, 0.115], [0.9, 0.19, 0.112, 0.13, 0, -0.005, 2.2], [0.96, 0.188, 0.106, 0.124, 0, -0.005, 2.2], [1.02, 0.174, 0.1, 0.104, 0, 0, 2.2]], C.pants);
@@ -562,11 +566,11 @@ export function makeFigure(opts) {
     add(C.top, shell(torsoS, { cols: TSEG, s0: 0.885, s1: 1.45, step: STEP, d: shirtD, lip0: 0.008, uu: 3, vv: 3 }), skirtW(0.3));
     add(C.trim, shell(torsoS, { cols: TSEG, s0: 1.445, s1: 1.478, step: 0.006, d: () => 0.009, lip1: 0.006, uu: 10, vv: 1 }), torsoW);
     // short sleeves (plain), or long sleeves pushed up past the elbow in soft rolls (apron)
-    const TS = [[1.485, 0.03, 0.03, 0.03], [1.468, 0.058, 0.058, 0.06], [1.41, 0.072, 0.071, 0.074], [1.33, 0.066, 0.065, 0.066], [1.27, 0.064, 0.064, 0.064],
+    const TS = [[1.455, 0.003, 0.003, 0.003, -0.1, 0], [1.449, 0.034, 0.034, 0.035, -0.08, 0], [1.432, 0.055, 0.055, 0.057, -0.04, 0], [1.398, 0.069, 0.068, 0.071], [1.33, 0.066, 0.065, 0.066], [1.27, 0.064, 0.064, 0.064],
       [1.2, 0.058, 0.06, 0.057], [1.12, 0.056, 0.057, 0.056], [1.06, 0.058, 0.058, 0.057]];
     SIDES.forEach(S => {
-      if (outfit === "plain") add(C.top, shell(armS(S, TS), { cols: SEG, s0: 1.27, s1: 1.485, step: STEP, lip0: 0.007 }), armW(S));
-      else add(C.top, shell(armS(S, TS), { cols: SEG, s0: 1.06, s1: 1.485, step: STEP, lip0: 0.01,
+      if (outfit === "plain") add(C.top, shell(armS(S, TS), { cols: SEG, s0: 1.27, s1: 1.455, step: STEP, lip0: 0.007 }), armW(S));
+      else add(C.top, shell(armS(S, TS), { cols: SEG, s0: 1.06, s1: 1.455, step: STEP, lip0: 0.01,
         d: (th, y) => 0.006 * Math.pow(Math.max(0, Math.sin(y * 95 + 1.2 * Math.sin(th * 2))), 2) * sstep(1.2, 1.1, y) }), armW(S));
     });
     pantsSeat([[0.84, 0.05, 0.04, 0.05], [0.86, 0.155, 0.095, 0.11], [0.9, 0.184, 0.104, 0.125, 0, -0.005, 2.2], [0.96, 0.184, 0.1, 0.118, 0, -0.005, 2.2], [1.03, 0.168, 0.096, 0.1, 0, 0, 2.2]], C.pants);
@@ -607,8 +611,8 @@ export function makeFigure(opts) {
     const capM = cloth("cap", tWeave, 0.9); mats.cap = capM;
     const bun = new THREE.SphereGeometry(1, phone ? 12 : 18, phone ? 10 : 14); bun.scale(0.034, 0.03, 0.03); bun.translate(0, hy + 0.035, -0.105);
     add(hairM, bun, one(BI.head));
-    const capEdge = th => 0.07 + 0.04 * Math.cos(th) + 0.005 * Math.cos(2 * th);
-    add(capM, shell(headS, { cols: HSEG, s0: capEdge, s1: 0.183, step: phone ? 0.014 : 0.007, lip0: 0.008,
+    const capEdge = th => 0.065 + 0.045 * Math.cos(th) + 0.005 * Math.cos(2 * th);
+    add(capM, shell(headS, { cols: HSEG, s0: capEdge, s1: 0.178, step: phone ? 0.014 : 0.007, lip0: 0.008,
       d: (th, s) => 0.012 + 0.018 * sstep(0.1, 0.17, s) + 0.02 * sstep(0.6, 0.0, Math.abs(Math.abs(th) - Math.PI)) * sstep(0.0, 0.08, s) * sstep(0.15, 0.08, s) }), one(BI.head));
   }
 

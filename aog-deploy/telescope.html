@@ -327,7 +327,7 @@ const LOOK={
   m27:["A faint gray apple core. Look a little to one side of it.","Un corazón de manzana gris y tenue. Mira un poco a un lado."],
   sun:["Only with the filter on the front. Dark spots with gray fringes.","Solo con el filtro al frente. Manchas oscuras con flecos grises."]
 };
-function lookFor(){ const l=LOOK[S.lab.target]; return l?(S.lang==="es"?l[1]:l[0]):""; }
+function lookFor(){ const id=S.lab.target; if(id&&id.startsWith("x:")) return realReady()?window.AOGReal.lookFor(id.slice(2),S.lang):""; const l=LOOK[id]; return l?(S.lang==="es"?l[1]:l[0]):""; }
 /* AOG-TELE-LESSONS17-V1 (2026-09-27) — Jimmy: 17 lessons, like the Turntables. Steps keep their names so saved
    progress stays; each lesson has an id so the controls it opens can be found by name. */
 const STAIR = [
@@ -1578,15 +1578,27 @@ function skyLine(){
   if(s==="dawn") return say(" The Moon is setting. The warm band is the horizon in the glass. Same seas. Same shadows."," La Luna se pone. La banda cálida es el horizonte en el vidrio. Los mismos mares. Las mismas sombras.");
   return "";
 }
-function fieldNote(){ return noteCore()+skyLine()+glassLine(); }
+function fieldNote(){ return noteCore()+(realOn()?"":skyLine())+glassLine()+(realOn()?window.AOGReal.noteLine(S.lab,S.lang):""); }
+function noteCore(){
+  const L=S.lab;
+  if (L.target==="sun" && !L.filter) return t("sun");
+  if (L.cap) return t("capped");
+  if (!L.locked) return t("drift");
+  if (realOn()){ const r=window.AOGReal.blocked(L,S.lang); if(r) return r; }
+  if (SCOPE.id!=="r90" || (L.target&&L.target.startsWith("x:"))) return genericNote();
+  return noteCore90();
+}
 function glassLine(){
   const L=S.lab;
   if(L.cap || (L.target==="sun" && !L.filter)) return "";
+  if(SCOPE.kind!=="refractor") return S.lang==="es"
+    ? " Un espejo no tiene borde violeta. Las cuatro puntas finas en una estrella brillante vienen de los soportes del espejo pequeño."
+    : " A mirror has no purple edge. The four thin spikes on a bright star come from the arms that hold the small mirror.";
   return S.lang==="es"
     ? " Un borde violeta es el acromático, no el objeto. El polvo que gira con el ocular está en el ocular. Una estrella tiembla. La Luna no viaja."
     : " A purple edge is the achromat, not the object. Dust that turns with the eyepiece is on the eyepiece. A bright star shivers. The Moon stays put.";
 }
-function noteCore(){
+function noteCore90(){
   const L=S.lab, es=S.lang==="es", m=Math.round(magOf(L));
   if (L.target==="sun" && !L.filter) return t("sun");
   if (L.cap) return t("capped");
@@ -1719,6 +1731,67 @@ function noteCore(){
   return "";
 }
 
+/* ══ AOG-TELE-REAL-V1 (2026-10-12) — Jimmy: "a quantum leap forward." The real sky: a star catalog, the Sun, Moon and
+   planets for any date, time and place, a star map to look around in, and four telescopes. Silent until used: none of
+   it loads until the star map is opened or "Real sky" is chosen; the practice bench is exactly as fast as before. ══ */
+const REAL_FILES=["/aog-telescope-astro.js","/aog-telescope-catalog.js","/aog-telescope-real.js"];
+const LOADED={};
+function loadScript(src){
+  if(LOADED[src]) return LOADED[src];
+  return (LOADED[src]=new Promise((ok,no)=>{ const el=document.createElement("script"); el.src=src; el.onload=()=>ok(); el.onerror=()=>{ delete LOADED[src]; no(new Error(src)); }; document.head.appendChild(el); }));
+}
+function loadSky(extra){
+  const list=REAL_FILES.concat(extra||[]);
+  return list.reduce((pr,f)=>pr.then(()=>loadScript(f)),Promise.resolve()).then(()=>window.AOGSkyData.load());
+}
+function realReady(){ return !!(window.AOGReal && window.AOGSkyData && window.AOGSkyData.ready()); }
+function realOn(){ return !!OPT.real && realReady(); }
+let REAL_LOADING=false;
+function wantReal(){
+  if(!OPT.real || realReady() || REAL_LOADING) return;
+  REAL_LOADING=true;
+  loadSky().then(()=>{ REAL_LOADING=false; if(S.page==="lab") paint(); }).catch(()=>{ REAL_LOADING=false; });
+}
+/* the name of any target, including one pointed at from the star map ("x:…") */
+function targetName(id){
+  if(id&&id.startsWith("x:")) return (window.AOGSkyData&&window.AOGSkyData.ready())?window.AOGSkyData.name(id.slice(2),S.lang):id.slice(2);
+  return t(id==="sun"?"sunName":id);
+}
+/* for every telescope but the 90 mm (whose words are written above), a note worked out from the numbers */
+function genericNote(){
+  const L=S.lab, es=S.lang==="es", m=Math.round(magOf(L)), say=(en,sp)=>es?sp:en;
+  const I=INSTR[SCOPE.id], name=es?I.es:I.en, band=focusBand(L);
+  const tf=tfovArcmin(magOf(L)), tfs=tf>=90?(tf/60).toFixed(1)+"°":Math.round(tf)+"′";
+  const dw=SCOPE.dawes<1?SCOPE.dawes.toFixed(2):SCOPE.dawes.toFixed(1), tlm=limitMag().toFixed(1);
+  let out=say(`${name}: ${SCOPE.fl} mm ÷ ${L.ep} mm${L.barlow?" × 2":""} = ${m}×. The field is ${tfs} wide. It splits ${dw}″ and shows stars to magnitude ${tlm} under this sky. It gathers ${lightGrasp().toLocaleString("en-US")} times the light of your eye.`,
+    `${name}: ${SCOPE.fl} mm ÷ ${L.ep} mm${L.barlow?" × 2":""} = ${m}×. El campo mide ${tfs}. Separa ${dw}″ y muestra estrellas hasta la magnitud ${tlm} con este cielo. Junta ${lightGrasp().toLocaleString("es")} veces la luz de tu ojo.`);
+  if(band==="out") out+=say(" Out of focus: bring the coarse knob, then the fine one."," Fuera de foco: usa el macrométrico y luego el micrométrico.");
+  else if(band==="near") out+=say(" Almost: the fine knob."," Casi: el micrométrico.");
+  const T=L.target, size={moon:31,sea:31,sun:32,andromeda:180,pleiades:110,dcluster:60,orion:65,m27:8,m13:20,ring:1.4}[T];
+  if(size && size>tf*0.95) out+=say(" It is wider than the field. A lower power shows all of it."," Es más ancho que el campo. Un aumento menor lo muestra entero.");
+  const air=SCOPE.seeing;
+  if(T==="pair"||T==="split"){
+    const sep=T==="pair"?1.0:2.4, can=SCOPE.dawes<=sep, sharp=air<=sep*1.1;
+    out+=say(` This pair is ${sep}″ apart. ${can?(sharp?"This telescope and tonight's air can split it.":"The glass can split it, but the air blurs more than that tonight. Steady air helps."):"It is finer than this telescope can split."}`,
+             ` Este par está a ${sep}″. ${can?(sharp?"Este telescopio y el aire de esta noche lo pueden separar.":"El vidrio lo puede separar, pero esta noche el aire borra más que eso. El aire quieto ayuda."):"Es más fino de lo que este telescopio puede separar."}`);
+  }
+  if(m>SCOPE.useful) out+=say(` Past about ${SCOPE.useful}×, the picture gets bigger, not sharper.`,` Pasando unos ${SCOPE.useful}×, la imagen se agranda pero no se afina.`);
+  else if(air>SCOPE.dawes*1.2 && m>150) out+=say(" The air, not the glass, sets the limit tonight."," Esta noche el límite lo pone el aire, no el vidrio.");
+  return out;
+}
+function scopeRows(){
+  const es=S.lang==="es", b=OPT.bortle;
+  const realBtns=`${btn(!OPT.real,"real0",t("practice"))}${btn(!!OPT.real,"real1",t("realSky"))}`;
+  return `
+    <div class="row"><span class="tiny">${t("nightRow")}</span><span>${realBtns}</span></div>
+    ${OPT.real?`<p class="note-line realwhere">${realReady()?window.AOGReal.whereLine(S.lang):t("loadingSky")}</p>`:""}
+    <div class="row"><span class="tiny">${t("skymap")}</span><span><a class="btn" href="#sky" style="text-decoration:none">${t("openMap")}</a></span></div>
+    <div class="row"><span class="tiny">${t("scopeRow")}</span><span data-aog-dropdown="${STR.scopeRow.en}|${STR.scopeRow.es}">${Object.keys(INSTR).map(k=>btn(OPT.scope===k,"sc-"+k,es?INSTR[k].es:INSTR[k].en)).join("")}</span></div>
+    ${OPT.scope!=="r90"?`<p class="note-line">${t("lessons90")}</p>`:""}
+    <div class="row"><span class="tiny">${t("seeingRow")}</span><span>${["steady","avg","shaky"].map(k=>btn(OPT.seeing===k,"see-"+k,t(k))).join("")}</span></div>
+    <label class="row glowrow"><span class="tiny">${t("glowRow")}</span><span><input class="scope-knob glow-knob" type="range" min="1" max="9" step="1" value="${b}" data-opt="bortle" aria-label="${t("glowRow")}"><b class="glowval">${b} · ${BORTLE[b][es?1:0]}</b></span></label>`;
+}
+
 const STEP2_TARGETS=["jupiter","saturn","mars","venus","uranus","orion","pleiades","dcluster","andromeda","m13","ring","m27","mizar"];
 function targetsFor(step){
   const list=[["moon","moon"]];
@@ -1726,6 +1799,7 @@ function targetsFor(step){
   if (step>=LX("t10")) list.push(["sea","sea"]);
   if (step>=LX("t6")) list.push(["albireo","albireo"],["split","split"],["pair","pair"]);
   list.push(["sun","sunName"]);
+  if (S.lab.target && S.lab.target.startsWith("x:")) list.push([S.lab.target, S.lab.target]);
   return list;
 }
 function teacherRow(){
@@ -1742,13 +1816,14 @@ function instrumentHTML(){
     <div class="row"><span class="tiny">${t("cap")}</span><span>${btn(L.cap,"cap1",t("on"))}${btn(!L.cap,"cap0",t("off"))}</span></div>
     <div class="row"><span class="tiny">${t("mount")}</span><span>${btn(L.locked,"lock1",t("locked"))}${btn(!L.locked,"lock0",t("loose"))}</span></div>
     <div class="row"><span class="tiny">${t("eye")}</span><span>${eps.map(e=>btn(L.ep===e&&!L.barlow,"ep"+e,e+" mm")).join("")}</span></div>
-    <div class="row"><span class="tiny">${t("target")}</span><span data-aog-dropdown="${STR.target.en}|${STR.target.es}">${targets.map(([id,k])=>btn(L.target===id,"tg-"+id,t(k))).join("")}</span></div>
+    <div class="row"><span class="tiny">${t("target")}</span><span data-aog-dropdown="${STR.target.en}|${STR.target.es}">${targets.map(([id,k])=>btn(L.target===id,"tg-"+id,targetName(id==="sun"?"sun":k))).join("")}</span></div>
     <p class="note-line lookfor">${lookFor()}</p>
     ${(L.target==="moon"||L.target==="sea")?`<div class="row"><span class="tiny">${t("sky")}</span><span data-aog-dropdown="${STR.sky.en}|${STR.sky.es}">${["night","dusk","day","dawn"].map(s=>btn((L.sky||"night")===s,"sky-"+s,t(s))).join("")}</span></div>`:""}
     ${L.target==="sun"?`<div class="row"><span class="tiny">${t("filter")}</span><span>${btn(!L.filter,"filt0",t("none"))}${btn(!!L.filter,"filt1",t("front"))}</span></div>`:""}
     ${step>=LX("t4")?`<div class="row"><span class="tiny">${t("reticle")}</span><span>${btn(L.reticle,"ret1",t("scaleOn"))}${btn(!L.reticle,"ret0",t("scaleOff"))}${btn(L.measure,"meas1",t("measure"))}</span></div>`:""}
     ${step>=LX("t6")?`<div class="row"><span class="tiny">${t("barlow")}</span><span>${btn(L.barlow,"bar1",t("barlowIn"))}${btn(!L.barlow,"bar0",t("barlowOut"))}</span></div>`:""}
-    <p class="note-line fieldnote">${fieldNote()}</p>`;
+    <p class="note-line fieldnote">${fieldNote()}</p>
+    ${scopeRows()}`;
 }
 function missionActs(p){
   /* AOG-TELE-LESSONS17-V1: each lesson's buttons, found by its id */
@@ -1972,6 +2047,7 @@ function pageLab(){
         <div class="eye-hud">${L.reticle?`1′ = ${(60).toFixed(0)}″`:""}</div></div>
         <div class="readout"><span>${SCOPE.fl} / ${L.ep} mm${L.barlow?" × 2":""} = ${Math.round(mag)}×</span><span>${L.cap?t("capped").split(".")[0]:fl}</span></div>
         <p class="note-line" id="dragread" style="color:#8aa">${L.measure?t("tap"):L.locked?t("drag"):t("drift")}</p>
+        ${realOn()?`<p class="note-line realline" style="color:#b9c6cc">${window.AOGReal.eyeLine(L,S.lang)} <a href="#sky" style="color:#d9e4ea;font-weight:700">${t("skymap")} ›</a></p>`:""}
       </div>
       ${L.target==="sun" && !L.filter?`<div class="warn"><p style="margin:0">${t("sun")}</p><button class="btn" data-act="filt1" style="margin-top:.6rem">${t("front")}</button></div>`:""}
       <div class="knobs">${knob("coarse",t("coarse"),L.coarse)}${knob("fine",t("fine"),L.fine)}${knob("eyeTwist",t("twist"),L.eyeTwist||0)}</div>
@@ -2046,6 +2122,19 @@ function achromatFringe(ctx, src, w, h, cx, cy, r, strength){
   ctx.drawImage(b, cx-r, cy-r, r*2, r*2);
   ctx.restore();
 }
+/* AOG-TELE-CALM-EYE-V1 (2026-10-12) — "silent when not being used". The eyepiece draws once when something changes
+   (a button, a knob, a drag, the window size) and then asks for nothing. A loose mount lets the field walk once, for
+   three seconds, and stops (with "reduce motion" it is simply moved). Stars shiver only while you drag. */
+let eyeDraw=null, eyeDrag=false, drift=null, driftKey="";
+function requestEye(){ if(!eyeRaf && eyeDraw) eyeRaf=requestAnimationFrame(t=>{ eyeRaf=0; eyeDraw(t); }); }
+function startDrift(){
+  const L=S.lab, key=[L.locked,L.target,L.cap,L.filter].join("|");
+  if(key===driftKey) return; driftKey=key;
+  if(L.locked || L.cap || (L.target==="sun"&&!L.filter)){ drift=null; return; }
+  const dist=viewArcmin(magOf(L))*0.32;
+  if(STILL){ L.panX+=dist; drift=null; return; }
+  drift={t0:performance.now(), from:L.panX, dist};
+}
 function startEye(){
   const canvas=document.getElementById("eyecanvas"); if(!canvas) return;
   const wrap=canvas.parentElement, ctx=canvas.getContext("2d");
@@ -2054,22 +2143,24 @@ function startEye(){
     if (canvas.width!==px){ canvas.width=canvas.height=px; }
   };
   resize();
+  if (!startEye._rs){ startEye._rs=true; window.addEventListener("resize", ()=>requestEye()); }
   if (!wrap._bound){
     wrap._bound=true;
     let drag=null, moved=0;
     const loc=e=>{ const r=wrap.getBoundingClientRect(); return {x:e.clientX-r.left,y:e.clientY-r.top,w:r.width,h:r.height}; };
-    wrap.addEventListener("pointerdown", e=>{ if(e.pointerType==="touch") e.preventDefault(); wrap.setPointerCapture(e.pointerId); drag={x:e.clientX,y:e.clientY}; moved=0; }, {passive:false});
+    wrap.addEventListener("pointerdown", e=>{ if(e.pointerType==="touch") e.preventDefault(); wrap.setPointerCapture(e.pointerId); drag={x:e.clientX,y:e.clientY}; moved=0; eyeDrag=true; }, {passive:false});
     wrap.addEventListener("pointermove", e=>{
       if(!drag) return;
       const dx=e.clientX-drag.x, dy=e.clientY-drag.y;
       moved+=Math.abs(dx)+Math.abs(dy); drag={x:e.clientX,y:e.clientY};
       if(!(S.lab.measure&&moved<10)){
         const mag=magOf(S.lab), z=(wrap.clientWidth||400)*.92/viewArcmin(mag);
-        S.lab.panX+=dx/z; S.lab.panY+=dy/z;
+        S.lab.panX+=dx/z; S.lab.panY+=dy/z; drift=null;
       }
+      requestEye();
     });
-    wrap.addEventListener("pointerup", e=>{
-      if (S.lab.measure && moved<12 && S.lab.target!=="sun" && !S.lab.cap){
+    const up=e=>{
+      if (e.type==="pointerup" && S.lab.measure && moved<12 && S.lab.target!=="sun" && !S.lab.cap){
         const p=loc(e), w=canvas.width, h=canvas.height, cx=w/2, cy=h/2, r=Math.min(w,h)*.46;
         const sx=p.x*(w/(p.w||1)), sy=p.y*(h/(p.h||1));
         if ((sx-cx)**2+(sy-cy)**2<=r*r){
@@ -2080,24 +2171,27 @@ function startEye(){
           const before=stairNow(), sig=JSON.stringify(S.missions); tick(); if (stairNow()!==before || JSON.stringify(S.missions)!==sig) paint();
         }
       }
-      drag=null;
-    });
+      drag=null; eyeDrag=false; requestEye();
+    };
+    wrap.addEventListener("pointerup", up); wrap.addEventListener("pointercancel", up);
     wrap.addEventListener("touchmove", e=>{ if(drag) e.preventDefault(); }, {passive:false});
   }
-  let lastKey="";
-  const draw=now=>{
-    EYE_NOW=STILL?0:(now||0);
-    resize();
-    const w=canvas.width,h=canvas.height,cx=w/2,cy=h/2,r=Math.min(w,h)*.46;
+  eyeDraw=now=>{
     const L=S.lab;
-    if (!L.locked && !L.cap && !(L.target==="sun" && !L.filter)){ L.panX+=0.012; }
-    /* a still picture is drawn once; it is redrawn only when a knob, a button or a drag changes it */
-    const key=STILL?[w,L.cap,L.locked,L.ep,L.barlow,L.coarse,L.fine,L.eyeTwist,L.target,L.sky,L.filter,L.panX.toFixed(3),L.panY.toFixed(3),L.reticle,L.measure,JSON.stringify(L.mA),JSON.stringify(L.mB)].join("|"):"";
-    if (STILL && key===lastKey){ eyeRaf=requestAnimationFrame(draw); return; }
-    lastKey=key;
+    TWINKLE=eyeDrag && !STILL; EYE_NOW=TWINKLE?(now||0):0;
+    resize();
+    if (drift){
+      const u=Math.min(1,(performance.now()-drift.t0)/3000), e=u*u*(3-2*u);
+      L.panX=drift.from+drift.dist*e;
+      if (u<1) requestEye(); else drift=null;
+    }
+    const w=canvas.width,h=canvas.height,cx=w/2,cy=h/2,r=Math.min(w,h)*.46;
+    const R=realOn()?window.AOGReal.view(L,S.lang):null;
+    window.REAL_GLOW=R?R.glow:1;
     ctx.clearRect(0,0,w,h);
     ctx.save(); ctx.beginPath(); ctx.arc(cx,cy,r,0,6.3); ctx.clip();
-    const sky=skyNow();
+    const sky=R?R.sky:skyNow();
+    const night=sky==="night";
     paintSky(ctx,w,h,sky);
     if (!L.cap && (L.target!=="sun" || L.filter)){
       const mag=magOf(L);
@@ -2105,15 +2199,20 @@ function startEye(){
       if (!skyOff) skyOff=document.createElement("canvas");
       if (skyOff.width!==w){ skyOff.width=w; skyOff.height=h; }
       const sctx=skyOff.getContext("2d");
-      paintSky(sctx,w,h,sky);
+      if (night){ sctx.fillStyle="#000"; sctx.fillRect(0,0,w,h); } else paintSky(sctx,w,h,sky);
       sctx.save();
       sctx.translate(cx,cy); sctx.scale(zoom,zoom); sctx.translate(L.panX,L.panY);
-      if (sky!=="day" && L.target!=="moon" && L.target!=="sea") drawStars(sctx);
-      if (DRAW[L.target]) DRAW[L.target](sctx);
+      if (R){ if (R.state!=="below") R.draw(sctx, viewArcmin(mag)); }
+      else {
+        if (sky!=="day" && L.target!=="moon" && L.target!=="sea") drawStars(sctx);
+        if (DRAW[L.target]) DRAW[L.target](sctx);
+      }
       sctx.restore();
-      achromatFringe(sctx, skyOff, w, h, cx, cy, r, Math.min(1.25, mag/120));
+      if (night){ const c=glowRGB(R?R.skyAdd:0); sctx.save(); sctx.globalCompositeOperation="lighter"; sctx.fillStyle=`rgb(${c[0]},${c[1]},${c[2]})`; sctx.fillRect(0,0,w,h); sctx.restore(); }
+      if (R) R.atmosphere(sctx,w,h);
+      if (SCOPE.kind==="refractor") achromatFringe(sctx, skyOff, w, h, cx, cy, r, Math.min(1.25, mag/120));
       const err=Math.abs(focusErr(L)), band=focusBand(L);
-      const blurArcsec=SCOPE.seeing+(band==="in"?0:band==="near"?err*6:Math.min(900, err*28))+(L.barlow?2:0);
+      const blurArcsec=SCOPE.seeing*(R?R.seeingMul:1)+(band==="in"?0:band==="near"?err*6:Math.min(900, err*28))+(L.barlow?2:0);
       const blurPx=blurArcsec/60*zoom;
       ctx.imageSmoothingEnabled=true; ctx.imageSmoothingQuality="high";
       if (blurPx<1.1) ctx.drawImage(skyOff,0,0);
@@ -2125,13 +2224,13 @@ function startEye(){
         ctx.filter="none";
         ctx.restore();
       }
+      const ink=(sky==="day"||(R&&R.bright))?"rgba(18,28,38,.85)":"rgba(255,255,255,.8)";
+      if (R && R.state==="below") R.belowText(ctx,cx,cy,r);
       if (L.reticle){
-        const ink=sky==="day"?"rgba(18,28,38,.85)":"rgba(255,255,255,.8)";
         ctx.strokeStyle=ink; ctx.lineWidth=1;
         ctx.beginPath(); ctx.moveTo(cx-r*.7,cy); ctx.lineTo(cx+r*.7,cy); ctx.moveTo(cx,cy-r*.7); ctx.lineTo(cx,cy+r*.7); ctx.stroke();
       }
       if (L.mA){
-        const mag=magOf(L), zoom=w*.92/viewArcmin(mag);
         const ax=cx+(L.mA.x+L.panX)*zoom, ay=cy+(L.mA.y+L.panY)*zoom;
         ctx.fillStyle="#f2d48a"; ctx.beginPath(); ctx.arc(ax,ay,4,0,6.3); ctx.fill();
         if (L.mB){
@@ -2145,26 +2244,26 @@ function startEye(){
           ctx.fillText(label,(ax+bx)/2,(ay+by)/2-8);
         }
       }
-      const barMin = mag<50?30:mag<120?10:2;
+      const barMin = mag<50?30:mag<120?10:mag<400?2:0.5;
       const barPx=(barMin/viewArcmin(mag))*(2*r);
-      const ink=sky==="day"?"rgba(18,28,38,.8)":"rgba(255,255,255,.8)";
       ctx.strokeStyle=ink; ctx.lineWidth=1.5;
       ctx.beginPath(); const y=cy+r*.78, x0=cx-barPx/2;
       ctx.moveTo(x0,y-4); ctx.lineTo(x0,y+4); ctx.moveTo(x0,y); ctx.lineTo(x0+barPx,y); ctx.moveTo(x0+barPx,y-4); ctx.lineTo(x0+barPx,y+4); ctx.stroke();
       ctx.fillStyle=ink; ctx.font="12px sans-serif"; ctx.textAlign="center";
-      ctx.fillText(barMin>=10?barMin+"′":(barMin*60)+"″", cx, y+16);
+      ctx.fillText(barMin>=10?barMin+"′":Math.round(barMin*60)+"″", cx, y+16);
       drawEyeDust(ctx, cx, cy, r, w, L.eyeTwist);
     }
     const vg=ctx.createRadialGradient(cx,cy,r*.72,cx,cy,r);
-    if(L.sky==="day" && sky==="day"){ vg.addColorStop(0,"rgba(0,0,0,0)"); vg.addColorStop(1,"rgba(20,40,60,.18)"); }
+    if(sky==="day" || (R&&R.bright)){ vg.addColorStop(0,"rgba(0,0,0,0)"); vg.addColorStop(1,"rgba(20,40,60,.18)"); }
     else if(L.sky==="dusk"||L.sky==="dawn"){ vg.addColorStop(0,"rgba(0,0,0,0)"); vg.addColorStop(1,"rgba(0,0,0,.28)"); }
     else { vg.addColorStop(0,"rgba(0,0,0,0)"); vg.addColorStop(1,"rgba(0,0,0,.55)"); }
     ctx.fillStyle=vg; ctx.fillRect(cx-r,cy-r,r*2,r*2);
     ctx.restore();
     ctx.beginPath(); ctx.arc(cx,cy,r,0,6.3); ctx.strokeStyle="rgba(255,255,255,.18)"; ctx.lineWidth=Math.max(2,w*.008); ctx.stroke();
-    eyeRaf=requestAnimationFrame(draw);
+    canvas.dataset.draws=String((+canvas.dataset.draws||0)+1);
   };
-  cancelAnimationFrame(eyeRaf); eyeRaf=requestAnimationFrame(draw);
+  startDrift();
+  cancelAnimationFrame(eyeRaf); eyeRaf=0; requestEye();
 }
 function tick(){
   const L=S.lab, band=focusBand(L);
@@ -2273,26 +2372,30 @@ function centerTarget(id){
   S.lab.panX=-p[0]; S.lab.panY=-p[1]; S.lab.mA=S.lab.mB=null;
 }
 function paint(){
-  cancelAnimationFrame(eyeRaf);
+  cancelAnimationFrame(eyeRaf); eyeRaf=0; eyeDraw=null;
   const h=(location.hash||"#home").replace("#","");
-  S.page=h==="lab"?"lab":h==="lessons"?"lessons":h==="print"?"print":"home";
+  const was=S.page;
+  S.page=h==="lab"?"lab":h==="lessons"?"lessons":h==="print"?"print":h==="sky"?"sky":"home";
+  if (was==="sky" && S.page!=="sky" && window.AOGMap) window.AOGMap.close();
   document.documentElement.lang=S.lang;
   document.documentElement.setAttribute("data-theme", S.theme);
   document.documentElement.classList.toggle("dark", S.theme==="dark");
   document.getElementById("brand").textContent=t("app");
-  { const k=document.getElementById("mastK"), h=document.getElementById("mastH"), l=document.getElementById("mastL"); if(k) k.textContent=t("eyebrow"); if(h) h.textContent=t("app"); if(l) l.textContent=t("tag"); }
+  { const k=document.getElementById("mastK"), h=document.getElementById("mastH"), l=document.getElementById("mastL"); if(k) k.textContent=S.lang==="es"?INSTR[SCOPE.id].eyebrow_es:INSTR[SCOPE.id].eyebrow_en; if(h) h.textContent=t("app"); if(l) l.textContent=t("tag"); }
   document.getElementById("langBtn").textContent=S.lang==="es"?"EN":"ES";
   document.getElementById("themeBtn").textContent=S.theme==="dark"?t("light"):t("dark");
   document.getElementById("foot").textContent=t("foot");
-  document.getElementById("nav").innerHTML=`<span id="navViews" class="aogdd-src" data-aog-dropdown="Go to|Ir a">`+[["home","home"],["lab","lab"],["lessons","lessons"],["print","print"]].map(([id,k])=>`<a href="#${id}" class="${S.page===id?"on":""}">${k==="lessons"?lt("lessonsNav"):k==="print"?lt("printNav"):t(k)}</a>`).join("")+`</span>`   /* AOG-BENCH-BAR-V1 */
+  document.getElementById("nav").innerHTML=`<span id="navViews" class="aogdd-src" data-aog-dropdown="Go to|Ir a">`+[["home","home"],["lab","lab"],["sky","skymap"],["lessons","lessons"],["print","print"]].map(([id,k])=>`<a href="#${id}" class="${S.page===id?"on":""}">${k==="lessons"?lt("lessonsNav"):k==="print"?lt("printNav"):t(k)}</a>`).join("")+`</span>`   /* AOG-BENCH-BAR-V1 */
     +`<a class="sep" href="/telescope-guide">${S.lang==="es"?"Guía en imágenes":"Picture guide"}</a><a class="sep" href="/microscope">${S.lang==="es"?"El microscopio":"The microscope"}</a>`;
   lessonsHome();
   const view=document.getElementById("view");
+  if (S.page==="sky"){ paintSkyPage(view, was==="sky"); paintLessonsTop(); return; }
   view.innerHTML=S.page==="lab"?pageLab():S.page==="lessons"?lessonsView():S.page==="print"?printView():pageHome();
   bindLessonBox(view);
   paintLessonsTop();   /* AOG-BENCH-TOP-V1 */
   lessonsBelow();
   if (S.page!=="lab") return;
+  wantReal();
   startEye(); tick();
   document.querySelectorAll("#view [data-act], #lessons [data-act]").forEach(b=>b.onclick=()=>{
     const a=b.getAttribute("data-act"), L=S.lab, step=benchStep();
@@ -2320,6 +2423,10 @@ function paint(){
     if (a==="meas1"){ L.measure=!L.measure; L.reticle=L.measure||L.reticle; if(!L.measure){L.mA=L.mB=null;} }
     if (a.startsWith("tg-")){ L.target=a.slice(3); centerTarget(L.target); if(L.target==="sun" && !L.filter) L.cap=true; }
     if (a.startsWith("sky-")) L.sky=a.slice(4);
+    if (a.startsWith("sc-")){ OPT.scope=a.slice(3); setScope(); persistOpt(); }
+    if (a.startsWith("see-")){ OPT.seeing=a.slice(4); setScope(); persistOpt(); }
+    if (a==="real1"){ OPT.real=true; persistOpt(); }
+    if (a==="real0"){ OPT.real=false; persistOpt(); }
     tick(); paint();
   });
   document.querySelectorAll("#view [data-knob], #lessons [data-knob]").forEach(inp=>{
@@ -2331,9 +2438,16 @@ function paint(){
       const fl=band==="in"?t("focusIn"):band==="near"?t("focusNear"):t("focusOut");
       const span=document.querySelector(".readout span:last-child"); if(span && !L.cap) span.textContent=fl;
       document.querySelectorAll(".fieldnote").forEach(el=>{ el.textContent=fieldNote(); });
-      tick();
+      tick(); requestEye();
     };
     inp.onchange=()=>{ if(stairNow()!==S.lastStair || JSON.stringify(S.missions)!==S.lastSig) paint(); };
+  });
+  document.querySelectorAll("#view [data-opt]").forEach(inp=>{
+    inp.oninput=()=>{ OPT.bortle=+inp.value; persistOpt();
+      document.querySelectorAll(".glowval").forEach(b=>b.textContent=OPT.bortle+" · "+BORTLE[OPT.bortle][S.lang==="es"?1:0]);
+      document.querySelectorAll("#view [data-opt]").forEach(o=>{ if(o!==inp) o.value=OPT.bortle; });
+      document.querySelectorAll(".fieldnote").forEach(el=>{ el.textContent=fieldNote(); });
+      requestEye(); };
   });
   S.lastStair=stairNow(); S.lastSig=JSON.stringify(S.missions);
 }
