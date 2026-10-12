@@ -246,6 +246,10 @@ async function finish(pg) {
     if (room === "grind") ok(pr.pb.kind === "grind" && Math.abs(pr.pb.stop - pr.want) < 1e-6 && /μ ≈ 0\.25/.test(pr.pb.label), `grind 3D: "would stop here" stands at v²/(2μg) = ${pr.want.toFixed(2)} m, and the surface's μ is named`);
     ok(pr.feet <= 0.02, `${room} 3D: the soles stay on the deck (${(pr.feet * 100).toFixed(2)} cm)`);
   }
+  // before any run the grind room still builds a real rail (no shape of no size, no warnings)
+  const e0 = d3.errs.length;
+  await d3.evaluate(() => { window.AOGSkate.G3().draw({ kind: "grind", fr: null, data: {} }); }); await wait(150);
+  ok(d3.errs.length === e0 && await d3.evaluate(() => window.AOGSkate.G3().probe().kind === "grind"), "grind 3D: before any run it shows the default rail, with no warnings" + (d3.errs.length > e0 ? ": " + d3.errs[e0] : ""));
   // pop the ollie room's forces: at the snap the tail arrow and the ground's push show
   await d3.evaluate(() => window.AOGSkate.open("ollie")); await wait(150);
   const snap = await d3.evaluate(() => { const A = window.AOGSkate, P = A.P; const k = P.frames.findIndex(f => f.popping || f.phase === "pop"); if (k < 0) return null; P.k = k; P.ran = true; return k; });

@@ -759,7 +759,7 @@ export async function create(kit) {
   function draw(spec) {
     if (!spec.dry) lastSpec = spec;
     probeD = { kind: spec.kind };
-    const fr = spec.fr, d = spec.data || {};
+    const fr = spec.fr; let d = spec.data || {};
     if (spec.cam && spec.cam !== camMode && !(camMode === "orbit" && spec.cam === "orbit")) camMode = spec.cam;
     fxHide(); viewPad = 0; camSnap = true;
     let t = V(0, 0.8, 0);
@@ -818,6 +818,7 @@ export async function create(kit) {
       else frameCam(40, V(1.05, 1.15, 3.7), V(-0.05, 0.62, 0));
       sunAt(0, 0);
     } else if (spec.kind === "grind") {
+      if (!(d.len > 0)) d = Object.assign({}, d, { key: "metal:2.5", surface: "metal", len: 2.5, rh: 0.35, x: 0 });   // before any run: the default rail, never a shape of no size
       setScene("room:grind:" + d.key, () => grindMesh(d)); slideWorld(0);
       if (fr) t = pose(fr);
       viewPad = (d.bottom || 0) * 0.75;
@@ -828,7 +829,7 @@ export async function create(kit) {
       const span = d.len + 2.8, cx = d.len / 2;
       if (camMode === "orbit") orbitCam(V(t.x, 0.6, 0));
       else if (camMode === "follow") frameCam(40, V(t.x + 1.0, 1.2, 3.2), V(t.x + 0.2, 0.55, 0));
-      else { const dist = fitDist(span * 0.9, 40) * Math.max(1, camera.aspect * 0.85); frameCam(40, V(cx + span * 0.06, 0.75 + dist * 0.13, dist), V(cx, 0.42, 0)); }
+      else { const dist = fitDist(span * 0.9, 40) * Math.max(1, camera.aspect * 0.85); frameCam(40, V(cx + span * 0.06, 1.1 + dist * 0.13, dist), V(cx, 0.88, 0)); }
       sunAt(cx, 0, true);
     } else if (spec.kind === "free") {
       setScene("free", null); world.position.x = 0;
