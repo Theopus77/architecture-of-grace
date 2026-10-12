@@ -210,3 +210,9 @@ LINKS = {
  19: [("/fc11", "Independent living and money — the room")],
  20: [("/fc12", "Capstone — plan, cost, produce — the room")],
 }
+
+# AOG-FCS-3D-V1 (2026-10-12, at the owner's request): after each unit's room, its doors into the
+# 3D Kitchen (/kitchen-lab) and the 3D Sewing Room (/sewing-lab). The ids live in practice3d.py.
+from practice3d import LINK_DOORS as _LINK_DOORS
+for _n, _doors in _LINK_DOORS.items():
+    LINKS[_n] = LINKS.get(_n, []) + [d for d in _doors if d not in LINKS.get(_n, [])]

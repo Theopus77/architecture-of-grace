@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><style id="aog-first-paint">/* AOG-ONE-PAINT-V1 (2026-09-27) — the page shows once, fully built. No fade, no motion. */html{background:#F7F2E6}html[data-theme="dark"]{background:#0A1E33}html:not(.aog-ready) body{visibility:hidden;animation:aogOnePaint 0s linear 1.1s forwards}@keyframes aogOnePaint{to{visibility:visible}}@media print{html:not(.aog-ready) body{visibility:visible;animation:none}}</style>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>
+(function(){var t="light";try{if(localStorage.getItem("aog.theme.lightstart.v1")==="1"&&localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);if(t==="dark")document.documentElement.classList.add("dark");})();
+</script>
+<title>The Kitchen Lab — Architecture of Grace</title>
+<!-- AOG-KITCHEN-LAB-V1 (2026-10-12) — Jimmy: "Could we not take this amazement to FACS for cooking and sewing lessons? Have
+     this person cook recipes by preloaded or the viewer plugs it in."
+     A real-looking 3D kitchen (aog-kitchen3d.js, three.js in /vendor/three-0.160.0) where a cook in an apron
+     (aog-figure3d.js) makes a recipe step by step with the right tool in hand.
+       Recipes      nine preloaded recipes (aog-kitchen-recipes.js): /kitchen-lab#pancakes and the rest
+       Skills       every kitchen skill on its own: /kitchen-lab#skill-chop, #skill-wash-hands …
+       Your recipe  paste or type a recipe (English or Spanish); it is read on this device and played; saved on this device only
+     Silent and fast: the words and the recipe card show at once; the 3D comes right after; it draws only while a step plays,
+     a finger drags the camera, the size or the theme changes. Calm: nothing moves on its own; Go plays one step once;
+     "reduce motion" shows each step's end at once. No sounds. -->
+<meta name="description" content="The Kitchen Lab: watch a cook make real recipes step by step in 3D, learn every kitchen skill with its safety habit, or plug in your own recipe. English and Spanish.">
+<link rel="canonical" href="https://architectureofgrace.com/kitchen-lab">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Architecture of Grace">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="The Kitchen Lab — Architecture of Grace">
+<meta property="og:description" content="Watch real recipes cooked step by step in 3D, or plug in your own.">
+<meta property="og:url" content="https://architectureofgrace.com/kitchen-lab">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#0A1E33">
+<link rel="modulepreload" href="/vendor/three-0.160.0/three.module.min.js">
+<link href="/fonts/aog-fonts.css" rel="stylesheet">
+<style>
+:root {
+  --bg:#f5f0e6; --card:#fffcf7; --ink:#1d2329; --muted:#5a626b; --line:#ddd6c8;
+  --sage:#3f6b52; --sage-fg:#f4faf6; --sage-soft:#e4efe7;
+  --warm:#8a4b12; --warm-soft:#f7ead8;
+  --alert:#8f2d1f; --alert-soft:#f8e4df;
+  --chip:#efe9de; --stage:#efe6d6;
+  --shadow:0 1px 3px rgb(29 35 41 / .08);
+  --sans:"Source Sans 3", ui-sans-serif, system-ui, sans-serif;
+  --display:"Fraunces", Georgia, serif;
+  --mono:ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --steel:var(--sage);
+}
+.dark, [data-theme="dark"] {
+  --bg:#14181d; --card:#1c232b; --ink:#ece8df; --muted:#9ba3ad; --line:#333b46;
+  --sage:#8fc4a3; --sage-fg:#14181d; --sage-soft:#1f3328;
+  --warm:#f0bd7c; --warm-soft:#33281a;
+  --alert:#ff9c8c; --alert-soft:#3a201c;
+  --chip:#29303a; --stage:#1a2028;
+  --shadow:0 1px 3px rgb(0 0 0 / .35);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#14181d; --card:#1c232b; --ink:#ece8df; --muted:#9ba3ad; --line:#333b46;
+    --sage:#8fc4a3; --sage-fg:#14181d; --sage-soft:#1f3328;
+    --warm:#f0bd7c; --warm-soft:#33281a;
+    --alert:#ff9c8c; --alert-soft:#3a201c;
+    --chip:#29303a; --stage:#1a2028;
+  }
+}
+* { box-sizing:border-box; }
+html { -webkit-text-size-adjust:100%; }
+body { margin:0; background:var(--bg); color:var(--ink); font:400 17px/1.55 var(--sans); overflow-x:hidden; }
+h1,h2,h3 { font-family:var(--display); font-weight:600; letter-spacing:-.01em; text-wrap:balance; }
+h2 { font-size:1.35rem; margin:.1rem 0 .3rem; }
+h3 { font-size:1.05rem; margin:1rem 0 .35rem; }
+p, li { text-wrap:pretty; }
+a { color:inherit; }
+button, select, input, textarea { font:inherit; touch-action:manipulation; }
+button { cursor:pointer; }
+header { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:.75rem; }
+.brand { font-weight:700; text-decoration:none; }
+.tools { display:flex; gap:.5rem; }
+.pill, .btn {
+  min-height:44px; border-radius:999px; border:1px solid var(--line); background:var(--card); color:var(--ink);
+  padding:0 1rem; font-weight:600; font-size:.95rem; display:inline-flex; align-items:center; justify-content:center; gap:.4rem;
+}
+.btn-go { background:var(--sage); color:var(--sage-fg); border-color:transparent; min-width:6.5em; }
+.btn[disabled] { opacity:.55; cursor:default; }
+.nav { display:flex; gap:4px; }
+.muted { color:var(--muted); }
+.kicker { font-size:.75rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--sage); margin:0; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:16px; box-shadow:var(--shadow); }
+.sr { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+
+/* the mode switch: three choices, so buttons */
+.modes { display:flex; flex-wrap:wrap; gap:.35rem; }
+.modes button, .seg button { min-height:44px; border-radius:999px; border:1px solid var(--line); background:var(--card); color:var(--ink); padding:0 .9rem; font-weight:600; font-size:.95rem; }
+.modes button[aria-pressed="true"], .seg button[aria-pressed="true"] { background:var(--sage); color:var(--sage-fg); border-color:transparent; }
+.seg { display:flex; flex-wrap:wrap; gap:.3rem; align-items:center; }
+
+/* the bench: the kitchen on the left, the card on the right; one column on a phone */
+.k-bench { display:grid; gap:1rem; margin-top:1rem; }
+@media (min-width:900px){ .k-bench { grid-template-columns:minmax(0,1.35fr) minmax(0,1fr); align-items:start; }
+  .k-side { position:sticky; top:.75rem; } }
+.k-side { display:flex; flex-direction:column; gap:.6rem; min-width:0; }
+.panel { padding:1rem 1.1rem 1.2rem; min-width:0; }
+.panel h2 { margin-top:.2rem; }
+
+/* the kitchen */
+.stage { position:relative; width:100%; aspect-ratio:4 / 3; border-radius:18px; overflow:hidden; border:1px solid var(--line);
+  background:linear-gradient(180deg, #f6efe2, #e7dccb); touch-action:pan-y; user-select:none; -webkit-user-select:none; }
+[data-theme="dark"] .stage { background:linear-gradient(180deg, #1f2733, #151b23); }
+@media (min-width:900px){ .stage { aspect-ratio:16 / 11; } }
+.stage canvas { position:absolute; inset:0; width:100%; height:100%; display:block; }
+.stage.walk { touch-action:none; cursor:grab; }
+.stage .wait { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; text-align:center; padding:1rem;
+  font:600 1rem/1.4 var(--sans); color:#3d3428; }
+[data-theme="dark"] .stage .wait { color:#e6dccb; }
+.stage .wait[hidden] { display:none; }
+.stage .cap { position:absolute; left:10px; bottom:10px; right:10px; display:flex; justify-content:space-between; align-items:flex-end; gap:.5rem; pointer-events:none; }
+.stage .say { background:rgb(255 252 247 / .94); color:#1d2329; border-radius:12px; padding:.35rem .7rem; font:600 .92rem/1.3 var(--sans); max-width:75%; box-shadow:0 1px 4px rgb(0 0 0 / .12); }
+.stage .say:empty { display:none; }
+[data-theme="dark"] .stage .say { background:rgb(24 30 38 / .94); color:#ece8df; }
+.clock { position:absolute; right:10px; top:10px; display:flex; align-items:center; gap:.45rem; background:rgb(255 252 247 / .95); color:#1d2329;
+  border-radius:14px; padding:.35rem .65rem .35rem .4rem; box-shadow:0 1px 4px rgb(0 0 0 / .14); pointer-events:none; }
+.clock[hidden] { display:none; }
+[data-theme="dark"] .clock { background:rgb(24 30 38 / .95); color:#ece8df; }
+.clock svg { width:40px; height:40px; display:block; }
+.clock b { display:block; font:700 1rem/1.15 var(--sans); }
+.clock small { display:block; font:600 .75rem/1.2 var(--sans); color:inherit; opacity:.85; }
+
+/* the player */
+.player { display:flex; flex-wrap:wrap; align-items:center; gap:.45rem; }
+.player .grow { flex:1 1 160px; min-width:140px; display:flex; align-items:center; gap:.5rem; }
+input[type=range] { accent-color:var(--sage); min-height:32px; width:100%; }
+.viewrow { display:flex; flex-wrap:wrap; gap:.5rem 1rem; align-items:center; }
+.viewrow .lab { font-weight:700; font-size:.9rem; color:var(--muted); }
+#viewRow { display:flex; gap:.3rem; flex-wrap:wrap; }
+#viewRow button { min-height:44px; border-radius:999px; border:1px solid var(--line); background:var(--card); color:var(--ink); padding:0 .8rem; font-weight:600; }
+#viewRow button[aria-pressed="true"] { background:var(--sage); color:var(--sage-fg); border-color:transparent; }
+.aogdd .aogdd-sel, select.sel { font-size:16px; min-height:44px; }
+.hint { font-size:.88rem; color:var(--muted); margin:.2rem 0; }
+
+/* the card */
+.pick { margin:0 0 .4rem; }
+.pick > div > button { min-height:44px; border-radius:999px; border:1px solid var(--line); background:var(--card); color:var(--ink); padding:0 .8rem; margin:.15rem; font-weight:600; }
+.pick > div > button[aria-pressed="true"] { background:var(--sage); color:var(--sage-fg); }
+.facts { display:flex; flex-wrap:wrap; gap:.35rem; margin:.3rem 0 .5rem; }
+.tag { display:inline-block; border-radius:999px; padding:.15rem .6rem; font:700 .8rem/1.4 var(--sans); background:var(--chip); color:var(--ink); }
+.tag.alg { background:var(--alert-soft); color:var(--alert); border:1px solid currentColor; }
+.tag.time { background:var(--warm-soft); color:var(--warm); }
+.tag.act { background:var(--sage-soft); color:var(--ink); font-weight:600; }
+.tag.unsure { background:var(--warm-soft); color:var(--warm); }
+ul.ing { list-style:none; padding:0; margin:.3rem 0; display:grid; gap:.25rem; }
+ul.ing li { display:flex; gap:.6rem; align-items:baseline; border-bottom:1px dashed var(--line); padding:.2rem 0; }
+ul.ing .q { font:700 .92rem/1.3 var(--mono); color:var(--sage); min-width:7.5em; flex:0 0 auto; }
+ul.tools { padding-left:1.2rem; margin:.3rem 0; columns:2 12em; }
+ol.steps { padding-left:0; margin:.4rem 0; list-style:none; counter-reset:st; display:grid; gap:.35rem; }
+ol.steps li { counter-increment:st; display:block; }
+ol.steps li > button { all:unset; box-sizing:border-box; display:grid; grid-template-columns:2rem 1fr; gap:.4rem; width:100%; padding:.45rem .55rem; border-radius:12px;
+  border:1px solid var(--line); background:var(--card); color:var(--ink); cursor:pointer; min-height:44px; }
+ol.steps li > button:focus-visible { outline:3px solid var(--sage); outline-offset:2px; }
+ol.steps li > button::before { content:counter(st); font:700 .9rem/1.6 var(--mono); color:var(--sage); text-align:center; }
+ol.steps li.on > button { background:var(--sage-soft); border-color:var(--sage); border-left-width:5px; font-weight:600; }
+ol.steps .meta { display:flex; flex-wrap:wrap; gap:.25rem; margin-top:.25rem; }
+ol.how { padding-left:1.3rem; margin:.4rem 0; }
+ol.how li { padding:.25rem .45rem; border-radius:10px; border-left:4px solid transparent; margin:.15rem 0; }
+ol.how li.on { background:var(--sage-soft); border-left-color:var(--sage); font-weight:600; }
+.note { border-left:4px solid var(--sage); background:var(--sage-soft); color:var(--ink); padding:.55rem .8rem; border-radius:0 10px 10px 0; margin:.6rem 0; }
+.note.safe { border-left-color:var(--warm); background:var(--warm-soft); }
+.note.alert { border-left-color:var(--alert); background:var(--alert-soft); }
+.row { display:flex; flex-wrap:wrap; gap:.45rem; align-items:center; margin:.5rem 0; }
+textarea.mine { width:100%; min-height:12rem; font:16px/1.45 var(--sans); border-radius:12px; border:1px solid var(--line); background:var(--card); color:var(--ink); padding:.6rem .7rem; resize:vertical; }
+.saved { display:grid; gap:.35rem; margin:.4rem 0; }
+.saved div { display:flex; flex-wrap:wrap; gap:.35rem; align-items:center; justify-content:space-between; border:1px solid var(--line); border-radius:12px; padding:.3rem .3rem .3rem .7rem; }
+details.more { margin:.5rem 0; }
+details.more summary { cursor:pointer; font-weight:700; min-height:44px; display:flex; align-items:center; }
+footer { margin-top:2rem; font-size:.85rem; color:var(--muted); }
+@media (max-width:420px){ .panel { padding:.9rem .85rem 1.1rem; } ul.ing .q { min-width:6.2em; } }
+@media print { .no-print { display:none !important; } .stage { display:none; } }
+</style>
+<link rel="stylesheet" href="/aog-bench.css">
+</head>
+<body>
+<script src="/aog-grace.js" defer></script>
+<script src="/aog-dropdowns.js" defer></script>
+<script>
+(function(){
+  function add(src){
+    var s=document.createElement("script");
+    s.src=src;
+    s.onerror=function(){ if(src.indexOf("netlify.app")<0) add("https://architectureofgrace.netlify.app/aog-topbar.js"); };
+    document.head.appendChild(s);
+  }
+  add(new URL("aog-topbar.js", document.baseURI).href);
+})();
+</script>
+<div class="wrap">
+  <header class="no-print">
+    <a class="brand" href="/kitchen-lab" id="brand">The Kitchen Lab</a>
+    <div class="tools">
+      <button type="button" class="pill" id="langBtn">ES</button>
+      <button type="button" class="pill" id="themeBtn">Dark</button>
+    </div>
+  </header>
+  <section class="mast" id="toolMast"><p class="kicker" id="mastK"></p><h1 id="mastH"></h1><p class="lead" id="mastL"></p></section>
+  <div class="bench-bar">
+    <nav class="nav no-print" id="nav" aria-label="Kitchen Lab"></nav>
+    <div class="modes no-print" role="group" id="modes" aria-label="Show"></div>
+  </div>
+  <main class="k-bench" id="bench">
+    <div class="k-side">
+      <div class="stage" id="stage">
+        <div class="wait" id="wait"></div>
+        <div class="clock" id="clock" hidden aria-hidden="true">
+          <svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="17" fill="none" stroke="currentColor" stroke-opacity=".25" stroke-width="3"/><path id="clockArc" d="" fill="none" stroke="#3f8f62" stroke-width="3.4" stroke-linecap="round"/><line id="clockHand" x1="20" y1="20" x2="20" y2="6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><circle cx="20" cy="20" r="2.4" fill="currentColor"/></svg>
+          <span><b id="clockBig"></b><small id="clockSmall"></small></span>
+        </div>
+        <div class="cap"><span class="say" id="say"></span></div>
+      </div>
+      <div class="player no-print" id="player">
+        <button type="button" class="btn" id="prevBtn" aria-label="Previous step">◀</button>
+        <button type="button" class="btn btn-go" id="goBtn">Go</button>
+        <button type="button" class="btn" id="nextBtn" aria-label="Next step">▶</button>
+        <span class="grow"><input type="range" id="scrub" min="0" max="1000" value="0" aria-label="Move through the step"></span>
+      </div>
+      <div class="viewrow no-print">
+        <div class="seg" role="group" id="speedRow" aria-label="Speed"></div>
+        <div id="viewRow" data-aog-dropdown="View|Vista"></div>
+      </div>
+      <p class="hint" id="viewHint"></p>
+      <p class="sr" id="stageDesc" aria-live="polite"></p>
+    </div>
+    <section class="panel card" id="panel">
+      <div class="pick no-print" id="pick"><div id="recipeRow" data-aog-dropdown="Recipe|Receta"></div><div id="skillRow" data-aog-dropdown="Skill|Habilidad" hidden></div></div>
+      <div id="card"></div>
+    </section>
+  </main>
+  <footer><p id="foot"></p></footer>
+</div>
+<script src="/aog-kitchen-recipes.js"></script>
+<script src="/aog-kitchen.js"></script>
+</body>
+</html>
