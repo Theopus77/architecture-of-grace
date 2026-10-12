@@ -32,6 +32,11 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
   try { const out = cp.execSync("node " + JSON.stringify(path.join(ROOT, "aog-cube-short.js")) + " test 8", { stdio: "pipe", timeout: 120000 }).toString().trim().split("\n").pop();
     const m = out.match(/longest (\d+)/); ok(/^ok/.test(out) && m && +m[1] <= 22, "the short way: " + out); }
   catch (e) { ok(false, "the short way's own test failed: " + String(e.stdout || e.message).slice(0, 300)); }
+  /* the faster way (Level 2): cross in one go, pairs, two looks for the top, two for the last layer */
+  try { const out = cp.execSync("node " + JSON.stringify(path.join(ROOT, "aog-cube-l2.js")) + " test 120", { stdio: "pipe", timeout: 300000 }).toString().trim().split("\n");
+    const line = out.find(l => /^ok/.test(l)) || out.pop(), avg = +(line.match(/average ([\d.]+)/) || [0, 999])[1];
+    ok(/^ok/.test(line) && avg < 95, "the faster way: " + line); }
+  catch (e) { ok(false, "the faster way's own test failed: " + String(e.stdout || e.message).slice(0, 300)); }
   /* the solver */
   try { const out = cp.execSync("node " + JSON.stringify(path.join(ROOT, "aog-cube.js")) + " test", { stdio: "pipe" }).toString().trim().split("\n").pop(); ok(/^ok/.test(out), "the solver: " + out); }
   catch (e) { ok(false, "the solver's own test failed: " + String(e.stdout || e.message).slice(0, 300)); }
@@ -163,7 +168,7 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
   ok(/R U R' U'/.test(await p.evaluate(() => window.__printed || "")), "Print a move card fills the card with the moves for each step");
   /* every Learn step can be practised to its end */
   await p.selectOption("#speedSel", "instant");
-  for (let li = 2; li <= 8; li++) {
+  for (const li of [2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13]) {
     await p.evaluate(i => document.querySelector(`#lessonRow [data-lesson="${i}"]`).click(), li); await p.waitForTimeout(150);
     await p.click('#panel [data-act="setup"]'); await p.click('#panel [data-act="hint"]');
     let k = 0; while (k < 300 && await p.$('#panel [data-act="gnext"]')) { await p.click('#panel [data-act="gnext"]'); k++; }
@@ -197,6 +202,12 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
     ok(/Practice ·/.test(k0) && /is finished/.test(await p.textContent("#panel")) && !!(await p.$('#panel [data-act="drill"]')), `practising one step ends on that step, with Again (${k} moves)`); }
   /* the three kinds of help */
   await p.click('#panel [data-act="undrill"]'); await p.waitForTimeout(200);
+  /* the faster way in Solve with me: chosen under the card, it leads a mixed cube to Solved, in its four steps */
+  { await p.click('#panel [data-act="mix"]'); await p.waitForTimeout(150); await p.selectOption("#waySel", "faster"); await p.waitForTimeout(150);
+    const k0 = await p.textContent("#panel .kicker"); let fn = 0, kinds = new Set();
+    while (fn < 200 && await p.$('#panel [data-act="gnext"]')) { kinds.add((await p.textContent("#panel .kicker")).split("·")[1]); await p.click('#panel [data-act="gnext"]'); fn++; }
+    ok(/of 4/.test(k0) && /Solved!/.test(await p.textContent("#panel")) && fn < 110, `the faster way leads a mixed cube to Solved in ${fn} moves, through its steps (${[...kinds].map(x => (x || "").trim()).join(", ")})`);
+    await p.click('#panel [data-act="mix"]'); await p.waitForTimeout(150); await p.selectOption("#waySel", "steps"); }
   await p.selectOption("#levelSel", "own"); await p.waitForTimeout(150);
   const own = await p.evaluate(() => ({ tok: !!document.querySelector("#panel .move-big .tok"), arrow: document.getElementById("arrow").innerHTML.length, aim: !!document.querySelector("#panel .aim") }));
   ok(!own.tok && !own.arrow && !own.aim, "On my own: no move, no arrow, no goal until asked");
