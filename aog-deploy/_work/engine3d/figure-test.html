@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Figure Test Bench</title>
+<link rel="stylesheet" href="/aog-calm.css">
+<style>
+  :root { --bg: #f4f1ea; --ink: #1d2433; --soft: #5a6272; --card: #ffffff; --line: #d9d3c6; --accent: #2f5f7a; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #10161f; --ink: #eef1f6; --soft: #b4bccb; --card: #1a2230; --line: #2c3646; --accent: #8cc3e0; } }
+  :root[data-theme="dark"] { --bg: #10161f; --ink: #eef1f6; --soft: #b4bccb; --card: #1a2230; --line: #2c3646; --accent: #8cc3e0; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 1200px; margin: 0 auto; padding: 12px 16px 32px; }
+  h1 { font-size: 1.3rem; margin: 4px 0 2px; }
+  p.lead { margin: 0 0 10px; color: var(--soft); }
+  .bar { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0; }
+  .bar button { font: inherit; font-size: 16px; padding: 8px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--card); color: var(--ink); cursor: pointer; }
+  .bar button[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 2px var(--accent); }
+  #stage { width: 100%; aspect-ratio: 16 / 9; border-radius: 14px; overflow: hidden; background: var(--card); border: 1px solid var(--line); }
+  @media (max-width: 600px) { #stage { aspect-ratio: 3 / 4; } }
+  #note { color: var(--soft); font-size: 15px; margin-top: 8px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Figure test bench</h1>
+  <p class="lead">The shared 3D person in every outfit and a few poses. Drag sideways to walk around.</p>
+  <div class="bar" id="views">
+    <button data-view="all" aria-pressed="true">Everyone</button>
+    <button data-view="skate">Skate</button>
+    <button data-view="gi">Gi</button>
+    <button data-view="plain">Plain</button>
+    <button data-view="apron">Apron</button>
+    <button data-view="hands">Hands</button>
+    <button data-view="head">Head</button>
+  </div>
+  <div class="bar">
+    <button id="dark" aria-pressed="false">Night look</button>
+    <button id="phone" aria-pressed="false">Phone quality</button>
+  </div>
+  <div id="stage"></div>
+  <p id="note"></p>
+</main>
+<script type="module">
+import { makeStage } from "/aog-3dkit.js";
+import { makeFigure, REST } from "/aog-figure3d.js";
+
+const qs = new URLSearchParams(location.search);
+const T = window.FIGTEST = { ready: false };
+let stage, figs = [], THREE, props = [];
+let quality = qs.get("q") === "phone" ? "phone" : "full", dark = qs.get("dark") === "1", view = qs.get("view") || "all";
+
+const POSES = {
+  rest: REST,
+  skate: { root: { pos: [0, -0.12, 0], rot: [0, 0, 0] }, j: { spine: [12, 0, 0], chest: [6, -10, 0], hipL: [-38, 0, 6], kneeL: [62, 0, 0], ankleL: [-22, 0, 0], hipR: [-30, 0, -8], kneeR: [55, 0, 0], ankleR: [-24, 0, 0],
+    shoulderL: [-15, 0, 48], elbowL: [-28, 0, 0], shoulderR: [10, 0, -38], elbowR: [-22, 0, 0], neck: [-6, 0, 0] } },
+  horse: { root: { pos: [0, -0.2, 0] }, j: { hipL: [-30, 0, 32], kneeL: [70, 0, 0], ankleL: [-38, 0, -18], hipR: [-30, 0, -32], kneeR: [70, 0, 0], ankleR: [-38, 0, 18],
+    shoulderR: [-90, 0, 0], elbowR: [0, 0, 0], shoulderL: [-25, 0, 20], elbowL: [-125, 0, 0], spine: [-4, 0, 0] }, grip: { L: 1, R: 1 } },
+  kick: { root: { pos: [0, -0.03, -0.05], rot: [0, 0, 0] }, j: { spine: [-10, 0, 0], hipR: [-88, 0, 0], kneeR: [8, 0, 0], ankleR: [40, 0, 0], kneeL: [12, 0, 0], ankleL: [-6, 0, 0],
+    shoulderL: [-35, 0, 25], elbowL: [-110, 0, 0], shoulderR: [-20, 0, -25], elbowR: [-115, 0, 0] }, grip: { L: 1, R: 1 } },
+  wave: { j: { shoulderR: [0, 0, -90], elbowR: [0, 0, 0], shoulderL: [-160, 0, 15], elbowL: [-20, 0, 0], hipL: [-25, 0, 0], kneeL: [35, 0, 0], ankleL: [10, 0, 0] }, grip: { L: 0, R: 0 } },
+  counter: { root: { pos: [0, -0.005, 0] }, j: { spine: [8, 0, 0], chest: [6, 0, 0], neck: [10, 0, 0], head: [16, 0, 0] } }
+};
+
+function build() {
+  const host = document.getElementById("stage");
+  if (stage) { figs.forEach(f => f.dispose()); stage.dispose(); }
+  stage = makeStage({ host, quality, dark });
+  THREE = stage.THREE;
+  stage.floor({ kind: "mat", color: "#ece4d2", colorDark: "#2d3442" });
+  const lineup = [["skate", "rest"], ["skate", "skate"], ["gi", "horse"], ["gi", "kick"], ["plain", "wave"], ["apron", "counter"]];
+  const colors = { gi: { belt: "#c4932f" } };
+  figs = lineup.map(([outfit, pose], i) => {
+    const f = makeFigure({ outfit, quality, colors: colors[outfit] });
+    f.root.position.x = (i - (lineup.length - 1) / 2) * 0.95;
+    f.root.rotation.y = pose === "kick" ? -0.6 : pose === "skate" ? -0.9 : 0;
+    stage.scene.add(f.root); f.setPose(POSES[pose]); f.name = outfit + ":" + pose; f.outfitName = outfit;
+    return f;
+  });
+  // the skater's feet on a board line; the cook's hands at the counter, a knife in one and a needle in the other
+  const sk = figs[1]; const p = (x, y, z) => sk.root.localToWorld(new THREE.Vector3(x, y, z));
+  sk.ik.leg("L", p(0.24, 0.17, 0.02), p(0.6, 0.5, 0.6), { footFlat: true, up: new THREE.Vector3(0, 1, 0), forward: p(0.2, 0, 1).sub(p(0, 0, 0)) });
+  sk.ik.leg("R", p(-0.22, 0.17, -0.02), p(-0.5, 0.5, 0.7), { footFlat: true, up: new THREE.Vector3(0, 1, 0), forward: p(0.1, 0, 1).sub(p(0, 0, 0)) });
+  const board = new THREE.Mesh(new THREE.CapsuleGeometry(0.1, 0.62, 8, 24), new THREE.MeshStandardMaterial({ color: "#2a2a2a", roughness: 0.8 }));
+  board.scale.set(1, 1, 0.12); board.rotation.set(Math.PI / 2, 0, Math.PI / 2); board.position.set(0, 0.085, 0);
+  board.castShadow = board.receiveShadow = true; sk.root.add(board); props.push(board);
+  const ck = figs[5]; ck.setPose(POSES.counter); const c = (x, y, z) => ck.root.localToWorld(new THREE.Vector3(x, y, z));
+  ck.ik.arm("R", c(-0.12, 0.98, 0.36)); ck.ik.arm("L", c(0.14, 1.0, 0.34));
+  ck.update();
+  ck.bones.wristR.rotation.set(0.2, 0, 0.6); ck.bones.wristL.rotation.set(0.1, 0, -0.5);
+  ck.grip("R", 1); ck.pinch("L", true);
+  const counter = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.06, 0.45), new THREE.MeshStandardMaterial({ color: "#d9d0bf", roughness: 0.5 }));
+  counter.position.set(0, 0.88, 0.42); counter.castShadow = counter.receiveShadow = true; ck.root.add(counter); props.push(counter);
+  const knife = new THREE.Group();
+  const handle = new THREE.Mesh(new THREE.CapsuleGeometry(0.012, 0.09, 6, 16), new THREE.MeshStandardMaterial({ color: "#3a2a20", roughness: 0.6 }));
+  handle.rotation.z = Math.PI / 2; knife.add(handle);
+  const blade = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.035, 0.002), new THREE.MeshStandardMaterial({ color: "#cfd3d8", metalness: 0.9, roughness: 0.25 }));
+  blade.position.set(0.14, -0.01, 0); knife.add(blade);
+  knife.traverse(m => { if (m.isMesh) m.castShadow = true; });
+  ck.hand("R").add(knife);
+  const needle = new THREE.Mesh(new THREE.CylinderGeometry(0.0008, 0.0008, 0.05, 6), new THREE.MeshStandardMaterial({ color: "#d8dde3", metalness: 1, roughness: 0.2 }));
+  ck.hand("L").add(needle);
+  T.stage = stage; T.figs = figs; T.THREE = THREE;
+  applyView();
+}
+
+function applyView() {
+  const cam = stage.camera, V = (x, y, z) => new THREE.Vector3(x, y, z);
+  const pick = name => figs.find(f => f.outfitName === name);
+  figs.forEach(f => f.root.visible = true); props.forEach(p => p.visible = true);
+  if (view === "all") { cam.fov = 35; stage.look(V(0.2, 1.5, 6.6), V(0, 0.85, 0)); }
+  else if (view === "hands") { const f = pick("apron"); cam.fov = 30; const h = f.world("wristR").add(f.world("wristL")).multiplyScalar(0.5); stage.look(h.clone().add(V(0.15, 0.25, 0.55)), h.clone().add(V(0, -0.05, 0))); }
+  else if (view === "head") { const f = pick("skate"); cam.fov = 30; const h = f.world("head").add(V(0, 0.07, 0)); stage.look(h.clone().add(V(0.35, 0.1, 0.6)), h); }
+  else { const f = pick(view); cam.fov = 30; const at = f.root.position.clone().add(V(0, 0.9, 0)); figs.forEach(g => g.root.visible = g === f || (view === "gi" && g.outfitName === "gi") || (view === "skate" && g.outfitName === "skate"));
+    const center = view === "gi" || view === "skate" ? figs.filter(g => g.outfitName === view).reduce((a, g) => a.add(g.root.position), V(0, 0, 0)).multiplyScalar(0.5).add(V(0, 0.9, 0)) : at;
+    stage.look(center.clone().add(V(0.9, 0.45, view === "gi" || view === "skate" ? 3.4 : 2.6)), center); }
+  cam.updateProjectionMatrix();
+  stage.shadowFocus(V(0, 0.9, 0), 3.2);
+  stage.orbit({ target: stage.camera.position.clone().lerp(new THREE.Vector3(0, 0.9, 0), 1) });
+  stage.render();
+  document.querySelectorAll("#views button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.view === view)));
+  const tri = figs.reduce((a, f) => a + f.info.triangles, 0);
+  document.getElementById("note").textContent = `${quality === "phone" ? "Phone" : "Full"} quality: ${figs.length} people, ${Math.round(tri / 1000)}k triangles, ${stage.renderer.info.render.calls} draw calls. Pictures drawn: ${stage.renders()}.`;
+}
+
+document.getElementById("views").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; view = b.dataset.view; applyView(); });
+document.getElementById("dark").addEventListener("click", e => { dark = !dark; e.currentTarget.setAttribute("aria-pressed", String(dark)); stage.setDark(dark); });
+document.getElementById("phone").addEventListener("click", e => { quality = quality === "phone" ? "full" : "phone"; e.currentTarget.setAttribute("aria-pressed", String(quality === "phone")); build(); });
+document.getElementById("dark").setAttribute("aria-pressed", String(dark));
+document.getElementById("phone").setAttribute("aria-pressed", String(quality === "phone"));
+build();
+T.rebuild = build; T.setView = v => { view = v; applyView(); };
+T.ready = true;
+</script>
+</body>
+</html>

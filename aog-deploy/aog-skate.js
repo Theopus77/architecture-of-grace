@@ -1879,7 +1879,7 @@ function drawGrind3D(fr) {
   draw3D({ kind: "grind", cam: o.cam || "wide",
     fr: rig({ bx: fr.x, h, crouch: 0.45, piv: o.trick === "five" && onIt ? "back" : "mid", pitch: o.trick === "five" && onIt ? 7 : 0, yaw: board ? 90 : 0, turn: board ? 75 : 0,
       lean: o.trick === "five" ? -0.05 : 0.04, hx: o.trick === "five" && onIt ? -0.05 : 0 }),
-    data: { key: o.surface + ":" + o.len, surface: o.surface, len: o.len, rh, x: fr.x, v: fr.v, onIt, d: GR.d, mu: GR.mu, bottom: 0.4 } });
+    data: { key: o.surface + ":" + o.len, surface: o.surface, len: o.len, rh, x: fr.x, v: fr.v, onIt, d: GR.d, mu: GR.mu, bottom: 0.4, label: L(SURF[o.surface].en, SURF[o.surface].es) + " · μ ≈ " + num(GR.mu, 2) } });
   if (G3state === "ready") drawGrindGraph(fr, o.len + 2.8, true);
 }
 
@@ -2043,16 +2043,19 @@ function fAir(st, dt, R) {
     if (along) { const d = Math.atan2(Math.sin(ax - a.h0), Math.cos(ax - a.h0)); st.h = a.h0 + d * ease(u); }
     st.z += (o.z - st.z) * Math.min(1, dt * 7 * u);
   }
+  if (a.want && a.t > a.flight / 2) {   // aimed at a ledge or rail just ahead: float at the top of the pop until over it
+    const o = FPARK.obs.find(q => q.id === a.want), ahead = Math.cos(st.h) >= 0 ? st.x < o.x0 + 0.05 && st.x > o.x0 - 0.7 : st.x > o.x1 - 0.05 && st.x < o.x1 + 0.7;
+    if (ahead && Math.abs(st.z - o.z) < 0.3) a.t = a.flight / 2;
+  }
   st.x += st.v * Math.cos(st.h) * dt; st.z += st.v * Math.sin(st.h) * dt;
   const B = FPARK.bounds; if (st.x < B[0] || st.x > B[1] || st.z < B[2] || st.z > B[3]) { st.v = 0; st.x = clamp(st.x, B[0] + 0.01, B[1] - 0.01); st.z = clamp(st.z, B[2] + 0.01, B[3] - 0.01); st.msg = "edge"; }
   const by = a.base + boardRel(a), down = a.v0 - G * a.t < 0;
   st.y = by;
   // onto the ledge or the rail: lined up, a 50-50; across it, a boardslide; too low, a bump
   for (const o of FPARK.obs) {
-    const cap = o.id === "rail" ? 0.2 : 0.18, early = a.want === o.id ? 0.6 : 0;
-    if (st.x < o.x0 + 0.05 - early || st.x > o.x1 - 0.05 || Math.abs(st.z - o.z) > o.w / 2 + cap) continue;
+    const cap = o.id === "rail" ? 0.2 : 0.18;
+    if (st.x < o.x0 + 0.05 || st.x > o.x1 - 0.05 || Math.abs(st.z - o.z) > o.w / 2 + cap) continue;
     if (by < o.h - 0.06) { if (st.x >= o.x0 && Math.abs(st.z - o.z) <= o.w / 2 + 0.06 && a.from !== "grind") { st.v = 0; st.x -= Math.cos(st.h) * 0.3; st.z -= Math.sin(st.h) * 0.3; st.msg = "side"; st.bumped = o.id; } continue; }
-    if (st.x < o.x0 + 0.05) st.x = o.x0 + 0.05;
     if (!down || by > o.h + 0.1) continue;
     const c = Math.abs(Math.cos(st.h));
     if (c > Math.cos(38 * DEG) || c < Math.cos(55 * DEG)) {

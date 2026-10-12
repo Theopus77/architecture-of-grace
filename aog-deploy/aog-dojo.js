@@ -132,16 +132,20 @@ function open(id, push) {
   if (!BY[id]) id = "ready";
   stop(); MV = BY[id]; S.id = id; save();
   P.t = 0; P.ran = false;
-  if (push) { const u = location.pathname + location.search + "#" + id; if (location.hash !== "#" + id) history.replaceState(null, "", u); }
+  if (push) writeAddr();
   $("movePick").value = id;
   panel();
   if (G3) G3.setMove(MV, mirror);
   show();
 }
+function writeAddr() {   // one tidy form: /dojo?side=left#id
+  const q = new URLSearchParams(location.search); if (mirror) q.set("side", "left"); else q.delete("side");
+  const qs = q.toString(), u = location.pathname + (qs ? "?" + qs : "") + (MV ? "#" + MV.id : "");
+  if (u !== location.pathname + location.search + location.hash) history.replaceState(null, "", u);
+}
 function setMirror(on) {
   mirror = on; stop();
-  const q = new URLSearchParams(location.search); if (on) q.set("side", "left"); else q.delete("side");
-  const qs = q.toString(); history.replaceState(null, "", location.pathname + (qs ? "?" + qs : "") + location.hash);
+  writeAddr();
   $("mirrorBtn").setAttribute("aria-pressed", String(on));
   $("capSide").hidden = !on; $("capSide").textContent = L("Other side", "Otro lado");
   if (G3) G3.setMove(MV, mirror);
@@ -281,7 +285,7 @@ st.addEventListener("pointermove", e => { if (G3 && G3.onMove(e)) show(); });
 window.addEventListener("pagehide", () => { stop(); if (G3) { G3.dispose(); G3 = null; G3state = ""; } });
 
 /* for the site's checks (tools/check-dojo.js) */
-window.AOGDojo = { MOVES, P, state: S, open: id => open(id, true), go, next, back, stepAt: t => stepAt(t), stepEnd: s => stepEnd(s),
+window.AOGDojo = { MOVES, P, state: S, seek: t => { stop(); P.t = Math.max(0, Math.min(MV.dur, t)); show(); }, open: id => open(id, true), go, next, back, stepAt: t => stepAt(t), stepEnd: s => stepEnd(s),
   get move() { return MV; }, get mirror() { return mirror; }, G3: () => G3, G3state: () => G3state, setMirror, setGhost };
 
 pageWords();

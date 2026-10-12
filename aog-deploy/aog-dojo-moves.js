@@ -30,6 +30,7 @@ function merge() {   // later parts win; joint maps merge joint by joint
     const p = arguments[i]; if (!p) continue;
     for (const k in p) {
       if (k === "j") Object.assign(out.j, clone(p.j));
+      else if (k === "arm" || k === "grip") out[k] = Object.assign(out[k] || {}, clone(p[k]));
       else out[k] = clone(p[k]);
     }
   }
@@ -60,6 +61,8 @@ function mirrorKey(k) {
   }
   m.L = mirrorFoot(k.R); m.R = mirrorFoot(k.L);
   if (k.grip) m.grip = { L: k.grip.R, R: k.grip.L };
+  if (k.arm) { m.arm = {}; const mf = a => a && { to: [-a.to[0], a.to[1], a.to[2]], pole: [-a.pole[0], a.pole[1], a.pole[2]], twist: -(a.twist || 0), wrist: a.wrist && mirrorAngles(a.wrist) };
+    if (k.arm.L) m.arm.R = mf(k.arm.L); if (k.arm.R) m.arm.L = mf(k.arm.R); }
   return m;
 }
 
@@ -272,21 +275,21 @@ move({ id: "guard", kind: "stance", band: "6-8", art: W("boxing, Muay Thai, kick
 /* ─────────── Hand strikes ─────────── */
 {
   const G = GUARD(), g = ST.guard();
-  const jabOut = merge(G, root(0.01, -0.06, 0.03, 0, -36, 0), { j: Object.assign({}, Lside({ shoulderR: [-88, 0, 32], elbowR: [-3, 90, 0], clavR: [0, 0, -8] })) }, { j: { neck: [14, 0, 0] } });
+  const jabOut = merge(G, root(0.01, -0.06, 0.03, 0, -36, 0), { j: { clavL: [0, 0, 8], neck: [14, 0, 0] }, arm: { L: { to: [0.02, 1.40, 0.80], pole: [0.5, 0.9, 0.1], twist: 0 } } });
   move({ id: "jab", kind: "hand", band: "3-5", art: W("boxing", "boxeo"),
     keys: [K(0, 0, G), K(0.6, 0, G), K(0.82, 1, jabOut, { ease: "snap" }), K(1.3, 1, jabOut), K(1.65, 2, G), K(2.3, 2, G)],
     en: { n: "Jab", steps: ["Start in your guard. Hands up by your face.", "Snap your front hand straight out. Turn the fist so the palm faces down. Breathe out.", "Bring it straight back to your face, the same way it went."],
           tips: ["Your back hand stays by your chin.", "Lift your front shoulder to cover your chin.", "Fast out, fast back, like touching a hot stove."] },
     es: { n: "Jab", steps: ["Empieza en tu guardia. Manos arriba junto a la cara.", "Lanza la mano de adelante recta. Gira el puño para que la palma mire abajo. Exhala.", "Regrésala recta a tu cara, por el mismo camino."],
           tips: ["La mano de atrás se queda junto a la barbilla.", "Sube el hombro de adelante para cubrir la barbilla.", "Rápido al salir y rápido al volver, como si tocaras una estufa caliente."] } });
-  const crossOut = merge(G, root(0.01, -0.07, 0.05, 0, 4, 0), { R: pivot(g.R, -8, 32) }, { j: Object.assign({}, AR.punchHi, { shoulderR: [-90, 0, 4], clavR: [0, 0, 6] }) }, torso(10), { j: { neck: [14, -6, 0] } });
+  const crossOut = merge(G, root(0.01, -0.07, 0.05, 0, 4, 0), { R: pivot(g.R, -8, 32) }, torso(10), { j: { clavR: [0, 0, -6], neck: [14, -6, 0] }, arm: { R: { to: [-0.01, 1.40, 0.86], pole: [-0.5, 0.9, 0.1], twist: 0 } } });
   move({ id: "cross", kind: "hand", band: "3-5", art: W("boxing", "boxeo"),
     keys: [K(0, 0, G), K(0.6, 0, G), K(0.9, 1, crossOut, { ease: "snap" }), K(1.4, 1, crossOut), K(1.8, 2, G), K(2.4, 2, G)],
     en: { n: "Cross", steps: ["Start in your guard.", "Turn your back foot and hip forward. Your back hand goes straight out. Breathe out.", "Bring the hand back to your chin and turn back into your guard."],
           tips: ["Your back heel lifts and turns, like squashing a bug.", "The power comes from your hip, not just your arm.", "Your front hand guards your face."] },
     es: { n: "Directo", steps: ["Empieza en tu guardia.", "Gira el pie y la cadera de atrás hacia adelante. La mano de atrás sale recta. Exhala.", "Regresa la mano a la barbilla y vuelve a tu guardia."],
           tips: ["El talón de atrás se levanta y gira, como si aplastaras un bicho.", "La fuerza viene de la cadera, no solo del brazo.", "La mano de adelante protege tu cara."] } });
-  const hookOut = merge(G, root(0.0, -0.07, 0.02, 0, 12, 0), { L: pivot(g.L, 40, 26) }, { j: Object.assign({}, Lside({ shoulderR: [-84, 0, -18], elbowR: [-96, 90, 0], clavR: [0, 0, -4] })) }, torso(16), { j: { neck: [14, 0, 0] } });
+  const hookOut = merge(G, root(0.0, -0.07, 0.02, 0, -48, 0), { L: pivot(g.L, -40, 26) }, torso(-14), { j: { neck: [14, 30, 0] }, arm: { L: { to: [-0.06, 1.38, 0.42], pole: [0.7, 1.42, 0.1], twist: 0 } } });
   move({ id: "hook", kind: "hand", band: "6-8", art: W("boxing", "boxeo"),
     keys: [K(0, 0, G), K(0.6, 0, G), K(0.92, 1, hookOut, { ease: "snap" }), K(1.4, 1, hookOut), K(1.8, 2, G), K(2.4, 2, G)],
     en: { n: "Hook", steps: ["Start in your guard.", "Turn your front foot, hip and shoulder together. Your front arm swings around, bent like a hook, elbow at shoulder height. Breathe out.", "Turn back and bring the hand to your face."],
@@ -294,7 +297,7 @@ move({ id: "guard", kind: "stance", band: "6-8", art: W("boxing, Muay Thai, kick
     es: { n: "Gancho", steps: ["Empieza en tu guardia.", "Gira juntos el pie, la cadera y el hombro de adelante. El brazo de adelante gira doblado como un gancho, con el codo a la altura del hombro. Exhala.", "Gira de vuelta y lleva la mano a tu cara."],
           tips: ["Mantén el codo igual de doblado todo el tiempo.", "El talón de adelante gira hacia afuera cuando gira la cadera.", "Corto y cerrado. El brazo no se estira lejos."] } });
   const dip = merge(G, root(0, -0.13, 0, 0, -20, 0), { j: Object.assign({}, AR.upperDip) }, torso(-6, 6), chinTuck);
-  const upOut = merge(G, root(0, -0.05, 0.03, 0, 2, 0), { R: pivot(g.R, -10, 30) }, { j: Object.assign({}, AR.upper) }, torso(10, -2), chinTuck);
+  const upOut = merge(G, root(0, -0.05, 0.03, 0, 2, 0), { R: pivot(g.R, -10, 30) }, torso(10, -2), chinTuck, { arm: { R: { to: [-0.03, 1.38, 0.40], pole: [-0.25, 0.8, 0.6], twist: 0 } } });
   move({ id: "uppercut", kind: "hand", band: "6-8", art: W("boxing", "boxeo"),
     keys: [K(0, 0, G), K(0.5, 0, G), K(1.0, 1, dip), K(1.3, 2, upOut, { ease: "snap" }), K(1.8, 2, upOut), K(2.2, 3, G), K(2.8, 3, G)],
     en: { n: "Uppercut", steps: ["Start in your guard.", "Bend your knees a little and drop your back hand to chest height.", "Push up with your legs and turn your hip. Your fist rises, palm toward you. Breathe out.", "Bring the hand back to your chin."],
@@ -314,7 +317,7 @@ move({ id: "guard", kind: "stance", band: "6-8", art: W("boxing, Muay Thai, kick
           tips: ["Las dos manos se mueven a la vez, como un subibaja.", "Golpea con los dos primeros nudillos.", "Despacio está bien. Primero suave, luego rápido."] } });
   const G = GUARD(), g = ST.guard();
   const cock = merge(G, { j: Object.assign({}, AR.palmStart) });
-  const out = merge(G, root(0.01, -0.07, 0.05, 0, 6, 0), { R: pivot(g.R, -8, 30) }, { j: Object.assign({}, AR.palm) }, torso(8), { j: { neck: [10, -6, 0] } });
+  const out = merge(G, root(0.01, -0.07, 0.05, 0, 6, 0), { R: pivot(g.R, -8, 30) }, torso(8), { j: { neck: [10, -6, 0] }, arm: { R: { to: [-0.01, 1.40, 0.84], pole: [-0.5, 0.9, 0.1], twist: 0, wrist: [0, 0, -70] } }, grip: { R: 0.05 } });
   move({ id: "palm-strike", kind: "hand", band: "6-8", art: W("kung fu, self-defense", "kung fu, defensa personal"),
     keys: [K(0, 0, G), K(0.8, 1, cock), K(1.2, 2, out, { ease: "snap" }), K(1.9, 2, out), K(2.4, 3, G), K(3.0, 3, G)],
     en: { n: "Palm strike", steps: ["Start in your guard.", "Open your back hand. Bend the wrist back so the fingers point up.", "Push the heel of your palm straight forward and turn your hip. Breathe out.", "Bring the hand back to your face."],
@@ -400,9 +403,9 @@ blockMove("outside-block", "3-5", "outStart", "outside",
     es: { n: "Patada de empuje (teep)", steps: ["Empieza en tu guardia.", "Sube alto la rodilla de atrás frente a ti.", "Empuja la cadera al frente y estira el pie recto, como si cerraras una puerta con él. Inclínate un poco atrás. Exhala.", "Regresa la rodilla y baja el pie en tu guardia."],
           tips: ["Es un empujón, no un latigazo. Piensa en alejar algo.", "Empuja con la planta o con toda la suela.", "Las manos siguen arriba mientras te inclinas."] } });
   // roundhouse: the standing foot turns, the hip turns over, the knee comes up sideways, then the shin snaps around
-  const rTurn = merge(G, root(0.06, -0.05, 0.12, 0, 20, 0), { L: pivot(g.L, 50, 16), R: pivot(g.R, -10, 50) });
-  const rCham = merge(G, root(0.08, -0.03, 0.14, 0, 70, -12), { L: pivot(g.L, 95, 18) }, legR([-12, 0, -80], 125, [20, 0, 0], [0, 0, 0]), { j: { spine: [0, 0, -6], chest: [0, -18, 0], neck: [12, -26, 0], head: [0, -20, 0] } });
-  const rExt = merge(rCham, root(0.08, -0.02, 0.14, 0, 78, -18), legR([-14, 0, -86], 8, [30, 0, 0], [0, 0, 0]), { j: { chest: [0, -24, 0], neck: [12, -34, 0], head: [0, -24, 0] } });
+  const rTurn = merge(G, root(0.04, -0.05, 0.18, 0, 20, 0), { L: pivot(g.L, 50, 16), R: pivot(g.R, -10, 50) });
+  const rCham = merge(G, root(-0.02, -0.03, 0.30, 0, 80, -8), { L: pivot(g.L, 105, 18) }, legR([-14, 0, -80], 125, [20, 0, 0], [0, 0, 0]), { j: { spine: [0, 0, -6], chest: [0, -18, 0], neck: [12, -26, 0], head: [0, -20, 0] } });
+  const rExt = merge(rCham, root(-0.02, -0.02, 0.30, 0, 88, -12), legR([-12, 0, -84], 8, [30, 0, 0], [0, 0, 0]), { j: { chest: [0, -24, 0], neck: [12, -34, 0], head: [0, -24, 0] } });
   move({ id: "roundhouse-kick", kind: "kick", band: "6-8", art: W("taekwondo, Muay Thai, karate", "taekwondo, Muay Thai, karate"),
     keys: [K(0, 0, G), K(0.6, 0, G), K(1.15, 1, rTurn), K(1.6, 1, rCham), K(1.92, 2, rExt, { ease: "snap" }), K(2.5, 2, rExt), K(2.85, 3, rCham), K(3.4, 4, rTurn), K(3.9, 4, G), K(4.4, 4, G)],
     en: { n: "Roundhouse kick", steps: ["Start in your guard.", "Turn your standing foot out and swing your hip over. Your knee comes up to the side.", "Snap your lower leg around. Hit with the shin or the top of the foot. Breathe out.", "Fold the leg back to the knee.", "Turn back and set the foot down in your guard."],
@@ -410,9 +413,9 @@ blockMove("outside-block", "3-5", "outStart", "outside",
     es: { n: "Patada circular", steps: ["Empieza en tu guardia.", "Gira hacia afuera el pie de apoyo y pasa la cadera por encima. La rodilla sube por el lado.", "Lanza en círculo la parte baja de la pierna. Golpea con la espinilla o el empeine. Exhala.", "Dobla la pierna de vuelta a la rodilla.", "Gira de vuelta y baja el pie en tu guardia."],
           tips: ["El talón de apoyo gira hacia el blanco. Eso abre la cadera.", "Primero la rodilla, luego el latigazo.", "Inclínate un poco al lado contrario, manos arriba. Los principiantes patean a la altura de la barriga o más abajo."] } });
   // side kick: sideways body, heel leads
-  const sTurn = merge(G, root(0.06, -0.06, 0.08, 0, 50, 0), { L: pivot(g.L, 80, 0), R: pivot(g.R, 20, 30) }, { j: { neck: [10, -30, 0], head: [0, -26, 0] } });
-  const sCham = merge(G, root(0.08, -0.05, 0.10, 0, 88, -8), { L: pivot(g.L, 130, 0) }, legR([-95, 0, -28], 135, [-20, 0, 0], [-20, 0, 0]), { j: { neck: [10, -40, 0], head: [0, -36, 0] } });
-  const sExt = merge(G, root(0.08, -0.04, 0.10, 0, 90, -26), { L: pivot(g.L, 140, 0) }, legR([-8, 0, -84], 4, [-20, 0, 0], [-20, 0, 0]), { j: { spine: [0, 0, -10], neck: [8, -48, 6], head: [0, -36, 0] } });
+  const sTurn = merge(G, root(0.03, -0.06, 0.20, 0, 50, 0), { L: pivot(g.L, 80, 0), R: pivot(g.R, 20, 30) }, { j: { neck: [10, -30, 0], head: [0, -26, 0] } });
+  const sCham = merge(G, root(-0.02, -0.05, 0.36, 0, 88, -6), { L: pivot(g.L, 130, 0) }, legR([-95, 0, -28], 135, [-20, 0, 0], [-20, 0, 0]), { j: { neck: [10, -40, 0], head: [0, -36, 0] } });
+  const sExt = merge(G, root(-0.02, -0.04, 0.38, 0, 90, -18), { L: pivot(g.L, 140, 0) }, legR([-8, 0, -84], 4, [-20, 0, 0], [-20, 0, 0]), { j: { spine: [0, 0, -10], neck: [8, -48, 6], head: [0, -36, 0] } });
   move({ id: "side-kick", kind: "kick", band: "6-8", art: W("taekwondo, karate", "taekwondo, karate"),
     keys: [K(0, 0, G), K(0.6, 0, G), K(1.15, 1, sTurn), K(1.7, 1, sCham), K(2.05, 2, sExt, { ease: "snap" }), K(2.7, 2, sExt), K(3.05, 3, sCham), K(3.6, 4, sTurn), K(4.1, 4, G), K(4.6, 4, G)],
     en: { n: "Side kick", steps: ["Start in your guard.", "Turn sideways. Pull your knee up across your body. Look over your shoulder at the target.", "Push your leg straight out to the side. Heel first, toes a little down. Breathe out.", "Pull the knee back in.", "Set the foot down and turn back into your guard."],
@@ -421,8 +424,8 @@ blockMove("outside-block", "3-5", "outStart", "outside",
           tips: ["Talón, cadera y hombro forman una línea recta.", "El talón de apoyo gira hacia el blanco.", "Patea bajo al empezar: a la altura de la rodilla está bien."] } });
   // back kick: look over the shoulder, thrust the heel straight back
   const bLook = merge(G, root(0.04, -0.06, 0.06, 0, -40, 0), { j: { neck: [6, -50, 0], head: [0, -40, 0] } });
-  const bCham = merge(G, root(0.08, -0.05, 0.12, 12, -50, 0), { L: g.L }, legR([-80, 0, 6], 125, [-20, 0, 0]), { j: { spine: [10, 0, 0], neck: [-6, -60, 0], head: [0, -45, 0] } });
-  const bExt = merge(G, root(0.08, -0.07, 0.16, 32, -50, 0), { L: g.L }, legR([26, 0, 4], 6, [-30, 0, 0], [0, 0, 0]), { j: { spine: [10, 0, 0], neck: [-24, -64, 0], head: [-10, -45, 0] } });
+  const bCham = merge(G, root(0.06, -0.06, 0.18, 16, -14, 0), { L: pivot(g.L, 0, 0) }, legR([-72, 0, 4], 128, [-10, 0, 0]), { j: { spine: [10, 0, 0], neck: [-6, -60, 0], head: [0, -45, 0] } });
+  const bExt = merge(G, root(0.06, -0.09, 0.24, 36, -10, 0), { L: pivot(g.L, 0, 0) }, legR([54, 0, 2], 4, [12, 0, 0], [0, 0, 0]), { j: { spine: [8, 0, 0], neck: [-30, -60, 0], head: [-12, -45, 0] } });
   move({ id: "back-kick", kind: "kick", band: "9-12", art: W("taekwondo", "taekwondo"),
     keys: [K(0, 0, G), K(0.6, 0, G), K(1.2, 1, bLook), K(1.8, 2, bCham), K(2.15, 3, bExt, { ease: "snap" }), K(2.8, 3, bExt), K(3.15, 4, bCham), K(3.8, 4, bLook), K(4.3, 4, G), K(4.8, 4, G)],
     en: { n: "Back kick", steps: ["Start in your guard.", "Look over your back shoulder to see behind you.", "Lift your knee in close, toes down.", "Push your heel straight back behind you. Toes point to the floor. Breathe out.", "Pull the knee in, set the foot down, and face forward."],
@@ -524,8 +527,8 @@ blockMove("outside-block", "3-5", "outStart", "outside",
 /* ─────────── Combinations and form ─────────── */
 {
   const G = GUARD(), g = ST.guard();
-  const jabOut = merge(G, root(0.01, -0.06, 0.03, 0, -36, 0), { j: Object.assign({}, Lside({ shoulderR: [-88, 0, 32], elbowR: [-3, 90, 0], clavR: [0, 0, -8] })) }, { j: { neck: [14, 0, 0] } });
-  const crossOut = merge(G, root(0.01, -0.07, 0.05, 0, 4, 0), { R: pivot(g.R, -8, 32) }, { j: Object.assign({}, AR.punchHi, { shoulderR: [-90, 0, 4], clavR: [0, 0, 6] }) }, torso(10), { j: { neck: [14, -6, 0] } });
+  const jabOut = merge(G, root(0.01, -0.06, 0.03, 0, -36, 0), { j: { clavL: [0, 0, 8], neck: [14, 0, 0] }, arm: { L: { to: [0.02, 1.40, 0.80], pole: [0.5, 0.9, 0.1], twist: 0 } } });
+  const crossOut = merge(G, root(0.01, -0.07, 0.05, 0, 4, 0), { R: pivot(g.R, -8, 32) }, torso(10), { j: { clavR: [0, 0, -6], neck: [14, -6, 0] }, arm: { R: { to: [-0.01, 1.40, 0.86], pole: [-0.5, 0.9, 0.1], twist: 0 } } });
   move({ id: "combo-jab-cross", kind: "combo", band: "6-8", art: W("boxing", "boxeo"),
     keys: [K(0, 0, G), K(0.6, 0, G), K(0.82, 1, jabOut, { ease: "snap" }), K(1.15, 1, jabOut), K(1.45, 2, G), K(1.75, 3, crossOut, { ease: "snap" }), K(2.2, 3, crossOut), K(2.6, 4, G), K(3.2, 4, G)],
     en: { n: "Jab, cross", steps: ["Start in your guard.", "Jab: the front hand snaps straight out.", "Bring it back to your face.", "Cross: turn your back foot and hip, the back hand goes straight out. Breathe out on each punch.", "Back to your guard."],

@@ -141,3 +141,22 @@ trick wording. Spread the right answer evenly over the positions (the validator 
 
 When done, reply with ONLY: the validator's OK line, and a list of any facts you were unsure about and left
 out or softened (one line each), and any quote you set to paraphrase.
+
+## Watch it in 3D (2026-10-12, at the owner's request)
+Jimmy: "Could we not take this amazement to FACS for cooking and sewing lessons? Have this person cook recipes by
+preloaded or the viewer plugs it in and demonstration on how to sew etc." Lessons now link into the 3D Kitchen
+(`/kitchen-lab`) and the 3D Sewing Room (`/sewing-lab`). `/kitchen` stays the 2D bench (fcs-shop.html).
+- Addresses, ids only from `_work/engine3d/CONTRACT.md` (Addendum): `/kitchen-lab#skill-<action-id>`,
+  `/kitchen-lab#<recipe-id>`, `/sewing-lab#<move-id>`; plain `/kitchen-lab` for "Plug in your own recipe".
+- Everything lives in `practice3d.py`: `TRY` (a lesson's `"try": {"href","en","es"}` button, "Watch it in 3D: …"),
+  `NEW` (a "Watch it in 3D" lesson: which skill or recipe, 2–4 things to notice, a safety line, the usual words,
+  look and three checks; appended to the end of a chapter so no lesson number moves) and `LINKS3D` (the unit
+  page's Practice rooms doors, merged into `LINKS` in outline.py). `python3 add_3d.py` writes TRY and NEW into
+  the chapter files (idempotent), then `python3 assemble.py <n>`.
+- Band words: K–2 says watch, look, a grown-up does the sharp and hot jobs; 9–12 may name the science (heat
+  transfer, protein denaturing, gluten, emulsions). Safety the 3D rooms show: clean hands, hair tied back, claw
+  grip with the knife tip on the board, handles turned in, dry oven mitts, a grown-up at the stove for children,
+  the thermometer (poultry 165 °F, ground meat 160 °F, eggs until firm); pins in the pincushion, shears passed
+  closed, fingers off the presser-foot path, the iron upright and unplugged.
+- Room pages: `python3 add_3d_rooms.py` (from aog-deploy/) adds the calm "Watch it in 3D" card after Start here on
+  fc*.html and two doors on fcs-shop.html. Check every link: `node tools/check-facs-3d.js`.

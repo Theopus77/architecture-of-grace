@@ -647,42 +647,58 @@ export function makeFigure(opts) {
     H.thb[0].quaternion.setFromAxisAngle(axOpp, opp * D2R);
     H.thb[1].quaternion.setFromAxisAngle(axF, f1 * D2R); H.thb[2].quaternion.setFromAxisAngle(axF, f2 * D2R);
   }
-  const PINCH = {};   // the thumb angles that bring its tip to the index tip, found once per side
-  function applyHand(S) {
-    const H = HB[S], g = clamp(H.grip, 0, 1);
-    if (H.pinch) {
-      curlFinger(H, "idx", 38, 42, 22); curlFinger(H, "mid", 50, 62, 40, 0); curlFinger(H, "rng", 62, 78, 50); curlFinger(H, "lit", 70, 85, 55);
-      if (!PINCH[S]) PINCH[S] = solvePinch(S);
-      const p = PINCH[S]; thumbPose(H, p[0], p[1], p[2]);
-    } else {
-      const r = 6 + g * 74;
-      curlFinger(H, "idx", r * 0.92, 8 + g * 88, 6 + g * 58, (1 - g) * 2); curlFinger(H, "mid", r, 9 + g * 92, 7 + g * 60);
-      curlFinger(H, "rng", r * 1.05, 10 + g * 94, 8 + g * 62, -(1 - g) * 2); curlFinger(H, "lit", r * 1.1, 11 + g * 95, 9 + g * 64, -(1 - g) * 5);
-      thumbPose(H, 18 + g * 30, 6 + g * 32, 6 + g * 38);
+  const THUMB = {};   // thumb angles found once per side: open, closed round a handle, and pinching the index tip
+  const _m = new THREE.Matrix4();
+  function boneLocal(S, b, off) { const w = bones["wrist" + S]; w.updateMatrixWorld(true); _m.copy(w.matrixWorld).invert(); return (off ? off.clone() : V3(0, 0, 0)).applyMatrix4(b.matrixWorld).applyMatrix4(_m); }
+  function tipLocal(S, nm) {   // the tip of a finger in its wrist's space
+    const H = HB[S], len = nm === "thb" ? TH_L[2] : FING.find(f => f[0] === nm)[3][2];
+    return boneLocal(S, H[nm][2], nm === "thb" ? H.thD.clone().multiplyScalar(len) : V3(0, -len, 0));
+  }
+  function solveThumb(S, target) {   // search the thumb's three angles so its tip lands on a point (wrist space)
+    const H = HB[S]; let best = [20, 10, 10], bd = 1e9;
+    const cost = t => { thumbPose(H, t[0], t[1], t[2]); bones["wrist" + S].updateMatrixWorld(true); return tipLocal(S, "thb").distanceTo(target) + 0.00005 * (Math.max(0, -t[2]) + Math.max(0, -t[1])); };
+    for (let o = -40; o <= 100; o += 10) for (let f1 = -30; f1 <= 80; f1 += 10) for (let f2 = -10; f2 <= 80; f2 += 15) { const d = cost([o, f1, f2]); if (d < bd) { bd = d; best = [o, f1, f2]; } }
+    let st = 5;
+    for (let it = 0; it < 40 && st > 0.2; it++) {
+      let moved = false;
+      for (let k = 0; k < 3; k++) for (const sg of [-1, 1]) { const t = best.slice(); t[k] += sg * st; const d = cost(t); if (d < bd) { bd = d; best = t; moved = true; } }
+      if (!moved) st /= 2;
     }
+    return best;
+  }
+  function fingersFor(H, g, pin) {
+    if (pin) { const c = H.pinchIdx || [46, 46, 22]; curlFinger(H, "idx", c[0], c[1], c[2]); curlFinger(H, "mid", 52, 64, 40); curlFinger(H, "rng", 62, 78, 50); curlFinger(H, "lit", 70, 85, 55); return; }
+    const r = 6 + g * 74;
+    curlFinger(H, "idx", r * 0.92, 8 + g * 88, 6 + g * 58, (1 - g) * 2); curlFinger(H, "mid", r, 9 + g * 92, 7 + g * 60);
+    curlFinger(H, "rng", r * 1.05, 10 + g * 94, 8 + g * 62, -(1 - g) * 2); curlFinger(H, "lit", r * 1.1, 11 + g * 95, 9 + g * 64, -(1 - g) * 5);
+  }
+  function thumbSets(S) {
+    if (THUMB[S]) return THUMB[S];
+    const H = HB[S], T = {};
+    T.open = [8, 4, 4];
+    fingersFor(H, 1, false); bones["wrist" + S].updateMatrixWorld(true);
+    const over = boneLocal(S, H.idx[2]).add(boneLocal(S, H.mid[2])).multiplyScalar(0.5).addScaledVector(H.palmN, 0.016);
+    T.fist = solveThumb(S, over);
+    let bestD = 1e9;
+    for (const c of [[40, 40, 20], [50, 50, 20], [55, 60, 25], [60, 65, 30], [65, 70, 30], [70, 75, 35], [45, 70, 40], [55, 80, 45]]) {
+      H.pinchIdx = c; fingersFor(H, 0.5, true); bones["wrist" + S].updateMatrixWorld(true);
+      const tip = tipLocal(S, "idx"), base = boneLocal(S, H.thb[0]);
+      const goal = tip.clone().addScaledVector(base.sub(tip).normalize(), 0.0145), t = solveThumb(S, goal);
+      thumbPose(H, t[0], t[1], t[2]); const d = tipLocal(S, "thb").distanceTo(goal);
+      if (d < bestD - 0.002) { bestD = d; T.pinch = t; T.pinchIdx = c; }
+    }
+    H.pinchIdx = T.pinchIdx;
+    return (THUMB[S] = T);
+  }
+  function applyHand(S) {
+    const H = HB[S], g = clamp(H.grip, 0, 1), T = thumbSets(S);
+    fingersFor(H, g, H.pinch);
+    const t = H.pinch ? T.pinch : T.open.map((v, k) => v + (T.fist[k] - v) * g);
+    thumbPose(H, t[0], t[1], t[2]);
     bones["wrist" + S].updateMatrixWorld(true);
     // the anchor: in the palm for a handle; between the thumb and index tips for a pinch
-    if (H.pinch) { const a = tipLocal(S, "idx"), b = tipLocal(S, "thb"); H.anchor.position.copy(a).add(b).multiplyScalar(0.5); }
+    if (H.pinch) H.anchor.position.copy(tipLocal(S, "idx")).add(tipLocal(S, "thb")).multiplyScalar(0.5);
     else H.anchor.position.copy(H.anchorHome);
-  }
-  const _m = new THREE.Matrix4();
-  function tipLocal(S, nm) {   // the tip of a finger in its wrist's space
-    const H = HB[S], b = H[nm][2], len = nm === "thb" ? TH_L[2] : FING.find(f => f[0] === nm)[3][2];
-    const off = nm === "thb" ? H.thD.clone().multiplyScalar(len) : V3(0, -len, 0);
-    bones["wrist" + S].updateMatrixWorld(true);
-    _m.copy(bones["wrist" + S].matrixWorld).invert();
-    return off.applyMatrix4(b.matrixWorld).applyMatrix4(_m);
-  }
-  function solvePinch(S) {
-    const H = HB[S]; let best = [40, 15, 10], bd = 1e9;
-    for (let o = 20; o <= 90; o += 5) for (let f1 = 0; f1 <= 60; f1 += 6) for (let f2 = 0; f2 <= 60; f2 += 10) {
-      thumbPose(H, o, f1, f2); bones["wrist" + S].updateMatrixWorld(true);
-      const d = tipLocal(S, "idx").distanceTo(tipLocal(S, "thb")); if (d < bd) { bd = d; best = [o, f1, f2]; }
-    }
-    for (let it = 0; it < 3; it++) { const st = [2.5, 3, 5].map(x => x / (it + 1)); [0, 1, 2].forEach(k => [-1, 1].forEach(sg => {
-      const t = best.slice(); t[k] += sg * st[k]; thumbPose(H, t[0], t[1], t[2]); bones["wrist" + S].updateMatrixWorld(true);
-      const d = tipLocal(S, "idx").distanceTo(tipLocal(S, "thb")); if (d < bd) { bd = d; best = t; } })); }
-    return best;
   }
   const sideKey = s => (s === "R" || s === "right" || s === "r") ? "R" : "L";
   function grip(side, amount) { const S = sideKey(side); HB[S].grip = clamp(+amount || 0, 0, 1); HB[S].pinch = false; applyHand(S); }

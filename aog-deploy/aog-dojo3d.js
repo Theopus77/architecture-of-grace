@@ -130,7 +130,7 @@ export async function create(opt) {
   });
   // smooth shapes on the back wall: three soft discs in a calm row (wood, sage, stone) — just shapes
   const disc = r => { const t = 0.035, pts = [new THREE.Vector2(0.0001, t)]; for (let i = 0; i <= 10; i++) { const a = i / 10 * Math.PI / 2; pts.push(new THREE.Vector2(r - t + Math.sin(a) * t, Math.cos(a) * t)); } pts.push(new THREE.Vector2(0.0001, 0)); const g = new THREE.LatheGeometry(pts, 64); g.rotateX(Math.PI / 2); return g; };
-  [[-2.2, 2.2, 0.55, MAT.wood], [-0.9, 2.45, 0.38, MAT.accent], [0.15, 2.15, 0.26, MAT.stone]].forEach(([x, y, r, m]) => add(disc(r), m, x, y, -5.15, false));
+  [[-3.4, 2.0, 0.55, MAT.wood], [-2.3, 2.5, 0.34, MAT.accent], [3.6, 2.3, 0.42, MAT.stone]].forEach(([x, y, r, m]) => add(disc(r), m, x, y, -5.15, false));
   // a long low bench with rounded edges, with three smooth river stones resting on it
   add(new RoundedBoxGeometry(2.6, 0.08, 0.42, seg, 0.035), MAT.wood, 2.4, 0.42 + FLOOR_Y, -4.7, true);
   [[1.6, 0.4], [2.6, 0.3], [3.4, 0.36]].forEach(([x, s]) => add(new RoundedBoxGeometry(0.1, 0.36, 0.34, seg, 0.04), MAT.wood, x, 0.2 + FLOOR_Y, -4.7, true));
@@ -216,9 +216,14 @@ export async function create(opt) {
     JN.forEach(n => { const o = F.J(n); if (!o) return; tmpE.setFromQuaternion(o.quaternion, "XYZ"); out.j[n] = [tmpE.x / DEG, tmpE.y / DEG, tmpE.z / DEG]; });
     return out;
   }
+  /* a key's root turns about the hips (where a person turns), not about the floor: the body's own origin is on the floor */
+  const P0 = new THREE.Vector3(0, 0.97, 0);
+  const rotP0 = rot => P0.clone().applyEuler(new THREE.Euler(rot[0] * DEG, rot[1] * DEG, rot[2] * DEG, "YXZ"));
   function fkPose(k) {
     const j = {}; for (const n in k.j) j[n] = k.j[n];
-    return { root: { pos: (k.root ? k.root.pos : [0, 0, 0]).slice(), rot: (k.root ? k.root.rot : [0, 0, 0]).slice() }, j, grip: Object.assign({ L: 0.92, R: 0.92 }, k.grip || {}) };
+    const pos = (k.root ? k.root.pos : [0, 0, 0]).slice(), rot = (k.root ? k.root.rot : [0, 0, 0]).slice(), r = rotP0(rot);
+    pos[0] += P0.x - r.x; pos[1] += P0.y - r.y; pos[2] += P0.z - r.z;
+    return { root: { pos, rot }, j, grip: Object.assign({ L: 0.92, R: 0.92 }, k.grip || {}) };
   }
   /* solve a keyframe on its own: FK, then IK for planted feet, then rest the body on the mat if asked */
   function solveKey(F, k, offset) {
@@ -231,8 +236,20 @@ export async function create(opt) {
       let worst = 0; ["L", "R"].forEach(s => { if (planted[s]) worst = Math.max(worst, F.fig.footFloor(s) - 0.004); });
       if (worst > 0.002 && pass === 0) { F.fig.body.position.y -= worst; F.fig.update(); } else break;
     }
+    // arms that reach for a spot (a punch's target, the chin for a guard): IK to the spot, the elbow toward its pole
+    if (k.arm) ["L", "R"].forEach(s => {
+      const a = k.arm[s]; if (!a) return;
+      const to = new THREE.Vector3(a.to[0] + offset.x, a.to[1], a.to[2] + offset.z), pole = new THREE.Vector3(a.pole[0] + offset.x, a.pole[1], a.pole[2] + offset.z);
+      F.ik.arm(s, to, pole);
+      const el = F.J("elbow" + s);
+      if (a.twist) el.quaternion.multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), a.twist * DEG));
+      if (a.wrist) F.J("wrist" + s).rotation.set(a.wrist[0] * DEG, a.wrist[1] * DEG, a.wrist[2] * DEG, "XYZ");
+      F.fig.update();
+    });
     if (k.ground === "body") { const m = lowest(F, null); F.fig.body.position.y -= m; F.fig.update(); }
-    const out = readPose(F); out.grip = pose.grip; return out;
+    const out = readPose(F); out.grip = pose.grip;
+    const r = rotP0(out.root.rot); out.pelvis = [out.root.pos[0] + r.x - offset.x, out.root.pos[1] + r.y, out.root.pos[2] + r.z - offset.z];
+    return out;
   }
 
   /* ══ the move ══ */
@@ -242,7 +259,7 @@ export async function create(opt) {
     const mk = window.AOGDojoMoves.mirrorKey;
     KEYS = m.keys.map(k => { const kk = mirror ? mk(k) : JSON.parse(JSON.stringify(k)); return kk; });
     KEYS.forEach(k => { k.solved = solveKey(MAIN, k, { x: 0, z: 0 }); });
-    path = KEYS.map(k => ({ t: k.t, x: k.solved.root.pos[0], z: k.solved.root.pos[2] }));
+    path = KEYS.map(k => ({ t: k.t, x: k.solved.pelvis[0], z: k.solved.pelvis[2] }));
     curT = 0;
     if (ghostOn) buildGhosts();
   }
@@ -257,7 +274,8 @@ export async function create(opt) {
     offset = offset || { x: 0, z: 0 };
     const [a, b, u] = segAt(t), A = KEYS[a], B = KEYS[b];
     const pose = F.fig.blend(A.solved, B.solved, u);
-    pose.root.pos = [lerp(A.solved.root.pos[0], B.solved.root.pos[0], u) + offset.x, lerp(A.solved.root.pos[1], B.solved.root.pos[1], u), lerp(A.solved.root.pos[2], B.solved.root.pos[2], u) + offset.z];
+    const pa = A.solved.pelvis, pb = B.solved.pelvis, r = rotP0(pose.root.rot);
+    pose.root.pos = [lerp(pa[0], pb[0], u) - r.x + offset.x, lerp(pa[1], pb[1], u) - r.y, lerp(pa[2], pb[2], u) - r.z + offset.z];
     F.fig.setPose(pose); F.fig.update && F.fig.update(); F.fig.root.updateMatrixWorld(true);
     const planted = {};
     ["L", "R"].forEach(s => {
@@ -284,13 +302,13 @@ export async function create(opt) {
     // follow the figure where it travels (form, steps), smoothly
     let x = path[0].x, z = path[0].z;
     for (let i = 0; i < path.length - 1; i++) if (t >= path[i].t) { const u = clamp((t - path[i].t) / Math.max(1e-6, path[i + 1].t - path[i].t), 0, 1), e = EASE.soft(u); x = lerp(path[i].x, path[i + 1].x, e); z = lerp(path[i].z, path[i + 1].z, e); }
-    return new THREE.Vector3(x, 0.9, z);
+    return new THREE.Vector3(x, 0.84, z);
   }
   function placeCamera(t) {
     const asp = W / Math.max(1, H), fov = camera.fov * DEG;
-    let target = center(t), wNeed = 2.1, hNeed = 2.25;
+    let target = center(t), wNeed = 1.9, hNeed = 2.0;
     if (ghostOn && ghosts.length) { target = new THREE.Vector3(0, 0.88, 0); wNeed = ghostSpan + 1.0; hNeed = 2.2; }
-    const dist = Math.max(hNeed / 2 / Math.tan(fov / 2), wNeed / 2 / (Math.tan(fov / 2) * asp)) * 1.08 + 0.4;
+    const dist = Math.max(hNeed / 2 / Math.tan(fov / 2), wNeed / 2 / (Math.tan(fov / 2) * asp)) * 1.0 + 0.2;
     const a = (ghostOn ? 0 : az) * DEG, e = (ghostOn ? 6 : el) * DEG;
     camera.position.set(target.x + Math.sin(a) * Math.cos(e) * dist, target.y + Math.sin(e) * dist + 0.1, target.z + Math.cos(a) * Math.cos(e) * dist);
     camera.lookAt(target);
