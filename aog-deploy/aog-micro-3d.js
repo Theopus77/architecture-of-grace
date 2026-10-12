@@ -1395,7 +1395,7 @@ function setOptics(u, gl, L, o) {
   var na = naOf(L), cf = condFrac(L), n = immersion(L);
   var naEff = na * (1 + cf) / 2, tanA = naEff / Math.sqrt(Math.max(0.05, n * n - naEff * naEff));
   var d = abbeUm(L), haze = (L.obj === 100 && !L.oil) ? 0.55 : (L.obj === 40 && L.oil40) ? 1.4 : 0;
-  gl.uniform1f(u.uTanA, tanA); gl.uniform1f(u.uCond, cf); gl.uniform1f(u.uSigRes, 0.38 * d); gl.uniform1f(u.uHaze, haze);
+  gl.uniform1f(u.uTanA, tanA); gl.uniform1f(u.uCond, cf); gl.uniform1f(u.uSigRes, 0.45 * d); gl.uniform1f(u.uHaze, haze);
   gl.uniform1f(u.uZf, o.zf);
   if (u.uScat) gl.uniform1f(u.uScat, 0.30 * (1.05 - na * 0.55));
   if (u.uKappa) gl.uniform1f(u.uKappa, 0.55 * (1.15 - cf * 0.75));
