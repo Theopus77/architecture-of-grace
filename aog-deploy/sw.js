@@ -909,6 +909,20 @@ self.addEventListener('fetch', function (e) {
   /* AOG-FRONT-BUILD-V1 (2026-10-11): the front page's code (front/), one file per block, named after what is in it.
      A name never changes its contents, so a saved copy is always right: it comes straight from the store, and only a
      block never seen before is fetched (and kept). */
+  /* AOG-STEMS-AI-V1 (2026-10-12): the separation model and its runtime (about 40 MB, fetched only at Best quality) live in
+     versioned folders whose files never change: a saved copy is used as it is, never fetched again in the background. */
+  if (/\/(vendor\/onnxruntime-web-\d[^\/]*|models\/stems\/[a-z0-9-]+-v\d+)\//.test(req.url)) {
+    e.respondWith(
+      caches.match(req).then(function (hit) {
+        if (hit) return hit;
+        return fetch(req).then(function (r) {
+          if (r && r.status === 200 && r.type === 'basic') { var copy = r.clone(); e.waitUntil(caches.open(KEEP).then(function (c) { return c.put(req, copy); }).catch(function () {})); }
+          return r;
+        });
+      })
+    );
+    return;
+  }
   if (/\/front\/[0-9a-f]+\.js(\?|#|$)/.test(req.url)) {
     e.respondWith(
       caches.match(req).then(function (hit) {
