@@ -41,7 +41,7 @@ const SPY = `(() => {
   window.setTimeout = function () { window.__n.to++; return st.apply(window, arguments); };
   window.setInterval = function () { window.__n.iv++; return si.apply(window, arguments); };
   window.requestAnimationFrame = function (f) { window.__n.raf++; if (window.__who) window.__who[(new Error().stack || "").split("\\n").slice(2, 4).join(" | ")] = 1; return ra.call(window, f); };
-  let real; Object.defineProperty(window, "AOGVU", { configurable: true, get() { return real; }, set(v) { if (v && !v.own) v.own = c => { (window.__owned = window.__owned || []).push(c); }; real = v; } });
+  let real; Object.defineProperty(window, "AOGVU", { configurable: true, get() { return real; }, set(v) { if (v) { const o = v.own; v.own = c => { (window.__owned = window.__owned || []).push(c); return o ? o.call(v, c) : c; }; } real = v; } });
 })();`;
 async function routes(ctx) {
   await ctx.route(/^https?:\/\/(?!localhost)/, r => r.abort());
@@ -260,7 +260,7 @@ async function routes(ctx) {
     await p.click('[data-part="A"][data-k="drums"]'); await p.click('[data-ponly="A"]');
     const dm = await c.newPage(); await dm.goto(U(P2) + "music-pads.html"); await dm.waitForTimeout(2000);
     a = await dm.evaluate(() => { const B = S.banks[S.bank]; return { type: B.type, line: (document.getElementById("inLine") || {}).textContent || "" }; });
-    ok(a.type === "chops" && /^\d+ chops from my-song · Drums are on bank [A-D], one beat a pad\.$/.test(a.line), "B the Drum Machine opens on its chops bank with the drums' chops: " + JSON.stringify(a));
+    ok(a.type === "chops" && /^\d+ chops from my-song · Drums are on bank [A-D], each starting a beat after the last\.$/.test(a.line), "B the Drum Machine opens on its chops bank with the drums' chops: " + JSON.stringify(a));
     await dm.close();
 
     /* the Studio's hush: the deck that played stops, and only it starts again */

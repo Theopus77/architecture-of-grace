@@ -460,7 +460,7 @@
     if (!PL.ac) { var C = window.AudioContext || window.webkitAudioContext; PL.ac = new C(); try { if (window.AOGVU && AOGVU.own) AOGVU.own(PL.ac); } catch (e) {}   /* AOG-SILENT-V1 */
       PL.out = PL.ac.createGain(); PL.out.gain.value = 0.9; PL.out.connect(PL.ac.destination);
       PL.fxIn = PL.ac.createGain(); try { PL.fxIn.channelCount = 2; PL.fxIn.channelCountMode = "explicit"; PL.fxIn.channelInterpretation = "speakers"; } catch (e) {}
-      PL.fx = []; quietWire(); try { if (window.AOGVU && AOGVU.own) AOGVU.own(PL.ac); } catch (e) {} }
+      PL.fx = []; quietWire(); }
     clearTimeout(PL.restT); try { if (PL.ac.state !== "running") PL.ac.resume(); } catch (e) {}
     return PL.ac;
   }
@@ -793,10 +793,8 @@
     stopTick(); paintLive(); rest();
   }
   /* AOG-SILENT-V1 (2026-10-12): a paused song lets its sound engine rest (nothing runs while nothing plays); the next press wakes
-     it (acx). Out of sight (the Studio's hush, or the tab hidden) the song pauses at once. */
+     it (acx). Out of sight the song pauses, and goes on after (the aog-hush listener below, AOG-STEMS-V1). */
   function rest() { clearTimeout(PL.restT); PL.restT = setTimeout(function () { try { if (PL.ac && !PL.playing && !PL.counting && PL.ac.state === "running") PL.ac.suspend(); } catch (e) {} }, 600); }
-  window.addEventListener("aog-hush", function (e) { if (e.detail && e.detail.on && PL.playing) pause(); });
-  D.addEventListener("visibilitychange", function () { if (D.hidden && PL.playing) pause(); });
   function paintLive() { if (!CUR || !$("lgNow")) return; paintStatus(); paintNow(songNow(), true); }
   function seek(T) { PIN = null; var was = PL.playing; if (was) pause(); PL.pos = Math.max(0, Math.min(CUR.sec, T)); PL.waiting = null; PL.waitDone = PL.pos - 0.001; paintLive(); if (was) play({ noCount: false }); }
   function startTick() { stopTick(); PL.tick = setInterval(tick, 30); }
