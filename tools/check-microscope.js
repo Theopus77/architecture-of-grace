@@ -194,7 +194,8 @@ const DESK = { viewport: { width: 1280, height: 900 }, deviceScaleFactor: 1 };
   for (const id of specs) for (const obj of [4, 10, 40, 100]) {
     const fine = obj === 4 ? 0 : obj === 10 ? 0 : 3, coarse = obj === 4 ? 42 : obj === 10 ? 44 : obj === 40 ? 45 : 46;
     await setLab(p, { spec: id, obj, coarse, fine: obj === 100 ? 5 : fine, oil: obj === 100 }, { step: 200 });
-    const st = await stat(p, "eye");
+    let st = await stat(p, "eye");
+    if (!(st.sd > 1.5 && st.mean > 8)) { await wait(800); st = await stat(p, "eye"); }   // the first slide after opening can still be on its way
     const dep = await p.evaluate(() => !depthWanted(S.lab) || (DEPTH.state === "ready" && AOGMicro3D.info().spec === S.lab.spec));
     if (!(st.sd > 1.5 && st.mean > 8) || !dep) bad.push(`${id}@${obj}× (${st.mean.toFixed(0)}±${st.sd.toFixed(1)}${dep ? "" : ", depth engine did not draw"})`);
   }
