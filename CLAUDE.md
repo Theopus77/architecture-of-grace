@@ -305,6 +305,19 @@ LIGHT SPEED!!" Every feature, now and later:
   practice lessons live in `_work/mar/mar_practice.py` (assemble.py adds them); after a change, rebuild the course and
   run `node tools/check-mar-practice.js`.
 
+## The Kitchen and the Sewing Room (Jimmy, 2026-10-12: "take this amazement to FACS for cooking and sewing lessons")
+
+- The 3D Kitchen is `kitchen.html` at **/kitchen-lab** (/kitchen stays the older "Kitchen & the Sewing Table" page,
+  `fcs-shop.html`). The site's figure (outfit "apron") cooks the 9 recipes in `aog-kitchen-recipes.js` and any recipe a
+  person types or pastes in (read on the device, English or Spanish, scaled ½×–3×, saved on the device), and shows the
+  28 skills one at a time: `/kitchen-lab#<recipe>`, `/kitchen-lab#skill-<id>`, `/kitchen-lab#plug-in`. After any change,
+  run `node tools/check-kitchen.js`.
+- The 3D Sewing Room is `sewing.html` at **/sewing-lab** (also /sewing): 20 moves in `aog-sewing-moves.js` — hand
+  stitches whose thread really goes through the cloth (front and back), buttons, cutting, the machine and pressing.
+  `/sewing-lab#<id>` opens a move. After any change, run `node tools/check-sewing.js`.
+- FACS lessons and room pages link into both (`_work/fcs/practice3d.py`, `add_3d.py`, `add_3d_rooms.py`); after a
+  change run `node tools/check-facs-3d.js`. The ids are fixed in `_work/engine3d/CONTRACT.md`.
+
 ## Housekeeping
 
 - Bump `const CACHE` in `aog-deploy/sw.js` whenever a page changes, so browsers
