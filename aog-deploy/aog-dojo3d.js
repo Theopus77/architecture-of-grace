@@ -159,7 +159,7 @@ export async function create(opt) {
   const sun = stage.sun || new THREE.DirectionalLight("#fff1dc", 2.0);
   sun.position.set(-6, 5.5, 2.5); sun.target.position.set(0, 0.6, 0); sun.castShadow = true;
   const sm = phone ? 1024 : 2048; sun.shadow.mapSize.set(sm, sm);
-  Object.assign(sun.shadow.camera, { left: -3, right: 3, top: 3, bottom: -3, near: 1, far: 20 });
+  Object.assign(sun.shadow.camera, { left: -3, right: 3, top: 3, bottom: -3, near: 1, far: 20 }); sun.shadow.camera.updateProjectionMatrix();
   sun.shadow.bias = -0.0003; sun.shadow.normalBias = 0.02; sun.shadow.radius = 4;
   if (!stage.sun) { scene.add(sun); scene.add(sun.target); }
   const fill = stage.hemi || new THREE.HemisphereLight("#fff8ee", "#b89a78", 0.5); if (!stage.hemi) scene.add(fill);
