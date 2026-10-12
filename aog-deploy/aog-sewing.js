@@ -409,7 +409,7 @@ BUILD.whipstitch = () => {
     tip(tl, H, sNow[2], 0.4 * pace, s.iE, 0.2, 0.85);
     tip(tl, H, sNow[2], 1.2 * pace, pullOut(H, x(k), zi, "F", -0.004, 0.03), 0.85);
   }
-  parkSeg(tl, H, 6, "B");
+  parkSeg(tl, H, 6, "F");
   flipSeg(tl, 6, 1); holdSeg(tl, 6, 0.8);
   H.done(); tl.derive = deriveHand(H); tl.track = H;
   return finish(tl, 7);

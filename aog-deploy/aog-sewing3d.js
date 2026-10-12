@@ -608,24 +608,18 @@ export async function create(kit) {
   }
   function camFor(st, mode) {
     const f = focusPoint(st), s = st.station;
-    let pos;
+    let pos, fov = 34;
     if (mode === "close") {
-      if (s === "hand" && globalThis.__sewCam) {   // TEMP-TWEAK
-        const T = globalThis.__sewCam, n = V(0, 1, 0).applyQuaternion(work.quaternion), xa = V(1, 0, 0).applyQuaternion(work.quaternion), za = V(0, 0, 1).applyQuaternion(work.quaternion);
+      if (s === "hand") {
+        // a long lens from a little way off, the way a teacher leans in: the stitches fill the picture and the hands stay
+        // their real size instead of crowding the lens
+        const n = V(0, 1, 0).applyQuaternion(work.quaternion), xa = V(1, 0, 0).applyQuaternion(work.quaternion), za = V(0, 0, 1).applyQuaternion(work.quaternion);
+        const T = globalThis.__sewCam || (st.work.kind === "none" ? { d: 0.26, fov: 20, x: -0.03, z: -0.08 }
+          : (st.id === "whipstitch" || st.id === "blanket-stitch") ? { d: 0.15, fov: 24, x: -0.02, z: -0.06 }   // over the edge, so the wrap shows
+          : (st.id === "sew-button" && st.step >= 5 && st.step <= 7) ? { d: 0.05, fov: 30, x: 0.03, z: 0.06 }   // low and side-on: the shank under the button
+          : { d: 0.17, fov: 24, x: -0.02, z: -0.03 });
         pos = f.clone().addScaledVector(n, T.d).addScaledVector(xa, T.x || 0).addScaledVector(za, T.z || 0);
-        camera.fov = T.fov || 34;
-      } else if (s === "hand") {
-        const n = V(0, 1, 0).applyQuaternion(work.quaternion);   // the work's face
-        const flipNow = st.work && st.work.flip > 0.5 ? 1 : 0;
-        pos = f.clone().addScaledVector(n, st.work.kind === "none" ? 0.17 : 0.105).add(V(-0.025, 0.03, 0.012));
-        if (st.id === "whipstitch" || st.id === "blanket-stitch") {   // edge stitches: look from beyond the edge, so the wrap shows
-          const out = V(0, 0, -1).applyQuaternion(work.quaternion);
-          pos = f.clone().addScaledVector(n, 0.075).addScaledVector(out, 0.07).add(V(-0.02, 0, 0));
-        }
-        if (st.id === "sew-button" && st.step >= 5 && st.step <= 7) {   // the thread shank: a lower, side-on look under the button
-          const out = V(0, 0, 1).applyQuaternion(work.quaternion);
-          pos = f.clone().addScaledVector(n, 0.05).addScaledVector(out, 0.06).add(V(0.03, 0, 0));
-        }
+        fov = T.fov;
       } else if (s === "machine") {
         if (st.id === "machine-parts") pos = f.clone().add(st.m.hl === "pedal" ? V(-0.25, 0.45, 0.5) : V(-0.12, 0.12, 0.34));
         else if (st.id === "thread-machine" || st.id === "wind-bobbin") pos = f.clone().add(V(-0.12, 0.14, 0.5));
@@ -634,12 +628,13 @@ export async function create(kit) {
       else pos = f.clone().add(V(0.1, 0.46, -0.34));
     } else if (mode === "shoulder") {
       const seat = s === "hand" ? LAY.hand.seat : s === "machine" ? M_.seat : s === "cut" ? CUT.stand : LAY.press.stand;
-      pos = V(seat[0] - 0.36, (s === "hand" || s === "machine") ? 1.6 : 1.9, seat[1] + 0.34);
+      // over the left shoulder, beside the head (never behind it)
+      pos = (s === "hand" || s === "machine") ? V(seat[0] - 0.3, 1.42, seat[1] + 0.16) : V(seat[0] - 0.36, 1.72, seat[1] + 0.26);
     } else {   // across the table, from the window side
       pos = V(f.x + 0.35, f.y + 0.45, f.z - 1.25);
       if (s === "press") pos = V(f.x - 0.2, f.y + 0.6, f.z - 1.2);
     }
-    return { pos, f };
+    return { pos, f, fov };
   }
   function placeCam(st) {
     const c = camFor(st, camMode === "orbit" ? "shoulder" : camMode);
@@ -649,6 +644,7 @@ export async function create(kit) {
       camera.position.set(f.x + Math.sin(orbitYaw) * d, c.pos.y, f.z + Math.cos(orbitYaw) * d);
       camera.lookAt(f);
     } else { camera.position.copy(c.pos); camera.lookAt(c.f); }
+    camera.fov = camMode === "close" ? c.fov : 34;
     camera.near = camMode === "close" ? 0.01 : 0.05; camera.updateProjectionMatrix();
     stage.sun.target.position.copy(c.f); stage.sun.position.copy(c.f).add(V(-0.6, 2.4, -2.2));
     const sc = stage.sun.shadow.camera, r = camMode === "close" ? 0.5 : 1.6; sc.left = -r; sc.right = r; sc.top = r; sc.bottom = -r; sc.near = 0.5; sc.far = 6; sc.updateProjectionMatrix();
