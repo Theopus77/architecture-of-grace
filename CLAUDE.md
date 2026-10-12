@@ -278,6 +278,21 @@ chip. After any change to a page with animation, 3D or sound, run
 
 and add new pages and rooms to its PAGES list. Do not push while it fails.
 
+## The silent treatment: light speed (standing order from Jimmy, 2026-10-12)
+
+"Make sure everything that has been built and will continue to be built has the silent treatment as I want this website
+LIGHT SPEED!!" Every feature, now and later:
+
+- Loads nothing until it is needed. A room's new script is `defer`. A heavy engine, worker, model or big file is fetched on
+  the first press that needs it, never as the page opens.
+- Is silent and still out of sight. Every AudioContext a page makes goes through `AOGVU.own(ctx)`, so the Studio's hush pauses
+  it. Players, the mic, timers, rAF and polling stop on the `aog-hush` event (`detail.on`) and when the tab is hidden. They wake
+  only what they paused (AOG-SILENT-V1, `aog-vu.js`).
+- Rests when idle: no timer, loop or rAF while nothing plays, listens or is dragged. A paused player suspends its engine.
+- Does heavy work in a Worker, or in slices of 12 ms or less.
+- Never slows the note path: tap-to-sound stays 10–25 ms on a phone.
+- Rooms and the front page are built with `python3 tools/build-fast.py`. Big new code goes in its own file, loaded when used.
+
 ## Housekeeping
 
 - Bump `const CACHE` in `aog-deploy/sw.js` whenever a page changes, so browsers

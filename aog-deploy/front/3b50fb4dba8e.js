@@ -157,6 +157,23 @@ const STR = {
   chopsEnd:{en:"Too close to the end of the record. Move back a little and try again.",es:"Muy cerca del final del disco. Retrocede un poco y vuelve a intentarlo."},
   chopsFail:{en:"That did not work. Try again.",es:"No funcionó. Inténtalo otra vez."},
   chopsWord:{en:"chops",es:"cortes"},
+  /* AOG-STEMS-V1 (Jimmy, 2026-10-12: "Being able to take the instruments / vocals apart will be a GAME CHANGER in the turn table world!") */
+  partsSplit:{en:"Split into parts",es:"Separar en partes"},
+  partsTip:{en:"Drums, bass, voice and the rest, each on its own. It is done on this device.",es:"Batería, bajo, voz y el resto, cada uno aparte. Se hace en este aparato."},
+  partsListen:{en:"Listening to the record… %n%",es:"Escuchando el disco… %n %"},
+  partsBusy:{en:"Splitting the record… %n%",es:"Separando el disco… %n %"},
+  partsStop:{en:"Stop",es:"Parar"},
+  partsStopped:{en:"Stopped. The record is as it was.",es:"Detenido. El disco quedó como estaba."},
+  partsDone:{en:"The record is in four parts. Tap a part to quiet it.",es:"El disco está en cuatro partes. Toca una parte para silenciarla."},
+  partsFail:{en:"The record did not split. Try again, or close other apps first.",es:"El disco no se separó. Inténtalo otra vez, o cierra otras apps primero."},
+  partsMemory:{en:"This record is too long to split on this device. Try a shorter one.",es:"Este disco es muy largo para separarlo en este aparato. Prueba uno más corto."},
+  pdrums:{en:"Drums",es:"Batería"}, pbass:{en:"Bass",es:"Bajo"}, pvoice:{en:"Voice",es:"Voz"}, pother:{en:"The rest",es:"El resto"},
+  partsOnly:{en:"Only",es:"Solo"},
+  partsOnlyTip:{en:"With Only on, a tap plays that part alone. Holding a part does the same.",es:"Con Solo encendido, un toque suena esa parte sola. Mantener una parte hace lo mismo."},
+  partsH:{en:"The record's parts",es:"Las partes del disco"},
+  partsVoiceOnly:{en:"Voice only",es:"Solo la voz"}, partsNoVoice:{en:"No voice",es:"Sin voz"}, partsAll:{en:"All parts",es:"Todas las partes"},
+  partsLevel:{en:"Level",es:"Nivel"},
+  partsKind:{en:"Kind of music",es:"Tipo de música"},
   erase:{en:"Erase",es:"Borrar"},
   eraseTip:{en:"Then tap the pad to empty",es:"Luego toca el pad que quieres vaciar"},
   keysHint:{en:"On a keyboard, the left hand plays the left deck and the right hand the right: Q and P start and stop, W and O cue, E and I sync, A S D F Z X C V and H J K L N M , . are the pads. ← and → move the crossfader.",es:"Con un teclado, la mano izquierda toca el plato de la izquierda y la derecha el de la derecha: Q y P ponen y paran, W y O marcan el cue, E e I sincronizan, A S D F Z X C V y H J K L N M , . son los pads. ← y → mueven el crossfader."},
@@ -229,6 +246,7 @@ function ctx(){
   if(!actx){
     const AC = window.AudioContext||window.webkitAudioContext;
     actx = new AC({ latencyHint:"interactive" });
+    try{ if(window.AOGVU && AOGVU.own) AOGVU.own(actx); }catch(e){}   /* AOG-SILENT-V1: the Studio's hush pauses it too */
     /* AOG-DECKS-LOUDNESS-V1 — the same treatment the drum machine got: a normal
        level with a real limiter behind it, so three loud songs at once still
        cannot clip. The last 6% is deliberately left alone. */
@@ -267,7 +285,7 @@ function makeDeck(id){
            side: id==="A" ? "L" : id==="B" ? "R" : "N", eqv:{high:0,mid:0,low:0}, filtv:0,
            fxType:"echo", fxBeats:{echo:0.75, reverb:2, flanger:16}, fxAmt:0, fxSent:"",
            snap:1, erase:false, slipPos:0, div:false, pend:false, lastJump:null, jumps:0, wraps:0,
-           waveDirty:true, wcan:null, zcan:null, bend:1, padDown:{}, xgv:1 };
+           waveDirty:true, wcan:null, zcan:null, bend:1, padDown:{}, xgv:1, parts:partsNew() };
 }
 function send(d, m){
   if(d.node && d.node.port) d.node.port.postMessage(m, m.L ? [m.L.buffer, m.R.buffer] : []);
@@ -339,6 +357,7 @@ async function ensureNode(d){
 }
 /* what the audio thread tells the page, about 60 times a second */
 function hear(d, m){
+  if(m && m.t === "preg"){ const f = d._preg && d._preg[m.id]; if(f){ delete d._preg[m.id]; f(m); } return; }   /* AOG-STEMS-V1 */
   if(!m || m.t!=="st") return;
   d.pos = m.pos; d.level = m.level; d.rate = m.rate; d.rr = m.rr; d.frame = m.frame;
   d.slipPos = m.slip; d.div = m.div; d.pend = m.pend; d.lastJump = m.lastJump; d.jumps = m.jumps; d.wraps = m.wraps;
@@ -376,6 +395,7 @@ function putOn(d, buf, L, R, o){
   d.trackKey = o.key;
   d.lufs = o.lufs != null ? o.lufs : null;
   send(d, { t:"buf", L:L, R:R, sr:buf.sampleRate });
+  partsFind(d);   /* AOG-STEMS-V1: split before? its parts come back at once */
   if(o.pos > 0 && o.pos < buf.length-3){ d.pos = d.cue = o.pos; send(d, { t:"seek", v:d.pos, park:true }); }
   const known = marksLoad(d);
   setTimeout(()=>{
@@ -1724,7 +1744,7 @@ function shell(){
   /* the live curve is drawn only while it is on screen: nobody is watching it otherwise */
   if(!EQIO && window.IntersectionObserver){ const eqc = document.getElementById("eqCurve");
     if(eqc){ EQIO = new IntersectionObserver(es=>{ es.forEach(e=>{ eqSeen = e.isIntersecting; }); if(eqSeen){ eqDirty = true; loopWake(); } }); EQIO.observe(eqc); } }
-  bind();
+  bind(); decks.forEach(partsBind);   /* AOG-STEMS-V1 */
   paintMasters(); paintStrips(); paintSides();
   decks.forEach(d=>{ paintDeck(d); drawWave(d); drawZoom(d); });
 }
@@ -1786,9 +1806,13 @@ function deckHTML(d){
         <div class="row tr padtools"><button type="button" class="ghost sm" data-erase="${id}" aria-pressed="false" title="${t("eraseTip")}">${t("erase")}</button></div>
         <p class="chopline" id="chopLine${id}" aria-live="polite">${d.chopMsg||""}</p>
       </div>
+      <!-- AOG-STEMS-V1: the record's parts, one row of four under the pads (Split into parts until it is split) -->
+      <div class="row tr prow" data-prow="${id}" role="group" aria-label="${t("partsH")}"${d.buf?"":" hidden"}>${partsRowHTML(d)}</div>
+      <p class="chopline" data-pline="${id}" aria-live="polite">${esc(d.parts.msg||"")}</p>
       <!-- the rest of the deck, one tap away (open on the Full bench): Lands, loops, TAP, ½×, 2×, nudge -->
       <details class="dmore"${document.body.classList.contains("bench-simple")?"":" open"}>
         <summary>${t("more")}</summary>
+        <div class="pmore" data-pmore="${id}"${d.parts.st==="on"?"":" hidden"}>${partsMoreHTML(d)}</div>
         <div class="padhead">
           <label class="snap">${t("snap")} <select data-snap="${id}">${[1,0.5,0.25,0].map(v=>`<option value="${v}"${d.snap===v?" selected":""}>${t(v===1?"snap1":v===0.5?"snap2":v===0.25?"snap4":"snap0")}</option>`).join("")}</select></label>
         </div>
@@ -2031,14 +2055,175 @@ async function chopsToPads(d, btn){
   if(btn) btn.disabled = true;
   try{
     if(!window.AOGHandoff || !AOGHandoff.add) throw new Error("no inbox");
-    const L = d.buf.getChannelData(0).subarray(a, a+n), R = (d.buf.numberOfChannels > 1 ? d.buf.getChannelData(1) : d.buf.getChannelData(0)).subarray(a, a+n);
-    const nm = recordTitle(d), at = Date.now();
+    let L = d.buf.getChannelData(0).subarray(a, a+n), R = (d.buf.numberOfChannels > 1 ? d.buf.getChannelData(1) : d.buf.getChannelData(0)).subarray(a, a+n);
+    /* AOG-STEMS-V1: the parts you hear (the drums alone, the voice alone …), as the deck plays them */
+    const pl = partsLabel(d);
+    if(pl){ const r = await partsRegion(d, a, n); if(r){ L = r.L; R = r.R; } }
+    const nm = recordTitle(d) + (pl ? " · " + pl : ""), at = Date.now();
     const r = await AOGHandoff.add(AOGHandoff.INBOX, { from:"decks", name:{ en:nm+" · "+STR.chopsWord.en, es:nm+" · "+STR.chopsWord.es }, chops:true,
       sec:Math.round(n/sr*1000)/1000, bpm:bpm > 0 ? Math.round(bpm*1000)/1000 : 0, at:at, take:true, wav:chopWav(L, R, sr) }, { key:"chops|"+(d.trackKey||d.name)+"|"+a });
     await AOGHandoff.put("padstake", { id:r.id, from:"decks", name:nm, at:at });
     say(esc(t("chopsSent").replace("%s", nm))+` <a href="/drum-machine">${esc(t("chopsGo"))}</a>`);
   }catch(e){ say(esc(e && e.name === "QuotaExceededError" ? t("noRoom") : t("chopsFail"))); }
   if(btn) btn.disabled = false;
+}
+/* ══ AOG-STEMS-V1 (2026-10-12) — THE RECORD IN ITS PARTS ══════════════════════════════════════════════════════
+   Jimmy: "Being able to take the instruments / vocals apart will be a GAME CHANGER in the turn table world!"
+   Split into parts (aog-stems.js, loaded on that first press, run in a Worker) splits the record on this deck into
+   drums, bass, voice and the rest, once: it is kept in IndexedDB "aog-stems" with the record, so next time the parts
+   are there the moment the record is on. The parts go into the deck's own engine (aog-vinyl-worklet.js, "parts"),
+   which reads them at the very place it reads the record, so scratching, the speed, KEY, SLIP, loops, the pads,
+   nudge, SYNC and reverse move all four together, to the sample. A tap on a part quiets it or brings it back (an
+   8 ms glide, no click); Only (or holding a part) plays one part alone; each part's level, Voice only and No voice
+   are in the deck's More box. The chops you send take what you hear. ═══════════════════════════════════════════ */
+const PARTK = ["drums","bass","voice","other"];
+function partsNew(){ return { st:"", pct:0, word:"", key:"", job:0, ctl:null, msg:"", solo:"", only:false,
+  mute:{drums:false,bass:false,voice:false,other:false}, lvl:{drums:1,bass:1,voice:1,other:1}, g:null }; }
+function partsId(d){ return d.buf ? "deck|" + (d.trackKey || d.name) + "|" + d.buf.sampleRate : ""; }
+let stemsP = null;
+function stemsLib(){
+  if(window.AOGStems) return Promise.resolve(window.AOGStems);
+  if(stemsP) return stemsP;
+  stemsP = new Promise((ok, no)=>{ const s = document.createElement("script"); s.src = "/aog-stems.js"; s.async = true;
+    s.onload = ()=>{ if(window.AOGStems) ok(window.AOGStems); else { stemsP = null; no(new Error("no stems")); } };
+    s.onerror = ()=>{ stemsP = null; no(new Error("no stems")); }; document.head.appendChild(s); });
+  return stemsP;
+}
+/* a record split before is found in the small list, without loading anything else */
+function partsMeta(id){
+  return new Promise(ok=>{
+    if(!window.indexedDB || !id){ ok(null); return; }
+    let r; try{ r = indexedDB.open("aog-stems"); }catch(e){ ok(null); return; }
+    r.onupgradeneeded = ()=>{ try{ r.transaction.abort(); }catch(e){} };
+    r.onerror = r.onblocked = ()=>ok(null);
+    r.onsuccess = ()=>{ const db = r.result;
+      try{ if(!db.objectStoreNames.contains("meta")){ db.close(); ok(null); return; }
+        const q = db.transaction("meta").objectStore("meta").get(id);
+        q.onsuccess = ()=>{ db.close(); ok(q.result || null); }; q.onerror = ()=>{ db.close(); ok(null); }; }catch(e){ try{ db.close(); }catch(x){} ok(null); } };
+  });
+}
+function partsPost(d, m, tr){ if(d.node && d.node.port) d.node.port.postMessage(m, tr || []); else if(d.core) d.core.msg(m); else d.pending.push(m); }
+function partsGains(P){ const g = {}; PARTK.forEach(k=>{ g[k] = (P.solo ? (P.solo === k ? 1 : 0) : (P.mute[k] ? 0 : 1)) * P.lvl[k]; }); return g; }
+function partsGain(d, now){ const P = d.parts; if(P.st !== "on") return; P.g = partsGains(P); partsPost(d, { t:"pgain", g:P.g, now:!!now }); }
+/* the parts into the deck's engine (moved, not copied: the page keeps none of them) */
+function partsLoad(d, raw){
+  const dL = raw.d[0], dR = raw.d[1] || raw.d[0], tr = [dL.buffer];
+  if(dR !== dL) tr.push(dR.buffer); tr.push(raw.b.buffer, raw.v.buffer);
+  partsPost(d, { t:"parts", dL:dL, dR:dR, b:raw.b, v:raw.v }, tr);
+  d.parts.st = "on"; d.parts.had = true; d.parts.kind = raw.kind || "pop"; d.parts.auto = raw.auto !== false; d.parts.note = raw.note || "";
+  partsGain(d, true); paintParts(d);
+}
+async function partsFind(d){
+  partsStop(d, true);
+  const id = partsId(d); d.parts = partsNew(); d.parts.key = id; paintParts(d);
+  const m = await partsMeta(id);
+  if(!m || !d.buf || d.parts.key !== id || m.len !== d.buf.length) return;
+  try{ const A = await stemsLib(), raw = await A.keptParts(id, { sr:d.buf.sampleRate, len:d.buf.length });
+    if(raw && d.buf && d.parts.key === id && d.parts.st === "") partsLoad(d, raw); }catch(e){}
+}
+async function partsSplit(d, kind){
+  if(!d.buf || d.parts.st === "busy" || (d.parts.st === "on" && kind === undefined)) return;
+  const P = d.parts, id = partsId(d), job = ++P.job;
+  P.st = "busy"; P.pct = 0; P.word = "open"; P.msg = ""; paintParts(d);
+  const ctl = window.AbortController ? new AbortController() : null; P.ctl = ctl;
+  try{
+    ctx(); await ensureNode(d);
+    const A = await stemsLib();
+    const R = await A.split(d.buf, { kind:kind && kind !== "auto" ? kind : undefined, signal:ctl ? ctl.signal : undefined, onProgress:(p, k)=>{ if(P.job !== job) return; P.pct = Math.round(p*100); P.word = k; paintPartsLine(d); } });
+    if(P.job !== job || d.parts !== P) return;
+    const raw = R.pack; raw.x = null; raw.note = R.note;
+    try{ await A.keep(id, raw); }catch(e){}
+    if(P.job !== job || d.parts !== P || !d.buf) return;
+    P.ctl = null; P.msg = t("partsDone"); partsLoad(d, raw);
+  }catch(e){
+    if(P.job !== job) return;
+    P.ctl = null; P.st = P.had ? "on" : ""; P.msg = t(e && e.name === "AbortError" ? "partsStopped" : e && e.memory ? "partsMemory" : "partsFail"); paintParts(d);
+  }
+}
+function partsStop(d, quiet){ const P = d.parts; if(!P || P.st !== "busy") return; P.job++; try{ if(P.ctl) P.ctl.abort(); }catch(e){} P.ctl = null; P.st = P.had ? "on" : ""; if(!quiet){ P.msg = t("partsStopped"); paintParts(d); } }
+function partTap(d, k, hold){
+  const P = d.parts; if(P.st !== "on") return;
+  if(hold || P.only) P.solo = P.solo === k ? "" : k;
+  else if(P.solo) P.solo = "";
+  else P.mute[k] = !P.mute[k];
+  partsGain(d); paintParts(d);
+}
+function partsSet(d, how){
+  const P = d.parts; if(P.st !== "on") return;
+  PARTK.forEach(k=>{ P.mute[k] = false; }); P.solo = "";
+  if(how === "voice") P.solo = "voice";
+  else if(how === "novoice") P.mute.voice = true;
+  else PARTK.forEach(k=>{ P.lvl[k] = 1; });
+  partsGain(d); paintParts(d);
+}
+/* what you hear, in words, when it is not the whole record ("Drums", "Drums + Bass"); "" for the whole record */
+function partsLabel(d){
+  const P = d.parts; if(!P || P.st !== "on" || !P.g) return "";
+  const on = PARTK.filter(k=>P.g[k] > 0.001);
+  if(on.length === 4 && PARTK.every(k=>Math.abs(P.g[k] - 1) < 1e-6)) return "";
+  return on.length ? on.map(k=>t("p"+k)).join(" + ") : "";
+}
+/* a stretch of the record as the deck plays its parts now, made by the deck's engine a block at a time */
+function partsRegion(d, a, n){
+  return new Promise(ok=>{
+    const id = "r" + Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+    if(d.node && d.node.port && !d.core){ d._preg = d._preg || {}; d._preg[id] = (m)=>ok({ L:m.L, R:m.R });
+      setTimeout(()=>{ if(d._preg && d._preg[id]){ delete d._preg[id]; ok(null); } }, 8000);
+      d.node.port.postMessage({ t:"prender", id:id, a:a, n:n }); return; }
+    if(!d.core){ ok(null); return; }
+    d.core.msg({ t:"prender", id:id, a:a, n:n });
+    (function step(){ if(!d.core.preq){ ok(null); return; } if(d.core.regionStep(65536)){ const q = d.core.preq; d.core.preq = null; ok({ L:q.L, R:q.R }); } else setTimeout(step, 0); })();
+  });
+}
+function partsRowHTML(d){
+  const P = d.parts, id = d.id;
+  if(P.st === "busy") return `<button type="button" class="ghost sm psplit" data-pstop="${id}">${t("partsStop")}</button>`;
+  if(P.st !== "on") return `<button type="button" class="ghost sm psplit" data-psplit="${id}" title="${t("partsTip")}">${t("partsSplit")}</button>`;
+  const g = P.g || partsGains(P);
+  return PARTK.map(k=>{ const on = g[k] > 0.001, solo = P.solo === k;
+    return `<button type="button" class="ghost sm pt${on?" on":""}${solo?" solo":""}" data-part="${id}" data-k="${k}" aria-pressed="${on}">${t("p"+k)}</button>`; }).join("") +
+    `<button type="button" class="ghost sm ponly${P.only?" on":""}" data-ponly="${id}" aria-pressed="${P.only}" title="${t("partsOnlyTip")}">${t("partsOnly")}</button>`;
+}
+function partsMoreHTML(d){
+  const P = d.parts, id = d.id;
+  return `<span class="dlab">${t("partsH")}</span>
+    ${P.note && window.AOGStems ? `<p class="chopline pnote">${esc(AOGStems.word(P.note, S.lang))}</p>` : ""}
+    <label class="pkind">${t("partsKind")} <select data-pkind="${id}">${(window.AOGStems ? AOGStems.kinds : ["auto"]).map(k=>`<option value="${k}"${(P.auto ? "auto" : P.kind) === k ? " selected" : ""}>${esc(window.AOGStems ? AOGStems.kindWords[S.lang][k] + (k === "auto" && P.auto && P.kind ? " · " + AOGStems.kindWords[S.lang][P.kind] : "") : "Auto")}</option>`).join("")}</select></label>
+    <div class="row tr"><button type="button" class="ghost sm" data-pset="${id}" data-v="voice">${t("partsVoiceOnly")}</button><button type="button" class="ghost sm" data-pset="${id}" data-v="novoice">${t("partsNoVoice")}</button><button type="button" class="ghost sm" data-pset="${id}" data-v="all">${t("partsAll")}</button></div>
+    ${PARTK.map(k=>`<label class="plv"><span>${t("p"+k)}</span><input type="range" min="0" max="100" step="5" value="${Math.round(P.lvl[k]*100)}" data-plvl="${id}" data-k="${k}" aria-label="${t("partsLevel")} · ${t("p"+k)}"><b data-plvo="${id}" data-k="${k}">${Math.round(P.lvl[k]*100)}%</b></label>`).join("")}`;
+}
+function paintPartsLine(d){
+  const el = document.querySelector(`[data-pline="${d.id}"]`); if(!el) return;
+  const P = d.parts, txt = P.st === "busy" ? t(P.word === "split" || P.word === "done" ? "partsBusy" : "partsListen").replace("%n", P.pct) : (P.msg || "");
+  if(el.textContent !== txt) el.textContent = txt;
+}
+function paintParts(d){
+  const row = document.querySelector(`[data-prow="${d.id}"]`), more = document.querySelector(`[data-pmore="${d.id}"]`);
+  if(row){ row.hidden = !d.buf; const h = partsRowHTML(d); if(row._h !== h){ row._h = h; row.innerHTML = h; } }
+  if(more){ more.hidden = d.parts.st !== "on"; if(!more.hidden && !(more.contains(document.activeElement) && document.activeElement.type === "range")){ const h = partsMoreHTML(d); if(more._h !== h){ more._h = h; more.innerHTML = h; } } }
+  paintPartsLine(d);
+}
+function partsBind(d){
+  const el = document.getElementById("deck"+d.id); if(!el) return;
+  let hold = null;
+  el.addEventListener("click", (e)=>{
+    const b = e.target.closest && e.target.closest("button"); if(!b || !el.contains(b)) return;
+    if(b.hasAttribute("data-psplit")) partsSplit(d);
+    else if(b.hasAttribute("data-pstop")) partsStop(d);
+    else if(b.hasAttribute("data-part")){ if(b._held){ b._held = false; return; } partTap(d, b.getAttribute("data-k")); }
+    else if(b.hasAttribute("data-ponly")){ d.parts.only = !d.parts.only; if(!d.parts.only && d.parts.solo){ d.parts.solo = ""; partsGain(d); } paintParts(d); }
+    else if(b.hasAttribute("data-pset")) partsSet(d, b.getAttribute("data-v"));
+  });
+  /* hold a part: that part alone */
+  el.addEventListener("pointerdown", (e)=>{ const b = e.target.closest && e.target.closest("[data-part]"); if(!b) return;
+    clearTimeout(hold); hold = setTimeout(()=>{ hold = null; b._held = true; partTap(d, b.getAttribute("data-k"), true); }, 450); });
+  ["pointerup","pointercancel","pointerleave"].forEach(ev=>el.addEventListener(ev, ()=>{ if(hold){ clearTimeout(hold); hold = null; } }));
+  /* another kind of music: split again with its settings (the parts you have play on until the new ones are ready) */
+  el.addEventListener("change", (e)=>{ const r = e.target; if(!r.hasAttribute || !r.hasAttribute("data-pkind")) return; r.blur(); partsSplit(d, r.value); });
+  el.addEventListener("input", (e)=>{ const r = e.target; if(!r.hasAttribute || !r.hasAttribute("data-plvl")) return;
+    const k = r.getAttribute("data-k"); d.parts.lvl[k] = Math.max(0, Math.min(1, +r.value/100));
+    const o = el.querySelector(`[data-plvo="${d.id}"][data-k="${k}"]`); if(o) o.textContent = Math.round(d.parts.lvl[k]*100) + "%";
+    partsGain(d); const row = document.querySelector(`[data-prow="${d.id}"]`); if(row){ const h = partsRowHTML(d); if(row._h !== h){ row._h = h; row.innerHTML = h; } } });
 }
 /* a loop in beats, measured on the audio thread from where the needle really is */
 function deckSay(d, k, n){ const line = document.getElementById("chopLine"+d.id), h = t(k).replace("%n", n); d.chopMsg = esc(h); if(line) line.textContent = h; }
@@ -2098,6 +2283,7 @@ function bind(){
       d.buf = null; d.peaks = null; d.zpk = null; d.bands = null; d.name = ""; d.note = ""; d.made = "";
       d.pos = 0; d.cue = 0; d.rate = 0; d.rr = 0; d.level = 0; d.rot = 0; d.bpm = 0; d.beat0 = 0;
       d.cues = [null,null,null,null,null,null,null,null]; d.trackKey = ""; d.taps = []; d._sig = ""; d.waveDirty = true;
+      partsStop(d, true); d.parts = partsNew(); paintParts(d);   /* AOG-STEMS-V1 */
       crateForget(d);
       if(masterId === d.id) setMaster(null);
       drawWave(d); drawZoom(d); paintDeck(d); paintStrips();
@@ -2506,6 +2692,11 @@ document.documentElement.lang = S.lang;
 document.getElementById("themeBtn").onclick = ()=>{ S.theme = S.theme==="dark"?"light":"dark"; try{localStorage.setItem("aog.interior.ws.v1.theme", S.theme);}catch(e){} paintChrome(); };
 document.addEventListener("visibilitychange", ()=>{
   if(document.hidden) decks.forEach(d=>{ if(d.motor) stopDeck(d); });
+});
+/* AOG-SILENT-V1: out of sight in the Studio, the decks that were playing stop, and only those start again on the way back */
+window.addEventListener("aog-hush", (e)=>{
+  if(e && e.detail && e.detail.on) decks.forEach(d=>{ if(d.motor){ d._hushed = true; stopDeck(d); } });
+  else decks.forEach(d=>{ if(d._hushed){ d._hushed = false; if(d.buf) startDeck(d); } });
 });
 /* AOG-DECKS-SIMPLE-V1 — the bench switch and the phone's view menu */
 (function(){

@@ -278,7 +278,8 @@ JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></scrip
   function hush(f, on) {
     try { var w = f.contentWindow; if (!w) return;
       if (w.AOGVU && w.AOGVU.hush) w.AOGVU.hush(on);
-      else if (w.__aogStudio && w.__aogStudio.AC) {   /* the Mixing Desk has its own meters, and its own player */
+      else if (w.__aogStudio && w.__aogStudio.AC) {
+        try { w.dispatchEvent(new w.CustomEvent("aog-hush", { detail: { on: !!on } })); } catch (e) {}   /* AOG-SILENT-V1 */   /* the Mixing Desk has its own meters, and its own player */
         var ac = w.__aogStudio.AC;
         if (on && ac.state === "running") { ac.suspend(); f.__hushed = true; } else if (!on && f.__hushed) { f.__hushed = false; ac.resume(); }
       }
