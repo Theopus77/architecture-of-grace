@@ -147,11 +147,13 @@ preloaded or the viewer plugs it in and demonstration on how to sew etc."
 |---|---|
 | KITCHEN | `aog-deploy/kitchen.html`, `aog-deploy/aog-kitchen.js`, `aog-deploy/aog-kitchen3d.js`, `aog-deploy/aog-kitchen-recipes.js`, `tools/check-kitchen.js` |
 | SEWING | `aog-deploy/sewing.html`, `aog-deploy/aog-sewing.js`, `aog-deploy/aog-sewing3d.js`, `aog-deploy/aog-sewing-moves.js`, `tools/check-sewing.js` |
-| FACS | `aog-deploy/_work/fcs/**`, the built `fcs-u*.html` and the FACS course/hub pages (through the course build only), the FACS room pages `aog-deploy/fc*.html` (adding a "Watch it in 3D" block only), `tools/check-facs-3d.js` |
+| FACS | `aog-deploy/_work/fcs/**`, the built `fcs-u*.html` and the FACS course/hub pages (through the course build only), the FACS room pages `aog-deploy/fc*.html` and `aog-deploy/fcs-shop.html` (adding a "Watch it in 3D" block only), `tools/check-facs-3d.js` |
 
-Addresses (Lead adds `_redirects`): the Kitchen at **/kitchen** (`kitchen.html`), the Sewing Room at **/sewing**
-(`sewing.html`). `/kitchen#<recipe-id>` opens a recipe; `/kitchen#skill-<action-id>` opens one skill;
-`/sewing#<move-id>` opens a sewing move.
+Addresses (Lead adds `_redirects`): the 3D Kitchen at **/kitchen-lab** (`kitchen.html`), the Sewing Room at
+**/sewing-lab** (`sewing.html`; /sewing also works). **/kitchen is taken**: it is the existing room page "The Kitchen &
+the Sewing Table" (`fcs-shop.html`), linked from many pages; leave it, and FACS adds doors from it to the 3D rooms.
+`/kitchen-lab#<recipe-id>` opens a recipe; `/kitchen-lab#skill-<action-id>` opens one skill; `/sewing-lab#<move-id>`
+opens a sewing move.
 
 ## Figure additions (FIGURE adds them; they must not change the existing API)
 
