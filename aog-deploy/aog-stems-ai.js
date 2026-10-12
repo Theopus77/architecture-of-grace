@@ -9,7 +9,8 @@
    stages run one after another, so a phone holds only one stage's working memory at a time; the weights come as 8-bit
    numbers (11.6 MB) and are turned back into 32-bit ones here, stage by stage, as they load.
 
-   Messages in:   {type:"init", ep:"webgpu"|"wasm"}                    → {type:"ready", ep, ms} | {type:"error", where:"init"}
+   Messages in:   {type:"init", ep:"webgpu"|"wasm", selftest?, fake?}  → {type:"ready", ep, ms, self} | {type:"error", where:"init", why, self}
+                  (WebGPU is always self-tested first: AOG-STEMS-GPU-CHECK-V1, below)
                   {type:"seg", id, L, R}   (Float32Array, one 11 s segment, already scaled by the song's deviation)
                                                                         → {type:"tick", id, k} after each stage (k 1…10)
                                                                         → {type:"seg", id, d:[L,R], b:[L,R], v:[L,R]}
@@ -74,13 +75,23 @@ function stageWeights(st, W) {
   return out;
 }
 
-async function init(ep) {
+async function init(ep, o) {
   const t0 = Date.now();
+  o = o || {};
   if (ep !== "webgpu" && ep !== "wasm") throw new Error("no such backend: " + ep);
-  if (ep === "webgpu") { if (!self.navigator || !navigator.gpu) throw new Error("no webgpu"); const ad = await navigator.gpu.requestAdapter(); if (!ad) throw new Error("no webgpu adapter"); }
+  man = await (await fetch(new URL("manifest.json", MODEL_DIR))).json();
+  if (ep === "webgpu") {
+    if (!self.navigator || !navigator.gpu) throw new Error("no webgpu");
+    const ad = await navigator.gpu.requestAdapter(); if (!ad) throw new Error("no webgpu adapter");
+    /* AOG-STEMS-GPU-CHECK-V1: every tensor must fit in one GPU buffer. The largest tensor is 71.6 MB; onnxruntime rounds
+       a big buffer up to a power of two, so the largest buffer it asks for is 128 MiB (measured: 134217728 bytes), just what
+       Safari allows by default. A GPU that allows less is not used. */
+    const lim = ad.limits || {}, need = man.gpuBytes ? Math.pow(2, Math.ceil(Math.log2(man.gpuBytes))) : 0;
+    if (need && (+lim.maxStorageBufferBindingSize < need || +lim.maxBufferSize < need))
+      throw Object.assign(new Error("gpu limits"), { why: "limits " + lim.maxStorageBufferBindingSize + "/" + lim.maxBufferSize + " < " + need });
+  }
   ort = await import(new URL(ep === "webgpu" ? "ort.webgpu.min.mjs" : "ort.wasm.min.mjs", ORT_DIR).href);
   ort.env.wasm.numThreads = 1; ort.env.wasm.proxy = false; ort.env.wasm.wasmPaths = ORT_DIR.href;
-  man = await (await fetch(new URL("manifest.json", MODEL_DIR))).json();
   N = man.n_fft; HOP = man.hop; T = man.T; F = N / 2 + 1; fft = makeFFT(N);
   const W = await (await fetch(new URL("weights.bin", MODEL_DIR))).arrayBuffer();
   sess = [];
@@ -95,7 +106,54 @@ async function init(ep) {
     post({ type: "load", k: i + 1, of: man.stages.length });
   }
   EP = ep;
-  return Date.now() - t0;
+  /* AOG-STEMS-GPU-CHECK-V1: a GPU is trusted only after it gives the right answers on a fixed input, every stage */
+  if ((ep === "webgpu" || o.selftest) && man.selftest) {
+    const st = await selftest(o.fake);
+    self.__self = st;
+    if (!st.ok) throw Object.assign(new Error("selftest"), { why: "selftest " + st.at + " " + st.db + " dB", self: st });
+    return { ms: Date.now() - t0, self: st };
+  }
+  return { ms: Date.now() - t0, self: null };
+}
+
+/* ── AOG-STEMS-GPU-CHECK-V1 (2026-10-12): the self-test ─────────────────────────────────────────────────────────────
+   Jimmy, on his iPad: "It sounds nasty!" The GPU path had only been checked on a software GPU. Now, before the parts
+   are made on a device's GPU, one fixed input (made from whole numbers, the same bits everywhere) goes through all ten
+   stages and each stage's outputs are compared with answers worked out on a computer's CPU from the very same weights
+   (manifest.json "selftest", written by tools/stems-model/selftest.py): 96 values at fixed places (at least 50 dB alike)
+   and the whole output's energy (within 1 %), and no NaN or Infinity anywhere. A GPU that clamps a big buffer, rounds
+   to 16 bits or runs an op wrongly fails, and the page uses WebAssembly instead (a quiet console note says why).
+   fake (tests only): "half" zeroes half of the first stage's answer, as a GPU that cut a buffer short would. */
+function lcg(seed) { let x = seed >>> 0; return () => { x = (Math.imul(x, 1664525) + 1013904223) >>> 0; return (x >>> 8) / 16777216; }; }
+async function selftest(fake) {
+  const t0 = Date.now(), S = man.selftest, Fn = F, Tn = T, spec = new Float32Array(4 * Fn * Tn), g = lcg(S.seed);
+  for (let c = 0, i = 0; c < 4; c++) for (let k = 0; k < Fn; k++) { const a = 4 / (1 + k / 20); for (let t = 0; t < Tn; t++, i++) spec[i] = (g() - 0.5) * a; }
+  let j = 0, worst = { db: Infinity, at: "" }, bad = null;
+  const check = async (stage, out, ten) => {
+    const c = S.checks[j], jj = j++;
+    if (bad) return;
+    let d = ten.location && ten.location !== "cpu" ? await ten.getData() : ten.data;
+    if (fake === "half" && stage === "s0" && out === "x") { d = new Float32Array(d); d.fill(0, d.length >> 1); }
+    let ss = 0, fin = true;
+    for (let i = 0; i < d.length; i++) { const v = d[i]; if (v !== v || v === Infinity || v === -Infinity) { fin = false; break; } ss += v * v; }
+    let a = 0, e = 0; for (let i = 0; i < c.idx.length; i++) { const r = c.val[i], v = d[c.idx[i]]; a += r * r; e += (r - v) * (r - v); }
+    const db = e > 0 ? 10 * Math.log10(a / e) : 200, ratio = c.ss > 0 ? ss / c.ss : 1, here = stage + "." + out;
+    if (!fin || d.length !== c.n || !(db >= (S.minDb || 50)) || !(Math.abs(ratio - 1) <= 0.01)) bad = { at: here, db: +(fin ? db : -Infinity).toFixed(1), ratio: +ratio.toFixed(4), finite: fin, k: jj };
+    if (db < worst.db) worst = { db, at: here };
+    if (bad) throw BAD;   /* the first wrong answer is enough: no more stages run */
+  };
+  const BAD = new Error("selftest");
+  const drop = (v) => { try { if (v && v.dispose) v.dispose(); } catch (e) {} };
+  let o = await sess[0].run({ mix_spec: new ort.Tensor("float32", spec, [1, 4, Fn, Tn]) });
+  const k0 = o.k0, k1 = o.k1, k2 = o.k2; let x = o.x;
+  try {
+    await check("s0", "x", x); await check("s0", "k0", k0); await check("s0", "k1", k1); await check("s0", "k2", k2);
+    for (let i = 1; i <= 6; i++) { const y = (await sess[i].run({ x })).y; drop(x); x = y; await check("s" + i, "y", x); }
+    let y = (await sess[7].run({ x, k: k2 })).y; drop(x); drop(k2); x = y; await check("s7", "y", x);
+    y = (await sess[8].run({ x, k: k1 })).y; drop(x); drop(k1); x = y; await check("s8", "y", x);
+    const stm = (await sess[9].run({ x, k: k0 })).stems; drop(x); drop(k0); await check("s9", "stems", stm); drop(stm);
+  } catch (e) { if (e !== BAD) throw e; [x, k0, k1, k2].forEach(drop); }
+  return bad ? Object.assign({ ok: false, ep: EP, ms: Date.now() - t0 }, bad) : { ok: true, ep: EP, ms: Date.now() - t0, db: +worst.db.toFixed(1), at: worst.at };
 }
 
 /* one segment's STFT (ones, normalized, centred, reflected), both channels in one complex FFT a frame */
@@ -151,6 +209,8 @@ async function segment(id, L, R) {
   y = (await sess[8].run({ x, k: k1 })).y; drop(x); try { k1.dispose && k1.dispose(); } catch (e) {} x = y; T0(9);
   const st = (await sess[9].run({ x, k: k0 })).stems; drop(x); try { k0.dispose && k0.dispose(); } catch (e) {}
   const z = st.data || await st.getData();
+  /* AOG-STEMS-GPU-CHECK-V1: an answer with NaN or Infinity in it is never used (the page tries WebAssembly) */
+  for (let i = 0; i < z.length; i += 7) { const q = z[i]; if (q !== q || q === Infinity || q === -Infinity) throw Object.assign(new Error("not finite"), { why: "not finite" }); }
   const n = L.length, d = istft(z, 0, n), b = istft(z, 1, n), v = istft(z, 2, n);
   try { st.dispose && st.dispose(); } catch (e) {}
   T0(10);
@@ -162,10 +222,10 @@ let queue = Promise.resolve();
 self.onmessage = (e) => {
   const d = e.data || {};
   if (d.type === "init") {
-    queue = queue.then(() => init(d.ep).then((ms) => post({ type: "ready", ep: EP, ms }),
-      (er) => post({ type: "error", where: "init", message: String((er && er.message) || er), memory: isMem(er) })));
+    queue = queue.then(() => init(d.ep, { selftest: !!d.selftest, fake: d.fake || "" }).then((r) => post({ type: "ready", ep: EP, ms: r.ms, self: r.self }),
+      (er) => post({ type: "error", where: "init", message: String((er && er.message) || er), memory: isMem(er), why: (er && er.why) || "", self: (er && er.self) || null })));
   } else if (d.type === "seg") {
-    queue = queue.then(() => segment(d.id, d.L, d.R).catch((er) => post({ type: "error", where: "seg", id: d.id, message: String((er && er.message) || er), memory: isMem(er) })));
+    queue = queue.then(() => segment(d.id, d.L, d.R).catch((er) => post({ type: "error", where: "seg", id: d.id, message: String((er && er.message) || er), memory: isMem(er), why: (er && er.why) || "" })));
   }
 };
 post({ type: "hello" });

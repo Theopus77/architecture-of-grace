@@ -1,7 +1,7 @@
 /* synthetic songs with known parts (drums, bass, lead voice, pad), stereo, 44.1 kHz; used in the page */
 window.makeSong = function (opt) {
   opt = opt || {};
-  var sr = 44100, bpm = opt.bpm || 100, beat = 60 / bpm, bars = opt.bars || 8, sec = bars * 4 * beat + 1, n = Math.round(sec * sr);
+  var sr = opt.sr || 44100, bpm = opt.bpm || 100, beat = 60 / bpm, bars = opt.bars || 8, sec = bars * 4 * beat + 1, n = Math.round(sec * sr);
   var seed = opt.seed || 7; function rnd() { seed ^= seed << 13; seed ^= seed >>> 17; seed ^= seed << 5; return ((seed >>> 0) / 4294967296) * 2 - 1; }
   function arr() { return [new Float32Array(n), new Float32Array(n)]; }
   var D = arr(), Bs = arr(), V = arr(), O = arr();

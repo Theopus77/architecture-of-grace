@@ -47,6 +47,12 @@ const STR={
   splitMuted:{en:"Track {n} is muted, so you hear the parts.",es:"La pista {n} está en silencio, así oyes las partes."},
   splitFull:{en:"{parts} did not fit: every other track is full. Take a recording off a track, then press Split again.",es:"{parts} no cupieron: las demás pistas están llenas. Quita una grabación de una pista y vuelve a separar."},
   splitAll:{en:"Every part of this song is already on a track.",es:"Cada parte de esta canción ya está en una pista."},
+  /* AOG-STEMS-AI-V1 (2026-10-12): Split quality, and the model's cleaner parts */
+  splitQ:{en:"Split quality",es:"Calidad"}, splitQuick:{en:"Quick",es:"Rápida"}, splitBest:{en:"Best (slower)",es:"La mejor (más lenta)"},
+  splitClean:{en:"Making the parts cleaner… {n}%",es:"Limpiando las partes… {n} %"},
+  splitCleanDone:{en:"The parts are cleaner now.",es:"Las partes ya están más limpias."},
+  splitCleanKept:{en:"This device kept the quick split.",es:"Este aparato se quedó con la separación rápida."},
+  splitCleanStopped:{en:"Stopped. The quick parts stay.",es:"Detenido. Se quedan las partes rápidas."},
   app:{en:"The Mixing Desk",es:"La mesa de mezclas"},   /* AOG-MIXDESK-V1 (2026-10-04): The Studio is now the door to every instrument; this is its mixing desk */
   kicker:{en:"Put your song together.",es:"Arma tu canción."},
   lead:{en:"Record on any instrument, press Send to the Mixing Desk, then come here.",es:"Graba en cualquier instrumento, pulsa Enviar a la mesa de mezclas y luego ven aquí."},
@@ -1520,7 +1526,7 @@ function songChanged(){
    parts go on the empty tracks, in order: Drums, Bass, Voice, The rest (track 8 stays the voice slot). Whatever does not
    fit is named, never skipped without a word. Split from a track: that track is muted, so the parts are what you hear.
    Each part is a 16-bit stereo recording of its own, starting at bar 1, all four in line with each other. ══ */
-const SPL={busy:false, job:0, ctl:null};
+const SPL={busy:false, job:0, ctl:null, phase:"", base:""};
 let stemsP=null;
 function stemsLib(){
   if(window.AOGStems) return Promise.resolve(window.AOGStems);
@@ -1530,7 +1536,21 @@ function stemsLib(){
     s0.onerror=()=>{ stemsP=null; no(new Error("no stems")); }; document.head.appendChild(s0); });
   return stemsP;
 }
-function paintSplit(){ const c=SONG.tracks[SONG.sel] && SONG.tracks[SONG.sel].clip; $("splitTrack").disabled=SPL.busy || !c || !!c.voice; $("splitFile").disabled=SPL.busy; $("splitStop").hidden=!SPL.busy; }
+function paintSplit(){ const c=SONG.tracks[SONG.sel] && SONG.tracks[SONG.sel].clip; $("splitTrack").disabled=SPL.busy || !c || !!c.voice; $("splitFile").disabled=SPL.busy; $("splitStop").hidden=!SPL.busy; paintSplitQ(); }
+/* AOG-STEMS-AI-V1 — Split quality: Quick · Best (slower). At Best the model's cleaner parts follow the quick ones: they take
+   the place of the recordings on the tracks they went to (a track that has been given something else is left alone). Kept on
+   this device; the same key and the same first choice as aog-stems.js, which is not loaded until a split. */
+const SQ_KEY="aog.stems.quality.v1";
+function splitQuality(){
+  try{ const q=localStorage.getItem(SQ_KEY); if(q==="quick" || q==="best") return q; }catch(e){}
+  if(window.AOGStems) return AOGStems.quality();
+  const n=navigator; if(n.gpu) return "best"; if(typeof n.deviceMemory==="number") return n.deviceMemory>=4 ? "best" : "quick";
+  return /iPhone|iPod|Android.+Mobile|Mobile.+Firefox|Windows Phone/i.test(n.userAgent||"") ? "quick" : "best";
+}
+function paintSplitQ(){ const s=$("splitQual"); if(!s) return; const q=splitQuality(), sig=S.lang+"|"+q; if(s._sig===sig) return; s._sig=sig;
+  s.innerHTML=["quick","best"].map(v=>`<option value="${v}"${v===q ? " selected" : ""}>${esc(t(v==="best" ? "splitBest" : "splitQuick"))}</option>`).join(""); }
+function splitStopNow(){ if(!SPL.busy) return; SPL.job++; try{ if(SPL.ctl) SPL.ctl.abort(); }catch(e){} const was=SPL.phase; SPL.busy=false; SPL.ctl=null; SPL.phase="";
+  $("splitMsg").textContent=was==="clean" ? (SPL.base ? SPL.base+" " : "")+t("splitCleanStopped") : t("splitStopped"); paintSplit(); }
 async function splitIn(src){
   if(SPL.busy) return;
   const job=++SPL.job, ctl=window.AbortController ? new AbortController() : null, msg=$("splitMsg");
@@ -1545,7 +1565,7 @@ async function splitIn(src){
       try{ await A.keep(src.id, parts); }catch(e){}
     }
     if(SPL.job!==job) return;
-    const names=A.names[S.lang]||A.names.en, placed=[], left=[];
+    const names=A.names[S.lang]||A.names.en, placed=[], left=[], put=[];
     for(const k of A.parts){
       const name=(src.name+" · "+(A.names.en[k])).slice(0,200);
       if(SONG.tracks.some(x=>x.clip && x.clip.name===name)) continue;   /* already on a track */
@@ -1556,7 +1576,7 @@ async function splitIn(src){
       await sput(id, {wav:blob}); BUF.set(id, buf);
       SONG.tracks[ti].clip=cleanClip({id:id, src:"", name:name, at:Date.now(), take:true, sec:sec, bpm:0, bars:0, head:0, body:sec, tail:0, bpb:4,
         startBar:1, trimIn:0, trimOut:0, loops:1, peakDb:peakDbOf(buf)});
-      placed.push([names[k], ti+1]);
+      placed.push([names[k], ti+1]); put.push({k:k, id:id, ti:ti});
       if(SPL.job!==job) break;
     }
     if(placed.length && src.track!=null && SONG.tracks[src.track] && SONG.tracks[src.track].clip){ SONG.tracks[src.track].mute=true; }
@@ -1566,10 +1586,28 @@ async function splitIn(src){
     if(placed.length && src.track!=null) say.push(t("splitMuted",{n:src.track+1}));
     if(left.length) say.push(t("splitFull",{parts:andList(left)}));
     if(!placed.length && !left.length) say.push(t("splitAll"));
+    if(parts.quality!=="model" && put.length && splitQuality()==="best" && SPL.job===job){
+      /* AOG-STEMS-AI-V1: the cleaner parts, then into the recordings the quick ones made */
+      const base=SPL.base=say.join(" "); SPL.phase="clean"; msg.textContent=base+" "+t("splitClean",{n:0});
+      let M=null, why="";
+      try{ M=await A.clean(src.blob, { quick:parts, signal:ctl ? ctl.signal : undefined, onProgress:p=>{ if(SPL.job===job) msg.textContent=base+" "+t("splitClean",{n:Math.round(p*100)}); } }); }
+      catch(e){ why=e && e.name==="AbortError" ? "splitCleanStopped" : e && e.worse ? "!worse" : "splitCleanKept"; }
+      if(SPL.job!==job){ if(M && M.free) M.free(); return; }
+      if(M){
+        try{ await A.keep(src.id, M); }catch(e){}
+        for(const pz of put){ const tr=SONG.tracks[pz.ti]; if(!tr || !tr.clip || tr.clip.id!==pz.id) continue;
+          const blob=A.wav(M[pz.k]), buf=await decodeWav(blob, M.sampleRate);
+          if(SPL.job!==job) break;
+          await sput(pz.id, {wav:blob}); BUF.set(pz.id, buf); tr.clip.peakDb=peakDbOf(buf); }
+        songChanged(); paintTimeline(); paintTrack(); paintMixer();
+        say.push(t("splitCleanDone")); if(parts.free) parts.free(); parts=M;
+      } else say.push(why==="!worse" ? A.word("cleanWorse", S.lang) : t(why));
+      SPL.phase="";
+    }
     if(parts.note) say.push(A.word(parts.note, S.lang));
     msg.textContent=say.join(" ");
   }catch(e){ if(SPL.job===job) msg.textContent=t(e && e.name==="AbortError" ? "splitStopped" : "splitFail"); }
-  finally{ if(parts && parts.free) parts.free(); if(SPL.job===job){ SPL.busy=false; SPL.ctl=null; paintSplit(); } }
+  finally{ if(parts && parts.free) parts.free(); if(SPL.job===job){ SPL.busy=false; SPL.ctl=null; SPL.phase=""; paintSplit(); } }
 }
 /* a reload: every recording comes back from this browser */
 async function restore(){
@@ -2016,7 +2054,8 @@ function bindCarry(){
   $("splitIn").onchange=e=>{ const f=e.target.files && e.target.files[0]; if(f) splitIn({ id:(f.name||"?")+"·"+(f.size||0), name:String(f.name||"").replace(/\.[a-z0-9]{2,5}$/i,""), blob:f }); };
   $("splitTrack").onclick=async ()=>{ const ti=SONG.sel, c=SONG.tracks[ti] && SONG.tracks[ti].clip; if(!c) return; const v=await sget(c.id); if(!v || !v.wav) return;
     splitIn({ id:"clip|"+c.id, name:bareName(c.name)||t("trackN",{n:ti+1}), blob:v.wav, track:ti }); };
-  $("splitStop").onclick=()=>{ if(!SPL.busy) return; SPL.job++; try{ if(SPL.ctl) SPL.ctl.abort(); }catch(e){} SPL.busy=false; SPL.ctl=null; $("splitMsg").textContent=t("splitStopped"); paintSplit(); };
+  $("splitStop").onclick=splitStopNow;
+  $("splitQual").onchange=e=>{ const v=e.target.value==="best" ? "best" : "quick"; try{ localStorage.setItem(SQ_KEY, v); }catch(x){} e.target.blur(); paintSplitQ(); if(v==="quick" && SPL.phase==="clean") splitStopNow(); };
   $("fileIn").onchange=e=>{ const f=e.target.files && e.target.files[0]; openFile(f); };
   $("openNo").onclick=()=>{ closeAsk(); $("fileLine").textContent=""; };
   $("openYes").onclick=()=>{ const go=CARRY.ask; closeAsk(); if(go) go(); };
