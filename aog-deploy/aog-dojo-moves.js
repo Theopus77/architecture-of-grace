@@ -325,8 +325,8 @@ move({ id: "guard", kind: "stance", band: "6-8", art: W("boxing, Muay Thai, kick
     es: { n: "Golpe de palma", steps: ["Empieza en tu guardia.", "Abre la mano de atrás. Dobla la muñeca hacia atrás para que los dedos apunten arriba.", "Empuja la base de la palma recta al frente y gira la cadera. Exhala.", "Regresa la mano a tu cara."],
           tips: ["La parte fuerte es la base de la mano, cerca de la muñeca.", "Dedos juntos y hacia atrás.", "Un golpe seguro para la mano: sin nudillos."] } });
   const H = ST.horse();
-  const kStart = merge(H, root(0, -0.22, 0, 0, 0, 0), { j: Object.assign({}, AR.knifeStart, Lside(AR.hip)) }, torso(18), look(-40));
-  const kOut = merge(H, root(0, -0.23, 0, 0, 0, 0), { j: Object.assign({}, AR.knife, Lside(AR.hip)) }, torso(-12), look(-55));
+  const kStart = merge(H, root(0, -0.22, 0, 0, 0, 0), { j: Object.assign({}, AR.knifeStart, Lside(AR.hip)) }, torso(18), look(-40), { grip: { R: 0.04 } });
+  const kOut = merge(H, root(0, -0.23, 0, 0, 0, 0), { j: Object.assign({}, AR.knife, Lside(AR.hip)) }, torso(-12), look(-55), { grip: { R: 0.04 } });
   move({ id: "knife-hand", kind: "hand", band: "6-8", art: W("karate, taekwondo", "karate, taekwondo"),
     keys: [K(0, 0, merge(H, arms("hip"))), K(0.9, 1, kStart), K(1.35, 2, kOut, { ease: "snap" }), K(2.1, 2, kOut), K(2.8, 3, merge(H, arms("hip"), look(0))), K(3.3, 3, merge(H, arms("hip")))],
     en: { n: "Knife-hand strike", steps: ["Horse stance, fists on your hips.", "Open one hand flat, fingers together. Bring it up by your other ear, palm toward the ear.", "Sweep the arm out to the side. Hit with the outside edge of the hand, palm down. Breathe out.", "Make a fist again and bring it back to your hip."],
@@ -339,29 +339,30 @@ move({ id: "guard", kind: "stance", band: "6-8", art: W("boxing, Muay Thai, kick
 function blockMove(id, band, startArms, endArms, en, es, extra) {
   const S = ST.ready();
   const r0 = merge(S, arms("fistBelt"));
-  const a = merge(S, { j: Object.assign({}, AR[startArms], Lside(AR.reach)) }, extra && extra.a);
-  const b = merge(S, { j: Object.assign({}, AR[endArms], Lside(AR.hip)) }, extra && extra.b);
+  const part = x => typeof x === "string" ? { j: AR[x] } : x;
+  const a = merge(S, { j: Object.assign({}, Lside(AR.reach)) }, part(startArms), extra && extra.a);
+  const b = merge(S, { j: Object.assign({}, Lside(AR.hip)) }, part(endArms), extra && extra.b);
   move({ id, kind: "block", band, art: W("karate, taekwondo", "karate, taekwondo"),
     keys: [K(0, 0, r0), K(0.9, 1, a), K(1.35, 2, b, { ease: "snap" }), K(2.1, 2, b), K(2.9, 3, r0), K(3.4, 3, r0)], en, es });
 }
-blockMove("high-block", "K-2", "riseStart", "rise",
+blockMove("high-block", "K-2", "riseStart", { arm: { R: { to: [0.04, 1.76, 0.22], pole: [-0.6, 1.75, 0.35], twist: -60 } } },
   { n: "Rising block", steps: ["Stand in your ready stance.", "Get set: blocking fist low by your hip, other hand reaching up in front.", "Raise the blocking forearm up over your forehead, turned out. Pull the other fist to your hip. Breathe out.", "Lower your arms back to ready."],
     tips: ["Your forearm stops about one fist above your forehead.", "The forearm slants up a little, like a roof.", "The two arms cross in front of you on the way."] },
   { n: "Bloqueo alto", steps: ["Párate en tu posición de listo.", "Prepárate: el puño que bloquea abajo junto a la cadera, la otra mano estirada arriba al frente.", "Sube el antebrazo que bloquea por encima de la frente, girado hacia afuera. Lleva el otro puño a la cadera. Exhala.", "Baja los brazos a la posición de listo."],
     tips: ["El antebrazo se detiene a un puño por encima de la frente.", "El antebrazo sube un poco inclinado, como un techo.", "Los dos brazos se cruzan frente a ti al pasar."] },
   { b: { j: { neck: [-4, 0, 0] } } });
-blockMove("low-block", "K-2", "lowStart", "low",
+blockMove("low-block", "K-2", { arm: { R: { to: [0.16, 1.48, 0.14], pole: [-0.2, 1.0, 0.4], twist: 0 } } }, { arm: { R: { to: [-0.22, 0.82, 0.34], pole: [-0.6, 1.2, -0.1], twist: 70 } } },
   { n: "Downward block", steps: ["Stand in your ready stance.", "Get set: blocking fist up by your other ear, other hand reaching down in front.", "Sweep the blocking arm down across your body. Stop a fist above your knee. Pull the other fist to your hip. Breathe out.", "Bring your arms back to ready."],
     tips: ["The blocking arm is almost straight at the end.", "Sweep like brushing crumbs off a table.", "Stand tall. Look forward, not down."] },
   { n: "Bloqueo bajo", steps: ["Párate en tu posición de listo.", "Prepárate: el puño que bloquea arriba junto a la otra oreja, la otra mano estirada hacia abajo al frente.", "Barre el brazo hacia abajo cruzando el cuerpo. Detente a un puño sobre la rodilla. Lleva el otro puño a la cadera. Exhala.", "Regresa los brazos a la posición de listo."],
     tips: ["El brazo que bloquea queda casi recto al final.", "Barre como si quitaras migas de una mesa.", "Párate derecho. Mira al frente, no abajo."] });
-blockMove("inside-block", "3-5", "inStart", "inside",
+blockMove("inside-block", "3-5", { arm: { R: { to: [-0.48, 1.45, 0.12], pole: [-0.45, 0.9, -0.1], twist: 0 } } }, { arm: { R: { to: [-0.03, 1.38, 0.34], pole: [-0.3, 0.95, 0.35], twist: -40 } } },
   { n: "Inside block", steps: ["Stand in your ready stance.", "Get set: blocking arm out to the side, elbow bent, fist up.", "Swing the forearm in across your chest to the middle. Pull the other fist to your hip. Breathe out.", "Bring your arms back to ready."],
     tips: ["Your elbow stays bent, about a right angle.", "The fist stops in line with your shoulder.", "Turn the forearm as it moves, like turning a key."] },
   { n: "Bloqueo hacia adentro", steps: ["Párate en tu posición de listo.", "Prepárate: el brazo que bloquea hacia el lado, codo doblado, puño arriba.", "Lleva el antebrazo hacia adentro, cruzando el pecho hasta el centro. Lleva el otro puño a la cadera. Exhala.", "Regresa los brazos a la posición de listo."],
     tips: ["El codo sigue doblado, como una esquina.", "El puño se detiene en línea con el hombro.", "Gira el antebrazo al moverlo, como al girar una llave."] },
   { b: { j: { chest: [0, -12, 0] } } });
-blockMove("outside-block", "3-5", "outStart", "outside",
+blockMove("outside-block", "3-5", { arm: { R: { to: [0.12, 1.17, 0.14], pole: [-0.25, 1.05, 0.45], twist: 40 } } }, { arm: { R: { to: [-0.27, 1.42, 0.32], pole: [-0.3, 0.95, 0.35], twist: -60 } } },
   { n: "Outside block", steps: ["Stand in your ready stance.", "Get set: blocking fist under your other arm, near the armpit.", "Swing the forearm out to the side of your body. Fist at shoulder height. Pull the other fist to your hip. Breathe out.", "Bring your arms back to ready."],
     tips: ["Your elbow stays bent, about a right angle.", "The forearm stops just past your shoulder, not far out.", "Turn the fist as it arrives."] },
   { n: "Bloqueo hacia afuera", steps: ["Párate en tu posición de listo.", "Prepárate: el puño que bloquea debajo del otro brazo, cerca de la axila.", "Lleva el antebrazo hacia afuera, al lado del cuerpo. El puño a la altura del hombro. Lleva el otro puño a la cadera. Exhala.", "Regresa los brazos a la posición de listo."],
@@ -436,8 +437,8 @@ blockMove("outside-block", "3-5", "outStart", "outside",
 
 /* ─────────── Falls (on a mat; from low to the floor) ─────────── */
 {
-  const sitLegs = { L: "fk", R: "fk", j: { hipL: [-100, 0, 8], kneeL: [118, 0, 0], ankleL: [-15, 0, 0], hipR: [-100, 0, -8], kneeR: [118, 0, 0], ankleR: [-15, 0, 0] } };
-  const sit = merge(root(0, 0, 0, 0, 0, 0), sitLegs, { j: { spine: [18, 0, 0], chest: [8, 0, 0] } }, chinTuck,
+  const sitLegs = { L: "fk", R: "fk", j: { hipL: [-132, 0, 10], kneeL: [124, 0, 0], ankleL: [8, 0, 0], hipR: [-132, 0, -10], kneeR: [124, 0, 0], ankleR: [8, 0, 0] } };
+  const sit = merge(root(0, 0, 0, -12, 0, 0), sitLegs, { j: { spine: [20, 0, 0], chest: [10, 0, 0] } }, chinTuck,
     { j: { shoulderR: [-80, 0, 30], elbowR: [-20, 0, 0], shoulderL: [-80, 0, -30], elbowL: [-20, 0, 0] } }, { ground: "body" });
   const roll = merge(root(0, 0, 0, -62, 0, 0), { L: "fk", R: "fk", j: { hipL: [-95, 0, 6], kneeL: [80, 0, 0], ankleL: [-10, 0, 0], hipR: [-95, 0, -6], kneeR: [80, 0, 0], ankleR: [-10, 0, 0] } },
     { j: { spine: [26, 0, 0], chest: [16, 0, 0], neck: [34, 0, 0], head: [10, 0, 0] } },

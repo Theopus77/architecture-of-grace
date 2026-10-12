@@ -298,72 +298,58 @@ export async function create(kit) {
   }
   if (!rider) rider = tubeRider();
 
-  /* the site's figure (aog-figure3d.js): hips placed, feet on the board by ik.leg, arms by angles, head by lookAt */
+  /* the site's figure (aog-figure3d.js): the hips placed where the trick puts them, the body turned by the trick's
+     turn, each foot reached to its spot on the deck by ik.leg (the knee pointing over the toes and a little toward the
+     nose, the sole flat on the grip), the arms by angles (the front arm leads, the back arm trails, both rise in the
+     air), a twist through the shoulders toward the nose, and the head looking where the board goes. */
+  function figColors(C) {
+    const top = new THREE.Color(C.hood || "#3c6e8f"), trim = top.clone().offsetHSL(0, 0, -0.06);
+    return { top: "#" + top.getHexString(), trim: "#" + trim.getHexString(), pants: C.cargo, shoe: C.shoe, sole: C.sole, laces: C.sole, skin: C.skin, helmet: C.helmet, hair: C.hair, strings: C.sole, strap: C.shoe };
+  }
   function figureRider() {
-    const C0 = kit.colors();
-    const fig = FIG.makeFigure({ outfit: "skate", quality: phone ? "phone" : "full",
-      colors: { hood: C0.hood, cargo: C0.cargo, shoe: C0.shoe, sole: C0.sole, skin: C0.skin, helmet: C0.helmet, hair: C0.hair, accent: C0.ke } });
+    const fig = FIG.makeFigure({ outfit: "skate", quality: phone ? "phone" : "full", colors: figColors(kit.colors()) });
     fig.root.traverse(m => { if (m.isMesh) { m.castShadow = true; m.receiveShadow = true; } });
-    const tmpQ = new THREE.Quaternion(), tmpM = new THREE.Matrix4();
-    let ankleH = null;
+    const ANK = 0.08, PELVIS = 0.97;   // the ankle above the sole, the pelvis above the floor (the figure's own measures)
+    let targets = null;
     const api = { root: fig.root, fig,
-      colors: C => { if (fig.setColors) fig.setColors({ hood: C.hood, cargo: C.cargo, shoe: C.shoe, sole: C.sole, skin: C.skin, helmet: C.helmet, hair: C.hair, accent: C.ke }); },
+      colors: C => fig.setColors(figColors(C)),
       pose(o, parent) {
-        // o (in the parent's frame, the board's surface frame): fF, fB foot soles on the deck; hip; lean; turn; nose; arms; lift; str
-        const F = V(Math.sin(o.turn), 0, Math.cos(o.turn));                         // the chest's direction (toes toward +z)
-        const hipC = o.hip.clone();
-        // the figure stands facing +z with its left at +x: for a regular rider on a board whose nose is +x, the left foot leads
-        const n = o.nose >= 0 ? 1 : -1;
-        const pose = { root: { pos: [0, 0, 0], rot: [0, 0, 0] }, j: {} };
-        fig.setPose(pose); fig.root.position.set(0, 0, 0); fig.root.quaternion.identity(); fig.update && fig.update();
-        if (ankleH == null) { const a = fig.world("ankleL"); ankleH = Math.max(0.05, a.y - (fig.footFloor ? fig.footFloor("L") : 0)); }
-        const restHip = fig.world("pelvis").y;
-        // body turn: the figure faces F; a back view after 180° comes from turn itself
-        const yawB = Math.atan2(F.x, F.z);
-        const leanX = o.lean || 0;                                                     // leaning toward the nose (about the chest's forward axis)
-        const lowered = hipC.y - restHip;
-        pose.root.pos = [hipC.x, lowered, hipC.z];
-        pose.root.rot = [0, yawB / DEG, 0];
-        const lift = o.lift || 0, a = o.arms == null ? 1 : o.arms;
-        const lead = n > 0 ? "L" : "R", trail = n > 0 ? "R" : "L";
-        const sgn = s => s === "L" ? 1 : -1;                                           // out to the side: +z rotation for the left arm, −z for the right
-        const crouch = clamp((restHip - hipC.y) / 0.4, 0, 1);
-        pose.j.spine = [10 + 16 * crouch, 0, -n * leanX / DEG * 0.5];
-        pose.j.chest = [6 + 8 * crouch, n * 8, -n * leanX / DEG * 0.5];
-        const upL = 28 + 28 * a + lift * 38, upT = 22 + 34 * a + lift * 46;
-        pose.j["shoulder" + lead] = [-18 - lift * 10, 0, sgn(lead) * Math.min(115, upL)];
-        pose.j["elbow" + lead] = [-(26 + 20 * a + lift * 18), 0, 0];
-        pose.j["shoulder" + trail] = [8 - lift * 6, 0, sgn(trail) * Math.min(118, upT)];
-        pose.j["elbow" + trail] = [-(18 + 16 * a + lift * 14), 0, 0];
-        pose.j.wristL = [0, 0, 8]; pose.j.wristR = [0, 0, -8];
-        fig.setPose(pose);
-        // place the figure in the surface frame (the parent), then reach each foot to the board
-        parent.updateMatrixWorld(true);
-        fig.root.updateMatrixWorld(true);
-        const toW = p => parent.localToWorld(p.clone());
-        const upW = V(0, 1, 0).transformDirection(parent.matrixWorld);
-        const S = V(n, 0, 0);
-        [["L", lead === "L" ? o.fF : o.fB], ["R", lead === "R" ? o.fF : o.fB]].forEach(([side, sole]) => {
-          const ank = toW(sole).addScaledVector(upW, ankleH);
-          const toe = V(Math.sin(o.turn), 0, Math.cos(o.turn)).multiplyScalar(0.8).add(V(n * 0.35, 0.2, 0));
-          const pole = toW(sole.clone().add(toe));
-          fig.ik.leg(side, ank, pole);
+        // o, in the parent's frame (the board's surface frame): fF, fB (the soles on the deck or the ground), upF, upB,
+        // fwdF, fwdB (the deck's up and the toes' way, in the world), hip (the pelvis), lean, turn, nose, arms, lift
+        const tq = o.turn, left = V(Math.cos(tq), 0, -Math.sin(tq)), F = V(Math.sin(tq), 0, Math.cos(tq));
+        const ns = Math.sign(left.x * o.nose) || 1;                                   // +1: the nose is on the figure's left
+        const lead = ns > 0 ? "L" : "R", trail = ns > 0 ? "R" : "L", sg = s => s === "L" ? 1 : -1;
+        const a = o.arms == null ? 1 : o.arms, lift = clamp(o.lift || 0, 0, 1.2), lean = (o.lean || 0) / DEG;
+        const crouch = clamp((o.fF.y + o.fB.y) / 2 + PELVIS - o.hip.y, 0, 0.5) / 0.5;
+        const p = { root: { pos: [o.hip.x, o.hip.y - PELVIS, o.hip.z], rot: [0, tq / DEG, 0] }, j: {} };
+        p.j.spine = [8 + 18 * crouch, ns * 8, -ns * lean * 0.45];
+        p.j.chest = [4 + 10 * crouch, ns * 12, -ns * lean * 0.35];
+        p.j["clav" + lead] = [0, 0, sg(lead) * (4 + 6 * lift)]; p.j["clav" + trail] = [0, 0, sg(trail) * (3 + 6 * lift)];
+        p.j["shoulder" + lead] = [-22 - 12 * lift, sg(lead) * -10, sg(lead) * Math.min(112, 34 + 26 * a + 44 * lift)];
+        p.j["elbow" + lead] = [-(24 + 16 * a + 14 * lift), 0, 0];
+        p.j["shoulder" + trail] = [14 - 10 * lift, sg(trail) * 12, sg(trail) * Math.min(118, 28 + 30 * a + 52 * lift)];
+        p.j["elbow" + trail] = [-(18 + 14 * a + 12 * lift), 0, 0];
+        p.j["wrist" + lead] = [0, 0, sg(lead) * 10]; p.j["wrist" + trail] = [0, 0, sg(trail) * 14];
+        p.grip = { L: 0.25, R: 0.25 };
+        fig.setPose(p);
+        parent.updateMatrixWorld(true); fig.root.updateMatrixWorld(true);
+        // which leg takes which sole: the one on the nose's side takes the front foot
+        const pairs = [[lead, o.fF, o.upF, o.fwdF], [trail, o.fB, o.upB, o.fwdB]];
+        targets = [];
+        pairs.forEach(([side, sole, up, fwd]) => {
+          const soleW = parent.localToWorld(sole.clone()), ank = soleW.clone().addScaledVector(up, ANK);
+          const hipW = fig.world("hip" + side);
+          const pole = hipW.clone().lerp(ank, 0.5).addScaledVector(fwd, 0.9).add(parent.localToWorld(V(0, 0, 0)).sub(parent.localToWorld(V(-o.nose * 0.25, 0, 0))));
+          fig.ik.leg(side, ank, pole, { up, forward: fwd });
+          targets.push([side, ank]);
         });
-        const headT = toW(hipC.clone().add(V(n * 2.2, 0.55, 0.4)));
-        if (fig.lookAt) fig.lookAt(headT, 0.85);
-        fig.update && fig.update();
+        // the head looks along the board toward the nose, a little down at the ground ahead
+        const noseW = parent.localToWorld(V(o.nose * 3.2, 0, 0.8)).add(V(0, -0.2, 0));
+        fig.lookAt(noseW, 0.9);
+        fig.update();
       },
-      feetError(parent, o) {   // the gap between each sole and its spot on the board (meters), for the checks
-        const out = [];
-        [["L"], ["R"]].forEach(([side]) => {
-          const n = o.nose >= 0 ? 1 : -1, lead = n > 0 ? "L" : "R";
-          const sole = parent.localToWorld((side === lead ? o.fF : o.fB).clone());
-          const a = fig.world("ankle" + side), upW = V(0, 1, 0).transformDirection(parent.matrixWorld);
-          out.push(a.clone().addScaledVector(upW, -ankleH).distanceTo(sole));
-        });
-        return out;
-      },
-      dispose: () => fig.dispose && fig.dispose()
+      feetError() { return targets ? targets.map(([side, ank]) => fig.world("ankle" + side).distanceTo(ank)) : [0, 0]; },
+      dispose: () => fig.dispose()
     };
     return api;
   }
@@ -673,10 +659,17 @@ export async function create(kit) {
   const board = makeBoard(); spinG.add(board);
   surf.add(rider.root);
 
-  const tmp = new THREE.Vector3();
-  function footOnBoard(q) {   // a foot's place on the board ([x along it, lift]) → the surface frame
+  const tmp = new THREE.Vector3(), qS = new THREE.Quaternion(), qD = new THREE.Quaternion();
+  /* a foot's place on the board ([x along it, lift]) → the surface frame, with the deck's up and the toes' way (world).
+     A foot on the deck turns with the board; a foot lifted for a flip stays over it while the board spins below. */
+  function footOnBoard(q, front) {
+    const k = clamp(1 - q[1] / 0.035, 0, 1);
     tmp.set(q[0], kit.deckMid(q[0]) + B.thick / 2 + q[1], 0);
-    spinG.localToWorld(tmp); return surf.worldToLocal(tmp.clone());
+    const a = spinG.localToWorld(tmp.clone()), b = dirG.localToWorld(tmp.clone());
+    const p = b.lerp(a, k);
+    spinG.getWorldQuaternion(qS); dirG.getWorldQuaternion(qD); qD.slerp(qS, k);
+    const up = V(0, 1, 0).applyQuaternion(qD), fwd = V(0, 0, 1).add(V(front ? 0.36 : 0.1, 0, 0)).normalize().applyQuaternion(qD);
+    return { p: surf.worldToLocal(p), up, fwd };
   }
   let lastSpec = null, lastO = null, camMode = "follow", orbit = { th: 0.6, el: 0.22, dist: 4.4 };
   function pose(fr) {
@@ -692,7 +685,10 @@ export async function create(kit) {
     board.userData.wheels.forEach(w => w.rotation.z = roll * dir);
     surf.updateMatrixWorld(true);
     const gz = 0.14;   // a foot on the ground stands just beside the board, on the toe side
-    const fF = fr.f ? footOnBoard(fr.f) : V(fr.fg[0], fr.fg[1], gz), fB = fr.b ? footOnBoard(fr.b) : V(fr.bg[0], fr.bg[1], gz);
+    const sUp = V(0, 1, 0).transformDirection(surf.matrixWorld), sZ = V(0, 0, 1).transformDirection(surf.matrixWorld), sX = V(1, 0, 0).transformDirection(surf.matrixWorld);
+    const onGround = (g, front) => ({ p: V(g[0], g[1], gz), up: sUp.clone(), fwd: sZ.clone().addScaledVector(sX, front ? 0.5 : 0.2).normalize() });
+    const FF = fr.f ? footOnBoard(fr.f, true) : onGround(fr.fg, true), FB = fr.b ? footOnBoard(fr.b, false) : onGround(fr.bg, false);
+    const fF = FF.p, fB = FB.p;
     let hip;
     if (fr.hip) hip = V(fr.hip[0], fr.hip[1], -0.01);
     else {
@@ -703,7 +699,7 @@ export async function create(kit) {
     }
     const noseW = new THREE.Vector3(1, 0, 0).applyQuaternion(spinG.getWorldQuaternion(new THREE.Quaternion()));
     const noseL = noseW.clone().transformDirection(new THREE.Matrix4().copy(surf.matrixWorld).invert());
-    const o = { fF, fB, hip, lean: fr.lean - fr.ba * DEG, turn: fr.turn * DEG * dir, nose: noseL.x >= 0 ? 1 : -1, arms: fr.arms, lift: fr.lift, str: fr.str };
+    const o = { fF, fB, upF: FF.up, upB: FB.up, fwdF: FF.fwd, fwdB: FB.fwd, hip, lean: fr.lean - fr.ba * DEG, turn: fr.turn * DEG * dir, nose: noseL.x >= 0 ? 1 : -1, arms: fr.arms, lift: fr.lift, str: fr.str };
     rider.pose(o, surf); lastO = o;
     return surf.localToWorld(hip.clone());
   }
@@ -866,7 +862,7 @@ export async function create(kit) {
     onDown, onMove, onUp, renders: () => renders,
     show: on => { canvas.style.display = on ? "block" : "none"; },
     figure: () => !!(rider && rider.fig),
-    feetError: () => lastO && rider.feetError ? rider.feetError(surf, lastO) : [0, 0],
+    feetError: () => rider.feetError ? rider.feetError() : [0, 0],
     world: () => ({ surf: surf.position.clone(), board: boardOuter.getWorldPosition(new THREE.Vector3()) }),
     dispose: () => {   // let go of everything: the scene, its textures, the figure and the drawing context
       if (rider && rider.dispose) try { rider.dispose(); } catch (e) {}

@@ -111,6 +111,13 @@ export async function create(opt) {
   // walls: behind, and one side with tall soft windows
   const back = add(new THREE.PlaneGeometry(14, 6), MAT.wall, 0, 3 + FLOOR_Y, -5.2); back.receiveShadow = true;
   const sideW = add(new THREE.PlaneGeometry(12, 6), MAT.wall, -5.6, 3 + FLOOR_Y, 0.4); sideW.rotation.y = Math.PI / 2;
+  // the other two walls, so every view looks into a room
+  const frontW = add(new THREE.PlaneGeometry(14, 6), MAT.wall, 0, 3 + FLOOR_Y, 6.2); frontW.rotation.y = Math.PI;
+  const rightW = add(new THREE.PlaneGeometry(12, 6), MAT.wall, 5.6, 3 + FLOOR_Y, 0.4); rightW.rotation.y = -Math.PI / 2;
+  const railF = new THREE.CylinderGeometry(0.035, 0.035, 14, 20); railF.rotateZ(Math.PI / 2); add(railF, MAT.wood, 0, 0.95, 6.16, false);
+  const railR = new THREE.CylinderGeometry(0.035, 0.035, 12, 20); railR.rotateX(Math.PI / 2); add(railR, MAT.wood, 5.56, 0.95, 0.4, false);
+  add(new RoundedBoxGeometry(14, 0.16, 0.06, seg, 0.025), MAT.wood, 0, FLOOR_Y + 0.08, 6.17, false);
+  add(new RoundedBoxGeometry(0.06, 0.16, 12, seg, 0.025), MAT.wood, 5.57, FLOOR_Y + 0.08, 0.4, false);
   // a wooden base rail and a soft top rail along the back wall (rounded, turned)
   const rail = new THREE.CylinderGeometry(0.035, 0.035, 14, 20); rail.rotateZ(Math.PI / 2);
   add(rail, MAT.wood, 0, 0.95, -5.16, false);
@@ -130,7 +137,11 @@ export async function create(opt) {
   });
   // smooth shapes on the back wall: three soft discs in a calm row (wood, sage, stone) — just shapes
   const disc = r => { const t = 0.035, pts = [new THREE.Vector2(0.0001, t)]; for (let i = 0; i <= 10; i++) { const a = i / 10 * Math.PI / 2; pts.push(new THREE.Vector2(r - t + Math.sin(a) * t, Math.cos(a) * t)); } pts.push(new THREE.Vector2(0.0001, 0)); const g = new THREE.LatheGeometry(pts, 64); g.rotateX(Math.PI / 2); return g; };
-  [[-3.4, 2.0, 0.55, MAT.wood], [-2.3, 2.5, 0.34, MAT.accent], [3.6, 2.3, 0.42, MAT.stone]].forEach(([x, y, r, m]) => add(disc(r), m, x, y, -5.15, false));
+  [[1.5, 2.0, 0.55, MAT.wood], [2.6, 2.5, 0.34, MAT.accent], [-4.2, 2.3, 0.42, MAT.stone]].forEach(([x, y, r, m]) => add(disc(r), m, x, y, -5.15, false));
+  [[2.4, 2.1, 0.5, MAT.accent], [3.5, 2.6, 0.3, MAT.wood], [-3.2, 2.2, 0.38, MAT.stone]].forEach(([z, y, r, m]) => { const d = add(disc(r), m, 5.55, y, z, false); d.rotation.y = -Math.PI / 2; });
+  [[-2.6, 2.2, 0.46, MAT.stone], [-3.7, 2.6, 0.3, MAT.accent], [3.6, 2.1, 0.52, MAT.wood]].forEach(([x, y, r, m]) => { const d = add(disc(r), m, x, y, 6.15, false); d.rotation.y = Math.PI; });
+  // a row of soft vertical wooden slats on the front wall, rounded like dowels
+  for (let i = 0; i < 9; i++) { const g = new THREE.CapsuleGeometry(0.035, 1.6, 6, 16); add(g, MAT.wood, 1.6 + i * 0.14, 1.9, 6.12, false); }
   // a long low bench with rounded edges, with three smooth river stones resting on it
   add(new RoundedBoxGeometry(2.6, 0.08, 0.42, seg, 0.035), MAT.wood, 2.4, 0.42 + FLOOR_Y, -4.7, true);
   [[1.6, 0.4], [2.6, 0.3], [3.4, 0.36]].forEach(([x, s]) => add(new RoundedBoxGeometry(0.1, 0.36, 0.34, seg, 0.04), MAT.wood, x, 0.2 + FLOOR_Y, -4.7, true));

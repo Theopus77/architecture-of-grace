@@ -244,7 +244,7 @@
     const De = Ds - 2.22 * sin(psi) * cos(lam + 22) - 1.30 * (r - Dl) / Dl * sin(lam - 100.5);
     const names = [["Io", "Ío"], ["Europa", "Europa"], ["Ganymede", "Ganímedes"], ["Callisto", "Calisto"]];
     return [[u1, r1, 5.0], [u2, r2, 5.3], [u3, r3, 4.6], [u4, r4, 5.7]].map(([u, rr, mag], k) => ({
-      name: names[k], X: rr * sin(u), Y: -rr * cos(u) * sin(De), front: cos(u) < 0, mag
+      name: names[k], X: rr * sin(u), Y: -rr * cos(u) * sin(De), front: cos(u) > 0, mag
     }));
   }
   /* the local sky: altitude (refracted unless raw), azimuth from north through east */

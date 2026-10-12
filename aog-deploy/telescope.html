@@ -219,7 +219,33 @@ svg.scope { width:100%; height:auto; }
   <p class="muted" id="foot" style="margin-top:2rem;font-size:.9rem"></p>
 </div>
 <script>
-const SCOPE = { mm:90, fl:900, dawes:116/90, seeing:1.6, useful:180, afov:50 };
+/* AOG-TELE-INSTRUMENTS-V1 (2026-10-12) — Jimmy: "a quantum leap forward." Four telescopes. The 90 mm refractor is
+   the one the lessons are written for; the others follow the same truths: the aperture sets how fine a detail can be
+   split (Dawes: 116 ÷ aperture in mm, in arcseconds) and how faint a star shows (more glass, more light); the focal
+   length ÷ the eyepiece sets the power, and the power sets how much sky fits. The air (seeing) and the sky glow
+   (Bortle) limit every one of them. Eyepieces are the same three on each, so the lessons still work. */
+const INSTR = {
+  r90:  { mm:90,   fl:900,  kind:"refractor", en:"90 mm refractor", es:"Refractor de 90 mm", eyebrow_en:"90 mm brass refractor", eyebrow_es:"Refractor de bronce de 90 mm" },
+  n130: { mm:130,  fl:650,  kind:"reflector", en:"130 mm reflector", es:"Reflector de 130 mm", eyebrow_en:"130 mm reflector", eyebrow_es:"Reflector de 130 mm" },
+  d200: { mm:203,  fl:1200, kind:"reflector", en:"8-inch Dobsonian", es:"Dobson de 8 pulgadas", eyebrow_en:"8-inch (203 mm) Dobsonian", eyebrow_es:"Dobson de 8 pulgadas (203 mm)" },
+  obs:  { mm:1000, fl:8000, kind:"reflector", en:"1-meter observatory telescope", es:"Telescopio de observatorio de 1 metro", eyebrow_en:"1-meter observatory telescope", eyebrow_es:"Telescopio de observatorio de 1 metro" }
+};
+const SEEING = { steady:0.8, avg:1.6, shaky:3.0 };
+/* the naked-eye faintest star under each Bortle sky, 1 (darkest) … 9 (inner city) */
+const NELM = [0, 7.8, 7.3, 6.8, 6.3, 5.8, 5.3, 4.8, 4.3, 4.0];
+const SCOPE = { id:"r90", mm:90, fl:900, dawes:116/90, seeing:1.6, useful:180, afov:50, kind:"refractor" };
+const OPT_KEY = "scope.optics.v1";
+const OPT = { scope:"r90", seeing:"avg", bortle:4 };
+try { const o=JSON.parse(localStorage.getItem(OPT_KEY)||"null"); if(o){ if(INSTR[o.scope]) OPT.scope=o.scope; if(SEEING[o.seeing]) OPT.seeing=o.seeing; if(o.bortle>=1&&o.bortle<=9) OPT.bortle=Math.round(o.bortle); } } catch(e){}
+function setScope(){
+  const I=INSTR[OPT.scope]||INSTR.r90;
+  Object.assign(SCOPE, { id:OPT.scope, mm:I.mm, fl:I.fl, kind:I.kind, dawes:116/I.mm, seeing:SEEING[OPT.seeing]||1.6, useful:Math.min(2*I.mm, 500) });
+}
+setScope();
+function persistOpt(){ try{ localStorage.setItem(OPT_KEY, JSON.stringify(OPT)); }catch(e){} }
+/* the faintest star this telescope shows under this sky (before the air near the horizon dims it) */
+function limitMag(){ return NELM[OPT.bortle] - 4.5 + 5*Math.log10(SCOPE.mm); }
+function lightGrasp(){ return Math.round((SCOPE.mm/7)*(SCOPE.mm/7)); }
 const KEY = "scope.sky.v1";
 const THEME_KEY = "aog.interior.ws.v1.theme";
 function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return ((t^t>>>14)>>>0)/4294967296};}
@@ -264,8 +290,21 @@ const STR = {
   mars:{en:"Mars",es:"Marte"}, venus:{en:"Venus",es:"Venus"}, andromeda:{en:"Andromeda Galaxy",es:"Galaxia de Andrómeda"},
   ring:{en:"Ring Nebula",es:"Nebulosa del Anillo"}, m13:{en:"M13 star cluster",es:"Cúmulo M13"}, mizar:{en:"Mizar and Alcor",es:"Mizar y Alcor"},
   split:{en:"The 2.4″ pair",es:"El par de 2.4″"},
-  uranus:{en:"Uranus",es:"Urano"}, dcluster:{en:"Double Cluster",es:"Cúmulo Doble"}, m27:{en:"Dumbbell Nebula",es:"Nebulosa Dumbbell"}
+  uranus:{en:"Uranus",es:"Urano"}, dcluster:{en:"Double Cluster",es:"Cúmulo Doble"}, m27:{en:"Dumbbell Nebula",es:"Nebulosa Dumbbell"},
+  /* AOG-TELE-REAL-V1 (2026-10-12): the real sky, the star map, the four telescopes */
+  scopeRow:{en:"Telescope",es:"Telescopio"}, seeingRow:{en:"Air",es:"Aire"},
+  steady:{en:"Steady",es:"Quieto"}, avg:{en:"Average",es:"Normal"}, shaky:{en:"Shaky",es:"Inquieto"},
+  glowRow:{en:"Sky glow",es:"Brillo del cielo"},
+  nightRow:{en:"Which sky",es:"Qué cielo"}, practice:{en:"Practice",es:"Práctica"}, realSky:{en:"Real sky",es:"Cielo real"},
+  skymap:{en:"Star map",es:"Mapa del cielo"}, openMap:{en:"Open the star map",es:"Abrir el mapa del cielo"},
+  loadingSky:{en:"Getting the real sky ready…",es:"Preparando el cielo real…"},
+  moreRows:{en:"Telescope and sky",es:"Telescopio y cielo"},
+  lessons90:{en:"The lessons are written for the 90 mm. They still work with this one; the numbers change.",es:"Las lecciones están escritas para el de 90 mm. Funcionan con este también; los números cambian."}
 };
+const BORTLE = [null,
+  ["Darkest sky","El cielo más oscuro"], ["Truly dark sky","Cielo muy oscuro"], ["Country sky","Cielo de campo"],
+  ["Country edge","Borde del campo"], ["Suburb","Suburbio"], ["Bright suburb","Suburbio brillante"],
+  ["Edge of a city","Borde de ciudad"], ["City","Ciudad"], ["Inner city","Centro de la ciudad"]];
 /* one plain line under the target menu: what to look for */
 const LOOK={
   moon:["Dark seas, bright highlands, and shadows along the terminator.","Mares oscuros, tierras altas brillantes y sombras en el terminador."],
@@ -594,14 +633,15 @@ function viewArcmin(mag){ return tfovArcmin(mag)/viewScale(mag); }
 /* nothing moves on its own for someone who asked for stillness, or on a touch screen */
 const STILL=(function(){ try{ return matchMedia("(prefers-reduced-motion: reduce)").matches || matchMedia("(pointer: coarse)").matches; }catch(e){ return true; } })();
 
-let MOON=null;
+let MOON=null, MOON_T=null;
 /* ── THE MOON ─────────────────────────────────────────────────────────────────────────────
    The seas are traced by their real outlines in selenographic latitude and longitude; the named
    craters sit at their true places and sizes (Tycho and Copernicus with rays and terraces, Plato
    with its dark floor, Clavius with the arc of craterlets); the Apennines, Alps, Caucasus and
    Carpathians are ridges; and one sun lights a sphere, so the terminator is where the light runs
    out and the shadows next to it are long. Waxing gibbous: the terminator sits at about −0.2 R. */
-function bakeMoon(){
+function moonTerrain(){
+  if(MOON_T) return MOON_T;
   const N=1800, H=new Float32Array(N*N), alb=new Float32Array(N*N), mareM=new Uint8Array(N*N);
   const cx=N/2, cy=N/2, R=N*0.5-3;
   const D2R=Math.PI/180;
@@ -811,9 +851,46 @@ function bakeMoon(){
       if(fall>0.65) alb[ii]*=0.78+crng()*0.14;
     }
   }
+  MOON_T={N,H,alb,cx,cy,R};
+  return MOON_T;
+}
+/* AOG-TELE-REAL-MOON-V1 (2026-10-12): the ground above is shaped once; the light is laid on it here. With no
+   options this is the practice Moon (ten days old). The real Moon passes its phase angle (i), its libration (l, b: the
+   point of the Moon that faces us tonight) and a roll that puts the Sun on the right of the baked picture; the page
+   then turns the picture so the lit edge faces the real Sun. */
+function bakeMoon(){ return moonLight({}); }
+function moonLight(o){
+  o=o||{};
+  const T=moonTerrain(), N=T.N, cx=T.cx, cy=T.cy, R=T.R, D2R=Math.PI/180;
+  let H=T.H, alb=T.alb;
+  const rl=(o.l||0)*D2R, rb=(o.b||0)*D2R, rr=(o.roll||0)*D2R;
+  if(rl||rb||rr){
+    /* turn the globe: each pixel of the new face finds its spot on the reference face */
+    const H2=new Float32Array(N*N), A2=new Float32Array(N*N);
+    const cR=Math.cos(-rr), sR=Math.sin(-rr), cB=Math.cos(rb), sB=Math.sin(rb);
+    const samp=(arr,x,y)=>{ const x0=Math.floor(x), y0=Math.floor(y), u=x-x0, v=y-y0, i=y0*N+x0;
+      return arr[i]*(1-u)*(1-v)+arr[i+1]*u*(1-v)+arr[i+N]*(1-u)*v+arr[i+N+1]*u*v; };
+    for(let y=1;y<N-1;y++) for(let x=1;x<N-1;x++){
+      const X=(x-cx)/R, Y=-(y-cy)/R, q=X*X+Y*Y; if(q>1) continue;
+      const Z=Math.sqrt(1-q);
+      const X1=X*cR-Y*sR, Y1=X*sR+Y*cR;
+      const Y2=Y1*cB+Z*sB, Z2=-Y1*sB+Z*cB;
+      const lat=Math.asin(Math.max(-1,Math.min(1,Y2))), lon=Math.atan2(X1,Z2)+rl;
+      const z0=Math.cos(lat)*Math.cos(lon), i=y*N+x;
+      if(z0>0.03){
+        const px=cx+Math.cos(lat)*Math.sin(lon)*R, py=cy-Math.sin(lat)*R;
+        H2[i]=samp(H,Math.min(N-2.001,Math.max(1,px)),Math.min(N-2.001,Math.max(1,py)));
+        A2[i]=samp(alb,Math.min(N-2.001,Math.max(1,px)),Math.min(N-2.001,Math.max(1,py)));
+      } else {
+        /* a sliver of the far side that libration brings round the edge: plain highland */
+        H2[i]=(fbm(lon*9+4,lat*9)-.5)*1.4; A2[i]=0.82+(fbm(lon*7,lat*7+3)-.5)*.08;
+      }
+    }
+    H=H2; alb=A2;
+  }
   /* one sun. Ten days old, a waxing gibbous: the terminator runs down the west (left) at longitude −22°,
      so Copernicus, Plato, Clavius and the Apennines all stand in long morning shadow. */
-  const phase=68*D2R, Lx=Math.sin(phase), Lz=Math.cos(phase);
+  const phase=(o.i!=null?o.i:68)*D2R, Lx=Math.sin(phase), Lz=Math.cos(phase);
   const gapA=new Float32Array(N*N);
   for(let y=1;y<N-1;y++){
     let cover=-1e9;
@@ -844,7 +921,7 @@ function bakeMoon(){
       const shadowed=gapA[idx]>0.25;
       if(shadowed) light*=Math.exp(-gapA[idx]*.9)*.45;
       light=light*(0.7+0.3*Math.min(1,sunEl*1.6))+(shadowed?0:Math.max(0,sunEl)*0.12);
-      const night=sunEl<0.015?0.05:0;
+      const night=sunEl<0.015?(o.shine!=null?o.shine:0.05):0;
       const a=alb[idx], mare=Math.max(0,Math.min(1,(0.78-a)/0.18));
       const k=a*(night+light*1.0);
       const o=idx*4;
@@ -868,14 +945,19 @@ function skyNow(){
 }
 
 let EYE_NOW=0;
+/* AOG-TELE-CALM-EYE-V1: stars shiver only while a finger or the mouse is moving the field, and never when stillness
+   was asked for or on a touch screen. Nothing redraws on its own. */
+let TWINKLE=false;
 /* a star as the lens shows it: a bright core, a faint ring, a soft halo that grows with brightness */
 function airy(ctx,x,y,mag,col){
-  const flick=STILL?1:(mag<3.4
+  const still=!TWINKLE;
+  const flick=still?1:(mag<3.4
     ? 0.62+0.38*Math.abs(Math.sin(EYE_NOW/130+x*2.7+y*1.9))
     : 0.86+0.14*Math.sin(EYE_NOW/210+x*4.2+y*3.1));
-  if(!STILL){ const j=mag<4.5?0.012:0.004; x+=Math.sin(EYE_NOW/180+y*6)*j; y+=Math.cos(EYE_NOW/200+x*6)*j; }
+  if(!still){ const j=mag<4.5?0.012:0.004; x+=Math.sin(EYE_NOW/180+y*6)*j; y+=Math.cos(EYE_NOW/200+x*6)*j; }
   const k=Math.hypot(ctx.getTransform().a, ctx.getTransform().b)||1;
-  const corePx=Math.max(1.1, 0.022*k*(1+Math.max(0,7.5-mag)*0.22), 1.15+Math.max(0, 5.6-mag)*1.15);   /* never smaller than the lens's own 1.3″ disc; bright stars flare wider */
+  /* never smaller than the telescope's own smallest dot (Dawes); bright stars flare wider */
+  const corePx=Math.max(1.1, (SCOPE.dawes/60)*k*(1+Math.max(0,7.5-mag)*0.22), 1.15+Math.max(0, 5.6-mag)*1.15);
   const wing=(corePx*(mag>6?2.1:3.6))/k;
   const g=ctx.createRadialGradient(x,y,0,x,y,wing);
   g.addColorStop(0,"#fff");
@@ -889,6 +971,12 @@ function airy(ctx,x,y,mag,col){
     ctx.strokeStyle=`rgba(214,224,255,${0.28*flick})`;
     ctx.lineWidth=Math.max(0.4, corePx*0.35)/k;
     ctx.beginPath(); ctx.arc(x,y,wing*0.95,0,6.3); ctx.stroke();
+  }
+  /* a mirror held by thin vanes adds four soft spikes to a bright star (the refractor has none) */
+  if(SCOPE.kind==="reflector" && mag<4.2){
+    const L=wing*(1.6+(4.2-mag)*0.9), a=Math.min(.5,.12+(4.2-mag)*.08)*flick;
+    ctx.strokeStyle=`rgba(236,238,255,${a})`; ctx.lineWidth=Math.max(0.6, corePx*0.28)/k; ctx.lineCap="round";
+    ctx.beginPath(); ctx.moveTo(x-L,y); ctx.lineTo(x+L,y); ctx.moveTo(x,y-L); ctx.lineTo(x,y+L); ctx.stroke();
   }
   ctx.restore();
 }
@@ -910,7 +998,8 @@ const M13_FIELD = fieldStars(13, 70, 40);
 let JUP=null, SAT=null, ORI=null, MARS=null, VENUS=null, ANDR=null, RING=null, M13=null;
 /* ── JUPITER ── an oblate disk 42″ wide: two dark equatorial belts, finer belts and zones with ragged
    edges, festoons, the Great Red Spot in its bay, limb darkening, and one moon's shadow crossing the disk. */
-function bakeJupiter(){
+function bakeJupiter(op){
+  op=op||{};
   const N=900, cx=N/2, cy=N/2, SPAN=0.46;
   const eq=42/120, pol=eq*0.935;
   return bakeCanvas(N,data=>{
@@ -959,7 +1048,7 @@ function bakeJupiter(){
       const k=limb*(0.96+n*0.06);
       /* one moon's shadow on the disk: a sharp black dot, the easiest thing to see on Jupiter */
       const sh=Math.hypot((ax+0.19)*1.0,(lat+0.05)*pol);
-      const shadow=sh<0.011?1:sh<0.0135?(0.0135-sh)/0.0025:0;
+      const shadow=op.shadow===false?0:sh<0.011?1:sh<0.0135?(0.0135-sh)/0.0025:0;
       data[o]=Math.min(255,Math.max(0,r*k*(1-shadow)));
       data[o+1]=Math.min(255,Math.max(0,g*k*(1-shadow)));
       data[o+2]=Math.min(255,Math.max(0,b*k*(1-shadow)));
@@ -978,8 +1067,9 @@ function drawJupiter(ctx){
 }
 /* ── SATURN ── the globe inside the rings: the bright B ring, the Cassini Division, the dusky C ring,
    the rings' shadow on the globe, the globe's shadow on the rings behind it, subtle belts. */
-function bakeSaturn(){
-  const N=820, cx=N/2, cy=N/2, SPAN=0.58, open=0.25;
+function bakeSaturn(op){
+  op=op||{};
+  const N=820, cx=N/2, cy=N/2, SPAN=0.58, open=op.open!=null?Math.max(0.012,op.open):0.25;
   const pxPer=(N/2)/SPAN;
   function ringI(rho){
     const n=vnoise(rho*80, 2)-0.5;
@@ -1044,7 +1134,8 @@ function drawSaturn(ctx){
 }
 /* ── MARS ── a small orange disk, a little gibbous: the north polar cap, Syrtis Major's dark wedge,
    the Hellas basin bright below it, Sinus Sabaeus along the equator, Mare Acidalium in the north. */
-function bakeMars(){
+function bakeMars(op){
+  op=op||{};
   const N=700, cx=N/2, cy=N/2, SPAN=0.20, Rm=15.5/120;   /* 15.5″ across, a good year */
   const D2R=Math.PI/180;
   /* markings as ovals in areographic lat/lon: [lat, lon, half-w°, half-h°, tilt, darkness] */
@@ -1057,16 +1148,17 @@ function bakeMars(){
     [-30,215,20,9,0.2,.28],    /* Mare Cimmerium */
     [10,275,10,10,0,.20]
   ];
-  const cm=300*D2R;   /* central meridian: Syrtis Major just past the middle */
-  const phaseA=38*D2R, Lx=-Math.sin(phaseA), Lz=Math.cos(phaseA);
+  const cm=(op.cm!=null?op.cm:300)*D2R;   /* central meridian: Syrtis Major just past the middle */
+  const phaseA=38*D2R, LL=op.L||[-Math.sin(phaseA),0,Math.cos(phaseA)], Lx=LL[0], Ly=LL[1], Lz=LL[2];
+  const mir=op.mirror?-1:1;
   return bakeCanvas(N,data=>{
     for(let y=0;y<N;y++) for(let x=0;x<N;x++){
       const ax=(x-cx)/(N/2)*SPAN, ay=(y-cy)/(N/2)*SPAN;
       const dx=ax/Rm, dy=ay/Rm, rr=dx*dx+dy*dy, o=(y*N+x)*4;
       if(rr>=1){ data[o+3]=0; continue; }
       const nz=Math.sqrt(1-rr);
-      const tilt=24*D2R, ty=-dy*Math.cos(tilt)+nz*Math.sin(tilt), tz=nz*Math.cos(tilt)+dy*Math.sin(tilt);
-      const lat=Math.asin(Math.max(-1,Math.min(1,ty))), lon=Math.atan2(dx,tz)+cm;
+      const tilt=(op.tilt!=null?op.tilt:24)*D2R, ty=-dy*Math.cos(tilt)+nz*Math.sin(tilt), tz=nz*Math.cos(tilt)+dy*Math.sin(tilt);
+      const lat=Math.asin(Math.max(-1,Math.min(1,ty))), lon=cm+mir*Math.atan2(dx,tz);
       let dark=0;
       for(const [la,lo,hw,hh,rot,d] of DARK){
         let dlo=((lon/D2R-lo+540)%360-180)*Math.cos(la*D2R), dla=lat/D2R-la;
@@ -1081,7 +1173,7 @@ function bakeMars(){
       let r=222-dark*120, g=132-dark*70, b=78-dark*36;
       if(hellas){ r=234; g=176; b=120; }
       if(cap){ r=255; g=253; b=250; }
-      const nd=Math.max(0, dx*Lx+nz*Lz);
+      const nd=Math.max(0, dx*Lx-dy*Ly+nz*Lz);
       const k=Math.pow(nd,0.6)*(0.35+0.65*Math.pow(nz,0.4))*(cap?1.25:1.05);
       data[o]=Math.min(255,r*k); data[o+1]=Math.min(255,g*k); data[o+2]=Math.min(255,b*k); data[o+3]=255;
     }
@@ -1093,9 +1185,11 @@ function drawMars(ctx){
   ctx.drawImage(MARS,-0.20,-0.20,0.40,0.40);
 }
 /* ── VENUS ── a brilliant crescent 45″ across, no markings at all: it is cloud, and it dazzles. */
-function bakeVenus(){
+function bakeVenus(op){
+  op=op||{};
   const N=700, cx=N/2, cy=N/2, SPAN=0.55, Rv=45/120;
-  const phaseA=112*(Math.PI/180), Lx=-Math.sin(phaseA), Lz=Math.cos(phaseA);
+  const phaseA=(op.phase!=null?op.phase:112)*(Math.PI/180), Lx=-Math.sin(phaseA), Lz=Math.cos(phaseA);
+  const tint=op.tint||[1,0.985,0.93];
   return bakeCanvas(N,data=>{
     for(let y=0;y<N;y++) for(let x=0;x<N;x++){
       const ax=(x-cx)/(N/2)*SPAN, ay=(y-cy)/(N/2)*SPAN;
@@ -1107,7 +1201,7 @@ function bakeVenus(){
       let k=Math.max(0, nd+0.06)/1.06;
       k=Math.pow(k,0.45)*(0.75+0.25*nz);
       const v=Math.min(255, 255*k*1.15);
-      data[o]=v; data[o+1]=Math.min(255,v*0.985); data[o+2]=Math.min(255,v*0.93); data[o+3]=k>0.02?255:Math.min(255,k*255*50);
+      data[o]=Math.min(255,v*tint[0]); data[o+1]=Math.min(255,v*tint[1]); data[o+2]=Math.min(255,v*tint[2]); data[o+3]=k>0.02?255:Math.min(255,k*255*50);
     }
   });
 }
@@ -1452,8 +1546,19 @@ function drawStars(ctx){ SKY.forEach(s=>airy(ctx,s.x,s.y,s.m,s.c)); }
 const DRAW={moon:drawMoon,sea:drawMoon,jupiter:drawJupiter,saturn:drawSaturn,mars:drawMars,venus:drawVenus,orion:drawOrion,pleiades:drawPleiades,
   albireo:drawAlbireo,mizar:drawMizar,pair:drawPair,split:drawSplit,andromeda:drawAndromeda,ring:drawRing,m13:drawM13,sun:drawSun,
   uranus:drawUranus,dcluster:drawDoubleCluster,m27:drawM27};
+/* AOG-TELE-GLOW-V1: the night background is the sky's own glow, seen through the eyepiece. A brighter sky (higher
+   Bortle) makes it greyer; more power (a smaller exit pupil) makes it darker. Bortle 4 at the 25 mm is the bench's old
+   black. The glow is laid over the field too, so a faint object loses contrast, as it does under a city sky. */
+function glowLin(){
+  const base=[0,0.0005,0.0008,0.0013,0.0021,0.0036,0.0062,0.010,0.016,0.024][OPT.bortle]||0.0021;
+  const exitPupil=SCOPE.mm/magOf(S.lab), ref=2.5;
+  return base*Math.max(0.12, Math.min(3.2, (exitPupil/ref)*(exitPupil/ref)))*(window.REAL_GLOW||1);
+}
+function lin2s(v){ v=Math.max(0,Math.min(1,v)); return Math.round(255*(v<=0.0031308?12.92*v:1.055*Math.pow(v,1/2.4)-0.055)); }
+function glowRGB(extra){ const g=glowLin()+(extra||0); return [lin2s(g*1.0+0.0004), lin2s(g*0.93+0.0005), lin2s(g*0.82+0.0011)]; }
 function paintSky(ctx,w,h,sky){
-  if(!sky || sky==="night"){ ctx.fillStyle="#07080c"; ctx.fillRect(0,0,w,h); return; }
+  if(!sky || sky==="night"){ const c=glowRGB(); ctx.fillStyle=`rgb(${c[0]},${c[1]},${c[2]})`; ctx.fillRect(0,0,w,h); return; }
+  if(sky && typeof sky==="object"){ ctx.fillStyle=sky.css; ctx.fillRect(0,0,w,h); return; }
   const g=ctx.createLinearGradient(0,0,0,h);
   if(sky==="day"){ g.addColorStop(0,"#8eb6d6"); g.addColorStop(1,"#d5e6f2"); }
   else if(sky==="dusk"){ g.addColorStop(0,"#1a2948"); g.addColorStop(.4,"#4c648c"); g.addColorStop(.74,"#c4846a"); g.addColorStop(1,"#f0c4a0"); }
