@@ -25,6 +25,11 @@
                  Or in 3D (AOG-SKATE-3D-V1, aog-skate3d.js, three.js in /vendor/three-0.160.0): a real-time skatepark and a
                  jointed skater driven by the same demos; cameras: filmer, fisheye, side, walk around (drag). It draws only
                  when a step plays or the camera is dragged.
+       #free     Free skate (AOG-SKATE-FREE-V1): ride a small park yourself with big buttons (or the keyboard): push, steer,
+                 ollie, kickflip, grind the waxed ledge or the flat rail, drop into the mini ramp, all with the lab's physics.
+                 A map from above by default; the 3D park on a tap. The loop runs only while something moves.
+       The Ramp, Ollie and Grinds rooms can also show their own run in the 3D park (AOG-SKATE-3D-ROOMS-V1), with the energy
+       bars, force arrows and marks standing in the scene; their drawings stay the light default.
        #questions Questions (AOG-SKATE-FAQ-V1): 30 answers, searchable, by topic, in English and Spanish.
        #build    Build a board (AOG-SKATE-BUILD-V1; "Every part" pulls the board apart with a printable parts list, AOG-SKATE-PARTS-V1): a whole setup for a rider and a use, and checks for truck fit,
                  the wheels and wheel bite, drawn from the front at full lean.
@@ -142,6 +147,14 @@ header { display:flex; flex-wrap:wrap; justify-content:space-between; align-item
 .player input[type=range] { flex:1; }
 .player .time { font:700 .95rem/1 var(--mono); min-width:5.2em; text-align:right; }
 input[type=range] { accent-color:var(--steel); min-height:32px; width:100%; }
+/* free skate's buttons (AOG-SKATE-FREE-V1): big, for thumbs on an iPhone; a finger on them never scrolls or selects */
+.player .pad { flex:1 1 100%; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.5rem; }
+.pad-b { min-height:58px; border-radius:16px; border:1px solid var(--line); background:var(--card); color:var(--ink); font:700 1.05rem/1.15 var(--sans);
+  padding:.3rem .4rem; touch-action:none; user-select:none; -webkit-user-select:none; -webkit-touch-callout:none; box-shadow:var(--shadow); }
+.pad-b[data-pad="left"], .pad-b[data-pad="right"] { font-size:1.7rem; }
+.pad-b.pad-go { background:var(--steel); color:var(--steel-fg); border-color:transparent; }
+.pad-b.on { background:var(--steel-soft); border-color:var(--steel); color:var(--ink); }
+@media (min-width:900px){ .pad-b { min-height:52px; } }
 
 /* the readouts under the drawing */
 .reads { display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:.45rem; }

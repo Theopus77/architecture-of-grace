@@ -410,7 +410,7 @@ const VERBS = [
   [/\bbak(e|ed|es|ing)\b|\broast\b|\boven\b|\bhorne(a|ar|e)\b|\bal horno\b|\bhorno\b/i, "bake"],
   [/\bspread\b|\bunt(a|ar|e)\b|\bextiend(e|a)\b/i, "spread"],
   [/\bseason(ed|ing)?\b|\bsprinkle\b|\bsalt and pepper\b|\bsazon(a|ar|e)\b|\bsalpiment(a|ar|e)\b|\bespolvore(a|ar|e)\b/i, "season"],
-  [/\bstir(s|red|ring)?\b|\bmix(es|ing)?\b|\bcombine\b|\btoss\b|\bmezcl(a|ar|e)\b|\brevuelv(e|a)\b|\brevolver\b|\bremuev(e|a)\b|\bcombin(a|ar|e)\b/i, "stir"],
+  [/\bstir(s|red|ring)?\b|\bmix(es|ing)?\b|\bcombine\b|\bmash(ed)?\b|\bmachac(a|ar|e)\b|\baplast(a|ar|e)\b|\btoss\b|\bmezcl(a|ar|e)\b|\brevuelv(e|a)\b|\brevolver\b|\bremuev(e|a)\b|\bcombin(a|ar|e)\b/i, "stir"],
   [/\bpour(s|ed|ing)?\b|\bdrizzle\b|\bdrain\b|\bverti?(e|er|a|ir)\b|\bvierte\b|\bescurr(e|ir|a)\b|\bech(a|ar|e)\b/i, "pour"],
   [/\brinse\b|\bwash (the )?(fruit|vegetables|veggies|produce|berries)|\benjuag(a|ar|ue)\b|\blav(a|ar|e) (la fruta|las verduras|los vegetales)/i, "rinse"],
   [/\bserve\b|\bplate\b|\bgarnish\b|\blayer\b|\barrange\b|\bsirv(e|a)\b|\bservir\b|\bdecor(a|ar|e)\b|\bemplat(a|ar|e)\b/i, "plate"],
@@ -418,10 +418,12 @@ const VERBS = [
   [/\bwash\b|\blav(a|ar|e)\b/i, "wash-dishes"]
 ];
 const LIQUID = /milk|water|oil|juice|broth|stock|vinegar|cream|leche|agua|aceite|jugo|zumo|caldo|vinagre|crema|\bml\b|\bmL\b|litro|liter|fl oz/i;
-function verbsIn(text, ingNames) {
+const WB = "(?:(?<![\\wáéíóúüñ])(?=[\\wáéíóúüñ])|(?<=[\\wáéíóúüñ])(?![\\wáéíóúüñ]))";   // a word edge that knows é, í, ñ
+const VERBS_G = VERBS.map(([re, id]) => [new RegExp(re.source.split("\\b").join(WB), "gi"), id]);
+function verbsIn(text) {
   let s = " " + text + " "; const out = [];
-  VERBS.forEach(([re, id]) => {
-    const g = new RegExp(re.source, "gi"); let m;
+  VERBS_G.forEach(([g, id]) => {
+    g.lastIndex = 0; let m;
     while ((m = g.exec(s))) { out.push([m.index, id, m[0]]); s = s.slice(0, m.index) + " ".repeat(m[0].length) + s.slice(m.index + m[0].length); g.lastIndex = m.index + m[0].length; }
   });
   out.sort((a, b) => a[0] - b[0]);

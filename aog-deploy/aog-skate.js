@@ -392,7 +392,11 @@ function wirePlayer() {
   $("scrub").onchange = () => paint();
   document.querySelectorAll("[data-spd]").forEach(b => b.onclick = () => { S.speed = +b.getAttribute("data-spd"); save(); if (P.playing) { P.tk0 = P.k; P.t0 = performance.now(); } paintPlayer(); });
 }
-function paintPlayer() { const room = ROOMS[S.room]; $("player").innerHTML = playerHtml(room); $("player").hidden = !room.player; wirePlayer(); }
+function paintPlayer() {
+  const room = ROOMS[S.room], pl = $("player");
+  if (room.pad) { if (pl.getAttribute("data-pad") !== S.lang) { pl.innerHTML = padHtml(); pl.setAttribute("data-pad", S.lang); wirePad(); } pl.hidden = false; return; }   // free skate: its buttons stay put while held
+  pl.removeAttribute("data-pad"); pl.innerHTML = playerHtml(room); pl.hidden = !room.player; wirePlayer();
+}
 
 /* ══ ROOM 1 — the ramp ═══════════════════════════════════════════════════════════════════════════════ */
 const WHEELS = {
@@ -1739,11 +1743,11 @@ function want3D() { return ROOMS3D.includes(S.room) && S[S.room].view === "3d"; 
 function load3D() {
   if (G3state) return;
   G3state = "loading";
-  import("/aog-skate3d.js").then(m => {
-    G3 = m.create({ host: $("stage"), before: cv, colors: () => C, BOARD, deckMid, L, path: () => demoPath().pts, at: q => at(demoPath(), q), atPath: at, demoPath, SHAPES, FPARK, fRamp, WHEELS,
+  import("/aog-skate3d.js").then(m => m.create({ host: $("stage"), before: cv, colors: () => C, BOARD, deckMid, L, path: () => demoPath().pts, at: q => at(demoPath(), q), atPath: at, demoPath, SHAPES, FPARK, fRamp, WHEELS,
       dark: () => document.documentElement.getAttribute("data-theme") === "dark",
-      onCam: k => { const o = S[S.room]; if (o && typeof o === "object") { o.cam = k; save(); } const sel = $("kCam"); if (sel) sel.value = k; } });
-    G3.setCam((S[S.room] && S[S.room].cam) || "follow"); G3state = "ready"; paint();
+      onCam: k => { const o = S[S.room]; if (o && typeof o === "object") { o.cam = k; save(); } const sel = $("kCam"); if (sel) sel.value = k; } })).then(g => {
+    if (!want3D()) { g.dispose(); G3state = ""; return; }   // left 3D while it was loading
+    G3 = g; G3.setCam((S[S.room] && S[S.room].cam) || "follow"); G3state = "ready"; paint();
   }).catch(err => { G3state = "failed"; console.warn("3D park:", err); paint(); });
 }
 /* draw the 3D picture when it is ready; until then one short line says it is on the way */
@@ -1842,6 +1846,483 @@ function tricksWire() {
   document.querySelectorAll("#panel [data-prog]").forEach(b => b.onclick = () => { S.progress = S.progress || {}; S.progress[S.tricks.id] = +b.getAttribute("data-prog"); save(); panel(); paint(); });
 }
 function tricksReset(quiet) { TR = simDemo(curTrick().id); setRun(TR.frames, 1 / 60); if (!quiet) panel(); paint(); }
+
+/* ── the physics rooms in 3D (AOG-SKATE-3D-ROOMS-V1): each room's own run, turned into the pose the 3D rider takes ──
+   A pose is the trick demos' own frame (DEMO_DEF) plus surf, the place and slope of the ground under the board. */
+function rig(o) { return Object.assign({}, DEMO_DEF, { lift: 0, str: 0, step: 0 }, o); }
+function drawRamp3D(fr) {
+  if (!fr || !RR) return draw3D({ kind: "ramp", fr: null, data: {} });
+  const nx = -fr.ty, ny = fr.tx, k = P.ran ? P.k : -1, trail = [];
+  for (let i = 0; i <= k; i += 2) { const f = P.frames[i]; trail.push([f.x - f.ty * 0.98, f.base + f.tx * 0.98 + f.air]); }
+  const tot = Math.max(fr.E0 + fr.pumpW, 1);
+  draw3D({ kind: "ramp", cam: S.ramp.cam || "wide",
+    fr: rig({ surf: { x: fr.x, y: fr.y, z: 0, slope: Math.atan2(fr.ty, fr.tx) }, crouch: fr.crouch, lean: 0.06, lift: fr.air > 0.05 ? 0.7 : 0 }),
+    data: { path: RR.path, key: S.ramp.shape + ":" + (RR.path.hill ? S.ramp.h : ""), hill: !!RR.path.hill, x: fr.x, y: fr.y,
+      energy: { pe: fr.pe / tot, ke: fr.ke / tot, heat: fr.heat / tot, pump: S.ramp.pump && !RR.path.hill ? fr.pumpW / tot : -1 },
+      forces: S.ramp.forces !== false ? { com: [fr.x + nx * 0.98, fr.base + ny * 0.98 + fr.air], contact: [fr.x, fr.base], n: [nx, ny], nG: fr.nG } : null, trail } });
+}
+function drawOllie3D(fr) {
+  if (!fr || !OR) return draw3D({ kind: "ollie", fr: null, data: {} });
+  const air = fr.phase !== "crouch" && fr.phase !== "land" && fr.phase !== "pop", trail = [], ghosts = [];
+  if (P.ran) for (let i = 0; i <= P.k; i += 2) trail.push([0.03, P.frames[i].com + BOARD.deckY]);
+  if (S.ollie.ghost && P.ran) for (let i = 0; i < P.frames.length; i += 6) { const f = P.frames[i]; ghosts.push({ h: f.rearY, pitch: f.phi / DEG }); }
+  draw3D({ kind: "ollie", cam: S.ollie.cam || "wide",
+    fr: rig({ piv: "back", pitch: fr.phi / DEG, h: fr.rearY, b: [-0.31, air ? 0.03 : 0], f: [fr.ffoot, air ? 0.02 : 0], crouch: fr.crouch, hip: [0, fr.com + BOARD.deckY - 0.12], lean: 0.05, arms: 1, lift: air ? 0.6 : 0 }),
+    data: { forces: !!S.ollie.forces, popping: !!(fr.popping || fr.phase === "pop"), sliding: !!fr.sliding, ffoot: fr.ffoot, ghosts, trail } });
+  text(olliePhase(fr), 16, 34, { w: 700, m: 1.05, c: C.steel, bg: C.card });
+}
+function drawGrind3D(fr) {
+  const o = S.grind;
+  if (!fr || !GR) return draw3D({ kind: "grind", fr: null, data: {} });
+  const onIt = fr.x >= -0.05 && fr.x <= o.len + 0.05, rh = 0.35, board = o.trick === "board" && onIt;
+  const h = !onIt ? 0 : board ? rh - BOARD.deckY + BOARD.thick / 2 : rh - BOARD.wheelR - 0.01;
+  draw3D({ kind: "grind", cam: o.cam || "wide",
+    fr: rig({ bx: fr.x, h, crouch: 0.45, piv: o.trick === "five" && onIt ? "back" : "mid", pitch: o.trick === "five" && onIt ? 7 : 0, yaw: board ? 90 : 0, turn: board ? 75 : 0,
+      lean: o.trick === "five" ? -0.05 : 0.04, hx: o.trick === "five" && onIt ? -0.05 : 0 }),
+    data: { key: o.surface + ":" + o.len, surface: o.surface, len: o.len, rh, x: fr.x, v: fr.v, onIt, d: GR.d, mu: GR.mu, bottom: 0.4 } });
+  if (G3state === "ready") drawGrindGraph(fr, o.len + 2.8, true);
+}
+
+/* ══ ROOM 10 — free skate (AOG-SKATE-FREE-V1, 2026-10-12) ══════════════════════════════════════════════════════
+   Jimmy: "Hit the ceiling with 1-3". Ride a small park yourself: push, steer, ollie, kickflip, grind the waxed ledge or
+   the flat rail, drop into the mini ramp. Every number is the lab's own: rolling friction and air push back (Room 1),
+   the pop is the ollie room's snap and jump (Room 2), a grind slows by μg (Room 3), the trucks turn by the lean and
+   the lean that balances a turn is tan θ = v²/(gR) (Room 4), and gravity pulls along the mini ramp's curve.
+   Calm: nothing moves until a button is pressed; the loop runs only while something moves and stops itself at rest.
+   With "reduce motion" on, nothing glides: each press jumps to its result at once (a push: one second of rolling;
+   an ollie, a flip or a grind: to the landing; the brake: to a stop), the path is drawn, and ← → turn 15° a press.
+   The map (seen from above) is the light default; the 3D park waits for a tap. World: x east, z south, y up (meters). */
+const FPARK = { bounds: [-13, 13, -7.5, 5.5], ramp: { x0: 2, z: -4.2, w2: 1.5, deck: 1.6 },
+  obs: [{ id: "ledge", x0: -9, x1: -5.8, z: 1.6, w: 0.45, h: 0.32, surf: "wax", en: "waxed ledge", es: "bordillo con cera" },
+        { id: "rail", x0: -9, x1: -6.4, z: -1.2, w: 0.05, h: 0.3, surf: "metal", en: "flat rail", es: "barandal plano" }],
+  start: { x: -11.5, z: 0.2 } };
+const FMASS = 50, VPUSH = 4.5, PUSH_A = 2.2, PUSH_T = 0.55, MU_BRAKE = 0.45, FLIP_T = 0.42;
+function fRamp() {
+  const p = demoPath(), R = FPARK.ramp, sh = SHAPES.demo;
+  return { p, top: sh.Hm, x0: R.x0, z: R.z, w2: R.w2, deck: R.deck, xa: R.x0 + p.pts[0].x, xb: R.x0 + p.pts[p.pts.length - 1].x, f0: R.x0 + sh.R, f1: R.x0 + sh.R + sh.F };
+}
+function sAtX(p, lx) {   // the distance along the ramp's curve where it reaches x = lx (x only grows along the demo ramp)
+  const q = p.pts; let lo = 0, hi = q.length - 1;
+  if (lx <= q[0].x) return 0; if (lx >= q[hi].x) return p.len;
+  while (hi - lo > 1) { const m = (lo + hi) >> 1; if (q[m].x <= lx) lo = m; else hi = m; }
+  const u = (lx - q[lo].x) / ((q[hi].x - q[lo].x) || 1); return lerp(q[lo].s, q[hi].s, u);
+}
+const inZone = (R, x, z) => Math.abs(z - R.z) <= R.w2 && x > R.xa - R.deck && x < R.xb + R.deck;
+const deckSide = (R, x) => x <= R.xa ? -1 : x >= R.xb ? 1 : 0;
+const inFoot = (o, x, z, pad) => x >= o.x0 - pad && x <= o.x1 + pad && Math.abs(z - o.z) <= o.w / 2 + pad;
+function surfY(R, x, z) {   // the height of what is under (x, z): the ground, a deck, the ramp's curve or the ledge
+  if (Math.abs(z - R.z) <= R.w2) {
+    if (x >= R.xa - R.deck && x <= R.xa || x >= R.xb && x <= R.xb + R.deck) return R.top;
+    if (x > R.xa && x < R.xb) return at(R.p, sAtX(R.p, x - R.x0)).y;
+  }
+  const L0 = FPARK.obs[0]; if (inFoot(L0, x, z, 0)) return L0.h;
+  return 0;
+}
+function popNumbers() {   // the ollie room's own pop: takeoff speed, how high the board can rise, time in the air
+  const o = S.ollie, v0 = Math.sqrt(2 * G * (o.jump + 0.12));
+  return { v0, cap: (0.12 + o.jump) * (0.45 + 0.55 * o.pop), flight: 2 * v0 / G, alpha: 12 + 22 * o.pop };
+}
+function freeNew(where) {
+  const R = fRamp();
+  const st = { mode: "ground", x: FPARK.start.x, z: FPARK.start.z, y: 0, h: 0, v: 0, fakie: false, phi: 0, theta: 0, R: Infinity, s: 0, u: 0,
+    air: null, grind: null, stall: 0, stallWant: false, push: 0, brake: 0, brakeHeld: false, steer: 0, kick: 0, hop: 0, decel: 0, t: 0,
+    msg: where === "deck" ? "deckStart" : "start", trail: [[FPARK.start.x, FPARK.start.z, 0]], lastTrail: 0, lift: 0, did: "" };
+  if (where === "deck") { st.mode = "deck"; st.x = R.xa - 0.75; st.z = R.z; st.y = R.top; st.trail = [[st.x, st.z, st.y]]; }
+  return st;
+}
+/* one small step of the ride (dt ≤ 1/120 s) */
+function fStep(st, dt) {
+  const R = fRamp();
+  st.t += dt; st.odo = (st.odo || 0) + st.v * dt;
+  if (st.push > 0) st.push = Math.max(0, st.push - dt);
+  if (st.brake > 0) st.brake = Math.max(0, st.brake - dt);
+  if (st.hop > 0) st.hop = Math.max(0, st.hop - dt);
+  if (st.mode === "ground" || st.mode === "deck") fFlat(st, dt, R);
+  else if (st.mode === "ramp") fCurve(st, dt, R);
+  else if (st.mode === "air") fAir(st, dt, R);
+  else if (st.mode === "grind") fGrind(st, dt);
+  else if (st.mode === "stall") {
+    st.stall -= dt; st.v = 0; st.decel = 0;
+    if (st.stall <= 0) {   // back in: the axle stall turned the rider around, so they ride down forward
+      const right = st.x > R.x0 + 2; st.mode = "ramp"; st.s = right ? R.p.len - 0.02 : 0.02; st.u = right ? -0.25 : 0.25; st.h = right ? Math.PI : 0; st.msg = "stallOut";
+    }
+  }
+  const lz = st.mode === "air" ? 0.06 : 0.12;
+  if (st.t - st.lastTrail > lz) { st.lastTrail = st.t; st.trail.push([st.x, st.z, st.y]); if (st.trail.length > 400) st.trail.shift(); }
+  st.lift += ((st.mode === "air" ? 0.8 : 0) - st.lift) * Math.min(1, dt * 9);
+}
+function fSteer(st, dt) {
+  const target = st.steer * TRUCKS.med.max * DEG;
+  st.phi += clamp(target - st.phi, -40 * DEG * dt, 40 * DEG * dt);
+  st.kick = 0;
+  if (st.steer && st.v < 0.5) { st.h += st.steer * 2.2 * dt; st.kick = st.steer; st.R = Infinity; st.theta = 0; return; }   // slow or still: a kickturn on the back wheels
+  if (Math.abs(st.phi) > 1e-4) { st.R = WB / (2 * Math.tan(Math.abs(st.phi))); st.h += Math.sign(st.phi) * st.v / st.R * dt; st.theta = Math.sign(st.phi) * Math.atan(st.v * st.v / (G * st.R)); }
+  else { st.R = Infinity; st.theta = 0; }
+}
+function fFlat(st, dt, R) {
+  let a = 0;
+  if (st.push > 0 && st.v < VPUSH) a += PUSH_A;
+  const roll = st.v > 0 ? WHEELS.ure.mu * G + DRAG_K * st.v * st.v / FMASS : 0, br = (st.brake > 0 || st.brakeHeld) && st.v > 0 ? MU_BRAKE * G : 0;
+  st.decel = roll + br;
+  st.v = Math.max(0, st.v + (a - roll - br) * dt);
+  fSteer(st, dt);
+  const nx = st.x + st.v * Math.cos(st.h) * dt, nz = st.z + st.v * Math.sin(st.h) * dt, B = FPARK.bounds;
+  if (st.mode === "deck") {
+    const side = deckSide(R, st.x);
+    if (side < 0 && nx > R.xa || side > 0 && nx < R.xb) {   // over the coping: dropping in
+      const c = Math.cos(st.h) * -side;
+      if (c > 0.35) { st.mode = "ramp"; st.s = side < 0 ? 0 : R.p.len; st.u = -side * Math.max(0.3, st.v * c); st.h = side < 0 ? 0 : Math.PI; st.msg = "dropIn"; st.did = "dropin"; return fCurve(st, 0, R); }
+      st.v = 0; st.msg = "straight"; return;
+    }
+    const x0 = side < 0 ? R.xa - R.deck : R.xb, x1 = side < 0 ? R.xa : R.xb + R.deck;
+    if ((side < 0 && nx < x0 + 0.15) || (side > 0 && nx > x1 - 0.15) || Math.abs(nz - R.z) > R.w2 - 0.15) { st.v = 0; st.msg = "deckEdge"; return; }
+    st.x = nx; st.z = nz; st.y = R.top; return;
+  }
+  if (nx < B[0] || nx > B[1] || nz < B[2] || nz > B[3]) { st.v = 0; st.x = clamp(st.x, B[0] + 0.01, B[1] - 0.01); st.z = clamp(st.z, B[2] + 0.01, B[3] - 0.01); st.msg = "edge"; return; }
+  for (const o of FPARK.obs) if (inFoot(o, nx, nz, 0.14) && !inFoot(o, st.x, st.z, 0.14)) { st.v = 0; st.msg = "bump"; st.bumped = o.id; return; }
+  if (inZone(R, nx, nz)) {
+    const flatBand = nx >= R.f0 && nx <= R.f1;
+    if (!flatBand) {
+      const wasFlat = inZone(R, st.x, st.z) && st.x >= R.f0 - 0.001 && st.x <= R.f1 + 0.001;
+      if (wasFlat && nx > R.xa && nx < R.xb) {   // from the flat middle up onto the curve: ride straight up it
+        const c = Math.cos(st.h); st.mode = "ramp"; st.s = sAtX(R.p, nx - R.x0); st.u = st.v * c; st.h = c >= 0 ? 0 : Math.PI; st.z = nz; st.msg = "ramp"; return fCurve(st, 0, R);
+      }
+      st.v = 0; st.msg = "rampSide"; return;
+    }
+  }
+  st.x = nx; st.z = nz;
+  const sy = surfY(R, nx, nz);
+  if (st.y > sy + 0.02) { st.mode = "air"; st.air = { t: 0, v0: 0, cap: 0, base: st.y, flight: 0, flip: false, alpha: 0, from: "ground", want: null, h0: st.h }; return; }   // off the top of the ledge
+  st.y = sy;
+}
+function fCurve(st, dt, R) {
+  const p = R.p, q = at(p, st.s);
+  const N = Math.max(0, G * Math.abs(q.tx) + st.u * st.u * q.k);
+  const fr = WHEELS.ure.mu * N + DRAG_K * st.u * st.u / FMASS + ((st.brake > 0 || st.brakeHeld) ? MU_BRAKE * N : 0);
+  let a = -G * q.ty;
+  if (Math.abs(st.u) > 1e-3) a -= Math.sign(st.u) * fr; else if (Math.abs(a) <= fr) a = 0;
+  st.decel = Math.abs(a);
+  const u0 = st.u; st.u += a * dt;
+  if (u0 !== 0 && st.u !== 0 && Math.sign(st.u) !== Math.sign(u0)) {   // rolled back: now riding the other way
+    st.fakie = !st.fakie; st.msg = st.stallWant ? "stallLow" : "fakie"; st.stallWant = false;
+  }
+  st.s += st.u * dt;
+  st.phi = 0; st.theta = 0; st.R = Infinity; st.kick = 0;
+  if (st.s >= p.len && st.u > 0 || st.s <= 0 && st.u < 0) {   // the top: a stall on the coping, or up onto the deck
+    const right = st.s >= p.len; st.s = right ? p.len : 0;
+    if (st.stallWant) { st.mode = "stall"; st.stall = 0.9; st.stallWant = false; st.x = right ? R.xb : R.xa; st.y = R.top; st.v = 0; st.msg = "stall"; st.did = "stall"; return; }
+    st.mode = "deck"; st.x = (right ? R.xb + 0.16 : R.xa - 0.16); st.y = R.top; st.v = Math.abs(st.u); st.h = right ? 0 : Math.PI; st.msg = "deck"; return;
+  }
+  const q2 = at(p, st.s), wx = R.x0 + q2.x;
+  st.x = wx; st.y = q2.y; st.v = Math.abs(st.u); st.h = st.u >= 0 ? 0 : Math.PI;
+  if (wx >= R.f0 && wx <= R.f1) { st.mode = "ground"; st.y = 0; }   // back on the flat middle
+}
+function fPop(st, kind) {
+  const R = fRamp();
+  if (st.mode === "air" || st.mode === "grind" || st.mode === "stall") return;
+  if (kind === "grind") {
+    if (st.mode === "ramp") { const up = st.u > 0 ? st.s > R.p.len * 0.5 : st.s < R.p.len * 0.5; if (up) { st.stallWant = true; st.msg = "stallWant"; } else st.msg = "stallUp"; return; }
+    const pn = popNumbers(), T = pn.flight, px = st.x + st.v * Math.cos(st.h) * T, pz = st.z + st.v * Math.sin(st.h) * T;
+    let best = null, bd = 1.3;
+    FPARK.obs.forEach(o => { const cx = clamp(px, o.x0 + 0.25, o.x1 - 0.25), d = Math.hypot(px - cx, pz - o.z); if (d < bd) { bd = d; best = o; } });
+    if (!best || st.v < 0.6) { st.msg = st.v < 0.6 ? "grindSlow" : "noGrind"; return; }
+    st.want = best.id;
+  } else st.want = null;
+  if (st.mode === "ramp") { st.hop = 0.35; st.msg = "hop"; return; }
+  const pn = popNumbers();
+  st.air = { t: 0, v0: pn.v0, cap: pn.cap, base: st.y, flight: pn.flight, flip: kind === "flip", alpha: pn.alpha, from: st.mode, want: st.want, x0: st.x, z0: st.z, h0: st.h };
+  st.mode = "air"; st.msg = kind === "flip" ? "flip" : kind === "grind" ? "grindGo" : "ollie"; st.did = kind;
+}
+function boardRel(a) { const c = a.v0 * a.t - 0.5 * G * a.t * a.t; return c > 0 ? Math.min(a.cap, 0.95 * c) : c; }
+function fAir(st, dt, R) {
+  const a = st.air; a.t += dt; st.decel = 0;
+  // the Grind button lines the rider up with what they aimed at, the way a skater locks in
+  if (a.want) {
+    const o = FPARK.obs.find(q => q.id === a.want), u = clamp(a.t / (a.flight * 0.5), 0, 1);
+    const ax = Math.cos(a.h0) >= 0 ? 0 : Math.PI, along = Math.abs(Math.sin(a.h0)) < Math.sin(40 * DEG);
+    if (along) { const d = Math.atan2(Math.sin(ax - a.h0), Math.cos(ax - a.h0)); st.h = a.h0 + d * ease(u); }
+    st.z += (o.z - st.z) * Math.min(1, dt * 7 * u);
+  }
+  st.x += st.v * Math.cos(st.h) * dt; st.z += st.v * Math.sin(st.h) * dt;
+  const B = FPARK.bounds; if (st.x < B[0] || st.x > B[1] || st.z < B[2] || st.z > B[3]) { st.v = 0; st.x = clamp(st.x, B[0] + 0.01, B[1] - 0.01); st.z = clamp(st.z, B[2] + 0.01, B[3] - 0.01); st.msg = "edge"; }
+  const by = a.base + boardRel(a), down = a.v0 - G * a.t < 0;
+  st.y = by;
+  // onto the ledge or the rail: lined up, a 50-50; across it, a boardslide; too low, a bump
+  for (const o of FPARK.obs) {
+    const cap = o.id === "rail" ? 0.2 : 0.18, early = a.want === o.id ? 0.6 : 0;
+    if (st.x < o.x0 + 0.05 - early || st.x > o.x1 - 0.05 || Math.abs(st.z - o.z) > o.w / 2 + cap) continue;
+    if (by < o.h - 0.06) { if (st.x >= o.x0 && Math.abs(st.z - o.z) <= o.w / 2 + 0.06 && a.from !== "grind") { st.v = 0; st.x -= Math.cos(st.h) * 0.3; st.z -= Math.sin(st.h) * 0.3; st.msg = "side"; st.bumped = o.id; } continue; }
+    if (st.x < o.x0 + 0.05) st.x = o.x0 + 0.05;
+    if (!down || by > o.h + 0.1) continue;
+    const c = Math.abs(Math.cos(st.h));
+    if (c > Math.cos(38 * DEG) || c < Math.cos(55 * DEG)) {
+      const kind = c > Math.cos(38 * DEG) ? "fifty" : "board";
+      st.mode = "grind"; st.grind = { o: o.id, kind, dir: kind === "fifty" ? (Math.cos(st.h) >= 0 ? 1 : -1) : (Math.cos(a.h0) >= 0 ? 1 : -1), mu: SURF[o.surf].mu[kind === "fifty" ? "fifty" : "board"], heat: 0, from: st.x };
+      if (kind === "board") st.v = Math.max(st.v * Math.abs(Math.cos(a.h0)), 0.8);
+      st.h = st.grind.dir > 0 ? 0 : Math.PI; st.z = o.z; st.y = o.h; st.air = null; st.msg = kind; st.did = kind; return;
+    }
+  }
+  if (!down) return;
+  const sy = surfY(R, st.x, st.z);
+  if (by <= sy + 1e-4) {   // landing
+    const done = a.flip ? Math.min(1, a.t / FLIP_T) : 1;
+    st.air = null; st.y = sy;
+    if (inZone(R, st.x, st.z) && st.x > R.xa && st.x < R.xb && !(st.x >= R.f0 && st.x <= R.f1)) { const c = Math.cos(st.h); st.mode = "ramp"; st.s = sAtX(R.p, st.x - R.x0); st.u = st.v * c; st.h = c >= 0 ? 0 : Math.PI; }
+    else st.mode = sy >= R.top - 1e-3 && inZone(R, st.x, st.z) ? "deck" : "ground";
+    if (st.mode === "ground" && sy > 0.01) { st.y = sy; }   // rolling along the top of the ledge
+    st.msg = a.flip ? (done < 1 ? "flipShort" : "flipLand") : "landed"; st.did = a.flip ? "kickflip" : st.did;
+  }
+}
+function fGrind(st, dt) {
+  const g = st.grind, o = FPARK.obs.find(q => q.id === g.o), a = g.mu * G;
+  const v2 = Math.max(0, st.v - a * dt); g.heat += 0.5 * FMASS * (st.v * st.v - v2 * v2);
+  st.x += g.dir * (st.v + v2) / 2 * dt; st.v = v2; st.decel = a; st.y = o.h; st.z = o.z;
+  if (st.x > o.x1 || st.x < o.x0) {   // off the end: drop to the ground and roll away
+    st.mode = "air"; st.air = { t: 0, v0: 0, cap: 0, base: o.h, flight: 0, flip: false, alpha: 0, from: "grind", want: null, h0: st.h };
+    st.grind = null; st.msg = "grindDone"; return;
+  }
+  if (st.v <= 0) { st.mode = "ground"; st.z = o.z + (o.w / 2 + 0.4) * (o.z >= 0 ? -1 : 1); st.y = 0; st.grind = null; st.msg = "grindStop"; }
+}
+/* at rest: nothing rolling, flying, grinding, stalling, pushing or turning */
+function fBusy(st) {
+  if (st.mode === "air" || st.mode === "grind" || st.mode === "stall" || st.push > 0 || st.hop > 0 || st.steer) return true;
+  if (st.mode === "ramp") { const q = at(fRamp().p, st.s); return !(Math.abs(st.u) < 0.02 && Math.abs(G * q.ty) <= WHEELS.ure.mu * G * Math.abs(q.tx)); }
+  return st.v > 0.02;
+}
+const FL = { st: null, raf: 0, last: 0, frames: 0, held: {} };
+function fst() { if (!FL.st) FL.st = freeNew(S.free.start); return FL.st; }
+function freeRun(sec, until) {   // work the ride out ahead in small steps (reduce motion, and the checks)
+  const st = fst(); let t = 0;
+  while (t < sec) { fStep(st, 1 / 240); t += 1 / 240; if (!fBusy(st) && t > 0.05) break; if (until && until(st, t)) break; }
+  if (!fBusy(st)) { st.v = 0; if (st.mode === "ramp") st.u = 0; }
+}
+function freeKick() {
+  if (REDUCE || FL.raf || S.room !== "free") return;
+  FL.last = performance.now(); FL.raf = requestAnimationFrame(freeTick);
+}
+function freeTick(now) {
+  FL.raf = 0;
+  if (S.room !== "free") return;
+  const st = fst(), dt = Math.min(0.05, Math.max(0, (now - FL.last) / 1000)); FL.last = now;
+  const n = Math.max(1, Math.ceil(dt * 240)); for (let i = 0; i < n; i++) fStep(st, dt / n);
+  FL.frames++;
+  const busy = fBusy(st);
+  if (!busy) { st.v = 0; if (st.mode === "ramp") st.u = 0; if (!/stop|edge|bump|side|deckEdge|rampSide|straight|grindStop|deck|landed|flipLand|flipShort/.test(st.msg)) st.msg = "stop"; }
+  freePaint();
+  if (busy || (G3 && want3D() && G3.camBusy && G3.camBusy())) FL.raf = requestAnimationFrame(freeTick);
+}
+/* a button: down (and up, for the ones you hold) */
+function freePress(k, down) {
+  const st = fst();
+  if (k === "left" || k === "right") {
+    const d = k === "left" ? -1 : 1;
+    if (REDUCE) { if (!down || !(st.mode === "ground" || st.mode === "deck")) return; st.h += d * 15 * DEG; st.msg = st.v < 0.5 ? "kick" : "turn"; freeRun(0.5); freePaint(); return; }
+    st.steer = down ? d : (st.steer === d ? 0 : st.steer); if (down) st.msg = st.v < 0.5 ? "kick" : "turn";
+  } else if (k === "brake") {
+    if (REDUCE) { if (!down) return; st.brake = 0; st.v = 0; st.u = st.mode === "ramp" ? st.u : 0; st.msg = "brake"; freeRun(30); freePaint(); return; }
+    st.brakeHeld = down; if (down) { st.brake = 0.35; st.msg = "brake"; }
+  } else if (!down) return;
+  else if (k === "push") {
+    if (st.mode === "air" || st.mode === "grind" || st.mode === "stall") return;
+    if (st.mode === "ramp") { st.msg = "rampPush"; return; }
+    st.push = PUSH_T; st.msg = st.mode === "deck" ? "deckPush" : "push"; st.did = "push";
+    if (REDUCE) { freeRun(1); freePaint(); return; }
+  } else if (k === "ollie" || k === "flip" || k === "grind") {
+    fPop(st, k);
+    if (REDUCE) { const was = st.mode; freeRun(5, (q, t) => was !== "air" && q.mode !== "air" && q.mode !== "grind" && q.mode !== "stall" && t > 0.1 && !q.stallWant); freePaint(); return; }
+  } else if (k === "on") { if (REDUCE) { freeRun(1); freePaint(); return; } }
+  else if (k === "reset") { FL.st = freeNew(S.free.start); freePaint(); return; }
+  freePaint(); freeKick();
+}
+const FMSG = {
+  start: ["Press Push to roll. Steer with ← and →.", "Pulsa Empujar para rodar. Gira con ← y →."],
+  deckStart: ["You are on the ramp's deck. Press Push to drop in.", "Estás en la plataforma de la rampa. Pulsa Empujar para entrar."],
+  push: ["Push: your back foot pushes the ground.", "Empujar: tu pie de atrás empuja el suelo."],
+  deckPush: ["Roll to the coping to drop in.", "Rueda hasta el coping para entrar."],
+  turn: ["Leaning tips the trucks, so the board turns.", "Al inclinarte, los ejes giran y la tabla da vuelta."],
+  kick: ["Kickturn: you turn on the back wheels.", "Kickturn: giras sobre las ruedas de atrás."],
+  brake: ["Foot brake: your shoe rubs the ground.", "Freno de pie: tu zapato roza el suelo."],
+  stop: ["Stopped. Friction and air slowed you down.", "Te detuviste. La fricción y el aire te frenaron."],
+  edge: ["That is the edge of the park. Turn around.", "Ese es el borde del parque. Da la vuelta."],
+  bump: ["Bump! Ollie up onto it, or press Grind beside it.", "¡Choque! Haz un ollie para subir, o pulsa Grind al lado."],
+  side: ["You hit the side. Pop higher, or come in straighter.", "Chocaste con el lado. Salta más alto o entra más derecho."],
+  rampSide: ["That is the side of the ramp. Ride in from the flat middle, or start on the deck.", "Ese es el lado de la rampa. Entra por el centro plano o empieza en la plataforma."],
+  deckEdge: ["The deck ends here. Turn around.", "La plataforma termina aquí. Da la vuelta."],
+  straight: ["Face the ramp straight to drop in.", "Ponte de frente a la rampa para entrar."],
+  dropIn: ["Dropping in! Lean forward over your front foot.", "¡Entrando! Inclínate sobre el pie de adelante."],
+  ramp: ["Up the curve: gravity slows you going up.", "Por la curva: la gravedad te frena al subir."],
+  rampPush: ["Push on the flat part of the ramp.", "Empuja en la parte plana de la rampa."],
+  fakie: ["Rolling back: now you ride fakie.", "De regreso: ahora vas en fakie."],
+  deck: ["You rolled up onto the deck.", "Subiste a la plataforma."],
+  hop: ["A small hop on the curve.", "Un saltito en la curva."],
+  ollie: ["Ollie!", "¡Ollie!"], flip: ["Kickflip!", "¡Kickflip!"], grindGo: ["Lock in…", "Engancha…"],
+  landed: ["Landed. Knees bent.", "Aterrizaste. Rodillas dobladas."],
+  flipLand: ["Kickflip landed!", "¡Kickflip logrado!"],
+  flipShort: ["The board was still turning. Pop higher next time.", "La tabla seguía girando. Salta más alto la próxima vez."],
+  fifty: ["50-50 grind! Friction slows you a little at a time.", "¡Grind 50-50! La fricción te frena poco a poco."],
+  board: ["Boardslide! The deck slides across.", "¡Boardslide! La tabla se desliza de lado."],
+  grindDone: ["Off the end. Nice!", "Saliste por el final. ¡Bien!"],
+  grindStop: ["Friction stopped you, so you stepped off. Come in faster.", "La fricción te detuvo y te bajaste. Entra más rápido."],
+  noGrind: ["Roll toward the ledge or the rail, then press Grind.", "Rueda hacia el bordillo o el barandal y luego pulsa Grind."],
+  grindSlow: ["Roll a little faster first, then press Grind.", "Rueda un poco más rápido y luego pulsa Grind."],
+  stallWant: ["Ride up to the coping: you will stall there.", "Sube hasta el coping: allí harás un stall."],
+  stallUp: ["Press Stall while you ride up the curve.", "Pulsa Stall mientras subes por la curva."],
+  stall: ["Axle stall on the coping.", "Axle stall en el coping."], stallOut: ["Back in!", "¡De vuelta adentro!"],
+  stallLow: ["Not enough speed to reach the coping. Push on the flat part first.", "No alcanzó la rapidez para llegar al coping. Empuja primero en la parte plana."]
+};
+function freeDoing(st) {
+  if (st.mode === "air") return L("In the air", "En el aire");
+  if (st.mode === "grind") { const o = FPARK.obs.find(q => q.id === st.grind.o); return (st.grind.kind === "fifty" ? "50-50 · " : "Boardslide · ") + L(o.en, o.es); }
+  if (st.mode === "stall") return "Axle stall";
+  if (st.mode === "ramp") return L("On the mini ramp", "En la mini rampa") + (st.fakie ? " · fakie" : "");
+  if (st.mode === "deck") return L("On the deck", "En la plataforma");
+  return st.v > 0.02 ? L("Rolling", "Rodando") + (st.fakie ? " · fakie" : "") : L("Standing still", "Quieto");
+}
+/* the pose the 3D rider takes, from the ride */
+function freeRig(st) {
+  const R = fRamp(), nose = st.h + (st.fakie ? Math.PI : 0);
+  let slope = 0, h = 0, pitch = 0, piv = "mid", roll = 0, yaw = 0, turn = 0, crouch = 0.3, f = [0.13, 0], b = [-0.2, 0], bg = null, arms = 1, jump = 0, hx = 0, lean = 0.04, base = st.y;
+  if (st.mode === "ramp") { const q = at(R.p, st.s), sg = Math.cos(nose) >= 0 ? 1 : -1; slope = Math.atan2(q.ty * sg, q.tx); crouch = 0.42; if (st.hop > 0) { const u = 1 - st.hop / 0.35; h = 0.12 * Math.sin(Math.PI * u); } }
+  if (st.push > 0) { const u = 1 - st.push / PUSH_T; b = null; bg = [-0.15 - 0.45 * Math.sin(Math.PI * u), 0]; f = [0.15, 0]; crouch = 0.38; arms = 0.6; }
+  if ((st.brake > 0 || st.brakeHeld) && st.v > 0.05 && st.mode !== "ramp") { b = null; bg = [-0.05, 0]; crouch = 0.3; }
+  if (st.kick) { piv = "back"; pitch = 10; b = [-0.32, 0]; }
+  if (st.mode === "air") {
+    const a = st.air; base = a.base; h = boardRel(a); const tt = a.t; piv = "back";
+    pitch = a.v0 > 0 ? a.alpha * clamp(tt / 0.05, 0, 1) * (1 - ease(clamp((tt - 0.04) / 0.13, 0, 1))) : 0;
+    const up = a.v0 > 0 && tt < a.flight; crouch = up ? 0.55 + 0.37 * clamp(tt / (a.flight * 0.4), 0, 1) : 0.6;
+    b = [-0.3, up ? 0.04 : 0]; f = [up ? 0.06 + 0.14 * clamp((tt - 0.04) / 0.13, 0, 1) : 0.13, up ? 0.04 : 0];
+    if (a.flip) { roll = 360 * Math.min(1, tt / FLIP_T); f = [0.12, roll < 350 ? 0.12 : 0.04]; b = [-0.2, roll < 350 ? 0.1 : 0.04]; }
+    jump = 0;
+  }
+  if (st.mode === "grind") { const g = st.grind, o = FPARK.obs.find(q => q.id === g.o); base = o.h; crouch = 0.45;
+    if (g.kind === "board") { yaw = 90; turn = 75; h = -BOARD.deckY + BOARD.thick / 2; } else h = -BOARD.wheelR - 0.01; }
+  if (st.mode === "stall") { yaw = 90; turn = 80; crouch = 0.35; h = -BOARD.wheelR - 0.012; piv = "back"; pitch = 0; }
+  return rig({ surf: { x: st.x, y: base, z: st.z, yaw: nose, slope, roll: st.mode === "ground" || st.mode === "deck" ? st.theta * 0.8 : 0 }, h, pitch, piv, roll, yaw, turn, crouch, f, b, bg, fg: null, arms, jump, hx, lean, lift: st.lift, str: clamp(st.v * 0.15, 0, 0.6), dist: st.odo || 0 });
+}
+function drawFreeMap() {
+  const st = fst(), R = fRamp(), B = FPARK.bounds;
+  const sc = Math.min((W - 40) / (B[1] - B[0]), (H - 30 - FS * 1.6) / (B[3] - B[2])), ox = W / 2 - (B[0] + B[1]) / 2 * sc, oy = FS * 1.6 + 8 - B[2] * sc + Math.max(0, (H - 30 - FS * 1.6 - (B[3] - B[2]) * sc) / 2);
+  const X = x => ox + x * sc, Z = z => oy + z * sc;
+  // the slab with its joints, then grass beyond the edge
+  ctx.fillStyle = alpha(C.good, 0.18); ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = shade(C.ground, 0.25); roundRect(X(B[0]), Z(B[2]), (B[1] - B[0]) * sc, (B[3] - B[2]) * sc, 10); ctx.fill();
+  ctx.strokeStyle = alpha(C.ink, 0.08); ctx.lineWidth = 1;
+  for (let x = Math.ceil(B[0] / 1.5) * 1.5; x < B[1]; x += 1.5) { ctx.beginPath(); ctx.moveTo(X(x), Z(B[2])); ctx.lineTo(X(x), Z(B[3])); ctx.stroke(); }
+  for (let z = Math.ceil(B[2] / 1.5) * 1.5; z < B[3]; z += 1.5) { ctx.beginPath(); ctx.moveTo(X(B[0]), Z(z)); ctx.lineTo(X(B[1]), Z(z)); ctx.stroke(); }
+  // the mini ramp: shaded by height, coping on both tops, decks
+  const z0 = Z(R.z - R.w2), zh = 2 * R.w2 * sc;
+  const g = ctx.createLinearGradient(X(R.xa), 0, X(R.xb), 0), sh = (x) => clamp(1 - surfY(R, x, R.z) / R.top, 0, 1);
+  for (let i = 0; i <= 10; i++) { const x = R.xa + (R.xb - R.xa) * i / 10; g.addColorStop(i / 10, shade(C.ramp, -0.25 * (1 - sh(x)) + 0.12 * sh(x))); }
+  ctx.fillStyle = g; ctx.fillRect(X(R.xa), z0, (R.xb - R.xa) * sc, zh);
+  ctx.fillStyle = shade(C.ramp, -0.3); ctx.fillRect(X(R.xa - R.deck), z0, R.deck * sc, zh); ctx.fillRect(X(R.xb), z0, R.deck * sc, zh);
+  ctx.fillStyle = shade(C.truck, -0.2); [R.xa, R.xb].forEach(x => ctx.fillRect(X(x) - 2, z0, 4, zh));
+  ctx.strokeStyle = shade(C.ramp, -0.5); ctx.lineWidth = 1.5; ctx.strokeRect(X(R.xa - R.deck), z0, (R.xb - R.xa + 2 * R.deck) * sc, zh);
+  text(L("Mini ramp", "Mini rampa"), X((R.xa + R.xb) / 2), z0 - 8, { a: "center", m: .75, w: 700, c: C.ink, bg: C.card });
+  // the ledge and the rail
+  FPARK.obs.forEach(o => {
+    if (o.id === "ledge") { ctx.fillStyle = shade(C.ramp, 0.1); roundRect(X(o.x0), Z(o.z - o.w / 2), (o.x1 - o.x0) * sc, o.w * sc, 4); ctx.fill(); ctx.strokeStyle = C.ke; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(X(o.x0), Z(o.z - o.w / 2) + 2); ctx.lineTo(X(o.x1), Z(o.z - o.w / 2) + 2); ctx.stroke(); }
+    else { ctx.strokeStyle = shade(C.truck, -0.25); ctx.lineWidth = 5; ctx.lineCap = "round"; ctx.beginPath(); ctx.moveTo(X(o.x0), Z(o.z)); ctx.lineTo(X(o.x1), Z(o.z)); ctx.stroke(); }
+    text(L(o.en, o.es), X((o.x0 + o.x1) / 2), Z(o.z) + (o.id === "ledge" ? o.w * sc / 2 + FS * 0.95 : -10), { a: "center", m: .75, w: 700, c: C.ink, bg: C.card });
+  });
+  // the path ridden, then the board and rider from above
+  if (st.trail.length > 1) { ctx.save(); ctx.strokeStyle = C.path; ctx.globalAlpha = .55; ctx.lineWidth = 2.5; ctx.setLineDash([6, 5]); ctx.beginPath(); st.trail.forEach((p, i) => i ? ctx.lineTo(X(p[0]), Z(p[1])) : ctx.moveTo(X(p[0]), Z(p[1]))); ctx.lineTo(X(st.x), Z(st.z)); ctx.stroke(); ctx.restore(); }
+  const nose = st.h + (st.fakie ? Math.PI : 0), bs = Math.max(sc, 22), up = st.mode === "air" ? 1 + boardRel(st.air) * 0.8 : 1;
+  ctx.save(); ctx.translate(X(st.x), Z(st.z));
+  ctx.fillStyle = alpha(C.ink, 0.18); ctx.beginPath(); ctx.ellipse(0, 0, 0.45 * bs, 0.14 * bs, nose, 0, 7); ctx.fill();
+  ctx.rotate(nose + (st.mode === "grind" && st.grind.kind === "board" || st.mode === "stall" ? Math.PI / 2 : 0)); ctx.scale(up, up);
+  ctx.fillStyle = C.grip; roundRect(-0.4 * bs, -0.105 * bs, 0.8 * bs, 0.21 * bs, 0.1 * bs); ctx.fill(); ctx.strokeStyle = C.deck; ctx.lineWidth = 2; ctx.stroke();
+  ctx.restore();
+  ctx.save(); ctx.translate(X(st.x), Z(st.z)); ctx.rotate(nose); ctx.scale(up, up);   // the rider: shoulders across the board, the head, the helmet
+  ctx.fillStyle = C.hood; ctx.beginPath(); ctx.ellipse(0, 0.02 * bs, 0.11 * bs, 0.2 * bs, 0, 0, 7); ctx.fill();
+  ctx.fillStyle = C.helmet; ctx.beginPath(); ctx.arc(0.02 * bs, 0.03 * bs, 0.085 * bs, 0, 7); ctx.fill();
+  ctx.restore();
+  // which way: a small arrow ahead of the rider
+  if (st.v > 0.05) { const ax = X(st.x) + Math.cos(st.h) * 0.75 * bs, az = Z(st.z) + Math.sin(st.h) * 0.75 * bs; arrow(ax, az, ax + Math.cos(st.h) * 22, az + Math.sin(st.h) * 22, C.steel, 3); }
+  text(L("The park, from above", "El parque, desde arriba"), 16, FS * 1.2, { w: 700, m: .9, c: C.steel });
+}
+function drawFree() {
+  const st = fst();
+  if (want3D()) {
+    if (draw3D({ kind: "free", fr: freeRig(st), data: { st, trail: st.trail, reduce: REDUCE }, cam: S.free.cam || "behind" })) {
+      text(freeDoing(st), 16, 34, { w: 700, m: 1.0, c: C.steel, bg: C.card });
+    }
+  } else drawFreeMap();
+}
+function freeUnder() {
+  const st = fst(), pn = popNumbers();
+  const val = (id, v) => `<div class="v" id="${id}">${v}</div>`;
+  return `<p class="note" id="fMsg" aria-live="polite" style="margin:.2rem 0 .5rem">${esc(L(FMSG[st.msg][0], FMSG[st.msg][1]))}</p>
+  <div class="reads">
+    <div class="read"><div class="k">${L("Speed", "Rapidez")}</div>${val("fV", num(st.v, 1))}<div class="u">m/s · <span id="fK">${num(st.v * 3.6, 0)}</span> km/h</div></div>
+    <div class="read"><div class="k">${L("Height", "Altura")}</div>${val("fH", num(Math.max(0, st.y), 2))}<div class="u">m</div></div>
+    <div class="read"><div class="k">${L("Slowing", "Frenado")}</div>${val("fA", num(st.decel, 2))}<div class="u">m/s²</div></div>
+    <div class="read"><div class="k">${L("Doing", "Haciendo")}</div><div class="v" id="fD" style="font-size:1rem;font-family:var(--sans)">${esc(freeDoing(st))}</div><div class="u">${L("pop", "salto")} ${num(pn.cap * 100, 0)} cm</div></div>
+  </div>`;
+}
+function freePaint() {   // one picture of the ride, and the numbers under it (no panel rebuild, so held buttons stay held)
+  if (S.room !== "free") return;
+  if (fit()) colors();
+  clear(); if (G3 && !want3D()) { G3.dispose(); G3 = null; G3state = ""; }
+  drawFree();
+  const st = fst(), set = (id, v) => { const e = $(id); if (e && e.textContent !== v) e.textContent = v; };
+  if (!$("fV")) { $("under").innerHTML = freeUnder(); return; }
+  set("fV", num(st.v, 1)); set("fK", num(st.v * 3.6, 0)); set("fH", num(Math.max(0, st.y), 2)); set("fA", num(st.decel, 2)); set("fD", freeDoing(st)); set("fMsg", L(FMSG[st.msg][0], FMSG[st.msg][1]));
+}
+function padHtml() {
+  const b = (k, label, cls, aria) => `<button type="button" class="pad-b${cls ? " " + cls : ""}" data-pad="${k}"${aria ? ` aria-label="${aria}"` : ""}>${label}</button>`;
+  return `<div class="pad" role="group" aria-label="${L("Skate controls", "Controles de skate")}">
+    ${b("left", "←", "", L("Turn left", "Girar a la izquierda"))}${b("push", L("Push", "Empujar"), "pad-go")}${b("right", "→", "", L("Turn right", "Girar a la derecha"))}
+    ${b("ollie", "Ollie")}${b("flip", "Kickflip")}${b("grind", "Grind · Stall")}
+    ${b("brake", L("Brake", "Frenar"))}${REDUCE ? b("on", L("Roll on", "Seguir rodando")) : ""}${b("reset", L("Start over", "Empezar de nuevo"))}
+  </div>`;
+}
+function wirePad() {
+  document.querySelectorAll("#player [data-pad]").forEach(btn => {
+    const k = btn.getAttribute("data-pad"), hold = k === "left" || k === "right" || k === "brake";
+    btn.addEventListener("pointerdown", e => { e.preventDefault(); if (hold) try { btn.setPointerCapture(e.pointerId); } catch (x) {} btn.classList.add("on"); freePress(k, true); });
+    const up = () => { if (!btn.classList.contains("on")) return; btn.classList.remove("on"); if (hold) freePress(k, false); };
+    btn.addEventListener("pointerup", up); btn.addEventListener("pointercancel", up); btn.addEventListener("lostpointercapture", up);
+    btn.addEventListener("click", e => { if (e.detail === 0) { freePress(k, true); if (hold) setTimeout(() => freePress(k, false), 250); } });   // a keyboard press on the button
+    btn.addEventListener("contextmenu", e => e.preventDefault());
+  });
+}
+const FKEYS = { ArrowLeft: "left", ArrowRight: "right", ArrowUp: "push", ArrowDown: "brake", " ": "ollie", Spacebar: "ollie", f: "flip", F: "flip", g: "grind", G: "grind" };
+document.addEventListener("keydown", e => {
+  if (S.room !== "free" || e.metaKey || e.ctrlKey || e.altKey) return;
+  const t = e.target, tag = t && t.tagName; if (tag === "INPUT" || tag === "SELECT" || tag === "TEXTAREA" || tag === "BUTTON" || (t && t.isContentEditable)) return;
+  const k = FKEYS[e.key]; if (!k) return;
+  e.preventDefault(); if (e.repeat) return;
+  FL.held[e.key] = true; freePress(k, true);
+});
+document.addEventListener("keyup", e => { const k = FKEYS[e.key]; if (!k || !FL.held[e.key]) return; FL.held[e.key] = false; freePress(k, false); });
+function freePanel() {
+  const o = S.free, pn = popNumbers();
+  const seg = (k, v, l) => `<button type="button" data-fk="${k}" data-v="${v}" aria-pressed="${o[k] === v}">${l}</button>`;
+  return `<p class="kicker">${L("Room 10 · Ride it yourself", "Sala 10 · Patina tú")}</p>
+  <h2>${L("Free skate", "Patinaje libre")}</h2>
+  <p class="say">${L("Ride the park yourself. Push to roll and steer with ← →. Ollie, kickflip, grind the ledge or the rail, or drop into the mini ramp.", "Patina el parque tú. Empuja para rodar y gira con ← →. Haz ollie, kickflip, grind en el bordillo o el barandal, o entra a la mini rampa.")}</p>
+  <div class="ctl"><span class="lab">${L("Watch it", "Míralo")}</span><div class="seg">${seg("view", "map", L("Map", "Mapa"))}${seg("view", "3d", "3D")}</div></div>
+  ${o.view === "3d" ? camSel("free") : ""}
+  <div class="ctl"><span class="lab">${L("Start", "Empezar")}</span><div class="seg">${seg("start", "flat", L("On the flat", "En lo plano"))}${seg("start", "deck", L("On the ramp's deck", "En la plataforma de la rampa"))}</div></div>
+  <p class="hint">${L("On a computer: ↑ push, ↓ brake, ← → steer, space ollie, F kickflip, G grind or stall.", "En una computadora: ↑ empujar, ↓ frenar, ← → girar, espacio ollie, F kickflip, G grind o stall.")}${REDUCE ? " " + L("Reduce motion is on: each press shows where it ends, at once.", "Reducir movimiento está activado: cada botón muestra al instante dónde termina.") : ""}</p>
+  <details class="more"><summary>${L("The science in the ride", "La ciencia del paseo")}</summary>
+   <div class="math">${L("Rolling", "Rodar")}: a = μ·g + ${L("air", "aire")}, μ = ${num(WHEELS.ure.mu, 3)} (${L("urethane", "uretano")})
+${L("Your pop (from The ollie room)", "Tu salto (de la sala El ollie)")}: ${L("board up to", "tabla hasta")} ${num(pn.cap * 100, 0)} cm, ${num(pn.flight, 2)} s ${L("in the air", "en el aire")}
+${L("Turning", "Girar")}: R = ${L("wheelbase", "distancia entre ejes")} / (2·tan φ); ${L("lean", "inclinación")} tan θ = v² / (g·R)
+${L("Grinding", "Grind")}: a = μ·g; ${L("wax", "cera")} μ = ${num(SURF.wax.mu.fifty, 2)}, ${L("metal", "metal")} μ = ${num(SURF.metal.mu.fifty, 2)}
+${L("Ramp", "Rampa")}: ${L("gravity along the curve", "la gravedad a lo largo de la curva")}, a = −g·sin α</div>
+   <p>${L("Change the snap and the jump in The ollie room, then come back: your ollie here gets higher or lower.", "Cambia el golpe y el salto en la sala El ollie y vuelve: tu ollie aquí sube más o menos.")}</p>
+  </details>
+  <div class="note warn"><b>${L("In real life", "En la vida real")}:</b> ${L("wear a helmet and pads, and skate in a skatepark or another safe place. Never on stairs, on rails in public places, or near traffic. Children ride with a grown-up nearby.", "usa casco y protecciones, y patina en un skatepark u otro lugar seguro. Nunca en escaleras, en barandales de lugares públicos ni cerca del tráfico. Los niños patinan con un adulto cerca.")}</div>`;
+}
+function freeWire() {
+  document.querySelectorAll("#panel [data-fk]").forEach(b => b.onclick = () => {
+    const k = b.getAttribute("data-fk"), v = b.getAttribute("data-v"); S.free[k] = v; save();
+    if (k === "start") FL.st = freeNew(v);
+    panel(); paint();
+  });
+  if ($("kCam")) $("kCam").onchange = e => { S.free.cam = e.target.value; save(); if (G3) G3.setCam(e.target.value); paint(); freeKick(); };
+}
 
 /* ══ ROOM 9 — questions (AOG-SKATE-FAQ-V1) ═════════════════════════════════════════════════════════════════
    Thirty plain answers: getting started, gear, safety, tricks, the skatepark, grown-ups, the science. Search and a topic
@@ -2148,10 +2629,12 @@ const ROOMS = {
     desc: () => S.build.view === "parts" ? L("A skateboard from the side, every part pulled apart and numbered to match the parts list. ", "Una patineta de lado, cada pieza separada y numerada como en la lista de piezas. ") : L("A skateboard from the front, leaning all the way over its wheels, and from above. ", "Una patineta de frente, inclinada al máximo sobre sus ruedas, y desde arriba. ") },
   tricks: { en: "Trick book", es: "Libro de trucos", player: true, run: () => tricksReset(true), reset: tricksReset, draw: () => drawTricks(P.frames[P.k]), under: () => "", panel: tricksPanel, wire: tricksWire, onFrame: tricksOnFrame,
     desc: () => L("A skater showing the trick, step by step, with a small map of where each foot goes. ", "Un patinador muestra el truco paso a paso, con un mapa pequeño de dónde va cada pie. ") + (es() ? curTrick().es.n : curTrick().en.n) + ". " },
+  free: { en: "Free skate", es: "Patinaje libre", player: false, pad: true, run: () => {}, reset: () => { setRun([], 1); panel(); paint(); }, draw: drawFree, under: freeUnder, panel: freePanel, wire: freeWire,
+    desc: () => L("A small skatepark with a mini ramp, a waxed ledge and a flat rail. You steer the skater with the buttons under the picture. ", "Un skatepark pequeño con una mini rampa, un bordillo con cera y un barandal plano. Diriges al patinador con los botones bajo la imagen. ") + freeDoing(fst()) + ". " },
   questions: { en: "Questions", es: "Preguntas", player: false, run: () => {}, reset: () => { setRun([], 1); panel(); paint(); }, draw: drawFaq, under: () => "", panel: faqPanel, wire: faqWire,
     desc: () => L("A skater beside a question mark. The answers are below. ", "Un patinador junto a un signo de pregunta. Las respuestas están abajo. ") }
 };
-const ORDER = ["build", "ramp", "ollie", "grind", "balance", "flip", "timeline", "tricks", "questions"];   // AOG-SKATE-BUILD-HOME-V1: Build a board first
+const ORDER = ["build", "ramp", "ollie", "grind", "balance", "flip", "timeline", "tricks", "free", "questions"];   // AOG-SKATE-BUILD-HOME-V1: Build a board first
 function panel() { const r = ROOMS[S.room]; $("panel").innerHTML = r.panel(); r.wire(); paintPlayer(); $("under").innerHTML = r.under(); if (r.onFrame) r.onFrame(P.frames[P.k]); }
 function paint(fast) {
   if (fit()) colors();
@@ -2177,7 +2660,8 @@ function openRoom(k, push) {
     loadBook(ok => { if (S.room !== k) return; if (ok) openRoom(k, push); else $("panel").innerHTML = `<p class="hint">${L("This room could not open. Check the connection and try again.", "Esta sala no pudo abrir. Revisa la conexión e inténtalo de nuevo.")}</p>`; });
     return;
   }
-  stop(); S.room = k; save();
+  stop(); if (FL.raf) { cancelAnimationFrame(FL.raf); FL.raf = 0; } if (FL.st) { FL.st.steer = 0; FL.st.brakeHeld = false; }
+  S.room = k; save();
   if (push && location.hash !== "#" + k) history.replaceState(null, "", "#" + k);
   rooms(); fit(true); colors(); ROOMS[k].reset();
 }
@@ -2209,7 +2693,8 @@ cv.addEventListener("pointermove", e => { if (G3 && want3D() && G3.onMove(e)) { 
 ["pointerup", "pointercancel", "pointerleave"].forEach(k => cv.addEventListener(k, () => { if (G3) G3.onUp(); }));
 function drawTricksOverlayOnly() { paint(true); }
 /* for the site's checks (tools/check-skate.js) */
-window.AOGSkate = { suggestBoard, boardCheck, boltFor, simRamp, simGrind, simOllie, simFlip, simSpin, balanceCalc, standCalc, rooms: ORDER, open: k => openRoom(k, true), state: S, P, go, get TRICKS() { return TRICKS; }, ERAS, DEMOS, simDemo, get FAQ() { return FAQ; }, book: () => new Promise(r => loadBook(r)), G3: () => G3, G3state: () => G3state, trick: id => { S.tricks.id = id; save(); if (S.room === "tricks") tricksReset(); else openRoom("tricks", true); } };
+window.AOGSkate = { suggestBoard, boardCheck, boltFor, simRamp, simGrind, simOllie, simFlip, simSpin, balanceCalc, standCalc, rooms: ORDER, open: k => openRoom(k, true), state: S, P, go, get TRICKS() { return TRICKS; }, ERAS, DEMOS, simDemo, get FAQ() { return FAQ; }, book: () => new Promise(r => loadBook(r)), G3: () => G3, G3state: () => G3state, FPARK, popNumbers,
+  free: { get st() { return fst(); }, press: freePress, run: freeRun, reset: w => { FL.st = freeNew(w || "flat"); freePaint(); }, running: () => !!FL.raf, frames: () => FL.frames, rig: () => freeRig(fst()) }, trick: id => { S.tricks.id = id; save(); if (S.room === "tricks") tricksReset(); else openRoom("tricks", true); } };
 words();
 /* AOG-SKATE-BUILD-HOME-V1 (2026-10-11) — Jimmy: "Make build a board a main stay for this page." /skate always opens on
    Build a board; an address that names a room (/skate#ollie, a lesson's link) still opens that room. */
