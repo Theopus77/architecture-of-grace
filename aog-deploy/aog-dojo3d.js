@@ -33,8 +33,9 @@ export async function create(opt) {
   const { renderer, scene, camera } = stage;
   const canvas = renderer.domElement;
   canvas.setAttribute("aria-hidden", "true");
-  let renders = 0;
-  const draw = () => { stage.render(); renders++; };
+  let renders = 0, pending = 0;
+  /* one picture per screen frame at most: many changes in a row (a slider, a quick run of taps) draw once */
+  const draw = () => { if (!pending) pending = requestAnimationFrame(() => { pending = 0; stage.render(); renders++; }); };
 
   /* ══ the room ══ */
   const room = new THREE.Group(); scene.add(room);
@@ -411,6 +412,7 @@ export async function create(opt) {
   }
   function onUp() { drag = null; }
   function dispose() {
+    if (pending) cancelAnimationFrame(pending); pending = 0;
     ghosts.forEach(g => { g.fig.dispose && g.fig.dispose(); scene.remove(g.fig.root); }); ghosts = [];
     fig.dispose && fig.dispose(); scene.remove(fig.root);
     disposables.forEach(d => d.dispose && d.dispose());
@@ -440,7 +442,7 @@ export async function create(opt) {
 
   colors(); resize(); setView(view);
   return { setMove, show, setView, view: () => view, setGhost, colors, resize, onDown, onMove, onUp, dispose, sample,
-    renders: () => renders, canvas, fig, poseAt: t => poseAt(MAIN, t), cam: () => view };
+    renders: () => renders, canvas, fig, setAngles: (a, e) => { az = a; el = e; }, poseAt: t => poseAt(MAIN, t), cam: () => view };
 }
 
 /* a stage of our own when the shared kit is not there (same look: soft room light, ACES, soft shadows) */

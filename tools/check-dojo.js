@@ -47,6 +47,9 @@ const IDS = ["ready", "horse", "front-stance", "back-stance", "cat-stance", "gua
     await p.goto(BASE + (addr || ""), { waitUntil: "load" });
     return p;
   }
+  /* jump a playing move to its end, then wait (a busy computer may draw slowly) until the player has stopped */
+  const finish = async p => { await p.evaluate(() => { window.AOGDojo.P.t0 -= 600000; }); for (let i = 0; i < 100 && await p.evaluate(() => window.AOGDojo.P.playing); i++) await wait(50); };
+  const stageShot = async p => { await p.evaluate(() => document.getElementById("stage").scrollIntoView({ block: "start" })); await wait(200); const bx = await (await p.$("#stage")).boundingBox(); return p.screenshot({ clip: bx, timeout: 60000 }); };
   const ready = async p => { for (let i = 0; i < 150 && await p.evaluate(() => !["ready", "failed"].includes(window.AOGDojo.G3state())); i++) await wait(200); return p.evaluate(() => window.AOGDojo.G3state()); };
 
   /* ── the words come first, then the room ── */
@@ -76,20 +79,20 @@ const IDS = ["ready", "horse", "front-stance", "back-stance", "cat-stance", "gua
   const plays = [];
   for (const id of IDS) {
     await p.evaluate(i => window.AOGDojo.open(i), id);
-    await p.click("#goBtn"); await wait(60);
+    await p.click("#goBtn");
     const playing = await p.evaluate(() => window.AOGDojo.P.playing);
-    await p.evaluate(() => { window.AOGDojo.P.t0 -= 600000; }); await wait(120);
+    await finish(p);
     const r = await p.evaluate(() => { const A = window.AOGDojo, P = A.P, lis = [...document.querySelectorAll("#steps li")]; return { done: !P.playing && Math.abs(P.t - A.move.dur) < 1e-6, lit: lis.findIndex(l => l.classList.contains("on")) === lis.length - 1 && document.querySelectorAll("#steps li.on").length === 1 }; });
     if (!playing || !r.done || !r.lit) plays.push(id);
   }
   ok(!plays.length, `all ${IDS.length} moves play once when Go is pressed, stop at the end, and light their last step` + (plays.length ? " (" + plays.join(", ") + ")" : ""));
   await p.evaluate(() => window.AOGDojo.open("front-kick"));
-  await p.click("#fwdBtn"); await wait(50); await p.evaluate(() => { window.AOGDojo.P.t0 -= 600000; }); await wait(100);
+  await p.click("#fwdBtn"); await finish(p);
   const st1 = await p.evaluate(() => { const A = window.AOGDojo; return { t: A.P.t, e: A.stepEnd(1), playing: A.P.playing }; });
-  await p.click("#fwdBtn"); await wait(50); await p.evaluate(() => { window.AOGDojo.P.t0 -= 600000; }); await wait(100);
+  await p.click("#fwdBtn"); await finish(p);
   await p.click("#backBtn"); await wait(50);
   const st2 = await p.evaluate(() => { const A = window.AOGDojo; return { t: A.P.t, e: A.stepEnd(1), lit: [...document.querySelectorAll("#steps li")].findIndex(l => l.classList.contains("on")) }; });
-  ok(Math.abs(st1.t - st1.e) < 1e-6 && !st1.playing && Math.abs(st2.t - st2.e) < 1e-6 && st2.lit === 1, "▶ plays one step and stops; ◀ goes back one step, and the step list follows");
+  ok(Math.abs(st1.t - st1.e) < 1e-6 && !st1.playing && Math.abs(st2.t - st2.e) < 1e-6 && st2.lit === 1, "▶ plays one step and stops; ◀ goes back one step, and the step list follows" + (st2.lit === 1 ? "" : ` (${JSON.stringify([st1, st2])})`));
 
   /* ── the floor: feet never more than 1 cm under it; falls rest on the mat, never through it ── */
   const floor = await p.evaluate(ids => ids.map(id => { const A = window.AOGDojo, m = A.MOVES.find(x => x.id === id), s = A.G3().sample(m, false, 30);
@@ -113,7 +116,7 @@ const IDS = ["ready", "horse", "front-stance", "back-stance", "cat-stance", "gua
   await wait(1500);
   const idle1 = await p.evaluate(() => ({ r: window.AOGDojo.G3().renders(), f: window.__raf }));
   ok(idle1.r === idle0.r && idle1.f === idle0.f, `nothing is drawn and no animation frame is asked for while idle (${idle1.r - idle0.r} draws, ${idle1.f - idle0.f} frames in 1.5 s)`);
-  const shot = await (await p.$("#stage")).screenshot();
+  const shot = await stageShot(p);
   ok(shot.length > 40000, `the dojo and the figure are drawn (${Math.round(shot.length / 1024)} KB picture)`);
   /* the ghost: several faded moments in one still picture */
   await p.click("#ghostBtn"); await wait(400);
@@ -165,7 +168,7 @@ const IDS = ["ready", "horse", "front-stance", "back-stance", "cat-stance", "gua
         if (r.pan > 2 || !r.steps || r.lang !== lang || (lang === "es" && !/Pasos/.test(r.txt))) ok(false, `${name} ${lang} ${id}: pans ${r.pan}px, ${r.steps} steps, lang ${r.lang}`);
       }
     }
-    const sh = await (await q.$("#stage")).screenshot();
+    const sh = await stageShot(q);
     ok(!q.errs.length && sh.length > 20000, `${name}: all ${IDS.length} moves open and fit, in English and Spanish, with the 3D drawn` + (q.errs.length ? " — " + q.errs[0] : ""));
     await q.context().close();
   }

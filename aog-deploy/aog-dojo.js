@@ -45,6 +45,8 @@ function stepAt(t) {
   return k[k.length - 1].s;
 }
 function stepEnd(s) { let t = 0; MV.keys.forEach(k => { if (k.s === s) t = k.t; }); return t; }
+/* where ▶ and ◀ stop: the end of each step; the first step (a still start) counts as reached at the very start */
+function stopAt(s) { return s <= 0 ? 0 : stepEnd(s); }
 function nSteps() { return MV.en.steps.length; }
 
 /* ── the 3D room (aog-dojo3d.js), loaded right after the words are on the page ── */
@@ -86,7 +88,7 @@ function paintPlayer() {
   const s = stepAt(P.t), last = nSteps() - 1;
   $("goBtn").textContent = P.playing ? L("Pause", "Pausa") : (P.t >= MV.dur - 1e-6 ? L("Again", "Otra vez") : L("Go", "Iniciar"));
   $("backBtn").disabled = P.t <= 1e-6;
-  $("fwdBtn").disabled = s >= last && P.t >= stepEnd(last) - 1e-6;
+  $("fwdBtn").disabled = s >= last && P.t >= stopAt(last) - 1e-6;
   $("goBtn").disabled = S.ghost; $("scrub").disabled = S.ghost; $("backBtn").disabled = $("backBtn").disabled || S.ghost; $("fwdBtn").disabled = $("fwdBtn").disabled || S.ghost;
 }
 
@@ -113,19 +115,19 @@ function go() {
 }
 function next() {
   if (S.ghost) return;
-  const s = stepAt(P.t), here = P.t >= stepEnd(s) - 1e-6 ? s + 1 : s;
+  const s = stepAt(P.t), here = P.t >= stopAt(s) - 1e-6 ? s + 1 : s;
   if (here > nSteps() - 1) return;
-  play(P.t, stepEnd(here));
+  play(P.t, stopAt(here));
 }
 function back() {
   if (S.ghost) return;
   stop();
   // the latest step end before this moment (or the very start)
   let t = 0;
-  for (let s = 0; s < nSteps(); s++) { const e = stepEnd(s); if (e < P.t - 1e-6) t = e; }
+  for (let s = 0; s < nSteps(); s++) { const e = stopAt(s); if (e < P.t - 1e-6) t = e; }
   P.t = t; show();
 }
-function jumpStep(i) { if (S.ghost) setGhost(false); stop(); if (i === 0) { P.t = 0; show(); return; } play(stepEnd(i - 1), stepEnd(i)); }
+function jumpStep(i) { if (S.ghost) setGhost(false); stop(); if (i === 0) { P.t = 0; show(); return; } play(stopAt(i - 1), stopAt(i)); }
 
 /* ── open a move ── */
 function open(id, push) {

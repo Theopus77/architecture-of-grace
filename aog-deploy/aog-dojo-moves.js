@@ -69,7 +69,7 @@ function mirrorKey(k) {
 /* ══ stances (ball-of-foot aware; the left foot in front) ══ */
 const ST = {
   attention: () => merge(root(0, 0, 0), { L: foot(0.07, 0, 14), R: foot(-0.07, 0, -14) }),
-  ready: () => merge(root(0, -0.015, 0), { L: foot(0.15, 0, 9), R: foot(-0.15, 0, -9) }),
+  ready: () => merge(root(0, -0.015, 0), { L: foot(0.13, 0, 9), R: foot(-0.13, 0, -9) }),
   horse: () => merge(root(0, -0.24, 0), { L: foot(0.37, 0, 6), R: foot(-0.37, 0, -6) }),
   front: (z) => merge(root(0, -0.15, (z || 0) + 0.05), { L: foot(0.12, (z || 0) + 0.42, 0), R: foot(-0.13, (z || 0) - 0.40, -28) }),
   frontR: (z) => merge(root(0, -0.15, (z || 0) + 0.05), { R: foot(-0.12, (z || 0) + 0.42, 0), L: foot(0.13, (z || 0) - 0.40, 28) }),
@@ -111,7 +111,7 @@ const AR = {
 };
 /* arms that reach for a spot (IK), right-arm versions; spots are measured from where the figure stands */
 const IK = {
-  rise:    { to: [0.04, 1.76, 0.22], pole: [-0.6, 1.75, 0.35], twist: -60 },
+  rise:    { to: [0.0, 1.72, 0.25], pole: [-0.7, 1.48, 0.38], twist: -60 },
   lowSet:  { to: [0.16, 1.48, 0.14], pole: [-0.2, 1.0, 0.4], twist: 0 },
   low:     { to: [-0.22, 0.82, 0.34], pole: [-0.6, 1.2, -0.1], twist: 70 },
   lowFS:   { to: [-0.17, 0.92, 0.56], pole: [-0.6, 1.3, 0.1], twist: 70 },
@@ -155,9 +155,9 @@ move({ id: "ready", kind: "stance", band: "K-2", art: W("many arts", "muchas art
     K(2.7, 3, READY(), { j: { chest: [-3, 0, 0] } }),
     K(3.3, 3, READY())
   ],
-  en: { n: "Ready stance", steps: ["Stand tall with your feet together.", "Make two soft fists in front of your belt.", "Step your feet out to shoulder width.", "Soften your knees. Breathe in, then out."],
+  en: { n: "Ready stance", steps: ["Stand tall with your feet together.", "Make two soft fists in front of your belt.", "Step your feet out as wide as your hips.", "Soften your knees. Breathe in, then out."],
         tips: ["Feel your weight in the middle of both feet.", "Shoulders low and relaxed. Eyes forward."] },
-  es: { n: "Posición de listo", steps: ["Párate derecho con los pies juntos.", "Cierra dos puños suaves frente al cinturón.", "Separa los pies al ancho de los hombros.", "Afloja las rodillas. Inhala y luego exhala."],
+  es: { n: "Posición de listo", steps: ["Párate bien erguido con los pies juntos.", "Cierra dos puños suaves frente al cinturón.", "Separa los pies al ancho de la cadera.", "Afloja las rodillas. Inhala y luego exhala."],
         tips: ["Siente tu peso en el centro de los dos pies.", "Hombros bajos y relajados. La mirada al frente."] } });
 
 move({ id: "horse", kind: "stance", band: "K-2", art: W("karate, kung fu, taekwondo", "karate, kung fu, taekwondo"),
@@ -368,7 +368,7 @@ blockMove("low-block", "K-2", { arm: { R: IK.lowSet } }, { arm: { R: IK.low } },
   { n: "Downward block", steps: ["Stand in your ready stance.", "Get set: blocking fist up by your other ear, other hand reaching down in front.", "Sweep the blocking arm down across your body. Stop a fist above your knee. Pull the other fist to your hip. Breathe out.", "Bring your arms back to ready."],
     tips: ["The blocking arm is almost straight at the end.", "Sweep like brushing crumbs off a table.", "Stand tall. Look forward, not down."] },
   { n: "Bloqueo bajo", steps: ["Párate en tu posición de listo.", "Prepárate: el puño que bloquea arriba junto a la otra oreja, la otra mano estirada hacia abajo al frente.", "Barre el brazo hacia abajo cruzando el cuerpo. Detente a un puño sobre la rodilla. Lleva el otro puño a la cadera. Exhala.", "Regresa los brazos a la posición de listo."],
-    tips: ["El brazo que bloquea queda casi recto al final.", "Barre como si quitaras migas de una mesa.", "Párate derecho. Mira al frente, no abajo."] });
+    tips: ["El brazo que bloquea queda casi recto al final.", "Barre como si quitaras migas de una mesa.", "Párate erguido. Mira al frente, no abajo."] });
 blockMove("inside-block", "3-5", { arm: { R: IK.inSet } }, { arm: { R: IK.inside } },
   { n: "Inside block", steps: ["Stand in your ready stance.", "Get set: blocking arm out to the side, elbow bent, fist up.", "Swing the forearm in across your chest to the middle. Pull the other fist to your hip. Breathe out.", "Bring your arms back to ready."],
     tips: ["Your elbow stays bent, about a right angle.", "The fist stops in line with your shoulder.", "Turn the forearm as it moves, like turning a key."] },
@@ -391,8 +391,8 @@ blockMove("outside-block", "3-5", { arm: { R: IK.outSet } }, { arm: { R: IK.outs
     keys: [K(0, 0, R0), K(0.7, 1, merge(R0, root(0.06, -0.025, 0))), K(1.5, 2, chamber), K(2.6, 2, ch2), K(3.4, 3, merge(R0, root(0.06, -0.025, 0))), K(3.9, 3, R0)],
     en: { n: "Knee raise (chamber)", steps: ["Stand tall, hands up.", "Shift your weight onto your standing leg.", "Lift your other knee up to your belt, like a shield. Toes pull back. Hold and count to three.", "Lower your foot softly to the floor."],
           tips: ["Stand tall. Do not lean back.", "A wall or chair nearby helps with balance.", "This is the first part of almost every kick."] },
-    es: { n: "Levantar la rodilla", steps: ["Párate derecho, manos arriba.", "Pasa tu peso a la pierna de apoyo.", "Sube la otra rodilla hasta el cinturón, como un escudo. Los dedos hacia atrás. Sostén y cuenta hasta tres.", "Baja el pie suave al piso."],
-          tips: ["Párate derecho. No te inclines atrás.", "Una pared o una silla cerca ayuda con el equilibrio.", "Esta es la primera parte de casi todas las patadas."] } });
+    es: { n: "Levantar la rodilla", steps: ["Párate bien erguido, manos arriba.", "Pasa tu peso a la pierna de apoyo.", "Sube la otra rodilla hasta el cinturón, como un escudo. Los dedos hacia atrás. Sostén y cuenta hasta tres.", "Baja el pie suave al piso."],
+          tips: ["Mantente erguido. No te inclines atrás.", "Una pared o una silla cerca ayuda con el equilibrio.", "Esta es la primera parte de casi todas las patadas."] } });
 }
 {
   const S0 = merge(ST.front(0), arms("guard", "guardLead"), { root: { pos: [0, -0.12, 0.05], rot: [0, 0, 0] } });
@@ -452,11 +452,13 @@ blockMove("outside-block", "3-5", { arm: { R: IK.outSet } }, { arm: { R: IK.outs
 {
   const sitLegs = { L: "fk", R: "fk", j: { hipL: [-132, 0, 10], kneeL: [124, 0, 0], ankleL: [8, 0, 0], hipR: [-132, 0, -10], kneeR: [124, 0, 0], ankleR: [8, 0, 0] } };
   const sit = merge(root(0, 0, 0, -12, 0, 0), sitLegs, { j: { spine: [20, 0, 0], chest: [10, 0, 0] } }, chinTuck,
-    { j: { shoulderR: [-80, 0, 30], elbowR: [-20, 0, 0], shoulderL: [-80, 0, -30], elbowL: [-20, 0, 0] } }, { ground: "body" });
-  const roll = merge(root(0, 0, 0, -62, 0, 0), { L: "fk", R: "fk", j: { hipL: [-95, 0, 6], kneeL: [80, 0, 0], ankleL: [-10, 0, 0], hipR: [-95, 0, -6], kneeR: [80, 0, 0], ankleR: [-10, 0, 0] } },
-    { j: { spine: [26, 0, 0], chest: [16, 0, 0], neck: [34, 0, 0], head: [10, 0, 0] } },
-    { j: { shoulderR: [-40, 0, -30], elbowR: [-10, 0, 0], shoulderL: [-40, 0, 30], elbowL: [-10, 0, 0] } }, { ground: "body" });
-  const slap = merge(roll, root(0, 0, 0, -70, 0, 0), { j: Object.assign({}, AR.slap, Lside(AR.slap)) }, { ground: "body" });
+    { j: { shoulderR: [-84, 0, 6], elbowR: [-12, 0, 0], shoulderL: [-84, 0, -6], elbowL: [-12, 0, 0] } }, { ground: "body" });
+  // rolled onto the round back: shoulder blades on the mat, legs up, chin tucked, head off the mat
+  const roll = merge(root(0, 0, 0, -104, 0, 0), { L: "fk", R: "fk", j: { hipL: [-58, 0, 8], kneeL: [78, 0, 0], ankleL: [-10, 0, 0], hipR: [-58, 0, -8], kneeR: [78, 0, 0], ankleR: [-10, 0, 0] } },
+    { j: { spine: [24, 0, 0], chest: [16, 0, 0], neck: [40, 0, 0], head: [14, 0, 0] } },
+    { j: { shoulderR: [-60, 0, -36], elbowR: [-10, 0, 0], shoulderL: [-60, 0, 36], elbowL: [-10, 0, 0] } }, { ground: "body" });
+  // both arms slap the mat at about 45° from the body, palms down
+  const slap = merge(roll, root(0, 0, 0, -110, 0, 0), { j: { shoulderR: [-4, 0, -46], elbowR: [-4, 0, 0], wristR: [0, 0, 0], shoulderL: [-4, 0, 46], elbowL: [-4, 0, 0], wristL: [0, 0, 0] } }, { ground: "body" });
   const squat = merge(root(0, -0.42, 0.02, 0, 0, 0), { L: foot(0.14, 0.02, 10, 0), R: foot(-0.14, 0.02, -10, 0) }, { j: { spine: [30, 0, 0], chest: [10, 0, 0], shoulderR: [-80, 0, 20], elbowR: [-20, 0, 0], shoulderL: [-80, 0, -20], elbowL: [-20, 0, 0] } }, chinTuck);
   move({ id: "back-fall", kind: "fall", band: "K-2", fall: true, art: W("judo", "judo"),
     keys: [K(0, 0, sit), K(0.8, 1, sit, { j: { neck: [30, 0, 0], head: [10, 0, 0] } }), K(1.7, 2, roll), K(2.05, 2, slap, { ease: "snap" }), K(2.9, 2, slap), K(3.9, 3, sit), K(4.5, 3, sit)],
@@ -467,12 +469,17 @@ blockMove("outside-block", "3-5", { arm: { R: IK.outSet } }, { arm: { R: IK.outs
   // side fall: from a low squat, one leg slides across, sit to that side, roll onto the side, slap with that arm
   const sq = merge(squat, { j: { shoulderR: [-70, 0, 10], elbowR: [-20, 0, 0] } });
   const reach = merge(root(-0.04, -0.46, 0.02, 0, 0, 8), { L: foot(0.14, 0.02, 10, 0), R: "fk" }, { j: { hipR: [-70, 0, 22], kneeR: [20, 0, 0], ankleR: [-10, 0, 0], spine: [24, 0, 0], chest: [8, 0, 0], shoulderR: [-90, 0, 36], elbowR: [-10, 0, 0], shoulderL: [-60, 0, -20], elbowL: [-40, 0, 0] } }, chinTuck);
-  const side = merge(root(0, 0, 0, -6, 0, 70), { L: "fk", R: "fk" },
-    { j: { hipL: [-60, 0, 10], kneeL: [100, 0, 0], ankleL: [-10, 0, 0], hipR: [-30, 0, -6], kneeR: [30, 0, 0], ankleR: [-10, 0, 0], spine: [16, 0, 8], chest: [10, 0, 6], neck: [26, 0, 22], head: [6, 0, 10],
-           shoulderR: [-10, 0, -50], elbowR: [-6, 0, 0], shoulderL: [-70, 0, -30], elbowL: [-60, 0, 0] } }, { ground: "body" });
-  const sitSide = merge(root(0, 0, 0, 0, 0, 22), { L: "fk", R: "fk" },
-    { j: { hipL: [-90, 0, 10], kneeL: [110, 0, 0], ankleL: [-10, 0, 0], hipR: [-70, 0, 0], kneeR: [30, 0, 0], ankleR: [-10, 0, 0], spine: [20, 0, 6], chest: [8, 0, 0], neck: [24, 0, 10],
-           shoulderR: [-60, 0, 10], elbowR: [-10, 0, 0], shoulderL: [-60, 0, -20], elbowL: [-40, 0, 0] } }, { ground: "body" });
+  // lying on the side: rolled onto the hip and the back of that shoulder, chin tucked, head held off the mat,
+  // the falling-side arm flat on the mat about 40° from the body, the other hand by the belt, the top knee up
+  const side = merge(root(0, 0, 0, -96, 0, 40), { L: "fk", R: "fk" },
+    { j: { hipL: [-78, 0, 16], kneeL: [92, 0, 0], ankleL: [-8, 0, 0], hipR: [-46, 0, -4], kneeR: [26, 0, 0], ankleR: [-8, 0, 0],
+           spine: [18, 0, -4], chest: [12, 0, -4], neck: [34, 0, -20], head: [10, 0, -8],
+           shoulderR: [-6, 0, -42], elbowR: [-4, 0, 0], wristR: [0, 0, 0], shoulderL: [-42, 0, -18], elbowL: [-96, 0, 0] } }, { ground: "body" });
+  // sitting on the mat on the falling side, close to the heel, leaning back a little, that arm ready across the body
+  const sitSide = merge(root(0, 0, 0, -22, 0, 18), { L: "fk", R: "fk" },
+    { j: { hipL: [-100, 0, 12], kneeL: [136, 0, 0], ankleL: [-6, 0, 0], hipR: [-78, 0, -8], kneeR: [22, 0, 0], ankleR: [-8, 0, 0],
+           spine: [22, 0, -4], chest: [10, 0, 0], neck: [26, 0, -10], head: [6, 0, 0],
+           shoulderR: [-72, 0, 34], elbowR: [-14, 0, 0], shoulderL: [-58, 0, -16], elbowL: [-40, 0, 0] } }, { ground: "body" });
   move({ id: "side-fall", kind: "fall", band: "3-5", fall: true, art: W("judo", "judo"),
     keys: [K(0, 0, sq), K(0.9, 1, reach), K(1.8, 2, sitSide), K(2.4, 3, side, { ease: "snap" }), K(3.2, 3, side), K(4.2, 4, sitSide), K(4.8, 4, sitSide)],
     en: { n: "Side fall", steps: ["Squat low on the mat, arm out in front.", "Slide one leg across in front of you.", "Sit down onto that side, close to your heel.", "Roll onto your side. Slap the mat with that arm, palm down. Chin tucked. Breathe out.", "Sit back up."],
@@ -501,10 +508,12 @@ blockMove("outside-block", "3-5", { arm: { R: IK.outSet } }, { arm: { R: IK.outs
   // ginga: the rocking base of capoeira
   const base = (dx) => merge(root(0, -0.20, 0.02, 0, 0, 0), { L: foot(0.33, 0.06, 10), R: foot(-0.33, 0.06, -10) },
     { j: { spine: [14, 0, 0], shoulderR: [-30, 0, -20], elbowR: [-60, 0, 0], shoulderL: [-30, 0, 20], elbowL: [-60, 0, 0] } });
+  // the arm on the back-foot side comes up, the forearm across in front of the face; the other hand stays low and loose
+  const shield = { to: [-0.01, 1.33, 0.40], pole: [-0.5, 0.95, 0.32], twist: 0 };
   const backR = merge(root(0.06, -0.22, -0.14, 0, -18, 0), { L: foot(0.33, 0.06, 10), R: foot(-0.08, -0.46, -20, 40) },
-    { j: { spine: [22, 0, 0], chest: [0, -6, 0], shoulderR: [-80, 0, 60], elbowR: [-110, 30, 0], shoulderL: [-20, 0, 30], elbowL: [-50, 0, 0], neck: [-8, 10, 0] } });
+    { j: { spine: [22, 0, 0], chest: [0, -6, 0], shoulderL: [-20, 0, 30], elbowL: [-50, 0, 0], neck: [-8, 10, 0] }, arm: { R: shield } });
   const backL = merge(root(-0.06, -0.22, -0.14, 0, 18, 0), { R: foot(-0.33, 0.06, -10), L: foot(0.08, -0.46, 20, 40) },
-    { j: { spine: [22, 0, 0], chest: [0, 6, 0], shoulderL: [-80, 0, -60], elbowL: [-110, -30, 0], shoulderR: [-20, 0, -30], elbowR: [-50, 0, 0], neck: [-8, -10, 0] } });
+    { j: { spine: [22, 0, 0], chest: [0, 6, 0], shoulderR: [-20, 0, -30], elbowR: [-50, 0, 0], neck: [-8, -10, 0] }, arm: { L: ikL(shield) } });
   move({ id: "ginga", kind: "style", band: "3-5", art: W("capoeira", "capoeira"),
     keys: [K(0, 0, base()), K(0.7, 0, base()), K(1.6, 1, backR), K(2.1, 1, backR), K(3.0, 2, base()), K(3.9, 3, backL), K(4.4, 3, backL), K(5.3, 4, base()), K(5.8, 4, base())],
     en: { n: "Ginga", steps: ["Stand with your feet wide, knees bent, hands loose in front.", "Step one foot back on a slant. The same arm comes up across your face.", "Bring the foot back beside the other, wide again.", "Now step the other foot back. That arm comes across your face.", "Back to wide. Keep rocking: one, two, three."],

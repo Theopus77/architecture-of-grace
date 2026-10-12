@@ -5590,7 +5590,7 @@ function achromatFringe(ctx, src, w, h, cx, cy, r, strength){
   ctx.drawImage(b, cx-r, cy-r, r*2, r*2); ctx.restore();
 }
 /* ══ AOG-MICRO-DEPTH-V1 (2026-10-12) — Jimmy: "a quantum leap forward" in the Microscope. The page side.
-   · Slides built in depth (onion, cheek, elodea, pond, blood, pollen, leaf section, yeast, crystals, starch) are drawn by
+   · Slides built in depth (onion, cheek, elodea, pond, blood, pollen, leaf section, yeast, salt and sugar crystals) are drawn by
      /aog-micro-3d.js, which loads only when one of them is opened. The fine knob then moves a thin sharp slice through
      the sample; the side view under the eyepiece shows where that slice is.
    · Two new kinds of light on those slides: phase contrast and fluorescence. Polarized light gets real interference
@@ -5598,9 +5598,9 @@ function achromatFringe(ctx, src, w, h, cx, cy, r, strength){
    · AOG-MICRO-STILL-V1: the eyepiece draws only when something changes (a knob, a drag, a button, the size). Living
      slides (pond water, elodea, bacteria, the tick) move only after Play is pressed, only while the eyepiece is on
      screen, and stop by themselves. With "reduce motion" on, Play becomes "Next moment": one still frame at a time. ══ */
-const DEPTH_SPECS=["onion","cheek","elodea","pond","blood","pollen","section","yeast","crystal","starch"];
+const DEPTH_SPECS=["onion","cheek","elodea","pond","blood","pollen","section","yeast","crystal"];
 /* each slide's depth in µm (top and bottom of the sample), so focus can be judged before the engine has loaded */
-const DEPTH_Z={onion:[-13.9,13.9],cheek:[-9,9],elodea:[-17,20.5],pond:[-150,150],blood:[-2.5,2.5],pollen:[-60,60],section:[-6,6],yeast:[-12,12],crystal:[0,46],starch:[-30,30]};
+const DEPTH_Z={onion:[-13.9,13.9],cheek:[-9,9],elodea:[-17,20.5],pond:[-150,150],blood:[-2.6,2.6],pollen:[-60,60],section:[-6,6],yeast:[-12.5,12.5],crystal:[0,46]};
 const LIVE_SPECS=["pond","elodea","bact","dog"];
 const LIVE={playing:false,t:0,last:0,played:0,limit:45000,visible:true,step:0,slipUntil:0};
 const DEPTH={state:"idle"};

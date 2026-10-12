@@ -211,9 +211,12 @@
       const tint = sid === "venus" ? [1, 0.985, 0.93] : [0.93, 0.87, 0.80], key = Math.round(p.phase) + sid;
       const img = cached(sid, key, () => bakeVenus({ phase: Math.round(p.phase), tint }));
       const kk = Math.hypot(ctx.getTransform().a, ctx.getTransform().b) || 1, R0 = 0.375 * k;
-      if (sid === "venus") { const gl = ctx.createRadialGradient(0, 0, R0 * 0.5, 0, 0, R0 + 40 / kk); gl.addColorStop(0, "rgba(255,250,236,.45)"); gl.addColorStop(0.35, "rgba(255,250,236,.14)"); gl.addColorStop(1, "rgba(255,250,236,0)");
-        ctx.fillStyle = gl; ctx.beginPath(); ctx.arc(0, 0, R0 + 40 / kk, 0, 6.3); ctx.fill(); }
-      ctx.save(); ctx.rotate(-(th - Math.PI)); ctx.scale(k, k); ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = "high";
+      ctx.save(); ctx.rotate(-(th - Math.PI));
+      /* the glare sits on the lit part (toward the Sun, −x here), so the night side stays dark */
+      if (sid === "venus") { const xc = -R0 * (1 - p.illum) * 0.85, rg = R0 * (0.25 + 0.75 * p.illum) + 16 / kk;
+        const gl = ctx.createRadialGradient(xc, 0, 0, xc, 0, rg); gl.addColorStop(0, "rgba(255,250,236,.22)"); gl.addColorStop(0.4, "rgba(255,250,236,.07)"); gl.addColorStop(1, "rgba(255,250,236,0)");
+        ctx.fillStyle = gl; ctx.beginPath(); ctx.arc(xc, 0, rg, 0, 6.3); ctx.fill(); }
+      ctx.scale(k, k); ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = "high";
       ctx.drawImage(img, -0.55, -0.55, 1.1, 1.1); ctx.restore();
       return;
     }

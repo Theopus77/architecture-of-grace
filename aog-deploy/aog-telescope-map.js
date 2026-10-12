@@ -31,7 +31,8 @@
     upNow: ["up", "de altura"], sunWarn: ["Only with a solar filter on the front.", "Solo con un filtro solar al frente."],
     field: ["the eyepiece's view", "lo que ve el ocular"], nogl: ["This device draws a simpler map.", "Este aparato dibuja un mapa más sencillo."],
     custom: ["Your place", "Tu lugar"], nothing: ["Nothing bright is up then. Try another time.", "No hay nada brillante arriba a esa hora. Prueba otra hora."],
-    sel: ["Selected", "Elegido"], placeLabel: ["City", "Ciudad"]
+    sel: ["Selected", "Elegido"], placeLabel: ["City", "Ciudad"],
+    credit: ["Stars from the Hipparcos catalog (ESA), lines and names from d3-celestial. The Sun, Moon and planets are worked out on this device.", "Estrellas del catálogo Hipparcos (ESA); líneas y nombres de d3-celestial. El Sol, la Luna y los planetas se calculan en este aparato."]
   };
   const DIR8 = { en: ["N", "NE", "E", "SE", "S", "SW", "W", "NW"], es: ["N", "NE", "E", "SE", "S", "SO", "O", "NO"] };
   const NELM = [0, 7.8, 7.3, 6.8, 6.3, 5.8, 5.3, 4.8, 4.3, 4.0];
@@ -189,6 +190,7 @@
           <div class="card sky-box sky-tonight-box">
             <p class="kicker">${w("up")}</p><p class="note-line sky-darkat"></p><div class="sky-tonight"></div>
           </div>
+          <p class="note-line sky-credit">${w("credit")}</p>
         </aside>
       </div>`;
     const q = s => h.querySelector(s);

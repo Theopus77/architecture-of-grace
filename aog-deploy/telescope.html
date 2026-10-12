@@ -164,6 +164,37 @@ svg.scope { width:100%; height:auto; }
 .ladder .mk{font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--steel);min-width:5.6rem}
 .ladder .lt{font-weight:600}
 .lab-lesson{margin-top:1rem}
+/* AOG-TELE-MAP-V1 (2026-10-12): the star map. iPhone first: the sky on top, its controls below; side by side on a
+   computer. A finger on the sky turns the sky, never the page. */
+.skypage{min-height:60vh}
+.sky-lead{margin:.2rem 0 .6rem}
+.sky-grid{display:grid;gap:1rem;grid-template-columns:minmax(0,1fr)}
+@media (min-width:900px){.sky-grid{grid-template-columns:minmax(0,1fr) 300px;align-items:start}}
+.sky-stage{position:relative;width:100%;aspect-ratio:1/1;max-height:72dvh;border-radius:16px;overflow:hidden;background:#04060c;touch-action:none;user-select:none;-webkit-user-select:none;overscroll-behavior:contain}
+@media (min-width:640px){.sky-stage{aspect-ratio:4/3}}
+.sky-stage:focus-visible{outline:3px solid var(--steel);outline-offset:3px}
+.sky-stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.sky-zoom{position:absolute;right:10px;top:10px;display:flex;flex-direction:column;gap:6px}
+.sky-zoom .btn{width:44px;height:44px;padding:0;font-size:1.25rem;background:#16202c;color:#eef2f4;border-color:#34414f}
+.sky-time{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.6rem}
+.sky-time .btn{flex:1 1 auto;min-height:44px}
+.sky-when{margin:.45rem 0 0}
+.sky-card{padding:.9rem 1rem;margin-top:.7rem}
+.sky-card h3{margin:.05rem 0 .2rem;font-size:1.15rem}
+.sky-card .sky-kind{margin:.1rem 0 .3rem}
+.sky-card .sky-warn{color:var(--bad);font-weight:700}
+.sky-side{display:flex;flex-direction:column;gap:.8rem}
+.sky-box{padding:.8rem .9rem;display:flex;flex-direction:column;gap:.5rem}
+.sky-field{display:grid;gap:.25rem}
+.sky-field>span{font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.sky-field select,.sky-field input{min-height:46px;font:inherit;font-size:16px;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:12px;padding:0 .7rem;width:100%;max-width:100%}
+.sky-typed>summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-weight:600}
+.sky-typed[open]{display:flex;flex-direction:column;gap:.5rem}
+.sky-tonight{display:flex;flex-wrap:wrap;gap:.35rem}
+.sky-chip{min-height:44px}
+.sky-chip small{color:var(--muted);font-weight:600;margin-left:.3rem}
+.sky-box .glowrow input{max-width:150px}
+.realline a{text-decoration:underline}
 </style>
 <link rel="stylesheet" href="/aog-bench.css">
 </head>
@@ -296,7 +327,7 @@ const STR = {
   steady:{en:"Steady",es:"Quieto"}, avg:{en:"Average",es:"Normal"}, shaky:{en:"Shaky",es:"Inquieto"},
   glowRow:{en:"Sky glow",es:"Brillo del cielo"},
   nightRow:{en:"Which sky",es:"Qué cielo"}, practice:{en:"Practice",es:"Práctica"}, realSky:{en:"Real sky",es:"Cielo real"},
-  skymap:{en:"Star map",es:"Mapa del cielo"}, openMap:{en:"Open the star map",es:"Abrir el mapa del cielo"},
+  skymap:{en:"Star map",es:"Mapa del cielo"}, navSky:{en:"Star map",es:"Mapa"}, openMap:{en:"Open the star map",es:"Abrir el mapa del cielo"},
   loadingSky:{en:"Getting the real sky ready…",es:"Preparando el cielo real…"},
   moreRows:{en:"Telescope and sky",es:"Telescopio y cielo"},
   lessons90:{en:"The lessons are written for the 90 mm. They still work with this one; the numbers change.",es:"Las lecciones están escritas para el de 90 mm. Funcionan con este también; los números cambian."}
@@ -924,11 +955,11 @@ function moonLight(o){
       const night=sunEl<0.015?(o.shine!=null?o.shine:0.05):0;
       const a=alb[idx], mare=Math.max(0,Math.min(1,(0.78-a)/0.18));
       const k=a*(night+light*1.0);
-      const o=idx*4;
-      data[o]=Math.min(255, k*(240-mare*22)+night*10);
-      data[o+1]=Math.min(255, k*(236-mare*18)+night*11);
-      data[o+2]=Math.min(255, k*(228-mare*10)+night*15);
-      data[o+3]=255;
+      const px4=idx*4;
+      data[px4]=Math.min(255, k*(240-mare*22)+night*10);
+      data[px4+1]=Math.min(255, k*(236-mare*18)+night*11);
+      data[px4+2]=Math.min(255, k*(228-mare*10)+night*15);
+      data[px4+3]=255;
     }
   });
 }
@@ -949,7 +980,12 @@ let EYE_NOW=0;
    was asked for or on a touch screen. Nothing redraws on its own. */
 let TWINKLE=false;
 /* a star as the lens shows it: a bright core, a faint ring, a soft halo that grows with brightness */
+/* AOG-TELE-INSTRUMENTS-V1: the practice drawings are tuned for the 90 mm under a country-edge sky (faintest star 11.6).
+   Another telescope or another sky moves every star by the difference; a star past the faintest one fades out. */
+let AIRY_SHIFT=0;
 function airy(ctx,x,y,mag,col){
+  mag+=AIRY_SHIFT*(mag>3?1:0.4);
+  const fade=Math.max(0,Math.min(1,(12.6-mag)/1.2)); if(fade<=0) return;
   const still=!TWINKLE;
   const flick=still?1:(mag<3.4
     ? 0.62+0.38*Math.abs(Math.sin(EYE_NOW/130+x*2.7+y*1.9))
@@ -965,7 +1001,7 @@ function airy(ctx,x,y,mag,col){
   g.addColorStop(0.42,`rgba(176,168,214,${(mag<4?0.28:0.1)*flick})`);
   g.addColorStop(1,"rgba(0,0,0,0)");
   ctx.save();
-  ctx.globalAlpha=Math.max(0.45, Math.min(1, flick))*(mag>9?Math.max(.25,1-(mag-9)*.2):1);
+  ctx.globalAlpha=Math.max(0.45, Math.min(1, flick))*(mag>9?Math.max(.25,1-(mag-9)*.2):1)*fade;
   ctx.fillStyle=g; ctx.beginPath(); ctx.arc(x,y,wing,0,6.3); ctx.fill();
   if(mag<4.8){
     ctx.strokeStyle=`rgba(214,224,255,${0.28*flick})`;
@@ -1578,14 +1614,22 @@ function skyLine(){
   if(s==="dawn") return say(" The Moon is setting. The warm band is the horizon in the glass. Same seas. Same shadows."," La Luna se pone. La banda cálida es el horizonte en el vidrio. Los mismos mares. Las mismas sombras.");
   return "";
 }
-function fieldNote(){ return noteCore()+(realOn()?"":skyLine())+glassLine()+(realOn()?window.AOGReal.noteLine(S.lab,S.lang):""); }
+function fieldNote(){ if(realOn() && window.AOGReal.blocked(S.lab,S.lang)) return window.AOGReal.blocked(S.lab,S.lang); return noteCore()+(realOn()?"":skyLine())+glassLine()+glowLine()+(realOn()?window.AOGReal.noteLine(S.lab,S.lang):""); }
+/* AOG-TELE-INSTRUMENTS-V1: one plain line when the sky glow is far from the bench's usual country-edge sky */
+function glowLine(){
+  const L=S.lab, b=OPT.bortle, es=S.lang==="es", tlm=limitMag().toFixed(1);
+  if (L.cap || L.target==="sun" || L.target==="moon" || L.target==="sea") return "";
+  if (b>=7) return es?` Cielo de ciudad: el brillo se come las estrellas más débiles. Ahora ves hasta la magnitud ${tlm}.`:` City sky: the glow swallows the faintest stars. You now see to magnitude ${tlm}.`;
+  if (b<=2) return es?` Cielo muy oscuro: aparecen estrellas más débiles, hasta la magnitud ${tlm}.`:` A truly dark sky: fainter stars appear, down to magnitude ${tlm}.`;
+  return "";
+}
 function noteCore(){
   const L=S.lab;
   if (L.target==="sun" && !L.filter) return t("sun");
   if (L.cap) return t("capped");
   if (!L.locked) return t("drift");
   if (realOn()){ const r=window.AOGReal.blocked(L,S.lang); if(r) return r; }
-  if (SCOPE.id!=="r90" || (L.target&&L.target.startsWith("x:"))) return genericNote();
+  if (SCOPE.id!=="r90" || (L.target&&L.target.startsWith("x:")) || (realOn() && ["moon","sea","jupiter","saturn","mars","venus","uranus"].includes(L.target))) return genericNote();
   return noteCore90();
 }
 function glassLine(){
@@ -2188,6 +2232,7 @@ function startEye(){
     const w=canvas.width,h=canvas.height,cx=w/2,cy=h/2,r=Math.min(w,h)*.46;
     const R=realOn()?window.AOGReal.view(L,S.lang):null;
     window.REAL_GLOW=R?R.glow:1;
+    AIRY_SHIFT=R?0:11.6-limitMag();
     ctx.clearRect(0,0,w,h);
     ctx.save(); ctx.beginPath(); ctx.arc(cx,cy,r,0,6.3); ctx.clip();
     const sky=R?R.sky:skyNow();
@@ -2212,7 +2257,7 @@ function startEye(){
       if (R) R.atmosphere(sctx,w,h);
       if (SCOPE.kind==="refractor") achromatFringe(sctx, skyOff, w, h, cx, cy, r, Math.min(1.25, mag/120));
       const err=Math.abs(focusErr(L)), band=focusBand(L);
-      const blurArcsec=SCOPE.seeing*(R?R.seeingMul:1)+(band==="in"?0:band==="near"?err*6:Math.min(900, err*28))+(L.barlow?2:0);
+      const blurArcsec=Math.hypot(SCOPE.seeing*(R?R.seeingMul:1), SCOPE.dawes*0.8)+(band==="in"?0:band==="near"?err*6:Math.min(900, err*28))+(L.barlow?2:0);
       const blurPx=blurArcsec/60*zoom;
       ctx.imageSmoothingEnabled=true; ctx.imageSmoothingQuality="high";
       if (blurPx<1.1) ctx.drawImage(skyOff,0,0);
@@ -2404,7 +2449,7 @@ function paint(){
   document.getElementById("langBtn").textContent=S.lang==="es"?"EN":"ES";
   document.getElementById("themeBtn").textContent=S.theme==="dark"?t("light"):t("dark");
   document.getElementById("foot").textContent=t("foot");
-  document.getElementById("nav").innerHTML=`<span id="navViews" class="aogdd-src" data-aog-dropdown="Go to|Ir a">`+[["home","home"],["lab","lab"],["sky","skymap"],["lessons","lessons"],["print","print"]].map(([id,k])=>`<a href="#${id}" class="${S.page===id?"on":""}">${k==="lessons"?lt("lessonsNav"):k==="print"?lt("printNav"):t(k)}</a>`).join("")+`</span>`   /* AOG-BENCH-BAR-V1 */
+  document.getElementById("nav").innerHTML=`<span id="navViews" class="aogdd-src" data-aog-dropdown="Go to|Ir a">`+[["home","home"],["lab","lab"],["sky","navSky"],["lessons","lessons"],["print","print"]].map(([id,k])=>`<a href="#${id}" class="${S.page===id?"on":""}">${k==="lessons"?lt("lessonsNav"):k==="print"?lt("printNav"):t(k)}</a>`).join("")+`</span>`   /* AOG-BENCH-BAR-V1 */
     +`<a class="sep" href="/telescope-guide">${S.lang==="es"?"Guía en imágenes":"Picture guide"}</a><a class="sep" href="/microscope">${S.lang==="es"?"El microscopio":"The microscope"}</a>`;
   lessonsHome();
   const view=document.getElementById("view");
