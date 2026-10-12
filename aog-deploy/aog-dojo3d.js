@@ -155,13 +155,14 @@ export async function create(opt) {
     const L = new THREE.PointLight("#ffcf8a", 0, 9, 1.6); L.position.set(x, 3.15, z); scene.add(L); lampLights.push(L);
   });
   // the sun through the windows (soft shadows); the kit's own light is kept and tuned here
-  const sun = new THREE.DirectionalLight("#fff1dc", 2.0);
+  // one sun only: the kit's own (when it has one) is moved to the windows, so there is never a second shadow
+  const sun = stage.sun || new THREE.DirectionalLight("#fff1dc", 2.0);
   sun.position.set(-6, 5.5, 2.5); sun.target.position.set(0, 0.6, 0); sun.castShadow = true;
   const sm = phone ? 1024 : 2048; sun.shadow.mapSize.set(sm, sm);
   Object.assign(sun.shadow.camera, { left: -3, right: 3, top: 3, bottom: -3, near: 1, far: 20 });
   sun.shadow.bias = -0.0003; sun.shadow.normalBias = 0.02; sun.shadow.radius = 4;
-  scene.add(sun); scene.add(sun.target);
-  const fill = new THREE.HemisphereLight("#fff8ee", "#b89a78", 0.5); scene.add(fill);
+  if (!stage.sun) { scene.add(sun); scene.add(sun.target); }
+  const fill = stage.hemi || new THREE.HemisphereLight("#fff8ee", "#b89a78", 0.5); if (!stage.hemi) scene.add(fill);
 
   /* ══ the figure ══ */
   const C0 = opt.colors();
@@ -370,6 +371,7 @@ export async function create(opt) {
   /* ══ colors from the page's tokens; a night look in dark theme ══ */
   function colors() {
     const c = opt.colors(), dark = opt.dark();
+    if (stage.setDark) stage.setDark(dark);   // the kit's light and night look first; the room's own tuning goes on top
     const col = (x, d) => new THREE.Color(x || d);
     MAT.floor.color.copy(col(c.floor, "#c79d6c")); MAT.wood.color.copy(col(c.wood, "#9a7350"));
     MAT.mat.color.copy(col(c.mat, "#5e7f73")); MAT.mat2.color.copy(col(c.mat2, "#a8b9a4"));
@@ -382,7 +384,6 @@ export async function create(opt) {
     fill.color.set(dark ? "#56637f" : "#fff8ee"); fill.groundColor.set(dark ? "#2a241d" : "#b89a78"); fill.intensity = dark ? 0.35 : 0.45;
     const bg = col(dark ? "#141a24" : "#e9e1d2");
     scene.background = bg; if (scene.fog) scene.fog.color.copy(bg);
-    if (stage.setDark) stage.setDark(dark);
     fig.setColors(giColors(c)); ghosts.forEach(g => g.fig.setColors(giColors(c)));
   }
 

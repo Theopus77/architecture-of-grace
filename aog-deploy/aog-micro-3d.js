@@ -479,7 +479,7 @@ MODELS.__bars = {
         var C = list[c];
         if (C.xr < v.x0 - 60 || C.xl > v.x1 + 60 || C.bot < v.y0 - 20 || C.top > v.y1 + 20) continue;
         if (low) {   /* far away: the walls and the nuclei are all that can show */
-          if (oSide > 0) { poly(g, C.P); g.strokeStyle = ink.rgb(mats.wall, oSide * 0.75); g.lineWidth = lw; g.stroke(); }
+          if (oSide > 0) { poly(g, C.P); g.strokeStyle = ink.rgb(mats.wall, oSide * 0.3); g.lineWidth = lw; g.stroke(); }
           var N0 = C.nuc, o0 = ovl(N0.z - N0.rz, N0.z + N0.rz, z0, z1) / dz;
           if (o0 > 0) { g.fillStyle = ink.rgb(mats.nuc, o0 * 0.9); ell(g, N0.x, N0.y, N0.rx, N0.ry, N0.rot); g.fill(); }
           continue;
@@ -913,9 +913,9 @@ function smooth(g, P) {
    faces. Focus on the upper cells, then turn down through them to the lower layer. After Play, the chloroplasts
    stream round the edge of each cell (cyclosis, a few micrometres a second), the sign that the cell is alive.     */
 (function () {
-  var LAY = [{ z0: 2.5, z1: 20.5, w: 62, h: 24, sx: 0.37, seed: 1 }, { z0: -17, z1: -1, w: 44, h: 18, sx: 0.61, seed: 2 }];
+  var LAY = [{ z0: 2.5, z1: 20.5, w: 84, h: 28, sx: 0.37, seed: 1 }, { z0: -17, z1: -1, w: 60, h: 22, sx: 0.61, seed: 2 }];
   var mats = {
-    wall: M({ ph: 0.55, st: { iodine: 0.06, methylene: 0.18, safranin: 0.3 }, bir: 0.6, fl: [0.0, 0.05, 0.0] }),
+    wall: M({ ph: 0.85, st: { iodine: 0.06, methylene: 0.18, safranin: 0.3 }, bir: 0.6, fl: [0.0, 0.05, 0.0] }),
     face: M({ ph: 0.15, st: { iodine: 0.02, methylene: 0.05, safranin: 0.08 } }),
     chl: M({ ph: 0.8, pig: 1.0, st: { iodine: 0.6, methylene: 0.2, safranin: 0.1 }, fl: [0.0, 0.02, 1.0] }),
     nuc: M({ ph: 0.35, st: { iodine: 0.4, methylene: 0.8, safranin: 0.6 }, fl: [0.85, 0.0, 0.0] })
@@ -950,12 +950,14 @@ function smooth(g, P) {
   function plastids(L, j, i, b) {
     var key = L.seed * 1e7 + j * 7919 + i, have = memo.get(key); if (have) return have;
     if (memo.size > 20000) memo.clear();
-    var r = mulberry(key | 0), n = Math.round((b.x1 - b.x0) * (b.y1 - b.y0) / 38), a = [];
-    var dir = r() < 0.5 ? 1 : -1, P = 2 * (b.x1 - b.x0 + b.y1 - b.y0);
+    var r = mulberry(key | 0), n = Math.round((b.x1 - b.x0) * (b.y1 - b.y0) / 45), a = [];
+    var dir = r() < 0.5 ? 1 : -1, hmax = (b.y1 - b.y0) / 2 - 3;
+    /* every chloroplast rides a loop round the cell: along the side walls at any depth, or in a belt on the top
+       or bottom face; one direction per cell, a few micrometres a second (cyclosis) */
     for (var k = 0; k < n; k++) {
-      var side = r() < 0.68;
-      a.push(side ? { s: r(), z: lerp(L.z0 + 2, L.z1 - 2, r()), ins: 2.4 + r() * 1.2, sp: dir * (3.5 + r() * 3) / P, side: 1 }
-        : { x: lerp(b.x0 + 4, b.x1 - 4, r()), y: lerp(b.y0 + 4, b.y1 - 4, r()), z: r() < 0.5 ? L.z1 - 2.2 : L.z0 + 2.2, rot: r() * TAU, sp: dir * (1 + r() * 2), side: 0 });
+      var u = r(), side = u < 0.35, ins = side ? 2.4 + r() * 1.2 : 4 + r() * Math.max(0.5, hmax - 4);
+      var P = 2 * (b.x1 - b.x0 + b.y1 - b.y0 - 4 * ins);
+      a.push({ s: r(), ins: ins, z: side ? lerp(L.z0 + 2, L.z1 - 2, r()) : u < 0.8 ? L.z1 - 2.1 : L.z0 + 2.1, sp: dir * (3 + r() * 3.5) / P, side: side ? 1 : 0 });
     }
     memo.set(key, a); return a;
   }
@@ -989,8 +991,8 @@ function smooth(g, P) {
         eachCell(L, v, 6, function (j, i, b) {
           if (b.x1 < v.x0 - 6 || b.x0 > v.x1 + 6) return;
           plastids(L, j, i, b).forEach(function (p) {
-            if (p.side) { var q = around(b, p.ins, p.s + p.sp * t); I.add(q[0], q[1], p.z, q[2], 1, 0, 1, 0.62); }
-            else { var x = p.x + p.sp * t, w = b.x1 - b.x0 - 8; x = b.x0 + 4 + (((x - b.x0 - 4) % w) + w) % w; I.add(x, p.y, p.z, p.rot, 1, 0, 1, 1); }
+            var q = around(b, p.ins, p.s + p.sp * t);
+            I.add(q[0], q[1], p.z, q[2], 1, 0, 1, p.side ? 0.62 : 1);
           });
         });
       });

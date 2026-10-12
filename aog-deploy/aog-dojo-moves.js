@@ -418,8 +418,8 @@ blockMove("outside-block", "3-5", { arm: { R: IK.outSet } }, { arm: { R: IK.outs
           tips: ["Es un empujón, no un latigazo. Piensa en alejar algo.", "Empuja con la planta o con toda la suela.", "Las manos siguen arriba mientras te inclinas."] } });
   // roundhouse: the standing foot turns, the hip turns over, the knee comes up sideways, then the shin snaps around
   const rTurn = merge(G, root(0.04, -0.05, 0.18, 0, 20, 0), { L: pivot(g.L, 50, 16), R: pivot(g.R, -10, 50) });
-  const rCham = merge(G, root(-0.02, -0.03, 0.30, 0, 80, -8), { L: pivot(g.L, 105, 18) }, legR([-14, 0, -80], 125, [20, 0, 0], [0, 0, 0]), { j: { spine: [0, 0, -6], chest: [0, -18, 0], neck: [12, -26, 0], head: [0, -20, 0] } });
-  const rExt = merge(rCham, root(-0.02, -0.02, 0.30, 0, 88, -12), legR([-12, 0, -84], 8, [30, 0, 0], [0, 0, 0]), { j: { chest: [0, -24, 0], neck: [12, -34, 0], head: [0, -24, 0] } });
+  const rCham = merge(G, root(-0.02, -0.03, 0.30, 0, 88, -8), { L: pivot(g.L, 122, 18) }, legR([-14, 0, -80], 125, [20, 0, 0], [0, 0, 0]), { j: { spine: [0, 0, -6], chest: [0, -18, 0], neck: [12, -26, 0], head: [0, -20, 0] } });
+  const rExt = merge(rCham, root(-0.02, -0.02, 0.30, 0, 96, -16), { L: pivot(g.L, 140, 14) }, legR([-6, 0, -74], 8, [30, 0, 0], [0, 0, 0]), { j: { chest: [0, -24, 0], neck: [12, -34, 0], head: [0, -24, 0] } });
   move({ id: "roundhouse-kick", kind: "kick", band: "6-8", art: W("taekwondo, Muay Thai, karate", "taekwondo, Muay Thai, karate"),
     keys: [K(0, 0, G), K(0.6, 0, G), K(1.15, 1, rTurn), K(1.6, 1, rCham), K(1.92, 2, rExt, { ease: "snap" }), K(2.5, 2, rExt), K(2.85, 3, rCham), K(3.4, 4, rTurn), K(3.9, 4, G), K(4.4, 4, G)],
     en: { n: "Roundhouse kick", steps: ["Start in your guard.", "Turn your standing foot out and swing your hip over. Your knee comes up to the side.", "Snap your lower leg around. Hit with the shin or the top of the foot. Breathe out.", "Fold the leg back to the knee.", "Turn back and set the foot down in your guard."],
@@ -471,13 +471,13 @@ blockMove("outside-block", "3-5", { arm: { R: IK.outSet } }, { arm: { R: IK.outs
   const reach = merge(root(-0.04, -0.46, 0.02, 0, 0, 8), { L: foot(0.14, 0.02, 10, 0), R: "fk" }, { j: { hipR: [-70, 0, 22], kneeR: [20, 0, 0], ankleR: [-10, 0, 0], spine: [24, 0, 0], chest: [8, 0, 0], shoulderR: [-90, 0, 36], elbowR: [-10, 0, 0], shoulderL: [-60, 0, -20], elbowL: [-40, 0, 0] } }, chinTuck);
   // lying on the side: rolled onto the hip and the back of that shoulder, chin tucked, head held off the mat,
   // the falling-side arm flat on the mat about 40° from the body, the other hand by the belt, the top knee up
-  const side = merge(root(0, 0, 0, -96, 0, 40), { L: "fk", R: "fk" },
-    { j: { hipL: [-78, 0, 16], kneeL: [92, 0, 0], ankleL: [-8, 0, 0], hipR: [-46, 0, -4], kneeR: [26, 0, 0], ankleR: [-8, 0, 0],
-           spine: [18, 0, -4], chest: [12, 0, -4], neck: [34, 0, -20], head: [10, 0, -8],
-           shoulderR: [-6, 0, -42], elbowR: [-4, 0, 0], wristR: [0, 0, 0], shoulderL: [-42, 0, -18], elbowL: [-96, 0, 0] } }, { ground: "body" });
+  const side = merge(root(0, 0, 0, -50, 0, 80), { L: "fk", R: "fk" },
+    { j: { hipL: [-72, 0, 18], kneeL: [92, 0, 0], ankleL: [-8, 0, 0], hipR: [-22, 0, -4], kneeR: [22, 0, 0], ankleR: [-8, 0, 0],
+           spine: [10, 0, 0], chest: [6, 0, 0], neck: [30, 0, -22], head: [10, 0, -8],
+           shoulderR: [-32, 0, -24], elbowR: [-4, 0, 0], wristR: [0, 0, 0], shoulderL: [-42, 0, -18], elbowL: [-96, 0, 0] } }, { ground: "body" });
   // sitting on the mat on the falling side, close to the heel, leaning back a little, that arm ready across the body
-  const sitSide = merge(root(0, 0, 0, -22, 0, 18), { L: "fk", R: "fk" },
-    { j: { hipL: [-100, 0, 12], kneeL: [136, 0, 0], ankleL: [-6, 0, 0], hipR: [-78, 0, -8], kneeR: [22, 0, 0], ankleR: [-8, 0, 0],
+  const sitSide = merge(root(0, 0, 0, -18, 0, 16), { L: "fk", R: "fk" },
+    { j: { hipL: [-84, 0, 14], kneeL: [24, 0, 0], ankleL: [-6, 0, 0], hipR: [-74, 0, -6], kneeR: [8, 0, 0], ankleR: [-8, 0, 0],
            spine: [22, 0, -4], chest: [10, 0, 0], neck: [26, 0, -10], head: [6, 0, 0],
            shoulderR: [-72, 0, 34], elbowR: [-14, 0, 0], shoulderL: [-58, 0, -16], elbowL: [-40, 0, 0] } }, { ground: "body" });
   move({ id: "side-fall", kind: "fall", band: "3-5", fall: true, art: W("judo", "judo"),
@@ -525,7 +525,7 @@ blockMove("outside-block", "3-5", { arm: { R: IK.outSet } }, { arm: { R: IK.outs
   // fencing: the right foot leads; feet at a right angle; side-on body
   const eg = merge(root(-0.02, -0.15, 0.0, 0, 62, 0), { R: foot(-0.03, 0.34, 0), L: foot(0.02, -0.24, 88) },
     { j: { chest: [0, 14, 0], neck: [0, -40, 0], head: [0, -34, 0] }, grip: { R: 0.6, L: 0.3 },
-      arm: { R: { to: [-0.14, 1.12, 0.52], pole: [-0.3, 0.75, 0.25], twist: 0 }, L: { to: [0.06, 1.62, -0.36], pole: [0.1, 1.32, -0.75], twist: 0 } } });
+      arm: { R: { to: [-0.14, 1.18, 0.52], pole: [-0.3, 0.8, 0.25], twist: 0 }, L: { to: [0.06, 1.62, -0.36], pole: [0.1, 1.32, -0.75], twist: 0 } } });
   const ready0 = merge(root(0, 0, 0, 0, 62, 0), { R: foot(-0.03, 0.10, 0), L: foot(0.02, -0.08, 88) },
     { j: { neck: [0, -40, 0], head: [0, -34, 0], shoulderL: [6, 0, 6] }, grip: { R: 0.6, L: 0.3 }, arm: { R: { to: [-0.16, 0.92, 0.42], pole: [-0.3, 0.9, -0.1], twist: 0 } } });
   move({ id: "en-garde", kind: "style", band: "6-8", art: W("fencing", "esgrima"),
@@ -579,14 +579,18 @@ blockMove("outside-block", "3-5", { arm: { R: IK.outSet } }, { arm: { R: IK.outs
   const R3 = foot(-0.12, 1.62, 0), L3 = foot(0.13, 0.80, 28);
   const s3 = (j, ry) => merge(root(0, -0.15, 1.27, 0, ry || 0, 0), { L: L3, R: R3 }, { j });
   const midStep = merge(root(0, -0.15, 0.80), { L: foot(0.12, 0.80, 0), R: foot(-0.04, 0.78, -6) }, arms("fistBelt"));
-  const R5 = foot(-0.02, 0.62, -82), L5 = foot(0.04, 1.28, 0);
-  const back5 = (j) => merge(root(0.0, -0.21, 0.82, 0, -50, 0), { L: L5, R: R5 }, { j });
-  const L6 = foot(0.05, 1.02, 0, 50), R6 = foot(-0.04, 0.70, -35);
-  const cat6 = (j) => merge(root(0.0, -0.21, 0.78, 0, -25, 0), { L: L6, R: R6 }, { j });
-  const H7a = merge(root(0.12, -0.12, 0.84, 0, 0, 0), { L: foot(0.38, 0.80, 6), R: foot(-0.04, 0.70, -20) });
-  const H7 = (j) => merge(root(0.02, -0.24, 0.80, 0, 0, 0), { L: foot(0.38, 0.80, 6), R: foot(-0.34, 0.80, -6) }, { j });
-  const end8a = merge(root(-0.08, -0.06, 0.80), { L: foot(0.15, 0.80, 9), R: foot(-0.34, 0.80, -6) }, arms("fistBelt"));
-  const end8 = merge(root(0, -0.015, 0.80), { L: foot(0.15, 0.80, 9), R: foot(-0.15, 0.80, -9) }, arms("fistBelt"));
+  // move 5: the front foot steps back past the other foot; the foot that stays turns to point forward (back stance)
+  const R5 = foot(-0.02, 0.12, -82), L5 = foot(0.04, 0.80, 0);
+  const back5 = (j) => merge(root(0.0, -0.21, 0.32, 0, -50, 0), { L: L5, R: R5 }, { j });
+  // move 6: the front foot draws in, heel up (cat stance); the back foot stays
+  const L6 = foot(0.05, 0.45, 0, 50), R6 = foot(-0.02, 0.12, -38);
+  const cat6 = (j) => merge(root(0.0, -0.21, 0.15, 0, -25, 0), { L: L6, R: R6 }, { j });
+  // move 7: the front foot steps out to the side into a horse stance, facing forward
+  const H7a = merge(root(0.12, -0.12, 0.16, 0, -10, 0), { L: foot(0.36, 0.20, 6), R: foot(-0.02, 0.14, -12) });
+  const H7 = (j) => merge(root(0.34, -0.24, 0.14, 0, 0, 0), { L: foot(0.71, 0.14, 6), R: foot(-0.02, 0.14, -6) }, { j });
+  // move 8: the feet come in to ready, one then the other
+  const end8a = merge(root(0.36, -0.06, 0.14), { L: foot(0.71, 0.14, 6), R: foot(0.21, 0.14, -9) }, arms("fistBelt"));
+  const end8 = merge(root(0.34, -0.015, 0.14), { L: foot(0.47, 0.14, 9), R: foot(0.21, 0.14, -9) }, arms("fistBelt"));
   const J = (r, l) => Object.assign({}, AR[r], Lside(AR[l]));
   move({ id: "form-1", kind: "combo", band: "9-12", art: W("an original form made for this site", "una forma original hecha para este sitio"),
     keys: [

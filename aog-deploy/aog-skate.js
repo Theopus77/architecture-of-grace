@@ -2135,7 +2135,7 @@ function freePress(k, down) {
     if (REDUCE) { const was = st.mode; freeRun(5, (q, t) => was !== "air" && q.mode !== "air" && q.mode !== "grind" && q.mode !== "stall" && t > 0.1 && !q.stallWant); freePaint(); return; }
   } else if (k === "on") { if (REDUCE) { freeRun(1); freePaint(); return; } }
   else if (k === "reset") { FL.st = freeNew(S.free.start); freePaint(); return; }
-  freePaint(); freeKick();
+  freePaint(); if (down || fBusy(st)) freeKick();   // letting go of a button at rest starts nothing
 }
 const FMSG = {
   start: ["Press Push to roll. Steer with ← and →.", "Pulsa Empujar para rodar. Gira con ← y →."],
