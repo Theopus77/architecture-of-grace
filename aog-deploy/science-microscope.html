@@ -5679,8 +5679,11 @@ function bindLive(){
 }
 let eyeDraw=null, eyeTries=0;
 function eyeAsk(){ if(!eyeRaf && eyeDraw && S.page==="lab") eyeRaf=requestAnimationFrame(eyeDraw); }
+/* is the eyepiece on screen right now? Measured each time: the eyepiece is rebuilt when the slide changes, so a watcher
+   set on an older one would wrongly say "hidden" and Play would never move */
+function eyeInView(){ const w=document.getElementById("eye"); if(!w) return false; const r=w.getBoundingClientRect(); return r.width>0 && r.bottom>0 && r.top<(innerHeight||document.documentElement.clientHeight); }
 function eyeBusy(now){
-  return (LIVE.playing && LIVE.visible && document.visibilityState!=="hidden") || now<LIVE.slipUntil;
+  return (LIVE.playing && eyeInView() && document.visibilityState!=="hidden") || now<LIVE.slipUntil;
 }
 function slip(){ if(!S.lab.clipped && S.lab.lightOn && !S.lab.cracked) LIVE.slipUntil=performance.now()+1400; }
 document.addEventListener("visibilitychange", ()=>{ if(document.visibilityState==="hidden" && LIVE.playing) setPlaying(false,"away"); });
@@ -5741,7 +5744,8 @@ function startEye(){
     wrap.addEventListener("touchmove", e=>{ if(drag) e.preventDefault(); }, {passive:false});
     /* AOG-MICRO-STILL-V1: redraw when the eyepiece changes size; pause a playing slide when it scrolls away */
     try{ new ResizeObserver(()=>eyeAsk()).observe(wrap); }catch(e){}
-    try{ new IntersectionObserver(es=>{ es.forEach(en=>{ LIVE.visible=en.isIntersecting; if(!en.isIntersecting && LIVE.playing) setPlaying(false,"away"); }); }).observe(wrap); }catch(e){}
+    try{ new IntersectionObserver(()=>{ LIVE.visible=eyeInView(); if(!LIVE.visible && LIVE.playing) setPlaying(false,"away"); }).observe(wrap); }catch(e){}
+    if(!window._aogEyeScroll){ window._aogEyeScroll=1; window.addEventListener("scroll", ()=>{ if(LIVE.playing && !eyeInView()) setPlaying(false,"away"); }, {passive:true}); }
   }
   let last=performance.now();
   const draw=now=>{
