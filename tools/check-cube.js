@@ -320,6 +320,16 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
   ok(!p.errs.length, "no page errors (my cube) " + p.errs.join("; "));
   await p.ctx.close();
 
+  /* a browser that says no to the camera: the sheet says how to turn it on, in plain steps */
+  { const b2 = await pw.chromium.launch(); const ctx = await b2.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+    await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, r => r.abort());
+    await ctx.addInitScript(() => { if (navigator.mediaDevices) navigator.mediaDevices.getUserMedia = () => Promise.reject(new DOMException("blocked", "NotAllowedError")); });   /* as a phone does when the site may not use the camera */
+    const q = await ctx.newPage(); await q.goto(URL + "#mine"); await q.waitForTimeout(700);
+    await q.click('#panel [data-act="camera"]'); await q.waitForTimeout(1500);
+    ok(/turned off for this site/.test(await q.textContent(".cam")) && /Website Settings/.test(await q.textContent(".cam")), "camera blocked: the sheet says how to turn it on");
+    await b2.close(); }
+  /* the site's headers let its own pages use the camera (camera=() blocked it on phones) */
+  { const hd = fs.readFileSync(path.join(ROOT, "_headers"), "utf8"); ok(/Permissions-Policy:[^\n]*camera=\(self\)/.test(hd), "_headers lets the site's own pages ask for the camera"); }
   await b.close(); server.close();
   console.log(fails ? `\n${fails} cube check(s) failed.` : "\nThe Cube Lab passes every check.");
   process.exit(fails ? 1 : 0);
