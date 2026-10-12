@@ -202,6 +202,7 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
 <script src="/aog-grace.js" defer></script>
 <script src="/aog-dropdowns.js" defer></script>
 <script src="/aog-labdoors.js" defer></script><!-- AOG-LABDOORS-V1: the nine music labs, as doors -->
+<script src="/aog-onebutton.js" defer></script><!-- AOG-ONEBUTTON-V1: One button (the big button and the switches load when it is opened) -->
 <script>
 (function(){
   function add(src){
@@ -296,6 +297,7 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
           </details>
         </div>
       </div>
+      <div id="oneBlk" style="margin-top:1rem"></div><!-- AOG-ONEBUTTON-V1: One button, closed (aog-onebutton.js draws it) -->
       <div class="pm-sec pm-fx" id="ampBlk"><!-- AOG-ROOM-PEDALS-V1: every effect and the EQ (aog-amp.js draws them) -->
         <h2 class="pm-h" id="fxH"></h2>
         <p class="pm-line" id="fxLine"></p>
@@ -1493,6 +1495,16 @@ const REC=AOGRecorder.attach({context:()=>ctx(), tap:()=>clip, lang:()=>S0.lang,
    the song. */
 /* AOG-OVERDUB-V1: recording over My Track, a loop that is playing starts again on the bar line My Track starts on */
 window.AOGRoomClock={ align(t0){ if(!SEQ.on) return; SEQ.t0=t0; SEQ.abs=0; SEQ.map=null; } };
+/* AOG-ONEBUTTON-V1: one big button, a switch or the space bar plays the Drum Machine (aog-onebutton.js): the loop one beat
+   a press, at the song's tempo, or the loop started and stopped */
+window.AOGOneRoom={ room:"pads", lang:()=>S0.lang, ctx:ctx, bpm:()=>S.bpm,
+  grid:()=>SEQ.on ? {t0:SEQ.t0, beat:60/S.bpm} : null,
+  beats:()=>S.ev.length ? S.bars*4 : 0,
+  beat(i, when, sec){ prepUsed(); const sp=sec/PPQ, m=evMap(); let n=0;
+    for(let k=0;k<PPQ;k++){ const list=m.get(i*PPQ+k); if(list) list.forEach(e=>{ const at=when+k*sp, v=trigger(e.b, e.p, e.v, at); flash(e.b, e.p, at);
+      if(v && gated(e.b)) v.stop(at+Math.max(12, e.len||48)*sp); n++; }); }
+    return n; },
+  playing:()=>SEQ.on, start:play, stop:stop, quiet:()=>{ if(SEQ.on) stop(); } };
 function isMinorScale(id){ const iv=scaleIv(id); return iv.indexOf(3)>=0 && iv.indexOf(4)<0; }   /* a minor third and no major third */
 if(window.AOGSong) AOGSong.room({
   bpm:{get:()=>S.bpm, set:v=>retime(v), min:60, max:180},

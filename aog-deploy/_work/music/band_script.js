@@ -838,9 +838,9 @@ function track(vc, when){
   }
 }
 function prune(){ const now=ac?ac.currentTime:0; for(let i=ALL.length-1;i>=0;i--){ const v=ALL[i]; if((v.end&&v.end<now)||(v.natural&&v.natural<now)) ALL.splice(i,1); } }
-function noteOn(key, inst, m, v){
+function noteOn(key, inst, m, v, when){
   if(!inst) return;
-  const c=ctx(), now=c.currentTime;
+  const c=ctx(), now=Math.max(c.currentTime, when||0);   /* when: AOG-ONEBUTTON-V1 lands a press on the beat */
   const old=LIVE.get(key); if(old){ old.stop(now, 0.05); LIVE.delete(key); }
   const vc=makeVoice(c, LIVE_CH, inst, m, v, now, "sus");
   if(!vc) return;
@@ -1489,6 +1489,16 @@ function bindMidi(){
     off:(m)=>{ noteOff("m"+m); lessonKeyUp(m); },
     sustain:setSus});
 }
+/* AOG-ONEBUTTON-V1: one big button, a switch or the space bar plays the Band, in key and in time (aog-onebutton.js) */
+window.AOGOneRoom={ room:"band", lang:()=>S.lang, ctx:ctx, key:()=>({key:S.key, minor:!!S.minor}), bpm:()=>S.bpm, prog:()=>S.prog,
+  qs:Object.keys(Q), name:chordName, pc:pcName, range:()=>soundRange(S.sound), root:bassOf, quiet:allOff,
+  grid:()=>S.playing ? {t0:PLAY.t0, beat:PLAY.barSec/beatsPerBar()} : null,
+  chord(c, v, when){ if(!soundReady(S.sound)){ loadSound(S.sound, paintLoad); return false; }
+    const vo=voicing(c, lastVoicing), keys=[]; lastVoicing=vo;
+    chordParts(c, vo).filter(p=>!p.dup).forEach(p=>{ const k="o:"+p.inst+":"+p.m; noteOn(k, p.inst, p.m, v*(p.bass?0.85:1), when); keys.push(k); });
+    return {off(){ keys.forEach(k=>noteOff(k)); }}; },
+  note(m, v, when){ if(!soundReady(S.sound)){ loadSound(S.sound, paintLoad); return false; } const inst=playerFor(m); if(!inst) return null;
+    noteOn("o"+m, inst, m, v, when); return {off(){ noteOff("o"+m); }}; } };
 /* computer keys: by position, so other keyboard layouts work too */
 const HELD_KEYS=new Map();
 function typing(el){ if(!el||!el.tagName) return false; const tg=el.tagName; return el.isContentEditable||tg==="TEXTAREA"||(tg==="INPUT"&&el.type!=="range"); }

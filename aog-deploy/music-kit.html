@@ -151,6 +151,7 @@ body.aog-play #kitView{display:flex;flex-direction:column;position:fixed;inset:0
 <script src="/aog-grace.js" defer></script>
 <script src="/aog-dropdowns.js" defer></script>
 <script src="/aog-labdoors.js" defer></script><!-- AOG-LABDOORS-V1: the nine music labs, as doors -->
+<script src="/aog-onebutton.js" defer></script><!-- AOG-ONEBUTTON-V1: One button (the big button and the switches load when it is opened) -->
 <script>
 (function(){
   function add(src){
@@ -181,6 +182,7 @@ body.aog-play #kitView{display:flex;flex-direction:column;position:fixed;inset:0
     <div id="kitBox"></div>
     <div id="pedalsNear" hidden></div><!-- AOG-ROOM-PEDALS-V1: the effects that are on, with their knobs, and the menu of the rest, under the kit (aog-amp.js) -->
     <p class="kp-line kp-keys" id="kitKeys"></p><!-- AOG-KIT-KEYS-V1 -->
+    <div id="oneBlk" style="margin:1rem 0"></div><!-- AOG-ONEBUTTON-V1: One button, closed (aog-onebutton.js draws it) -->
     <section class="kp-beat" id="beatBox" aria-labelledby="beatH">
       <h2 id="beatH"></h2>
       <p class="kp-about" id="beatIntro"></p>
@@ -572,6 +574,17 @@ const REC=AOGRecorder.attach({context:()=>ctx(), tap:()=>lim, lang:()=>S.lang, w
   ids:{btn:"takeBtn", time:"takeTime", line:"takeLine", list:"takeList"}});
 /* AOG-OVERDUB-V1: recording over My Track, a beat that is playing starts again on the bar line My Track starts on */
 window.AOGRoomClock={ align(t0){ if(!BT.on) return; BT.step=0; BT.part=0; BT.next=t0; } };
+/* AOG-ONEBUTTON-V1: one big button, a switch or the space bar plays the Drum Kit (aog-onebutton.js): kick and snare in turn,
+   the next hit of the beat that is picked, or the beat started and stopped */
+window.AOGOneRoom={ room:"kit", lang:()=>S.lang, ctx:ctx, bpm:()=>S.bpm,
+  grid:()=>BT.on ? {t0:BT.next-BT.step*60/S.bpm/4, beat:60/S.bpm} : null,
+  groove(){ const b=beatNow(); if(!b) return []; const p=beatParts(b)[0], out=[];
+    for(let st=0; st<p.len; st++){ const ids=Object.keys(p.map).filter(id=>(p.map[id]||[])[st]).sort((x,y)=>(padName(S.bank,x)==="OPEN")-(padName(S.bank,y)==="OPEN"));
+      if(ids.length) out.push({ids:ids, acc:ids.map(id=>ACC[p.map[id][st]]||0)}); }
+    return out; },
+  hit(ids, acc, when){ if(!ready()){ ctx(); return false; } const at=Math.max(ac.currentTime, when||0);
+    ids.forEach((id,i)=>sound(S.bank, id, at, acc[i]||0, 0.5)); setTimeout(()=>ids.forEach(id=>light(id)), Math.max(0,(at-ac.currentTime)*1000)); return true; },
+  playing:()=>BT.on, start:beatStart, stop:beatStop, quiet:beatStop };
 /* AOG-SONG-V1 (2026-10-11): the Drum Kit's beats play at the song's tempo (aog-song.js); its tempo controls change the song */
 if(window.AOGSong) AOGSong.room({ bpm:{get:()=>S.bpm, set:v=>{ S.bpm=Math.max(40, Math.min(220, Math.round(v))); save(); try{ beatPaint(); }catch(e){} }, min:40, max:220},
   watch:{bpm:["tempoR","tempoDn","tempoUp","dkSlow","dkFast"]} });

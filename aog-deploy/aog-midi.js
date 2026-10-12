@@ -42,8 +42,8 @@
       if(!d || d.length<1) return;
       const st=d[0], cmd=st&0xf0, a=d[1]|0, b=d[2]|0;
       let h=ctl.held.get(from); if(!h){ h=new Set(); ctl.held.set(from, h); }
-      if(cmd===0x90 && b>0){ if(away()) return; h.add(a); if(o.on) o.on(a, b/127); }
-      else if(cmd===0x80 || (cmd===0x90 && b===0)){ if(!h.has(a)) return; h.delete(a); if(o.off) o.off(a); }
+      if(cmd===0x90 && b>0){ if(away()) return; if(window.AOGOne && AOGOne.midi && AOGOne.midi(0x90, a, b/127)) return; h.add(a); if(o.on) o.on(a, b/127); }   /* AOG-ONEBUTTON-V1: with Any key plays on, a key plays One button */
+      else if(cmd===0x80 || (cmd===0x90 && b===0)){ if(window.AOGOne && AOGOne.midi && AOGOne.midi(0x80, a, 0)) return; if(!h.has(a)) return; h.delete(a); if(o.off) o.off(a); }
       else if(cmd===0xb0){
         if(a===64){ if(o.sustain && !(b>=64 && away())) o.sustain(b>=64); }
         else if(a===120 || a===123){ h.forEach(n=>{ if(o.off) o.off(n); }); h.clear(); if(a===123 && o.sustain) o.sustain(false); }   /* all sound off, all notes off */
