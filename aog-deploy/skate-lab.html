@@ -22,6 +22,9 @@
                  links, progress kept on the device (learning / landed it once / got it, 7 of 10) and a trick map.
                  Watch it moving (the camera follows on flat ground, AOG-SKATE-FILM-V1) or as a sequence: seven moments in
                  one picture, the way skate magazines print a trick. The skater (AOG-SKATE-RIDER-V3) has no face.
+                 Or in 3D (AOG-SKATE-3D-V1, aog-skate3d.js, three.js in /vendor/three-0.160.0): a real-time skatepark and a
+                 jointed skater driven by the same demos; cameras: filmer, fisheye, side, walk around (drag). It draws only
+                 when a step plays or the camera is dragged.
        #questions Questions (AOG-SKATE-FAQ-V1): 30 answers, searchable, by topic, in English and Spanish.
        #build    Build a board (AOG-SKATE-BUILD-V1; "Every part" pulls the board apart with a printable parts list, AOG-SKATE-PARTS-V1): a whole setup for a rider and a use, and checks for truck fit,
                  the wheels and wheel bite, drawn from the front at full lean.
@@ -127,6 +130,8 @@ header { display:flex; flex-wrap:wrap; justify-content:space-between; align-item
 .stage { position:relative; width:100%; border-radius:18px; overflow:hidden; border:1px solid var(--line);
   background:var(--cv-sky); touch-action:pan-y; user-select:none; -webkit-user-select:none; }
 .stage canvas { display:block; width:100%; height:auto; }
+.stage canvas.gl { position:absolute; left:0; top:0; display:none; }
+.stage #cv { position:relative; z-index:1; }
 .stage .cap { position:absolute; left:10px; top:8px; right:10px; display:flex; justify-content:space-between; gap:.5rem; pointer-events:none;
   font:700 .8rem/1.2 var(--sans); color:var(--muted); letter-spacing:.06em; text-transform:uppercase; }
 

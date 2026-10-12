@@ -219,6 +219,10 @@ check for anything new the hands can do.
   ollie and curb families). The skater is drawn without a face (no faces in the site's art). It should look right to a
   teenager who skates (Jimmy, 2026-10-11: "a teenager would laugh at this"): real clothes and shoes, a relaxed athletic
   stance, the head looking where the board goes, steady rolling speed, the camera riding along.
+- The trick book also plays every demo in 3D (Jimmy, 2026-10-12: "three.js 3d engine … we are the 1%"): `aog-skate3d.js`
+  (AOG-SKATE-3D-V1), a skatepark and a jointed skater posed from the same demo frames, loaded with import() only when
+  someone picks 3D. three.js is kept in the site (`vendor/three-0.160.0`, MIT), never fetched from elsewhere. It renders
+  only when a step plays or the camera is dragged; nothing moves on its own. A new trick needs nothing extra for 3D.
 
 ## Housekeeping
 

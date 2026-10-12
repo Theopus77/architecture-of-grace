@@ -35,7 +35,7 @@ const DEF = {
   balance: { mode: "stand", com: 0, lean: 10, v: 3, truck: "med" },
   flip: { mode: "board", trick: "kickflip", view: "corner", arms: "out" },
   timeline: { i: 0 },
-  tricks: { id: "stance", view: "move" },
+  tricks: { id: "stance", view: "move", cam: "follow" },
   progress: {},
   faq: { q: "", cat: "all" },
   build: { rider: "m", use: "tricks", deck: 8.125, axle: 8.125, wheel: 52, duro: 100, riser: 0, bush: "med", type: "pop", view: "fit" }
@@ -1758,9 +1758,28 @@ function drawFeetMap(t, cx, cy, sc, small) {
 }
 let TR = null;
 function curTrick() { return TRICKS.find(x => x.id === S.tricks.id) || TRICKS[0]; }
+/* ── the 3D park (AOG-SKATE-3D-V1): three.js, loaded the first time someone picks 3D; it draws only when asked ── */
+let G3 = null, G3state = "";   // "", "loading", "ready", "failed"
+function want3D() { return S.room === "tricks" && S.tricks.view === "3d"; }
+function load3D() {
+  if (G3state) return;
+  G3state = "loading";
+  import("/aog-skate3d.js").then(m => {
+    G3 = m.create({ host: $("stage"), before: cv, colors: () => C, BOARD, deckMid, path: () => demoPath().pts, at: q => at(demoPath(), q),
+      dark: () => document.documentElement.getAttribute("data-theme") === "dark", onCam: k => { S.tricks.cam = k; save(); const sel = $("kCam"); if (sel) sel.value = k; } });
+    G3.setCam(S.tricks.cam || "follow"); G3state = "ready"; paint();
+  }).catch(err => { G3state = "failed"; console.warn("3D park:", err); paint(); });
+}
 function drawTricks(fr) {
   const t = curTrick(), D = DEMOS[t.id];
-  if (D && S.tricks.view === "seq") drawSequence(D, P.frames); else if (D) drawDemo(fr, D);
+  if (want3D()) {
+    if (G3state === "ready") {
+      ctx.clearRect(0, 0, W, H); G3.show(true); G3.resize(sizedW, Math.round(sizedW * H / W)); G3.render(fr || P.frames[0], D);
+    } else {
+      if (!G3state) load3D();
+      text(G3state === "failed" ? L("3D could not start on this device. Pick Moving to watch the trick.", "El 3D no pudo iniciar en este equipo. Elige En movimiento para ver el truco.") : L("Building the 3D park…", "Construyendo el parque en 3D…"), W / 2, H / 2, { a: "center", m: 1, w: 700, c: C.soft });
+    }
+  } else if (D && S.tricks.view === "seq") drawSequence(D, P.frames); else if (D) drawDemo(fr, D);
   // the setup from above, top right; the step, top left
   const bw = Math.min(W * 0.34, 300), sc = bw / 1.0, bx = W - bw / 2 - 18, by = 18 + 0.13 * sc + FS * 0.2;
   ctx.save(); ctx.fillStyle = alpha(C.card, 0.92); ctx.strokeStyle = C.line; ctx.lineWidth = 1.5; roundRect(W - bw - 30, 8, bw + 22, 0.26 * sc + FS * 1.6, 12); ctx.fill(); ctx.stroke(); ctx.restore();
@@ -1768,6 +1787,7 @@ function drawTricks(fr) {
   drawFeetMap(t, bx, by + FS * 0.75, sc * 0.82, true);
   const c = es() ? t.es : t.en;
   if (S.tricks.view === "seq") text(L("Sequence", "Secuencia"), 16, 34, { w: 700, m: 1.05, c: C.steel });
+  else if (want3D() && fr) text(L("Step ", "Paso ") + (fr.step + 1) + L(" of ", " de ") + c.steps.length, 16, 34, { w: 700, m: 1.05, c: C.steel, bg: C.card });
   else if (fr) text(L("Step ", "Paso ") + (fr.step + 1) + L(" of ", " de ") + c.steps.length, 16, 34, { w: 700, m: 1.05, c: C.steel });
   else text(c.n, 16, 34, { w: 700, m: 1.05, c: C.steel });
 }
@@ -1788,7 +1808,8 @@ function tricksPanel() {
   return `<p class="kicker">${L("Room 7 · How to", "Sala 7 · Cómo se hace")}</p>
   <h2>${L("Trick book", "Libro de trucos")}</h2>
   <div class="ctl"><label for="kT">${L("Pick a trick", "Elige un truco")}</label><select class="sel" id="kT">${groups}</select></div>
-  <div class="ctl"><span class="lab">${L("Watch it", "Míralo")}</span><div class="seg"><button type="button" data-tv="move" aria-pressed="${S.tricks.view !== "seq"}">${L("Moving", "En movimiento")}</button><button type="button" data-tv="seq" aria-pressed="${S.tricks.view === "seq"}">${L("Sequence", "Secuencia")}</button></div></div>
+  <div class="ctl"><span class="lab">${L("Watch it", "Míralo")}</span><div class="seg"><button type="button" data-tv="move" aria-pressed="${S.tricks.view !== "seq"}">${L("Moving", "En movimiento")}</button><button type="button" data-tv="seq" aria-pressed="${S.tricks.view === "seq"}">${L("Sequence", "Secuencia")}</button><button type="button" data-tv="3d" aria-pressed="${S.tricks.view === "3d"}">3D</button></div></div>
+  ${S.tricks.view === "3d" ? `<div class="ctl"><label for="kCam">${L("Camera", "Cámara")}</label><select class="sel" id="kCam">${[["follow", L("Filmer, rolling along", "Camarógrafo, rodando al lado")], ["fish", L("Fisheye, up close", "Ojo de pez, de cerca")], ["side", L("From the side", "De lado")], ["orbit", L("Walk around (drag the picture)", "Rodear (arrastra la imagen)")]].map(([k, l]) => `<option value="${k}" ${(S.tricks.cam || "follow") === k ? "selected" : ""}>${l}</option>`).join("")}</select><p class="hint">${L("Drag the picture sideways to walk around the rider.", "Arrastra la imagen de lado para rodear al patinador.")}</p></div>` : ""}
   <div class="ctl"><div class="seg"><button type="button" data-st="regular" aria-pressed="${S.stance === "regular"}">${L("Regular", "Regular")}</button><button type="button" data-st="goofy" aria-pressed="${S.stance === "goofy"}">Goofy</button></div></div>
   <h3>${esc(c.n)}</h3>
   <p><span class="tag">${esc(L(LV[t.lv][0], LV[t.lv][1]))}</span><span class="tag">${L("Helmet on", "Con casco")}</span>${t.lv >= 2 ? `<span class="tag">${L("Wrist guards and pads", "Muñequeras y protecciones")}</span>` : ""}</p>
@@ -1813,6 +1834,7 @@ function tricksWire() {
   const pick = id => { S.tricks.id = id; save(); tricksReset(); };
   $("kT").onchange = e => pick(e.target.value);
   document.querySelectorAll("#panel [data-tv]").forEach(b => b.onclick = () => { S.tricks.view = b.getAttribute("data-tv"); save(); panel(); paint(); });
+  if ($("kCam")) $("kCam").onchange = e => { S.tricks.cam = e.target.value; save(); if (G3) G3.setCam(S.tricks.cam); paint(); };
   document.querySelectorAll("#panel [data-st]").forEach(b => b.onclick = () => { S.stance = b.getAttribute("data-st"); save(); panel(); paint(); });
   const i = TRICKS.indexOf(curTrick());
   $("kPrev").onclick = () => pick(TRICKS[Math.max(0, i - 1)].id);
@@ -2136,7 +2158,7 @@ const ORDER = ["build", "ramp", "ollie", "grind", "balance", "flip", "timeline",
 function panel() { const r = ROOMS[S.room]; $("panel").innerHTML = r.panel(); r.wire(); paintPlayer(); $("under").innerHTML = r.under(); if (r.onFrame) r.onFrame(P.frames[P.k]); }
 function paint(fast) {
   if (fit()) colors();
-  clear(); ROOMS[S.room].draw();
+  clear(); if (G3 && !want3D()) G3.show(false); ROOMS[S.room].draw();
   $("under").innerHTML = ROOMS[S.room].under();
   const sc = $("scrub"); if (sc) { sc.max = Math.max(0, P.frames.length - 1); sc.value = P.k; }
   const tr = $("tRead"); if (tr) tr.textContent = num(P.k * P.dt, 2) + " s";
@@ -2175,11 +2197,15 @@ $("themeBtn").onclick = () => {
   try { localStorage.setItem("aog.interior.ws.v1.theme", next); } catch (e) {}
   words(); colors(); paint();
 };
-new MutationObserver(() => { colors(); paint(); }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+new MutationObserver(() => { colors(); if (G3) G3.colors(); paint(); }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 window.addEventListener("resize", () => { if (fit()) { colors(); paint(); } });
 window.addEventListener("hashchange", () => { const k = location.hash.slice(1); if (ROOMS[k] && k !== S.room) openRoom(k, false); });
+cv.addEventListener("pointerdown", e => { if (G3 && want3D()) G3.onDown(e); });
+cv.addEventListener("pointermove", e => { if (G3 && want3D() && G3.onMove(e)) { drawTricksOverlayOnly(); } });
+["pointerup", "pointercancel", "pointerleave"].forEach(k => cv.addEventListener(k, () => { if (G3) G3.onUp(); }));
+function drawTricksOverlayOnly() { paint(true); }
 /* for the site's checks (tools/check-skate.js) */
-window.AOGSkate = { suggestBoard, boardCheck, boltFor, simRamp, simGrind, simOllie, simFlip, simSpin, balanceCalc, standCalc, rooms: ORDER, open: k => openRoom(k, true), state: S, P, go, TRICKS, ERAS, DEMOS, simDemo, FAQ, trick: id => { S.tricks.id = id; save(); if (S.room === "tricks") tricksReset(); else openRoom("tricks", true); } };
+window.AOGSkate = { suggestBoard, boardCheck, boltFor, simRamp, simGrind, simOllie, simFlip, simSpin, balanceCalc, standCalc, rooms: ORDER, open: k => openRoom(k, true), state: S, P, go, TRICKS, ERAS, DEMOS, simDemo, FAQ, G3: () => G3, G3state: () => G3state, trick: id => { S.tricks.id = id; save(); if (S.room === "tricks") tricksReset(); else openRoom("tricks", true); } };
 words();
 /* AOG-SKATE-BUILD-HOME-V1 (2026-10-11) — Jimmy: "Make build a board a main stay for this page." /skate always opens on
    Build a board; an address that names a room (/skate#ollie, a lesson's link) still opens that room. */

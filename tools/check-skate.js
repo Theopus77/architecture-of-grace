@@ -28,7 +28,7 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
 
 (async () => {
   await new Promise(o => server.listen(0, o)); const port = server.address().port, URL = `http://127.0.0.1:${port}/skate-lab.html`;
-  const b = await pw.chromium.launch();
+  const b = await pw.chromium.launch({ args: ["--use-gl=angle", "--use-angle=swiftshader", "--enable-unsafe-swiftshader"] });   // WebGL for the 3D park
   async function open(vp, touch, hash, extra) {
     const ctx = await b.newContext(Object.assign({ viewport: vp, isMobile: !!touch, hasTouch: !!touch }, extra || {}));
     await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, r => r.abort());
@@ -146,7 +146,23 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
   await p.evaluate(() => window.AOGSkate.trick("kickflip")); await wait(80);
   await p.click('#panel [data-tv="seq"]'); await wait(120);
   ok(await p.evaluate(() => window.AOGSkate.state.tricks.view === "seq" && !window.AOGSkate.P.playing), "the sequence shot draws the trick in one still picture");
+  /* ── the 3D park (AOG-SKATE-3D-V1): loads when picked, draws only when asked, plays once, the camera walks around on a drag ── */
+  await p.click('#panel [data-tv="3d"]');
+  for (let i = 0; i < 80 && await p.evaluate(() => window.AOGSkate.G3state() !== "ready" && window.AOGSkate.G3state() !== "failed"); i++) await wait(200);
+  ok(await p.evaluate(() => window.AOGSkate.G3state() === "ready" && window.AOGSkate.G3().canvas.style.display === "block"), "3D: the park loads when 3D is picked (three.js from the site itself)");
+  const r0 = await p.evaluate(() => window.AOGSkate.G3().renders()); await wait(900);
+  ok(await p.evaluate(r => window.AOGSkate.G3().renders() === r, r0), "3D: nothing is drawn while nobody presses anything");
+  const shot = await (await p.$("#stage")).screenshot();
+  ok(shot.length > 30000, `3D: the park and the rider are drawn (${Math.round(shot.length / 1024)} KB picture)`);
+  await p.click("#goBtn"); await wait(200); await p.evaluate(() => { const P = window.AOGSkate.P; P.t0 -= 60000; }); await wait(300);
+  ok(await p.evaluate(r => { const A = window.AOGSkate, P = A.P; return !P.playing && P.k === P.frames.length - 1 && A.G3().renders() > r + 1; }, r0), "3D: Go plays the trick once and stops at its end");
+  const bx = await (await p.$("#cv")).boundingBox();
+  await p.mouse.move(bx.x + bx.width / 2, bx.y + bx.height / 2); await p.mouse.down(); await p.mouse.move(bx.x + bx.width / 2 + 120, bx.y + bx.height / 2, { steps: 6 }); await p.mouse.up();
+  ok(await p.evaluate(() => window.AOGSkate.G3().cam() === "orbit" && document.getElementById("kCam").value === "orbit"), "3D: dragging the picture walks the camera around the rider");
+  await p.selectOption("#kCam", "follow");
+  ok(await p.evaluate(() => window.AOGSkate.G3().cam() === "follow"), "3D: the camera menu picks the filmer again");
   await p.click('#panel [data-tv="move"]');
+  ok(await p.evaluate(() => window.AOGSkate.G3().canvas.style.display === "none"), "3D: picking Moving puts the drawings back");
   /* ── Questions: search and topic narrow the list; a search with no accent still finds accented words ── */
   await p.evaluate(() => window.AOGSkate.open("questions")); await wait(100);
   const all = await p.$$eval("#panel details.qa", d => d.length);
