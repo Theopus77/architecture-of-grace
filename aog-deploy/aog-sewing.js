@@ -51,7 +51,7 @@ function nodePt(n, st) {
     case "I": y = LT; break;
     case "IF": y = 1.5 * LT; break;
     case "E": return [n.x, surf(n.x, n.z) + T / 2, n.z - CL * 1.25];
-    case "BT": { const b = st.btn[n.b]; y = b.y + BH + CL + PIN; break; }
+    case "BT": { const b = st.btn[n.b]; y = b.y + BH + CL + PIN * (1 - (st.pick ? st.pick.out : 0)); break; }   // over the toothpick while it is in
     case "U": case "W": y = n.y; break;
     case "K": { const kp = knotPos(n, st); return kp; }
     default: y = 0;
@@ -651,7 +651,21 @@ BUILD["tie-off"] = () => {
   tl.pre = pre;
   return finish(tl, 7);
 };
-/* Thread a needle and tie the needle knot: the needle and thread in the air (no cloth) */
+/* Thread a needle and tie the needle knot: the needle and thread in the air (no cloth).
+   Both are worked out with the needle along x or y, then turned into place (remap) so that, seen from the sewer's own
+   eyes, the needle lies across the picture: each hand stays on its own side and the eye or the wraps show plainly. */
+function remap(st, M) {
+  const P = q => q && M(q);
+  if (st.needle) st.needle = st.needle.map(P);
+  if (st.eye) st.eye = P(st.eye);
+  if (st.threads) st.threads = st.threads.map(l => l.map(P));
+  if (st.shortEnd) st.shortEnd = st.shortEnd.map(P);
+  if (st.coil) st.coil = st.coil.map(P);
+  (st.knots || []).forEach(k => { k.p = P(k.p); });
+  if (st.snips) st.snips.p = P(st.snips.p);
+  if (st.handL) st.handL.p = P(st.handL.p);
+  if (st.handR) st.handR.p = P(st.handR.p);
+}
 BUILD["thread-needle"] = () => {
   const tl = TL("thread-needle", "hand", workInit("none", () => ({ tn: { cut: 0, snip: 0, lift: 0, end: 0, pull: 0 } })));
   tl.add(0, 2.4, (st, u) => { st.tn.cut = u; });
@@ -661,8 +675,8 @@ BUILD["thread-needle"] = () => {
   tl.add(4, 2.4, (st, u) => { st.tn.pull = u; });
   tl.derive = st => {
     const q = st.tn, eyeY = 0.03 + 0.012 * q.lift;
-    const eye = [0, eyeY, 0.004 - 0.01 * q.lift];
-    const dir = nrm([0, 1, -0.25 * q.lift]);
+    const eye = [0, eyeY, 0.004 + 0.012 * q.lift];
+    const dir = nrm([0, 1, 0.3 * q.lift]);
     const tipP = add(eye, mul(dir, -NL));
     st.needle = [eye, tipP];
     st.eye = eye;
@@ -683,7 +697,9 @@ BUILD["thread-needle"] = () => {
     else st.snips = null;
     st.knots = [];
     st.handL = { f: "work", p: add(tipP, mul(dir, 0.008)), grip: 0.5, pinch: true };
-    st.handR = st.snips ? { f: "work", p: st.snips.p, grip: 0.9 } : { f: "work", p: add(end, [0.012, -0.002, 0.004]), grip: 0.5, pinch: true };
+    st.handR = st.snips ? { f: "work", p: st.snips.p, grip: 0.9 } : { f: "work", p: add(end, [0.02, -0.002, 0.004]), grip: 0.5, pinch: true };
+    remap(st, p => [p[0], 0.03 + p[2], 0.022 - p[1]]);     // the needle lies away from the sewer, eye on the far side
+    st.eyeAxis = [1, 0, 0];                                   // the eye's hole faces the thread
   };
   return finish(tl, 5);
 };
@@ -726,6 +742,7 @@ BUILD["tie-knot"] = () => {
     st.shortEnd = [eye, add(eye, [-0.006, 0, 0.001]), add(eye, [-0.012, -0.012, 0.004]), add(eye, [-0.014, -0.03, 0.008])];
     st.handR = q.pull > 0 ? { f: "work", p: add(tipP, [-0.004, 0, 0]), grip: 0.5, pinch: true } : { f: "work", p: add(eye, [0.012, 0, 0]), grip: 0.5, pinch: true };
     st.handL = { f: "work", p: q.pinch > 0 ? [wx0 + 0.003, 0.02, 0.006] : add(endP, [0.004, -0.004, 0.006]), grip: 0.6, pinch: true };
+    remap(st, p => [-p[2] - 0.004, p[1] + 0.008, -p[0]]);     // the tip points away; the left hand works on the left
   };
   return finish(tl, 6);
 };
@@ -1339,7 +1356,8 @@ function draw() {
 const focusCache = {};
 function focusOf(id, step) {
   if (id === "sew-button") return step >= 8 ? [BTN.sc[0], 0, BTN.sc[1]] : [BTN.c[0], 0, BTN.c[1]];
-  if (id === "thread-needle" || id === "tie-knot") return [0, 0.02, 0];
+  if (id === "thread-needle") return [0.002, 0.034, -0.016];  // the eye, held up to the light
+  if (id === "tie-knot") return [-0.004, 0.028, -0.004];       // the wraps on the needle
   if (!focusCache[id]) {
     const fp = finalPattern(id), ls = fp.kind === "hand" ? fp.front.concat(fp.back) : [];
     if (!ls.length) focusCache[id] = [0.01, 0, 0];

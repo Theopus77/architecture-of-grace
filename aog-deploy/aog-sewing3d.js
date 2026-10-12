@@ -139,7 +139,7 @@ export async function create(kit) {
     mfabW: phys({ color: "#dde6ea", map: weaveMap, normalMap: weaveN, roughness: 0.92, sheen: 0.5, sheenRoughness: 0.7, sheenColor: new THREE.Color("#f4fbff") }),
     gingham: phys({ map: gingham, normalMap: weaveN, roughness: 0.9, sheen: 0.5, sheenRoughness: 0.7, sheenColor: new THREE.Color("#ffffff") }),
     tissue: std({ map: patternMap, roughness: 0.85, transparent: true, opacity: 0.9, side: THREE.DoubleSide }),
-    button: phys({ color: "#e0ad45", roughness: 0.25, clearcoat: 1, clearcoatRoughness: 0.1 }),
+    button: phys({ color: "#3d7d84", roughness: 0.42, clearcoat: 0.6, clearcoatRoughness: 0.3 }),
     buttonS: phys({ color: "#2f3a52", roughness: 0.2, metalness: 0.2, clearcoat: 1 }),
     pinHeadR: phys({ color: "#d23d3d", roughness: 0.15, clearcoat: 1 }), pinHeadY: phys({ color: "#e9b52c", roughness: 0.15, clearcoat: 1 }), pinHeadB: phys({ color: "#3a72c4", roughness: 0.15, clearcoat: 1 }),
     cushion: phys({ color: "#c8423a", roughness: 0.85, sheen: 1, sheenColor: new THREE.Color("#ffb3a8"), sheenRoughness: 0.5, map: weaveMap, normalMap: weaveN }),
@@ -614,7 +614,7 @@ export async function create(kit) {
         // a long lens from a little way off, the way a teacher leans in: the stitches fill the picture and the hands stay
         // their real size instead of crowding the lens
         const n = V(0, 1, 0).applyQuaternion(work.quaternion), xa = V(1, 0, 0).applyQuaternion(work.quaternion), za = V(0, 0, 1).applyQuaternion(work.quaternion);
-        const T = globalThis.__sewCam || (st.work.kind === "none" ? { d: 0.26, fov: 20, x: -0.03, z: -0.08 }
+        const T = globalThis.__sewCam || (st.work.kind === "none" ? { d: 0.2, fov: 22, x: 0, z: 0.02 }
           : (st.id === "whipstitch" || st.id === "blanket-stitch") ? { d: 0.15, fov: 24, x: -0.02, z: -0.06 }   // over the edge, so the wrap shows
           : (st.id === "sew-button" && st.step >= 5 && st.step <= 7) ? { d: 0.05, fov: 30, x: 0.03, z: 0.06 }   // low and side-on: the shank under the button
           : { d: 0.17, fov: 24, x: -0.02, z: -0.03 });
@@ -629,7 +629,7 @@ export async function create(kit) {
     } else if (mode === "shoulder") {
       const seat = s === "hand" ? LAY.hand.seat : s === "machine" ? M_.seat : s === "cut" ? CUT.stand : LAY.press.stand;
       // over the left shoulder, beside the head (never behind it)
-      pos = (s === "hand" || s === "machine") ? V(seat[0] - 0.3, 1.42, seat[1] + 0.16) : V(seat[0] - 0.36, 1.72, seat[1] + 0.26);
+      pos = (s === "hand" || s === "machine") ? V(seat[0] - 0.42, 1.38, seat[1] + 0.1) : V(seat[0] - 0.55, 1.8, seat[1] + 0.2);
     } else {   // across the table, from the window side
       pos = V(f.x + 0.35, f.y + 0.45, f.z - 1.25);
       if (s === "press") pos = V(f.x - 0.2, f.y + 0.6, f.z - 1.2);
@@ -692,6 +692,10 @@ export async function create(kit) {
       cone.quaternion.setFromUnitVectors(V(0, 1, 0), dir);
       const e0 = V(...pts[0]), e1 = V(...pts[1]), ed = e0.clone().sub(e1).normalize();
       const eye = mesh(needleEye, MAT.steel, dyn); needleEye.userData.shared = true; eye.position.copy(e0).addScaledVector(ed, -0.0012); eye.quaternion.setFromUnitVectors(V(0, 1, 0), ed);
+      if (st.eyeAxis) {   // turn the eye about the needle so its hole faces the thread
+        const ax = V(...st.eyeAxis), zNow = V(0, 0, 1).applyQuaternion(eye.quaternion), want = ax.sub(ed.clone().multiplyScalar(ax.dot(ed))).normalize();
+        eye.quaternion.premultiply(new THREE.Quaternion().setFromAxisAngle(ed, Math.atan2(zNow.clone().cross(want).dot(ed), zNow.dot(want))));
+      }
       const cap = mesh(new THREE.SphereGeometry(0.00038, 8, 6), MAT.steel, dyn); cap.position.copy(e0);
     }
     // buttons and the toothpick

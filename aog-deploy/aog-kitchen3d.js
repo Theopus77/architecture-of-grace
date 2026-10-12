@@ -37,7 +37,7 @@ const SINK = { x: -1.0, z: 0.52, w: 0.54, d: 0.42, depth: 0.2 };
 const COOK = { x0: 0.6, x1: 1.4, z0: 0.24, z1: 0.98 };
 const PAN = { x: 0.82, z: 0.42, r: 0.13 };
 const POT = { x: 1.17, z: 0.44, r: 0.12, h: 0.16 };
-const OVEN = { x: 1.0, w: 0.68, y0: 0.14, y1: 0.78 };
+const OVEN = { x: 1.0, w: 0.68, y0: 0.16, y1: 0.66, rackY: 0.4, out: 0.34 };   // the door is on its bottom hinge; the rack slides out by `out`
 
 export async function create(opts) {
   const host = opts.host, R = opts.R;
@@ -271,7 +271,13 @@ export async function create(opts) {
   /* ══ THE ISLAND ══ */
   const island = new THREE.Group(); room.add(island);
   const IX0 = -1.55, IX1 = 1.55, IZ0 = FRONT, IZ1 = 1.08, TH = 0.04;
-  { const base = mesh(rbox(IX1 - IX0 - 0.08, TOP - TH - 0.1, IZ1 - IZ0 - 0.1, 0.03), M.cabinetDk); base.position.set(0, 0.1 + (TOP - TH - 0.1) / 2, (IZ0 + IZ1) / 2); island.add(base);
+  { // the cabinet body, built around the oven's opening so the oven is a real hollow you can see into
+    const by0 = 0.1, by1 = TOP - TH, bz = (IZ0 + IZ1) / 2, bd = IZ1 - IZ0 - 0.1, ox0 = OVEN.x - OVEN.w / 2 - 0.02, ox1 = OVEN.x + OVEN.w / 2 + 0.02;
+    const body = (x0, x1, y0, y1) => { const m = mesh(rbox(x1 - x0, y1 - y0, bd, 0.025), M.cabinetDk); m.position.set((x0 + x1) / 2, (y0 + y1) / 2, bz); island.add(m); };
+    body(IX0 + 0.04, ox0, by0, by1); body(ox1, IX1 - 0.04, by0, by1); body(ox0 - 0.01, ox1 + 0.01, OVEN.y1 + 0.005, by1); body(ox0 - 0.01, ox1 + 0.01, by0, OVEN.y0 - 0.005);
+    // a drawer front over the oven, with a rounded bar
+    { const d = mesh(rbox(OVEN.w + 0.03, by1 - OVEN.y1 - 0.11, 0.03, 0.02), M.cabinet); d.position.set(OVEN.x, (OVEN.y1 + 0.1 + by1) / 2, IZ0 + 0.035); island.add(d);
+      const h = mesh(cyl(0.008, 0.008, 0.2, 10), M.handle); h.rotation.z = Math.PI / 2; h.position.set(OVEN.x, (OVEN.y1 + 0.1 + by1) / 2, IZ0 + 0.01); island.add(h); }
     const kick = mesh(rbox(IX1 - IX0 - 0.16, 0.1, IZ1 - IZ0 - 0.2, 0.02), M.blackHandle); kick.position.set(0, 0.05, (IZ0 + IZ1) / 2); island.add(kick);
     // doors and drawers on the cook's side (not where the oven is)
     [[-1.3, 0.5], [-0.75, 0.5], [-0.2, 0.5], [0.35, 0.36]].forEach(([x, w]) => {
@@ -333,7 +339,7 @@ export async function create(opts) {
     const rw = OVEN.w - 0.08, rd = 0.42; const wireG = cyl(0.003, 0.003, rd, 6);
     for (let i = 0; i <= 10; i++) { const w = mesh(wireG, M.chrome, false, false); w.rotation.x = Math.PI / 2; w.position.set(-rw / 2 + i * rw / 10, 0, 0); oven.rack.add(w); }
     [-rd / 2, 0, rd / 2].forEach(z => { const w = mesh(cyl(0.004, 0.004, rw, 6), M.chrome, false, false); w.rotation.z = Math.PI / 2; w.position.set(0, 0, z); oven.rack.add(w); });
-    oven.rack.position.set(OVEN.x, 0.38, FRONT + 0.27); island.add(oven.rack);
+    oven.rack.position.set(OVEN.x, OVEN.rackY, FRONT + 0.27); island.add(oven.rack);
   }
   // the cutting board (with a damp towel peeking out under it so it never slides)
   const board = mesh(rbox(BOARD.w, BOARD.h, BOARD.d, 0.01), M.board); board.position.set(BOARD.x, TOP + BOARD.h / 2 + 0.003, BOARD.z); island.add(board);
@@ -580,7 +586,7 @@ export async function create(opts) {
   const noodles = new THREE.InstancedMesh(noodleSoft, M.pasta, 40); noodles.castShadow = true; noodles.frustumCulled = false; noodles.count = 0; scene.add(noodles);
 
   /* ══ STATE: what is where, step by step ══ */
-  const STAND = { sink: { x: SINK.x, z: 0, yaw: 0 }, board: { x: 0.1, z: 0, yaw: 0 }, stove: { x: 0.92, z: 0, yaw: 0 }, oven: { x: 1.0, z: -0.45, yaw: 0 }, pot: { x: 1.08, z: 0, yaw: 0 } };
+  const STAND = { sink: { x: SINK.x, z: 0, yaw: 0 }, board: { x: 0.1, z: 0, yaw: 0 }, stove: { x: 0.92, z: 0, yaw: 0 }, oven: { x: 1.0, z: -0.47, yaw: 0 }, pot: { x: 1.08, z: 0, yaw: 0 } };
   const PRODUCE = ["strawberry", "banana", "apple", "grape", "blueberry", "carrot", "cucumber", "bellpepper", "broccoli", "onion", "garlic", "tomato", "potato", "lemon", "cheese"];
   const DEFAULT_ITEM = { chop: "carrot", slice: "cucumber", dice: "onion", mince: "garlic", peel: "carrot", grate: "cheese", rinse: "strawberry" };
   const LIQ_M = { milk: "milk", water: "water", oil: "oil", lemonjuice: "vinegar", vinegar: "vinegar", honey: "honey", soy: "soy", tomatosauce: "sauce", yogurt: "yogurt", egg: "beaten" };
@@ -916,19 +922,28 @@ export async function create(opts) {
   // ── bake: mitts on; open the door; pull the rack; pan on; push in; close. Later, out again ──
   ANIM.bake = (c, u) => {
     c.s.mitts = 1; c.s.ovenOn = 1;
-    const door = K(u, [[0.12, 0], [0.22, 1], [0.44, 1], [0.52, 0], [0.62, 0], [0.7, 1], [0.86, 1], [0.94, 0]]);
+    // mitts on, pick up the tin; squat (back straight, knees bent); open the door; pull the rack out; tin on; rack in;
+    // door shut; stand up. Later (the clock shows the time quickly): squat, door, rack, tin out onto the counter.
+    const door = K(u, [[0.1, 0], [0.2, 1], [0.44, 1], [0.52, 0], [0.62, 0], [0.7, 1], [0.86, 1], [0.94, 0]]);
     const rack = K(u, [[0.2, 0], [0.26, 1], [0.38, 1], [0.44, 0], [0.7, 0], [0.75, 1], [0.84, 1], [0.88, 0]]);
     c.s.door = door; c.s.rack = rack; c.s.baked = u > 0.6 ? 1 : 0;
-    const rackP = P(OVEN.x, 0.38 + 0.02, FRONT + 0.27 - 0.3 * rack);
-    const panP = u < 0.26 ? V(...K(u, [[0, [OVEN.x - 0.1, TOP + 0.02, 0.36]], [0.12, [OVEN.x - 0.1, TOP + 0.02, 0.36]], [0.26, rackP.clone().add(V(0, 0.01, -0.0)).toArray()]])) : u < 0.4 ? rackP.clone().add(V(0, 0.01, 0)) : u < 0.74 ? rackP.clone().add(V(0, 0.01, 0)) : u < 0.86 ? rackP.clone().add(V(0, 0.01, 0)) : V(...K(u, [[0.86, rackP.toArray()], [1, [OVEN.x - 0.1, TOP + 0.02, 0.36]]]));
+    const rackP = P(OVEN.x, OVEN.rackY + 0.02, FRONT + 0.27 - OVEN.out * rack), start = P(OVEN.x - 0.02, TOP + 0.02, 0.27);
+    const panP = u < 0.26 ? V(...K(u, [[0.04, start.toArray()], [0.1, start.clone().add(V(0, 0.04, -0.06)).toArray()], [0.2, [OVEN.x, 0.6, -0.02]], [0.26, rackP.toArray()]]))
+      : u < 0.86 ? rackP.clone() : V(...K(u, [[0.86, rackP.toArray()], [0.92, [OVEN.x, 0.6, -0.02]], [1, start.toArray()]]));
     c.s.bakeObj = { pos: panP, inOven: u > 0.4 && u < 0.74 };
-    const holding = u < 0.3 || (u > 0.74 && u < 0.98);
-    const doorHandle = P(OVEN.x, OVEN.y0 + (OVEN.y1 - OVEN.y0 - 0.06) * Math.cos(door * 1.45), FRONT - 0.075 - (OVEN.y1 - OVEN.y0 - 0.06) * Math.sin(door * 1.45));
-    const crouch = K(u, [[0.12, 0.05], [0.24, 0.5], [0.46, 0.5], [0.54, 0.1], [0.62, 0.1], [0.72, 0.5], [0.88, 0.5], [0.98, 0.05]]);
-    c.body.crouch = crouch; c.body.lean = 22 + crouch * 10; c.look = rackP;
-    if (holding) { const w = 0.2; c.R = { G: panP.clone().add(V(-w, 0.03, 0)), T: FWD.clone(), N: LEFT.clone(), grip: 0.4 }; c.L = { G: panP.clone().add(V(w, 0.03, 0)), T: FWD.clone(), N: RIGHT.clone(), grip: 0.4 }; }
-    else if ((u > 0.1 && u < 0.24) || (u > 0.42 && u < 0.56) || (u > 0.6 && u < 0.72) || (u > 0.86)) { c.R = { G: doorHandle.clone().add(V(-0.12, 0.03, 0)), T: LEFT.clone().negate(), N: FWD.clone(), grip: 0.7 }; c.L = null; c.R.T = nrm(1, 0, 0); c.R.N = nrm(0, -0.3, 1); }
-    else { c.R = { G: rackP.clone().add(V(-0.15, 0.02, -0.2)), T: FWD.clone(), N: DOWN.clone(), grip: 0.5 }; c.L = { G: rackP.clone().add(V(0.15, 0.02, -0.2)), T: FWD.clone(), N: DOWN.clone(), grip: 0.5 }; }
+    const holding = u < 0.27 || (u > 0.84 && u < 0.98);
+    const hinge = OVEN.y1 - OVEN.y0 - 0.06, doorHandle = P(OVEN.x, OVEN.y0 + hinge * Math.cos(door * 1.45), FRONT - 0.075 - hinge * Math.sin(door * 1.45));
+    const crouch = K(u, [[0.06, 0], [0.18, 1.05], [0.46, 1.05], [0.54, 0.1], [0.62, 0.1], [0.69, 1.05], [0.9, 1.05], [0.98, 0]]);
+    c.body.crouch = crouch; c.body.lean = 10 + crouch * 16; c.look = door > 0.3 ? rackP : doorHandle;
+    if (holding) {   // a mitt on each side of the tin
+      const w = 0.135; c.R = { G: panP.clone().add(V(-w, 0.012, -0.01)), T: FWD.clone(), N: nrm(1, 0.15, 0), grip: 0.45 };
+      c.L = { G: panP.clone().add(V(w, 0.012, -0.01)), T: FWD.clone(), N: nrm(-1, 0.15, 0), grip: 0.45 };
+    } else if (door > 0.02 && door < 0.98 || (u > 0.44 && u < 0.62) || u > 0.86) {   // the right mitt pulls or lifts the door by its bar
+      c.R = { G: doorHandle.clone().add(V(-0.1, 0.02, -0.01)), T: nrm(1, 0, 0), N: nrm(0, -0.2 + 0.9 * (1 - door), -1).normalize(), grip: 0.7 }; c.L = null;
+    } else {   // both mitts slide the rack by its front wire
+      const front = rackP.clone().add(V(0, 0.015, -0.2));
+      c.R = { G: front.clone().add(V(-0.17, 0, 0)), T: FWD.clone(), N: DOWN.clone(), grip: 0.55 }; c.L = { G: front.clone().add(V(0.17, 0, 0)), T: FWD.clone(), N: DOWN.clone(), grip: 0.55 };
+    }
   };
   // ── check the temperature: the tip in the thickest part, wait for the number ──
   ANIM["check-temp"] = (c, u) => {
@@ -952,7 +967,7 @@ export async function create(opts) {
   // ── wipe the counter: clean side toward the messy side, in overlapping strokes ──
   ANIM["wipe-clean"] = (c, u) => {
     const n = 4, k = (u * n) % 1, row = Math.floor(u * n);
-    const x = lerp(-0.42, 0.42, row / (n - 1)), z = K(k, [[0, 0.72], [0.5, 0.3], [1, 0.72]]);
+    const x = lerp(-0.36, 0.36, Math.min(n - 1, row + sst(0.82, 1, k)) / (n - 1)), z = K(k, [[0, 0.6], [0.5, 0.28], [1, 0.6]]);   // overlapping rows, sliding over at the far end
     const p = P(x, TOP + 0.03, z);
     c.R = { G: p, T: nrm(0, 0, 1), N: DOWN.clone(), grip: 0.25, tool: "cloth" };
     c.L = { G: P(0.45, TOP + 0.02, 0.3), T: FWD.clone(), N: DOWN.clone(), grip: 0.2 };
@@ -1023,21 +1038,44 @@ export async function create(opts) {
   const FIG = { x: 0, z: 0, yaw: 0 };
   function standXZ(stand) { return STAND[stand] || STAND.board; }
   const restHand = (S, yaw, base) => ({ G: base.clone().add(rotY(V(S === "L" ? 0.21 : -0.21, 0.78, 0.05), yaw)), T: rotY(FWD, yaw), N: rotY(S === "L" ? RIGHT : LEFT, yaw), grip: 0.15, rest: true });
+  // how far past its reach a hand's target is (0 when it can reach), for the posture now on the figure
+  function overReach(c, crouch) {
+    let worst = 0, dir = V(0, 0, 0);
+    ["R", "L"].forEach(S => { const h = c[S]; if (!h) return;
+      const sh = J["shoulder" + S].getWorldPosition(new THREE.Vector3());
+      const rot = frameRot(S, h.T, h.N, _m1), Rw = _m2.multiplyMatrices(rot, REST_INV[S]);
+      const wt = h.G.clone().sub(fig.hand(S).position.clone().applyMatrix4(new THREE.Matrix4().extractRotation(Rw)));
+      const d = wt.clone().sub(sh), over = d.length() - 0.525;
+      if (over > worst) { worst = over; dir = d.normalize(); } });
+    return { over: worst, dir };
+  }
   function solveFigure(c, stance) {
     const pose = { root: { pos: [0, 0, 0], rot: [0, 0, 0] }, j: {} };
-    const crouch = c.body.crouch || 0, lean = c.body.lean || 0;
-    pose.root.pos = [stance.x + (c.body.shift || 0), -crouch * 0.42, stance.z]; pose.root.rot = [0, stance.yaw / D2R, 0];
-    fig.root.position.set(0, 0, 0); fig.root.rotation.set(0, 0, 0);
-    pose.j.spine = [lean * 0.45, (c.body.turn || 0) * 0.4, 0]; pose.j.chest = [lean * 0.55, (c.body.turn || 0) * 0.6, 0];
-    pose.j.hipL = [-lean * 0.5 - crouch * 70, 0, 2]; pose.j.hipR = [-lean * 0.5 - crouch * 70, 0, -2];
-    pose.grip = { L: c.L ? c.L.grip : 0.15, R: c.R ? c.R.grip : 0.15 }; pose.pinch = { L: !!(c.L && c.L.pinch), R: !!(c.R && c.R.pinch) };
-    fig.setPose(pose);
-    // feet planted on the floor (they step when the cook walks)
+    const crouch = c.body.crouch || 0; let lean = c.body.lean || 0, shiftX = c.body.shift || 0, shiftZ = 0;
     const yawV = a => rotY(a, stance.yaw);
-    ["L", "R"].forEach(S => { const f = stance.feet ? stance.feet[S] : V(stance.x, 0, stance.z).add(yawV(V(S === "L" ? 0.11 : -0.11, 0, -0.02)));
-      const target = V(f.x, 0.08 + (stance.lift ? stance.lift[S] || 0 : 0), f.z);
-      fig.ik.leg(S, target, V(f.x, 0.6, f.z).add(yawV(V(S === "L" ? 0.08 : -0.08, 0, 0.8))), { footFlat: true, forward: yawV(nrm(S === "L" ? 0.12 : -0.12, 0, 1)) }); });
-    fig.update();
+    const posture = () => {
+      pose.root.pos = [stance.x + shiftX, -crouch * 0.42, stance.z + shiftZ]; pose.root.rot = [0, stance.yaw / D2R, 0];
+      fig.root.position.set(0, 0, 0); fig.root.rotation.set(0, 0, 0);
+      pose.j.spine = [lean * 0.45, (c.body.turn || 0) * 0.4, 0]; pose.j.chest = [lean * 0.55, (c.body.turn || 0) * 0.6, 0];
+      pose.j.hipL = [-lean * 0.5 - crouch * 70, 0, 2]; pose.j.hipR = [-lean * 0.5 - crouch * 70, 0, -2];
+      pose.grip = { L: c.L ? c.L.grip : 0.15, R: c.R ? c.R.grip : 0.15 }; pose.pinch = { L: !!(c.L && c.L.pinch), R: !!(c.R && c.R.pinch) };
+      fig.setPose(pose);
+      // feet planted on the floor (they step when the cook walks)
+      ["L", "R"].forEach(S => { const f = stance.feet ? stance.feet[S] : V(stance.x, 0, stance.z).add(yawV(V(S === "L" ? 0.11 : -0.11, 0, -0.02)));
+        const target = V(f.x, 0.08 + (stance.lift ? stance.lift[S] || 0 : 0), f.z);
+        fig.ik.leg(S, target, V(f.x, 0.6, f.z).add(yawV(V(S === "L" ? 0.08 : -0.08, 0, 0.8))), { footFlat: true, forward: yawV(nrm(S === "L" ? 0.12 : -0.12, 0, 1)) }); });
+      fig.update();
+    };
+    posture();
+    // a target a little out of reach: bend forward a little more and let the hips drift toward it (as a cook does),
+    // a smooth function of the target, so the picture never jumps
+    for (let i = 0; i < 4; i++) {
+      const o = overReach(c, crouch); if (o.over < 0.004) break;
+      const down = clamp(-o.dir.y, 0, 1), side = o.dir.x;
+      lean = Math.min(48, lean + o.over * (60 + 90 * down));
+      shiftX = clamp(shiftX + side * o.over * 0.8, -0.16, 0.16);
+      posture();
+    }
     if (c.look) fig.lookAt(c.look, 0.85); else if (c.body.headDown) fig.lookAt(V(stance.x, 0.5, stance.z + 0.5), 0.6);
     // the hands
     ["R", "L"].forEach(S => {
@@ -1176,7 +1214,7 @@ export async function create(opts) {
     doughScene(s, seg, au);
     tinScene(s, seg, au);
     // oven door and rack
-    oven.door.rotation.x = -(s.door || 0) * 1.45; oven.rack.position.z = FRONT + 0.27 - 0.3 * (s.rack || 0);
+    oven.door.rotation.x = -(s.door || 0) * 1.45; oven.rack.position.z = FRONT + 0.27 - OVEN.out * (s.rack || 0);
     M.ovenGlow.emissiveIntensity = (s.ovenOn ? 1.2 : 0) * (0.4 + 0.6 * (s.door || 0));
     // the plate
     plateScene(s, seg, au, pieceList);
@@ -1368,7 +1406,11 @@ export async function create(opts) {
   function aimCamera() {
     const f = FIG.focus || V(0, TOP, 0.4), x = FIG.x, z = FIG.z, yaw = FIG.yaw || 0;
     const aspect = camera.aspect, narrow = aspect < 1.1;
-    if (view === "across") { camera.fov = narrow ? 52 : 40; camera.position.set(f.x + 0.35, 1.5, 2.55 + (narrow ? 0.5 : 0)); camera.lookAt(f.x - 0.05, 1.08, 0.15); }
+    const atOven = lastInfo && lastInfo.stand === "oven";
+    if (atOven && (view === "shoulder" || view === "across")) {   // the oven is low on the cook's side: look from beside the cook
+      camera.fov = narrow ? 58 : 46; const side = view === "shoulder" ? 1 : -1;
+      camera.position.set(OVEN.x + side * 1.05, 1.25, -0.95); camera.lookAt(OVEN.x + side * 0.05, 0.52, -0.05); }
+    else if (view === "across") { camera.fov = narrow ? 52 : 40; camera.position.set(f.x + 0.35, 1.5, 2.55 + (narrow ? 0.5 : 0)); camera.lookAt(f.x - 0.05, 1.08, 0.15); }
     else if (view === "hands") { camera.fov = narrow ? 46 : 36; const hand = lastInfo.R && lastInfo.R.G ? lastInfo.R.G.clone().lerp(f, 0.55) : f.clone(); hand.y = Math.max(hand.y, TOP + 0.03); camera.position.set(hand.x + 0.18, hand.y + 0.36, hand.z + 0.62 + (narrow ? 0.12 : 0)); camera.lookAt(hand.x, hand.y + 0.0, hand.z - 0.03); }
     else if (view === "walk") { camera.fov = narrow ? 55 : 42; const c = V(f.x * 0.6, 1.0, 0.35); camera.position.set(c.x + Math.sin(orbit.yaw) * Math.cos(orbit.pitch) * orbit.dist, c.y + Math.sin(orbit.pitch) * orbit.dist, c.z + Math.cos(orbit.yaw) * Math.cos(orbit.pitch) * orbit.dist); camera.lookAt(c); }
     else { // over the shoulder: just behind and above the cook's right shoulder, looking down at the hands
