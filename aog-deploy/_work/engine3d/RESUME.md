@@ -1,5 +1,12 @@
 # Resume note — the 3D engine build (2026-10-12)
 
+**Deployed (live on main):** the Microscope and the Telescope (PR #435), the Skate Lab in 3D with the shared figure
+and three.js vendor files (PR #436), the martial-arts Practice strand and FACS 3D links are on this branch only.
+**Paused by Jimmy ("hold off everything else"):** the Dojo, the Kitchen, the Sewing Room — and the lessons that link
+to them (martial-arts Practice strand, FACS "Watch it in 3D"), which must deploy together with their rooms.
+To resume: merge origin/main into this branch first (it now carries the Microscope, Telescope and Skate Lab).
+
+
 Branch: `claude/skateboarding` (NOT deployed; main is live). Contract: `_work/engine3d/CONTRACT.md` (owners, figure API,
 moves, kitchen/sewing ids, telescope/microscope). Silent rule + check: CLAUDE.md "Silent until used", `tools/check-silent.js`.
 
