@@ -37,7 +37,7 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
   });
   const p = await ctx.newPage(); const errs = [];
   p.on("pageerror", e => errs.push(e.message)); p.on("console", m => { if (m.type() === "error" && !/Failed to load resource/.test(m.text())) errs.push(m.text()); });
-  await p.goto(`http://127.0.0.1:${port}/_work/engine3d/figure-test.html?q=phone`, { waitUntil: "load" });
+  await p.goto(`http://127.0.0.1:${port}/_work/engine3d/figure-test.html?q=phone&auto=1`, { waitUntil: "load" });
   await p.waitForFunction(() => window.FIGTEST && window.FIGTEST.ready, null, { timeout: 300000 });
   await wait(400);
 

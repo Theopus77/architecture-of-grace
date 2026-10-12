@@ -322,7 +322,7 @@ export async function create(opt) {
     let target = center(t), wNeed = 1.9, hNeed = 2.0;
     if (ghostOn && ghosts.length) { target = new THREE.Vector3(0, 0.88, 0); wNeed = ghostSpan + 1.0; hNeed = 2.2; }
     const dist = Math.max(hNeed / 2 / Math.tan(fov / 2), wNeed / 2 / (Math.tan(fov / 2) * asp)) * 1.0 + 0.2;
-    const a = (ghostOn ? 0 : az) * DEG, e = (ghostOn ? 6 : el) * DEG;
+    const a = (ghostOn ? -74 : az) * DEG, e = (ghostOn ? 8 : el) * DEG;
     camera.position.set(target.x + Math.sin(a) * Math.cos(e) * dist, target.y + Math.sin(e) * dist + 0.1, target.z + Math.cos(a) * Math.cos(e) * dist);
     camera.lookAt(target);
     sun.target.position.set(target.x, 0.6, target.z); sun.position.set(target.x - 6, 5.5, target.z + 2.5);
@@ -356,7 +356,7 @@ export async function create(opt) {
     const sp = kicky ? 1.25 : 0.95; ghostSpan = (n - 1) * sp;
     ts.forEach((t, i) => {
       const F = i === n - 1 ? MAIN : ghosts[i];
-      const c = center(t), off = { x: (i - (n - 1) / 2) * sp - c.x, z: -c.z };
+      const c = center(t), off = { x: -c.x, z: (i - (n - 1) / 2) * sp - c.z };   // a row along the direction the figure faces, seen from its side
       poseAt(F, t, off);
       if (F !== MAIN) setOpacity(F, 0.26 + 0.42 * i / Math.max(1, n - 1));
     });

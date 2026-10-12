@@ -31,7 +31,7 @@ function K(u, keys) {
 const win = (u, a, b) => clamp((u - a) / (b - a), 0, 1);   // where u is inside [a, b], 0 … 1
 const TOP = 0.92;           // the counter's top
 const FRONT = 0.16;         // the island's front edge
-const BOARD = { x: 0, z: 0.37, w: 0.42, d: 0.28, h: 0.024 };
+const BOARD = { x: 0, z: 0.46, w: 0.42, d: 0.28, h: 0.024 };
 const BOWL = { x: 0.33, z: 0.42, r: 0.125, h: 0.1 };
 const SINK = { x: -1.0, z: 0.52, w: 0.54, d: 0.42, depth: 0.2 };
 const COOK = { x0: 0.6, x1: 1.4, z0: 0.24, z1: 0.98 };
@@ -429,7 +429,7 @@ export async function create(opts) {
   { const s = new THREE.Group(); const gm = M.steel.clone(); gm.alphaMap = T.grater; gm.alphaTest = 0.5; gm.side = THREE.DoubleSide; track(gm);
     const body = mesh(cyl(0.045, 0.065, 0.22, 4, true), gm); body.rotation.y = Math.PI / 4; body.position.y = 0.11; s.add(body);
     const top = mesh(tube([[-0.04, 0.22, 0], [-0.03, 0.27, 0], [0.03, 0.27, 0], [0.04, 0.22, 0]], 0.006, 20, 8), M.blackHandle); s.add(top);
-    tool("grater", s, homeAt(0.05, BTOP, 0.36, 0, 0, 0)); }
+    tool("grater", s, homeAt(0.05, BTOP, BOARD.z, 0, 0, 0)); }
   // food thermometer (a probe with a round dial body)
   { const s = new THREE.Group(); const body = mesh(rbox(0.04, 0.09, 0.02, 0.01), M.thermo); body.rotation.z = Math.PI / 2; s.add(body);
     const sc = mesh(rbox(0.026, 0.03, 0.004, 0.003), M.screen, false, false); sc.position.set(0.0, 0, 0.011); s.add(sc);
@@ -976,7 +976,7 @@ export async function create(opts) {
   };
   // ── grate: the grater on the board; push down across the holes; stop when it is small ──
   ANIM.grate = (c, u) => {
-    const gp = P(0.05, BTOP, 0.36), n = 6, k = (u * n) % 1;
+    const gp = P(0.05, BTOP, BOARD.z), n = 6, k = (u * n) % 1;
     const y = K(k, [[0, 0.2], [0.6, 0.06], [1, 0.2]]) , size = 1 - 0.6 * u;
     c.s.graterShow = 1; c.s.grated = u; c.s.cheeseBlock = { pos: P(gp.x - 0.065, BTOP + y, gp.z), size };
     c.R = { G: P(gp.x - 0.1, BTOP + y + 0.04, gp.z - 0.0), T: nrm(0.3, 0.5, 1), N: nrm(1, -0.2, 0), grip: 0.7 };
@@ -985,7 +985,7 @@ export async function create(opts) {
   };
   // ── knead: push away with the heel of the hand, fold back, quarter turn ──
   ANIM.knead = (c, u) => {
-    const dp = P(0.0, TOP, 0.38), n = 5, k = (u * n) % 1;
+    const dp = P(0.0, TOP, BOARD.z), n = 5, k = (u * n) % 1;
     const push = K(k, [[0, 0], [0.45, 1], [0.6, 1], [0.85, 0], [1, 0]]), fold = K(k, [[0.55, 0], [0.85, 1], [1, 1]]);
     c.s.knead = { push, fold, turn: Math.floor(u * n) * Math.PI / 2 + fold * Math.PI / 2, smooth: u };
     c.R = { G: dp.clone().add(V(-0.03, 0.07 + 0.02 * (1 - push), -0.03 + 0.09 * push)), T: nrm(0.4, 0.2, 1), N: nrm(0.2, -1, 0.5), grip: 0.2 };
@@ -1104,7 +1104,7 @@ export async function create(opts) {
     lastInfo = { action: seg.id, lu: au, stand: seg.stand, R: c.R, L: c.L };
   }
   function focusFor(stand, c) {
-    const f = { sink: V(SINK.x, TOP, SINK.z), board: V(0.08, TOP, 0.42), stove: V(0.95, TOP, 0.45), pot: V(1.1, TOP + 0.05, 0.45), oven: V(1.0, 0.6, 0.1) }[stand] || V(0, TOP, 0.4);
+    const f = { sink: V(SINK.x, TOP, SINK.z), board: V(0.06, TOP, BOARD.z), stove: V(0.95, TOP, 0.45), pot: V(1.1, TOP + 0.05, 0.45), oven: V(1.0, 0.6, 0.1) }[stand] || V(0, TOP, 0.4);
     return f;
   }
 
@@ -1170,7 +1170,7 @@ export async function create(opts) {
     fallers.count = 0;
     if (s.salt) { for (let i = 0; i < 30; i++) { const k = (s.salt.k * 3 + i / 30) % 1; const p = s.salt.from.clone().lerp(s.salt.to, k); p.x += Math.sin(i * 7.1) * 0.02 * k; p.z += Math.cos(i * 3.3) * 0.02 * k; _o3.position.copy(p); _o3.scale.setScalar(0.0018); _o3.updateMatrix(); fallers.setMatrixAt(fallers.count++, _o3.matrix); } fallers.instanceMatrix.needsUpdate = true; }
     // the grater and its pile
-    if (s.graterShow || s.grated) { if (s.graterShow) homeTool("grater"); const pile = clamp(s.grated, 0, 1); const items = []; for (let i = 0; i < Math.round(60 * pile); i++) { const a = i * 2.4, r = Math.sqrt(i / 60) * 0.04; items.push([0.05 + 0.045 + Math.cos(a) * r * 0.6, BTOP + 0.002 + (1 - r / 0.04) * 0.012 * pile, 0.36 + Math.sin(a) * r, 0.002, 0.002, 0.012, 0, a, 0.3]); } pieceList.push({ m: M.cheese, shape: "strip", items }); }
+    if (s.graterShow || s.grated) { if (s.graterShow) homeTool("grater"); const pile = clamp(s.grated, 0, 1); const items = []; for (let i = 0; i < Math.round(60 * pile); i++) { const a = i * 2.4, r = Math.sqrt(i / 60) * 0.04; items.push([0.05 + 0.045 + Math.cos(a) * r * 0.6, BTOP + 0.002 + (1 - r / 0.04) * 0.012 * pile, BOARD.z + Math.sin(a) * r, 0.002, 0.002, 0.012, 0, a, 0.3]); } pieceList.push({ m: M.cheese, shape: "strip", items }); }
     if (s.cheeseBlock) { const p = getProduce("cheese"); p.g.visible = true; p.g.position.copy(s.cheeseBlock.pos); p.g.rotation.set(0, 0, Math.PI / 2 - 0.4); p.g.scale.set(s.cheeseBlock.size, 1, 1); }
     // dough, tin, tray
     doughScene(s, seg, au);
@@ -1334,7 +1334,7 @@ export async function create(opts) {
       return; }
     // a ball on the board, squashed by the push, smoother as it is kneaded
     const push = kn ? kn.push : 0, smooth = kn ? kn.smooth : d.smooth;
-    dough.position.set(0.0, TOP + 0.035 - 0.012 * push, 0.38 + 0.04 * push);
+    dough.position.set(0.0, TOP + 0.035 - 0.012 * push, BOARD.z + 0.04 * push);
     dough.scale.set(0.06 * (1 + 0.12 * push), 0.042 * (1 - 0.3 * push), 0.06 * (1 + 0.45 * push));
     dough.rotation.set(0, kn ? kn.turn : 0, 0);
     M.dough.roughness = lerp(0.85, 0.5, smooth); M.dough.bumpMap = T.knit; M.dough.bumpScale = lerp(0.6, 0.05, smooth);
@@ -1373,7 +1373,7 @@ export async function create(opts) {
     else if (view === "walk") { camera.fov = narrow ? 55 : 42; const c = V(f.x * 0.6, 1.0, 0.35); camera.position.set(c.x + Math.sin(orbit.yaw) * Math.cos(orbit.pitch) * orbit.dist, c.y + Math.sin(orbit.pitch) * orbit.dist, c.z + Math.cos(orbit.yaw) * Math.cos(orbit.pitch) * orbit.dist); camera.lookAt(c); }
     else { // over the shoulder: just behind and above the cook's right shoulder, looking down at the hands
       camera.fov = narrow ? 60 : 48; const crouch = lastInfo && lastInfo.stand === "oven";
-      const eye = V(x - 0.34, crouch ? 1.4 : 1.86, z - 0.34); camera.position.copy(eye); camera.lookAt(f.x - 0.02, f.y - (crouch ? 0.1 : 0.02), f.z + (crouch ? 0.15 : 0.05)); }
+      const eye = V(x - 0.44, crouch ? 1.45 : 1.98, z - 0.2); camera.position.copy(eye); camera.lookAt(f.x - 0.02, f.y - (crouch ? 0.1 : 0.02), f.z + (crouch ? 0.15 : 0.05)); }
     camera.updateProjectionMatrix();
   }
   // walk around: drag with a finger or a mouse (only in that view)

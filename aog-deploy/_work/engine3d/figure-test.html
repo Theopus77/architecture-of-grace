@@ -24,7 +24,7 @@
 <body>
 <main>
   <h1>Figure test bench</h1>
-  <p class="lead">The shared 3D person in every outfit and a few poses. Drag sideways to walk around.</p>
+  <p class="lead">The shared 3D person in every outfit and a few poses. Tap Show the figures. Drag sideways to walk around.</p>
   <div class="bar" id="views">
     <button data-view="all" aria-pressed="true">Everyone</button>
     <button data-view="skate">Skate</button>
@@ -38,12 +38,12 @@
     <button id="dark" aria-pressed="false">Night look</button>
     <button id="phone" aria-pressed="false">Phone quality</button>
   </div>
-  <div id="stage"></div>
+  <div id="stage"><button id="go" style="font:inherit;font-size:16px;margin:24px;padding:12px 18px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer">Show the figures</button></div>
   <p id="note"></p>
 </main>
 <script type="module">
-import { makeStage } from "/aog-3dkit.js";
-import { makeFigure, REST } from "/aog-figure3d.js";
+// silent until used: the 3D (three.js, the figure, the stage) loads on the first tap; ?auto=1 builds it at once (the checks use it)
+let makeStage, makeFigure, REST;
 
 const qs = new URLSearchParams(location.search);
 const T = window.FIGTEST = { ready: false };
@@ -51,7 +51,7 @@ let stage, figs = [], THREE, props = [];
 let quality = qs.get("q") === "phone" ? "phone" : "full", dark = qs.get("dark") === "1", view = qs.get("view") || "all";
 
 const POSES = {
-  rest: REST,
+  rest: null,
   skate: { root: { pos: [0, -0.12, 0], rot: [0, 0, 0] }, j: { spine: [12, 0, 0], chest: [6, -10, 0], hipL: [-38, 0, 6], kneeL: [62, 0, 0], ankleL: [-22, 0, 0], hipR: [-30, 0, -8], kneeR: [55, 0, 0], ankleR: [-24, 0, 0],
     shoulderL: [-15, 0, 48], elbowL: [-28, 0, 0], shoulderR: [10, 0, -38], elbowR: [-22, 0, 0], neck: [-6, 0, 0] } },
   horse: { root: { pos: [0, -0.2, 0] }, j: { hipL: [-30, 0, 32], kneeL: [70, 0, 0], ankleL: [-38, 0, -18], hipR: [-30, 0, -32], kneeR: [70, 0, 0], ankleR: [-38, 0, 18],
@@ -123,14 +123,22 @@ function applyView() {
   document.getElementById("note").textContent = `${quality === "phone" ? "Phone" : "Full"} quality: ${figs.length} people, ${Math.round(tri / 1000)}k triangles, ${stage.renderer.info.render.calls} draw calls. Pictures drawn: ${stage.renders()}.`;
 }
 
-document.getElementById("views").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; view = b.dataset.view; applyView(); });
-document.getElementById("dark").addEventListener("click", e => { dark = !dark; e.currentTarget.setAttribute("aria-pressed", String(dark)); stage.setDark(dark); });
-document.getElementById("phone").addEventListener("click", e => { quality = quality === "phone" ? "full" : "phone"; e.currentTarget.setAttribute("aria-pressed", String(quality === "phone")); build(); });
+let started = null;
+function start() {
+  if (started) return started;
+  return (started = Promise.all([import("/aog-3dkit.js"), import("/aog-figure3d.js")]).then(([k, f]) => {
+    makeStage = k.makeStage; makeFigure = f.makeFigure; REST = f.REST; POSES.rest = REST;
+    const go = document.getElementById("go"); if (go) go.remove();
+    build(); T.rebuild = build; T.setView = v => { view = v; applyView(); }; T.ready = true;
+  }));
+}
+document.getElementById("go").addEventListener("click", start);
+document.getElementById("views").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; view = b.dataset.view; if (stage) applyView(); else start(); });
+document.getElementById("dark").addEventListener("click", e => { dark = !dark; e.currentTarget.setAttribute("aria-pressed", String(dark)); if (stage) stage.setDark(dark); });
+document.getElementById("phone").addEventListener("click", e => { quality = quality === "phone" ? "full" : "phone"; e.currentTarget.setAttribute("aria-pressed", String(quality === "phone")); if (stage) build(); });
 document.getElementById("dark").setAttribute("aria-pressed", String(dark));
 document.getElementById("phone").setAttribute("aria-pressed", String(quality === "phone"));
-build();
-T.rebuild = build; T.setView = v => { view = v; applyView(); };
-T.ready = true;
+if (qs.get("auto") === "1") start();
 </script>
 </body>
 </html>
