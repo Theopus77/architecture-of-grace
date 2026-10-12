@@ -372,6 +372,8 @@ footer a{color:inherit}
 .pmore .plv{display:grid;grid-template-columns:6.5rem 1fr 3rem;align-items:center;gap:.5rem;color:#e3d8c6;font-size:.92rem;min-height:44px}
 .pmore .plv input{width:100%;min-height:44px}
 .pmore .plv b{font-weight:700;text-align:right;color:#f3efe6}
+.pmore .pkind{display:grid;gap:.25rem;color:#e3d8c6;font-size:.92rem}
+.pmore .pkind select{min-height:44px;border-radius:10px;border:1px solid rgba(255,255,255,.22);background:#20262e;color:#efe8dc;font:600 16px/1.2 var(--sans);padding:0 .4rem;max-width:100%}
 .chopline:empty{display:none}
 .chopline a{color:#cfe2ff}
 .padhead .snap{display:inline-flex;align-items:center;gap:.35rem;font-size:.72rem;font-weight:700;letter-spacing:.06em;color:#c9bfae}
@@ -865,6 +867,7 @@ const STR = {
   partsH:{en:"The record's parts",es:"Las partes del disco"},
   partsVoiceOnly:{en:"Voice only",es:"Solo la voz"}, partsNoVoice:{en:"No voice",es:"Sin voz"}, partsAll:{en:"All parts",es:"Todas las partes"},
   partsLevel:{en:"Level",es:"Nivel"},
+  partsKind:{en:"Kind of music",es:"Tipo de música"},
   erase:{en:"Erase",es:"Borrar"},
   eraseTip:{en:"Then tap the pad to empty",es:"Luego toca el pad que quieres vaciar"},
   keysHint:{en:"On a keyboard, the left hand plays the left deck and the right hand the right: Q and P start and stop, W and O cue, E and I sync, A S D F Z X C V and H J K L N M , . are the pads. ← and → move the crossfader.",es:"Con un teclado, la mano izquierda toca el plato de la izquierda y la derecha el de la derecha: Q y P ponen y paran, W y O marcan el cue, E e I sincronizan, A S D F Z X C V y H J K L N M , . son los pads. ← y → mueven el crossfader."},
@@ -2797,7 +2800,8 @@ function partsLoad(d, raw){
   const dL = raw.d[0], dR = raw.d[1] || raw.d[0], tr = [dL.buffer];
   if(dR !== dL) tr.push(dR.buffer); tr.push(raw.b.buffer, raw.v.buffer);
   partsPost(d, { t:"parts", dL:dL, dR:dR, b:raw.b, v:raw.v }, tr);
-  d.parts.st = "on"; partsGain(d, true); paintParts(d);
+  d.parts.st = "on"; d.parts.had = true; d.parts.kind = raw.kind || "pop"; d.parts.auto = raw.auto !== false; d.parts.note = raw.note || "";
+  partsGain(d, true); paintParts(d);
 }
 async function partsFind(d){
   partsStop(d, true);
@@ -2807,26 +2811,26 @@ async function partsFind(d){
   try{ const A = await stemsLib(), raw = await A.keptParts(id, { sr:d.buf.sampleRate, len:d.buf.length });
     if(raw && d.buf && d.parts.key === id && d.parts.st === "") partsLoad(d, raw); }catch(e){}
 }
-async function partsSplit(d){
-  if(!d.buf || d.parts.st === "busy" || d.parts.st === "on") return;
+async function partsSplit(d, kind){
+  if(!d.buf || d.parts.st === "busy" || (d.parts.st === "on" && kind === undefined)) return;
   const P = d.parts, id = partsId(d), job = ++P.job;
   P.st = "busy"; P.pct = 0; P.word = "open"; P.msg = ""; paintParts(d);
   const ctl = window.AbortController ? new AbortController() : null; P.ctl = ctl;
   try{
     ctx(); await ensureNode(d);
     const A = await stemsLib();
-    const R = await A.split(d.buf, { signal:ctl ? ctl.signal : undefined, onProgress:(p, k)=>{ if(P.job !== job) return; P.pct = Math.round(p*100); P.word = k; paintPartsLine(d); } });
+    const R = await A.split(d.buf, { kind:kind && kind !== "auto" ? kind : undefined, signal:ctl ? ctl.signal : undefined, onProgress:(p, k)=>{ if(P.job !== job) return; P.pct = Math.round(p*100); P.word = k; paintPartsLine(d); } });
     if(P.job !== job || d.parts !== P) return;
-    const raw = R.pack; raw.x = null;
+    const raw = R.pack; raw.x = null; raw.note = R.note;
     try{ await A.keep(id, raw); }catch(e){}
     if(P.job !== job || d.parts !== P || !d.buf) return;
     P.ctl = null; P.msg = t("partsDone"); partsLoad(d, raw);
   }catch(e){
     if(P.job !== job) return;
-    P.ctl = null; P.st = ""; P.msg = t(e && e.name === "AbortError" ? "partsStopped" : e && e.memory ? "partsMemory" : "partsFail"); paintParts(d);
+    P.ctl = null; P.st = P.had ? "on" : ""; P.msg = t(e && e.name === "AbortError" ? "partsStopped" : e && e.memory ? "partsMemory" : "partsFail"); paintParts(d);
   }
 }
-function partsStop(d, quiet){ const P = d.parts; if(!P || P.st !== "busy") return; P.job++; try{ if(P.ctl) P.ctl.abort(); }catch(e){} P.ctl = null; P.st = ""; if(!quiet){ P.msg = t("partsStopped"); paintParts(d); } }
+function partsStop(d, quiet){ const P = d.parts; if(!P || P.st !== "busy") return; P.job++; try{ if(P.ctl) P.ctl.abort(); }catch(e){} P.ctl = null; P.st = P.had ? "on" : ""; if(!quiet){ P.msg = t("partsStopped"); paintParts(d); } }
 function partTap(d, k, hold){
   const P = d.parts; if(P.st !== "on") return;
   if(hold || P.only) P.solo = P.solo === k ? "" : k;
@@ -2873,6 +2877,8 @@ function partsRowHTML(d){
 function partsMoreHTML(d){
   const P = d.parts, id = d.id;
   return `<span class="dlab">${t("partsH")}</span>
+    ${P.note && window.AOGStems ? `<p class="chopline pnote">${esc(AOGStems.word(P.note, S.lang))}</p>` : ""}
+    <label class="pkind">${t("partsKind")} <select data-pkind="${id}">${(window.AOGStems ? AOGStems.kinds : ["auto"]).map(k=>`<option value="${k}"${(P.auto ? "auto" : P.kind) === k ? " selected" : ""}>${esc(window.AOGStems ? AOGStems.kindWords[S.lang][k] + (k === "auto" && P.auto && P.kind ? " · " + AOGStems.kindWords[S.lang][P.kind] : "") : "Auto")}</option>`).join("")}</select></label>
     <div class="row tr"><button type="button" class="ghost sm" data-pset="${id}" data-v="voice">${t("partsVoiceOnly")}</button><button type="button" class="ghost sm" data-pset="${id}" data-v="novoice">${t("partsNoVoice")}</button><button type="button" class="ghost sm" data-pset="${id}" data-v="all">${t("partsAll")}</button></div>
     ${PARTK.map(k=>`<label class="plv"><span>${t("p"+k)}</span><input type="range" min="0" max="100" step="5" value="${Math.round(P.lvl[k]*100)}" data-plvl="${id}" data-k="${k}" aria-label="${t("partsLevel")} · ${t("p"+k)}"><b data-plvo="${id}" data-k="${k}">${Math.round(P.lvl[k]*100)}%</b></label>`).join("")}`;
 }
@@ -2884,7 +2890,7 @@ function paintPartsLine(d){
 function paintParts(d){
   const row = document.querySelector(`[data-prow="${d.id}"]`), more = document.querySelector(`[data-pmore="${d.id}"]`);
   if(row){ row.hidden = !d.buf; const h = partsRowHTML(d); if(row._h !== h){ row._h = h; row.innerHTML = h; } }
-  if(more){ more.hidden = d.parts.st !== "on"; if(!more.hidden && !more.contains(document.activeElement)){ const h = partsMoreHTML(d); if(more._h !== h){ more._h = h; more.innerHTML = h; } } }
+  if(more){ more.hidden = d.parts.st !== "on"; if(!more.hidden && !(more.contains(document.activeElement) && document.activeElement.type === "range")){ const h = partsMoreHTML(d); if(more._h !== h){ more._h = h; more.innerHTML = h; } } }
   paintPartsLine(d);
 }
 function partsBind(d){
@@ -2902,6 +2908,8 @@ function partsBind(d){
   el.addEventListener("pointerdown", (e)=>{ const b = e.target.closest && e.target.closest("[data-part]"); if(!b) return;
     clearTimeout(hold); hold = setTimeout(()=>{ hold = null; b._held = true; partTap(d, b.getAttribute("data-k"), true); }, 450); });
   ["pointerup","pointercancel","pointerleave"].forEach(ev=>el.addEventListener(ev, ()=>{ if(hold){ clearTimeout(hold); hold = null; } }));
+  /* another kind of music: split again with its settings (the parts you have play on until the new ones are ready) */
+  el.addEventListener("change", (e)=>{ const r = e.target; if(!r.hasAttribute || !r.hasAttribute("data-pkind")) return; r.blur(); partsSplit(d, r.value); });
   el.addEventListener("input", (e)=>{ const r = e.target; if(!r.hasAttribute || !r.hasAttribute("data-plvl")) return;
     const k = r.getAttribute("data-k"); d.parts.lvl[k] = Math.max(0, Math.min(1, +r.value/100));
     const o = el.querySelector(`[data-plvo="${d.id}"][data-k="${k}"]`); if(o) o.textContent = Math.round(d.parts.lvl[k]*100) + "%";

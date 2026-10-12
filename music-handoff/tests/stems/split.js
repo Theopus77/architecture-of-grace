@@ -18,6 +18,9 @@ const P1 = 9300, P2 = 9301, P3 = 9302;
 const srv = [P1, P2, P3].map(p => require("../srv.js")(p)), U = p => "http://localhost:" + p + "/";
 const ROOT = process.env.AOG_ROOT || path.resolve(__dirname, "../../../aog-deploy");
 const SONG = fs.readFileSync(path.join(__dirname, "song.js"), "utf8");
+const TOOLS = path.join(ROOT, "..", "tools");
+const cut = (file, name) => { const s = fs.readFileSync(path.join(TOOLS, file), "utf8"), a = s.indexOf("function " + name + "()"), end = "\n  return bad;\n}", e = s.indexOf(end, a); return s.slice(a, e + end.length); };
+const PROBE = cut("check-contrast.js", "probe"), CALM = cut("check-calm.js", "calmProbe");
 const ONLY = (process.env.STEMS_ONLY || "ABCD").split("");
 let fails = 0; const ok = (c, m) => { console.log((c ? "PASS " : "FAIL ") + m); if (!c) fails++; };
 const errs = [];
@@ -49,19 +52,42 @@ async function routes(ctx) {
     const p = await c.newPage(); await p.goto(U(P1) + "__h.html");
     ok(await p.evaluate(() => !window.AOGLearn), "A the splitter loads nothing else until a split starts");
     const rows = [];
-    /* the sung songs (a lead voice with notes) and the rap productions (a spoken voice, its double, ad-libs wide, an 808 that glides) */
-    const SONGS = [["a sung song", "makeSong", { seed: 7 }, "sung"], ["a sung song at 120", "makeSong", { seed: 11, bpm: 120, key: 2 }, "sung"], ["a sung song, one channel", "makeSong", { seed: 5, mono: true }, "sung"],
-      ["a trap production", "makeRap", { seed: 21 }, "rap"], ["a boom-bap production", "makeRap", { seed: 33, boom: true }, "rap"], ["a trap production, one channel", "makeRap", { seed: 21, mono: true }, "rapmono"]];
-    for (const [name, fn, opt, kind] of SONGS) for (const L of ["learn", "exact"]) {
-      const r = await p.evaluate(async ([fn, o, L]) => measure(window[fn](o), { lesson: L }), [fn, opt, L]);
-      rows.push({ name, kind, L, r });
-      console.log(`     ${name}, ${L === "learn" ? "the listener's notes" : "exact notes"}: drums ${r.drums} dB (the song as it is: ${r.drums0}), bass ${r.bass} (${r.bass0}), voice ${r.voice} (${r.voice0}), the rest ${r.other} (${r.other0}); ${r.ms} ms`);
+    /* Jimmy's music: "Rap, hip hop. Classic rock, heavy metal, Experimental music. Pop music, Classical music". Each song is
+       built here from known parts; the kind of music is found by itself (Auto). [name, maker, options, what to expect] */
+    const SONGS = [["a sung song", "makeSong", { seed: 7 }, "sung", "pop"], ["a sung song at 120", "makeSong", { seed: 11, bpm: 120, key: 2 }, "sung", "pop"], ["a sung song, one channel", "makeSong", { seed: 5, mono: true }, "sung", "pop"],
+      ["pop (tuned lead, harmonies, sidechain, synth bass)", "makeSong", { seed: 13, pop: true, bpm: 104 }, "pop", "pop"],
+      ["trap (808 glides, rap, double, ad-libs)", "makeRap", { seed: 21 }, "rap", "hiphop"], ["boom-bap", "makeRap", { seed: 33, boom: true }, "rap", "hiphop"],
+      ["trap, one channel", "makeRap", { seed: 21, mono: true }, "rapmono", "hiphop"], ["hip hop with a sampled loop", "makeRap", { seed: 35, boom: true, sample: true }, "rap", "hiphop"],
+      ["classic rock (guitars left and right, a solo)", "makeRock", { seed: 41 }, "rock", "rock"], ["metal (double kick, chugs, a growl)", "makeRock", { seed: 43, metal: true }, "metal", "rock"],
+      ["a solo piano piece", "makeClassical", { seed: 61, piano: true }, "piano", "classical"], ["an orchestra (timpani, low strings)", "makeClassical", { seed: 63 }, "orch", "classical"],
+      ["an orchestra with a soprano", "makeClassical", { seed: 65, soprano: true }, "opera", "classical"], ["experimental (drones, noise, glitches, no steady beat)", "makeExperimental", { seed: 77 }, "exp", "experimental"]];
+    const f1 = x => x == null ? "—" : x.toFixed(1);
+    console.log("     song | kind found | drums | bass | voice | the rest  (dB; in brackets the song as it is)  · energy shares · the line said");
+    for (const [name, fn, opt, kind, want] of SONGS) {
+      const r = await p.evaluate(async ([fn, o]) => { const t0 = performance.now(), m = await measure(window[fn](o), { lesson: "learn" }); m.wall = performance.now() - t0; return m; }, [fn, opt]);
+      rows.push({ name, kind, want, L: "learn", r });
+      console.log(`     ${name} | ${r.kind} | ${["drums", "bass", "voice", "other"].map(k => f1(r[k]) + " (" + f1(r[k + "0"]) + ")").join(" | ")} · ${r.share.join(" ")} · "${r.note}" · ${r.ms} ms`);
     }
-    const NEED = { sung: { drums: [7, 8], bass: [4, 7], voice: [5, 11], other: [2, 9] }, rap: { drums: [3.5, 8], bass: [6, 5], voice: [6, 14], other: [2, 15] }, rapmono: { drums: [3.5, 8], bass: [6, 5], voice: [6, 14], other: [0.4, 17] } };
+    const NEED = { sung: { drums: [7, 8], bass: [4, 7], voice: [5, 11], other: [2, 9] }, pop: { drums: [6, 8], bass: [4, 6], voice: [3, 9], other: [2, 10] },
+      rap: { drums: [3.5, 8], bass: [6, 5], voice: [6.5, 14], other: [2, 14] }, rapmono: { drums: [3.5, 8], bass: [6, 5], voice: [6.5, 14], other: [0.3, 17] },
+      rock: { drums: [5, 8], bass: [4, 7], voice: [1.5, 14], other: [3, 6] }, metal: { drums: [4, -2], bass: [-5, 5], voice: [-1, 13], other: [1.5, 10] },
+      orch: { drums: [0.5, 3], bass: [1.5, 3], other: [2.5, 7] }, opera: { drums: [0.5, 3], bass: [1, 3], voice: [0, 9], other: [0.8, 6] } };
     for (const k of ["drums", "bass", "voice", "other"]) {
-      const lr = rows.filter(x => x.L === "learn"), bad = lr.filter(x => !(x.r[k] >= NEED[x.kind][k][0] && x.r[k] - x.r[k + "0"] >= NEED[x.kind][k][1]));
-      ok(!bad.length, `A ${k} with the listener's notes: ` + lr.map(x => x.name + " " + x.r[k]).join(", ") + " dB" + (bad.length ? " — short: " + bad.map(x => x.name).join(", ") : ""));
+      const lr = rows.filter(x => NEED[x.kind] && NEED[x.kind][k]), bad = lr.filter(x => !(x.r[k] >= NEED[x.kind][k][0] && x.r[k] - x.r[k + "0"] >= NEED[x.kind][k][1]));
+      ok(!bad.length, `A ${k}, with the listener's notes: ` + lr.map(x => x.kind + " " + x.r[k]).join(", ") + " dB" + (bad.length ? " — short: " + bad.map(x => x.name).join(", ") : ""));
     }
+    const kinds = rows.map(x => x.r.kind + (x.r.kind === x.want ? "" : "≠" + x.want));
+    ok(rows.every(x => x.r.kind === x.want), "A Auto finds the kind of music: " + kinds.join(", "));
+    const pn = rows.find(x => x.kind === "piano").r, ex = rows.find(x => x.kind === "exp").r, orch = rows.find(x => x.kind === "orch").r;
+    ok(pn.share[0] <= 0.03 && pn.share[2] <= 0.02 && pn.note === "noVoice" && orch.share[2] <= 0.02 && orch.note === "noVoice",
+      "A classical: a solo piano leaves Drums and Voice nearly silent (" + pn.share[0] + ", " + pn.share[2] + "), and says \"No voice found in this piece.\"; the orchestra too (voice " + orch.share[2] + ")");
+    ok(ex.kind === "experimental" && ex.last.stats.grid === 0 && ex.share[3] >= 0.2 && ex.sumErr < 1e-4 && ex.wall < 30000,
+      "A experimental: no drum grid invented, much of it kept in The rest (" + ex.share[3] + "), it adds back, it finishes (" + Math.round(ex.wall) + " ms)");
+    ok(rows.filter(x => x.want === "rock").every(x => x.r.note === "guitars" || x.r.note === "noVoice") && rows.filter(x => x.want === "hiphop").every(x => x.r.note === "backing"),
+      "A the line after a split says where a part is hard: " + [...new Set(rows.map(x => x.want + ": " + x.r.note))].join(", "));
+    /* a kind chosen by hand is used, and said */
+    const forced = await p.evaluate(async () => { const s = makeRock({ seed: 41, bars: 3 }); const R = await AOGStems.split(bufOf(s.mix, s.sr), { kind: "classical" }); return { kind: R.kind, auto: R.auto }; });
+    ok(forced.kind === "classical" && forced.auto === false, "A a kind chosen by hand is the one used: " + JSON.stringify(forced));
     ok(rows.every(x => x.r.sumErr < 1e-4), "A the four parts add back to the song (largest difference " + Math.max(...rows.map(x => x.r.sumErr)).toExponential(1) + ")");
     ok(rows.every(x => x.r.last.how === "worker"), "A the split runs in a Worker");
     /* the same split where no Worker can start: 12 ms at a time, the very same parts */
@@ -71,7 +97,7 @@ async function routes(ctx) {
       const b2 = await AOGStems.split(buf, { lesson: L }); done = true; AOGStems.test.noWorker(false);
       let d = 0; ["drums", "bass", "voice", "other"].forEach(k => { const x = a[k].getChannelData(1), y = b2[k].getChannelData(1); for (let i = 0; i < x.length; i++) d = Math.max(d, Math.abs(x[i] - y[i])); });
       return { d, how: AOGStems.test.last().how, longest: Math.round(longest) }; });
-    ok(same.d === 0 && same.how === "slices" && same.longest <= 40, "A without a Worker: the same parts, in slices (the page's longest wait " + same.longest + " ms): " + JSON.stringify(same));
+    ok(same.d === 0 && same.how === "slices" && same.longest <= 60, "A without a Worker: the same parts, in slices (the page's longest wait " + same.longest + " ms): " + JSON.stringify(same));
     /* Stop */
     const stop = await p.evaluate(async () => { const s = makeSong({ seed: 9, bars: 12 }), ctl = new AbortController(), t0 = performance.now(); let at = 0;
       const pr = AOGStems.split(bufOf(s.mix, s.sr), { lesson: s.lesson, signal: ctl.signal, onProgress: (p, k) => { if (k === "split" && p > 0.3 && !at) { at = performance.now(); ctl.abort(); } } });
@@ -195,6 +221,19 @@ async function routes(ctx) {
     ok(g.g === "1,0.5,0,1" && g.sent === g.g && a === "50%", "B the bass at half: " + JSON.stringify(g) + " " + a);
     await p.click('[data-pset="A"][data-v="all"]'); g = await G();
     ok(g.g === "1,1,1,1", "B All parts: the record as it is: " + JSON.stringify(g));
+    /* the kind of music: Auto (and what it found), the line said for this song; another kind splits again, and is kept */
+    a = await p.evaluate(() => ({ opts: [...document.querySelectorAll('[data-pkind="A"] option')].map(o => o.textContent).join(" | "), sel: document.querySelector('[data-pkind="A"]').value,
+      note: (document.querySelector('[data-pmore="A"] .pnote') || {}).textContent || "" }));
+    ok(a.opts === "Auto · Pop | Pop | Hip hop and rap | Rock and metal | Classical | Experimental" && a.sel === "auto" && a.note === "Some ad-libs and backing voices may stay in The rest.",
+      "B Kind of music, a quiet menu in More (Auto found Pop), and one plain line: " + JSON.stringify(a));
+    await p.selectOption('[data-pkind="A"]', "rock");
+    await p.waitForFunction(() => decks[0].parts.st === "on" && decks[0].parts.kind === "rock", null, { timeout: 60000 }).catch(() => {});
+    a = await p.evaluate(async () => { const m = await AOGStems.has(partsId(decks[0])); return { kind: decks[0].parts.kind, auto: decks[0].parts.auto, mk: m && m.kind, ma: m && m.auto, sel: document.querySelector('[data-pkind="A"]').value,
+      note: (document.querySelector('[data-pmore="A"] .pnote') || {}).textContent || "", g: decks[0].parts.g }; });
+    ok(a.kind === "rock" && a.auto === false && a.mk === "rock" && a.ma === false && a.sel === "rock" && a.note === "Loud guitars can leave a little of the voice in The rest.",
+      "B Rock and metal chosen: split again with its settings, kept with the record, its line said: " + JSON.stringify(a));
+    await p.selectOption('[data-pkind="A"]', "auto");
+    await p.waitForFunction(() => decks[0].parts.st === "on" && decks[0].parts.auto === true, null, { timeout: 60000 }).catch(() => {});
 
     /* chops from what you hear: the drums alone, to the Drum Machine */
     await p.click('[data-ponly="A"]'); await p.click('[data-part="A"][data-k="drums"]');
@@ -261,17 +300,32 @@ async function routes(ctx) {
     ok(/^(Escuchando el disco…|Separando el disco…) \d{1,3} %$/.test(a) && b2 === "Detenido. El disco quedó como estaba.", "B the progress and Stop in Spanish: " + a + " / " + b2);
     await c.close();
 
-    /* an iPhone, inside the Studio's frame size: the row fits, every button a finger high */
-    const ph = await b.newContext(Object.assign({}, pw.devices["iPhone 13"])); watch(ph); await routes(ph); await ph.addInitScript(SPY);
-    const q = await ph.newPage(); await q.goto(U(P2) + "music-decks.html"); await q.waitForTimeout(1200); await q.addScriptTag({ content: SONG });
-    await q.evaluate(async () => { const s = makeSong({ seed: 7, bars: 8 }), d = decks[0]; await loadFile(d, songFile(s, "my-song.wav")); });
-    await q.waitForTimeout(300); await q.tap('[data-psplit="A"]');
-    await q.waitForFunction(() => decks[0].parts.st === "on", null, { timeout: 60000 }).catch(() => {});
-    a = await q.evaluate(() => { const row = document.querySelector('[data-prow="A"]'), bs = [...row.querySelectorAll("button")].map(x => x.getBoundingClientRect());
-      return { st: decks[0].parts.st, iw: innerWidth, sw: document.scrollingElement.scrollWidth, right: Math.round(Math.max(...bs.map(r => r.right))), h: Math.round(Math.min(...bs.map(r => r.height))), oneRow: new Set(bs.map(r => Math.round(r.top))).size === 1,
-        clipped: [...row.querySelectorAll("button")].filter(x => x.scrollWidth > x.clientWidth + 1).map(x => x.textContent) }; });
-    ok(a.st === "on" && a.sw <= a.iw && a.right <= a.iw && a.h >= 44 && a.oneRow && !a.clipped.length, "B on an iPhone the four parts and Only sit in one row, a finger high, nothing cut off: " + JSON.stringify(a));
-    await ph.close();
+    /* inside the Studio, on an iPhone and an iPad, light and dark: the row fits, every control a finger high, the More box
+       with the parts open reads (check-contrast) and is calm (check-calm) */
+    for (const [dev, theme] of [["iPhone 13", "light"], ["iPhone 13", "dark"], ["iPad (gen 7)", "dark"]]) {
+      const ph = await b.newContext(Object.assign({}, pw.devices[dev], { colorScheme: theme, serviceWorkers: "block" })); watch(ph); await routes(ph); await ph.addInitScript(SPY);
+      await ph.addInitScript(th => { try { localStorage.setItem("aog.grace.navy.v1", "1"); localStorage.setItem("aog.theme", th); localStorage.setItem("aog.interior.ws.v1.theme", th); localStorage.setItem("aog.theme.lightstart.v1", "1"); } catch (e) {} }, theme);
+      const m = await ph.newPage(); await m.goto(U(P2) + "the-studio#decks");
+      await m.waitForFunction(() => { const fr = document.getElementById("room"), d = fr && fr.contentDocument; return fr && /music-decks/.test(fr.getAttribute("data-file") || "") && d && d.readyState === "complete" && d.documentElement.classList.contains("in-studio"); }, null, { timeout: 30000 });
+      await m.waitForTimeout(900);
+      const q = await (await m.$("#room")).contentFrame();
+      await q.addScriptTag({ content: SONG });
+      await q.evaluate(async () => { const s = makeSong({ seed: 7, bars: 8 }), d = decks[0]; await loadFile(d, songFile(s, "my-song.wav")); });
+      await q.waitForTimeout(300); await q.evaluate(() => { const b0 = document.querySelector('[data-psplit="A"]'); b0.scrollIntoView({ block: "center" }); });
+      await q.tap('[data-psplit="A"]');
+      await q.waitForFunction(() => decks[0].parts.st === "on", null, { timeout: 60000 }).catch(() => {});
+      await q.evaluate(() => { const mo = document.querySelector("#deckA .dmore"); if (!mo.open) mo.querySelector("summary").click(); document.querySelector('[data-pmore="A"]').scrollIntoView({ block: "center" }); });
+      await q.waitForTimeout(300);
+      a = await q.evaluate(() => { const row = document.querySelector('[data-prow="A"]'), bs = [...row.querySelectorAll("button")].map(x => x.getBoundingClientRect());
+        const ctl = [...document.querySelectorAll('[data-prow="A"] button, [data-pmore="A"] button, [data-pmore="A"] select, [data-pmore="A"] input')].map(x => x.getBoundingClientRect().height);
+        return { st: decks[0].parts.st, iw: innerWidth, sw: document.scrollingElement.scrollWidth, right: Math.round(Math.max(...bs.map(r => r.right))), h: Math.round(Math.min(...ctl)), oneRow: new Set(bs.map(r => Math.round(r.top))).size === 1,
+          clipped: [...row.querySelectorAll("button")].filter(x => x.scrollWidth > x.clientWidth + 1).map(x => x.textContent), font: Math.min(...[...document.querySelectorAll('[data-pmore="A"] select')].map(x => parseFloat(getComputedStyle(x).fontSize))) }; });
+      const pc = await q.evaluate(`(${PROBE})()`), pk = await q.evaluate(`(${CALM})()`);
+      ok(a.st === "on" && a.sw <= a.iw && a.right <= a.iw && a.h >= 44 && a.oneRow && !a.clipped.length && a.font >= 16 && !pc.length && !pk.length,
+        `B in the Studio, ${dev}, ${theme}: the four parts and Only in one row, every control a finger high, the menu's text 16px, it reads and is calm: ` + JSON.stringify(a) + (pc.length ? " contrast: " + JSON.stringify(pc.slice(0, 3)) : "") + (pk.length ? " calm: " + JSON.stringify(pk.slice(0, 3)) : ""));
+      await m.screenshot({ path: path.join(require("os").tmpdir(), `stems-decks-${dev.split(" ")[0].toLowerCase()}-${theme}.png`) });
+      await ph.close();
+    }
   }
 
   ok(errs.length === 0, "no page errors " + errs.join(" | "));

@@ -38,11 +38,19 @@ var PARTS = ["drums", "bass", "voice", "other"];
 var WORDS = {
   en: { open: "Opening the song…", listen: "Listening to the song…", split: "Splitting the song…", done: "The song is in four parts.",
         stopped: "Stopped. The song is as it was.", failed: "The song did not split. Try a shorter song, or close other apps and try again.",
-        memory: "This song is too long to split on this device. Try a shorter song." },
+        memory: "This song is too long to split on this device. Try a shorter song.",
+        noVoice: "No voice found in this piece.", guitars: "Loud guitars can leave a little of the voice in The rest.",
+        hard: "This music is hard to split. Much of it stays in The rest.", classical: "No drum kit here. Drums keeps only real hits, like timpani.",
+        backing: "Some ad-libs and backing voices may stay in The rest.", kindLab: "Kind of music", again: "Split again" },
   es: { open: "Abriendo la canción…", listen: "Escuchando la canción…", split: "Separando la canción…", done: "La canción está en cuatro partes.",
         stopped: "Detenido. La canción quedó como estaba.", failed: "La canción no se separó. Prueba una canción más corta, o cierra otras apps e inténtalo otra vez.",
-        memory: "Esta canción es muy larga para separarla en este aparato. Prueba una canción más corta." }
+        memory: "Esta canción es muy larga para separarla en este aparato. Prueba una canción más corta.",
+        noVoice: "No se encontró voz en esta pieza.", guitars: "Las guitarras fuertes pueden dejar un poco de la voz en El resto.",
+        hard: "Esta música es difícil de separar. Mucho se queda en El resto.", classical: "Aquí no hay batería. Batería guarda solo golpes, como los timbales.",
+        backing: "Algunas voces de fondo pueden quedarse en El resto.", kindLab: "Tipo de música", again: "Separar otra vez" }
 };
+var KINDW = { en: { auto: "Auto", pop: "Pop", hiphop: "Hip hop and rap", rock: "Rock and metal", classical: "Classical", experimental: "Experimental" },
+  es: { auto: "Automático", pop: "Pop", hiphop: "Hip hop y rap", rock: "Rock y metal", classical: "Clásica", experimental: "Experimental" } };
 var NAMES = { en: { drums: "Drums", bass: "Bass", voice: "Voice", other: "The rest" }, es: { drums: "Batería", bass: "Bajo", voice: "Voz", other: "El resto" } };
 var MAX_SEC = 15 * 60;   /* a longer file is not split (memory) */
 
@@ -78,9 +86,21 @@ function selectK(a, n, k) {
 /* ══ the split itself: one self-contained job (it uses only what is in this file), run in a Worker or in slices.
    X: one or two Float32Arrays (the song's channels); notes: {bass:[{t,d,m,conf}], melody:[…], tune: cents}.
    run(ms) works for about that long and says whether it is done; out() gives the parts as Int16Arrays. ══ */
-var TUNE = { HR: 8, VR: 8, HL: 21, LMAX: 260, KV: 10, WU: 1, WC: 0.8, CG: 0.3, BETA: 1, KAPPA: 3, FLOOR_V: 1.0, FLOOR_B: 0.5, SIG_V: 0.02, SIG_B: 0.01, VMAX: 8000, BMAX: 2000, BLOW: 130, WMIN: 0.15, C0: 0.3, C1: 0.4 };
+var TUNE = { HR: 8, VR: 8, HL: 21, LMAX: 260, KV: 10, WU: 1, WC: 0.8, CG: 0.3, BETA: 1, KAPPA: 3, FLOOR_V: 1.0, FLOOR_B: 0.5, SIG_V: 0.02, SIG_B: 0.01, VMAX: 8000, BMAX: 2000, BLOW: 130, WMIN: 0.15, C0: 0.3, C1: 0.4,
+  PD: 0, NZ: 1, KB: 1.5, MODK: 1, VG: 0.5, VMINW: 0.5, GF0: 0.45, GF1: 0.75, VOICEW: 1, GRID: 1, CONS: 1, VIB: 0, OWN: 0, OWNV: 0.3, WN: 0, BT: 0, WNP: 1 };
+/* the kinds of music (Jimmy plays rap and hip hop, classic rock and metal, pop, classical and experimental music):
+   what each changes. Auto picks one from the song itself (kindOf, below); a learner can choose another. */
+var KINDS = ["auto", "pop", "hiphop", "rock", "classical", "experimental"];
+var PROF = {
+  pop: {},
+  hiphop: { PD: 0.15 },                                   /* drums inside a sampled loop go to Drums only when clearly hits */
+  rock: { VG: 1, VMINW: 0.15, OWN: 1, WN: 0.8 },                           /* a lead guitar is not taken for the voice */
+  classical: { PD: 0.6, WU: 0.2, WC: 0, VOICEW: 1, VG: 1, VMINW: 0.15, VIB: 1 },   /* a sung note has vibrato; a piano's has none */   /* no kit: only real hits are Drums; piano and strings stay */
+  experimental: { PD: 0.35, GRID: 0, WC: 0.3, WU: 0.6, CONS: 0.8 }         /* when unsure, it stays in The rest */
+};
 function stemsJob(X, n, sr, notes, tune) {
-  var P0 = tune || TUNE;
+  var kind = PROF[notes.kind] ? notes.kind : "pop";
+  var P0 = {}, key0; for (key0 in TUNE) P0[key0] = TUNE[key0]; for (key0 in PROF[kind]) P0[key0] = PROF[kind][key0]; if (tune) for (key0 in tune) P0[key0] = tune[key0];
   var nch = X.length > 1 ? 2 : 1, X0 = X[0], X1 = nch > 1 ? X[1] : null;
   var N = sr > 60000 ? 8192 : 4096, hop = N / 4, K = N / 2 + 1, df = sr / N, fft = makeFFT(N);
   var win = new Float64Array(N), i, k;
@@ -95,7 +115,7 @@ function stemsJob(X, n, sr, notes, tune) {
   var offs = new Int32Array(R), Hg = new Float32Array(NG), Vg = new Float32Array(NG);
   /* AOG-STEMS-V1 for rap: the low band's long median (±0.5 s): what is sustained there (a held bass, an 808's body) is
      Bass, what is short (a kick) is Drums; the bands a voice lives in, and where its consonants sit */
-  var kL = Math.min(K, Math.ceil(P0.LMAX / df) + 1), Hl = new Float32Array(kL), tmpL = new Float64Array(2 * HL + 1);
+  var kL = Math.min(K, Math.ceil(P0.LMAX / df) + 1), Hl = new Float32Array(kL), modL = new Float32Array(kL), tmpL = new Float64Array(2 * HL + 1);
   var bandV = new Float32Array(K), bandC = new Float32Array(K);
   for (k = 0; k < K; k++) { var fz = k * df;
     bandV[k] = fz < 180 ? 0 : fz < 350 ? (fz - 180) / 170 : fz < 4500 ? 1 : fz < 8000 ? (8000 - fz) / 3500 : 0;
@@ -121,6 +141,12 @@ function stemsJob(X, n, sr, notes, tune) {
     .sort(function (a, b) { return a.t - b.t; }); }
   var BN = prep(notes.bass, false), MN = prep(notes.melody, true), bi = 0, mi = 0, hasB = BN.length > 0;
   var lowW = new Float32Array(K); for (k = 0; k < K; k++) { var fq = k * df; lowW[k] = 1 / (1 + Math.pow(fq / P0.BLOW, 6)); }
+  /* cymbals ringing for seconds: flat, sustained noise high up is Drums (a guitar's dense harmonics stop near 5 kHz) */
+  var hiW = new Float32Array(K), kS3 = Math.round(3000 / df), kB3 = Math.round(300 / df); for (k = 0; k < K; k++) { var fh0 = k * df; hiW[k] = fh0 < 3000 ? 0 : fh0 < 5500 ? (fh0 - 3000) / 2500 : 1; }
+  var ePart = [0, 0, 0, 0], eVp = 0, eVu = 0, gSum = 0, gN = 0;
+  var kO = Math.min(K - 2, Math.ceil(4200 / df)), Cc = new Float32Array(K), FC = [], HW = [0], prevF = 0, ownH = [];
+  for (var fc0 = 100; fc0 <= 900; fc0 *= Math.pow(2, 1 / 48)) FC.push(fc0);
+  var NC = FC.length; for (var hw = 1; hw <= 10; hw++) HW.push(1 / Math.sqrt(hw));
   var ja = 0, jf = 0, G = 1 / (1.5 * N), stereo = nch > 1;
   function q16(v) { v = Math.round(v * 32767); return v > 32767 ? 32767 : v < -32768 ? -32768 : v; }
   function analyze(j) {
@@ -162,34 +188,84 @@ function stemsJob(X, n, sr, notes, tune) {
     for (k = 0; k < K; k++) { Hm[k] = Hg[gid[k]]; Vm[k] = Vg[gid[k]]; }
     var a2 = Math.max(0, j - HL), b2 = Math.min(J - 1, j + HL), m2 = b2 - a2 + 1;
     for (k = 0; k < kL; k++) { for (jj = 0; jj < m2; jj++) tmpL[jj] = ring[(a2 + jj) % R].P[k]; Hl[k] = selectK(tmpL, m2, m2 >> 1); }
-    var og = offGrid(t), cgw = P0.CG + (1 - P0.CG) * og;
+    var og = P0.GRID ? offGrid(t) : 0.5, cgw = P0.CG + (1 - P0.CG) * og;
+    /* a fast double kick: the low band rising and falling many times a second is hits, not a held note */
+    var a3 = Math.max(0, j - 3), b3 = Math.min(J - 1, j + 3);
+    for (k = 0; k < kL; k++) { var mn = 1e30, mx = 0; for (jj = a3; jj <= b3; jj++) { var pv = ring[jj % R].P[k]; if (pv < mn) mn = pv; if (pv > mx) mx = pv; }
+      var md0 = (mx - mn) / (mx + mn + 1e-20); modL[k] = md0 < 0.6 ? 0 : md0 > 0.9 ? P0.MODK : P0.MODK * (md0 - 0.6) / 0.3; }
     /* the notes sounding now: their harmonics */
     Tb.fill(0); Tv.fill(0);
     while (bi < BN.length && BN[bi].e < t - 0.05) bi++;
     while (mi < MN.length && MN[mi].e < t - 0.05) mi++;
     for (jj = bi; jj < BN.length && BN[jj].t <= t + 0.03; jj++) if (BN[jj].e >= t - 0.03) comb(Tb, refine(BN[jj].f, PM, P0.BMAX, true), BN[jj].w, P0.BMAX, P0.SIG_B, 800);
-    for (jj = mi; jj < MN.length && MN[jj].t <= t + 0.03; jj++) if (MN[jj].e >= t - 0.03) comb(Tv, refine(MN[jj].f, PM, P0.VMAX), MN[jj].w, P0.VMAX, P0.SIG_V, 0);
+    var gateV = 1;
+    for (jj = mi; jj < MN.length && MN[jj].t <= t + 0.03; jj++) if (MN[jj].e >= t - 0.03) { var fv = refine(MN[jj].f, PM, P0.VMAX);
+      /* a voice or a lead guitar? a voice's harmonics rise and fall with its vowels; distortion's are flat and dense */
+      if (P0.VG > 0) { var la = 0, ln = 0, sa = 0; for (var hh = Math.max(1, Math.ceil(300 / fv)); hh * fv < 4000; hh++) { var bb = hh * fv / df, b0 = Math.floor(bb), fr = bb - b0, am = Math.sqrt(PM[b0] * (1 - fr) + PM[b0 + 1] * fr) + 1e-12; la += Math.log(am); sa += am; ln++; }
+        if (ln >= 5) { var fl0 = Math.exp(la / ln) / (sa / ln), gv = fl0 <= P0.GF0 ? 1 : fl0 >= P0.GF1 ? P0.VMINW : 1 - (1 - P0.VMINW) * (fl0 - P0.GF0) / (P0.GF1 - P0.GF0); gv = 1 - P0.VG * (1 - gv); if (gv < gateV) gateV = gv; gSum += fl0; gN++; } }
+      if (P0.VIB) { var hs = MN[jj].hs || (MN[jj].hs = []); hs.push(1200 * Math.log(fv / MN[jj].f) / Math.LN2); if (hs.length > 14) hs.shift();
+        var gvb = P0.VMINW; if (hs.length >= 5) { var mu = 0, vq = 0, zq; for (zq = 0; zq < hs.length; zq++) mu += hs[zq]; mu /= hs.length; for (zq = 0; zq < hs.length; zq++) vq += (hs[zq] - mu) * (hs[zq] - mu);
+          var sdv = Math.sqrt(vq / hs.length); gvb = sdv <= 8 ? P0.VMINW : sdv >= 20 ? 1 : P0.VMINW + (1 - P0.VMINW) * (sdv - 8) / 12; }
+        if (gvb < gateV) gateV = gvb; }
+      comb(Tv, fv, MN[jj].w, P0.VMAX, P0.SIG_V, 0); }
+    /* the voice's own pitch, heard in the middle alone (a stereo song): guitars double-tracked left and right, strings
+       across the stage, a wide pad all fall away, and what is left that is pitched and not a hit is most often the voice */
+    if (stereo && P0.OWN > 0) {
+      for (k = 0; k < kO; k++) { var pmo = PM[k], po = P[k] + 1e-20, ho = Hm[k], vo = Vm[k], c1o = pmo / (pmo + P0.KV * (po - pmo) + 1e-20); c1o *= c1o; Cc[k] = Math.sqrt((ho / (ho + vo + 1e-20)) * pmo * c1o * c1o); }
+      var bestF = 0, bestS = 0, tot0 = 0;
+      for (k = Math.round(100 / df); k < kO; k++) tot0 += Cc[k];
+      for (var cq = 0; cq < NC; cq++) { var f0 = FC[cq], sS = 0, nh = 0;
+        for (var hq = 1; hq <= 10 && hq * f0 < 4000; hq++) { var bq = hq * f0 / df, bq0 = Math.floor(bq), frq = bq - bq0; sS += (Cc[bq0] * (1 - frq) + Cc[bq0 + 1] * frq) * HW[hq]; nh++; }
+        if (prevF && Math.abs(Math.log(f0 / prevF)) < 0.06) sS *= 1.1;
+        if (sS > bestS) { bestS = sS; bestF = f0; } }
+      var half = bestF / 2, sH = 0;
+      if (half >= 90) { for (var hq2 = 1; hq2 <= 10 && hq2 * half < 4000; hq2++) { var bq2 = hq2 * half / df, b2q = Math.floor(bq2), f2q = bq2 - b2q; sH += (Cc[b2q] * (1 - f2q) + Cc[b2q + 1] * f2q) * HW[hq2]; } if (sH > bestS * 1.25) bestF = half; }
+      /* voiced when its harmonics hold a good share of the middle's pitched sound */
+      var on = 0; if (bestF) { for (var hq3 = 1; hq3 <= 10 && hq3 * bestF < 4000; hq3++) { var kc = Math.round(hq3 * bestF / df); on += Cc[kc] + (Cc[kc - 1] || 0) + (Cc[kc + 1] || 0); } }
+      if (bestF && tot0 > 0 && on / tot0 > P0.OWNV) { var fo = refine(bestF, PM, P0.VMAX), wO = P0.OWN, gO = 1;
+        if (P0.VG > 0) { var la2 = 0, ln2 = 0, sa2 = 0; for (var h4 = Math.max(1, Math.ceil(300 / fo)); h4 * fo < 4000; h4++) { var b4 = h4 * fo / df, b40 = Math.floor(b4), f4 = b4 - b40, am2 = Math.sqrt(PM[b40] * (1 - f4) + PM[b40 + 1] * f4) + 1e-12; la2 += Math.log(am2); sa2 += am2; ln2++; }
+          if (ln2 >= 5) { var fl2 = Math.exp(la2 / ln2) / (sa2 / ln2), gv2 = fl2 <= P0.GF0 ? 1 : fl2 >= P0.GF1 ? P0.VMINW : 1 - (1 - P0.VMINW) * (fl2 - P0.GF0) / (P0.GF1 - P0.GF0); gO = 1 - P0.VG * (1 - gv2); } }
+        if (P0.VIB) { ownH.push(1200 * Math.log(fo) / Math.LN2); if (ownH.length > 14) ownH.shift(); var gvo = P0.VMINW;
+          if (ownH.length >= 5) { var mo = 0, vo2 = 0, zo; for (zo = 0; zo < ownH.length; zo++) mo += ownH[zo]; mo /= ownH.length; for (zo = 0; zo < ownH.length; zo++) vo2 += (ownH[zo] - mo) * (ownH[zo] - mo); var sdo = Math.sqrt(vo2 / ownH.length);
+            gvo = sdo <= 8 || sdo > 300 ? P0.VMINW : sdo >= 20 ? 1 : P0.VMINW + (1 - P0.VMINW) * (sdo - 8) / 12; }
+          gO = Math.min(gO, gvo); }
+        comb(Tv, fo, wO * gO, P0.VMAX, P0.SIG_V, 0); prevF = fo; }
+      else { prevF = 0; if (P0.VIB) ownH.length = 0; }
+    }
     /* the masks, added to one, on the middle; the sides keep only their drums */
     var beta = P0.BETA;
     for (k = 0; k < K; k++) {
       var pm = PM[k], p = P[k] + 1e-20, h = Hm[k], v = Vm[k];
       var wp0 = beta === 1 ? v / (h + v + 1e-20) : Math.pow(v, beta) / (Math.pow(h, beta) + Math.pow(v, beta) + 1e-30);
+      if (P0.PD > 0) wp0 = wp0 <= P0.PD ? 0 : (wp0 - P0.PD) / (1 - P0.PD);
       /* a voice that is spoken more than sung (rap): what neither median explains (it moves: neither a held line nor a
          hit), strictly in the middle, in the voice's band; its consonants: short noise in the middle, off the drums' grid */
       var er = 1 - (h + v) / p; if (er < 0) er = 0;
       var c1 = stereo ? pm / (pm + P0.KV * (p - pm) + 1e-20) : 1, c4 = c1 * c1; c4 *= c4;
-      var fu = P0.WU * er * c4 * bandV[k], fcn = P0.WC * wp0 * (1 - er) * c4 * bandC[k] * cgw;
+      var gn0 = P0.WN && stereo ? P0.WN * c4 * bandV[k] * (1 - (P0.WNP === 2 ? wp0 * wp0 : wp0)) * (v / p <= 0.35 ? 0 : v / p >= 0.75 ? 1 : (v / p - 0.35) / 0.4) : 0;
+      var fu = P0.VOICEW * (P0.WU * er + gn0) * c4 * bandV[k] * (P0.VIB ? gateV : 1), fcn = P0.VOICEW * P0.WC * wp0 * (1 - er) * c4 * bandC[k] * cgw;
       var rest = 1 - fu - fcn; if (rest < 0) { var sc0 = 1 / (fu + fcn); fu *= sc0; fcn *= sc0; rest = 0; }
-      var wp = wp0 * rest, hp = (1 - wp0) * rest * pm, fl = v * pm / p * rest;
-      var cc = stereo ? pm / (pm + P0.KAPPA * (p - pm) + 1e-20) : 1;
-      /* the low band that no bass note explains: what is sustained is Bass (an 808's body), what is short is Drums (a kick) */
-      var tb = Tb[k], tv = Tv[k] * cc, el = k < kL ? hp * lowW[k] * (1 - tb) : 0, sus = k < kL ? Math.min(1, Hl[k] / p) : 0;
+      var gk = Gp[gid[k]] + 1e-20, fz2 = v / gk, fnz = hiW[k] ? P0.NZ * hiW[k] * (fz2 <= 0.55 ? 0 : fz2 >= 0.9 ? 1 : (fz2 - 0.55) / 0.35) * (1 - er) : 0;
+      var wq = wp0 > fnz ? wp0 : fnz;
+      var wp = wq * rest, hp = (1 - wq) * rest * pm, fl = v * pm / p * rest;
+      var cc = stereo ? pm / (pm + P0.KAPPA * (p - pm) + 1e-20) : 1, cb = stereo ? pm / (pm + P0.KB * (p - pm) + 1e-20) : 1;
+      /* the low band that no bass note explains: what is sustained is Bass (an 808's body), what is short is Drums (a kick);
+         only what is in the middle (guitars double-tracked left and right stay in The rest) */
+      var tb = Tb[k] * cb, tv = Tv[k] * cc * gateV, el = k < kL ? hp * lowW[k] * (1 - tb) * cb : 0, sus = k < kL ? Math.min(1, Hl[k] / p) * (1 - modL[k]) : 0;
       var eb = tb * Math.max(0, hp - P0.FLOOR_B * fl), ev = tv * Math.max(0, hp - P0.FLOOR_V * fl);
+      /* a short, plucked bass note is a hit to the medians; under 300 Hz its tones are still the bass */
+      if (P0.BT && k < kB3 && tb > 0.05 && wp > 0) { var tone0 = tb * wp * pm * (1 - v / p > 0 ? 1 - v / p : 0); if (tone0 > 0) { eb += tone0; wp -= tone0 / (pm + 1e-20); if (wp < 0) wp = 0; } }
       if (eb + ev + el > hp) { var sc = hp / (eb + ev + el); eb *= sc; ev *= sc; el *= sc; }
       var md = wp + (pm > 0 ? el * (1 - sus) / (pm + 1e-20) : 0), mb = pm > 0 ? (eb + el * sus) / (pm + 1e-20) : 0, mv = (pm > 0 ? ev / (pm + 1e-20) : 0) + fu + fcn;
+      if (P0.CONS !== 1) { md *= P0.CONS; mb *= P0.CONS; mv *= P0.CONS; }
+      /* the sides: their drums are cymbals and hats up high, or clear hits; a chugging guitar out there stays in The rest */
+      var ws = k >= kS3 ? wq : wq * (wp0 <= 0.5 ? 0 : wp0 >= 0.8 ? 1 : (wp0 - 0.5) / 0.3);
+      if (P0.CONS !== 1) ws *= P0.CONS;
+      ePart[0] += md * md * pm + ws * ws * (p - pm); ePart[1] += mb * mb * pm; ePart[2] += mv * mv * pm; ePart[3] += p;
+      var vpz = pm > 0 ? ev / pm : 0, vuz = fu + fcn; eVp += vpz * vpz * pm; eVu += vuz * vuz * pm;
       var Mr = sl.Mr[k], Mi = sl.Mi[k], Sr = sl.Sr[k], Si = sl.Si[k];
       /* drums: middle + i·sides; bass + i·voice */
-      var dr = md * Mr, di = md * Mi, er2 = wp0 * Sr, ei = wp0 * Si, br = mb * Mr, bim = mb * Mi, vr = mv * Mr, vi = mv * Mi;
+      var dr = md * Mr, di = md * Mi, er2 = ws * Sr, ei = ws * Si, br = mb * Mr, bim = mb * Mi, vr = mv * Mr, vi = mv * Mi;
       re[k] = dr - ei; im[k] = di + er2; re2[k] = br - vi; im2[k] = bim + vr;
       if (k > 0 && k < N / 2) { var nk = N - k; re[nk] = dr + ei; im[nk] = er2 - di; re2[nk] = br + vi; im2[nk] = vr - bim; }
     }
@@ -211,8 +287,73 @@ function stemsJob(X, n, sr, notes, tune) {
     return true;
   }
   return { run: run, progress: function () { return jf / J; },
-    out: function () { return { sr: sr, len: n, nch: nch, x: X16, d: D1 ? [D0, D1] : [D0], b: B, v: V }; } };
+    out: function () { var tot = ePart[3] || 1;
+      return { sr: sr, len: n, nch: nch, x: X16, d: D1 ? [D0, D1] : [D0], b: B, v: V, kind: kind,
+        stats: { drums: ePart[0] / tot, bass: ePart[1] / tot, voice: ePart[2] / tot, vp: eVp / tot, vu: eVu / tot, flat: gN ? gSum / gN : 0, grid: P0.GRID && grid.length >= 8 ? grid.length : 0 } }; } };
 }
+
+/* ══ the kind of music, from the song itself: a quick look (a 2048-point STFT every 1024 samples, a sixteenth of the
+   split's work) at how much of the top end comes as hits (drums), how dense and flat the middle is (distorted guitars),
+   how wide it is, and whether the listener's beats are steady. ══ */
+function kindJob(X, n, sr, beats, notes) {
+  var N = 2048, hop = 1024, K = N / 2 + 1, df = sr / N, fft = makeFFT(N), re = new Float64Array(N), im = new Float64Array(N), w = new Float64Array(N), i, k;
+  for (i = 0; i < N; i++) w[i] = 0.5 - 0.5 * Math.cos(2 * Math.PI * i / N);
+  var A = X[0], B = X[1] || X[0], k5 = Math.round(5000 / df), k12 = Math.min(K - 1, Math.round(12000 / df)), k4 = Math.round(400 / df), k40 = Math.round(4000 / df), k15 = Math.round(150 / df);
+  var prev = new Float64Array(K), P = new Float64Array(K), eHi = 0, fHi = 0, side = 0, mid = 0, fr = [], tot = 0, lpv = new Float64Array(K), onset = [];
+  var s = 0, f = null, pj = null, res = null;
+  function scan(until) {
+  for (var c = 0; s + N <= n; s += hop) {
+    if ((++c & 31) === 0 && Date.now() > until) return false;
+    for (i = 0; i < N; i++) { var l = A[s + i], r = B[s + i]; re[i] = w[i] * 0.5 * (l + r); im[i] = w[i] * 0.5 * (l - r); }
+    fft(re, im, false);
+    var e = 0, la = 0, sa = 0, cnt = 0, of = 0;
+    for (k = 1; k <= k12; k++) { var nk = N - k, zr = re[k], zi = im[k], yr = re[nk], yi = im[nk], mr = 0.5 * (zr + yr), mi = 0.5 * (zi - yi), sr2 = 0.5 * (zi + yi), si = -0.5 * (zr - yr);
+      var pm = mr * mr + mi * mi, ps = sr2 * sr2 + si * si; P[k] = pm + ps; e += P[k];
+      if (k >= k15 && k <= k40) { mid += pm; side += ps; }
+      if (k >= k4 && k <= k40) { la += Math.log(P[k] + 1e-18); sa += P[k]; cnt++; }
+      if (k >= k5) { eHi += P[k]; var dlt = P[k] - prev[k]; if (dlt > 0) fHi += dlt; }
+      if (k >= k5) { var lg = Math.log(P[k] + 1e-9), dl2 = lg - lpv[k]; if (dl2 > 0) of += dl2; lpv[k] = lg; }
+      prev[k] = P[k]; }
+    onset.push(of);
+    tot += e; fr.push([e, cnt ? Math.exp(la / cnt) / (sa / cnt + 1e-30) : 0]);
+  }
+  return true;
+  }
+  function feats() {
+  fr.sort(function (a, b) { return b[0] - a[0]; });
+  var top = fr.slice(0, Math.max(1, Math.round(fr.length / 2))), flat = 0, wsum = 0;
+  top.forEach(function (x) { flat += x[1] * x[0]; wsum += x[0]; }); flat = wsum ? flat / wsum : 0;
+  var bt = (beats || []).filter(isFinite).slice().sort(function (a, b) { return a - b; }), ibi = [];
+  for (i = 1; i < bt.length; i++) ibi.push(bt[i] - bt[i - 1]);
+  var mean = ibi.reduce(function (a, b) { return a + b; }, 0) / (ibi.length || 1), sd = Math.sqrt(ibi.reduce(function (a, b) { return a + (b - mean) * (b - mean); }, 0) / (ibi.length || 1));
+  /* how clearly the music pulses at its beat: the onsets' own echo one beat (or half a beat) later */
+  var pulse = 0;
+  if (onset.length > 64) {
+    var fps = sr / hop, mo = 0, o2 = onset.slice(), q;
+    for (q = 0; q < o2.length; q++) mo += o2[q]; mo /= o2.length;
+    for (q = 0; q < o2.length; q++) o2[q] -= mo;
+    var b0 = 0; for (q = 0; q < o2.length; q++) b0 += o2[q] * o2[q];
+    for (var L = Math.round(0.18 * fps); L <= Math.round(1.2 * fps) && L < o2.length / 2; L++) { var a = 0; for (var z = 0; z + L < o2.length; z++) a += o2[z] * o2[z + L]; if (b0 > 0 && a / b0 > pulse) pulse = a / b0; }
+  }
+  f = { hits: eHi > 0 ? fHi / eHi : 0, top: tot > 0 ? eHi / tot : 0, flat: flat, width: mid + side > 0 ? side / (mid + side) : 0, steady: ibi.length >= 8 ? sd / mean : 1, pulse: pulse };
+  /* a short look at the split itself (up to 24 s, from a quarter of the way in): how much comes out as drums, and
+     whether the voice is sung (its notes) or spoken (rap) */
+  var a0 = n > 40 * sr ? Math.round(n * 0.25) : 0, m0 = Math.min(n - a0, Math.round(24 * sr)), t0 = a0 / sr, nt = notes || {};
+  var sh = function (l) { return (l || []).map(function (x) { return { t: x.t - t0, d: x.d, m: x.m, conf: x.conf }; }); };
+  pj = stemsJob(X.map(function (a) { return a.subarray(a0, a0 + m0); }), m0, sr, { bass: sh(nt.bass), melody: sh(nt.melody), beats: (nt.beats || []).map(function (b) { return b - t0; }), tune: nt.tune, kind: "pop" }, null);
+  }
+  function decide() {
+  var st = pj.out().stats;
+  f.drums = st.drums; f.sung = st.vp; f.spoken = st.vu;
+  var kind = f.flat > KT.dist ? "rock" : f.drums < KT.kit ? "classical" : f.pulse < KT.pulse ? "experimental" : f.spoken > 2 * f.sung ? "hiphop" : "pop";
+  res = { kind: kind, f: f };
+  }
+  /* run(ms): about that long, then whether it is done (a Worker runs it whole; the page in slices) */
+  return { run: function (ms) { var until = Date.now() + ms; if (!f) { if (!scan(until)) return false; feats(); } if (!res) { if (!pj.run(Math.max(1, until - Date.now()))) return false; decide(); } return true; },
+    progress: function () { return f ? 0.3 + 0.7 * (pj ? 0 : 0) : 0.3 * s / Math.max(1, n); }, result: function () { return res; } };
+}
+function kindOf(X, n, sr, beats, notes) { var j = kindJob(X, n, sr, beats, notes); j.run(1e12); return j.result(); }
+var KT = { dist: 0.1, kit: 0.06, pulse: 0.17 };
 
 /* ══ in the Worker: one split, then the parts back (moved, not copied) ══ */
 /* the song as AOGLearn hears it: one channel at 22050 Hz (a windowed-sinc low-pass, then every r-th sample) */
@@ -247,12 +388,14 @@ if (IS_WORKER) {
     };
     listen().then(function (notes) {
       timing.listen = Date.now() - t0;
+      var kd = d.kind && PROF[d.kind] ? { kind: d.kind, f: null } : kindOf(d.X, d.n, d.sr, notes.beats, notes);
+      notes.kind = kd.kind; if (kd.kind === "experimental" || kd.kind === "classical") notes.beats = [];   /* no steady beat: no drum grid */
       var job = stemsJob(d.X, d.n, d.sr, notes, d.tune || null), last = -1, t1 = Date.now();
       while (!job.run(150)) { var p = Math.round(job.progress() * 100); if (p !== last) { last = p; post({ type: "progress", key: "split", p: job.progress() }); } }
       timing.split = Date.now() - t1;
       var o = job.out(), tr = [];
       o.x.concat(o.d, [o.b, o.v]).forEach(function (a) { tr.push(a.buffer); });
-      o.timing = timing; o.notes = { bass: (notes.bass || []).length, melody: (notes.melody || []).length };
+      o.timing = timing; o.notes = { bass: (notes.bass || []).length, melody: (notes.melody || []).length }; o.auto = !(d.kind && PROF[d.kind]); o.feat = kd.f;
       post({ type: "done", pack: o }, tr);
     }).catch(function (err) { post({ type: "error", message: String((err && err.message) || err), memory: /memory|allocation|Array buffer/i.test(String(err && err.message)) }); });
   };
@@ -300,7 +443,7 @@ function learner() {
 }
 function notesOf(L) { return L ? { bass: L.bass || [], melody: L.melody || [], beats: L.beats || [], tune: typeof L.tuning === "number" ? L.tuning : 0 } : { bass: [], melody: [], beats: [], tune: 0 }; }
 
-function runWorker(X, n, sr, notes, say, signal, listenURL) {
+function runWorker(X, n, sr, notes, say, signal, listenURL, kind) {
   return new Promise(function (ok, no) {
     var w; try { if (!scriptURL || typeof Worker === "undefined") throw new Error("no worker"); w = new Worker(scriptURL); } catch (e) { no(Object.assign(new Error("no worker"), { noWorker: true })); return; }
     var started = false, fin = false;
@@ -310,7 +453,7 @@ function runWorker(X, n, sr, notes, say, signal, listenURL) {
     var timer = setTimeout(function () { if (!started) end(no, Object.assign(new Error("no worker"), { noWorker: true })); }, 8000);
     w.onmessage = function (e) { var d = e.data || {};
       if (d.type === "ready" && !started) { started = true; clearTimeout(timer);
-        try { w.postMessage({ type: "split", X: X, n: n, sr: sr, notes: notes, tune: TEST.tune, listen: listenURL || "" }, X.map(function (a) { return a.buffer; })); }
+        try { w.postMessage({ type: "split", X: X, n: n, sr: sr, notes: notes, tune: TEST.tune, listen: listenURL || "", kind: kind || "" }, X.map(function (a) { return a.buffer; })); }
         catch (er) { end(no, Object.assign(new Error("no worker"), { noWorker: true })); } }
       else if (d.type === "progress") say(d.p, d.key);
       else if (d.type === "done") end(ok, d.pack);
@@ -320,15 +463,19 @@ function runWorker(X, n, sr, notes, say, signal, listenURL) {
   });
 }
 /* where no Worker can start: the same job here, 12 ms at a time */
-function runSlices(X, n, sr, notes, say, signal) {
-  var job;
-  try { job = stemsJob(X, n, sr, notes, TEST.tune); } catch (e) { return Promise.reject(Object.assign(new Error("memory"), { memory: true })); }
+function runSlices(X, n, sr, notes, say, signal, kind) {
+  var job = null, kd = kind && PROF[kind] ? { kind: kind, f: null } : null, kj = kd ? null : kindJob(X, n, sr, notes.beats, notes);
   return new Promise(function (ok, no) {
     (function step() {
       if (signal && signal.aborted) { no(abortErr()); return; }
+      /* first the kind of music (in slices too), then the split */
+      if (!job) { try { if (kj && !kj.run(10)) { setTimeout(step, 0); return; } if (kj) kd = kj.result();
+          notes.kind = kd.kind; if (kd.kind === "experimental" || kd.kind === "classical") notes.beats = [];
+          job = stemsJob(X, n, sr, notes, TEST.tune); } catch (e) { no(Object.assign(new Error("memory"), { memory: true })); return; }
+        setTimeout(step, 0); return; }
       var done; try { done = job.run(12); } catch (e) { no(e); return; }
       say(job.progress(), "split");
-      if (done) { var o = job.out(); o.slices = true; ok(o); } else setTimeout(step, 0);
+      if (done) { var o = job.out(); o.slices = true; o.auto = !(kind && PROF[kind]); o.feat = kd.f; ok(o); } else setTimeout(step, 0);
     })();
   });
 }
@@ -347,9 +494,9 @@ function split(input, opts) {
     var lu = learnURL(), base0 = opts.lesson ? 0.02 : 0.25;
     if (!opts.lesson && opts.listen !== false && lu && !TEST.noWorker) {
       var sayW = function (p, key) { if (signal && signal.aborted) return; if (key === "listen") say(0.02 + 0.23 * Math.max(0, Math.min(1, p)), "listen"); else say(base0 + (1 - base0) * p * 0.98, "split"); };
-      return runWorker(chans(buf), buf.length, buf.sampleRate, {}, sayW, signal, lu).then(function (pack) {
+      return runWorker(chans(buf), buf.length, buf.sampleRate, {}, sayW, signal, lu, opts.kind).then(function (pack) {
         timing.listen = pack.timing ? pack.timing.listen : 0; timing.split = pack.timing ? pack.timing.split : 0;
-        TEST.last = { timing: timing, how: "worker", notes: pack.notes || {} };
+        TEST.last = { timing: timing, how: "worker", notes: pack.notes || {}, kind: pack.kind, feat: pack.feat, stats: pack.stats };
         pack.quality = "listen"; say(1, "done"); return fromPack(pack);
       }, function (e) { if (e && e.noWorker) return mainWay(buf); throw e; });
     }
@@ -366,10 +513,10 @@ function split(input, opts) {
       say(base, "split");
       var sayS = function (p) { if (!(signal && signal.aborted)) say(base + (1 - base) * p * 0.98, "split"); };
       var t1 = Date.now();
-      var run = TEST.noWorker ? runSlices(X, n, sr, notes, sayS, signal) : runWorker(X, n, sr, notes, sayS, signal).catch(function (e) {
-        if (e && e.noWorker) { X = chans(buf); return runSlices(X, n, sr, notes, sayS, signal); } throw e; });
+      var run = TEST.noWorker ? runSlices(X, n, sr, notes, sayS, signal, opts.kind) : runWorker(X, n, sr, notes, sayS, signal, "", opts.kind).catch(function (e) {
+        if (e && e.noWorker) { X = chans(buf); return runSlices(X, n, sr, notes, sayS, signal, opts.kind); } throw e; });
       return run.then(function (pack) {
-        timing.split = Date.now() - t1; TEST.last = { timing: timing, how: TEST.noWorker || pack.slices ? "slices" : "worker", notes: { bass: notes.bass.length, melody: notes.melody.length } };
+        timing.split = Date.now() - t1; TEST.last = { timing: timing, how: TEST.noWorker || pack.slices ? "slices" : "worker", notes: { bass: notes.bass.length, melody: notes.melody.length }, kind: pack.kind, feat: pack.feat, stats: pack.stats };
         pack.quality = "listen"; say(1, "done");
         return fromPack(pack);
       });
@@ -399,8 +546,15 @@ function partObj(pack, which) {
       cache[ch] = out; return out; },
     free: function () { cache = []; } };
 }
+/* the one plain line said after a split, where a part is hard */
+function noteOf(pack) {
+  var st = pack.stats || {};
+  if (st.voice != null && st.voice < 0.01) return "noVoice";
+  return pack.kind === "rock" ? "guitars" : pack.kind === "experimental" ? "hard" : pack.kind === "classical" ? "classical" : "backing";
+}
 function fromPack(pack) {
-  var o = { sr: pack.sr, sampleRate: pack.sr, length: pack.len, numberOfChannels: pack.nch, quality: pack.quality || "listen", pack: pack };
+  var o = { sr: pack.sr, sampleRate: pack.sr, length: pack.len, numberOfChannels: pack.nch, quality: pack.quality || "listen", pack: pack,
+    kind: pack.kind || "pop", auto: pack.auto !== false, stats: pack.stats || null, note: noteOf(pack) };
   PARTS.forEach(function (k) { o[k] = partObj(pack, k); });
   o.free = function () { PARTS.forEach(function (k) { o[k].free(); }); };
   return o;
@@ -461,7 +615,7 @@ function tx(stores, mode, fn) {
 }
 function has(id) { return tx(["meta"], "readonly", function (t) { return t.objectStore("meta").get(id); }).catch(function () { return null; }); }
 function keep(id, parts) {
-  var P = parts.pack || parts, meta = { id: id, at: Date.now(), sr: P.sr, len: P.len, nch: P.nch, quality: P.quality || "listen" };
+  var P = parts.pack || parts, meta = { id: id, at: Date.now(), sr: P.sr, len: P.len, nch: P.nch, quality: P.quality || "listen", kind: P.kind || "pop", auto: P.auto !== false, stats: P.stats || null };
   return tx(["meta", "data"], "readwrite", function (t) { t.objectStore("meta").put(meta); t.objectStore("data").put({ id: id, d: P.d, b: P.b, v: P.v }); return null; })
     .then(function () { return tx(["meta"], "readonly", function (t) { return t.objectStore("meta").getAll(); }); })
     .then(function (all) { var old = (all || []).sort(function (a, b) { return (b.at || 0) - (a.at || 0); }).slice(MAXK);
@@ -486,7 +640,7 @@ function kept(id, input) {
       var d = r[0], buf = r[1];
       if (!d || !buf || buf.sampleRate !== m.sr || buf.length !== m.len || Math.min(2, buf.numberOfChannels) !== m.nch) return null;
       tx(["meta"], "readwrite", function (t) { m.at = Date.now(); t.objectStore("meta").put(m); return null; }).catch(function () {});
-      return toX16(buf).then(function (x) { return fromPack({ sr: m.sr, len: m.len, nch: m.nch, quality: m.quality, x: x, d: d.d, b: d.b, v: d.v }); });
+      return toX16(buf).then(function (x) { return fromPack({ sr: m.sr, len: m.len, nch: m.nch, quality: m.quality, kind: m.kind, auto: m.auto, stats: m.stats, x: x, d: d.d, b: d.b, v: d.v }); });
     });
   }).catch(function () { return null; });
 }
@@ -498,16 +652,16 @@ function keptParts(id, want) {
     return tx(["data"], "readonly", function (t) { return t.objectStore("data").get(id); }).then(function (d) {
       if (!d || !d.d || !d.b || !d.v) return null;
       tx(["meta"], "readwrite", function (t) { m.at = Date.now(); t.objectStore("meta").put(m); return null; }).catch(function () {});
-      return { sr: m.sr, len: m.len, nch: m.nch, quality: m.quality, d: d.d, b: d.b, v: d.v };
+      return { sr: m.sr, len: m.len, nch: m.nch, quality: m.quality, kind: m.kind || "pop", auto: m.auto !== false, stats: m.stats || null, note: noteOf(m), d: d.d, b: d.b, v: d.v };
     });
   }).catch(function () { return null; });
 }
 
 var API = {
-  version: 1, words: WORDS, names: NAMES, parts: PARTS.slice(), word: word,
+  version: 1, words: WORDS, names: NAMES, parts: PARTS.slice(), word: word, kinds: KINDS.slice(), kindWords: KINDW,
   split: split, mixInto: mixInto, wav: wav, keep: keep, kept: kept, keptParts: keptParts, has: has, drop: drop,
   /* for the tests: the job itself (to measure on known parts), the settings, the last split's timing */
-  test: { job: stemsJob, tune: function (t) { TEST.tune = t || null; }, defaults: TUNE, noWorker: function (b) { TEST.noWorker = !!b; }, last: function () { return TEST.last; }, fromPack: fromPack }
+  test: { job: stemsJob, kindOf: kindOf, KT: KT, PROF: PROF, tune: function (t) { TEST.tune = t || null; }, defaults: TUNE, noWorker: function (b) { TEST.noWorker = !!b; }, last: function () { return TEST.last; }, fromPack: fromPack }
 };
 G.AOGStems = API;
 })(typeof self !== "undefined" ? self : this);
