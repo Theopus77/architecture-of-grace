@@ -376,7 +376,7 @@ const ITEMS = [
 ];
 const ALG = [
   [/milk|butter|cheese|yogh?urt|cream|leche|mantequilla|queso|yogur|crema|parmesan|mozzarella/i, "milk"], [/\beggs?\b|huevos?|mayonnaise|mayonesa/i, "egg"],
-  [/flour|harina|wheat|trigo|pasta|spaghetti|bread|\bpan\b|noodle|fideo|soy sauce|salsa de soya|granola|couscous|cusc/i, "wheat"],
+  [/flour|harina|wheat|trigo|pasta|spaghetti|espagueti|macarr|penne|bread|\bpan\b|noodle|fideo|soy sauce|salsa de soya|granola|couscous|cusc/i, "wheat"],
   [/\bsoy|soya|soja|tofu|edamame|tamari/i, "soy"], [/peanut|cacahuate|man[ií]\b/i, "peanut"],
   [/almond|walnut|pecan|cashew|pistachio|hazelnut|almendra|nuez|nueces|anacardo|pistache|avellana/i, "treenut"], [/\bfish|salmon|tuna|cod\b|pescado|salm[oó]n|at[uú]n/i, "fish"],
   [/shrimp|crab|lobster|clam|mussel|camar[oó]n|cangrejo|langosta|almeja|mejill/i, "shellfish"], [/sesame|tahini|ajonjol[ií]|s[eé]samo/i, "sesame"], [/mustard|mostaza/i, "mustard"]
@@ -407,7 +407,9 @@ const VERBS = [
   [/\bwhisk(s|ed|ing)?\b|\bbeat(s|en|ing)?\b|\bbat(e|ir|a)\b/i, "whisk"],
   [/\bsaut[eé](ed|ing)?\b|\bstir-?fry\b|\bfry\b|\bbrown\b|\bsofr(e[ií]r|íe|ia|ía)|\bsalte(a|ar|e)\b|\bdor(a|ar|e)\b|\bfr(eír|ie|íe|ía|ia)\b/i, "saute"],
   [/\bboil(s|ed|ing)?\b|\bhierv(e|a|an)\b|\bhervir\b|\bhervor\b/i, "boil"],
-  [/\bbak(e|ed|es|ing)\b|\broast\b|\boven\b|\bhorne(a|ar|e)\b|\bal horno\b|\bhorno\b/i, "bake"],
+  [/\bcook(s|ed|ing)?\b[^.]*\b(pasta|spaghetti|noodles|rice|potato(es)?|in (the )?(boiling )?water)\b|\bcocin(a|ar|e)\b[^.]*\b(pasta|espaguetis?|fideos|arroz|papas|en (el )?agua)\b/i, "boil"],
+  [/\bcook(s|ed|ing)?\b|\bheat (the |a )?(pan|skillet|oil|butter)|\bcocin(a|ar|e)\b|\bcalient(a|ar|e) (el |un )?(sart[eé]n|aceite|comal)/i, "saute"],
+  [/\bbak(e|ed|es|ing)\b(?! (powder|soda))|\broast\b|\boven\b|\bhorne(a|ar|e)\b|\bal horno\b|\bhorno\b/i, "bake"],
   [/\bspread\b|\bunt(a|ar|e)\b|\bextiend(e|a)\b/i, "spread"],
   [/\bseason(ed|ing)?\b|\bsprinkle\b|\bsalt and pepper\b|\bsazon(a|ar|e)\b|\bsalpiment(a|ar|e)\b|\bespolvore(a|ar|e)\b/i, "season"],
   [/\bstir(s|red|ring)?\b|\bmix(es|ing)?\b|\bcombine\b|\bmash(ed)?\b|\bmachac(a|ar|e)\b|\baplast(a|ar|e)\b|\btoss\b|\bmezcl(a|ar|e)\b|\brevuelv(e|a)\b|\brevolver\b|\bremuev(e|a)\b|\bcombin(a|ar|e)\b/i, "stir"],
@@ -420,7 +422,19 @@ const VERBS = [
 const LIQUID = /milk|water|oil|juice|broth|stock|vinegar|cream|leche|agua|aceite|jugo|zumo|caldo|vinagre|crema|\bml\b|\bmL\b|litro|liter|fl oz/i;
 const WB = "(?:(?<![\\wáéíóúüñ])(?=[\\wáéíóúüñ])|(?<=[\\wáéíóúüñ])(?![\\wáéíóúüñ]))";   // a word edge that knows é, í, ñ
 const VERBS_G = VERBS.map(([re, id]) => [new RegExp(re.source.split("\\b").join(WB), "gi"), id]);
+/* Spanish commands with a pronoun on the end ("córtalo", "saltéalo", "espolvoréalo", "batirlos") → the plain verb */
+const CLITIC = /([a-záéíóúüñ]+?)(selos|selas|selo|sela|los|las|lo|la|les|le)(?![a-záéíóúüñ])/gi;
+const unaccent = w => w.replace(/[áéíó]/g, c => ({ "á": "a", "é": "e", "í": "i", "ó": "o" })[c]);
+function plainVerbs(text) {
+  return text.replace(CLITIC, (m, stem, pro, at, all) => {
+    if (at > 0 && /[a-záéíóúüñ]/i.test(all[at - 1])) return m;
+    if (/[áéíó]/.test(stem) && stem.length > 2) return unaccent(stem);   // córta·lo → corta
+    if (/[aei]r$/.test(stem) && stem.length > 3) return stem;            // cortar·lo → cortar
+    return m;
+  });
+}
 function verbsIn(text) {
+  text = plainVerbs(text);
   let s = " " + text + " "; const out = [];
   VERBS_G.forEach(([g, id]) => {
     g.lastIndex = 0; let m;
@@ -437,7 +451,7 @@ function verbsIn(text) {
 }
 const SECTION_ING = /^\s*(ingredients?|ingredientes|you will need|you'll need|necesitas|lo que necesitas)\s*:?\s*$/i;
 const SECTION_STEP = /^\s*(steps?|directions?|instructions?|method|preparation|how to make it|pasos|instrucciones|preparaci[oó]n|procedimiento|modo de preparaci[oó]n|elaboraci[oó]n)\s*:?\s*$/i;
-const QTY_START = /^\s*([-•*·–]\s*)?(\d|[½⅓⅔¼¾⅛⅜⅝⅞]|(a|an|one|two|three|four|un|una|uno|dos|tres|cuatro|half|media|medio)\s+(cup|tbsp|tsp|tablespoon|teaspoon|pinch|clove|can|taza|cucharad|pizca|diente|lata|large|small|medium|egg|huevo))/i;
+const QTY_START = /^\s*([-•*·–]\s*)?((pinch|dash|pizca|chorrito)\s+(of|de)\s|salt and pepper|sal y pimienta|\d|[½⅓⅔¼¾⅛⅜⅝⅞]|(a|an|one|two|three|four|un|una|uno|dos|tres|cuatro|half|media|medio)\s+(cup|tbsp|tsp|tablespoon|teaspoon|pinch|clove|can|taza|cucharad|pizca|diente|lata|large|small|medium|egg|huevo))/i;
 const STEP_START = /^\s*((step|paso)\s*\d+\s*[:.)-]?|\d+\s*[.)]\s+|\d+\s*-\s+)/i;
 function read(text, lang) {
   const lines = String(text || "").replace(/\r/g, "").split("\n").map(l => l.replace(/\t/g, " ").trimEnd());
@@ -447,6 +461,8 @@ function read(text, lang) {
     if (SECTION_ING.test(t)) { mode = "ing"; sawHeader = true; return; }
     if (SECTION_STEP.test(t)) { mode = "step"; sawHeader = true; return; }
     if (!title && !mode && !QTY_START.test(t) && !STEP_START.test(t) && t.length < 80 && !/[.!?]$/.test(t)) { title = t.replace(/^#+\s*/, ""); return; }
+    // "Paso 1: Bate los huevos." under Ingredients with no Steps heading: the steps have started
+    if (mode === "ing" && STEP_START.test(t) && !QTY_START.test(t.replace(STEP_START, "")) && verbsIn(t).length) { mode = "step"; }
     if (mode === "ing" || (!mode && QTY_START.test(t) && !STEP_START.test(t))) {
       if (mode !== "ing" && STEP_START.test(t)) { stepsRaw.push(t); return; }
       const r = readIngredient(t);
@@ -466,7 +482,7 @@ function read(text, lang) {
   const ingN = ing.map((x, k) => ({ k: "i" + k, q: x.q, q2: x.q2, u: x.u, m: null, en: x.name + (x.note ? ", " + x.note : ""), es: x.name + (x.note ? ", " + x.note : ""), name: x.name, item: itemFor(x.name), alg: algFor(x.name), raw: x.raw }));
   const out = steps.map(t => {
     let a = verbsIn(t);
-    const mentioned = ingN.filter(i => i.name.toLowerCase().split(/[\s,]+/).filter(w => w.length > 3).some(w => t.toLowerCase().indexOf(w.replace(/s$/, "")) >= 0)).map(i => i.k);
+    const mentioned = ingN.filter(i => i.name.toLowerCase().split(/[\s,]+/).filter(w => w.length >= 3 && !/^(and|the|for|con|del|los|las|una|uno)$/.test(w)).some(w => t.toLowerCase().indexOf(w.replace(/s$/, "")) >= 0)).map(i => i.k);
     const tm = t.match(/(\d+(?:[.,]\d+)?)(?:\s*(?:-|to|a|–)\s*(\d+(?:[.,]\d+)?))?\s*(minutes?|mins?\b|minutos?|hours?|hrs?\b|horas?|seconds?|secs?\b|segundos?)/i);
     let timer = null; if (tm) { const v = (parseFloat(tm[1].replace(",", ".")) + (tm[2] ? parseFloat(tm[2].replace(",", ".")) : parseFloat(tm[1].replace(",", ".")))) / 2; timer = /^h/i.test(tm[3]) ? { min: v * 60 } : /^s/i.test(tm[3]) ? { sec: v } : { min: v }; }
     const tp = t.match(/(\d{2,3})\s*°?\s*(F|C)\b/i) || t.match(/(\d{2,3})\s*(?:degrees|grados)\s*(F|C|Fahrenheit|Celsius)?/i);

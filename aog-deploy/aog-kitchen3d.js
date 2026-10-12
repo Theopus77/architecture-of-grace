@@ -1417,6 +1417,7 @@ export async function create(opts) {
         if (tool && TOOL[tool]) { const toolOrigin = V(0, 0, 0).applyMatrix4(TOOL[tool].obj.matrix); const handPalm = fig.hand(S).getWorldPosition(new THREE.Vector3()); gap = toolOrigin.distanceTo(handPalm); }
         out.hands[S] = { tool: tool || null, gap, miss: g.G && g.want ? g.G.distanceTo(g.want) : null }; });
       if (TOOL.knife.obj.visible) { out.knifeTipY = TOOL.knife.tip.clone().applyMatrix4(TOOL.knife.obj.matrix).y; out.boardTop = BTOP; }
+      out.mitts = !!(mitts.R.visible && mitts.L.visible); out.door = oven.door.rotation.x;
       out.tools = Array.from(shownTools); return out;
     },
     figure: fig, scene, camera,

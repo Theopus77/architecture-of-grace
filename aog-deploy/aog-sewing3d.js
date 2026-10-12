@@ -610,7 +610,11 @@ export async function create(kit) {
     const f = focusPoint(st), s = st.station;
     let pos;
     if (mode === "close") {
-      if (s === "hand") {
+      if (s === "hand" && globalThis.__sewCam) {   // TEMP-TWEAK
+        const T = globalThis.__sewCam, n = V(0, 1, 0).applyQuaternion(work.quaternion), xa = V(1, 0, 0).applyQuaternion(work.quaternion), za = V(0, 0, 1).applyQuaternion(work.quaternion);
+        pos = f.clone().addScaledVector(n, T.d).addScaledVector(xa, T.x || 0).addScaledVector(za, T.z || 0);
+        camera.fov = T.fov || 34;
+      } else if (s === "hand") {
         const n = V(0, 1, 0).applyQuaternion(work.quaternion);   // the work's face
         const flipNow = st.work && st.work.flip > 0.5 ? 1 : 0;
         pos = f.clone().addScaledVector(n, st.work.kind === "none" ? 0.17 : 0.105).add(V(-0.025, 0.03, 0.012));

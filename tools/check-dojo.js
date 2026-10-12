@@ -12,7 +12,11 @@
      · silent: nothing is drawn and no animation frame is asked for while nobody touches it,
      · reduce motion shows each step's finished pose at once,
      · iPhone and iPad, English and Spanish: every move opens with no errors and no sideways scroll,
-     · the practice tracker is kept on this device; the ghost picture draws.
+     · the practice tracker is kept on this device; the ghost picture draws; the view and speed menus and the time slider,
+     · every lesson id opens the right move and side from /dojo#id, /dojo?side=left#id and /dojo#id?side=left, on a fresh
+       visit and by changing the address on an open page,
+     · each move shows What helps, the safety box and a link to /martial-arts; dark theme gives the room its night look,
+     · leaving the page frees the 3D (the graphics context is lost, the canvas removed, no frames asked for).
        node tools/check-dojo.js
    Exit code 1 when anything fails. Run it after any change to the Dojo's files (see CLAUDE.md). */
 const path = require("path"), fs = require("fs"), http = require("http"), cp = require("child_process");
@@ -31,6 +35,11 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
 const IDS = ["ready", "horse", "front-stance", "back-stance", "cat-stance", "guard", "step-forward", "step-back", "shuffle", "pivot", "jab", "cross", "hook",
   "uppercut", "reverse-punch", "palm-strike", "knife-hand", "high-block", "low-block", "inside-block", "outside-block", "knee-raise", "front-kick", "teep",
   "roundhouse-kick", "side-kick", "back-kick", "back-fall", "side-fall", "sprawl", "ginga", "en-garde", "lunge", "combo-jab-cross", "combo-block-punch", "form-1"];
+
+/* the ids the martial-arts course lessons link to (/dojo#<id> and /dojo?side=left#<id>) */
+const LESSON = ["ready", "step-forward", "step-back", "horse", "high-block", "low-block", "knee-raise", "reverse-punch", "back-fall", "side-fall", "front-stance",
+  "inside-block", "front-kick", "ginga", "jab", "cross", "cat-stance", "palm-strike", "guard", "roundhouse-kick", "back-stance", "knife-hand", "side-kick", "shuffle",
+  "combo-jab-cross", "hook", "combo-block-punch", "back-kick", "sprawl", "teep", "pivot", "en-garde", "lunge", "form-1"];
 
 (async () => {
   await new Promise(o => server.listen(0, o)); const port = server.address().port, BASE = `http://127.0.0.1:${port}/dojo.html`;
@@ -133,8 +142,66 @@ const IDS = ["ready", "horse", "front-stance", "back-stance", "cat-stance", "gua
      "\"I can do it slowly\" is kept on this device after a reload");
   await p.evaluate(() => { location.hash = "#jab"; }); await wait(150);
   ok(await p.evaluate(() => window.AOGDojo.move.id === "jab" && /Jab/.test(document.getElementById("moveName").textContent)), "changing the address to #jab opens the jab");
+  /* the view menu: Front, Side, Behind you, Walk around */
+  ok(await p.evaluate(() => [...document.querySelectorAll("#viewPick option")].map(o => o.value).join() === "front,side,behind,orbit"), "the camera menu offers Front, Side, Behind you and Walk around");
+  /* speed and the time slider */
+  await p.selectOption("#speedPick", "0.25");
+  const sp = await p.evaluate(() => { const A = window.AOGDojo, sc = document.getElementById("scrub"); sc.value = String(Math.round(A.stepEnd(2) * 30)); sc.dispatchEvent(new Event("input"));
+    return { speed: A.state.speed, t: A.P.t, e: A.stepEnd(2), lit: [...document.querySelectorAll("#steps li")].findIndex(l => l.classList.contains("on")), opts: [...document.querySelectorAll("#speedPick option")].map(o => o.value).join() }; });
+  ok(sp.speed === 0.25 && sp.opts === "1,0.5,0.25" && Math.abs(sp.t - sp.e) < 0.04 && sp.lit === 2, "Speed (Normal, Slow, Very slow) is kept, and the time slider moves the figure and lights its step" + (sp.lit === 2 ? "" : " " + JSON.stringify(sp)));
+  await p.selectOption("#speedPick", "0.5");
+  /* the night look: the theme changes the room, draws once, then rests */
+  const lum = async () => { const png = await stageShot(p); return p.evaluate(async b64 => { const im = new Image(); im.src = "data:image/png;base64," + b64; await im.decode();
+    const c = document.createElement("canvas"); c.width = 64; c.height = 48; const g = c.getContext("2d"); g.drawImage(im, 0, 0, 64, 48); const d = g.getImageData(0, 0, 64, 48).data;
+    let s = 0; for (let i = 0; i < d.length; i += 4) s += d[i] * 0.2126 + d[i + 1] * 0.7152 + d[i + 2] * 0.0722; return s / (d.length / 4); }, png.toString("base64")); };
+  const day = await lum();
+  const r0 = await p.evaluate(() => window.AOGDojo.G3().renders());
+  await p.evaluate(() => document.getElementById("themeBtn").click()); await wait(400);   /* the site top bar adopts this button and runs it */
+  const r1 = await p.evaluate(() => window.AOGDojo.G3().renders());
+  const night = await lum();
+  await wait(600);
+  const r2 = await p.evaluate(() => window.AOGDojo.G3().renders());
+  ok(r1 > r0 && r2 === r1 && night < day - 25, `dark theme gives the dojo its night look (brightness ${Math.round(day)} → ${Math.round(night)}), drawn on the change and then still`);
+  await p.evaluate(() => document.getElementById("themeBtn").click()); await wait(200);
   ok(!p.errs.length, "no errors on a computer" + (p.errs.length ? ": " + p.errs[0] : ""));
+  /* leaving the page lets go of the 3D: the drawing is freed and the graphics chip released */
+  const disp = await p.evaluate(() => { const c = document.querySelector("#stage canvas"), gl = c.getContext("webgl2") || c.getContext("webgl"); const f0 = window.__raf;
+    window.dispatchEvent(new Event("pagehide")); return { lost: !!gl && gl.isContextLost(), gone: !c.isConnected, g3: window.AOGDojo.G3() === null, f0 }; });
+  await wait(300);
+  const f1 = await p.evaluate(() => window.__raf);
+  ok(disp.lost && disp.gone && disp.g3 && f1 === disp.f0, "leaving the page frees the 3D (context lost, canvas removed, no more frames)" + (disp.lost && disp.gone ? "" : " " + JSON.stringify(disp)));
   await p.context().close();
+
+  /* ── every lesson address, in all three forms, on a fresh visit (words only: the 3D is not needed for this) ── */
+  {
+    const ctx = await b.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+    await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, r => r.abort());
+    await ctx.route(/aog-dojo3d\.js|three\.module/, r => r.abort());
+    const q = await ctx.newPage(); q.errs = []; q.on("pageerror", e => q.errs.push(e.message));
+    const bad = [];
+    for (const id of LESSON) for (const [form, left] of [["#" + id, false], ["?side=left#" + id, true], ["#" + id + "?side=left", true]]) {
+      await q.goto("about:blank"); await q.goto(BASE + form, { waitUntil: "domcontentloaded" });
+      await q.waitForFunction(() => window.AOGDojo && window.AOGDojo.move);
+      const r = await q.evaluate(() => ({ id: window.AOGDojo.move.id, m: window.AOGDojo.mirror, cap: !document.getElementById("capSide").hidden, ghost: window.AOGDojo.state.ghost,
+        pressed: document.getElementById("mirrorBtn").getAttribute("aria-pressed"), hash: location.hash, search: location.search }));
+      if (r.id !== id || r.m !== left || r.cap !== left || r.pressed !== String(left) || r.ghost || r.hash !== "#" + id || /side=left/.test(r.search) !== left) bad.push(form + " " + JSON.stringify(r));
+    }
+    ok(!bad.length, `all ${LESSON.length} lesson ids open the right move and side from /dojo#id, /dojo?side=left#id and /dojo#id?side=left (${LESSON.length * 3} visits)` + (bad.length ? " — " + bad.slice(0, 3).join("; ") : ""));
+    /* and by changing the address on an open page (hashchange), switching sides on and off as it goes */
+    await q.goto(BASE + "#ready", { waitUntil: "domcontentloaded" }); await q.waitForFunction(() => window.AOGDojo && window.AOGDojo.move);
+    const badH = [];
+    for (let i = 0; i < LESSON.length; i++) {
+      const id = LESSON[i], left = i % 2 === 1, h = left ? id + "?side=left" : id;
+      /* every other side=left change uses the other form: ?side=left before the #id */
+      if (left && i % 4 === 3) await q.evaluate(i => { history.replaceState(null, "", location.pathname + "?side=left" + location.hash); location.hash = "#" + i; }, id);
+      else await q.evaluate(([h, left]) => { if (!left) history.replaceState(null, "", location.pathname + location.hash); location.hash = "#" + h; }, [h, left]);   // a plain #id after ?side=left keeps the side, so clear it first
+      await wait(40);
+      const r = await q.evaluate(() => ({ id: window.AOGDojo.move.id, m: window.AOGDojo.mirror, hash: location.hash, search: location.search, name: document.getElementById("moveName").textContent }));
+      if (r.id !== id || r.m !== left || r.hash !== "#" + id || /side=left/.test(r.search) !== left) badH.push(h + " " + JSON.stringify(r));
+    }
+    ok(!badH.length && !q.errs.length, `changing the address on an open page opens each lesson move and side, and the address stays true for a reload` + (badH.length ? " — " + badH.slice(0, 3).join("; ") : q.errs.length ? " — " + q.errs[0] : ""));
+    await ctx.close();
+  }
 
   /* ── both address forms for the other side ── */
   for (const addr of ["?side=left#front-kick", "#front-kick?side=left"]) {
@@ -164,12 +231,13 @@ const IDS = ["ready", "horse", "front-stance", "back-stance", "cat-stance", "gua
       if (lang === "es") await q.evaluate(() => document.getElementById("langBtn").click());
       for (const id of IDS) {
         await q.evaluate(i => window.AOGDojo.open(i), id);
-        const r = await q.evaluate(() => ({ pan: document.documentElement.scrollWidth - innerWidth, steps: document.querySelectorAll("#steps li").length, lang: document.documentElement.lang, txt: document.getElementById("panel").textContent }));
-        if (r.pan > 2 || !r.steps || r.lang !== lang || (lang === "es" && !/Pasos/.test(r.txt))) ok(false, `${name} ${lang} ${id}: pans ${r.pan}px, ${r.steps} steps, lang ${r.lang}`);
+        const r = await q.evaluate(() => ({ pan: document.documentElement.scrollWidth - innerWidth, steps: document.querySelectorAll("#steps li").length, lang: document.documentElement.lang, txt: document.getElementById("panel").textContent,
+          tips: document.querySelectorAll("#panel .tips li").length, safe: !!document.querySelector("#panel #safety"), course: !!document.querySelector('#panel a[href="/martial-arts"]') }));
+        if (r.pan > 2 || !r.steps || r.lang !== lang || (lang === "es" && !/Pasos/.test(r.txt)) || r.tips < 2 || !r.safe || !r.course) ok(false, `${name} ${lang} ${id}: pans ${r.pan}px, ${r.steps} steps, lang ${r.lang}, ${r.tips} tips, safety ${r.safe}, course link ${r.course}`);
       }
     }
     const sh = await stageShot(q);
-    ok(!q.errs.length && sh.length > 20000, `${name}: all ${IDS.length} moves open and fit, in English and Spanish, with the 3D drawn` + (q.errs.length ? " — " + q.errs[0] : ""));
+    ok(!q.errs.length && sh.length > 20000, `${name}: all ${IDS.length} moves open and fit, in English and Spanish, each with What helps, the safety box and the course link, and the 3D drawn` + (q.errs.length ? " — " + q.errs[0] : ""));
     await q.context().close();
   }
   await b.close(); server.close();

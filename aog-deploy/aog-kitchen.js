@@ -104,7 +104,7 @@ function go(whole) {
 }
 function tick(now) {
   if (!P.playing) return;
-  const dt = P.last ? Math.min(0.05, (now - P.last) / 1000) : 0; P.last = now;
+  const dt = P.last ? Math.min(0.1, (now - P.last) / 1000) : 0; P.last = now;
   const st = stepOf(), dur = plan(st).total * SPEEDS[S.speed][0];
   P.u = Math.min(1, P.u + dt / dur);
   if (P.u >= 1) {

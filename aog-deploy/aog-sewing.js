@@ -240,12 +240,16 @@ function stab(H, x, z, from, u, nodesExtra, opt) {
   const iE = H.pt(add(P, mul(u, 0.016)));
   return { i0, iE };
 }
-/* pull the needle out and up, away from the cloth, until the thread lies flat (above the front or below the back) */
+/* pull the needle out and up, away from the cloth, until the thread lies flat (above the front or below the back).
+   A needle is straight: it first slides out along its own line until the eye is clear of the cloth, then lifts away. */
 function pullOut(H, x, z, side, dx, dz) {
-  const s = side === "F" ? 1 : -1, y = v => (side === "F" ? topOf(x, z, H.kind) + v : -v) + surf(x, z);
-  H.pt([x + dx * 0.45, y(0.02), z + dz * 0.45]);
-  H.pt([x + dx * 0.8, y(0.045), z + dz * 0.8]);
-  return H.pt([x + dx, y(0.07), z + dz]);
+  const sgn = side === "F" ? 1 : -1, c = H.c, a = c[c.length - 2], b = c[c.length - 1];
+  const d = nrm(sub(b, a)), Q = add(b, mul(d, NL * 0.95));
+  H.pt(add(b, mul(d, NL * 0.5)));
+  H.pt(Q);
+  H.pt(add(Q, [dx * 0.4 + d[0] * 0.01, sgn * 0.016, dz * 0.4 + d[2] * 0.01]));
+  H.pt(add(Q, [dx * 0.75 + d[0] * 0.014, sgn * 0.034, dz * 0.75 + d[2] * 0.014]));
+  return H.pt(add(Q, [dx + d[0] * 0.016, sgn * 0.05, dz + d[2] * 0.016]));
 }
 /* the standard hand-sewing rhythm for a scoop stitch, split over the steps given */
 function scoopStitch(tl, H, a, b, z, sDown, sUp, sPull, pace) {
@@ -275,6 +279,17 @@ function deriveHand(H, pre) {
     const lines = routeLines(nodes, st);
     const eyeS = Math.max(0, sEye), tipS = st.tipS;
     const needle = pathPart(sp, eyeS, Math.max(eyeS + 0.002, Math.min(tipS, sp.s[sp.s.length - 1])), 0.002);
+    // a needle is straight: whenever it is not passing through the cloth it is drawn as one straight piece, tip on its track
+    if (needle.length > 2) {
+      const rs = needle.map(q => region(q, st.work.kind));
+      const crossing = rs.includes("in") || (rs.includes("a") && rs.includes("b"));
+      if (!crossing) {
+        const tp = needle[needle.length - 1], dn = nrm(sub(tp, needle[0]));
+        const straight = needle.map((q, i) => add(tp, mul(dn, -NL * (1 - i / (needle.length - 1)))));
+        const side = rs.find(r => r !== "o"), rs2 = straight.map(q => region(q, st.work.kind));
+        if (rs2.every(r => r === "o" || r === side) && clear(needle[0], straight[0], st.work.kind)) needle.splice(0, needle.length, ...straight);
+      }
+    }
     st.needle = st.needleShow ? needle : null;
     const eye = needle[0];
     st.eye = eye;
@@ -319,6 +334,12 @@ function deriveHand(H, pre) {
 const sideF = dir => nrm([dir * 0.32, 1, 0.12]);
 const sideB = dir => nrm([dir * 0.32, -1, 0.1]);
 function flipSeg(tl, step, to) { tl.add(step, 1.6, (st, u) => { st.work.flip = to ? u : 1 - u; }); }
+/* before the work is turned over, the needle is carried off past the right edge, so the hands leave the stitches in view */
+function parkSeg(tl, H, step, side) {
+  const sg = side === "F" ? 1 : -1;
+  H.pt([FX + 0.02, sg * 0.05, 0.03]);
+  tip(tl, H, step, 1.4, H.pt([FX + 0.055, sg * 0.022, 0.05]), 0.85);
+}
 function holdSeg(tl, step, d) { tl.add(step, d || 0.8, null); }
 
 const BUILD = {};
@@ -339,6 +360,7 @@ BUILD["running-stitch"] = () => {
   const e = stab(H, x(9), z, "F", sideB(dir));
   tip(tl, H, 5, 1, e.i0, 0.2); tip(tl, H, 5, 0.9, e.iE, 0.2); tip(tl, H, 5, 0.35, e.iE, 0.2, 0.85);
   tip(tl, H, 5, 1.3, pullOut(H, x(9), z, "B", -0.01, 0.012), 0.85);
+  parkSeg(tl, H, 6, "B");
   flipSeg(tl, 6, 1); holdSeg(tl, 6, 0.8);
   H.done(); tl.derive = deriveHand(H); tl.track = H;
   return finish(tl, 7);
@@ -358,6 +380,7 @@ BUILD.backstitch = () => {
   const e = stab(H, x(5), z, "F", nrm([-dir * 0.3, -1, 0.1]));
   tip(tl, H, 6, 1, e.i0, 0.2); tip(tl, H, 6, 0.9, e.iE, 0.2); tip(tl, H, 6, 0.35, e.iE, 0.2, 0.85);
   tip(tl, H, 6, 1.3, pullOut(H, x(5), z, "B", -0.01, 0.012), 0.85);
+  parkSeg(tl, H, 7, "B");
   flipSeg(tl, 7, 1); holdSeg(tl, 7, 0.8);
   H.done(); tl.derive = deriveHand(H); tl.track = H;
   return finish(tl, 8);
@@ -386,6 +409,7 @@ BUILD.whipstitch = () => {
     tip(tl, H, sNow[2], 0.4 * pace, s.iE, 0.2, 0.85);
     tip(tl, H, sNow[2], 1.2 * pace, pullOut(H, x(k), zi, "F", -0.004, 0.03), 0.85);
   }
+  parkSeg(tl, H, 6, "B");
   flipSeg(tl, 6, 1); holdSeg(tl, 6, 0.8);
   H.done(); tl.derive = deriveHand(H); tl.track = H;
   return finish(tl, 7);
@@ -396,7 +420,8 @@ BUILD["slip-stitch"] = () => {
   const sp = 0.0095, x = k => 0.04 - k * sp, dir = -1, zf = 0.0012, zc = -0.0028, n = 6;
   // the needle starts inside the fold and comes out of it (the knot stays hidden in the fold)
   const P0 = [x(0), 1.5 * LT + surf(x(0), zf), zf];
-  H.pt(add(P0, [-dir * 0.045, 0, 0])); const i0 = H.pt(add(P0, [-dir * 0.012, 0, 0]));
+  const inFold = dx => [x(0) + dx, 1.5 * LT + surf(x(0) + dx, zf), zf];   // inside the fold, following the cloth's curve
+  H.pt(inFold(-dir * 0.045)); H.pt(inFold(-dir * 0.028)); const i0 = H.pt(inFold(-dir * 0.012));
   H.pt(P0, [knotNode(x(0) - dir * 0.008, zf, null, true), { L: "IF", x: x(0), z: zf }, { L: "F", x: x(0), z: zf }]);
   H.pt(H.S(x(0) + dir * 0.004, zf, 0.0025)); const iE0 = H.pt(H.S(x(0) + dir * 0.012, zf + 0.002, 0.006));
   H.last = i0;
@@ -427,6 +452,7 @@ BUILD["slip-stitch"] = () => {
     tip(tl, H, sP, 0.4 * pace, iE, 0.2, 0.85);
     tip(tl, H, sP, 1.2 * pace, pullOut(H, e1, zf, "F", 0.02, -0.02), 0.85);
   }
+  parkSeg(tl, H, 6, "F");
   flipSeg(tl, 6, 1); holdSeg(tl, 6, 0.8);
   H.done(); tl.derive = deriveHand(H); tl.track = H;
   return finish(tl, 7);
@@ -456,6 +482,7 @@ BUILD["blanket-stitch"] = () => {
     tip(tl, H, sP, 0.4 * pace, iE, 0.2, 0.85);
     tip(tl, H, sP, 1.2 * pace, pullOut(H, xi, EDGE, "F", -0.006, -0.035), 0.85);
   }
+  parkSeg(tl, H, 5, "F");
   flipSeg(tl, 5, 1); holdSeg(tl, 5, 0.8);
   H.done(); tl.derive = deriveHand(H); tl.track = H;
   return finish(tl, 6);
@@ -1088,7 +1115,12 @@ function needleCheck(id, samples) {
     const holes = [];
     // the needle's tip has passed these points of its track: every place on the track where it went through the cloth
     const sp = H.sp, upTo = st.tipS;
-    for (let k = 0; k < sp.pts.length && sp.s[k] <= upTo; k++) if (region(sp.pts[k], H.kind) === "in") holes.push(sp.pts[k]);
+    for (let k = 0; k < sp.pts.length && sp.s[k] <= upTo; k++) {
+      const r = region(sp.pts[k], H.kind);
+      if (r === "in") holes.push(sp.pts[k]);
+      // a thin layer can fall between two samples of the track: the place where the track changes side counts too
+      else if (k && r !== "o") { const r0 = region(sp.pts[k - 1], H.kind); if (r0 !== r && r0 !== "o") holes.push(mix(sp.pts[k - 1], sp.pts[k], 0.5)); }
+    }
     // pre-made stitches (tie-off) were made by a needle earlier: their holes count
     if (tl.pre) tl.pre(st).forEach(n => { if (CLOTH[n.L]) holes.push([n.x, 0, n.z]); });
     for (const line of st.threads || []) {
@@ -1096,7 +1128,9 @@ function needleCheck(id, samples) {
         const a = line[k - 1], b = line[k], ra = region(a, H.kind), rb = region(b, H.kind);
         const crosses = ra !== rb && ra !== "o" && rb !== "o";     // past a cut edge is not through the cloth
         if (!crosses) continue;
-        const m = mix(a, b, 0.5);
+        let lo = 0, hi = 1;                                    // where along this piece of thread it changes side
+        for (let it = 0; it < 24; it++) { const md = (lo + hi) / 2; if (region(mix(a, b, md), H.kind) === ra) lo = md; else hi = md; }
+        const m = mix(a, b, (lo + hi) / 2);
         const near = holes.some(h => Math.hypot(h[0] - m[0], h[2] - m[2]) < 0.0015);
         if (!near) bad.push({ t: +st.t.toFixed(2), at: [+m[0].toFixed(4), +m[1].toFixed(4), +m[2].toFixed(4)] });
       }
@@ -1256,22 +1290,24 @@ function go() {
   playRange(from, P.tl.dur);
 }
 function stepIndexAt(t) { let k = 0; P.tl.steps.forEach((r, i) => { if (r && r[0] <= t + 1e-6) k = i; }); return k; }
+const END = 1e-4;   // a step's end is shown a hair before the next step starts, so that step stays lit
+const stepEnd = k => k >= P.tl.steps.length - 1 ? P.tl.dur : P.tl.steps[k][1] - END;
 function next() {
-  // ▶ plays the next step once (or the current one, if it has not been played to its end)
+  // ▶ plays the next step once (or the rest of the current one, if it has not reached its end)
   const k = stepIndexAt(P.t), r = P.tl.steps[k];
-  if (P.t < r[1] - 1e-6 && P.t > r[0] + 1e-6) { playRange(P.t, r[1]); return; }
-  const kk = P.t >= r[1] - 1e-6 ? k + 1 : k;
+  if (P.t > r[0] + 1e-3 && P.t < stepEnd(k) - 1e-3) { playRange(P.t, stepEnd(k)); return; }
+  const kk = P.t >= stepEnd(k) - 1e-3 ? k + 1 : k;
   if (kk >= P.tl.steps.length) return;
-  playRange(P.tl.steps[kk][0], P.tl.steps[kk][1]);
+  playRange(P.tl.steps[kk][0], stepEnd(kk));
 }
 function prev() {
+  // ◀ shows the end of the step before the one that is lit
   stop(); P.flip = null;
-  const k = stepIndexAt(P.t), r = P.tl.steps[k];
-  const target = P.t > r[1] - 1e-6 && k >= 0 ? k : k - 1;
-  if (target < 0) { scene(0); return; }
-  scene(P.tl.steps[target][1] - 1e-4);
+  const k = stepIndexAt(P.t);
+  if (k - 1 < 0) { scene(0); return; }
+  scene(stepEnd(k - 1));
 }
-function showStep(k) { stop(); P.flip = null; const r = P.tl.steps[k]; scene(r[1] - 1e-4); }
+function showStep(k) { stop(); P.flip = null; scene(stepEnd(k)); }
 function openMove(id, push) {
   stop();
   if (!MOVES[id]) id = "running-stitch";
@@ -1338,6 +1374,7 @@ function wire() {
   window.addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(() => { if (G3 && G3.resize()) draw(); }, 120); });
   window.addEventListener("hashchange", () => { const k = location.hash.slice(1); if (MOVES[k] && k !== S.move) openMove(k, false); });
   window.addEventListener("pagehide", () => { if (G3) { G3.dispose(); G3 = null; G3state = ""; } });
+  window.addEventListener("pageshow", e => { if (e.persisted && !G3) load3D(); });   // back from the browser's page cache
 }
 window.AOGSewing = { ENGINE, BUILD, timeline, sample, finalPattern, needleCheck, legs, ORDER, MOVES, P, state: S, open: id => openMove(id, true), go, next, prev,
   G3: () => G3, G3state: () => G3state, scene };

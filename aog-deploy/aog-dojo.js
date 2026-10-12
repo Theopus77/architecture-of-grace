@@ -275,10 +275,10 @@ new MutationObserver(() => { $("themeBtn").textContent = isDark() ? L("Light", "
   .observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 let rsT = 0;
 window.addEventListener("resize", () => { clearTimeout(rsT); rsT = setTimeout(() => { if (G3 && G3.resize()) show(); }, 120); });
-window.addEventListener("hashchange", () => {
+window.addEventListener("hashchange", () => {   // a lesson link or a typed address: open that move first, then the side
   const a = addr();
-  if (a.left !== mirror) setMirror(a.left);
-  if (BY[a.id] && a.id !== S.id) open(a.id, false);
+  if (BY[a.id] && a.id !== MV.id) { if (S.ghost) setGhost(false); open(a.id, false); }
+  if (a.left !== mirror) setMirror(a.left); else writeAddr();   // writeAddr tidies #id?side=left into ?side=left#id
 });
 const st = $("stage");
 st.addEventListener("pointerdown", e => { if (G3) G3.onDown(e); });
@@ -292,7 +292,7 @@ window.AOGDojo = { MOVES, P, state: S, seek: t => { stop(); P.t = Math.max(0, Ma
 
 pageWords();
 const start = addr().id;
-if (BY[start]) S.id = start;
+if (BY[start]) { S.id = start; S.ghost = false; }   // a lesson link opens the move ready to play, not as a ghost
 picker();
 $("mirrorBtn").setAttribute("aria-pressed", String(mirror)); $("capSide").hidden = !mirror;
 $("ghostBtn").setAttribute("aria-pressed", String(S.ghost));
