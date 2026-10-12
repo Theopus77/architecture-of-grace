@@ -5,6 +5,7 @@ U.S. History validator, with the LEVEL rules from SPEC.md."""
 import json, sys, re, os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from outline import UNITS, BANDS
+import mar_practice as practice
 
 LEVELS = {
  "k2":  dict(read=(2,3), para=(80,260),  words=(1,3), choices=3, story=(3,4), sp=(120,400), intro=(120,400), main=120, review=6, test=10, wwords=8),
@@ -46,7 +47,7 @@ U = next((x for x in UNITS if x["n"] == n), None)
 if not U: print("unit n not in outline"); sys.exit(1)
 L = LEVELS[next(b for b in BANDS if b["id"] == U["band"])["level"]]
 nch = L["choices"]
-nlessons = 0; nq = 0
+nlessons = 0; nq = 0; npractice = 0
 s(u.get("title"), "title"); s(u.get("years"), "years")
 intro = u.get("intro")
 if not (isinstance(intro, list) and 2 <= len(intro) <= 3): E("intro", "2-3 paragraphs")
@@ -72,21 +73,43 @@ for ci, c in enumerate(chs):
         for i, p in enumerate(ps): s(p, f"{P}.story.paragraphs[{i}]", *L["sp"])
     s(st.get("think"), P + ".story.think", 20, 250)
     secs = c.get("sections") or []
-    if not (3 <= len(secs) <= 4): E(P + ".sections", "3-4 sections")
+    hist = [x for x in secs if not x.get("practice")]
+    prac = [x for x in secs if x.get("practice")]
+    if not (3 <= len(hist) <= 4): E(P + ".sections", "3-4 sections")
+    if prac and (len(prac) > 1 or ci != len(chs) - 1 or not secs[-1].get("practice")):
+        E(P + ".sections", "one Practice section, the last section of the unit's last chapter")
     for si, sec in enumerate(secs):
         SP = f"{P}.sections[{si}]"
         s(sec.get("title"), SP + ".title", 3, 70)
         ls = sec.get("lessons") or []
+        isp = bool(sec.get("practice")); npractice += len(ls) if isp else 0
         if not (2 <= len(ls) <= 4): E(SP + ".lessons", "2-4 lessons")
         for li, l in enumerate(ls):
             LP = f"{SP}.lessons[{li}]"; nlessons += 1
             s(l.get("title"), LP + ".title", 3, 70)
             s(l.get("mainIdea"), LP + ".mainIdea", 25, L["main"])
             rd = l.get("reading")
-            if not (isinstance(rd, list) and L["read"][0] <= len(rd) <= L["read"][1]): E(LP + ".reading", f"{L['read'][0]}-{L['read'][1]} paragraphs")
+            if isp:
+                # AOG-MAR-PRACTICE-V1: a purpose line, numbered steps, "What helps:", "Stay safe:"; a /dojo button.
+                if not (isinstance(rd, list) and 5 <= len(rd) <= 10): E(LP + ".reading", "5-10 paragraphs (purpose, numbered steps, what helps, stay safe)")
+                else:
+                    for i, p in enumerate(rd): s(p, f"{LP}.reading[{i}]", 15, 600)
+                    steps = [p for p in rd if re.match(r"\d+\. ", p)]
+                    if not (3 <= len(steps) <= 6) or [int(p.split(".")[0]) for p in steps] != list(range(1, len(steps) + 1)): E(LP + ".reading", "3-6 numbered steps, 1. 2. 3. …")
+                    if not any(p.startswith("What helps:") for p in rd): E(LP + ".reading", "needs a 'What helps:' paragraph")
+                    if not any(p.startswith("Stay safe:") for p in rd): E(LP + ".reading", "needs a 'Stay safe:' paragraph")
+                words(l.get("words"), LP + ".words", 1, 5)
+                tr = l.get("try") or {}
+                href = tr.get("href", "")
+                m = re.fullmatch(r"/dojo(?:#([a-z0-9-]+))?", href)
+                if not m: E(LP + ".try", "a /dojo or /dojo#<id> button")
+                elif m.group(1) and m.group(1) not in practice.ALLOWED[U["band"]]: E(LP + ".try", f"move '{m.group(1)}' is not allowed for band {U['band']}")
+                s(tr.get("en"), LP + ".try.en", 3, 40); s(tr.get("es"), LP + ".try.es", 3, 40)
             else:
-                for i, p in enumerate(rd): s(p, f"{LP}.reading[{i}]", *L["para"])
-            words(l.get("words"), LP + ".words", *L["words"])
+                if not (isinstance(rd, list) and L["read"][0] <= len(rd) <= L["read"][1]): E(LP + ".reading", f"{L['read'][0]}-{L['read'][1]} paragraphs")
+                else:
+                    for i, p in enumerate(rd): s(p, f"{LP}.reading[{i}]", *L["para"])
+                words(l.get("words"), LP + ".words", *L["words"])
             lk = l.get("look") or {}
             t = lk.get("type")
             if t not in ("source", "data", "think"): E(LP + ".look.type", "source | data | think")
@@ -141,4 +164,4 @@ for k in range(nch):
 
 if errs:
     print(f"{len(errs)} PROBLEM(S):"); [print(" -", e) for e in errs[:80]]; sys.exit(1)
-print(f"OK · unit {u['n']} · {len(chs)} chapters · {nlessons} lessons · {nq} questions · positions {dict(pos)}")
+print(f"OK · unit {u['n']} · {len(chs)} chapters · {nlessons} lessons ({npractice} practice) · {nq} questions · positions {dict(pos)}")

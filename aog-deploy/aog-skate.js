@@ -29,9 +29,10 @@ const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;",
 /* ── saved choices (this device only) ── */
 const DEF = {
   lang: "en", room: "build", speed: 1, stance: "regular",
-  ramp: { shape: "mini", h: 1.2, wheel: "ure", mass: 50, pump: false, guess: "" },
-  ollie: { pop: 0.7, slide: "on", jump: 0.3, forces: true, ghost: false },
-  grind: { surface: "metal", trick: "fifty", v: 3, len: 2.5, mass: 50 },
+  ramp: { shape: "mini", h: 1.2, wheel: "ure", mass: 50, pump: false, guess: "", view: "2d", cam: "wide" },
+  ollie: { pop: 0.7, slide: "on", jump: 0.3, forces: true, ghost: false, view: "2d", cam: "wide" },
+  grind: { surface: "metal", trick: "fifty", v: 3, len: 2.5, mass: 50, view: "2d", cam: "wide" },
+  free: { view: "map", start: "flat", cam: "behind" },
   balance: { mode: "stand", com: 0, lean: 10, v: 3, truck: "med" },
   flip: { mode: "board", trick: "kickflip", view: "corner", arms: "out" },
   timeline: { i: 0 },
@@ -45,6 +46,8 @@ try { S = JSON.parse(localStorage.getItem(KEY) || "null"); } catch (e) { S = nul
 if (!S || typeof S !== "object") { S = JSON.parse(JSON.stringify(DEF)); try { if (localStorage.getItem("aog.lang") === "es") S.lang = "es"; } catch (e) {} }
 for (const k in DEF) { if (S[k] == null) S[k] = JSON.parse(JSON.stringify(DEF[k])); else if (typeof DEF[k] === "object") for (const j in DEF[k]) if (S[k][j] == null) S[k][j] = DEF[k][j]; }
 if (S.tricks.view === "3d") S.tricks.view = "move";   // 3D never starts on its own: a new visit opens on Moving, and 3D waits for a tap
+["ramp", "ollie", "grind"].forEach(k => { if (S[k].view === "3d") S[k].view = "2d"; });   // AOG-SKATE-3D-ROOMS-V1: the same for the physics rooms
+if (S.free.view === "3d") S.free.view = "map";                                         // and free skate opens on its map
 function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
 const es = () => S.lang === "es";
 const L = (en, sp) => es() ? sp : en;
@@ -601,6 +604,7 @@ ${L("The mass cancels: a heavy rider and a light rider reach the same speed.", "
   return `<p class="kicker">${L("Room 1 · Energy", "Sala 1 · Energía")}</p>
   <h2>${L("Ramp and energy", "Rampa y energía")}</h2>
   <p class="say">${L("Pick a ramp and a starting height, guess your speed at the bottom, then press Go. Watch the energy bars: what you lose in height you gain in speed.", "Elige una rampa y una altura de salida, adivina tu rapidez abajo y pulsa Ir. Mira las barras: lo que pierdes en altura lo ganas en rapidez.")}</p>
+  ${viewSeg("ramp")}
   <div class="ctl"><span class="lab">${L("Ramp", "Rampa")}</span><div class="seg">${["mini", "vert", "hill"].map(k => seg("shape", k, L(SHAPES[k].en, SHAPES[k].es))).join("")}</div></div>
   <div class="ctl"><label for="rH">${L("Start height", "Altura de salida")} <output>${num(o.h, 1)} m</output></label><input type="range" id="rH" min="0.2" max="${hmax}" step="0.1" value="${o.h}"></div>
   <div class="ctl"><span class="lab">${L("Wheels", "Ruedas")}</span><div class="seg">${["ure", "clay", "steel", "ideal"].map(k => seg("wheel", k, L(WHEELS[k].en, WHEELS[k].es))).join("")}</div>
@@ -617,7 +621,7 @@ ${L("The mass cancels: a heavy rider and a light rider reach the same speed.", "
   </details>`;
 }
 function rampWire() {
-  const o = S.ramp;
+  const o = S.ramp; wireView("ramp");
   document.querySelectorAll("#panel [data-k]").forEach(b => b.onclick = () => {
     const k = b.getAttribute("data-k"), v = b.getAttribute("data-v");
     o[k] = v === "true" ? true : v === "false" ? false : v;
@@ -732,8 +736,11 @@ function drawOllie(fr) {
       text(L("Grip tape friction drags the board up", "La lija arrastra la tabla hacia arriba"), Math.min(X(b[0]) + 10, W - 10), Y(b[1]) - 52, { m: .8, c: C.friction, a: X(b[0]) > W * .6 ? "right" : "left", bg: C.sky });
     }
   }
+  text(olliePhase(fr), 16, 34, { w: 700, m: 1.05, c: C.steel });
+}
+function olliePhase(fr) {
   const PH = { crouch: L("1 · Crouch", "1 · Agáchate"), pop: L("2 · Pop", "2 · Golpe"), slide: L("3 · Slide", "3 · Desliza"), rise: L("4 · Jump", "4 · Salta"), peak: L("5 · Top", "5 · Arriba"), level: L("5 · Level at the top", "5 · Nivelada arriba"), fall: L("6 · Come down", "6 · Baja"), land: L("7 · Land, knees bent", "7 · Aterriza, rodillas dobladas") };
-  text(PH[fr.phase] || "", 16, 34, { w: 700, m: 1.05, c: C.steel });
+  return PH[fr.phase] || "";
 }
 function ollieUnder(fr) {
   if (!fr || !OR) return "";
@@ -759,6 +766,7 @@ function olliePanel() {
   return `<p class="kicker">${L("Room 2 · Levers and friction", "Sala 2 · Palancas y fricción")}</p>
   <h2>${L("The ollie", "El ollie")}</h2>
   <p class="say">${L("The ollie is the jump under almost every trick. Set the snap, the slide and the jump, press Go, then step through it with ◀ ▶.", "El ollie es el salto debajo de casi todos los trucos. Elige el golpe, el deslizamiento y el salto, pulsa Ir y luego avanza paso a paso con ◀ ▶.")}</p>
+  ${viewSeg("ollie")}
   <div class="ctl"><label for="oP">${L("Snap of the tail", "Golpe de la cola")} <output>${num(o.pop * 100, 0)}%</output></label><input type="range" id="oP" min="0.2" max="1" step="0.05" value="${o.pop}"></div>
   <div class="ctl"><span class="lab">${L("When the front foot slides", "Cuándo se desliza el pie de adelante")}</span><div class="seg">${seg("slide", "early", L("Too early", "Muy pronto"))}${seg("slide", "on", L("Right after the snap", "Justo después del golpe"))}${seg("slide", "late", L("Too late", "Muy tarde"))}${seg("slide", "none", L("No slide", "Sin deslizar"))}</div></div>
   <div class="ctl"><label for="oJ">${L("How high you jump", "Qué tan alto saltas")} <output>${num(o.jump * 100, 0)} cm</output></label><input type="range" id="oJ" min="0.1" max="0.5" step="0.02" value="${o.jump}"></div>
@@ -777,7 +785,7 @@ t = 2·√(2h / g) = 2·√(2 × ${num(o.jump + 0.12, 2)} / 9.8) = ${num(r ? r.f
   </details>`;
 }
 function ollieWire() {
-  const o = S.ollie;
+  const o = S.ollie; wireView("ollie");
   document.querySelectorAll("#panel [data-k]").forEach(b => b.onclick = () => { const k = b.getAttribute("data-k"), v = b.getAttribute("data-v"); o[k] = v === "true" ? true : v === "false" ? false : v; save(); if (k === "forces" || k === "ghost") { panel(); paint(); } else ollieReset(); });
   $("oP").oninput = e => { o.pop = +e.target.value; e.target.previousElementSibling.querySelector("output").textContent = num(o.pop * 100, 0) + "%"; save(); ollieReset(true); };
   $("oJ").oninput = e => { o.jump = +e.target.value; e.target.previousElementSibling.querySelector("output").textContent = num(o.jump * 100, 0) + " cm"; save(); ollieReset(true); };
@@ -853,8 +861,12 @@ function drawGrind(fr) {
       text(L("friction", "fricción"), x - 50 - 80 * GR.mu, y - 18, { a: "right", m: .75, c: C.friction, bg: C.sky });
     }
   }
-  // speed against distance, under the drawing
-  const gx = 50, gy = H - 24, gw = W - 80, gh = 120, vmax = 6;
+  drawGrindGraph(fr, span);
+}
+/* speed against distance, under the drawing (and over the 3D picture, on a card) */
+function drawGrindGraph(fr, span, card) {
+  const o = S.grind, gx = 50, gy = H - 24, gw = W - 80, gh = 120, vmax = 6;
+  if (card) { ctx.save(); ctx.fillStyle = alpha(C.card, 0.9); ctx.strokeStyle = C.line; ctx.lineWidth = 1.5; roundRect(gx - 34, gy - gh - 14, gw + 52, gh + 34, 12); ctx.fill(); ctx.stroke(); ctx.restore(); }
   const GX = x => gx + (x + 1.2) / span * gw, GY = v => gy - v / vmax * gh;
   ctx.strokeStyle = C.line; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(gx, gy - gh); ctx.lineTo(gx, gy); ctx.lineTo(gx + gw, gy); ctx.stroke();
   text(L("speed (m/s)", "rapidez (m/s)"), gx + 6, gy - gh + 2, { m: .7, c: C.soft, b: "top" });
@@ -878,6 +890,7 @@ function grindPanel() {
   return `<p class="kicker">${L("Room 3 · Friction", "Sala 3 · Fricción")}</p>
   <h2>${L("Grinds and slides", "Grinds y slides")}</h2>
   <p class="say">${L("A grind is the trucks scraping along an edge; a slide is the wood of the deck. Friction slows you the whole way. Will you reach the end?", "Un grind es raspar los ejes por un borde; un slide es raspar la madera de la tabla. La fricción te frena todo el camino. ¿Llegarás al final?")}</p>
+  ${viewSeg("grind")}
   <div class="ctl"><label for="gS">${L("Surface", "Superficie")}</label><select class="sel" id="gS">${Object.keys(SURF).map(k => `<option value="${k}" ${o.surface === k ? "selected" : ""}>${L(SURF[k].en, SURF[k].es)}</option>`).join("")}</select></div>
   <div class="ctl"><span class="lab">${L("Trick", "Truco")}</span><div class="seg">${Object.keys(GTRICK).map(k => seg("trick", k, L(GTRICK[k].en, GTRICK[k].es))).join("")}</div></div>
   <div class="ctl"><label for="gV">${L("Speed when you lock in", "Rapidez al entrar")} <output>${num(o.v, 1)} m/s</output></label><input type="range" id="gV" min="1" max="6" step="0.1" value="${o.v}"></div>
@@ -897,7 +910,7 @@ d = ${num(o.v, 1)}² / (2 × ${num(r.a, 2)}) = ${num(r.d, 2)} m</div>
   </details>`;
 }
 function grindWire() {
-  const o = S.grind;
+  const o = S.grind; wireView("grind");
   document.querySelectorAll("#panel [data-k]").forEach(b => b.onclick = () => { o[b.getAttribute("data-k")] = b.getAttribute("data-v"); save(); grindReset(); });
   $("gS").onchange = e => { o.surface = e.target.value; save(); grindReset(); };
   [["gV", "v", 1, " m/s"], ["gL", "len", 1, " m"], ["gM", "mass", 0, " kg"]].forEach(([id, k, d, u]) => {
@@ -1716,28 +1729,55 @@ function drawFeetMap(t, cx, cy, sc, small) {
 }
 let TR = null;
 function curTrick() { return TRICKS.find(x => x.id === S.tricks.id) || TRICKS[0]; }
-/* ── the 3D park (AOG-SKATE-3D-V1): three.js, loaded the first time someone picks 3D; it draws only when asked ── */
+/* ── the 3D park (AOG-SKATE-3D-V1): three.js, loaded the first time someone picks 3D; it draws only when asked ──
+   AOG-SKATE-3D-ROOMS-V1 (2026-10-12) — Jimmy: "more realism … do 1-3". The Ramp, Ollie and Grinds rooms and free skate
+   can show the same park in 3D: the room's own run (simRamp, simOllie, simGrind) poses the rider, and the energy bars,
+   force arrows and marks stand in the scene. The drawings stay the light default; 3D waits for a tap, every visit. */
 let G3 = null, G3state = "";   // "", "loading", "ready", "failed"
-function want3D() { return S.room === "tricks" && S.tricks.view === "3d"; }
+const ROOMS3D = ["tricks", "ramp", "ollie", "grind", "free"];
+function want3D() { return ROOMS3D.includes(S.room) && S[S.room].view === "3d"; }
 function load3D() {
   if (G3state) return;
   G3state = "loading";
   import("/aog-skate3d.js").then(m => {
-    G3 = m.create({ host: $("stage"), before: cv, colors: () => C, BOARD, deckMid, path: () => demoPath().pts, at: q => at(demoPath(), q),
-      dark: () => document.documentElement.getAttribute("data-theme") === "dark", onCam: k => { S.tricks.cam = k; save(); const sel = $("kCam"); if (sel) sel.value = k; } });
-    G3.setCam(S.tricks.cam || "follow"); G3state = "ready"; paint();
+    G3 = m.create({ host: $("stage"), before: cv, colors: () => C, BOARD, deckMid, L, path: () => demoPath().pts, at: q => at(demoPath(), q), atPath: at, demoPath, SHAPES, FPARK, fRamp, WHEELS,
+      dark: () => document.documentElement.getAttribute("data-theme") === "dark",
+      onCam: k => { const o = S[S.room]; if (o && typeof o === "object") { o.cam = k; save(); } const sel = $("kCam"); if (sel) sel.value = k; } });
+    G3.setCam((S[S.room] && S[S.room].cam) || "follow"); G3state = "ready"; paint();
   }).catch(err => { G3state = "failed"; console.warn("3D park:", err); paint(); });
+}
+/* draw the 3D picture when it is ready; until then one short line says it is on the way */
+function draw3D(spec) {
+  if (G3state === "ready") {
+    ctx.clearRect(0, 0, W, H); G3.show(true); G3.resize(sizedW, Math.round(sizedW * H / W)); G3.draw(spec); return true;
+  }
+  if (!G3state) load3D();
+  text(G3state === "failed" ? L("3D could not start on this device. Pick Drawing to watch it.", "El 3D no pudo iniciar en este equipo. Elige Dibujo para verlo.") : L("Building the 3D park…", "Construyendo el parque en 3D…"), W / 2, H / 2, { a: "center", m: 1, w: 700, c: C.soft });
+  return false;
+}
+/* the camera menu under a 3D picture: the trick book, the physics rooms and free skate each have their own shots */
+const CAMS = {
+  tricks: [["follow", "Filmer, rolling along", "Camarógrafo, rodando al lado"], ["fish", "Fisheye, up close", "Ojo de pez, de cerca"], ["side", "From the side", "De lado"], ["orbit", "Walk around (drag the picture)", "Rodear (arrastra la imagen)"]],
+  room: [["wide", "Wide view", "Vista amplia"], ["follow", "Follow the rider", "Seguir al patinador"], ["orbit", "Walk around (drag the picture)", "Rodear (arrastra la imagen)"]],
+  free: [["behind", "Behind the rider", "Detrás del patinador"], ["park", "The whole park", "Todo el parque"], ["orbit", "Walk around (drag the picture)", "Rodear (arrastra la imagen)"]]
+};
+function camSel(room) {
+  const list = CAMS[room] || CAMS.room, cur = S[room].cam || list[0][0];
+  return `<div class="ctl"><label for="kCam">${L("Camera", "Cámara")}</label><select class="sel" id="kCam">${list.map(([k, en, sp]) => `<option value="${k}" ${cur === k ? "selected" : ""}>${L(en, sp)}</option>`).join("")}</select><p class="hint">${L("Drag the picture sideways to walk around the rider.", "Arrastra la imagen de lado para rodear al patinador.")}</p></div>`;
+}
+/* Drawing | 3D for the physics rooms */
+function viewSeg(room) {
+  const o = S[room];
+  return `<div class="ctl"><span class="lab">${L("Watch it", "Míralo")}</span><div class="seg"><button type="button" data-v3="2d" aria-pressed="${o.view !== "3d"}">${L("Drawing", "Dibujo")}</button><button type="button" data-v3="3d" aria-pressed="${o.view === "3d"}">3D</button></div></div>${o.view === "3d" ? camSel(room) : ""}`;
+}
+function wireView(room) {
+  document.querySelectorAll("#panel [data-v3]").forEach(b => b.onclick = () => { S[room].view = b.getAttribute("data-v3"); save(); panel(); paint(); });
+  if ($("kCam")) $("kCam").onchange = e => { S[room].cam = e.target.value; save(); if (G3) G3.setCam(e.target.value); paint(); };
 }
 function drawTricks(fr) {
   const t = curTrick(), D = DEMOS[t.id];
-  if (want3D()) {
-    if (G3state === "ready") {
-      ctx.clearRect(0, 0, W, H); G3.show(true); G3.resize(sizedW, Math.round(sizedW * H / W)); G3.render(fr || P.frames[0], D);
-    } else {
-      if (!G3state) load3D();
-      text(G3state === "failed" ? L("3D could not start on this device. Pick Moving to watch the trick.", "El 3D no pudo iniciar en este equipo. Elige En movimiento para ver el truco.") : L("Building the 3D park…", "Construyendo el parque en 3D…"), W / 2, H / 2, { a: "center", m: 1, w: 700, c: C.soft });
-    }
-  } else if (D && S.tricks.view === "seq") drawSequence(D, P.frames); else if (D) drawDemo(fr, D);
+  if (want3D()) draw3D({ kind: "trick", fr: fr || P.frames[0], D, cam: S.tricks.cam || "follow" });
+  else if (D && S.tricks.view === "seq") drawSequence(D, P.frames); else if (D) drawDemo(fr, D);
   // the setup from above, top right; the step, top left
   const bw = Math.min(W * 0.34, 300), sc = bw / 1.0, bx = W - bw / 2 - 18, by = 18 + 0.13 * sc + FS * 0.2;
   ctx.save(); ctx.fillStyle = alpha(C.card, 0.92); ctx.strokeStyle = C.line; ctx.lineWidth = 1.5; roundRect(W - bw - 30, 8, bw + 22, 0.26 * sc + FS * 1.6, 12); ctx.fill(); ctx.stroke(); ctx.restore();
@@ -1767,7 +1807,7 @@ function tricksPanel() {
   <h2>${L("Trick book", "Libro de trucos")}</h2>
   <div class="ctl"><label for="kT">${L("Pick a trick", "Elige un truco")}</label><select class="sel" id="kT">${groups}</select></div>
   <div class="ctl"><span class="lab">${L("Watch it", "Míralo")}</span><div class="seg"><button type="button" data-tv="move" aria-pressed="${S.tricks.view !== "seq"}">${L("Moving", "En movimiento")}</button><button type="button" data-tv="seq" aria-pressed="${S.tricks.view === "seq"}">${L("Sequence", "Secuencia")}</button><button type="button" data-tv="3d" aria-pressed="${S.tricks.view === "3d"}">3D</button></div></div>
-  ${S.tricks.view === "3d" ? `<div class="ctl"><label for="kCam">${L("Camera", "Cámara")}</label><select class="sel" id="kCam">${[["follow", L("Filmer, rolling along", "Camarógrafo, rodando al lado")], ["fish", L("Fisheye, up close", "Ojo de pez, de cerca")], ["side", L("From the side", "De lado")], ["orbit", L("Walk around (drag the picture)", "Rodear (arrastra la imagen)")]].map(([k, l]) => `<option value="${k}" ${(S.tricks.cam || "follow") === k ? "selected" : ""}>${l}</option>`).join("")}</select><p class="hint">${L("Drag the picture sideways to walk around the rider.", "Arrastra la imagen de lado para rodear al patinador.")}</p></div>` : ""}
+  ${S.tricks.view === "3d" ? camSel("tricks") : ""}
   <div class="ctl"><div class="seg"><button type="button" data-st="regular" aria-pressed="${S.stance === "regular"}">${L("Regular", "Regular")}</button><button type="button" data-st="goofy" aria-pressed="${S.stance === "goofy"}">Goofy</button></div></div>
   <h3>${esc(c.n)}</h3>
   <p><span class="tag">${esc(L(LV[t.lv][0], LV[t.lv][1]))}</span><span class="tag">${L("Helmet on", "Con casco")}</span>${t.lv >= 2 ? `<span class="tag">${L("Wrist guards and pads", "Muñequeras y protecciones")}</span>` : ""}</p>
@@ -2092,11 +2132,11 @@ function buildWire() {
 
 /* ══ the rooms, the page and the words ══════════════════════════════════════════════════════════════ */
 const ROOMS = {
-  ramp: { en: "Ramp and energy", es: "Rampa y energía", player: true, run: () => rampReset(true), reset: rampReset, draw: () => drawRamp(P.frames[P.k]), under: () => rampUnder(P.frames[P.k]), panel: rampPanel, wire: rampWire,
+  ramp: { en: "Ramp and energy", es: "Rampa y energía", player: true, run: () => rampReset(true), reset: rampReset, draw: () => want3D() ? drawRamp3D(P.frames[P.k]) : drawRamp(P.frames[P.k]), under: () => rampUnder(P.frames[P.k]), panel: rampPanel, wire: rampWire,
     desc: () => L("A side view of a ramp with a skater. ", "Vista de lado de una rampa con un patinador. ") },
-  ollie: { en: "The ollie", es: "El ollie", player: true, run: () => ollieReset(true), reset: ollieReset, draw: () => drawOllie(P.frames[P.k]), under: () => ollieUnder(P.frames[P.k]), panel: olliePanel, wire: ollieWire,
+  ollie: { en: "The ollie", es: "El ollie", player: true, run: () => ollieReset(true), reset: ollieReset, draw: () => want3D() ? drawOllie3D(P.frames[P.k]) : drawOllie(P.frames[P.k]), under: () => ollieUnder(P.frames[P.k]), panel: olliePanel, wire: ollieWire,
     desc: () => L("A side view of a skater doing an ollie. ", "Vista de lado de un patinador haciendo un ollie. ") },
-  grind: { en: "Grinds and slides", es: "Grinds y slides", player: true, run: () => grindReset(true), reset: grindReset, draw: () => drawGrind(P.frames[P.k]), under: () => grindUnder(P.frames[P.k]), panel: grindPanel, wire: grindWire,
+  grind: { en: "Grinds and slides", es: "Grinds y slides", player: true, run: () => grindReset(true), reset: grindReset, draw: () => want3D() ? drawGrind3D(P.frames[P.k]) : drawGrind(P.frames[P.k]), under: () => grindUnder(P.frames[P.k]), panel: grindPanel, wire: grindWire,
     desc: () => L("A skater grinding along a rail, with a graph of speed against distance. ", "Un patinador haciendo grind en un barandal, con una gráfica de rapidez y distancia. ") },
   balance: { en: "Balance and turning", es: "Equilibrio y giros", player: false, run: () => {}, reset: () => { setRun([], 1); panel(); paint(); }, draw: drawBalance, under: balanceUnder, panel: balancePanel, wire: balanceWire,
     desc: () => L("A skater on a board, showing the center of mass. ", "Un patinador en la tabla, con el centro de masa. ") },
