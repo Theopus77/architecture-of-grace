@@ -854,6 +854,10 @@ Play. Make. Listen. Change. Mix. Create.
 
 ## 33 — SINCE THIS WAS WRITTEN
 
+- **2026-10-12 · Chop lengths in seconds too (AOG-CHOPS-SECONDS-V1; cache m7491).** Jimmy: "What is a beat?" Each pad plays' choices also say about how long they last on this record, from its tempo: "2 beats · about 1 s" / "2 tiempos · unos 1 s". Test `pads/chopslen`.
+
+- **2026-10-12 · Longer chops (AOG-CHOPS-LONGER-V1; cache m7490).** Jimmy: "Why are the chops like 1/10 of a second?" Each chop was one beat (0.48 s at 125), and pad 17 was a 0.02 s blip past the end of the 16 beats sent. Now the chops bank has **Each pad plays: 1 beat · 2 beats · 1 bar** (`B.clen`; 2 beats unless chosen, saved beats included). Pads 1–16 still start a beat apart; pads 17–24 start two beats apart and play twice as long; a pad with almost nothing left stays empty. The Turntables' Chops to the Drum Machine sends 32 beats when the record has them (16 at the least). Test `pads/chopslen` (port 9295); `studio/chops` and `ep/send2pads` updated (studio/chops keeps its one failing check and its crash from main).
+
 - **2026-10-12 · Erase sits with the pads (AOG-DJ-ERASE-V1; cache m7488).** Jimmy: "The erase on the turn table for the chops should not be hidden if the chops are not hidden." Each deck's Erase moved out of the closed More box to a row right under its eight pads, so it shows whenever they do. Test `dj/erase` (port 9294). (`dj/d4` has one mixer-row layout check that fails on main too.)
 
 - **2026-10-11 · Learn a song (AOG-LEARN-V1; cache m7485).** Jimmy: "Can the guitar, bass and piano teach how to play songs if I upload them?" … "Sure do them all!"

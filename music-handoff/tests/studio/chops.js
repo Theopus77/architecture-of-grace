@@ -1,6 +1,6 @@
 /* AOG-CHOPS-TO-PADS-V1 — STUDIO-HANDOFF §9, Jimmy: "I cut this from my record. Put it on the pads." A record of his own
    ("my-record.wav", 120 beats a minute, every beat its own note) on deck A, the needle in bar 3. Chops to the Drum Machine
-   sends 16 beats from the start of bar 3 into the Mixing Desk's list, named "my-record · chops", and says so with a link.
+   sends 32 beats from the start of bar 3 (AOG-CHOPS-LONGER-V1) into the Mixing Desk's list, named "my-record · chops", and says so with a link.
    The Drum Machine opens with the chops bank in front, named after the record; its 16 pads are beats 9 to 24 of the
    record, one beat each, and a pad plays. A record with no known tempo sends 8 seconds, cut in 16 equal parts; too
    close to the end says so plainly. Nothing leaves the computer (every outside address is refused). In the Studio: the
@@ -51,17 +51,17 @@ async function putRecord(p, deck, name, bpm, atSec) {
   const ln = await p.evaluate(() => { const el = document.getElementById("chopLineA"), a = el.querySelector("a"); return { text: el.textContent.trim(), href: a && a.getAttribute("href") }; });
   ok(ln.text === "16 chops from my-record are on the Drum Machine's pads. Open the Drum Machine" && ln.href === "/drum-machine", "the line: " + JSON.stringify(ln));
   const inbox = await p.evaluate(async () => { const r = await AOGHandoff.list(AOGHandoff.INBOX), x = r.items[0], s = await AOGHandoff.get("padstake"); return { from: x.from, name: x.name, bpm: x.bpm, sec: x.sec, note: s && s.id === x.id && s.from }; });
-  ok(inbox.from === "decks" && inbox.name.en === "my-record · chops" && inbox.name.es === "my-record · cortes" && inbox.bpm === 120 && Math.abs(inbox.sec - 8.02) < 0.01 && inbox.note === "decks",
+  ok(inbox.from === "decks" && inbox.name.en === "my-record · chops" && inbox.name.es === "my-record · cortes" && inbox.bpm === 120 && Math.abs(inbox.sec - 16.02) < 0.01 && inbox.note === "decks",
     "it goes the way every take goes (the Mixing Desk's list and a note for the Drum Machine): " + JSON.stringify(inbox));
 
   /* 2 · the Drum Machine: the chops bank in front, beats 9 to 24 of the record, a pad plays */
   await p.click("#chopLineA a"); await p.waitForURL(/drum-machine/); await p.waitForTimeout(1800);
   const dm = await p.evaluate(() => { const B = S.banks[S.bank]; return { type: B.type, rec: B.rec, bank: "ABCD"[S.bank], line: (document.getElementById("inLine") || {}).textContent || "",
     names: [...document.querySelectorAll(".pads button.pad .pn")].map(x => x.textContent) }; });
-  ok(dm.type === "chops" && /^t:/.test(dm.rec) && dm.line === "16 chops from my-record are on bank " + dm.bank + ", one beat a pad." && dm.names.length === 16,
+  ok(dm.type === "chops" && /^t:/.test(dm.rec) && dm.line === "24 chops from my-record are on bank " + dm.bank + ", each starting a beat after the last." && dm.names.length === 16,
     "the Drum Machine opens on the chops bank, named after the record: " + JSON.stringify(dm));
-  const hz = await p.evaluate(async () => { const B = S.banks[S.bank], buf = await recBuf(B.rec), ch = chopsOf(B, buf), d = buf.getChannelData(0), sr = buf.sampleRate;
-    return ch.map(([a, len]) => { const i0 = Math.floor((a + len * 0.2) * sr), i1 = Math.floor((a + len * 0.8) * sr); let up = 0; for (let i = i0 + 1; i < i1; i++) if (d[i - 1] < 0 && d[i] >= 0) up++; return Math.round(up / ((i1 - i0) / sr) / 20) * 20; }); });
+  const hz = await p.evaluate(async () => { const B = S.banks[S.bank], buf = await recBuf(B.rec), ch = chopsOf(B, buf).slice(0, 16), d = buf.getChannelData(0), sr = buf.sampleRate, beat = 60 / recInfo(B.rec).bpm;
+    return ch.map(([a]) => { const len = beat, i0 = Math.floor((a + len * 0.2) * sr), i1 = Math.floor((a + len * 0.8) * sr); let up = 0; for (let i = i0 + 1; i < i1; i++) if (d[i - 1] < 0 && d[i] >= 0) up++; return Math.round(up / ((i1 - i0) / sr) / 20) * 20; }); });
   const want = Array.from({ length: 16 }, (_, i) => 200 + 20 * (8 + i));
   ok(hz.length === 16 && hz.every((h, i) => Math.abs(h - want[i]) <= 20), "pad by pad, the chops are beats 9 to 24 of the record: " + hz.join(" "));
   const before = await p.evaluate(() => LT.chops.size);
