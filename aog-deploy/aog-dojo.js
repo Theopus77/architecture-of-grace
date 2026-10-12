@@ -25,7 +25,13 @@ function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e
 const es = () => S.lang === "es";
 const L = (en, sp) => es() ? sp : en;
 const num = (x, d) => x.toFixed(d).replace(".", es() ? "," : ".");
-let mirror = /[?&]side=left\b/.test(location.search);
+/* an address names a move and a side: /dojo#front-kick, /dojo?side=left#front-kick and /dojo#front-kick?side=left all work */
+function addr() {
+  const h = decodeURIComponent(location.hash.slice(1)), i = h.indexOf("?");
+  const id = (i < 0 ? h : h.slice(0, i)).trim(), hq = i < 0 ? "" : h.slice(i + 1);
+  return { id, left: /(^|[?&])side=left\b/.test(location.search.slice(1)) || /(^|&)side=left\b/.test(hq) };
+}
+let mirror = addr().left;
 
 /* ── the move now open ── */
 let MV = null;
@@ -263,7 +269,11 @@ new MutationObserver(() => { $("themeBtn").textContent = isDark() ? L("Light", "
   .observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 let rsT = 0;
 window.addEventListener("resize", () => { clearTimeout(rsT); rsT = setTimeout(() => { if (G3 && G3.resize()) show(); }, 120); });
-window.addEventListener("hashchange", () => { const k = location.hash.slice(1); if (BY[k] && k !== S.id) open(k, false); });
+window.addEventListener("hashchange", () => {
+  const a = addr();
+  if (a.left !== mirror) setMirror(a.left);
+  if (BY[a.id] && a.id !== S.id) open(a.id, false);
+});
 const st = $("stage");
 st.addEventListener("pointerdown", e => { if (G3) G3.onDown(e); });
 st.addEventListener("pointermove", e => { if (G3 && G3.onMove(e)) show(); });
@@ -275,7 +285,7 @@ window.AOGDojo = { MOVES, P, state: S, open: id => open(id, true), go, next, bac
   get move() { return MV; }, get mirror() { return mirror; }, G3: () => G3, G3state: () => G3state, setMirror, setGhost };
 
 pageWords();
-const start = location.hash.slice(1);
+const start = addr().id;
 if (BY[start]) S.id = start;
 picker();
 $("mirrorBtn").setAttribute("aria-pressed", String(mirror)); $("capSide").hidden = !mirror;

@@ -59,6 +59,7 @@ function mirrorKey(k) {
     m.j[other] = mirrorAngles(k.j[n]);
   }
   m.L = mirrorFoot(k.R); m.R = mirrorFoot(k.L);
+  if (k.grip) m.grip = { L: k.grip.R, R: k.grip.L };
   return m;
 }
 

@@ -29,7 +29,7 @@ export async function create(opt) {
   const quality = phone ? "phone" : "full";
   let makeStage = null;
   try { makeStage = (await import("/aog-3dkit.js")).makeStage; } catch (e) { makeStage = null; }
-  const stage = makeStage ? makeStage({ host, before: host.firstChild, quality, dark: opt.dark() }) : ownStage(host, quality);
+  const stage = makeStage ? makeStage({ host, before: host.firstChild, quality, dark: opt.dark() }) : await ownStage(host, quality);
   const { renderer, scene, camera } = stage;
   const canvas = renderer.domElement;
   canvas.setAttribute("aria-hidden", "true");
@@ -153,7 +153,8 @@ export async function create(opt) {
 
   /* ══ the figure ══ */
   const C0 = opt.colors();
-  const figOpts = c => ({ outfit: "gi", belt: c.belt, colors: { gi: c.gi, jacket: c.gi, pants: c.gi, skin: c.skin, hair: c.hair, belt: c.belt }, quality });
+  const giColors = c => ({ top: c.gi, trim: c.gi, pants: c.gi, skin: c.skin, hair: c.hair, belt: c.belt });
+  const figOpts = c => ({ outfit: "gi", belt: c.belt, colors: giColors(c), quality });
   const fig = makeFigure(figOpts(C0));
   scene.add(fig.root);
   fig.root.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
@@ -210,14 +211,14 @@ export async function create(opt) {
   }
   const MAIN = wrap(fig);
   function readPose(F) {
-    const out = { root: { pos: F.fig.body.position.toArray(), rot: [0, 0, 0] }, j: {}, grip: F.grip };
+    const out = { root: { pos: F.fig.body.position.toArray(), rot: [0, 0, 0] }, j: {} };
     tmpE.setFromQuaternion(F.fig.body.quaternion, "YXZ"); out.root.rot = [tmpE.x / DEG, tmpE.y / DEG, tmpE.z / DEG];
     JN.forEach(n => { const o = F.J(n); if (!o) return; tmpE.setFromQuaternion(o.quaternion, "XYZ"); out.j[n] = [tmpE.x / DEG, tmpE.y / DEG, tmpE.z / DEG]; });
     return out;
   }
   function fkPose(k) {
     const j = {}; for (const n in k.j) j[n] = k.j[n];
-    return { root: { pos: (k.root ? k.root.pos : [0, 0, 0]).slice(), rot: (k.root ? k.root.rot : [0, 0, 0]).slice() }, j };
+    return { root: { pos: (k.root ? k.root.pos : [0, 0, 0]).slice(), rot: (k.root ? k.root.rot : [0, 0, 0]).slice() }, j, grip: Object.assign({ L: 0.92, R: 0.92 }, k.grip || {}) };
   }
   /* solve a keyframe on its own: FK, then IK for planted feet, then rest the body on the mat if asked */
   function solveKey(F, k, offset) {
@@ -231,7 +232,7 @@ export async function create(opt) {
       if (worst > 0.002 && pass === 0) { F.fig.body.position.y -= worst; F.fig.update(); } else break;
     }
     if (k.ground === "body") { const m = lowest(F, null); F.fig.body.position.y -= m; F.fig.update(); }
-    return readPose(F);
+    const out = readPose(F); out.grip = pose.grip; return out;
   }
 
   /* ══ the move ══ */
@@ -350,7 +351,7 @@ export async function create(opt) {
     const bg = col(dark ? "#141a24" : "#e9e1d2");
     scene.background = bg; if (scene.fog) scene.fog.color.copy(bg);
     if (stage.setDark) stage.setDark(dark);
-    fig.setColors && fig.setColors({ gi: c.gi, jacket: c.gi, pants: c.gi, skin: c.skin, hair: c.hair, belt: c.belt });
+    fig.setColors(giColors(c)); ghosts.forEach(g => g.fig.setColors(giColors(c)));
   }
 
   /* ══ size ══ */
@@ -409,4 +410,20 @@ export async function create(opt) {
   colors(); resize(); setView(view);
   return { setMove, show, setView, view: () => view, setGhost, colors, resize, onDown, onMove, onUp, dispose, sample,
     renders: () => renders, canvas, fig, poseAt: t => poseAt(MAIN, t), cam: () => view };
+}
+
+/* a stage of our own when the shared kit is not there (same look: soft room light, ACES, soft shadows) */
+async function ownStage(host, quality) {
+  const { RoomEnvironment } = await import("/vendor/three-0.160.0/addons/environments/RoomEnvironment.js");
+  const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.0;
+  host.insertBefore(renderer.domElement, host.firstChild);
+  const scene = new THREE.Scene(), camera = new THREE.PerspectiveCamera(34, 1, 0.05, 60);
+  const pm = new THREE.PMREMGenerator(renderer), env = pm.fromScene(new RoomEnvironment(), 0.04).texture; scene.environment = env; pm.dispose();
+  let n = 0;
+  return { THREE, renderer, scene, camera, render() { renderer.render(scene, camera); n++; }, resize(w, h) { renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); },
+    setDark() {}, renders: () => n,
+    dispose() { env.dispose(); renderer.dispose(); renderer.forceContextLoss(); renderer.domElement.remove(); } };
 }

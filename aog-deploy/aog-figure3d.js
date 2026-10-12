@@ -82,8 +82,10 @@ const frameMap = (O, D, A, B) => (a, s, b, o) => o.set(O.x + D.x * s + A.x * a +
 /* ── a grid of points → smooth geometry; the seam of a closed ring is welded in the normals ── */
 function gridGeo(rows, cols, closed, P, UV, outward) {
   const nc = closed ? cols + 1 : cols, pos = new Float32Array(rows * nc * 3), uv = new Float32Array(rows * nc * 2), v = new THREE.Vector3();
+  const extra = new Float32Array(rows * nc);
   for (let i = 0; i < rows; i++) for (let j = 0; j < nc; j++) {
-    const k = i * nc + j; P(i, j % (closed ? cols : nc + 1), v, j); pos[k * 3] = v.x; pos[k * 3 + 1] = v.y; pos[k * 3 + 2] = v.z;
+    const k = i * nc + j, r = P(i, closed ? j % cols : j, v, j); pos[k * 3] = v.x; pos[k * 3 + 1] = v.y; pos[k * 3 + 2] = v.z;
+    if (typeof r === "number") extra[k] = r;
     const t = UV(i, j); uv[k * 2] = t[0]; uv[k * 2 + 1] = t[1];
   }
   const idx = [];
@@ -101,11 +103,12 @@ function gridGeo(rows, cols, closed, P, UV, outward) {
   }
   // make the normals point outward (the right side is a mirror image, so the winding can come out inside out)
   const mid = Math.floor(rows / 2), o = new THREE.Vector3(); let score = 0;
-  for (let j = 0; j < nc; j++) { const k = mid * nc + j; outward(mid, j % (closed ? cols : nc + 1), o); score += o.x * nr[k * 3] + o.y * nr[k * 3 + 1] + o.z * nr[k * 3 + 2]; }
+  for (let j = 0; j < nc; j++) { const k = mid * nc + j; outward(mid, closed ? j % cols : j, o); score += o.x * nr[k * 3] + o.y * nr[k * 3 + 1] + o.z * nr[k * 3 + 2]; }
   if (score < 0) {
     const ia = g.index.array; for (let q = 0; q < ia.length; q += 3) { const t = ia[q + 1]; ia[q + 1] = ia[q + 2]; ia[q + 2] = t; }
     for (let q = 0; q < nr.length; q++) nr[q] = -nr[q];
   }
+  g.userData.s = extra; g.userData.cols = nc;
   return g;
 }
 
@@ -126,14 +129,13 @@ function shell(S, o) {
     const k = r - nr + 1, s = s1(th);
     return k === 1 ? [s, 0] : k === 2 ? [s + dir * lip1 * 0.35, -lip1 * 0.5] : [s - dir * lip1 * 1.6, -lip1];
   };
-  const vq = new THREE.Vector3(), info = [];
+  const vq = new THREE.Vector3();
   const P = (i, j, out) => {
     const th = thAt(j), [s, ex] = rowParam(i, th), dd = d(th, s) + ex;
-    S(th, s, dd, out); info[i * (cols + 1) + j] = s; return out;
+    S(th, s, dd, out); return s;
   };
-  const g = gridGeo(rows, cols, closed, P, (i, j) => { const th = thAt(j), [s] = rowParam(i, th); return [(th - th0) / TAU * (o.uu || 2), s * (o.vv || 3)]; },
+  const g = gridGeo(rows, closed ? cols : cols + 1, closed, P, (i, j) => { const th = thAt(j), [s] = rowParam(i, th); return [(th - th0) / TAU * (o.uu || 2), s * (o.vv || 3)]; },
     (i, j, out) => { const th = thAt(j), [s] = rowParam(i, th), dd = d(th, s); S(th, s, dd + 0.01, out); return out.sub(S(th, s, dd, vq)); });
-  g.userData.s = info; g.userData.cols = closed ? cols + 1 : cols;
   return g;
 }
 
@@ -167,7 +169,7 @@ function sweep(points, o) {
     return out.copy(R.P).addScaledVector(a, R.ra * spow(Math.sin(th), e)).addScaledVector(b, R.rb * spow(Math.cos(th), e));
   };
   const g = gridGeo(rings.length, cols, true, P, (i, j) => [j / cols, rings[i].t * (o.vv || 1)], (i, j, out) => P(i, j, out).sub(rings[i].P));
-  g.userData.t = rings.map(r => r.t);
+  g.userData.t = rings.map(r => r.t); g.userData.s = null;
   return g;
 }
 
@@ -295,7 +297,7 @@ export function makeFigure(opts) {
     // the anchor in the palm for a tool: x across the palm toward the thumb, y along the fingers, z out of the palm
     const anc = new THREE.Object3D(); anc.name = "hand" + S;
     anc.position.set(-sx * 0.031, -0.098, 0.004);
-    anc.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(V3(0, 0, 1), V3(0, -1, 0), V3(sx > 0 ? 1 : 1, 0, 0)));
+    anc.quaternion.setFromRotationMatrix(sx > 0 ? new THREE.Matrix4().makeBasis(V3(0, 0, -1), V3(0, -1, 0), V3(-1, 0, 0)) : new THREE.Matrix4().makeBasis(V3(0, 0, 1), V3(0, -1, 0), V3(1, 0, 0)));
     if (sx > 0) anc.scale.set(-1, 1, 1);   // a left hand is a mirror image: its x still points toward the thumb
     wrist.add(anc); H.anchor = anc; H.anchorHome = anc.position.clone(); H.grip = 0; H.pinch = false;
   });
@@ -793,7 +795,7 @@ export function makeFigure(opts) {
     bones.head.quaternion.slerp(_lq.setFromEuler(_e.set(pitch * 0.6, yaw * 0.6, 0, "YXZ")), k);
     bones.neck.updateMatrixWorld(true);
   }
-  function world(j) { const b = bones[j] || (HB[sideKey(j.slice(-1))] && null); if (!b) return null; return b.getWorldPosition(new THREE.Vector3()); }
+  function world(j) { const b = bones[j] || allBones.find(x => x.name === j); if (!b) return null; return b.getWorldPosition(new THREE.Vector3()); }
   // the sole: heel, middle, ball and toe, under the shoe (or the bare foot)
   const SOLE_PTS = [[-0.07, 0, "ankle"], [0.0, 0, "ankle"], [0.07, 0, "ankle"], [0.13, 0, "toe"], [0.19, outfit === "gi" ? 0.004 : 0.006, "toe"]];
   function footFloor(side) {
