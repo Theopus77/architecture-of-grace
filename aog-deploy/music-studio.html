@@ -2611,7 +2611,7 @@ async function splitIn(src){
       const base=SPL.base=say.join(" "); SPL.phase="clean"; msg.textContent=base+" "+t("splitClean",{n:0});
       let M=null, why="";
       try{ M=await A.clean(src.blob, { quick:parts, signal:ctl ? ctl.signal : undefined, onProgress:p=>{ if(SPL.job===job) msg.textContent=base+" "+t("splitClean",{n:Math.round(p*100)}); } }); }
-      catch(e){ why=e && e.name==="AbortError" ? "splitCleanStopped" : "splitCleanKept"; }
+      catch(e){ why=e && e.name==="AbortError" ? "splitCleanStopped" : e && e.worse ? "!worse" : "splitCleanKept"; }
       if(SPL.job!==job){ if(M && M.free) M.free(); return; }
       if(M){
         try{ await A.keep(src.id, M); }catch(e){}
@@ -2621,7 +2621,7 @@ async function splitIn(src){
           await sput(pz.id, {wav:blob}); BUF.set(pz.id, buf); tr.clip.peakDb=peakDbOf(buf); }
         songChanged(); paintTimeline(); paintTrack(); paintMixer();
         say.push(t("splitCleanDone")); if(parts.free) parts.free(); parts=M;
-      } else say.push(t(why));
+      } else say.push(why==="!worse" ? A.word("cleanWorse", S.lang) : t(why));
       SPL.phase="";
     }
     if(parts.note) say.push(A.word(parts.note, S.lang));

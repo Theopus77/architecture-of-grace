@@ -727,7 +727,7 @@
         STM.clean = ""; STM.cctl = null; STM.msg = A.word("cleanDone", L()); stmOn(pt);
       }, function (e) {
         if (STM.cjob !== job) return;
-        STM.clean = ""; STM.cctl = null; STM.msg = A.word(e && e.name === "AbortError" ? "cleanStopped" : "cleanKept", L()); paintAll();
+        STM.clean = ""; STM.cctl = null; STM.msg = A.word(e && e.name === "AbortError" ? "cleanStopped" : e && e.worse ? "cleanWorse" : "cleanKept", L()); paintAll();
       });
   }
   function stmCleanStop(quiet) { if (STM.clean !== "busy") return; STM.cjob++; try { if (STM.cctl) STM.cctl.abort(); } catch (e) {} STM.cctl = null; STM.clean = "";

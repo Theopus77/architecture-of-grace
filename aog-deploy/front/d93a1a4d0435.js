@@ -1809,6 +1809,7 @@ function deckHTML(d){
       <!-- AOG-STEMS-V1: the record's parts, one row of four under the pads (Split into parts until it is split) -->
       <div class="row tr prow" data-prow="${id}" role="group" aria-label="${t("partsH")}"${d.buf?"":" hidden"}>${partsRowHTML(d)}</div>
       <p class="chopline" data-pline="${id}" aria-live="polite">${esc(d.parts.msg||"")}</p>
+      <div class="row tr pcrow" data-pcrow="${id}"${d.parts.clean==="busy"?"":" hidden"}><button type="button" class="ghost sm" data-pcstop="${id}">${t("partsStop")}</button></div>
       <!-- the rest of the deck, one tap away (open on the Full bench): Lands, loops, TAP, ½×, 2×, nudge -->
       <details class="dmore"${document.body.classList.contains("bench-simple")?"":" open"}>
         <summary>${t("more")}</summary>
@@ -2077,7 +2078,7 @@ async function chopsToPads(d, btn){
    8 ms glide, no click); Only (or holding a part) plays one part alone; each part's level, Voice only and No voice
    are in the deck's More box. The chops you send take what you hear. ═══════════════════════════════════════════ */
 const PARTK = ["drums","bass","voice","other"];
-function partsNew(){ return { st:"", pct:0, word:"", key:"", job:0, ctl:null, msg:"", solo:"", only:false,
+function partsNew(){ return { st:"", pct:0, word:"", key:"", job:0, ctl:null, msg:"", solo:"", only:false, clean:"", cpct:0, cjob:0, cctl:null, model:false, hasQuick:false, hear:"clean", hjob:0,
   mute:{drums:false,bass:false,voice:false,other:false}, lvl:{drums:1,bass:1,voice:1,other:1}, g:null }; }
 function partsId(d){ return d.buf ? "deck|" + (d.trackKey || d.name) + "|" + d.buf.sampleRate : ""; }
 let stemsP = null;
@@ -2107,14 +2108,18 @@ function partsGains(P){ const g = {}; PARTK.forEach(k=>{ g[k] = (P.solo ? (P.sol
 function partsGain(d, now){ const P = d.parts; if(P.st !== "on") return; P.g = partsGains(P); partsPost(d, { t:"pgain", g:P.g, now:!!now }); }
 /* the parts into the deck's engine (moved, not copied: the page keeps none of them) */
 function partsLoad(d, raw){
-  const dL = raw.d[0], dR = raw.d[1] || raw.d[0], tr = [dL.buffer];
-  if(dR !== dL) tr.push(dR.buffer); tr.push(raw.b.buffer, raw.v.buffer);
-  partsPost(d, { t:"parts", dL:dL, dR:dR, b:raw.b, v:raw.v }, tr);
-  d.parts.st = "on"; d.parts.had = true; d.parts.kind = raw.kind || "pop"; d.parts.auto = raw.auto !== false; d.parts.note = raw.note || "";
+  /* AOG-STEMS-AI-V1: bass and voice are one middle channel (the quick split) or two (the model) */
+  const two = x=>Array.isArray(x) ? [x[0], x[1] || x[0]] : [x, x];
+  const [dL, dR] = two(raw.d), [bL, bR] = two(raw.b), [vL, vR] = two(raw.v), tr = [];
+  [dL, dR, bL, bR, vL, vR].forEach(a=>{ if(a && a.buffer && !tr.includes(a.buffer)) tr.push(a.buffer); });
+  partsPost(d, { t:"parts", dL:dL, dR:dR, b:bL, v:vL, bR:bR, vR:vR }, tr);
+  d.parts.st = "on"; d.parts.had = true; d.parts.kind = raw.kind || "pop"; d.parts.auto = raw.auto !== false; d.parts.note = raw.note || ""; d.parts.model = raw.quality === "model" || !!raw.cmpQuick;
+  /* AOG-STEMS-COMPARE-V1: both splits are kept; Hear says which one plays */
+  d.parts.hasQuick = !!(raw.hasQuick || raw.qd); d.parts.hear = raw.cmpQuick ? "quick" : "clean";
   partsGain(d, true); paintParts(d);
 }
 async function partsFind(d){
-  partsStop(d, true);
+  partsStop(d, true); partsCleanStop(d, true);
   const id = partsId(d); d.parts = partsNew(); d.parts.key = id; paintParts(d);
   const m = await partsMeta(id);
   if(!m || !d.buf || d.parts.key !== id || m.len !== d.buf.length) return;
@@ -2123,24 +2128,63 @@ async function partsFind(d){
 }
 async function partsSplit(d, kind){
   if(!d.buf || d.parts.st === "busy" || (d.parts.st === "on" && kind === undefined)) return;
-  const P = d.parts, id = partsId(d), job = ++P.job;
+  const P = d.parts, id = partsId(d), job = ++P.job, wasModel = P.model;
+  partsCleanStop(d, true);
   P.st = "busy"; P.pct = 0; P.word = "open"; P.msg = ""; paintParts(d);
   const ctl = window.AbortController ? new AbortController() : null; P.ctl = ctl;
   try{
     ctx(); await ensureNode(d);
     const A = await stemsLib();
+    /* AOG-STEMS-AI-V1: another kind of music for the model's parts: the quick split with that kind, then the model's own
+       parts with it (no new model run) */
+    const model = wasModel ? await A.keptParts(id, { sr:d.buf.sampleRate, len:d.buf.length }) : null;
     const R = await A.split(d.buf, { kind:kind && kind !== "auto" ? kind : undefined, signal:ctl ? ctl.signal : undefined, onProgress:(p, k)=>{ if(P.job !== job) return; P.pct = Math.round(p*100); P.word = k; paintPartsLine(d); } });
     if(P.job !== job || d.parts !== P) return;
-    const raw = R.pack; raw.x = null; raw.note = R.note;
+    let raw = R.pack; raw.x = null; raw.note = R.note;
+    if(model && model.quality === "model") raw = await A.rekind(model, raw);
     try{ await A.keep(id, raw); }catch(e){}
     if(P.job !== job || d.parts !== P || !d.buf) return;
     P.ctl = null; P.msg = t("partsDone"); partsLoad(d, raw);
+    if(!P.model && A.quality() === "best") partsClean(d);
   }catch(e){
     if(P.job !== job) return;
     P.ctl = null; P.st = P.had ? "on" : ""; P.msg = t(e && e.name === "AbortError" ? "partsStopped" : e && e.memory ? "partsMemory" : "partsFail"); paintParts(d);
   }
 }
 function partsStop(d, quiet){ const P = d.parts; if(!P || P.st !== "busy") return; P.job++; try{ if(P.ctl) P.ctl.abort(); }catch(e){} P.ctl = null; P.st = P.had ? "on" : ""; if(!quiet){ P.msg = t("partsStopped"); paintParts(d); } }
+/* AOG-STEMS-AI-V1 — the cleaner parts (Split quality: Best): the model runs while the quick parts play; when it is done its
+   parts take their place in the deck's engine (the levels, quiet parts and Only stay as they are) and are kept with the
+   record, so this is done once per record. Stop keeps the quick parts. */
+async function partsClean(d){
+  const P = d.parts; if(!d.buf || P.st !== "on" || P.clean === "busy" || P.model) return;
+  const id = partsId(d), job = ++P.cjob, buf = d.buf, ctl = window.AbortController ? new AbortController() : null;
+  P.clean = "busy"; P.cpct = 0; P.cctl = ctl; P.msg = ""; paintParts(d);
+  let A = null;
+  try{
+    A = await stemsLib();
+    const M = await A.clean(buf, { noX:true, signal:ctl ? ctl.signal : undefined, quick:()=>A.keptParts(id, { sr:buf.sampleRate, len:buf.length }),
+      onProgress:(p)=>{ if(P.cjob !== job) return; P.cpct = Math.round(p*100); paintPartsLine(d); } });
+    if(P.cjob !== job || d.parts !== P || d.buf !== buf) return;
+    const raw = M.pack; raw.x = null; raw.note = M.note;
+    try{ await A.keep(id, raw); }catch(e){}
+    if(P.cjob !== job || d.parts !== P || d.buf !== buf) return;
+    P.clean = ""; P.cctl = null; P.msg = A.word("cleanDone", S.lang); partsLoad(d, raw);
+  }catch(e){
+    if(P.cjob !== job) return;
+    P.clean = ""; P.cctl = null; P.msg = A ? A.word(e && e.name === "AbortError" ? "cleanStopped" : e && e.worse ? "cleanWorse" : "cleanKept", S.lang) : t("partsFail"); paintParts(d);
+  }
+}
+/* AOG-STEMS-COMPARE-V1 — Hear: Quick parts · Clean parts. Both splits are kept with the record; a tap swaps which one the
+   deck plays (the levels, quiet parts and Only stay as they are). */
+async function partsHear(d, v){
+  const P = d.parts; if(P.st !== "on" || !P.model || !P.hasQuick || P.hear === v || P.clean === "busy") return;
+  const id = partsId(d), job = ++P.hjob;
+  try{ const A = await stemsLib(), raw = await A.keptParts(id, { sr:d.buf.sampleRate, len:d.buf.length }, v === "quick" ? "quick" : "");
+    if(!raw || P.hjob !== job || d.parts !== P) return;
+    const msg = P.msg; partsLoad(d, raw); P.msg = msg; paintParts(d); }catch(e){}
+}
+function partsCleanStop(d, quiet){ const P = d.parts; if(!P || P.clean !== "busy") return; P.cjob++; try{ if(P.cctl) P.cctl.abort(); }catch(e){} P.cctl = null; P.clean = "";
+  if(!quiet){ P.msg = window.AOGStems ? AOGStems.word("cleanStopped", S.lang) : ""; paintParts(d); } }
 function partTap(d, k, hold){
   const P = d.parts; if(P.st !== "on") return;
   if(hold || P.only) P.solo = P.solo === k ? "" : k;
@@ -2188,18 +2232,23 @@ function partsMoreHTML(d){
   const P = d.parts, id = d.id;
   return `<span class="dlab">${t("partsH")}</span>
     ${P.note && window.AOGStems ? `<p class="chopline pnote">${esc(AOGStems.word(P.note, S.lang))}</p>` : ""}
+    <label class="pkind">${esc(window.AOGStems ? AOGStems.word("qLab", S.lang) : "")} <select data-pq="${id}">${window.AOGStems ? ["quick","best"].map(q=>`<option value="${q}"${AOGStems.quality() === q ? " selected" : ""}>${esc(AOGStems.word(q === "best" ? "qBest" : "qQuick", S.lang))}</option>`).join("") : ""}</select></label>
+    ${window.AOGStems && !P.model && P.clean !== "busy" && AOGStems.quality() === "best" ? `<button type="button" class="ghost sm pcgo" data-pcgo="${id}">${esc(AOGStems.word("cleanGo", S.lang))}</button>` : ""}
+    ${window.AOGStems && P.model && P.hasQuick ? `<div class="phear" role="group" aria-label="${esc(AOGStems.word("hearLab", S.lang))}"><span>${esc(AOGStems.word("hearLab", S.lang))}</span>${["quick","clean"].map(v=>`<button type="button" class="ghost sm" data-phear="${id}" data-v="${v}" aria-pressed="${P.hear === v}">${esc(AOGStems.word(v === "quick" ? "hearQuick" : "hearClean", S.lang))}</button>`).join("")}</div>` : ""}
     <label class="pkind">${t("partsKind")} <select data-pkind="${id}">${(window.AOGStems ? AOGStems.kinds : ["auto"]).map(k=>`<option value="${k}"${(P.auto ? "auto" : P.kind) === k ? " selected" : ""}>${esc(window.AOGStems ? AOGStems.kindWords[S.lang][k] + (k === "auto" && P.auto && P.kind ? " · " + AOGStems.kindWords[S.lang][P.kind] : "") : "Auto")}</option>`).join("")}</select></label>
     <div class="row tr"><button type="button" class="ghost sm" data-pset="${id}" data-v="voice">${t("partsVoiceOnly")}</button><button type="button" class="ghost sm" data-pset="${id}" data-v="novoice">${t("partsNoVoice")}</button><button type="button" class="ghost sm" data-pset="${id}" data-v="all">${t("partsAll")}</button></div>
     ${PARTK.map(k=>`<label class="plv"><span>${t("p"+k)}</span><input type="range" min="0" max="100" step="5" value="${Math.round(P.lvl[k]*100)}" data-plvl="${id}" data-k="${k}" aria-label="${t("partsLevel")} · ${t("p"+k)}"><b data-plvo="${id}" data-k="${k}">${Math.round(P.lvl[k]*100)}%</b></label>`).join("")}`;
 }
 function paintPartsLine(d){
   const el = document.querySelector(`[data-pline="${d.id}"]`); if(!el) return;
-  const P = d.parts, txt = P.st === "busy" ? t(P.word === "split" || P.word === "done" ? "partsBusy" : "partsListen").replace("%n", P.pct) : (P.msg || "");
+  const P = d.parts, txt = P.st === "busy" ? t(P.word === "split" || P.word === "done" ? "partsBusy" : "partsListen").replace("%n", P.pct)
+    : P.clean === "busy" && window.AOGStems ? AOGStems.word("clean", S.lang).replace("%n", P.cpct) : (P.msg || "");
   if(el.textContent !== txt) el.textContent = txt;
 }
 function paintParts(d){
   const row = document.querySelector(`[data-prow="${d.id}"]`), more = document.querySelector(`[data-pmore="${d.id}"]`);
   if(row){ row.hidden = !d.buf; const h = partsRowHTML(d); if(row._h !== h){ row._h = h; row.innerHTML = h; } }
+  const crow = document.querySelector(`[data-pcrow="${d.id}"]`); if(crow) crow.hidden = d.parts.clean !== "busy";
   if(more){ more.hidden = d.parts.st !== "on"; if(!more.hidden && !(more.contains(document.activeElement) && document.activeElement.type === "range")){ const h = partsMoreHTML(d); if(more._h !== h){ more._h = h; more.innerHTML = h; } } }
   paintPartsLine(d);
 }
@@ -2213,13 +2262,19 @@ function partsBind(d){
     else if(b.hasAttribute("data-part")){ if(b._held){ b._held = false; return; } partTap(d, b.getAttribute("data-k")); }
     else if(b.hasAttribute("data-ponly")){ d.parts.only = !d.parts.only; if(!d.parts.only && d.parts.solo){ d.parts.solo = ""; partsGain(d); } paintParts(d); }
     else if(b.hasAttribute("data-pset")) partsSet(d, b.getAttribute("data-v"));
+    else if(b.hasAttribute("data-pcgo")) partsClean(d);
+    else if(b.hasAttribute("data-phear")) partsHear(d, b.getAttribute("data-v"));
+    else if(b.hasAttribute("data-pcstop")) partsCleanStop(d);
   });
   /* hold a part: that part alone */
   el.addEventListener("pointerdown", (e)=>{ const b = e.target.closest && e.target.closest("[data-part]"); if(!b) return;
     clearTimeout(hold); hold = setTimeout(()=>{ hold = null; b._held = true; partTap(d, b.getAttribute("data-k"), true); }, 450); });
   ["pointerup","pointercancel","pointerleave"].forEach(ev=>el.addEventListener(ev, ()=>{ if(hold){ clearTimeout(hold); hold = null; } }));
   /* another kind of music: split again with its settings (the parts you have play on until the new ones are ready) */
-  el.addEventListener("change", (e)=>{ const r = e.target; if(!r.hasAttribute || !r.hasAttribute("data-pkind")) return; r.blur(); partsSplit(d, r.value); });
+  el.addEventListener("change", (e)=>{ const r = e.target; if(!r.hasAttribute) return;
+    if(r.hasAttribute("data-pq")){ r.blur(); if(!window.AOGStems) return; AOGStems.setQuality(r.value);   /* AOG-STEMS-AI-V1 */
+      if(r.value === "best") partsClean(d); else { partsCleanStop(d, true); paintParts(d); } return; }
+    if(!r.hasAttribute("data-pkind")) return; r.blur(); partsSplit(d, r.value); });
   el.addEventListener("input", (e)=>{ const r = e.target; if(!r.hasAttribute || !r.hasAttribute("data-plvl")) return;
     const k = r.getAttribute("data-k"); d.parts.lvl[k] = Math.max(0, Math.min(1, +r.value/100));
     const o = el.querySelector(`[data-plvo="${d.id}"][data-k="${k}"]`); if(o) o.textContent = Math.round(d.parts.lvl[k]*100) + "%";
