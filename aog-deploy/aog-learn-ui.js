@@ -42,7 +42,15 @@
    - The slower copy is made in a Worker (the same WSOLA, from a Blob), else in slices as before; one at a time.
    - MIDI songs: piano parts ring and fade, guitar and bass parts are plucked, the drums are drums.
    A room may also say, for the pictures and the capo: shape:(chord)=>{ f:[fret per string, -1 muted], capo } (Guitar,
-   Bass). show() may carry chord.capo (the fret) and chord.shape {root, q, id} (what to finger above it). ══════════════ */
+   Bass). show() may carry chord.capo (the fret) and chord.shape {root, q, id} (what to finger above it).
+
+   AOG-STEMS-V1 (2026-10-12, Jimmy: "Split a song into its parts. Drums, bass, voice and the rest come apart right on the
+   device"). In More ways to practise, Split the song into parts (aog-stems.js, loaded on that press; the lesson's own
+   notes guide it, so nothing is heard twice). The split is kept on the device (IndexedDB "aog-stems", with the song's
+   id), so it is done once. Then Quiet a part of the song plays the real parts: Play without the bass (first in the
+   Bass), without the voice or the rest (first in the Piano and the Guitar), and a level for each part. The song you hear
+   is the parts mixed at those levels (in slices), so the slower copies, the loop and the count-in work as before. A song
+   never split keeps the filter way. ══════════════ */
 (function () {
   "use strict";
   var D = document, H = null;
@@ -148,8 +156,24 @@
     best: { en: "Your best: {k} of {n} at {s} %.", es: "Tu mejor pasada: {k} de {n} al {s} %." },
     print: { en: "Print the chord sheet", es: "Imprimir la hoja de acordes" },
     sheet: { en: "Chord sheet", es: "Hoja de acordes" }, printNow: { en: "Print", es: "Imprimir" },
-    sheetEasy: { en: "Easier chords.", es: "Acordes más fáciles." }
+    sheetEasy: { en: "Easier chords.", es: "Acordes más fáciles." },
+    /* AOG-STEMS-V1 */
+    split: { en: "Split the song into parts", es: "Separar la canción en partes" },
+    splitLine: { en: "Drums, bass, voice and the rest, each on its own. It is done on this device, once.", es: "Batería, bajo, voz y el resto, cada uno aparte. Se hace en este aparato, una vez." },
+    splitting: { en: "Splitting the song… {n}%", es: "Separando la canción… {n} %" },
+    splitDone: { en: "The song is in four parts.", es: "La canción está en cuatro partes." },
+    splitStopped: { en: "Stopped. The song is as it was.", es: "Detenido. La canción quedó como estaba." },
+    splitFail: { en: "The song did not split. Try again, or close other apps first.", es: "La canción no se separó. Inténtalo otra vez, o cierra otras apps primero." },
+    splitLong: { en: "This song is too long to split on this device. Try a shorter one.", es: "Esta canción es muy larga para separarla en este aparato. Prueba una más corta." },
+    pNo: { en: "Play the whole song", es: "Tocar toda la canción" },
+    pNobass: { en: "Play without the bass", es: "Tocar sin el bajo" }, pNovoice: { en: "Play without the voice", es: "Tocar sin la voz" },
+    pNodrums: { en: "Play without the drums", es: "Tocar sin la batería" }, pNoother: { en: "Play without the rest", es: "Tocar sin el resto" },
+    pMine: { en: "Your own levels", es: "Tus propios niveles" },
+    pLevels: { en: "Each part's level", es: "El nivel de cada parte" },
+    pdrums: { en: "Drums", es: "Batería" }, pbass: { en: "Bass", es: "Bajo" }, pvoice: { en: "Voice", es: "Voz" }, pother: { en: "The rest", es: "El resto" },
+    pKind: { en: "Kind of music", es: "Tipo de música" }
   };
+  var PARTK = ["drums", "bass", "voice", "other"];
   var QM = { maj: { id: "maj", iv: [0, 4, 7], s: "" }, min: { id: "min", iv: [0, 3, 7], s: "m" }, "7": { id: "dom7", iv: [0, 4, 7, 10], s: "7" },
     maj7: { id: "maj7", iv: [0, 4, 7, 11], s: "maj7" }, m7: { id: "m7", iv: [0, 3, 7, 10], s: "m7" }, sus2: { id: "sus2", iv: [0, 2, 7], s: "sus2" },
     sus4: { id: "sus4", iv: [0, 5, 7], s: "sus4" }, dim: { id: "dim", iv: [0, 3, 6], s: "dim" }, aug: { id: "aug", iv: [0, 4, 8], s: "aug" }, "5": { id: "five", iv: [0, 7], s: "5" } };
@@ -433,7 +457,8 @@
   var PL = { ac: null, src: null, out: null, base: null, cache: {}, playing: false, counting: false, pos: 0, t0: 0, start: 0, speed: 1, tick: 0, clicks: [], making: 0, lastT: 0, ended: false };
   var TEST = { clock: null };
   function acx() {
-    if (!PL.ac) { var C = window.AudioContext || window.webkitAudioContext; PL.ac = new C(); PL.out = PL.ac.createGain(); PL.out.gain.value = 0.9; PL.out.connect(PL.ac.destination);
+    if (!PL.ac) { var C = window.AudioContext || window.webkitAudioContext; PL.ac = new C(); try { if (window.AOGVU && AOGVU.own) AOGVU.own(PL.ac); } catch (e) {}   /* AOG-SILENT-V1 */
+      PL.out = PL.ac.createGain(); PL.out.gain.value = 0.9; PL.out.connect(PL.ac.destination);
       PL.fxIn = PL.ac.createGain(); try { PL.fxIn.channelCount = 2; PL.fxIn.channelCountMode = "explicit"; PL.fxIn.channelInterpretation = "speakers"; } catch (e) {}
       PL.fx = []; quietWire(); }
     try { if (PL.ac.state !== "running") PL.ac.resume(); } catch (e) {}
@@ -561,6 +586,7 @@
   }
   function baseBuf() {
     if (PL.base) return Promise.resolve(PL.base);
+    if (STM.st === "on" && STM.parts && !levelsFull()) return partsMix();
     var id = CUR.rec.id, keep = function (b) { if (CUR && CUR.rec.id === id) { PL.base = b; PL.stereo = stereoOf(b); if (PL.fxMode !== quietMode()) quietWire(); paintQuiet(); } return b; };
     if (CUR.L.src === "midi" || CUR.rec.src === "midi") return renderMidi(1).then(keep);
     if (!CUR.rec.blob) return Promise.reject(new Error("gone"));
@@ -604,7 +630,106 @@
     }
     input.connect(output); return nodes;
   }
-  function quietMode() { var q = CUR && CUR.rec.quiet; if (q === "voice" && PL.stereo === false) return "none"; return q === "bass" || q === "voice" ? q : "none"; }
+  function quietMode() { if (STM.st === "on") return "none"; var q = CUR && CUR.rec.quiet; if (q === "voice" && PL.stereo === false) return "none"; return q === "bass" || q === "voice" ? q : "none"; }
+  /* ── AOG-STEMS-V1: the song in its parts ── */
+  var STM = { st: "", id: "", parts: null, job: 0, ctl: null, pct: 0, msg: "", note: "", kind: "", auto: true, kept: null };
+  function stmFree() { if (STM.parts && STM.parts.free) STM.parts.free(); STM = { st: "", id: "", parts: null, job: STM.job + 1, ctl: null, pct: 0, msg: "", note: "", kind: "", auto: true, kept: null }; }
+  var stemsP = null;
+  function stemsLib() {
+    if (window.AOGStems) return Promise.resolve(window.AOGStems);
+    if (stemsP) return stemsP;
+    stemsP = new Promise(function (ok, no) { var s0 = D.createElement("script"); s0.src = "/aog-stems.js"; s0.async = true;
+      s0.onload = function () { if (window.AOGStems) ok(window.AOGStems); else { stemsP = null; no(new Error("no stems")); } };
+      s0.onerror = function () { stemsP = null; no(new Error("no stems")); }; D.head.appendChild(s0); });
+    return stemsP;
+  }
+  function levels() { var l = CUR && CUR.rec.levels || {}, o = {}; PARTK.forEach(function (k) { var v = +l[k]; o[k] = isFinite(v) ? Math.max(0, Math.min(1, v)) : 1; }); return o; }
+  function levelsFull() { var l = levels(); return PARTK.every(function (k) { return l[k] === 1; }); }
+  function preset() { var l = levels(), off = PARTK.filter(function (k) { return l[k] === 0; }), on = PARTK.filter(function (k) { return l[k] === 1; });
+    if (on.length === 4) return "none"; if (off.length === 1 && on.length === 3) return "p:" + off[0]; return "p:mine"; }
+  /* a split made before is found in the small list, without loading anything */
+  function stmMeta(id) {
+    return new Promise(function (ok) {
+      if (!window.indexedDB || !id) { ok(null); return; }
+      var r; try { r = indexedDB.open("aog-stems"); } catch (e) { ok(null); return; }
+      r.onupgradeneeded = function () { try { r.transaction.abort(); } catch (e) {} };
+      r.onerror = r.onblocked = function () { ok(null); };
+      r.onsuccess = function () { var db = r.result; try { if (!db.objectStoreNames.contains("meta")) { db.close(); ok(null); return; }
+        var q = db.transaction("meta").objectStore("meta").get(id); q.onsuccess = function () { db.close(); ok(q.result || null); }; q.onerror = function () { db.close(); ok(null); }; } catch (e) { try { db.close(); } catch (x) {} ok(null); } };
+    });
+  }
+  function isAudio() { return CUR && CUR.L.src !== "midi" && CUR.rec.src !== "midi" && !!CUR.rec.blob; }
+  function stmFind() {
+    var rec = CUR && CUR.rec; if (!rec || !isAudio()) return;
+    var job = STM.job, id = rec.id;
+    stmMeta(id).then(function (m) {
+      if (!m || STM.job !== job || !CUR || CUR.rec !== rec) return;
+      return stemsLib().then(function (A) { return A.kept(id, rec.blob); }).then(function (pt) {
+        if (!pt || STM.job !== job || !CUR || CUR.rec !== rec) return;
+        stmOn(pt); });
+    }).catch(function () {});
+  }
+  function stmOn(pt) {
+    STM.st = "on"; STM.parts = pt; STM.id = CUR.rec.id; STM.note = pt.note || ""; STM.kind = pt.kind || ""; STM.auto = pt.auto !== false;
+    quietWire(); stmRebuild(); paintAll();
+  }
+  /* the song you hear changes: made again from the parts (the slower copy too) */
+  function stmRebuild() {
+    var was = PL.playing; if (was) pause(true);
+    PL.base = null; PL.cache = {}; PL.stereo = null;
+    if (was) play({ noCount: true });
+  }
+  function partsMix() {
+    var pt = STM.parts, id = CUR.rec.id, job = STM.job, nch = pt.numberOfChannels, b = newBuf(nch, pt.length, pt.sampleRate), out = [];
+    for (var c = 0; c < nch; c++) out.push(b.getChannelData(c));
+    return window.AOGStems.mixInto(pt, levels(), out).then(function () {
+      if (!CUR || CUR.rec.id !== id || STM.job !== job) throw new Error("gone");
+      PL.base = b; PL.stereo = stereoOf(b); return b; });
+  }
+  function stmSplit(kind) {
+    if (!CUR || !isAudio() || STM.st === "busy") return;
+    var rec = CUR.rec, job = ++STM.job, had = STM.st === "on";
+    STM.st = "busy"; STM.pct = 0; STM.msg = ""; paintStm();
+    var ctl = window.AbortController ? new AbortController() : null; STM.ctl = ctl;
+    stemsLib().then(function (A) {
+      if (STM.job !== job) return null;
+      return A.split(rec.blob, { lesson: CUR.L, kind: kind && kind !== "auto" ? kind : undefined, signal: ctl ? ctl.signal : undefined,
+        onProgress: function (p) { if (STM.job !== job) return; STM.pct = Math.round(p * 100); paintStmLine(); } })
+        .then(function (pt) { if (STM.job !== job) return null; return A.keep(rec.id, pt).catch(function () {}).then(function () { return pt; }); });
+    }).then(function (pt) {
+      if (!pt || STM.job !== job || !CUR || CUR.rec !== rec) return;
+      if (STM.parts && STM.parts !== pt && STM.parts.free) STM.parts.free();
+      STM.ctl = null; STM.msg = w("splitDone"); stmOn(pt);
+    }, function (e) {
+      if (STM.job !== job) return;
+      STM.ctl = null; STM.st = had && STM.parts ? "on" : "";
+      STM.msg = w(e && e.name === "AbortError" ? "splitStopped" : e && e.memory ? "splitLong" : "splitFail"); paintAll();
+    });
+  }
+  function stmStop() { if (STM.st !== "busy") return; STM.job++; try { if (STM.ctl) STM.ctl.abort(); } catch (e) {} STM.ctl = null; STM.st = STM.parts ? "on" : ""; STM.msg = w("splitStopped"); paintAll(); }
+  function paintStmLine() { var el = $("lgSplitLine"); if (!el) return; var t = STM.st === "busy" ? w("splitting", { n: STM.pct }) : STM.msg; if (el.textContent !== t) el.textContent = t; }
+  function paintStm() { if (BOX && CUR) paintAll(); }
+  function partsOpts() {
+    var bass = H && H.room === "bass", order = bass ? ["bass", "voice", "drums", "other"] : ["voice", "other", "bass", "drums"], cur = preset();
+    return ['<option value="none"' + (cur === "none" ? " selected" : "") + ">" + esc(w("pNo")) + "</option>"].concat(order.map(function (k) {
+      return '<option value="p:' + k + '"' + (cur === "p:" + k ? " selected" : "") + ">" + esc(w("pNo" + k)) + "</option>"; }))
+      .concat(cur === "p:mine" ? ['<option value="p:mine" selected>' + esc(w("pMine")) + "</option>"] : []).join("");
+  }
+  function stmHtml() {
+    if (!isAudio()) return "";
+    if (STM.st === "busy") return '<div class="lg-ctl"><button type="button" class="pbtn clear" id="lgSplitStop">' + esc(w("stopWork")) + '</button></div><p class="line" id="lgSplitLine" aria-live="polite">' + esc(w("splitting", { n: STM.pct })) + "</p>";
+    if (STM.st !== "on") return '<div class="lg-ctl"><button type="button" class="pbtn" id="lgSplit">' + esc(w("split")) + '</button></div><p class="line" id="lgSplitLine" aria-live="polite">' + esc(STM.msg || w("splitLine")) + "</p>";
+    var A = window.AOGStems, l = levels(), lang = L();
+    return '<div class="row"><label class="field"><span class="plab">' + esc(w("quiet")) + '</span><select id="lgQuiet">' + partsOpts() + "</select></label></div>" +
+      '<div class="lg-lv" role="group" aria-label="' + esc(w("pLevels")) + '">' + PARTK.map(function (k) { var v = Math.round(l[k] * 100);
+        return '<label class="lg-lvr"><span>' + esc(w("p" + k)) + '</span><input type="range" min="0" max="100" step="5" value="' + v + '" data-lv="' + k + '" aria-label="' + esc(w("pLevels") + " · " + w("p" + k)) + '"><b id="lgLv_' + k + '">' + v + "%</b></label>"; }).join("") + "</div>" +
+      (A && STM.note ? '<p class="line note" id="lgSplitNote">' + esc(A.word(STM.note, lang)) + "</p>" : "") +
+      (A ? '<div class="row"><label class="field"><span class="plab">' + esc(w("pKind")) + '</span><select id="lgKind">' + A.kinds.map(function (k) { var sel = (STM.auto ? "auto" : STM.kind) === k;
+        return '<option value="' + k + '"' + (sel ? " selected" : "") + ">" + esc(A.kindWords[lang][k] + (k === "auto" && STM.auto && STM.kind ? " · " + A.kindWords[lang][STM.kind] : "")) + "</option>"; }).join("") + "</select></label></div>" : "") +
+      '<p class="line" id="lgSplitLine" aria-live="polite">' + esc(STM.msg) + "</p>";
+  }
+  var lvT = 0;
+  function setLevels(l, now) { CUR.rec.levels = l; keepSoon(); clearTimeout(lvT); if (now) stmRebuild(); else lvT = setTimeout(stmRebuild, 250); }
   function quietWire() {
     if (!PL.ac || !PL.fxIn) return;
     try { PL.fxIn.disconnect(); } catch (e) {}
@@ -874,6 +999,10 @@
     ".lg-shape .ln{stroke:#d8cfbf;stroke-width:1.2;fill:none}.lg-shape .nut{stroke:#f3efe6;stroke-width:4}.lg-shape .cp{stroke:#f0c26e;stroke-width:5;stroke-linecap:round}",
     ".lg-shape .dt{fill:#f0c26e}.lg-shape .dr{fill:#9fe0d6}.lg-shape .mk2{fill:none;stroke:#d8cfbf;stroke-width:1.4}.lg-shape .tx{fill:#e3dac9;font:700 9px/1 var(--sans,system-ui,sans-serif)}",
     ".lg-shape .wk{fill:#ece6da;stroke:#0f1012;stroke-width:1}.lg-shape .bk{fill:#2a2d33;stroke:#0f1012;stroke-width:1}",
+    /* AOG-STEMS-V1 */
+    ".lg-lv{display:grid;gap:.35rem}",
+    ".lg-lvr{display:grid;grid-template-columns:6.5rem 1fr 3rem;align-items:center;gap:.5rem;min-height:44px;color:#e3dac9;font-weight:700}",
+    ".lg-lvr input{width:100%;min-height:44px;accent-color:#f0c26e}.lg-lvr b{text-align:right;color:#f3efe6}",
     "@media print{.lg{display:none}}"
   ].join("\n");
   var BOX = null;
@@ -917,11 +1046,13 @@
   }
   function openRec(rec, fresh) {
     pause(); wsolaStop(); PL.base = null; PL.cache = {}; PL.stereo = null; PL.pos = 0; PL.waiting = null; PL.waitDone = -1; RESULT = null; FIXN = null; PIN = null;
+    stmFree();
     CUR = { rec: rec, L: rec.lesson };
     var fl = follows().map(function (f) { return f[0]; });
     CUR.follow = rec.follow && fl.indexOf(rec.follow) >= 0 ? rec.follow : (fl.indexOf(defaultFollow(rec.lesson)) >= 0 ? defaultFollow(rec.lesson) : fl[0]);
     if (SPEEDS.indexOf(rec.speed) < 0) rec.speed = 100;
     build(); quietWire();
+    stmFind();   /* AOG-STEMS-V1: split before? its parts come back */
     try { localStorage.setItem(LASTKEY(), rec.id); } catch (e) {}
     paintAll();
     say(fresh ? w("kept") : "");
@@ -998,8 +1129,9 @@
       '<label class="lg-chk"><input type="checkbox" id="lgStep"' + (r.stepUp ? " checked" : "") + ">" + esc(w("stepUp")) + "</label>" +
       (notesView ? "" : '<label class="lg-chk"><input type="checkbox" id="lgEasy"' + (r.easy ? " checked" : "") + ">" + esc(w("easy")) + "</label>") +
       (capo ? '<p class="line" id="lgCapoLine">' + esc(capoText()) + '</p><label class="lg-chk"><input type="checkbox" id="lgCapo"' + (r.capo ? " checked" : "") + ">" + esc(w("useCapo")) + "</label>" : "") +
+      (STM.st === "on" ? stmHtml() :
       '<div class="row"><label class="field"><span class="plab">' + esc(w("quiet")) + '</span><select id="lgQuiet">' + opts + "</select></label></div>" +
-      '<p class="line note" id="lgQuietLine" hidden>' + esc(w("mono")) + "</p>" +
+      '<p class="line note" id="lgQuietLine" hidden>' + esc(w("mono")) + "</p>" + stmHtml()) +
       (hasChords() ? '<div class="lg-ctl"><button type="button" class="pbtn" id="lgPrint">' + esc(w("print")) + "</button></div>" : "") +
       "</div></details>";
   }
@@ -1028,7 +1160,16 @@
       var on = this.checked, go = function () { if (!CUR) return; CUR.rec.easy = on; keepSoon(); RESULT = null; PIN = null; rebuildPart(); paintAll(); SHOWN = "?"; show(); };
       if (window.AOGLearn) go(); else engine().then(go, go); };
     if ((b = $("lgCapo"))) b.onchange = function () { CUR.rec.capo = this.checked; keepSoon(); PIN = null; paintAll(); SHOWN = "?"; show(); };
-    if ((b = $("lgQuiet"))) b.onchange = function () {
+    if ((b = $("lgSplit"))) b.onclick = function () { stmSplit(); };
+    if ((b = $("lgSplitStop"))) b.onclick = stmStop;
+    if ((b = $("lgKind"))) b.onchange = function () { var v = this.value; this.blur(); stmSplit(v); };
+    var lv = $("lgIn") ? $("lgIn").querySelectorAll("[data-lv]") : [];
+    [].forEach.call(lv, function (r) { r.oninput = function () { var l = levels(); l[r.getAttribute("data-lv")] = Math.max(0, Math.min(1, +r.value / 100)); var o = $("lgLv_" + r.getAttribute("data-lv")); if (o) o.textContent = r.value + "%";
+      var q = $("lgQuiet"); setLevels(l); if (q) { q.innerHTML = partsOpts(); } }; });
+    if ((b = $("lgQuiet")) && STM.st === "on") b.onchange = function () {
+      var v = this.value, l = { drums: 1, bass: 1, voice: 1, other: 1 }; if (v.indexOf("p:") === 0 && v !== "p:mine") l[v.slice(2)] = 0; if (v === "p:mine") return;
+      setLevels(l, true); paintAll(); };
+    else if ((b = $("lgQuiet"))) b.onchange = function () {
       CUR.rec.quiet = this.value; keepSoon();
       if (CUR.rec.quiet === "voice" && PL.stereo == null) baseBuf().then(function () { quietWire(); paintQuiet(); }, paintQuiet); else { quietWire(); paintQuiet(); } };
     if ((b = $("lgPrint"))) b.onclick = function () { printSheet(); };
@@ -1058,7 +1199,7 @@
     $("lgBars").onclick = function (e) { var t = e.target.closest && e.target.closest(".lg-bar"); if (t) barTap(+t.getAttribute("data-b")); };
     if ((b = $("lgFix"))) b.onclick = openChordFix;
     $("lgKey").onclick = function () { var k = CUR.L.key || {}; if (window.AOGSong) AOGSong.set({ bpm: Math.round(num(CUR.L.bpm, 0)) || undefined, key: k.key | 0, minor: !!k.minor }); $("lgStatus").textContent = w("keyDone", { k: keyName() }); };
-    $("lgOther").onclick = function () { pause(); CUR = null; FIXN = null; if (H && H.show) H.show(null); try { localStorage.removeItem(LASTKEY()); } catch (e) {} paintAll(); refreshList(); };
+    $("lgOther").onclick = function () { pause(); stmFree(); CUR = null; FIXN = null; if (H && H.show) H.show(null); try { localStorage.removeItem(LASTKEY()); } catch (e) {} paintAll(); refreshList(); };
     var r = $("lgRoll"); if (r) r.onclick = function (e) { var n = e.target.closest && e.target.closest(".lg-n"); if (n) openNoteFix(+n.getAttribute("data-i")); };
     bindMore();
   }
@@ -1327,6 +1468,8 @@
   /* ── start ── */
   function attach(h) { H = h || null; wrapNote(); if (D.readyState === "loading") D.addEventListener("DOMContentLoaded", mount); else mount(); }
   D.addEventListener("visibilitychange", function () { if (D.hidden) pause(); });
+  /* AOG-SILENT-V1: out of sight in the Studio the song pauses, and only a song that was playing goes on again */
+  window.addEventListener("aog-hush", function (e) { if (e && e.detail && e.detail.on) { if (PL.playing) { PL.hushed = true; pause(); } } else if (PL.hushed) { PL.hushed = false; if (CUR) play({ noCount: true }); } });
   window.addEventListener("pagehide", function () { pause(); });
   window.AOGLearnUI = {
     attach: attach,
@@ -1359,7 +1502,10 @@
       buffer: function (speed) { return bufFor(speed / 100).then(function (b) { return b ? { len: b.length, sr: b.sampleRate, ch0: b.getChannelData(0) } : null; }); },
       base: function () { return baseBuf().then(function (b) { return { len: b.length, sr: b.sampleRate }; }); },
       source: function () { var s = PL.src; return s ? { loop: s.loop, a: s.loopStart, b: s.loopEnd, rate: s.playbackRate.value } : null; },
-      state: function () { return api().state(); }
+      state: function () { return api().state(); },
+      /* AOG-STEMS-V1 */
+      stems: function () { return { st: STM.st, kind: STM.kind, auto: STM.auto, note: STM.note, levels: CUR ? levels() : null, preset: CUR ? preset() : "", base: PL.base ? { len: PL.base.length, sr: PL.base.sampleRate } : null, mode: PL.fxMode || "" }; },
+      baseData: function () { return baseBuf().then(function (b) { return { len: b.length, sr: b.sampleRate, ch0: b.getChannelData(0), ch1: b.numberOfChannels > 1 ? b.getChannelData(1) : null }; }); }
     }
   };
   function api() { return { state: function () { return {

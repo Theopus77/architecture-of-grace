@@ -328,6 +328,185 @@ async function routes(ctx) {
     }
   }
 
+  /* ══ C · Learn a song (port 9302): Split the song into parts, then Quiet a part of the song with the real parts ══ */
+  if (ONLY.includes("C")) {
+    const c = await b.newContext({ viewport: { width: 1366, height: 900 } }); watch(c); await routes(c);
+    await c.addInitScript(SPY);
+    let p = await c.newPage(); await p.goto(U(P3) + "music-bass.html"); await p.waitForTimeout(1200);
+    /* the song, as a file the learner picks */
+    await p.addScriptTag({ content: SONG });
+    const wavB64 = await p.evaluate(async () => { const f = songFile(makeSong({ seed: 7, bars: 8 }), "x.wav"), u = new Uint8Array(await f.arrayBuffer()); let s = ""; for (let i = 0; i < u.length; i += 32768) s += String.fromCharCode.apply(null, u.subarray(i, i + 32768)); return btoa(s); });
+    const FILE = { name: "Practice song.wav", mimeType: "audio/wav", buffer: Buffer.from(wavB64, "base64") };
+    const openPanel = async (f) => { await f.evaluate(() => { const bx = document.getElementById("lgBox"); bx.scrollIntoView({ block: "center" }); if (!bx.open) bx.querySelector("summary").click(); }); await f.waitForTimeout(200); };
+    const openMore = (f) => f.evaluate(() => { const d = document.getElementById("lgMore"); if (d && !d.open) d.querySelector("summary").click(); });
+    const loaded = (f, n) => f.waitForFunction(n => window.AOGLearnUI && AOGLearnUI.test.state().open && AOGLearnUI.test.state().name === n, n, { timeout: 60000 });
+    const ST = f => f.evaluate(() => AOGLearnUI.test.stems());
+    await openPanel(p); await p.setInputFiles("#lgFile", FILE); await loaded(p, "Practice song.wav"); await openMore(p); await p.waitForTimeout(200);
+    let a = await p.evaluate(() => ({ btn: (document.getElementById("lgSplit") || {}).textContent, line: (document.getElementById("lgSplitLine") || {}).textContent, quiet: [...document.getElementById("lgQuiet").options].map(o => o.textContent).join(" | "),
+      stems: !!window.AOGStems, res: performance.getEntriesByType("resource").some(e => /aog-stems/.test(e.name)) }));
+    ok(a.btn === "Split the song into parts" && a.line === "Drums, bass, voice and the rest, each on its own. It is done on this device, once." && a.quiet === "Nothing | Quiet the bass | Quiet the voice" && !a.stems && !a.res,
+      "C the Bass, More ways to practise: Split the song into parts, one line; the old way to quiet a part until then; nothing loaded yet: " + JSON.stringify(a));
+    /* Stop, then split */
+    await p.click("#lgSplit"); await p.waitForFunction(() => /\d+%/.test((document.getElementById("lgSplitLine") || {}).textContent || ""), null, { timeout: 30000 });
+    a = await p.evaluate(() => document.getElementById("lgSplitLine").textContent);
+    await p.click("#lgSplitStop"); await p.waitForTimeout(200);
+    let s = await ST(p), b2 = await p.evaluate(() => ({ line: document.getElementById("lgSplitLine").textContent, btn: !!document.getElementById("lgSplit") }));
+    ok(/^Splitting the song… \d{1,3}%$/.test(a) && s.st === "" && b2.line === "Stopped. The song is as it was." && b2.btn, "C the progress (" + a + ") and Stop: " + JSON.stringify(b2));
+    const t0 = Date.now(); await p.click("#lgSplit");
+    await p.waitForFunction(() => AOGLearnUI.test.stems().st === "on", null, { timeout: 90000 });
+    s = await ST(p);
+    a = await p.evaluate(() => ({ quiet: [...document.getElementById("lgQuiet").options].map(o => o.textContent).join(" | "), lv: [...document.querySelectorAll("#lgIn .lg-lvr span")].map(x => x.textContent).join(" | "),
+      line: document.getElementById("lgSplitLine").textContent, note: (document.getElementById("lgSplitNote") || {}).textContent, kind: document.getElementById("lgKind").selectedOptions[0].textContent,
+      workers: window.__workers.filter(w => /aog-stems/.test(w.url)).map(w => w.done) }));
+    ok(a.quiet === "Play the whole song | Play without the bass | Play without the voice | Play without the drums | Play without the rest" && a.lv === "Drums | Bass | Voice | The rest" && a.line === "The song is in four parts."
+      && a.note === "Some ad-libs and backing voices may stay in The rest." && a.kind === "Auto · Pop" && a.workers.length >= 1 && a.workers.every(Boolean),
+      `C split in ${Date.now() - t0} ms (the lesson's own notes guide it; its Worker let go, the stopped one too): the Bass offers Play without the bass first, a level for each part, Kind of music: ` + JSON.stringify(a));
+    /* Play without the bass: the song you hear is the parts without the bass, exactly */
+    await p.selectOption("#lgQuiet", "p:bass"); await p.waitForTimeout(300);
+    const cmp = () => p.evaluate(async () => { const id = AOGLearnUI.test.state().id, rec = await new Promise(ok => { const r = indexedDB.open("aog-learn", 1); r.onsuccess = () => { const q = r.result.transaction("songs").objectStore("songs").get(id); q.onsuccess = () => ok(q.result); }; });
+      const pt = await AOGStems.kept(id, rec.blob), l = AOGLearnUI.test.stems().levels, x = await AOGLearnUI.test.baseData(); let d = 0, e = 0;
+      for (let c = 0; c < 2; c++) { const y = c ? x.ch1 : x.ch0, P = ["drums", "bass", "voice", "other"].map(k => pt[k].getChannelData(c)); for (let i = 0; i < y.length; i += 3) { const want = l.drums * P[0][i] + l.bass * P[1][i] + l.voice * P[2][i] + l.other * P[3][i]; d = Math.max(d, Math.abs(y[i] - want)); e = Math.max(e, Math.abs(want)); } }
+      return { d, e, sr: x.sr, levels: l, stored: rec.levels }; });
+    a = await cmp(); s = await ST(p);
+    ok(a.d < 1e-4 && a.e > 0.05 && a.levels.bass === 0 && a.levels.drums === 1 && s.mode !== "bass" && s.mode !== "voice" && JSON.stringify(a.stored) === JSON.stringify(a.levels),
+      "C Play without the bass: what plays is the drums, the voice and the rest, exactly (the filters are off; kept with the song): " + JSON.stringify(a) + " " + s.mode);
+    await p.evaluate(() => { const r = document.querySelector('#lgIn [data-lv="voice"]'); r.value = "50"; r.dispatchEvent(new Event("input", { bubbles: true })); });
+    await p.waitForTimeout(500);
+    a = await cmp(); const q2 = await p.evaluate(() => ({ v: document.getElementById("lgQuiet").value, t: document.getElementById("lgQuiet").selectedOptions[0].textContent, o: document.getElementById("lgLv_voice").textContent }));
+    ok(a.d < 1e-4 && a.levels.voice === 0.5 && a.levels.bass === 0 && q2.v === "p:mine" && q2.t === "Your own levels" && q2.o === "50%", "C the voice at half: Your own levels, and what plays follows: " + JSON.stringify([a.levels, q2]));
+    /* slower, with the parts: the slower copy is made from them */
+    await p.selectOption("#lgSpeed", "75");
+    const sl = await p.evaluate(async () => { const x = await AOGLearnUI.test.buffer(75), b0 = await AOGLearnUI.test.base(); return { len: x.len, base: b0.len, how: AOGLearnUI.test.how().how }; });
+    ok(Math.abs(sl.len - Math.round(sl.base / 0.75)) <= 2 && sl.how === "worker", "C at 75 % the slower copy is made (in a Worker) from the parts as they are set: " + JSON.stringify(sl));
+    await p.selectOption("#lgSpeed", "100");
+    /* Play and listen: it sounds */
+    await p.click("#lgPlay"); await p.waitForFunction(() => AOGLearnUI.test.state().playing, null, { timeout: 20000 }); await p.waitForTimeout(400);
+    a = await p.evaluate(() => { const was = AOGLearnUI.test.state().playing; window.dispatchEvent(new CustomEvent("aog-hush", { detail: { on: true } })); const hushed = AOGLearnUI.test.state().playing;
+      window.dispatchEvent(new CustomEvent("aog-hush", { detail: { on: false } })); return { was, hushed }; });
+    await p.waitForTimeout(400);
+    const back = await p.evaluate(() => AOGLearnUI.test.state().playing);
+    ok(a.was && !a.hushed && back, "C out of sight (aog-hush) the song pauses, and only a song that was playing goes on: " + JSON.stringify(Object.assign(a, { back })));
+    await p.click("#lgPlay"); await p.waitForTimeout(200);
+    /* kept: the next visit, the parts at once */
+    p = await c.newPage(); await p.goto(U(P3) + "music-bass.html"); await p.waitForTimeout(1200);
+    await openPanel(p); await p.waitForFunction(() => window.AOGLearnUI && AOGLearnUI.test.state().open, null, { timeout: 20000 });
+    await p.waitForFunction(() => AOGLearnUI.test.stems().st === "on", null, { timeout: 20000 }).catch(() => {});
+    await openMore(p); await p.waitForTimeout(200);
+    s = await ST(p); a = await p.evaluate(() => ({ v: (document.getElementById("lgQuiet") || {}).value, w: window.__workers.filter(w => /aog-stems/.test(w.url)).length }));
+    ok(s.st === "on" && a.v === "p:mine" && s.levels.voice === 0.5 && a.w === 0, "C kept: the song opens with its parts and its levels, nothing split again: " + JSON.stringify([s, a]));
+    /* Spanish */
+    await p.evaluate(() => localStorage.setItem("aog.lang", "es")); await p.reload(); await p.waitForTimeout(1200);
+    await openPanel(p); await p.waitForFunction(() => window.AOGLearnUI && AOGLearnUI.test.stems().st === "on", null, { timeout: 20000 }).catch(() => {}); await openMore(p); await p.waitForTimeout(200);
+    a = await p.evaluate(() => ({ q: [...document.getElementById("lgQuiet").options].map(o => o.textContent).join(" | "), lv: [...document.querySelectorAll("#lgIn .lg-lvr span")].map(x => x.textContent).join(" | "), k: document.getElementById("lgKind").selectedOptions[0].textContent,
+      note: (document.getElementById("lgSplitNote") || {}).textContent }));
+    ok(a.q === "Tocar toda la canción | Tocar sin el bajo | Tocar sin la voz | Tocar sin la batería | Tocar sin el resto | Tus propios niveles" && a.lv === "Batería | Bajo | Voz | El resto" && a.k === "Automático · Pop" && a.note === "Algunas voces de fondo pueden quedarse en El resto.",
+      "C in Spanish: " + JSON.stringify(a));
+    await c.close();
+    /* the Piano: the voice and the rest first; a MIDI song has no split (its parts are its own) */
+    const c2 = await b.newContext({ viewport: { width: 1366, height: 900 } }); watch(c2); await routes(c2);
+    const q = await c2.newPage(); await q.goto(U(P3) + "music-piano.html"); await q.waitForTimeout(1200);
+    await openPanel(q); await q.setInputFiles("#lgFile", FILE); await loaded(q, "Practice song.wav"); await openMore(q);
+    await q.click("#lgSplit"); await q.waitForFunction(() => AOGLearnUI.test.stems().st === "on", null, { timeout: 90000 });
+    a = await q.evaluate(() => [...document.getElementById("lgQuiet").options].map(o => o.textContent).join(" | "));
+    ok(a === "Play the whole song | Play without the voice | Play without the rest | Play without the bass | Play without the drums", "C the Piano offers the voice and the rest first: " + a);
+    const MID = Buffer.from("4d546864000000060000000101e04d54726b0000001700ff510307a12000903c40837f803c4000ff2f00", "hex");
+    await q.click("#lgOther"); await q.waitForTimeout(200);
+    await q.setInputFiles("#lgFile", { name: "tune.mid", mimeType: "audio/midi", buffer: MID }); await loaded(q, "tune.mid"); await openMore(q); await q.waitForTimeout(200);
+    a = await q.evaluate(() => ({ split: !!document.getElementById("lgSplit"), st: AOGLearnUI.test.stems().st }));
+    ok(!a.split && a.st === "", "C a MIDI song has no Split (its parts are already apart): " + JSON.stringify(a));
+    await c2.close();
+    /* inside the Studio, an iPhone and an iPad, light and dark: with the parts open it reads and is calm */
+    for (const [dev, theme, room] of [["iPhone 13", "light", "bass"], ["iPad (gen 7)", "dark", "guitar"]]) {
+      const cx = await b.newContext(Object.assign({}, pw.devices[dev], { colorScheme: theme, serviceWorkers: "block" })); watch(cx); await routes(cx);
+      await cx.addInitScript(th => { try { localStorage.setItem("aog.grace.navy.v1", "1"); localStorage.setItem("aog.theme", th); localStorage.setItem("aog.interior.ws.v1.theme", th); localStorage.setItem("aog.theme.lightstart.v1", "1"); } catch (e) {} }, theme);
+      const m = await cx.newPage(); await m.goto(U(P3) + "the-studio#" + room);
+      await m.waitForFunction(r => { const fr = document.getElementById("room"), d = fr && fr.contentDocument; return fr && fr.getAttribute("data-file") === "/music-" + r + ".html" && d && d.readyState === "complete" && d.documentElement.classList.contains("in-studio"); }, room, { timeout: 30000 });
+      await m.waitForTimeout(900);
+      const f = await (await m.$("#room")).contentFrame();
+      await openPanel(f); await f.setInputFiles("#lgFile", FILE); await loaded(f, "Practice song.wav"); await openMore(f);
+      await f.click("#lgSplit"); await f.waitForFunction(() => AOGLearnUI.test.stems().st === "on", null, { timeout: 90000 }).catch(() => {});
+      await f.evaluate(() => document.getElementById("lgMore").scrollIntoView({ block: "start" })); await f.waitForTimeout(300);
+      const pc = await f.evaluate(`(${PROBE})()`), pk = await f.evaluate(`(${CALM})()`), side = await f.evaluate(() => document.documentElement.scrollWidth - innerWidth);
+      const small = await f.evaluate(() => [...document.querySelectorAll("#lgSplit, #lgSplitStop, #lgKind, #lgQuiet, #lgMore [data-lv]")].filter(e => e.getClientRects().length && e.getBoundingClientRect().height < 44).map(e => e.id || e.getAttribute("data-lv") || e.tagName));
+      ok(!pc.length && !pk.length && side <= 2 && !small.length && (await f.evaluate(() => AOGLearnUI.test.stems().st)) === "on", `C in the Studio, ${dev}, ${theme}, the ${room}: with the parts open it reads, is calm, nothing sideways, every control a finger high` + (pc.length ? " contrast: " + JSON.stringify(pc.slice(0, 3)) : "") + (pk.length ? " calm: " + JSON.stringify(pk.slice(0, 3)) : "") + (small.length ? " small: " + small.join(",") : ""));
+      await m.screenshot({ path: path.join(require("os").tmpdir(), `stems-learn-${dev.split(" ")[0].toLowerCase()}-${theme}-${room}.png`) });
+      await cx.close();
+    }
+  }
+
+  /* ══ D · the Mixing Desk (port 9302): a song file or a track's recording split onto four tracks ══ */
+  if (ONLY.includes("D")) {
+    const c = await b.newContext({ viewport: { width: 1366, height: 900 } }); watch(c); await routes(c);
+    await c.addInitScript(SPY);
+    const p = await c.newPage(); await p.goto(U(P3) + "music-studio.html"); await p.waitForTimeout(1500);
+    await p.addScriptTag({ content: SONG });
+    const fileOf = (seed, name) => p.evaluate(async ([seed]) => { const f = songFile(makeSong({ seed: seed, bars: 8 }), "x.wav"), u = new Uint8Array(await f.arrayBuffer()); let s = ""; for (let i = 0; i < u.length; i += 32768) s += String.fromCharCode.apply(null, u.subarray(i, i + 32768)); return btoa(s); }, [seed])
+      .then(b64 => ({ name: name, mimeType: "audio/wav", buffer: Buffer.from(b64, "base64") }));
+    const F1 = await fileOf(7, "First song.wav"), F2 = await fileOf(11, "Second song.wav");
+    let a = await p.evaluate(() => ({ h: document.querySelector("#splitBlk .st-h").textContent, line: document.querySelector('#splitBlk [data-t="splitLine"]').textContent, file: document.getElementById("splitFile").textContent,
+      track: document.getElementById("splitTrack").textContent, dis: document.getElementById("splitTrack").disabled, stems: !!window.AOGStems }));
+    ok(a.h === "Split a song into parts" && a.line === "Its drums, bass, voice and the rest go on four empty tracks. It is done on this device." && a.file === "Choose a song file" && a.track === "Split this track's recording" && a.dis && !a.stems,
+      "D the desk: Split a song into parts, one line, Choose a song file, and Split this track's recording (waiting for a track with a recording); nothing loaded: " + JSON.stringify(a));
+    const msg = () => p.evaluate(() => document.getElementById("splitMsg").textContent);
+    const waitIdle = () => p.waitForFunction(() => !__aogStudio.SPL.busy && document.getElementById("splitMsg").textContent && !/…/.test(document.getElementById("splitMsg").textContent), null, { timeout: 90000 });
+    await p.setInputFiles("#splitIn", F1); await waitIdle();
+    a = await p.evaluate(async () => { const S0 = __aogStudio.SONG, cl = S0.tracks.map(x => x.clip && { n: x.clip.name, sec: +x.clip.sec.toFixed(3), bar: x.clip.startBar, head: x.clip.head });
+      const bufs = S0.tracks.slice(0, 4).map(x => __aogStudio.BUF.get(x.clip.id));
+      const f = await (await fetch("data:audio/wav;base64," + "")).arrayBuffer().catch(() => null);
+      return { cl, len: bufs.map(b => b.length), ch: bufs.map(b => b.numberOfChannels) }; });
+    const m1 = await msg();
+    ok(a.cl.slice(0, 4).map(x => x.n).join(" | ") === "First song · Drums | First song · Bass | First song · Voice | First song · The rest" && a.cl.slice(0, 4).every(x => x.bar === 1 && x.head === 0 && x.sec === a.cl[0].sec) && !a.cl[4] && !a.cl[7]
+      && m1 === "Drums, Bass, Voice and The rest: on tracks 1, 2, 3 and 4. Some ad-libs and backing voices may stay in The rest.",
+      "D a song file: its four parts on tracks 1 to 4, each from bar 1, all the same length; said plainly: " + m1);
+    /* the four tracks add back to the song */
+    const sum = await p.evaluate(async (b64) => { const S0 = __aogStudio.SONG, u = Uint8Array.from(atob(b64), ch => ch.charCodeAt(0)), oc = new OfflineAudioContext(2, 1, 44100);
+      const orig = await oc.decodeAudioData(u.buffer); let d = 0, e = 0; const bufs = S0.tracks.slice(0, 4).map(x => __aogStudio.BUF.get(x.clip.id));
+      for (let c = 0; c < 2; c++) { const o = orig.getChannelData(c), P = bufs.map(b => b.getChannelData(c)); for (let i = 0; i < o.length; i += 2) { const y = P[0][i] + P[1][i] + P[2][i] + P[3][i]; d = Math.max(d, Math.abs(y - o[i])); e = Math.max(e, Math.abs(o[i])); } }
+      return { d, e }; }, F1.buffer.toString("base64"));
+    ok(sum.d < 4e-4 && sum.e > 0.5, "D the four tracks add back to the song (largest difference " + sum.d.toExponential(1) + ")");
+    /* a second song: tracks 5, 6 and 7 are free (8 is the voice's); the fourth part is named, never skipped without a word */
+    await p.setInputFiles("#splitIn", F2); await waitIdle();
+    const m2 = await msg(); a = await p.evaluate(() => __aogStudio.SONG.tracks.map(x => x.clip ? x.clip.name.replace(/ song/, "") : "-").join(" | "));
+    ok(m2.startsWith("Drums, Bass and Voice: on tracks 5, 6 and 7. The rest did not fit: every other track is full. Take a recording off a track, then press Split again.") && /Second · Voice \| -$/.test(a),
+      "D a second song with three empty tracks: three parts placed, the fourth named: " + m2 + " / " + a);
+    /* the first again: kept, nothing split again, and nothing to place */
+    const w0 = await p.evaluate(() => window.__workers.filter(w => /aog-stems/.test(w.url)).length);
+    await p.setInputFiles("#splitIn", F1); await waitIdle();
+    a = { m: await msg(), w: await p.evaluate(() => window.__workers.filter(w => /aog-stems/.test(w.url)).length) };
+    ok(a.m.startsWith("Every part of this song is already on a track.") && a.w === w0, "D the same song again: kept on the device (no new split), and every part already on a track: " + JSON.stringify(a));
+    await c.close();
+    /* a track's recording: split onto the empty tracks, the track itself muted; Stop; Spanish */
+    const c2 = await b.newContext({ viewport: { width: 1366, height: 900 } }); watch(c2); await routes(c2); await c2.addInitScript(SPY);
+    const q = await c2.newPage(); await q.goto(U(P3) + "music-studio.html"); await q.waitForTimeout(1500);
+    await q.evaluate(async (b64) => { const u = Uint8Array.from(atob(b64), ch => ch.charCodeAt(0)); await AOGHandoff.add(AOGHandoff.INBOX, { from: "piano", take: true, sec: 20.2, bpm: 0, at: Date.now(), wav: new Blob([u], { type: "audio/wav" }) });
+      await __aogStudio.refreshInbox(); const src = __aogStudio.sources()[0]; await __aogStudio.putOn(src.id, 0); __aogStudio.selectTrack(0); }, F1.buffer.toString("base64"));
+    await q.waitForTimeout(300);
+    a = await q.evaluate(() => ({ dis: document.getElementById("splitTrack").disabled, clip: !!__aogStudio.SONG.tracks[0].clip }));
+    ok(a.clip && !a.dis, "D a track with a recording: Split this track's recording can be pressed: " + JSON.stringify(a));
+    await q.click("#splitTrack"); await q.waitForFunction(() => /\d+%/.test(document.getElementById("splitMsg").textContent), null, { timeout: 30000 });
+    await q.click("#splitStop"); await q.waitForTimeout(300);
+    a = await q.evaluate(() => ({ m: document.getElementById("splitMsg").textContent, live: window.__workers.filter(w => !w.done && /aog-stems/.test(w.url)).length, busy: __aogStudio.SPL.busy, tracks: __aogStudio.SONG.tracks.filter(x => x.clip).length, stop: document.getElementById("splitStop").hidden }));
+    ok(a.m === "Stopped. Nothing was changed." && !a.live && !a.busy && a.tracks === 1 && a.stop, "D Stop: nothing changed, the Worker let go: " + JSON.stringify(a));
+    await q.evaluate(() => document.getElementById("langBtn").click()); await q.waitForTimeout(300);
+    a = await q.evaluate(() => ({ h: document.querySelector("#splitBlk .st-h").textContent, f: document.getElementById("splitFile").textContent, t: document.getElementById("splitTrack").textContent }));
+    await q.click("#splitTrack"); await q.waitForFunction(() => !__aogStudio.SPL.busy && /pista/i.test(document.getElementById("splitMsg").textContent), null, { timeout: 90000 });
+    const m3 = await q.evaluate(() => document.getElementById("splitMsg").textContent), tr = await q.evaluate(() => __aogStudio.SONG.tracks.map((x, i) => x.clip ? (i + 1) + (x.mute ? " muted" : "") : "").filter(Boolean).join(", "));
+    ok(a.h === "Separar una canción en partes" && a.f === "Elegir un archivo de canción" && a.t === "Separar la grabación de esta pista" && /^Batería, Bajo, Voz y El resto: en las pistas 2, 3, 4 y 5\. La pista 1 está en silencio, así oyes las partes\./.test(m3) && tr === "1 muted, 2, 3, 4, 5",
+      "D in Spanish, a track's recording split: its parts on tracks 2 to 5, track 1 muted, said plainly: " + JSON.stringify(a) + " / " + m3 + " / " + tr);
+    await c2.close();
+    /* inside the Studio, an iPhone: the block fits, a finger high, reads and is calm */
+    const cx = await b.newContext(Object.assign({}, pw.devices["iPhone 13"], { serviceWorkers: "block" })); watch(cx); await routes(cx);
+    const m = await cx.newPage(); await m.goto(U(P3) + "the-studio#studio");
+    await m.waitForFunction(() => { const fr = document.getElementById("room"), d = fr && fr.contentDocument; return fr && /music-studio/.test(fr.getAttribute("data-file") || "") && d && d.readyState === "complete"; }, null, { timeout: 30000 });
+    await m.waitForTimeout(1200);
+    const f = await (await m.$("#room")).contentFrame();
+    await f.evaluate(() => document.getElementById("splitBlk").scrollIntoView({ block: "center" })); await f.waitForTimeout(300);
+    const pc = await f.evaluate(`(${PROBE})()`), pk = await f.evaluate(`(${CALM})()`);
+    a = await f.evaluate(() => { const bs = [...document.querySelectorAll("#splitBlk button:not([hidden])")].map(x => x.getBoundingClientRect()); return { iw: innerWidth, sw: document.scrollingElement.scrollWidth, h: Math.round(Math.min(...bs.map(r => r.height))), right: Math.round(Math.max(...bs.map(r => r.right))) }; });
+    ok(!pc.length && !pk.length && a.sw <= a.iw + 2 && a.right <= a.iw && a.h >= 44, "D in the Studio on an iPhone the split block fits, a finger high, reads and is calm: " + JSON.stringify(a) + (pc.length ? " contrast: " + JSON.stringify(pc.slice(0, 3)) : "") + (pk.length ? " calm: " + JSON.stringify(pk.slice(0, 3)) : ""));
+    await cx.close();
+  }
+
   ok(errs.length === 0, "no page errors " + errs.join(" | "));
   await b.close(); srv.forEach(s => s.close());
   console.log(fails ? fails + " FAILED" : "ALL PASS");
