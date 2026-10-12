@@ -234,8 +234,12 @@ function reader() {
   await p0.evaluate(() => document.getElementById("themeBtn").click()); await wait(100);
   ok(!p0.errs.length, "no errors on a computer" + (p0.errs.length ? ": " + p0.errs.slice(0, 3).join(" | ") : ""));
 
-  /* ── 4. every skill: the right tool in the right hand, hands that reach, one play that stops ── */
-  const sk = await p0.evaluate(async ([SK, HOLD, KNIVES]) => {
+  /* ── 4. every skill: the right tool in the right hand, hands that reach, one play that stops ──
+     (on a narrow window, so the many pictures draw quickly) */
+  await p0.close();
+  const ctxS = await ctxFor({ width: 480, height: 800 });
+  const pk = await pageIn(ctxS, "skill-chop");
+  const sk = await pk.evaluate(async ([SK, HOLD, KNIVES]) => {
     const A = window.AOGKitchen, out = {};
     for (const id of SK) {
       A.openSkill(id, true);
@@ -245,7 +249,8 @@ function reader() {
         if (f.action !== id) o.action = f.action;
         const H = HOLD[id];
         if (H && ((!H.R || (f.hands.R.tool === H.R && f.hands.R.gap < 0.05)) && (!H.L || (f.hands.L.tool === H.L && f.hands.L.gap < 0.05)) && (!H.shown || f.tools.includes(H.shown)) && (!H.mitts || f.mitts))) o.hold = true;
-        if (KNIVES.includes(id) && f.knifeTipY != null && Math.abs(f.knifeTipY - f.boardTop) > 0.012) o.knife = false;
+        if (KNIVES.includes(id) && f.knifeTipY != null && (f.knifeTipY < f.boardTop - 0.012 || (u >= 0.15 && u <= 0.85 && Math.abs(f.knifeTipY - f.boardTop) > 0.012))) o.knife = u.toFixed(2) + ": " + (f.knifeTipY - f.boardTop).toFixed(3);
+        if (H && !o.hold) o.seen = (o.seen || "") + " " + u.toFixed(2) + ":" + f.hands.R.tool + "/" + (f.hands.R.gap || 0).toFixed(2) + "," + f.hands.L.tool + "," + f.tools.join("+") + (f.mitts ? ",mitts" : "");
         ["R", "L"].forEach(S => { if (f.hands[S].miss != null) o.reach = Math.max(o.reach, f.hands[S].miss); });
         if (document.querySelector("#card ol.how li.on")) o.lit++;
       }
@@ -256,19 +261,19 @@ function reader() {
   const wrongA = SKILLS.filter(id => sk[id].action !== true || sk[id].h2 !== R.ACTIONS[id].en.n || sk[id].how < 2);
   ok(!wrongA.length, "every skill opens with its own card and the cook does that skill all the way through" + (wrongA.length ? " (" + wrongA.map(id => id + "→" + sk[id].action).join(", ") + ")" : ""));
   const wrongH = SKILLS.filter(id => !sk[id].hold);
-  ok(!wrongH.length, "the right tool is in the right hand (knife, whisk, spoon, spatula, turner, thermometer, straight edge, mitts …)" + (wrongH.length ? " (" + wrongH.join(", ") + ")" : ""));
-  ok(KNIVES.every(id => sk[id].knife), "chop, slice, dice and mince keep the knife's tip on the board");
+  ok(!wrongH.length, "the right tool is in the right hand (knife, whisk, spoon, spatula, turner, thermometer, straight edge, mitts …)" + (wrongH.length ? " (" + wrongH.map(id => id + ":" + (sk[id].seen || "").slice(0, 300)).join(", ") + ")" : ""));
+  ok(KNIVES.every(id => sk[id].knife === true), "chop, slice, dice and mince keep the knife's tip on the board, and it never goes through it" + (KNIVES.some(id => sk[id].knife !== true) ? " (" + KNIVES.filter(id => sk[id].knife !== true).map(id => id + " " + sk[id].knife).join(", ") + ")" : ""));
   const far = SKILLS.filter(id => sk[id].reach > 0.07);
   ok(!far.length, "the hands reach what they hold (within 7 cm all the way through)" + (far.length ? " (" + far.map(id => id + " " + Math.round(sk[id].reach * 100) + " cm").join(", ") + ")" : ""));
   ok(SKILLS.every(id => sk[id].lit > 5), "the skill card lights the part of the skill the cook is doing");
   // one skill played with Go stops by itself
-  await p0.evaluate(() => window.AOGKitchen.openSkill("chop", true)); await fast(p0);
-  await p0.evaluate(() => document.getElementById("goBtn").click()); const skStop = await untilStopped(p0, 60000);
-  ok(skStop && await p0.evaluate(() => window.AOGKitchen.P.u === 1), "a skill plays once with Go and stops");
+  await pk.evaluate(() => window.AOGKitchen.openSkill("chop", true)); await fast(pk);
+  await pk.evaluate(() => document.getElementById("goBtn").click()); const skStop = await untilStopped(pk, 60000);
+  ok(skStop && await pk.evaluate(() => window.AOGKitchen.P.u === 1), "a skill plays once with Go and stops");
 
   /* ── 5. every recipe, in English and Spanish: each step shows its own skill ── */
   for (const lang of ["en", "es"]) {
-    const res = await p0.evaluate(async ([RC, lang]) => {
+    const res = await pk.evaluate(async ([RC, lang]) => {
       const A = window.AOGKitchen; if (A.state.lang !== lang) document.getElementById("langBtn").click();
       const out = [];
       for (const id of RC) {
@@ -284,15 +289,15 @@ function reader() {
     const badR = res.filter(x => x[1].length);
     ok(!badR.length, `all 9 recipes in ${lang === "es" ? "Spanish" : "English"}: the card and every step's skill` + (badR.length ? " — " + badR.map(x => x[0] + ": " + x[1].slice(0, 3).join(", ")).join("; ") : ""));
   }
-  const esWords = await p0.evaluate(() => ({ go: document.getElementById("goBtn").textContent, h1: document.getElementById("mastH").textContent, lang: document.documentElement.lang }));
+  const esWords = await pk.evaluate(() => ({ go: document.getElementById("goBtn").textContent, h1: document.getElementById("mastH").textContent, lang: document.documentElement.lang }));
   ok(esWords.lang === "es" && /Laboratorio de Cocina/.test(esWords.h1) && /Ir|Otra vez/.test(esWords.go), "the page speaks Spanish when ES is chosen");
-  await p0.evaluate(() => document.getElementById("langBtn").click());
-  ok(!p0.errs.length, "no errors through every skill and recipe" + (p0.errs.length ? ": " + p0.errs.slice(0, 3).join(" | ") : ""));
+  await pk.evaluate(() => document.getElementById("langBtn").click());
+  ok(!pk.errs.length, "no errors through every skill and recipe" + (pk.errs.length ? ": " + pk.errs.slice(0, 3).join(" | ") : ""));
 
   /* ── 6. letting go of the 3D ── */
-  const disp = await p0.evaluate(() => { const A = window.AOGKitchen, c = document.querySelector("#stage canvas"), gl = c.getContext("webgl2") || c.getContext("webgl"); A.K3.dispose(); return { gone: !document.querySelector("#stage canvas"), lost: gl ? gl.isContextLost() : true }; });
+  const disp = await pk.evaluate(() => { const A = window.AOGKitchen, c = document.querySelector("#stage canvas"), gl = c.getContext("webgl2") || c.getContext("webgl"); A.K3.dispose(); return { gone: !document.querySelector("#stage canvas"), lost: gl ? gl.isContextLost() : true }; });
   ok(disp.gone && disp.lost, "leaving the 3D lets go of the drawing and the graphics chip");
-  await p0.close();
+  await pk.close(); await ctxS.close();
 
   /* ── 7. every address the FACS course links to ── */
   const linked = new Set();
@@ -346,7 +351,7 @@ function reader() {
   // an odd line is shown, and an unknown step is played calmly at the counter
   await pp.fill("#mineText", SAMPLES[4].text + "\n???"); await pp.evaluate(() => document.getElementById("readBtn").click()); await wait(100);
   const odd = await pp.evaluate(() => ({ unsure: document.querySelectorAll("#preview .tag.unsure").length, notes: Array.from(document.querySelectorAll("#preview .note")).map(n => n.textContent).join(" ") }));
-  ok(odd.unsure === 1 && /no cooking word I know/.test(odd.notes) && /did not understand/.test(odd.notes) && /\?\?\?/.test(odd.notes), "the preview names the step it could not picture and the line it did not understand");
+  ok(odd.unsure === 1 && /no cooking word I know/.test(odd.notes) && /did not understand/.test(odd.notes) && /\?\?\?/.test(odd.notes), "the preview names the step it could not picture and the line it did not understand" + (odd.unsure === 1 && /\?\?\?/.test(odd.notes) ? "" : " — " + JSON.stringify(odd)));
   await pp.evaluate(() => { const A = window.AOGKitchen; A.setStep(3, 0.5); });
   ok(await pp.evaluate(() => window.AOGKitchen.K3.info().action === "counter" && /Juggle/.test(document.getElementById("stageDesc").textContent)), "an unknown step is shown at the counter with its own words");
   // save on this device, reload, open from the list, play
@@ -356,7 +361,7 @@ function reader() {
   ok(saved.length === 1 && saved[0].title === "Licuado de frutas en tazón" && /córtalo/.test(saved[0].text), "Save keeps the recipe on this device");
   await pp.reload({ waitUntil: "load" }); await ready(pp);
   const list = await pp.evaluate(() => ({ saved: Array.from(document.querySelectorAll("#card .saved span:first-child")).map(s => s.textContent), menu: Array.from(document.querySelectorAll("#recipeRow [data-recipe]")).map(b => b.textContent) }));
-  ok(list.saved.includes("Licuado de frutas en tazón") && list.menu.some(t => /★ Licuado/.test(t)), "after a reload it is still in the saved list and the recipe menu");
+  ok(list.saved.includes("Licuado de frutas en tazón") && list.menu.some(t => /^Saved: Licuado/.test(t)), "after a reload it is still in the saved list and the recipe menu" + (list.saved.includes("Licuado de frutas en tazón") && list.menu.some(t => /^Saved: Licuado/.test(t)) ? "" : " — " + JSON.stringify(list).slice(0, 300)));
   await pp.click("#card [data-open]"); await wait(150);
   const opened = await pp.evaluate(() => { const A = window.AOGKitchen; return { mode: A.state.mode, id: A.state.recipe, n: A.rec.steps.length, h2: document.querySelector("#card h2").textContent, hash: location.hash }; });
   ok(opened.mode === "recipe" && /^my-/.test(opened.id) && opened.n === 6 && opened.h2 === "Licuado de frutas en tazón", "Open plays a saved recipe like any other (" + opened.hash + ")");

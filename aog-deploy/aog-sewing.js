@@ -78,7 +78,7 @@ function routeLines(nodes, st) {
     if (m && m.L === n.L && LEGGY[n.L]) {                 // a leg on one side: follow the cloth's curve
       const d = Math.hypot(m.x - n.x, m.z - n.z), k = Math.floor(d / 0.0015);
       // long legs on the back that lie over each other (backstitch) sit a hair apart, the way real thread rolls aside
-      const bow = n.L === "B" && d > 0.0105 ? ((bowN++ % 2) ? 1 : -1) * 0.00062 : 0;
+      const bow = n.L === "B" && d > 0.0105 ? ((bowN++ % 2) ? 1 : -1) * 0.0013 : 0;
       for (let j = 1; j < k; j++) { const u = j / k, o = bow * Math.sin(Math.PI * u); cur.push(nodePt({ L: n.L, x: lerp(n.x, m.x, u), z: lerp(n.z, m.z, u) + o, b: n.b }, st)); }
     }
   }
@@ -626,19 +626,24 @@ BUILD["tie-off"] = () => {
   H.pt(add(Bp, mul(u2, 0.005))); const iE = H.pt(add(Bp, mul(u2, 0.014)));
   tip(tl, H, 2, 1.2, iA, 0.2); tip(tl, H, 2, 1.4, iE, 0.2); tip(tl, H, 2, 0.4, iE, 0.2, 0.85);
   // pull, leaving a loop
-  const iP = H.pt([pB2[0] - 0.02, -0.03 + surf(pB2[0], 0), 0.004]);
+  const iP = pullOut(H, pB2[0], pB2[1], "B", -0.02, 0.004);
   tip(tl, H, 3, 1.6, iP, 0.85);
   tl.add(3, 0.01, (st) => { st.loop = { r: 0.0055 }; });
   const r0 = 0.0055;
   // through the loop twice (the loop stands up from the back at the last stitch)
   const lc = [pB2[0], -CL - r0 + surf(pB2[0], pB2[1]), pB2[1]];
+  // a needle is straight, so it never turns sharply: between the two passes it swings round in a wide circle under the work
+  const swing = (from, to, n) => { const c = mix(from, to, 0.5), r = Math.hypot(to[0] - from[0], to[1] - from[1]) / 2, a0 = Math.atan2(from[1] - c[1], from[0] - c[0]);
+    for (let i = 1; i < n; i++) { const a = a0 + Math.PI * i / n; H.pt([c[0] + r * Math.cos(a), c[1] + r * Math.sin(a), lerp(from[2], to[2], i / n)]); } };
   for (let k = 0; k < 2; k++) {
-    H.pt(add(lc, [0.03, -0.01, 0.005]));
-    H.pt(add(lc, [0.008, 0, 0]));
-    const iT = H.pt(add(lc, [-0.008, 0, 0]));
-    const iQ = H.pt(add(lc, [-0.03, -0.012, 0.004]));
+    if (k === 0) { H.pt(add(lc, [0.05, -0.03, 0.006])); }
+    H.pt(add(lc, [0.03, -0.012, 0.004]));
+    H.pt(add(lc, [0.008, -0.002, 0]));
+    const iT = H.pt(add(lc, [-0.008, 0.0005, 0]));
+    H.pt(add(lc, [-0.03, -0.006, 0.002]));
+    const iQ = H.pt(add(lc, [-0.055, -0.014, 0.004]));
     tip(tl, H, 4, 1.3, iT, 0.2); tip(tl, H, 4, 0.3, iT, 0.2, 0.85); tip(tl, H, 4, 1.3, iQ, 0.85);
-    if (k === 0) tip(tl, H, 4, 0.3, iQ, 0.85, 0.2);
+    if (k === 0) { swing(add(lc, [-0.055, -0.014, 0.004]), add(lc, [0.05, -0.03, 0.006]), 10); const iR = H.pt(add(lc, [0.05, -0.03, 0.006])); tip(tl, H, 4, 1.6, iR, 0.85); tip(tl, H, 4, 0.3, iR, 0.85, 0.2); }
   }
   tl.add(5, 2.2, (st, u) => { st.loop = { r: r0 * (1 - u) }; st.endKnotNode = { L: "K", x: pB2[0], z: pB2[1] }; st.endKnot = u; });
   tip(tl, H, 5, 2.2, H.pt(add(lc, [-0.05, -0.02, 0.01])), 0.85);
@@ -646,6 +651,7 @@ BUILD["tie-off"] = () => {
   tl.add(6, 2.0, (st, u) => {
     st.snips = { p: add(nodePt({ L: "B", x: pB2[0] - 0.006, z: pB2[1] }, st), [0, -0.012, 0.004]), open: u < 0.5 ? u * 2 : 2 - u * 2 };
     if (u > 0.55) { st.cutAfter = true; st.tailLen = 0.006; st.needleShow = false; }
+    if (u > 0.6) st.snips.p = add(st.snips.p, mul([0.05, -0.05, 0.06], ease((u - 0.6) / 0.4)));   // the snips go away; the knot shows
   });
   H.done(); tl.derive = deriveHand(H, pre); tl.track = H;
   tl.pre = pre;
@@ -764,7 +770,7 @@ const LAYOUT = {
       feed: [0, 0.002, 0.01], plate: [0.01, 0.002, 0.0], bobbin: [0, 0.002, 0.05], winder: [0.42, 0.27, -0.02], wheel: [0.5, 0.17, -0.045],
       selector: [0.38, 0.14, 0.01], pedal: null }
   },
-  cut: { stand: [0.45, 0.76], cloth: [0.45, 0.13], size: [0.6, 0.44] },
+  cut: { stand: [0.45, 0.63], cloth: [0.45, 0.27], size: [0.6, 0.44] },   // the near edge of the cloth falls over the table's edge
   press: { stand: [1.6, 0.82], board: [1.6, 0.88, 0.32] }
 };
 const ML = { l: 0.003, W: 0.17, Lh: 0.2 };   // stitch length; the fabric pieces' width and length
@@ -925,7 +931,7 @@ BUILD["machine-parts"] = () => {
   return finish(tl, 12);
 };
 BUILD["wind-bobbin"] = () => {
-  const tl = TL("wind-bobbin", "machine", machineInit(() => ({ mf: { show: 0, T: [0, 0], rot: 0, st: [], pins: [] }, m: { w: 0, foot: 0, threadU: 0, bobbinIn: 0, tails: 0, winder: 0, wind: 0, bobbinFill: 0, onPin: 0, wpath: 0, wraps: 0, footOnPedal: 1, pedal: 0 } })));
+  const tl = TL("wind-bobbin", "machine", machineInit(() => ({ mf: { show: 0, T: [0, 0], rot: 0, st: [], pins: [] }, m: { w: 0, foot: 0, threadU: 0, bobbinIn: 0, tails: 0, winder: 0, wind: 0, bobbinFill: 0, onPin: 0, wpath: 0, wraps: 0, footOnPedal: 1, pedal: 0, spoolOn: 1 } })));
   tl.add(0, 1.6, (st, u) => { st.m.footOnPedal = 1 - u; });
   tl.add(1, 2.0, (st, u) => { st.m.onPin = u; });
   tl.add(2, 2.6, (st, u) => { st.m.wpath = u; });
@@ -1053,10 +1059,13 @@ BUILD["cut-fabric"] = () => {
     const tng = Math.atan2(q[1] - p[1], q[0] - p[0]);
     c.at = at; c.yaw = tng; c.path = path; c.N = N;
     const sh = c.shears;
-    sh.p = sh.hand > 0 ? mix([at[0], 0.02, at[1]], [0.05, 0.12, 0.3], ease(sh.hand)) : sh.down > 0 ? mix([at[0] + 0.04, 0.005, at[1] - 0.02], [0.33, 0.005, 0.12], sh.down) : [at[0], 0.012, at[1]];
+    // passing them: closed, held by the blades, the handles offered across the table
+    sh.p = sh.hand > 0 ? mix([at[0], 0.02, at[1]], [0.12, 0.1, -0.05], ease(sh.hand)) : sh.down > 0 ? mix([at[0] + 0.04, 0.005, at[1] - 0.02], [0.33, 0.005, 0.12], sh.down) : [at[0], 0.012, at[1]];
     sh.yaw = sh.hand > 0 ? lerp(tng, Math.PI / 2, sh.hand) : tng;
     if (c.notch > 0) { const nz = PAT.z0 + PAT.h * 0.5; sh.p = [PAT.x0 + PAT.w + 0.006, 0.012, nz]; sh.yaw = Math.PI; }
-    st.handR = { f: "cut", p: add(sh.p, [0.0, 0.03, 0.05]), grip: 1 };
+    // the right hand: thumb and fingers in the handles while cutting; around the closed blades when passing them
+    const ring = sh.hand > 0.5 ? 0.06 : -0.05, cy = Math.cos(sh.yaw), sy = Math.sin(sh.yaw);
+    st.handR = { f: "cut", p: add(sh.p, [ring * cy, 0.014, ring * sy]), grip: sh.hand > 0.5 ? 0.85 : 0.7 };
     st.handL = { f: "cut", p: [at[0] - 0.08 * Math.cos(tng) + 0.05 * Math.sin(tng), 0.006, at[1] - 0.08 * Math.sin(tng) - 0.06], grip: 0.05 };
     if (c.hand < 1 && !c.s) st.handL.p = mix([-0.2, 0.08, 0.2], st.handL.p, ease(c.hand || 0));
   };
@@ -1180,7 +1189,7 @@ function words() {
   $("brand").textContent = L("The Sewing Room", "El Taller de Costura");
   $("mastK").textContent = L("Family & Consumer Sciences · sewing", "Ciencias de la Familia y del Consumidor · costura");
   $("mastH").textContent = L("The Sewing Room", "El Taller de Costura");
-  $("mastL").textContent = L("Watch each stitch up close, step by step, then try it with your own needle.", "Mira cada puntada de cerca, paso a paso, y luego pruébala con tu aguja.");
+  $("mastL").textContent = L("Watch each stitch up close, step by step.", "Mira cada puntada de cerca, paso a paso.");
   $("langBtn").textContent = es() ? "EN" : "ES";
   $("themeBtn").textContent = document.documentElement.getAttribute("data-theme") === "dark" ? L("Light", "Claro") : L("Dark", "Oscuro");
   $("nav").innerHTML = `<a href="/kitchen">${L("Kitchen & Sewing Table", "Cocina y mesa de costura")}</a>`;
@@ -1249,7 +1258,15 @@ function resultSVG(id) {
   const x0 = Math.min(...xs) - 0.004, x1 = Math.max(...xs) + 0.004, z0 = Math.min(...zs) - 0.004, z1 = Math.max(...zs) + 0.004;
   const sc = Math.min((W - 30) / (x1 - x0), (H2 - 20) / Math.max(0.006, z1 - z0));
   const X = x => W / 2 + (x - (x0 + x1) / 2) * sc * -1, Y = z => H2 / 2 + (z - (z0 + z1) / 2) * sc;
-  const draw = (ls, cls) => ls.map(l => `<line x1="${X(l.a[0]).toFixed(1)}" y1="${Y(l.a[1]).toFixed(1)}" x2="${X(l.b[0]).toFixed(1)}" y2="${Y(l.b[1]).toFixed(1)}" class="${cls}"/>`).join("");
+  // each stitch is drawn on its own (a hair shorter at both ends, so stitches that touch still read one by one);
+  // long stitches that lie over each other (the back of a backstitch) sit a little apart, the way real thread rolls aside
+  const draw = (ls, cls) => { let flip = 1; return ls.map((l, i) => {
+    let x1 = X(l.a[0]), y1 = Y(l.a[1]), x2 = X(l.b[0]), y2 = Y(l.b[1]);
+    const d = Math.hypot(x2 - x1, y2 - y1) || 1, k = Math.min(1.4, d * 0.12) / d;
+    x1 += (x2 - x1) * k; y1 += (y2 - y1) * k; x2 -= (x2 - x1) * k / (1 - k); y2 -= (y2 - y1) * k / (1 - k);
+    const prev = ls[i - 1], over = prev && Math.min(Math.max(l.a[0], l.b[0]), Math.max(prev.a[0], prev.b[0])) - Math.max(Math.min(l.a[0], l.b[0]), Math.min(prev.a[0], prev.b[0])) > 0.001;
+    const o = over ? (flip = -flip) * 2.2 : 0;
+    return `<line x1="${x1.toFixed(1)}" y1="${(y1 + o).toFixed(1)}" x2="${x2.toFixed(1)}" y2="${(y2 + o).toFixed(1)}" class="${cls}"/>`; }).join(""); };
   let edge = "";
   if (["whipstitch", "blanket-stitch"].includes(id)) edge = `<line x1="0" x2="${W}" y1="${Y(EDGE).toFixed(1)}" y2="${Y(EDGE).toFixed(1)}" class="edge"/>`;
   if (id === "slip-stitch") edge = `<line x1="0" x2="${W}" y1="${Y(0.0012).toFixed(1)}" y2="${Y(0.0012).toFixed(1)}" class="edge"/>`;
@@ -1355,16 +1372,25 @@ function draw() {
    camera stays still while a step plays); buttons: the button being sewn */
 const focusCache = {};
 function focusOf(id, step) {
-  if (id === "sew-button") return step >= 8 ? [BTN.sc[0], 0, BTN.sc[1]] : [BTN.c[0], 0, BTN.c[1]];
-  if (id === "thread-needle") return [0.002, 0.034, -0.016];  // the eye, held up to the light
+  if (id === "sew-button") return step >= 9 ? [(BTN.c[0] + BTN.sc[0]) / 2, 0, 0] : step >= 8 ? [BTN.sc[0], 0, BTN.sc[1]] : [BTN.c[0], 0, BTN.c[1]];
+  if (id === "tie-off") return [-0.026, 0, 0.002];             // the last stitches and the knot
+  if (id === "thread-needle") return step < 2 ? [0.08, 0.05, 0.004] : [0.002, 0.034, -0.016];  // the thread being cut; then the eye
   if (id === "tie-knot") return [-0.004, 0.028, -0.004];       // the wraps on the needle
-  if (!focusCache[id]) {
-    const fp = finalPattern(id), ls = fp.kind === "hand" ? fp.front.concat(fp.back) : [];
-    if (!ls.length) focusCache[id] = [0.01, 0, 0];
-    else { const xs = ls.flatMap(l => [l.a[0], l.b[0]]), zs = ls.flatMap(l => [l.a[1], l.b[1]]);
-      focusCache[id] = [(Math.min(...xs) + Math.max(...xs)) / 2, 0, (Math.min(...zs) + Math.max(...zs)) / 2]; }
+  // the stitches made by the end of this step (the camera stays still while a step plays, and moves on with the work)
+  const key = id + ":" + step;
+  if (!focusCache[key]) {
+    const tl = timeline(id), r = tl.steps[Math.min(step, tl.steps.length - 1)], st = sample(tl, r[1] - 1e-4);
+    const ls = legs(st.nodes || []).filter(l => l.L === "F" || l.L === "B");
+    const lastHole = (st.nodes || []).filter(n => CLOTH[n.L]).pop(), nt = st.needle && st.needle[st.needle.length - 1];
+    const tipP = lastHole ? [lastHole.x, 0, lastHole.z] : nt;   // where the work is happening now
+    const xs = ls.flatMap(l => [l.a[0], l.b[0]]), zs = ls.flatMap(l => [l.a[1], l.b[1]]);
+    if (!xs.length && tipP) { xs.push(clamp(tipP[0], -FX + 0.02, FX - 0.02)); zs.push(clamp(tipP[2], EDGE, FZ)); }
+    if (!xs.length) { xs.push(0.01); zs.push(0); }
+    let cx = (Math.min(...xs) + Math.max(...xs)) / 2;
+    if (xs.length < 6 && tipP) cx = (cx * 2 + clamp(tipP[0], -FX, FX)) / 3;   // the first stitches: lean toward the needle
+    focusCache[key] = [cx, 0, (Math.min(...zs) + Math.max(...zs)) / 2];
   }
-  return focusCache[id];
+  return focusCache[key];
 }
 const ENGINE = { focusOf, LAYOUT, LT, T, CL, NL, FX, FZ, EDGE, BH, PIN, BTN, PAT, PINS, ML, surf, topOf, nodePt, f2w, w2f, needleTipY, patternPath, routeLines, region };
 function wire() {

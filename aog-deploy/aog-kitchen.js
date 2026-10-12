@@ -207,7 +207,7 @@ function modes() {
 }
 function picks() {
   const saved = mine();
-  const rs = R.RECIPES.map(r => [r.id, W(r).n]).concat(saved.map(m => [m.id, "★ " + m.title]));
+  const rs = R.RECIPES.map(r => [r.id, W(r).n]).concat(saved.map(m => [m.id, L("Saved: ", "Guardada: ") + m.title]));
   $("recipeRow").innerHTML = rs.map(([id, n]) => `<button type="button" data-recipe="${esc(id)}" aria-pressed="${S.mode === "recipe" && S.recipe === id}">${esc(n)}</button>`).join("");
   $("skillRow").innerHTML = R.SKILLS.map(id => `<button type="button" data-skill="${id}" aria-pressed="${S.skill === id}">${esc(W(R.ACTIONS[id]).n)}</button>`).join("");
   $("recipeRow").querySelectorAll("[data-recipe]").forEach(b => b.onclick = () => openRecipe(b.getAttribute("data-recipe"), true));

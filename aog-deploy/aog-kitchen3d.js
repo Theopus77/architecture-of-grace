@@ -37,6 +37,7 @@ const SINK = { x: -1.0, z: 0.52, w: 0.54, d: 0.42, depth: 0.2 };
 const COOK = { x0: 0.6, x1: 1.4, z0: 0.24, z1: 0.98 };
 const PAN = { x: 0.82, z: 0.42, r: 0.13 };
 const POT = { x: 1.17, z: 0.44, r: 0.12, h: 0.16 };
+const LIDREST = new THREE.Vector3(1.44, 0.92 + 0.004, 0.46);   // where the pot's lid rests on the counter, right of the cooktop
 const OVEN = { x: 1.0, w: 0.68, y0: 0.16, y1: 0.66, rackY: 0.4, out: 0.34 };   // the door is on its bottom hinge; the rack slides out by `out`
 
 export async function create(opts) {
@@ -304,9 +305,9 @@ export async function create(opts) {
     neck.position.set(SINK.x, TOP + 0.04, IZ1 - 0.13); island.add(neck);
     const lever = mesh(cyl(0.006, 0.008, 0.11, 12), M.chrome); lever.position.set(SINK.x + 0.05, TOP + 0.09, IZ1 - 0.13); lever.rotation.z = -1.1; island.add(lever);
     // soap pump and a towel on the island's end
-    const bottle = mesh(lathe([[0, 0], [0.035, 0], [0.04, 0.02], [0.04, 0.13], [0.02, 0.16], [0.012, 0.17], [0, 0.17]], 24), M.soap); bottle.position.set(SINK.x - 0.36, TOP, SINK.z + 0.24); island.add(bottle);
-    const pump = mesh(cyl(0.008, 0.008, 0.04, 10), M.pump); pump.position.set(SINK.x - 0.36, TOP + 0.19, SINK.z + 0.24); island.add(pump);
-    const nozzle = mesh(rbox(0.05, 0.012, 0.016, 0.005), M.pump); nozzle.position.set(SINK.x - 0.34, TOP + 0.21, SINK.z + 0.24); island.add(nozzle);
+    const bottle = mesh(lathe([[0, 0], [0.035, 0], [0.04, 0.02], [0.04, 0.13], [0.02, 0.16], [0.012, 0.17], [0, 0.17]], 24), M.soap); bottle.position.set(SINK.x - 0.36, TOP, SINK.z - 0.1); island.add(bottle);
+    const pump = mesh(cyl(0.008, 0.008, 0.04, 10), M.pump); pump.position.set(SINK.x - 0.36, TOP + 0.19, SINK.z - 0.1); island.add(pump);
+    const nozzle = mesh(rbox(0.05, 0.012, 0.016, 0.005), M.pump); nozzle.position.set(SINK.x - 0.34, TOP + 0.21, SINK.z - 0.1); island.add(nozzle);
   }
   const water = new THREE.Group(); island.add(water);
   const stream = mesh(sweep([[0, 0, 0], [0, -0.1, 0], [0, -0.25, 0], [0, -0.42, 0]], t => 0.007 + 0.003 * t, 16, 12), M.waterStream, false, false);
@@ -448,7 +449,7 @@ export async function create(opts) {
     const cuff = mesh(cyl(0.05, 0.05, 0.04, 24, true), M.mittCuff); cuff.rotation.z = Math.PI / 2; cuff.scale.set(1, 1, 0.68); cuff.position.set(-0.12, 0, 0); m.add(cuff);
     m.traverse(o => { if (o.isMesh) o.castShadow = true; }); m.visible = false; scene.add(m); mitts[S] = m; });
   // dishcloth, sponge, towel, plate, glass
-  { const c = mesh(rbox(0.16, 0.012, 0.12, 0.005, 2), M.cloth); tool("cloth", grp(c), homeAt(-0.4, TOP + 0.006, 0.55, 0.2), holdM(0, -0.0, -0.03)); }
+  { const c = mesh(rbox(0.16, 0.12, 0.012, 0.005, 2), M.cloth); tool("cloth", grp(c), homeAt(-0.4, TOP + 0.006, 0.55, 0.2, 0, -Math.PI / 2), holdM(0, 0.01, 0.022)); }   // flat under the palm
   { const s = grp(mesh(rbox(0.09, 0.03, 0.06, 0.01), M.sponge), at(mesh(rbox(0.09, 0.008, 0.06, 0.004), M.spongeTop), 0, 0.018, 0)); tool("sponge", s, homeAt(SINK.x + 0.36, TOP + 0.015, SINK.z + 0.22, 0.3), holdM(0, 0, -0.03)); }
   { const t = mesh(sweep([[0, 0, 0], [0.05, -0.08, 0], [0.04, -0.2, 0.02]], t => 0.03 - 0.005 * t, 16, 10), M.towel); t.scale.set(1, 1, 0.35); tool("towel", grp(t), homeAt(SINK.x - 0.42, TOP + 0.02, SINK.z - 0.1, 0, 0, 0)); TOOL.towel.obj.visible = true; }
   const plate = mesh(lathe([[0, 0], [0.1, 0], [0.105, 0.004], [0.14, 0.018], [0.145, 0.02], [0.14, 0.022], [0.1, 0.008], [0, 0.008]], 40), M.ceramic); plate.position.set(-0.3, TOP, 0.6); plate.visible = false; island.add(plate);
@@ -630,7 +631,7 @@ export async function create(opts) {
     "saute": (s, st) => { const prev = s.board && s.board.cut ? [s.board.item] : []; const it = stepItems(st).map(i => i.item).filter(x => PRODUCE.includes(x));
       s.pan.pieces = Array.from(new Set(s.pan.pieces.concat(prev, it))); if (s.board && s.board.cut) s.board = null;
       if (!s.pan.kind || s.pan.kind === "oil") s.pan.kind = s.pan.pieces.length ? "veg" : (stepItems(st).some(i => i.item === "butter") ? "butter" : "oil"); s.pan.cook = Math.min(1, s.pan.cook + 0.6); s.panHeat = 1; },
-    "boil": (s, st) => { s.pot.water = 1; s.pot.heat = 1; s.pot.lid = 0; if (stepItems(st).some(i => i.item === "pasta")) s.pot.pasta = 1; },
+    "boil": (s, st) => { s.pot.water = 1; s.pot.heat = 1; s.pot.lid = 0; s.lidRest = LIDREST.toArray(); if (stepItems(st).some(i => i.item === "pasta")) s.pot.pasta = 1; },
     "simmer": (s, st) => { if (s.pan.kind === "sauce" || stepItems(st).some(i => i.item === "tomatosauce")) { s.pan.kind = "sauce"; s.pan.cook = 1; } else s.pot.heat = 0.5; },
     "bake": (s) => { if (s.dough && s.dough.flat) s.dough.baked = 1; else s.tin = { fill: 1, baked: 1, at: "counter" }; },
     "check-temp": () => {},
@@ -690,10 +691,10 @@ export async function create(opts) {
     const ph = u < 0.12 ? "wet" : u < 0.22 ? "soap" : u < 0.74 ? "scrub" : u < 0.86 ? "rinse" : "dry";
     c.s.water = (ph === "wet" || ph === "rinse") ? 1 : 0;
     let mid = ph === "wet" || ph === "rinse" ? under.clone() : front.clone();
-    if (ph === "soap") mid = P(x - 0.2, TOP + 0.16, SINK.z + 0.2);
+    if (ph === "soap") mid = P(x - 0.2, TOP + 0.16, SINK.z - 0.12);
     const k = (u - 0.22) / 0.52, sub = Math.floor(clamp(k, 0, 0.999) * 5), su = (k * 5) % 1, wob = Math.sin(su * TAU * 3) * 0.022;
     let R0 = { G: mid.clone().add(V(-0.035, 0, 0)), T: nrm(0, 0.5, 1), N: LEFT.clone(), grip: 0.15 }, L0 = { G: mid.clone().add(V(0.035, 0, 0)), T: nrm(0, 0.5, 1), N: RIGHT.clone(), grip: 0.15 };
-    if (ph === "soap") { L0 = { G: P(x - 0.33, TOP + 0.13, SINK.z + 0.23), T: nrm(0, 0, 1), N: UP.clone(), grip: 0.3 }; R0 = { G: P(x - 0.35, TOP + 0.2 - 0.01 * Math.max(0, Math.sin(win(u, 0.14, 0.2) * Math.PI)), SINK.z + 0.24), T: nrm(-0.2, 0, 1), N: DOWN.clone(), grip: 0.1 }; }
+    if (ph === "soap") { L0 = { G: P(x - 0.33, TOP + 0.13, SINK.z - 0.11), T: nrm(0, 0, 1), N: UP.clone(), grip: 0.3 }; R0 = { G: P(x - 0.35, TOP + 0.2 - 0.01 * Math.max(0, Math.sin(win(u, 0.14, 0.2) * Math.PI)), SINK.z - 0.1), T: nrm(-0.2, 0, 1), N: DOWN.clone(), grip: 0.1 }; }
     if (ph === "scrub") {
       if (sub === 0) { R0.G.add(V(0, wob, wob)); L0.G.add(V(0, -wob, -wob)); }                    // palms
       else if (sub === 1) { R0 = { G: mid.clone().add(V(0.0, 0.025, 0.0 + wob)), T: nrm(0.4, 0, 1), N: DOWN.clone(), grip: 0.1 }; L0 = { G: mid.clone().add(V(0.01, -0.0, -wob)), T: nrm(-0.5, 0.3, 1), N: UP.clone(), grip: 0.1 }; }   // backs
@@ -757,8 +758,10 @@ export async function create(opts) {
   // ── measure dry: scoop, overfill a little, level with a straight edge, tip into the bowl ──
   ANIM["measure-dry"] = (c, u) => {
     const bag = P(-0.2, TOP, 0.62), lev = P(-0.05, TOP + 0.09, 0.42), over = P(BOWL.x - 0.05, TOP + 0.24, BOWL.z - 0.02);
-    c.body.lean = 12; c.s.bag = 1; c.s.cupFill = u < 0.1 ? 0 : u < 0.3 ? 1.2 : u < 0.62 ? lerp(1.2, 1, sst(0.4, 0.6, u)) : u < 0.85 ? lerp(1, 0, sst(0.68, 0.82, u)) : 0;
-    const cupG = u < 0.3 ? K(u, [[0, lev.clone().add(V(-0.05, 0.02, 0.05)).toArray()], [0.12, bag.clone().add(V(0.0, 0.12, -0.02)).toArray()], [0.22, bag.clone().add(V(0.02, 0.08, -0.02)).toArray()], [0.3, lev.toArray()]])
+    // spoon it in (two spoonfuls, not pressed down), a little over the top; then level; then tip it in
+    const cupA = P(-0.06, TOP + 0.07, 0.5), spoons = win(u, 0.06, 0.27) * 2, sp = spoons % 1, scoop = Math.min(2, Math.floor(spoons));
+    c.body.lean = 12; c.s.bag = 1; c.s.cupFill = u < 0.06 ? 0 : u < 0.3 ? Math.min(1.2, 0.6 * scoop + 0.6 * sst(0.72, 0.95, sp) * (scoop < 2 ? 1 : 0)) : u < 0.62 ? lerp(1.2, 1, sst(0.4, 0.6, u)) : u < 0.85 ? lerp(1, 0, sst(0.68, 0.82, u)) : 0;
+    const cupG = u < 0.3 ? K(u, [[0.0, cupA.toArray()], [0.27, cupA.toArray()], [0.32, lev.toArray()]])
       : u < 0.62 ? lev.toArray() : K(u, [[0.62, lev.toArray()], [0.72, over.toArray()], [0.86, over.toArray()], [1, lev.toArray()]]);
     const tipA = K(u, [[0.66, 0], [0.74, 1], [0.84, 1], [0.9, 0]]);
     c.L = { G: V(...cupG).add(V(0.05, 0, 0)), T: nrm(-1, 0, -0.15 * 0).applyAxisAngle(FWD, 0).applyAxisAngle(V(1, 0, 0), 0), N: nrm(0, -1, 0).applyAxisAngle(V(-1, 0, 0), 0).add(V(0, 0, 0)), grip: 0.85, tool: "cups" };
@@ -766,6 +769,12 @@ export async function create(opts) {
     c.L.N = V(0, 0, -1).applyAxisAngle(V(0, 0, 1), 0); c.L.N = nrm(0, 0.0, -1); c.L.T = nrm(-1, -0.25 * tipA, 0).applyAxisAngle(FWD, -tipA * 1.6);
     if (u > 0.33 && u < 0.62) { const k = sst(0.36, 0.58, u); const cupC = lev.clone().add(V(-0.05 + 0.1, -0.05, 0)).add(V(-0.1 + 0.0, 0.0, 0)); c.look = cupC;
       c.R = { G: P(lev.x - 0.08 + 0.0, lev.y + 0.0, lev.z - 0.06 + 0.12 * k), T: nrm(0.15, 0, 1), N: nrm(0, 0, -1).applyAxisAngle(UP, 0).add(V(0, 0, 0)), grip: 0.8, tool: "straight" }; c.R.N = nrm(1, 0, 0); c.R.T = nrm(0.2, 0, 1); }
+    else if (u > 0.04 && u < 0.28) {   // the spoon: into the bag, over the cup, tip it in
+      const inBag = bag.clone().add(V(0.0, 0.1, -0.01)), overCup = cupA.clone().add(V(-0.02, 0.07, 0));
+      const pos = V(...K(sp, [[0, overCup.toArray()], [0.3, inBag.toArray()], [0.45, inBag.clone().add(V(0, 0.03, 0)).toArray()], [0.72, overCup.toArray()], [1, overCup.toArray()]]));
+      const tilt = sst(0.72, 0.9, sp) * (1 - sst(0.95, 1, sp)), T = nrm(0.1, 0.9, -0.35).applyAxisAngle(FWD, -tilt * 0.9);
+      c.R = TIP("spoon", pos, T, nrm(1, 0, 0.25).applyAxisAngle(FWD, -tilt * 0.9), 0.85); c.look = sp < 0.5 ? bag : cupA;
+    }
     else if (u < 0.3) { c.R = null; c.look = bag; } else { c.R = null; c.look = over; }
   };
   // ── measure liquid: pour to the line, then bend down so the eyes are level with it ──
@@ -906,12 +915,20 @@ export async function create(opts) {
     c.s.pot.water = 1; c.s.boilK = sst(0, 0.4, u);
     const pasta = stepItems(c.step).some(i => i.item === "pasta");
     c.s.pot.lid = u < 0.35 ? 1 : 0;
-    // lift the lid away from you, then lower the food in
-    if (u < 0.5) { const lp = V(...K(u, [[0.2, pc.clone().add(V(0, 0.05, 0)).toArray()], [0.35, pc.clone().add(V(0, 0.05, 0)).toArray()], [0.45, pc.clone().add(V(0.2, 0.08, 0.22)).toArray()]]));
-      c.R = { G: lp.clone().add(V(0, 0.035, 0)), T: FWD.clone(), N: DOWN.clone(), grip: 0.55 }; c.s.lidHeld = u > 0.33 ? lp : null; if (u > 0.33) c.s.pot.lid = 0; }
-    else if (pasta) { c.s.pastaIn = sst(0.5, 0.75, u); c.s.pastaSoft = sst(0.7, 1, u);
-      const hp = P(POT.x - 0.02, TOP + POT.h + 0.2 - 0.06 * c.s.pastaIn, POT.z - 0.02); c.R = { G: hp, T: nrm(0, 0.2, 1), N: LEFT.clone(), grip: 0.7 }; if (u > 0.78) c.R = null; }
-    else c.R = null;
+    // lift the lid, tilted away from you so the steam goes the other way; set it down on the counter; lower the food in
+    const rest = restHand("R", 0, V(STAND.pot.x, 0, STAND.pot.z), c.body), lidUp = pc.clone().add(V(0.1, 0.1, 0.1)), lidDown = LIDREST.clone();
+    if (u < 0.52) { const lp = V(...K(u, [[0.35, pc.clone().add(V(0, 0.05, 0)).toArray()], [0.43, lidUp.toArray()], [0.52, lidDown.toArray()]]));
+      c.R = { G: lp.clone().add(V(0, 0.035 + 0.01 * win(u, 0.43, 0.52), 0)), T: FWD.clone(), N: DOWN.clone(), grip: 0.55 };
+      if (u > 0.35) { c.s.lidHeld = lp; c.s.lidTilt = sst(0.35, 0.42, u) * (1 - sst(0.45, 0.52, u)); c.s.pot.lid = 0; } }
+    else {
+      c.s.lidRest = LIDREST.toArray();
+      const handP = pasta ? P(POT.x - 0.02, TOP + POT.h + 0.2 - 0.06 * sst(0.58, 0.75, u), POT.z - 0.02) : rest.G;
+      const away = pasta ? sst(0.78, 0.9, u) : 1, back = sst(0.52, 0.6, u);
+      const G = LIDREST.clone().add(V(0, 0.045, 0)).lerp(handP, back).lerp(rest.G, away);
+      c.R = { G, T: FWD.clone().lerp(nrm(0, 0.2, 1), back).normalize(), N: DOWN.clone().lerp(LEFT, back * (1 - away)).normalize(), grip: lerp(0.55, 0.7, back) };
+      if (pasta) { c.s.pastaIn = sst(0.58, 0.75, u); c.s.pastaSoft = sst(0.7, 1, u); }
+      if (away >= 1 && back >= 1) c.R = null;
+    }
   };
   ANIM.simmer = (c, u) => {
     const inPan = c.stand === "stove"; const pc = inPan ? P(PAN.x, TOP + 0.03, PAN.z) : P(POT.x, TOP + POT.h * 0.6, POT.z);
@@ -922,28 +939,33 @@ export async function create(opts) {
   // ── bake: mitts on; open the door; pull the rack; pan on; push in; close. Later, out again ──
   ANIM.bake = (c, u) => {
     c.s.mitts = 1; c.s.ovenOn = 1;
-    // mitts on, pick up the tin; squat (back straight, knees bent); open the door; pull the rack out; tin on; rack in;
-    // door shut; stand up. Later (the clock shows the time quickly): squat, door, rack, tin out onto the counter.
-    const door = K(u, [[0.1, 0], [0.2, 1], [0.44, 1], [0.52, 0], [0.62, 0], [0.7, 1], [0.86, 1], [0.94, 0]]);
-    const rack = K(u, [[0.2, 0], [0.26, 1], [0.38, 1], [0.44, 0], [0.7, 0], [0.75, 1], [0.84, 1], [0.88, 0]]);
+    // Mitts on. Step in and pick up the tin; step back and squat (back straight, knees bent), the tin in the left mitt.
+    // Open the door, pull the rack out, set the tin on it with both mitts, push the rack in, close the door, stand.
+    // (The clock shows the baking time quickly.) Squat, open, pull the rack, lift the tin out, push the rack in, close,
+    // stand, step in and set the tin on the counter to cool.
+    const door = K(u, [[0.18, 0], [0.26, 1], [0.46, 1], [0.53, 0], [0.66, 0], [0.72, 1], [0.85, 1], [0.89, 0]]);
+    const rack = K(u, [[0.26, 0], [0.31, 1], [0.4, 1], [0.45, 0], [0.72, 0], [0.77, 1], [0.81, 1], [0.85, 0]]);
     c.s.door = door; c.s.rack = rack; c.s.baked = u > 0.6 ? 1 : 0;
-    const rackP = P(OVEN.x, OVEN.rackY + 0.02, FRONT + 0.27 - OVEN.out * rack), start = P(OVEN.x - 0.02, TOP + 0.02, 0.27);
-    const panP = u < 0.26 ? V(...K(u, [[0.04, start.toArray()], [0.1, start.clone().add(V(0, 0.04, -0.06)).toArray()], [0.2, [OVEN.x, 0.6, -0.02]], [0.26, rackP.toArray()]]))
-      : u < 0.86 ? rackP.clone() : V(...K(u, [[0.86, rackP.toArray()], [0.92, [OVEN.x, 0.6, -0.02]], [1, start.toArray()]]));
-    c.s.bakeObj = { pos: panP, inOven: u > 0.4 && u < 0.74 };
-    const holding = u < 0.27 || (u > 0.84 && u < 0.98);
+    c.body.crouch = K(u, [[0.08, 0], [0.16, 1.05], [0.53, 1.05], [0.58, 0], [0.62, 0], [0.66, 1.05], [0.88, 1.05], [0.93, 0]]);
+    c.body.fwd = K(u, [[0, 0], [0.04, 0.3], [0.1, 0.3], [0.15, 0], [0.27, 0], [0.3, 0.08], [0.44, 0.08], [0.47, 0], [0.71, 0], [0.74, 0.08], [0.84, 0.08], [0.87, 0], [0.88, 0], [0.92, 0.3], [0.95, 0.3], [1, 0]]);
+    c.body.lean = 12 + c.body.crouch * 14;
+    const rackP = P(OVEN.x, OVEN.rackY + 0.02, FRONT + 0.27 - OVEN.out * rack), start = P(OVEN.x - 0.04, TOP + 0.02, 0.25);
+    const hold = P(OVEN.x + 0.3, 0.62, -0.24), lifted = start.clone().add(V(0.05, 0.07, -0.12));
+    const panP = u < 0.04 ? start.clone() : u < 0.18 ? V(...K(u, [[0.04, start.toArray()], [0.09, lifted.toArray()], [0.18, hold.toArray()]]))
+      : u < 0.32 ? hold.clone() : u < 0.4 ? V(...K(u, [[0.32, hold.toArray()], [0.4, rackP.toArray()]])) : u < 0.77 ? rackP.clone()
+      : u < 0.89 ? V(...K(u, [[0.77, rackP.toArray()], [0.82, hold.toArray()]])) : V(...K(u, [[0.89, hold.toArray()], [0.93, start.toArray()]]));
+    c.s.bakeObj = { pos: panP, inOven: u > 0.45 && u < 0.72 };
     const hinge = OVEN.y1 - OVEN.y0 - 0.06, doorHandle = P(OVEN.x, OVEN.y0 + hinge * Math.cos(door * 1.45), FRONT - 0.075 - hinge * Math.sin(door * 1.45));
-    const crouch = K(u, [[0.06, 0], [0.18, 1.05], [0.46, 1.05], [0.54, 0.1], [0.62, 0.1], [0.69, 1.05], [0.9, 1.05], [0.98, 0]]);
-    c.body.crouch = crouch; c.body.lean = 10 + crouch * 16; c.look = door > 0.3 ? rackP : doorHandle;
-    if (holding) {   // a mitt on each side of the tin
-      const w = 0.135; c.R = { G: panP.clone().add(V(-w, 0.012, -0.01)), T: FWD.clone(), N: nrm(1, 0.15, 0), grip: 0.45 };
-      c.L = { G: panP.clone().add(V(w, 0.012, -0.01)), T: FWD.clone(), N: nrm(-1, 0.15, 0), grip: 0.45 };
-    } else if (door > 0.02 && door < 0.98 || (u > 0.44 && u < 0.62) || u > 0.86) {   // the right mitt pulls or lifts the door by its bar
-      c.R = { G: doorHandle.clone().add(V(-0.1, 0.02, -0.01)), T: nrm(1, 0, 0), N: nrm(0, -0.2 + 0.9 * (1 - door), -1).normalize(), grip: 0.7 }; c.L = null;
-    } else {   // both mitts slide the rack by its front wire
-      const front = rackP.clone().add(V(0, 0.015, -0.2));
-      c.R = { G: front.clone().add(V(-0.17, 0, 0)), T: FWD.clone(), N: DOWN.clone(), grip: 0.55 }; c.L = { G: front.clone().add(V(0.17, 0, 0)), T: FWD.clone(), N: DOWN.clone(), grip: 0.55 };
-    }
+    const rackFront = rackP.clone().add(V(-0.12, 0.015, -0.2));
+    const inW = (a, b) => u > a && u < b;
+    c.look = inW(0.16, 0.9) ? (door > 0.3 ? rackP : doorHandle) : panP;
+    const w = 0.135, both = () => { c.R = { G: panP.clone().add(V(-w, 0.012, -0.01)), T: FWD.clone(), N: nrm(1, 0.15, 0), grip: 0.45 }; c.L = { G: panP.clone().add(V(w, 0.012, -0.01)), T: FWD.clone(), N: nrm(-1, 0.15, 0), grip: 0.45 }; };
+    if (inW(0.03, 0.13) || inW(0.32, 0.41) || inW(0.76, 0.82) || inW(0.88, 0.94)) { both(); return; }
+    if (inW(0.13, 0.32) || inW(0.82, 0.88)) c.L = { G: panP.clone().add(V(0.0, -0.025, -0.02)), T: FWD.clone(), N: UP.clone(), grip: 0.3 };   // the tin flat on the left mitt
+    if (inW(0.15, 0.26) || inW(0.45, 0.54) || inW(0.64, 0.72) || inW(0.84, 0.89))   // the right mitt on the door's bar
+      c.R = { G: doorHandle.clone().add(V(-0.1, 0.02, -0.01)), T: nrm(1, 0, 0), N: nrm(0, -0.2 + 0.9 * (1 - door), -1).normalize(), grip: 0.7 };
+    else if (inW(0.26, 0.32) || inW(0.4, 0.45) || inW(0.72, 0.77) || inW(0.81, 0.84))   // the right mitt slides the rack by its front wire
+      c.R = { G: rackFront, T: FWD.clone(), N: DOWN.clone(), grip: 0.55 };
   };
   // ── check the temperature: the tip in the thickest part, wait for the number ──
   ANIM["check-temp"] = (c, u) => {
@@ -1037,7 +1059,9 @@ export async function create(opts) {
   /* ══ THE BODY: stand, walk, lean, crouch; hands solved to their frames; tools follow the real hands ══ */
   const FIG = { x: 0, z: 0, yaw: 0 };
   function standXZ(stand) { return STAND[stand] || STAND.board; }
-  const restHand = (S, yaw, base) => ({ G: base.clone().add(rotY(V(S === "L" ? 0.21 : -0.21, 0.78, 0.05), yaw)), T: rotY(FWD, yaw), N: rotY(S === "L" ? RIGHT : LEFT, yaw), grip: 0.15, rest: true });
+  // the hands hanging relaxed at the sides; they follow the body when it bends forward or squats
+  const restHand = (S, yaw, base, body) => ({ G: base.clone().add(rotY(V(S === "L" ? 0.21 : -0.21,
+      0.78 - (body ? (body.crouch || 0) * 0.42 + (1 - Math.cos((body.lean || 0) * D2R)) * 0.5 : 0), 0.05 + (body ? Math.sin((body.lean || 0) * D2R) * 0.45 + (body.fwd || 0) : 0)), yaw)), T: rotY(FWD, yaw), N: rotY(S === "L" ? RIGHT : LEFT, yaw), grip: 0.15, rest: true });
   // how far past its reach a hand's target is (0 when it can reach), for the posture now on the figure
   function overReach(c, crouch) {
     let worst = 0, dir = V(0, 0, 0);
@@ -1051,17 +1075,17 @@ export async function create(opts) {
   }
   function solveFigure(c, stance) {
     const pose = { root: { pos: [0, 0, 0], rot: [0, 0, 0] }, j: {} };
-    const crouch = c.body.crouch || 0; let lean = c.body.lean || 0, shiftX = c.body.shift || 0, shiftZ = 0;
+    const crouch = c.body.crouch || 0, fwd = c.body.fwd || 0; let lean = c.body.lean || 0, shiftX = c.body.shift || 0, shiftZ = 0;   // fwd: a step in toward the counter
     const yawV = a => rotY(a, stance.yaw);
     const posture = () => {
-      pose.root.pos = [stance.x + shiftX, -crouch * 0.42, stance.z + shiftZ]; pose.root.rot = [0, stance.yaw / D2R, 0];
+      pose.root.pos = [stance.x + shiftX + Math.sin(stance.yaw) * fwd, -crouch * 0.42, stance.z + shiftZ + Math.cos(stance.yaw) * fwd]; pose.root.rot = [0, stance.yaw / D2R, 0];
       fig.root.position.set(0, 0, 0); fig.root.rotation.set(0, 0, 0);
       pose.j.spine = [lean * 0.45, (c.body.turn || 0) * 0.4, 0]; pose.j.chest = [lean * 0.55, (c.body.turn || 0) * 0.6, 0];
       pose.j.hipL = [-lean * 0.5 - crouch * 70, 0, 2]; pose.j.hipR = [-lean * 0.5 - crouch * 70, 0, -2];
       pose.grip = { L: c.L ? c.L.grip : 0.15, R: c.R ? c.R.grip : 0.15 }; pose.pinch = { L: !!(c.L && c.L.pinch), R: !!(c.R && c.R.pinch) };
       fig.setPose(pose);
       // feet planted on the floor (they step when the cook walks)
-      ["L", "R"].forEach(S => { const f = stance.feet ? stance.feet[S] : V(stance.x, 0, stance.z).add(yawV(V(S === "L" ? 0.11 : -0.11, 0, -0.02)));
+      ["L", "R"].forEach(S => { const f = stance.feet ? stance.feet[S] : V(stance.x, 0, stance.z).add(yawV(V(S === "L" ? 0.11 : -0.11, 0, -0.02 + fwd)));
         const target = V(f.x, 0.08 + (stance.lift ? stance.lift[S] || 0 : 0), f.z);
         fig.ik.leg(S, target, V(f.x, 0.6, f.z).add(yawV(V(S === "L" ? 0.08 : -0.08, 0, 0.8))), { footFlat: true, forward: yawV(nrm(S === "L" ? 0.12 : -0.12, 0, 1)) }); });
       fig.update();
@@ -1073,13 +1097,13 @@ export async function create(opts) {
       const o = overReach(c, crouch); if (o.over < 0.004) break;
       const down = clamp(-o.dir.y, 0, 1), side = o.dir.x;
       lean = Math.min(48, lean + o.over * (60 + 90 * down));
-      shiftX = clamp(shiftX + side * o.over * 0.8, -0.16, 0.16);
+      shiftX = clamp(shiftX + side * o.over * 0.8, (c.body.shift || 0) - 0.16, (c.body.shift || 0) + 0.16);
       posture();
     }
     if (c.look) fig.lookAt(c.look, 0.85); else if (c.body.headDown) fig.lookAt(V(stance.x, 0.5, stance.z + 0.5), 0.6);
     // the hands
     ["R", "L"].forEach(S => {
-      const h = c[S] || restHand(S, stance.yaw, V(stance.x, -crouch * 0.42, stance.z));
+      const h = c[S] || restHand(S, stance.yaw, V(stance.x + shiftX, 0, stance.z), c.body);
       const sh = J["shoulder" + S].getWorldPosition(new THREE.Vector3());
       const rot = frameRot(S, h.T, h.N, _m1);
       const anc = fig.hand(S); const G0 = anc.position.clone();   // the palm point in the wrist's own space
@@ -1132,14 +1156,19 @@ export async function create(opts) {
       (ANIM[seg.id] || ANIM.counter)(c, au);
       // in and out of the skill: hands come from rest and go back to rest
       const e = sst(0, 0.08, au) * (1 - sst(0.93, 1, au));
-      ["R", "L"].forEach(S => { const h = c[S]; if (!h) return; const r = restHand(S, stance.yaw, V(stance.x, 0, stance.z)); if (e < 1) { h.G = r.G.clone().lerp(h.G, e); h.T = r.T.clone().lerp(h.T, e).normalize(); h.N = r.N.clone().lerp(h.N, e).normalize(); h.grip = lerp(0.15, h.grip, e); if (e < 0.35) h.tool = h.tool && h.tool; } });
+      ["R", "L"].forEach(S => { const h = c[S]; if (!h) return; const r = restHand(S, stance.yaw, V(stance.x + (c.body.shift || 0), 0, stance.z), c.body); if (e < 1) { h.G = r.G.clone().lerp(h.G, e); h.G.y += Math.sin(Math.PI * e) * 0.15; h.T = r.T.clone().lerp(h.T, e).normalize(); h.N = r.N.clone().lerp(h.N, e).normalize(); h.grip = lerp(0.15, h.grip, e); if (e < 0.35) h.tool = h.tool && h.tool; } });
       c.body.lean = lerp(4, c.body.lean || 4, sst(0, 0.1, au) * (1 - sst(0.9, 1, au)));
       if (c.body.crouch) c.body.crouch *= 1;
     } else { c.look = V(to.x, 1.0, 0.5); }
     solveFigure(c, stance);
     scenery(c, st, seg, au);
     FIG.x = stance.x; FIG.z = stance.z; FIG.yaw = stance.yaw; FIG.focus = focusFor(seg.stand, c);
-    lastInfo = { action: seg.id, lu: au, stand: seg.stand, R: c.R, L: c.L };
+    // which shoulder the camera looks over: the side where this skill's hands work (worked out from the skill's middle, so it holds still)
+    let camSide = -1;
+    try { const c2 = { s: clone(states[k].before), step: st, stand: seg.stand, item: c.item, body: { lean: 4 }, R: null, L: null, look: null, yaw: stance.yaw, fig: c.fig };
+      (ANIM[seg.id] || ANIM.counter)(c2, 0.5); const hs = [c2.R, c2.L].filter(h => h && h.G);
+      if (hs.length && hs.reduce((a, h) => a + h.G.x, 0) / hs.length - to.x > 0.12) camSide = 1; } catch (e) {}
+    lastInfo = { action: seg.id, lu: au, stand: seg.stand, R: c.R, L: c.L, camSide };
   }
   function focusFor(stand, c) {
     const f = { sink: V(SINK.x, TOP, SINK.z), board: V(0.06, TOP, BOARD.z), stove: V(0.95, TOP, 0.45), pot: V(1.1, TOP + 0.05, 0.45), oven: V(1.0, 0.6, 0.1) }[stand] || V(0, TOP, 0.4);
@@ -1334,7 +1363,8 @@ export async function create(opts) {
     if (s.potHeld) { pot.position.copy(s.potHeld.pos); pot.rotation.set(0, 0, s.potHeld.tilt); s.potMouth = pot.localToWorld(V(-POT.r, POT.h, 0)); } else { pot.position.set(POT.x, TOP + 0.004, POT.z); pot.rotation.set(0, 0, 0); }
     potWater.visible = !!s.pot.water; potSauce.visible = !!s.pot.sauce && !s.pot.water;
     potLid.visible = true;
-    if (s.lidHeld) { potLid.position.copy(pot.worldToLocal(s.lidHeld.clone())); potLid.rotation.set(-0.5, 0, 0.3); }
+    if (s.lidHeld) { potLid.position.copy(pot.worldToLocal(s.lidHeld.clone())); potLid.rotation.set(0.55 * (s.lidTilt || 0), 0, 0); }
+    else if (s.lidRest && !s.pot.lid) { potLid.position.copy(pot.worldToLocal(V(...s.lidRest))); potLid.rotation.set(0, 0, 0); }
     else if (s.pot.lid && !(s.pot.pasta)) { potLid.position.set(0, POT.h + 0.004, 0); potLid.rotation.set(0, 0, 0); }
     else { potLid.position.set(0.0, 0.0, 0); potLid.visible = false; }
     // bubbles: big rolling ones for a boil, small gentle ones for a simmer
@@ -1415,7 +1445,10 @@ export async function create(opts) {
     else if (view === "walk") { camera.fov = narrow ? 55 : 42; const c = V(f.x * 0.6, 1.0, 0.35); camera.position.set(c.x + Math.sin(orbit.yaw) * Math.cos(orbit.pitch) * orbit.dist, c.y + Math.sin(orbit.pitch) * orbit.dist, c.z + Math.cos(orbit.yaw) * Math.cos(orbit.pitch) * orbit.dist); camera.lookAt(c); }
     else { // over the shoulder: just behind and above the cook's right shoulder, looking down at the hands
       camera.fov = narrow ? 60 : 48; const crouch = lastInfo && lastInfo.stand === "oven";
-      const eye = V(x - 0.44, crouch ? 1.45 : 1.98, z - 0.2); camera.position.copy(eye); camera.lookAt(f.x - 0.02, f.y - (crouch ? 0.1 : 0.02), f.z + (crouch ? 0.15 : 0.05)); }
+      // aim between the work place and the hands, so a bowl on the cook's left is not hidden behind the body
+      const hs = [lastInfo.R, lastInfo.L].filter(h => h && h.G && !h.rest).map(h => h.G);
+      const t = hs.length ? f.clone().lerp(hs.reduce((a, g) => a.add(g), V(0, 0, 0)).multiplyScalar(1 / hs.length), 0.6) : f.clone(); t.y = Math.max(t.y, TOP - 0.02);
+      camera.position.set(t.x + (lastInfo.camSide || -1) * 0.6, crouch ? 1.45 : 2.04, z - 0.4); camera.lookAt(t.x - 0.02, t.y - 0.02, t.z + 0.05); }
     camera.updateProjectionMatrix();
   }
   // walk around: drag with a finger or a mouse (only in that view)

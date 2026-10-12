@@ -21,7 +21,7 @@ const ACTIONS = {
   "tie-hair": { at: "board", secs: 6, tools: ["cap"],
     en: { n: "Tie your hair back", how: ["Pull long hair back and tie it.", "Put on a cap.", "Push your sleeves up.", "Put on a clean apron."], safe: "Hair stays out of the food and away from the stove." },
     es: { n: "Recógete el pelo", how: ["Lleva el pelo largo hacia atrás y átalo.", "Ponte una gorra.", "Sube las mangas.", "Ponte un delantal limpio."], safe: "El pelo se queda lejos de la comida y de la estufa." } },
-  "measure-dry": { at: "board", secs: 7, tools: ["cups", "straight"],
+  "measure-dry": { at: "board", secs: 7, tools: ["cups", "spoon", "straight"],
     en: { n: "Measure dry food", how: ["Spoon it into the cup. Do not press it down.", "Fill it a little over the top.", "Sweep a straight edge across the top to level it.", "Tip it into the bowl."], safe: "Measure over a plate, so extra does not fall into the bowl." },
     es: { n: "Medir ingredientes secos", how: ["Échalo a la taza con una cuchara. No lo aprietes.", "Llénala un poco por encima del borde.", "Pasa un borde recto por arriba para nivelar.", "Viértelo en el tazón."], safe: "Mide sobre un plato, así lo que sobra no cae en el tazón." } },
   "measure-liquid": { at: "board", secs: 7, tools: ["jug"],
@@ -84,7 +84,7 @@ const ACTIONS = {
   "simmer": { at: "stove", secs: 7, tools: ["pot", "spoon"],
     en: { n: "Simmer", how: ["Turn the heat down.", "Look for small, gentle bubbles.", "Stir now and then.", "Leave the lid a little open."], safe: "Keep the pot handle turned in." },
     es: { n: "Cocinar a fuego lento", how: ["Baja el fuego.", "Busca burbujas pequeñas y suaves.", "Revuelve de vez en cuando.", "Deja la tapa un poco abierta."], safe: "Deja el mango de la olla hacia dentro." } },
-  "bake": { at: "oven", secs: 10, tools: ["mitts", "tray"],
+  "bake": { at: "oven", secs: 16, tools: ["mitts", "tray"],
     en: { n: "Bake", how: ["Heat the oven first.", "Put on oven mitts, both hands.", "Open the door and pull the rack out a little.", "Set the pan on the rack. Push it in. Close the door.", "Use the mitts again to take it out."], safe: "Oven mitts on both hands. Pull the rack out; never reach in. A grown-up at the oven for children." },
     es: { n: "Hornear", how: ["Calienta el horno primero.", "Ponte guantes de horno en las dos manos.", "Abre la puerta y saca un poco la rejilla.", "Pon el molde en la rejilla. Empújala. Cierra la puerta.", "Usa los guantes otra vez para sacarlo."], safe: "Guantes de horno en las dos manos. Saca la rejilla; nunca metas el brazo. Un adulto en el horno con los niños." } },
   "check-temp": { at: "stove", secs: 7, tools: ["thermo"],
@@ -458,6 +458,7 @@ function read(text, lang) {
   let title = "", mode = "", ing = [], stepsRaw = [], unknown = [], sawHeader = false;
   lines.forEach((l, n) => {
     const t = l.trim(); if (!t) return;
+    if (!/[a-záéíóúüñ\d½⅓⅔¼¾⅛]/i.test(t)) { unknown.push(t); return; }   // no words at all ("???", "---")
     if (SECTION_ING.test(t)) { mode = "ing"; sawHeader = true; return; }
     if (SECTION_STEP.test(t)) { mode = "step"; sawHeader = true; return; }
     if (!title && !mode && !QTY_START.test(t) && !STEP_START.test(t) && t.length < 80 && !/[.!?]$/.test(t)) { title = t.replace(/^#+\s*/, ""); return; }

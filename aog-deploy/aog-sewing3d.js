@@ -62,8 +62,7 @@ export async function create(kit) {
   const feltMap = ctex(128, 128, (g, w, h) => { g.fillStyle = "#e8e8e8"; g.fillRect(0, 0, w, h); for (let i = 0; i < 2600; i++) { g.strokeStyle = `rgba(${rnd() < 0.5 ? "0,0,0" : "255,255,255"},${rnd() * 0.12})`; g.beginPath(); const x = rnd() * w, y = rnd() * h, a = rnd() * 6.3; g.moveTo(x, y); g.lineTo(x + Math.cos(a) * 5, y + Math.sin(a) * 5); g.stroke(); } });
   const feltN = normalTex(64, 64, (x, y) => Math.sin(x * 0.9) * Math.cos(y * 1.1) * 0.3 + ((x * 7 + y * 13) % 5) / 10, 0.6);
   const gingham = ctex(128, 128, (g, w, h) => {
-    g.fillStyle = "#f4f1ea"; g.fillRect(0, 0, w, h);
-    g.fillStyle = "rgba(70,110,160,0.42)"; for (let i = 0; i < 4; i++) { g.fillRect(i * 32, 0, 16, h); g.fillRect(0, i * 32, w, 16); }
+    g.fillStyle = "#5d8f97"; g.fillRect(0, 0, w, h);   // a plain teal cotton: chalk lines and pins show on it
     const img = g.getImageData(0, 0, w, h); for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const k = (y * w + x) * 4, v = 0.9 + 0.1 * weaveH(x, y); img.data[k] *= v; img.data[k + 1] *= v; img.data[k + 2] *= v; } g.putImageData(img, 0, 0);
   });
   // a twisted thread: diagonal plies
@@ -135,11 +134,11 @@ export async function create(kit) {
     feltA: phys({ color: "#7fa1c2", map: feltMap, normalMap: feltN, roughness: 1, sheen: 0.8, sheenRoughness: 0.9, sheenColor: new THREE.Color("#dfeeff") }),
     feltB: phys({ color: "#e7d9b5", map: feltMap, normalMap: feltN, roughness: 1, sheen: 0.8, sheenRoughness: 0.9, sheenColor: new THREE.Color("#fff8e0") }),
     hem: phys({ color: "#8fa9c6", map: weaveMap, normalMap: weaveN, roughness: 0.9, sheen: 0.6, sheenRoughness: 0.7, sheenColor: new THREE.Color("#eef5ff") }),
-    mfab: phys({ color: "#c7d6de", map: weaveMap, normalMap: weaveN, roughness: 0.9, sheen: 0.6, sheenRoughness: 0.7, sheenColor: new THREE.Color("#f4fbff") }),
-    mfabW: phys({ color: "#dde6ea", map: weaveMap, normalMap: weaveN, roughness: 0.92, sheen: 0.5, sheenRoughness: 0.7, sheenColor: new THREE.Color("#f4fbff") }),
+    mfab: phys({ color: "#6f9673", map: weaveMap, normalMap: weaveN, roughness: 0.9, sheen: 0.6, sheenRoughness: 0.7, sheenColor: new THREE.Color("#f4fbff") }),
+    mfabW: phys({ color: "#8fb08b", map: weaveMap, normalMap: weaveN, roughness: 0.92, sheen: 0.5, sheenRoughness: 0.7, sheenColor: new THREE.Color("#f4fbff") }),
     gingham: phys({ map: gingham, normalMap: weaveN, roughness: 0.9, sheen: 0.5, sheenRoughness: 0.7, sheenColor: new THREE.Color("#ffffff") }),
     tissue: std({ map: patternMap, roughness: 0.85, transparent: true, opacity: 0.9, side: THREE.DoubleSide }),
-    button: phys({ color: "#3d7d84", roughness: 0.42, clearcoat: 0.6, clearcoatRoughness: 0.3 }),
+    button: phys({ color: "#3d7d84", roughness: 0.5, clearcoat: 0.2, clearcoatRoughness: 0.5 }),
     buttonS: phys({ color: "#2f3a52", roughness: 0.2, metalness: 0.2, clearcoat: 1 }),
     pinHeadR: phys({ color: "#d23d3d", roughness: 0.15, clearcoat: 1 }), pinHeadY: phys({ color: "#e9b52c", roughness: 0.15, clearcoat: 1 }), pinHeadB: phys({ color: "#3a72c4", roughness: 0.15, clearcoat: 1 }),
     cushion: phys({ color: "#c8423a", roughness: 0.85, sheen: 1, sheenColor: new THREE.Color("#ffb3a8"), sheenRoughness: 0.5, map: weaveMap, normalMap: weaveN }),
@@ -309,13 +308,13 @@ export async function create(kit) {
     [[0.02, 0.01, MAT.pinHeadR], [-0.015, 0.02, MAT.pinHeadY], [0.0, -0.022, MAT.pinHeadB], [-0.025, -0.01, MAT.pinHeadR]].forEach(([x, z, m]) => { const pn = pinMesh(m); pn.position.set(x, 0.05, z); pn.lookAt(cushion.position.clone().add(V(x * 3, 0.15, z * 3))); pn.rotateX(Math.PI / 2); cushion.add(pn); }); }
   function pinMesh(headMat) {
     const g = new THREE.Group();
-    const shaft = mesh(new THREE.CylinderGeometry(0.0003, 0.0003, 0.03, 6), MAT.steel, g, false); shaft.position.y = -0.015;
-    const tipc = mesh(new THREE.ConeGeometry(0.0003, 0.002, 6), MAT.steel, g, false); tipc.position.y = -0.031; tipc.rotation.x = Math.PI;
-    mesh(new THREE.SphereGeometry(0.0018, 12, 8), headMat, g); return g;
+    const shaft = mesh(new THREE.CylinderGeometry(0.0004, 0.0004, 0.03, 6), MAT.steel, g, false); shaft.position.y = -0.015;
+    const tipc = mesh(new THREE.ConeGeometry(0.0004, 0.002, 6), MAT.steel, g, false); tipc.position.y = -0.031; tipc.rotation.x = Math.PI;
+    mesh(new THREE.SphereGeometry(0.003, 12, 8), headMat, g); return g;
   }
   // a spool of thread and the measuring tape on the table
-  const spoolT = spoolMesh("#b3263a"); spoolT.position.set(0.72, TY, 0.3); room.add(spoolT);
-  const tapeCase = mesh(lathe([[0, 0], [0.028, 0], [0.031, 0.004], [0.031, 0.014], [0.028, 0.018], [0, 0.018]]), MAT.tapeCase, room); tapeCase.position.set(0.74, TY, 0.08);
+  const spoolT = spoolMesh("#b3263a"); spoolT.position.set(0.8, TY, 0.33); room.add(spoolT);
+  const tapeCase = mesh(lathe([[0, 0], [0.028, 0], [0.031, 0.004], [0.031, 0.014], [0.028, 0.018], [0, 0.018]]), MAT.tapeCase, room); tapeCase.position.set(0.8, TY, 0.06);
 
   /* ═════════ the sewing machine (relative to the needle's place on the plate, NP) ═════════ */
   const mach = new THREE.Group(); mach.position.set(NP[0], NP[1], NP[2]); room.add(mach);
@@ -568,6 +567,7 @@ export async function create(kit) {
     fig.root.position.set(seat[0], 0, seat[1]); fig.root.rotation.set(0, Math.PI, 0);
     const pose = { root: { pos: [0, seated ? -0.4 : 0, seated ? 0 : 0.0], rot: [0, 0, 0] }, j: {} };
     if (seated) Object.assign(pose.j, { spine: [8, 0, 0], chest: [8, 0, 0], neck: [10, 0, 0], hipL: [-86, 0, 4], hipR: [-86, 0, -4], kneeL: [86, 0, 0], kneeR: [86, 0, 0] });
+    else if (station === "cut") Object.assign(pose.j, { spine: [22, 0, 0], chest: [18, 0, 0], neck: [16, 0, 0], hipL: [-6, 0, 0], hipR: [-6, 0, 0], kneeL: [8, 0, 0], kneeR: [8, 0, 0] });   // leaning over the table to cut
     else Object.assign(pose.j, { spine: [10, 0, 0], chest: [12, 0, 0], neck: [14, 0, 0], kneeL: [4, 0, 0], kneeR: [4, 0, 0] });
     if (station === "hand") { pose.j.spine = [12, 0, 0]; pose.j.chest = [6, 0, 0]; }
     fig.setPose(pose); fig.update();
@@ -599,8 +599,9 @@ export async function create(kit) {
     if (s === "hand") return toWorld("work", E.focusOf(st.id, st.step));
     if (s === "machine") {
       if (st.id === "machine-parts" && st.m.hl) { const p = M_.parts[st.m.hl]; if (p) return V(NP[0] + p[0], NP[1] + p[1], NP[2] + p[2]); return V(M_.pedal[0], 0.05, M_.pedal[2]); }
-      if (st.id === "thread-machine" || st.id === "wind-bobbin") return V(NP[0] + 0.12, NP[1] + 0.14, NP[2]);
-      return V(NP[0], NP[1] + 0.01, NP[2] + 0.02);
+      if (st.id === "wind-bobbin") return V(NP[0] + 0.34, NP[1] + 0.24, NP[2] - 0.03);   // the spool pin and the winder on top
+      if (st.id === "thread-machine") return V(NP[0] + 0.12, NP[1] + 0.14, NP[2]);
+      return V(NP[0] - 0.01, NP[1] + 0.006, NP[2] - 0.004);
     }
     if (s === "cut") return toWorld("cut", st.cut && st.cut.at ? [st.cut.at[0] * 0.6, 0, st.cut.at[1] * 0.6] : [0, 0, -0.02]);
     if (s === "press") return toWorld("press", [st.iron ? st.iron.x * 0.4 : 0, 0.02, 0]);
@@ -614,24 +615,26 @@ export async function create(kit) {
         // a long lens from a little way off, the way a teacher leans in: the stitches fill the picture and the hands stay
         // their real size instead of crowding the lens
         const n = V(0, 1, 0).applyQuaternion(work.quaternion), xa = V(1, 0, 0).applyQuaternion(work.quaternion), za = V(0, 0, 1).applyQuaternion(work.quaternion);
-        const T = globalThis.__sewCam || (st.work.kind === "none" ? { d: 0.2, fov: 22, x: 0, z: 0.02 }
-          : (st.id === "whipstitch" || st.id === "blanket-stitch") ? { d: 0.15, fov: 24, x: -0.02, z: -0.06 }   // over the edge, so the wrap shows
+        const T = (st.work.kind === "none" ? { d: 0.2, fov: 22, x: 0, z: 0.02 }
+          : (st.id === "whipstitch" || st.id === "blanket-stitch") ? { d: 0.15, fov: 24, x: -0.07, z: -0.06 }   // over the edge from the left, so the wrap shows beside the hand
           : (st.id === "sew-button" && st.step >= 5 && st.step <= 7) ? { d: 0.05, fov: 30, x: 0.03, z: 0.06 }   // low and side-on: the shank under the button
           : { d: 0.17, fov: 24, x: -0.02, z: -0.03 });
-        pos = f.clone().addScaledVector(n, T.d).addScaledVector(xa, T.x || 0).addScaledVector(za, T.z || 0);
+        const near = st.work.kind !== "none" && st.work.flip > 0.5 ? 0.62 : 1;   // the back of the work: lean in to read the stitches
+        pos = f.clone().addScaledVector(n, T.d * near).addScaledVector(xa, (T.x || 0) * near).addScaledVector(za, (T.z || 0) * near);
         fov = T.fov;
       } else if (s === "machine") {
-        if (st.id === "machine-parts") pos = f.clone().add(st.m.hl === "pedal" ? V(-0.25, 0.45, 0.5) : V(-0.12, 0.12, 0.34));
-        else if (st.id === "thread-machine" || st.id === "wind-bobbin") pos = f.clone().add(V(-0.12, 0.14, 0.5));
-        else pos = f.clone().add(V(-0.05, 0.25, 0.17));
-      } else if (s === "cut") pos = f.clone().add(V(-0.02, 0.56, 0.14));
-      else pos = f.clone().add(V(0.1, 0.46, -0.34));
+        if (st.id === "machine-parts") pos = f.clone().add(st.m.hl === "pedal" ? V(0.33, 0.25, -0.3) : V(-0.12, 0.12, 0.34));
+        else if (st.id === "wind-bobbin") { pos = f.clone().add(V(0.02, 0.2, 0.42)); fov = 30; }
+        else if (st.id === "thread-machine") pos = f.clone().add(V(-0.12, 0.14, 0.5));
+        else { pos = f.clone().add(V(-0.12, 0.16, 0.13)); fov = 30; }   // from the open side: the seam behind the foot shows
+      } else if (s === "cut") pos = f.clone().add(V(0.08, 0.5, -0.36));   // a teacher across the table: the hands come toward us, the arms stay behind them   // from across the right-hand corner: the arms come in from below, not in front
+      else { pos = f.clone().add(V(0.14, 0.66, -0.5)); fov = 30; }
     } else if (mode === "shoulder") {
       const seat = s === "hand" ? LAY.hand.seat : s === "machine" ? M_.seat : s === "cut" ? CUT.stand : LAY.press.stand;
       // over the left shoulder, beside the head (never behind it)
-      pos = (s === "hand" || s === "machine") ? V(seat[0] - 0.42, 1.38, seat[1] + 0.1) : V(seat[0] - 0.55, 1.8, seat[1] + 0.2);
+      pos = (s === "hand" || s === "machine") ? V(seat[0] - 0.42, 1.38, seat[1] + 0.1) : V(seat[0] - 0.72, 1.9, seat[1] - 0.02);
     } else {   // across the table, from the window side
-      pos = V(f.x + 0.35, f.y + 0.45, f.z - 1.25);
+      pos = V(f.x + 0.35, f.y + 0.45, f.z - (s === "cut" ? 0.85 : 1.25));
       if (s === "press") pos = V(f.x - 0.2, f.y + 0.6, f.z - 1.2);
     }
     return { pos, f, fov };
@@ -643,7 +646,11 @@ export async function create(kit) {
       if (orbitYaw == null) orbitYaw = Math.atan2(c.pos.x - f.x, c.pos.z - f.z);
       camera.position.set(f.x + Math.sin(orbitYaw) * d, c.pos.y, f.z + Math.cos(orbitYaw) * d);
       camera.lookAt(f);
-    } else { camera.position.copy(c.pos); camera.lookAt(c.f); }
+    } else {
+      // a tall phone picture is narrow: step back a little so a row of stitches still fits across it
+      const k = camMode === "close" ? clamp(1.1 / (camera.aspect || 1), 1, 1.35) : 1;
+      camera.position.copy(c.f).addScaledVector(c.pos.clone().sub(c.f), k); camera.lookAt(c.f);
+    }
     camera.fov = camMode === "close" ? c.fov : 34;
     camera.near = camMode === "close" ? 0.01 : 0.05; camera.updateProjectionMatrix();
     stage.sun.target.position.copy(c.f); stage.sun.position.copy(c.f).add(V(-0.6, 2.4, -2.2));
@@ -746,7 +753,7 @@ export async function create(kit) {
     winderBob.rotation.y = (m.wind || 0) * Math.PI * 2;
     const fill = m.bobbinFill == null ? 1 : m.bobbinFill; winderFill.scale.set(0.42 + 0.58 * fill, 1, 0.42 + 0.58 * fill);
     mSpool.rotation.y = -(m.wind || 0) * 0.6;
-    lampL.intensity = kit.dark() ? 0.9 : 0.15;
+    lampL.intensity = kit.dark() ? 0.3 : 0.06;
     // the tour's highlight
     const hk = m.hl;
     hlRing.visible = !!(st.id === "machine-parts" && hk);
@@ -792,8 +799,8 @@ export async function create(kit) {
           tops.push(V(NP[0], Math.max(m.needleY + 0.0045, NP[1] + E.T), NP[2]));
           bots.push(V(NP[0], NP[1] - 0.004, NP[2]), V(NP[0], NP[1] - 0.009, NP[2] + 0.04));
         }
-        thread(tops, back ? MAT.threadB : MAT.thread, mDyn, 0.00034);
-        thread(bots, back ? MAT.thread : MAT.threadB, mDyn, 0.00034);
+        thread(tops, back ? MAT.threadB : MAT.thread, mDyn, 0.00042);
+        thread(bots, back ? MAT.thread : MAT.threadB, mDyn, 0.00042);
       }
       // pins across the seam, heads to the right; each goes back to the pincushion before it reaches the foot
       (mf.pinsNow || []).forEach((p, i) => {
@@ -880,7 +887,10 @@ export async function create(kit) {
     const cw = CUT.size[0], cd = CUT.size[1];
     // the folded cloth: two layers, the fold along the far edge; a few soft ripples that smooth out
     const wr = (1 - (c.fold || 0)) * 0.006;
-    cCloth.update((i, j, t) => { const x = lerp(-cw / 2, cw / 2, i / NXc), z = lerp(-cd / 2, cd / 2, j / NZc); const y = (t ? 0.0022 : 0.0003) + wr * Math.sin(x * 23 + z * 9) * Math.sin(z * 17) * smooth(-0.3, 0.2, z) + 0.0012 * Math.sin(j / NZc * Math.PI) * 0; return [x, y, z, x, z]; });
+    const edgeZ = LAY.table[3] - CUT.cloth[1];   // where the table ends, in the cloth's frame: past it the cloth falls softly
+    cCloth.update((i, j, t) => { const x = lerp(-cw / 2, cw / 2, i / NXc), z0 = lerp(-cd / 2, cd / 2, j / NZc); let z = z0, y = (t ? 0.0022 : 0.0003) + wr * Math.sin(x * 23 + z * 9) * Math.sin(z * 17) * smooth(-0.3, 0.2, z);
+      if (z0 > edgeZ) { const d = z0 - edgeZ, a = Math.min(1.35, d / 0.012); z = edgeZ + 0.012 * Math.sin(a) + Math.max(0, d - 0.012 * 1.35) * 0.2; y -= 0.012 * (1 - Math.cos(a)) + Math.max(0, d - 0.012 * 1.35) * 0.98; }
+      return [x, y, z, x, z0]; });
     const showPat = (c.pat || 0) > 0 && !c.single;
     pattern.visible = showPat; pattern.position.y = 0.0025 + (1 - (c.pat || 0)) * 0.06; pattern.rotation.y = (1 - (c.pat || 0)) * 0.3;
     cutPins.forEach((pn, i) => {
@@ -954,7 +964,7 @@ export async function create(kit) {
   function applyLook() {
     darkNow = !!kit.dark();
     MAT.sky.color.set(darkNow ? "#1d2a44" : "#eaf3f7");
-    lampL.intensity = darkNow ? 0.9 : 0.15;
+    lampL.intensity = darkNow ? 0.3 : 0.06;
   }
   applyLook();
   function render(st) {
@@ -974,6 +984,7 @@ export async function create(kit) {
     chairM.position.z = M_.seat[1] + (s === "machine" ? 0.06 : -0.02);
     chairH.visible = true; chairM.visible = true;
     if (s === "cut" || s === "press") chairH.position.z = LAY.hand.seat[1] - 0.06;
+    chairH.position.x = LAY.hand.seat[0] + (s === "cut" ? 0.62 : 0);   // standing to cut: the chair is pushed aside
     poseFigure(st);
     placeCam(st);
     stage.render();
