@@ -189,16 +189,22 @@
   }
   /* AOG-STUDIO-KEEP-V1 (2026-10-11): the Studio keeps the last rooms open out of sight; a room out of sight is silent. hush(true)
      pauses every sound this page makes (its players and any recording playing), hush(false) lets the ones it paused go on. */
-  var HUSHED = [];
+  var HUSHED = [], CTXS = [];
+  /* AOG-SILENT-V1 (2026-10-12) — Jimmy: "Make sure everything that has been built and will continue to be built has the silent
+     treatment … LIGHT SPEED". own(ctx) adds any sound engine a page makes (a song player, a jam band) to what hush() pauses;
+     hush() also tells the page with an "aog-hush" event ({detail:{on}}), so timers, the mic and polling stop out of sight. */
+  function ownCtx(c) { if (c && typeof c.suspend === "function" && CTXS.indexOf(c) < 0) CTXS.push(c); return c; }
   function hush(on) {
+    try { window.dispatchEvent(new CustomEvent("aog-hush", { detail: { on: !!on } })); } catch (e) {}
     if (on) {
-      BUSES.forEach(function (b) { try { if (b.ctx && b.ctx.state === "running") { b.ctx.suspend(); HUSHED.push(b.ctx); } } catch (e) {} });
+      CTXS.forEach(function (c) { try { if (c.state === "running" && HUSHED.indexOf(c) < 0) { c.suspend(); HUSHED.push(c); } } catch (e) {} });
+      BUSES.forEach(function (b) { try { if (b.ctx && b.ctx.state === "running" && HUSHED.indexOf(b.ctx) < 0) { b.ctx.suspend(); HUSHED.push(b.ctx); } } catch (e) {} });
       [].forEach.call(document.querySelectorAll("audio,video"), function (m) { try { if (!m.paused) m.pause(); } catch (e) {} });
     } else {
       HUSHED.forEach(function (c) { try { if (c.state === "suspended") c.resume(); } catch (e) {} }); HUSHED = [];
     }
   }
-  window.AOGVU = { levels: levels, mount: mount, draw: draw, wake: wake, hush: hush };
+  window.AOGVU = { levels: levels, mount: mount, draw: draw, wake: wake, hush: hush, own: ownCtx };
 
   /* ══ AOG-STUDIO-ROOM-SOUND-V1 (Jimmy, 2026-10-09: "1, 3, 2, 4" — 3: make it sound like a real room). One knob, shared by
      every instrument room: Dry, Small room, Studio, Hall. The room is a reverb made here (a stereo tail that dies away and

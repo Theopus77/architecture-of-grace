@@ -370,6 +370,22 @@
       }, 40);
       return function () { clearInterval(tm); try { A.inGain.disconnect(an); } catch (e) {} };
     },
+    /* AOG-LEARN-V2: the sound itself, for Learn a song to hear a strummed chord (AOGLearn.hearChord). Only while the input
+       is on (it never opens it, so no new question for the microphone): every opts.every ms (100) fn(samples, sampleRate)
+       with the last opts.sec seconds (0.25). The samples are lent for the call only (the same array each time). Returns
+       the way to stop, or null when the input is off. */
+    frames: function (fn, opts) {
+      if (!A || !A.inGain || !A.o) return null;
+      opts = opts || {};
+      var c = A.o.context(), an = c.createAnalyser(), g = A.inGain; an.fftSize = 16384; g.connect(an);
+      var buf = new Float32Array(an.fftSize), n = Math.max(256, Math.min(an.fftSize, Math.round((opts.sec || 0.25) * c.sampleRate))), part = buf.subarray(buf.length - n);
+      var tm = setInterval(function () {
+        if (A.inGain !== g) return;   /* the input was turned off */
+        an.getFloatTimeDomainData(buf);
+        try { fn(part, c.sampleRate); } catch (e) {}
+      }, Math.max(40, opts.every || 100));
+      return function () { clearInterval(tm); try { g.disconnect(an); } catch (e) {} };
+    },
     _pitch: pitchOf
   };
 })();

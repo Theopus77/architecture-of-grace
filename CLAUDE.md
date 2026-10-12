@@ -279,6 +279,46 @@ chip. After any change to a page with animation, 3D or sound, run
 
 and add new pages and rooms to its PAGES list. Do not push while it fails.
 
+## The silent treatment: light speed (standing order from Jimmy, 2026-10-12)
+
+"Make sure everything that has been built and will continue to be built has the silent treatment as I want this website
+LIGHT SPEED!!" Every feature, now and later:
+
+- Loads nothing until it is needed. A room's new script is `defer`. A heavy engine, worker, model or big file is fetched on
+  the first press that needs it, never as the page opens.
+- Is silent and still out of sight. Every AudioContext a page makes goes through `AOGVU.own(ctx)`, so the Studio's hush pauses
+  it. Players, the mic, timers, rAF and polling stop on the `aog-hush` event (`detail.on`) and when the tab is hidden. They wake
+  only what they paused (AOG-SILENT-V1, `aog-vu.js`).
+- Rests when idle: no timer, loop or rAF while nothing plays, listens or is dragged. A paused player suspends its engine.
+- Does heavy work in a Worker, or in slices of 12 ms or less.
+- Never slows the note path: tap-to-sound stays 10–25 ms on a phone.
+- Rooms and the front page are built with `python3 tools/build-fast.py`. Big new code goes in its own file, loaded when used.
+
+## The Dojo and Practice the Moves (Jimmy, 2026-10-12: "instructions on how to learn moves with this engine showing the person the moves")
+
+- The Dojo is `dojo.html` (/dojo): the site's figure (`aog-figure3d.js`, outfit "gi") shows the 36 moves in
+  `aog-dojo-moves.js` (ids fixed in `_work/engine3d/CONTRACT.md`) step by step in 3D (`aog-dojo3d.js`, `aog-3dkit.js`).
+  `/dojo#<id>` opens a move; `/dojo?side=left#<id>` and `/dojo#<id>?side=left` the other side. Words show at once, the
+  3D loads right after, and it draws only when a step plays or the view is dragged. After any change, run
+  `node tools/check-dojo.js`.
+- The Measured Step (martial-arts history) now ends every unit with Practice the Moves: safe, solo basics into the
+  air, numbered steps, What helps, Stay safe and a Watch it in 3D button. The history lessons stay history-only. The
+  practice lessons live in `_work/mar/mar_practice.py` (assemble.py adds them); after a change, rebuild the course and
+  run `node tools/check-mar-practice.js`.
+
+## The Kitchen and the Sewing Room (Jimmy, 2026-10-12: "take this amazement to FACS for cooking and sewing lessons")
+
+- The 3D Kitchen is `kitchen.html` at **/kitchen-lab** (/kitchen stays the older "Kitchen & the Sewing Table" page,
+  `fcs-shop.html`). The site's figure (outfit "apron") cooks the 9 recipes in `aog-kitchen-recipes.js` and any recipe a
+  person types or pastes in (read on the device, English or Spanish, scaled ½×–3×, saved on the device), and shows the
+  28 skills one at a time: `/kitchen-lab#<recipe>`, `/kitchen-lab#skill-<id>`, `/kitchen-lab#plug-in`. After any change,
+  run `node tools/check-kitchen.js`.
+- The 3D Sewing Room is `sewing.html` at **/sewing-lab** (also /sewing): 20 moves in `aog-sewing-moves.js` — hand
+  stitches whose thread really goes through the cloth (front and back), buttons, cutting, the machine and pressing.
+  `/sewing-lab#<id>` opens a move. After any change, run `node tools/check-sewing.js`.
+- FACS lessons and room pages link into both (`_work/fcs/practice3d.py`, `add_3d.py`, `add_3d_rooms.py`); after a
+  change run `node tools/check-facs-3d.js`. The ids are fixed in `_work/engine3d/CONTRACT.md`.
+
 ## Housekeeping
 
 - Bump `const CACHE` in `aog-deploy/sw.js` whenever a page changes, so browsers

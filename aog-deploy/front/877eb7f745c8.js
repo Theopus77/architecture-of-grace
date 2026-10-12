@@ -3,7 +3,7 @@
 /* ══════════════════════════════════════════════════════════════════════════
    THE GUITAR AND THE BASS (AOG-STRINGS-V1) — one page, built twice
    ══════════════════════════════════════════════════════════════════════════ */
-const INST="bass", GTR=INST==="guitar";
+const INST="guitar", GTR=INST==="guitar";
 const LKEY="aog."+INST+".v1";
 /* the strings, low to high, as note numbers: a guitar E A D G B E, a bass E A D G */
 const TUNING=GTR?[40,45,50,55,59,64]:[28,33,38,43];
@@ -2337,18 +2337,30 @@ function litNeck(){
   handChanged();    /* AOG-HAND-STYLE-V1: the style follows the frets you hold */
   learnLit();       /* AOG-LEARN-V1 */
 }
-/* ══ AOG-LEARN-V1 (2026-10-11) — Learn a song, the bass's side. aog-learn-ui.js plays the song and teaches; it asks the
+/* ══ AOG-LEARN-V1 (2026-10-11) — Learn a song, the guitar's side. aog-learn-ui.js plays the song and teaches; it asks the
    neck to show a chord (the guitar: its shape where the hand is, shapeFor; the bass: the lowest root the hand reaches,
    bassRoot, ringed, and the chord's other notes on the frets in view) or the notes to play (each at its place nearest the
    hand, cellFor; when one is off the frets in view, the neck moves to it, unless a finger is on it). What the hands play
-   (a fret, a strum, a chord button, a MIDI keyboard) reaches it through AOGRecorder.note; a real bass through
+   (a fret, a strum, a chord button, a MIDI keyboard) reaches it through AOGRecorder.note; a real guitar through
    aog-liveinput.js. The neck's own key and tempo stay as they are unless the learner asks (Play in the song's key). ══ */
 var LEARN={chord:null, ms:null};   /* var: litNeck may run before this line does */
+/* AOG-LEARN-V2: the guitar has no capo of its own, so a capo shape (Use the capo in Learn a song) is the open shape the
+   room would show near the nut, moved up to the capo fret: each fretted note that many frets higher, each open string
+   at the capo fret. learnShape gives the frets for the chord pictures: the shape where the hand is, or the open shape
+   (counted from the capo) when the capo is on; the bass: the root's place. */
+function openShape(sc){ const c={off:((sc.root-S.key)%12+12)%12, q:Q[sc.id]?sc.id:"maj"}, was=S.fret0; S.fret0=1; let sh; try{ sh=shapeFor(c).slice(); }finally{ S.fret0=was; } return sh; }
+function learnShape(C){
+  if(!C) return null;
+  const c={off:((C.root-S.key)%12+12)%12, q:Q[C.id]?C.id:"maj"};
+  if(GTR){ if(C.capo>0 && C.shape) return {f:openShape(C.shape), capo:C.capo, tuning:TUNING.slice()}; return {f:shapeFor(c).slice(), capo:0, tuning:TUNING.slice()}; }
+  const r=cellFor(bassRoot(c)), f=TUNING.map(()=>-1); if(r) f[r.s]=r.f; return {f:f, capo:0, tuning:TUNING.slice()};
+}
 function learnCells(){
   const out=new Map(); if(!LEARN) return out;
   const C=LEARN.chord;
   if(C){ const c={off:((C.root-S.key)%12+12)%12, q:Q[C.id]?C.id:"maj"};
-    if(GTR) shapeFor(c).forEach((f,s)=>{ if(f>=0) out.set(s+":"+f, (TUNING[s]+f)%12===C.root?"r":"n"); });
+    if(GTR && C.capo>0 && C.shape) openShape(C.shape).forEach((f,s)=>{ if(f>=0){ const fr=f+C.capo; out.set(s+":"+fr, (TUNING[s]+fr)%12===C.root?"r":"n"); } });
+    else if(GTR) shapeFor(c).forEach((f,s)=>{ if(f>=0) out.set(s+":"+f, (TUNING[s]+f)%12===C.root?"r":"n"); });
     else { const r=cellFor(bassRoot(c)); if(r) out.set(r.s+":"+r.f, "r");
       TUNING.forEach((o,s)=>{ for(let f=0; f<=MAXF; f++){ if(!inReach(f)) continue; const pc=(o+f)%12; if(pc!==C.root && C.pcs.indexOf(pc)>=0) out.set(s+":"+f, "n"); } }); }
   }
@@ -2360,8 +2372,12 @@ function learnLit(){
   svg.querySelectorAll(".dot").forEach(g=>{ const v=on.get(g.getAttribute("data-c"));
     if(g.classList.contains("lrn")!==!!v) g.classList.toggle("lrn", !!v); if(g.classList.contains("lroot")!==(v==="r")) g.classList.toggle("lroot", v==="r"); });
 }
-window.AOGLearnRoom={ room:INST, lang:()=>S.lang, busy:()=>!!S.playing,
+window.AOGLearnRoom={ room:INST, lang:()=>S.lang, busy:()=>!!S.playing, shape:learnShape,
   show:(what)=>{ LEARN.chord=what&&what.chord||null; LEARN.ms=what&&what.notes&&what.notes.length?what.notes.map(Math.round):null;
+    /* AOG-LEARN-V2: a shape above the capo off the frets in view: the neck goes up to the capo (never under a finger) */
+    const C=LEARN.chord;
+    if(GTR && C && C.capo>0 && C.shape && !FINGERS.size && !NECK.play){ const fr=openShape(C.shape).filter(f=>f>=0).map(f=>f+C.capo);
+      if(fr.some(f=>!inReach(f))){ const n=NECK.n||4, to=Math.max(1, Math.min(MAXF-n+1, C.capo)); if(to!==S.fret0){ S.fret0=to; buildNeck(); return; } } }
     /* a note off the frets in view: the neck goes to it (never under a finger, never sideways on the whole screen) */
     if(LEARN.ms && !FINGERS.size && !NECK.play){ const far=LEARN.ms.map(cellFor).filter(cl=>cl && !inReach(cl.f));
       if(far.length){ const f=far[0].f, n=NECK.n||4, to=Math.max(1, Math.min(MAXF-n+1, f-1)); if(to!==S.fret0){ S.fret0=to; buildNeck(); return; } } }

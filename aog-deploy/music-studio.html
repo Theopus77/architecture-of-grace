@@ -960,6 +960,15 @@ html.in-studio .st-chassis{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 
         <p class="st-line" id="inboxLine" aria-live="polite"></p>
       </div>
 
+      <!-- AOG-STEMS-V1: Split a song into parts (aog-stems.js, loaded on the press): Drums, Bass, Voice, The rest on four empty tracks -->
+      <div class="st-blk" id="splitBlk">
+        <h2 class="st-h" data-t="splitH"></h2>
+        <p class="st-line" data-t="splitLine" style="margin:0 0 .7rem"></p>
+        <div class="st-row"><button type="button" class="st-btn st-go" id="splitFile" data-t="splitFile"></button><button type="button" class="st-btn" id="splitTrack" data-t="splitTrack"></button><button type="button" class="st-btn st-clear" id="splitStop" data-t="splitStop" hidden></button></div>
+        <input type="file" id="splitIn" accept="audio/*,.mp3,.m4a,.aac,.wav,.aif,.aiff,.ogg,.flac" hidden>
+        <p class="st-line" id="splitMsg" aria-live="polite"></p>
+      </div>
+
       <div class="st-blk">
         <h2 class="st-h" data-t="finishH"></h2>
         <label class="st-field st-bits"><span class="st-lab" data-t="bitsLab"></span><select id="bitsSel"></select></label><!-- AOG-DESK-BITS-V1 -->
@@ -1044,6 +1053,19 @@ const TOOLS={
 };
 
 const STR={
+  /* AOG-STEMS-V1 (2026-10-12): Split a song into parts, onto four tracks */
+  splitH:{en:"Split a song into parts",es:"Separar una canción en partes"},
+  splitLine:{en:"Its drums, bass, voice and the rest go on four empty tracks. It is done on this device.",es:"Su batería, bajo, voz y el resto van a cuatro pistas vacías. Se hace en este aparato."},
+  splitFile:{en:"Choose a song file",es:"Elegir un archivo de canción"},
+  splitTrack:{en:"Split this track's recording",es:"Separar la grabación de esta pista"},
+  splitBusy:{en:"Splitting the song… {n}%",es:"Separando la canción… {n} %"},
+  splitStop:{en:"Stop",es:"Parar"},
+  splitStopped:{en:"Stopped. Nothing was changed.",es:"Detenido. No se cambió nada."},
+  splitFail:{en:"The song did not split. Try another file.",es:"La canción no se separó. Prueba otro archivo."},
+  splitPlaced:{en:"{parts}: on tracks {tracks}.",es:"{parts}: en las pistas {tracks}."},
+  splitMuted:{en:"Track {n} is muted, so you hear the parts.",es:"La pista {n} está en silencio, así oyes las partes."},
+  splitFull:{en:"{parts} did not fit: every other track is full. Take a recording off a track, then press Split again.",es:"{parts} no cupieron: las demás pistas están llenas. Quita una grabación de una pista y vuelve a separar."},
+  splitAll:{en:"Every part of this song is already on a track.",es:"Cada parte de esta canción ya está en una pista."},
   app:{en:"The Mixing Desk",es:"La mesa de mezclas"},   /* AOG-MIXDESK-V1 (2026-10-04): The Studio is now the door to every instrument; this is its mixing desk */
   kicker:{en:"Put your song together.",es:"Arma tu canción."},
   lead:{en:"Record on any instrument, press Send to the Mixing Desk, then come here.",es:"Graba en cualquier instrumento, pulsa Enviar a la mesa de mezclas y luego ven aquí."},
@@ -2508,8 +2530,65 @@ function songChanged(){
     else if(c && c.lead && Math.abs(deskBpm()-s0.bpm)>0.005) AOGSong.set({bpm:deskBpm()}); } }catch(e){}
   liveApply(applyAll);
   reschedule();
-  paintTransport(); paintTimeline(); paintTrack(); paintMixer(); paintFinish(); paintInbox();
+  paintTransport(); paintTimeline(); paintTrack(); paintMixer(); paintFinish(); paintInbox(); paintSplit();
   lessonSong();
+}
+/* ══ AOG-STEMS-V1 (2026-10-12) — Split a song into parts (Jimmy: "Split a song into its parts. Drums, bass, voice and
+   the rest come apart right on the device"). A song file, or the recording on the track picked, is split by aog-stems.js
+   (loaded on this press, in a Worker; the split is kept on the device with the song, so a second press is at once). The
+   parts go on the empty tracks, in order: Drums, Bass, Voice, The rest (track 8 stays the voice slot). Whatever does not
+   fit is named, never skipped without a word. Split from a track: that track is muted, so the parts are what you hear.
+   Each part is a 16-bit stereo recording of its own, starting at bar 1, all four in line with each other. ══ */
+const SPL={busy:false, job:0, ctl:null};
+let stemsP=null;
+function stemsLib(){
+  if(window.AOGStems) return Promise.resolve(window.AOGStems);
+  if(stemsP) return stemsP;
+  stemsP=new Promise((ok,no)=>{ const s0=document.createElement("script"); s0.src="/aog-stems.js"; s0.async=true;
+    s0.onload=()=>{ if(window.AOGStems) ok(window.AOGStems); else { stemsP=null; no(new Error("no stems")); } };
+    s0.onerror=()=>{ stemsP=null; no(new Error("no stems")); }; document.head.appendChild(s0); });
+  return stemsP;
+}
+function paintSplit(){ const c=SONG.tracks[SONG.sel] && SONG.tracks[SONG.sel].clip; $("splitTrack").disabled=SPL.busy || !c || !!c.voice; $("splitFile").disabled=SPL.busy; $("splitStop").hidden=!SPL.busy; }
+async function splitIn(src){
+  if(SPL.busy) return;
+  const job=++SPL.job, ctl=window.AbortController ? new AbortController() : null, msg=$("splitMsg");
+  SPL.busy=true; SPL.ctl=ctl; paintSplit(); msg.textContent=t("splitBusy",{n:0});
+  let parts=null;
+  try{
+    const A=await stemsLib();
+    parts=await A.kept(src.id, src.blob);
+    if(!parts){
+      parts=await A.split(src.blob, { signal:ctl ? ctl.signal : undefined, onProgress:p=>{ if(SPL.job===job) msg.textContent=t("splitBusy",{n:Math.round(p*100)}); } });
+      if(SPL.job!==job) return;
+      try{ await A.keep(src.id, parts); }catch(e){}
+    }
+    if(SPL.job!==job) return;
+    const names=A.names[S.lang]||A.names.en, placed=[], left=[];
+    for(const k of A.parts){
+      const name=(src.name+" · "+(A.names.en[k])).slice(0,200);
+      if(SONG.tracks.some(x=>x.clip && x.clip.name===name)) continue;   /* already on a track */
+      const ti=SONG.tracks.findIndex((x,i)=>i!==VOICE_T && !x.clip);
+      if(ti<0){ left.push(names[k]); continue; }
+      const blob=A.wav(parts[k]), sec=parts.length/parts.sampleRate, id="c"+Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+      const buf=await decodeWav(blob, parts.sampleRate);
+      await sput(id, {wav:blob}); BUF.set(id, buf);
+      SONG.tracks[ti].clip=cleanClip({id:id, src:"", name:name, at:Date.now(), take:true, sec:sec, bpm:0, bars:0, head:0, body:sec, tail:0, bpb:4,
+        startBar:1, trimIn:0, trimOut:0, loops:1, peakDb:peakDbOf(buf)});
+      placed.push([names[k], ti+1]);
+      if(SPL.job!==job) break;
+    }
+    if(placed.length && src.track!=null && SONG.tracks[src.track] && SONG.tracks[src.track].clip){ SONG.tracks[src.track].mute=true; }
+    if(placed.length) songChanged();
+    const say=[];
+    if(placed.length) say.push(t("splitPlaced",{parts:andList(placed.map(x=>x[0])), tracks:andList(placed.map(x=>String(x[1])))}));
+    if(placed.length && src.track!=null) say.push(t("splitMuted",{n:src.track+1}));
+    if(left.length) say.push(t("splitFull",{parts:andList(left)}));
+    if(!placed.length && !left.length) say.push(t("splitAll"));
+    if(parts.note) say.push(A.word(parts.note, S.lang));
+    msg.textContent=say.join(" ");
+  }catch(e){ if(SPL.job===job) msg.textContent=t(e && e.name==="AbortError" ? "splitStopped" : "splitFail"); }
+  finally{ if(parts && parts.free) parts.free(); if(SPL.job===job){ SPL.busy=false; SPL.ctl=null; paintSplit(); } }
 }
 /* a reload: every recording comes back from this browser */
 async function restore(){
@@ -2951,6 +3030,12 @@ function bindCarry(){
   $("songName").addEventListener("keydown", e=>{ if(e.key==="Enter") e.target.blur(); });
   $("fileSave").onclick=saveFile;
   $("fileOpen").onclick=()=>{ closeAsk(); $("fileIn").value=""; $("fileIn").click(); };
+  /* AOG-STEMS-V1 */
+  $("splitFile").onclick=()=>{ $("splitIn").value=""; $("splitIn").click(); };
+  $("splitIn").onchange=e=>{ const f=e.target.files && e.target.files[0]; if(f) splitIn({ id:(f.name||"?")+"·"+(f.size||0), name:String(f.name||"").replace(/\.[a-z0-9]{2,5}$/i,""), blob:f }); };
+  $("splitTrack").onclick=async ()=>{ const ti=SONG.sel, c=SONG.tracks[ti] && SONG.tracks[ti].clip; if(!c) return; const v=await sget(c.id); if(!v || !v.wav) return;
+    splitIn({ id:"clip|"+c.id, name:bareName(c.name)||t("trackN",{n:ti+1}), blob:v.wav, track:ti }); };
+  $("splitStop").onclick=()=>{ if(!SPL.busy) return; SPL.job++; try{ if(SPL.ctl) SPL.ctl.abort(); }catch(e){} SPL.busy=false; SPL.ctl=null; $("splitMsg").textContent=t("splitStopped"); paintSplit(); };
   $("fileIn").onchange=e=>{ const f=e.target.files && e.target.files[0]; openFile(f); };
   $("openNo").onclick=()=>{ closeAsk(); $("fileLine").textContent=""; };
   $("openYes").onclick=()=>{ const go=CARRY.ask; closeAsk(); if(go) go(); };
@@ -3388,7 +3473,7 @@ function paintText(){
   $("newAskT").textContent=t("newAsk"); $("newYes").textContent=t("newYes"); $("newNo").textContent=t("newNo");
   $("newBtn").textContent=t("newSong"); $("mixBtn").textContent=t("mixBtn");
 }
-function paintAll(){ try{ paintSongsBtn(); }catch(e){} paintText(); paintTransport(); paintTimeline(); paintTrack(); paintMixer(true); paintFinish(); paintInbox(); paintCarry(); paintSlip(); dmPaintVer(); }
+function paintAll(){ try{ paintSongsBtn(); }catch(e){} paintText(); paintTransport(); paintTimeline(); paintTrack(); paintMixer(true); paintFinish(); paintInbox(); paintCarry(); paintSlip(); dmPaintVer(); paintSplit(); }
 
 /* ── 1 · play ── */
 function paintPlay(){
@@ -4415,7 +4500,7 @@ function bindAuto(){
 }
 
 /* ══ wiring ══ */
-function selectTrack(i){
+function selectTrack(i){ try{ setTimeout(paintSplit, 0); }catch(e){}
   i=Math.max(0, Math.min(NT-1, i|0)); if(i===SONG.sel) return;
   SONG.sel=i; saveSoon(); $("recLine").textContent=""; LES.mark("track2");
   paintTimeline(); paintTrack(); paintMixer();
@@ -4600,6 +4685,7 @@ Object.assign(window.__aogStudio, { DESK_ROOMS:DESK_ROOMS, roomBuf:roomBuf, appl
 /* AOG-DESK-LUFS-V1, AOG-DESK-BITS-V1, AOG-DESK-CHOPS-OUT-V1: for the tests (music-handoff/tests/studio/release.js) */
 Object.assign(window.__aogStudio, { kCoef:kCoef, loudOf:loudOf, truePeak:truePeak, lufsTap:lufsTap, lufsStart:lufsStart, lufsStep:lufsStep, LU:LU, outLevel:outLevel,
   wavBuf:wavBuf, bits:()=>BITS, chopsLook:chopsLook, chopCuts:chopCuts, sendChops:sendChops });
+Object.assign(window.__aogStudio, { splitIn:splitIn, SPL:SPL });   /* AOG-STEMS-V1: for stems/split.js */
 Object.assign(window.__aogStudio, { openNotes:openNotes, keepNotes:keepNotes, cleanClip:cleanClip, beatOf:beatOf });   /* AOG-PIANOROLL-V1 */
 /* AOG-DESK-AUTO-V1: for the tests (music-handoff/tests/studio/auto.js) */
 Object.assign(window.__aogStudio, { AUTO:AUTO, AUI:AUI, drawnAt:drawnAt, autoCorners:autoCorners, lineOf:lineOf, filtHz:filtHz, cleanLines:cleanLines,

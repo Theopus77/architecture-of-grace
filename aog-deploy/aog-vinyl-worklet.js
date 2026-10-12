@@ -82,6 +82,7 @@
     for (var w = 0; w < this.N; w++) this.win[w] = 0.5 - 0.5 * Math.cos(2 * Math.PI * w / this.N);
     this.RM = 8192; this.RMask = this.RM - 1;
     this.rL = new Float32Array(this.RM); this.rR = new Float32Array(this.RM);
+    this.rS = new Float32Array(this.RM);   /* AOG-STEMS-V1: the record's own left channel, grain by grain, for the search alone */
     this.rRead = 0; this.rWrite = 0; this.rFill = 0; this.grainStart = 0; this.primed = false;
     this.slip = false; this.slipPos = 0; this.rev = false;
     /* AOG-DJ-ENGINE-V1 */
@@ -94,6 +95,12 @@
     this.sched = [];           /* messages booked for a frame */
     this.bend = 1;             /* a held-in-time correction from SYNC */
     this.jumps = 0; this.wraps = 0; this.lastJump = null;
+    /* AOG-STEMS-V1 — the record's parts (aog-stems.js): drums, bass and voice as 16-bit samples beside the record itself.
+       Every read of the record reads them at the very same place, so a scratch, a loop, a cue, keylock and reverse move
+       all four together, to the sample. The rest is the record minus the three. Each part's level glides (8 ms), so a
+       mute never clicks; with every level at full the record plays exactly as it is. */
+    this.P = null; this.pg = [1, 1, 1, 1]; this.pc = [1, 1, 1, 1]; this.pOn = false;
+    this.pk = 1 - Math.exp(-1 / (0.008 * this.sr)); this.oL = 0; this.oR = 0; this.preq = null;
   }
 
   VinylCore.prototype.setBuffer = function (L, R, bufSampleRate) {
@@ -102,6 +109,32 @@
     this.pos = 0; this.rate = 0; this.ended = false;
     this.xf = 0; this.pend = null; this.ret = null; this.div = false; this.sched = [];
     this.loopOn = false; this.slipPos = 0;
+    this.P = null; this.pOn = false; this.pg = [1, 1, 1, 1]; this.pc = [1, 1, 1, 1]; this.preq = null;
+  };
+  /* AOG-STEMS-V1: the record at this place, its parts at their levels (this.oL, this.oR) */
+  var PS = 1 / 32767;
+  VinylCore.prototype.rd = function (i1, f) {
+    var sL = hermite(this.L, i1, f), sR = hermite(this.R, i1, f);
+    if (this.pOn) {
+      var P = this.P, c = this.pc, go = c[3], cd = (c[0] - go) * PS, cb = (c[1] - go) * PS, cv = (c[2] - go) * PS;
+      var dl = hermite(P.dL, i1, f), dr = P.dR === P.dL ? dl : hermite(P.dR, i1, f), mid = cb * hermite(P.b, i1, f) + cv * hermite(P.v, i1, f);
+      sL = go * sL + cd * dl + mid; sR = go * sR + cd * dr + mid;
+    }
+    this.oL = sL; this.oR = sR;
+  };
+  VinylCore.prototype.glide = function () {
+    var c = this.pc, g = this.pg, k = this.pk, far = 0;
+    for (var j = 0; j < 4; j++) { c[j] += (g[j] - c[j]) * k; var e = c[j] - g[j]; if (e > 1e-5 || e < -1e-5) far = 1; else c[j] = g[j]; }
+    if (!far && g[0] === 1 && g[1] === 1 && g[2] === 1 && g[3] === 1) this.pOn = false;
+  };
+  /* a stretch of the record as it sounds with its parts at their levels (for the chops), up to `max` frames at a time */
+  VinylCore.prototype.regionStep = function (max) {
+    var q = this.preq; if (!q) return true;
+    var g = this.pg, P = this.P, go = g[3], cd = (g[0] - go) * PS, cb = (g[1] - go) * PS, cv = (g[2] - go) * PS, e = Math.min(q.n, q.i + max);
+    for (var i = q.i; i < e; i++) { var x = q.a + i, l = this.L ? this.L[x] || 0 : 0, r = this.R ? this.R[x] || 0 : 0;
+      if (P) { var m = cb * (P.b[x] || 0) + cv * (P.v[x] || 0); l = go * l + cd * (P.dL[x] || 0) + m; r = go * r + cd * (P.dR[x] || 0) + m; }
+      q.L[i] = l; q.R[i] = r; }
+    q.i = e; return e >= q.n;
   };
   /* the motor's own speed, in buffer samples per output sample */
   VinylCore.prototype.runRate = function () {
@@ -255,7 +288,23 @@
         this.ret = { at: m.b0 + k * m.len };
         break;
       case "cancel": this.pend = null; this.ret = null; break;
+      /* AOG-STEMS-V1 */
+      case "parts":
+        if (m.off || !this.L || !m.dL || m.dL.length !== this.len) { this.P = null; this.pOn = false; this.pc = [1, 1, 1, 1]; this.pg = [1, 1, 1, 1]; break; }
+        this.P = { dL: m.dL, dR: m.dR || m.dL, b: m.b, v: m.v };
+        break;
+      case "pgain":
+        if (!this.P || !m.g) break;
+        this.pg = [m.g.drums, m.g.bass, m.g.voice, m.g.other].map(function (x) { x = +x; return x >= 0 && x <= 2 ? x : 1; });
+        this.pOn = true;
+        if (m.now) this.pc = this.pg.slice();
+        break;
+      case "prender":
+        var na = Math.max(0, Math.min(this.len, m.n | 0));
+        this.preq = { id: m.id, a: Math.max(0, m.a | 0), n: na, i: 0, L: new Float32Array(na), R: new Float32Array(na) };
+        break;
       case "clear":
+        this.P = null; this.pOn = false; this.preq = null;
         this.L = this.R = null; this.len = 0; this.pos = 0; this.rate = 0;
         this.xf = 0; this.pend = null; this.ret = null; this.div = false; this.sched = [];
         this.loopOn = false; this.motorOn = false; this.bend = 1;
@@ -289,7 +338,7 @@
         var score = 0, norm = 1e-9;
         for (var k = 0; k < 256; k += 4) {
           var a = L[(c + k * this.srRatio) | 0] || 0;
-          var b = this.rL[(this.rWrite + k) & this.RMask];
+          var b = this.rS[(this.rWrite + k) & this.RMask];   /* AOG-STEMS-V1: the record, not the parts at their levels, so every level cuts the same grains */
           score += a * b; norm += a * a;
         }
         score /= Math.sqrt(norm);
@@ -303,12 +352,16 @@
       var i1 = p | 0, f = p - i1;
       var w = win[i];
       var idx = (this.rWrite + i) & this.RMask;
+      this.rd(i1, f);
+      var sw = (this.pOn ? hermite(L, i1, f) : this.oL) * w;
       if (i < H) {                                   /* overlap: add onto the tail */
-        this.rL[idx] += hermite(L, i1, f) * w;
-        this.rR[idx] += hermite(R, i1, f) * w;
+        this.rL[idx] += this.oL * w;
+        this.rR[idx] += this.oR * w;
+        this.rS[idx] += sw;
       } else {                                       /* new ground: write it clean */
-        this.rL[idx] = hermite(L, i1, f) * w;
-        this.rR[idx] = hermite(R, i1, f) * w;
+        this.rL[idx] = this.oL * w;
+        this.rR[idx] = this.oR * w;
+        this.rS[idx] = sw;
       }
     }
     this.rWrite = (this.rWrite + H) & this.RMask;
@@ -335,6 +388,8 @@
         last = this.len - 3;
       }
       this.rate += (target - this.rate) * k;
+      /* AOG-STEMS-V1 · AOG-SILENT-V1: a record coasting to a stop does stop (an endless creep kept the page from resting) */
+      if (target === 0 && this.rate < 1e-4 && this.rate > -1e-4) this.rate = 0;
       var p = this.pos;
 
       if (p < 1) { p = this.pos = 1; if (this.rate < 0) this.rate = 0; }
@@ -345,13 +400,16 @@
       }
 
       var i1 = p | 0, f = p - i1;
-      var sL = hermite(L, i1, f), sR = hermite(R, i1, f);
+      if (this.pOn) this.glide();
+      this.rd(i1, f);
+      var sL = this.oL, sR = this.oR;
       if (this.xf > 0) {                     /* the old place, fading out under the new one */
         var gp = this.xfPos; if (gp < 1) gp = 1; if (gp > last) gp = last;
         var gi = gp | 0, gf = gp - gi;
         var s = 0.5 - 0.5 * Math.cos(Math.PI * this.xf / this.xfLen);
-        sL += (hermite(L, gi, gf) - sL) * s;
-        sR += (hermite(R, gi, gf) - sR) * s;
+        this.rd(gi, gf);
+        sL += (this.oL - sL) * s;
+        sR += (this.oR - sR) * s;
         this.xfPos += this.rate; this.xf--;
       }
 
@@ -366,7 +424,7 @@
       if (this.klMix > 0.001) {
         if (this.rFill < 2) this.grain();
         var kL = this.rL[this.rRead], kR = this.rR[this.rRead];
-        this.rL[this.rRead] = 0; this.rR[this.rRead] = 0;     /* clear as we leave */
+        this.rL[this.rRead] = 0; this.rR[this.rRead] = 0; this.rS[this.rRead] = 0;     /* clear as we leave */
         this.rRead = (this.rRead + 1) & this.RMask; this.rFill--;
         sL = sL * (1 - this.klMix) + kL * this.klMix;
         sR = sR * (1 - this.klMix) + kR * this.klMix;
@@ -644,6 +702,9 @@
         const n = out[0].length;
         this.core.frame = currentFrame;
         this.core.process(out[0], out[1] || out[0], n);
+        /* AOG-STEMS-V1: a stretch for the chops, 8192 frames a block, so the sound never waits */
+        if (this.core.preq && this.core.regionStep(8192)) { const q = this.core.preq; this.core.preq = null;
+          this.port.postMessage({ t: "preg", id: q.id, L: q.L, R: q.R }, [q.L.buffer, q.R.buffer]); }
         if (++this.tick % 6 === 0) {
           const c = this.core;
           this.port.postMessage({
