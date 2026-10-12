@@ -28,6 +28,10 @@ const ok = (c, m) => { console.log((c ? "✓ " : "✗ ") + m); if (!c) fails++; 
 const wait = ms => new Promise(o => setTimeout(o, ms));
 
 (async () => {
+  /* the short way: two-phase search, every answer checked by turning the cube to solved */
+  try { const out = cp.execSync("node " + JSON.stringify(path.join(ROOT, "aog-cube-short.js")) + " test 8", { stdio: "pipe", timeout: 120000 }).toString().trim().split("\n").pop();
+    const m = out.match(/longest (\d+)/); ok(/^ok/.test(out) && m && +m[1] <= 22, "the short way: " + out); }
+  catch (e) { ok(false, "the short way's own test failed: " + String(e.stdout || e.message).slice(0, 300)); }
   /* the solver */
   try { const out = cp.execSync("node " + JSON.stringify(path.join(ROOT, "aog-cube.js")) + " test", { stdio: "pipe" }).toString().trim().split("\n").pop(); ok(/^ok/.test(out), "the solver: " + out); }
   catch (e) { ok(false, "the solver's own test failed: " + String(e.stdout || e.message).slice(0, 300)); }
@@ -203,6 +207,12 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
   ok(await p.evaluate(() => !!document.querySelector("#panel .move-big .tok") && document.getElementById("arrow").innerHTML.length > 0), "Show me the move shows the move and its arrow");
   const hb = await hist(p); await p.click('#panel [data-act="gnext"]'); await p.waitForTimeout(150); ok(await hist(p) === hb + 1, "and Turn it turns it");
   await p.selectOption("#levelSel", "every");
+  /* Show me the short way: found off the page, then followed with Turn it to Solved, in about 20 moves */
+  await p.click('#panel [data-act="mix"]'); await p.waitForTimeout(150);
+  await p.click('#panel [data-act="short"]');
+  let shortOk = false; try { await p.waitForSelector("#panel .kicker:has-text('The short way')", { timeout: 30000 }); shortOk = true; } catch (e) {}
+  let sn = 0; if (shortOk) while (sn < 40 && await p.$('#panel [data-act="gnext"]')) { await p.click('#panel [data-act="gnext"]'); sn++; }
+  ok(shortOk && sn > 0 && sn <= 22 && /Solved!/.test(await p.textContent("#panel")), `Show me the short way solves a mixed cube in ${sn} moves (no more than 22)`);
   ok(!p.errs.length, "no page errors (computer) " + p.errs.join("; "));
   await p.ctx.close();
 
@@ -268,6 +278,17 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
   while (n < 300 && !seen && await p.$('#panel [data-act="gnext"]')) { await p.click('#panel [data-act="gnext"]'); n++; seen = !!(await p.$("#panel .checkin")); }
   ok(seen, "with a real cube, a finished step asks: does yours look like the screen?");
   if (seen) { await p.click('#panel [data-act="checkYes"]'); ok(!(await p.$("#panel .checkin")), "Yes, it matches puts the question away"); }
+  /* Check with the camera: a side held up is compared with the screen; a square that differs is marked */
+  { const r = await p.evaluate(() => { const C = AOGCube, c = AOGCubeLab.cube, H = { W: "#f4f3ee", Y: "#ffd43b", G: "#23a159", B: "#2a62c9", O: "#ff7e1f", R: "#d2303b", P: "#7d3cc0", K: "#ff7eb6" };
+      const sc = JSON.parse(localStorage.getItem("aog.cube.v1")).scheme, home = { Y: "U", W: "D", G: "F", B: "B", O: "R", R: "L" };
+      const shown = col => sc[home[col]] || col, rgb = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16) * .92);
+      const side = C.facelets("R").map(([pos, dir]) => rgb(H[shown(c.colorAt(pos, dir))]));
+      const same = AOGCubeLab.verifyRead(side.slice()); const off = side.slice(); off[0] = off[4].map(v => v); off[0] = rgb(H[shown(c.colorAt(...C.facelets("L")[4]))]);
+      const turned = [6, 3, 0, 7, 4, 1, 8, 5, 2].map(i => side[i]); const tr = AOGCubeLab.verifyRead(turned);
+      const diff = AOGCubeLab.verifyRead(off); document.querySelector(".cam [data-cam='close']").click();
+      return { same: same.f === "R" && same.diff.length === 0, turned: tr.f === "R" && tr.diff.length === 0, diff: diff.f === "R" && diff.diff.length >= 1 }; });
+    ok(r.same && r.turned, "Check with the camera: a side that matches says so, even held turned");
+    ok(r.diff, "Check with the camera: a square that differs is found and marked"); }
   /* the camera sheet itself (a fake camera here) */
   await p.evaluate(() => { location.hash = "mine"; }); await p.waitForTimeout(300);
   await p.click('#panel [data-act="camera"]'); await p.waitForTimeout(1500);
