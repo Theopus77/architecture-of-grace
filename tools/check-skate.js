@@ -289,9 +289,11 @@ async function finish(pg) {
   await d3.evaluate(() => window.AOGSkate.free.reset("flat"));
   const settle = async () => { let a = -1, b = await d3.evaluate(() => window.AOGSkate.G3().renders()); for (let i = 0; i < 20 && a !== b; i++) { await wait(400); a = b; b = await d3.evaluate(() => window.AOGSkate.G3().renders()); } return b; };   // a late resize may draw once
   const fr0 = await settle(); await wait(700);
-  ok(await d3.evaluate(r => window.AOGSkate.G3().renders() <= r + 1 && !window.AOGSkate.free.running(), fr0), "free skate 3D: still until a press");
+  const still3 = await d3.evaluate(r => ({ n: window.AOGSkate.G3().renders() - r, run: window.AOGSkate.free.running(), v: window.AOGSkate.free.st.v }), fr0);
+  ok(still3.n === 0 && !still3.run && still3.v === 0, "free skate 3D: still until a press" + (still3.n || still3.run ? ` (${still3.n} pictures drawn, loop ${still3.run ? "running" : "off"})` : ""));
   const pushBtn = await d3.$('#player [data-pad="push"]'), pb = await pushBtn.boundingBox();
-  await d3.mouse.move(pb.x + pb.width / 2, pb.y + pb.height / 2); await d3.mouse.down(); await d3.mouse.up(); await wait(1500);
+  await d3.mouse.move(pb.x + pb.width / 2, pb.y + pb.height / 2); await d3.mouse.down(); await d3.mouse.up();
+  for (let i = 0; i < 60 && await d3.evaluate(() => window.AOGSkate.free.st.v < 0.3); i++) await wait(150);   // a slow test machine draws few pictures a second
   const fm = await d3.evaluate(r => ({ n: window.AOGSkate.G3().renders() - r, v: window.AOGSkate.free.st.v, feet: Math.max.apply(null, window.AOGSkate.G3().feetError()) }), fr0);
   ok(fm.n >= 2 && fm.v > 0.2, `free skate 3D: the Push button rolls the rider through the park (${fm.n} pictures drawn)`);
   ok(fm.feet <= 0.02, `free skate 3D: the soles stay on the board or the ground (${(fm.feet * 100).toFixed(2)} cm)`);
