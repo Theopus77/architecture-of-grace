@@ -387,7 +387,7 @@ $("#themeBtn").addEventListener("click",function(){
 });
 
 /* ── one band at a time: ?band=6-8 or #6-8 on the link wins, then this device's last choice ── */
-var BANDS=["k-2","3-5","6-8","9-10","11-12"], GRADE={"k-2":"K","3-5":"3","6-8":"6","9-10":"9-10","11-12":"11-12"};
+var BANDS=["k-2","3-5","6-8","9-10","11-12"], GRADE={"k-2":"K","3-5":"3","6-8":"6","9-10":"9-10","11-12":"11-12","adult":"adult"};
 function bandCanon(v){ v=String(v==null?"":v).toLowerCase(); for(var i=0;i<BANDS.length;i++){ if(BANDS[i].toLowerCase()===v) return BANDS[i]; } return null; }
 function bandFrom(){ var c;
   var m=/[?&]band=([^&#]+)/.exec(location.search||""); if(m&&(c=bandCanon(m[1]))) return c;
