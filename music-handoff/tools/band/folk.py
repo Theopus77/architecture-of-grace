@@ -123,13 +123,16 @@ if want("fiddle"):
         if n>88: continue
         x=load(os.path.join(V,"spic",f)); add("fiddle", n, "t", "short", x[onset(x):])
 # ── the banjo ──
+# AOG-BANJO-GS-V1 (2026-10-13) — Jimmy: "The g sharp sounds messed up on the banjo." Ganjo's G#3 take rings unlike its
+# neighbours, so G#3 is played from the G3 take a half step up (as a missing note is).
+BANJO_SKIP={56}
 if want("banjo"):
     G=os.path.join(DL,"ganjo"); sfz=open(os.path.join(G,"ganjo.sfz")).read(); seen=set()
     for r in sfz.split("<region>")[1:]:
         d=dict(re.findall(r"(\w+)=([^\n]+)", r)); d={k:v.strip() for k,v in d.items()}
         if d.get("seq_position","1")!="1": continue
         n=int(d.get("pitch_keycenter") or d["lokey"])
-        if n in seen: continue
+        if n in seen or n in BANJO_SKIP: continue
         seen.add(n); x=load(os.path.join(G, d["sample"].replace("\\","/"))); add("banjo", n, "s", "pluck", x[onset(x):])
 # ── made from the Martin steel-string guitar: the mandolin, its tremolo, the Dobro ──
 def martin(m):
