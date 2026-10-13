@@ -221,7 +221,7 @@ COURSES = [
                   "Cada dato se comprueba con documentos: actas de juicios y de logias, casos judiciales y audiencias. Las leyendas se llaman leyendas. Los grupos criminales y de odio se estudian solo en los grados 6–12. Todo es texto original escrito para este curso.")),
     # AOG-SKT-V1 (2026-10-11) — Skateboarding: history, how to (tricks and grinds, safety first) and the science, K–12 and Adult.
     dict(cid="skt", file="skateboarding-hub.html", slug="skateboarding", name=("Skateboarding", "Skateboarding"), contents="skateboarding-course",
-         drops=None, res="science", kicker=("A course of study · K–12 and Adult", "Un curso de estudio · K–12 y adultos"),
+         drops="skate", res="science", kicker=("A course of study · K–12 and Adult", "Un curso de estudio · K–12 y adultos"),
          lede=("Skateboarding's history, how to do tricks and grinds, and the science of balance. Grades K–12 and adults.",
                "La historia del skate, cómo hacer trucos y grinds, y la ciencia del equilibrio. Grados K–12 y adultos."),
          daily=("Ten short lines a day: history, tricks and the science of skating.",

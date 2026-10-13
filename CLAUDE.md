@@ -204,12 +204,12 @@ check for anything new the hands can do.
 ## Skateboarding (Jimmy, 2026-10-11: "a history of skateboarding curriculum … k12 and adult … how to do tricks, grinds … from a science perspective")
 
 - The course is `_work/skt` (id `skt`, 18 units in six bands: K–2 … 11–12 and **Adult**, the first course with an
-  Adult band), built like every other course.
+  Adult band), built like every other course; Daily Practice is the `skate` book (`_work/ddworld/skt.py`).
   Unlike Sports History it **teaches technique**, always safety first (helmet, pads, a safe place, a grown-up near
   children; never stairs, rails, traffic or holding onto a vehicle). Directions say front foot and back foot.
-- Only the course is kept (Jimmy, 2026-10-13: "Except for the course itself (the written material), get rid of
-  everything else that is skateboarding related"). The Skate Lab (/skate), its 3D trick book, the Daily Practice
-  skate book, the front-page Skateboarding door and the top bar's skate door are gone; /skate and /skate-lab send
+- Only the course and its Daily Practice book are kept (Jimmy, 2026-10-13: "Except for the course itself (the
+  written material), get rid of everything else that is skateboarding related"; then "The daily practice you may
+  keep"). The Skate Lab (/skate), its 3D trick book, the front-page Skateboarding door and the top bar's skate door are gone; /skate and /skate-lab send
   to the course (/skateboarding). Don't add them back unless Jimmy asks.
 
 ## The Microscope Lab, in depth (Jimmy, 2026-10-12: "a quantum leap forward in the Micro")

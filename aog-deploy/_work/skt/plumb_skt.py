@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AOG-SKT-V1 · site plumbing for the Skateboarding course (the Skate Lab and the Daily Practice book were removed 2026-10-13). Idempotent.
+AOG-SKT-V1 · site plumbing for the Skateboarding course (the Skate Lab was removed 2026-10-13). Idempotent.
   · (hub page made by _work/course/make_hubs.py)
   · _redirects — /skateboarding-course, /skateboarding (hub), /skt1 … /skt18
   · sw.js — CACHE bump (the old line kept as a comment) + the course pages precached
