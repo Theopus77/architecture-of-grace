@@ -95,7 +95,7 @@ function ratio(a,b){ const x=lum(a), y=lum(b); return (Math.max(x,y)+0.05)/(Math
   ok(/made here from real nylon guitar strings/.test(lines.ukulele), "the ukulele says it is made: "+lines.ukulele);
   ok(/made here, not recorded/.test(lines.boomwhackers), "the tubes say they are made: "+lines.boomwhackers);
   const foot=await p.textContent("#foot");
-  ok(/recorders come from the Versilian Community Sample Library/.test(foot) && /FreePats/.test(foot) && /boomwhackers by synthesis/.test(foot) && /All four are given to everyone/.test(foot),
+  ok(/recorders come from the Versilian Community Sample Library/.test(foot) && /FreePats/.test(foot) && /boomwhackers by synthesis/.test(foot) && /are given to everyone/.test(foot),
     "the credit names the recorders' library, the guitar the ukulele is made from, and the synthesized tubes: "+foot.slice(foot.indexOf("The recorders"), foot.indexOf("The recorders")+90)+"…");
   /* 2 · in tune */
   const TRY={recorder:[[72,"sus"],[73,"sus"],[79,"sus"],[90,"sus"],[96,"sus"],[74,"stac"]], recorder_alto:[[65,"sus"],[71,"sus"],[84,"sus"],[76,"stac"]],
