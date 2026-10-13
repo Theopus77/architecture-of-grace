@@ -6,7 +6,7 @@ const LKEY="aog.band.v1";
 /* every recording the page can load: for each instrument, the held notes (soft "s" and loud "l") and the short ones ("t"),
    and a tuning correction in cents for the few that were recorded a little off (made by _work/music/make_band.py) */
 const MAN=@@MANIFEST@@;
-const RHYTHMS=["long","swell","stabs","offbeat","march","waltz","fanfare","broken"];
+const RHYTHMS=["long","swell","stabs","offbeat","march","waltz","fanfare","broken","roll"];   /* AOG-BAND-FOLK-V1: the banjo roll */
 /* a waltz has three beats in a bar; everything else, four. A waltz plays without a four-beat drum beat (as on the piano) */
 const RHYTHM_BEATS={waltz:3};
 function beatsPerBar(){ return RHYTHM_BEATS[S.rhythm]||4; }
@@ -43,17 +43,19 @@ function save(){
 const STR={
   app:{en:"The Band",es:"La banda"},
   kicker:{en:"A band in two taps.",es:"Una banda en dos toques."},
-  lead:{en:"Brass, woodwinds, strings and percussion, recorded for real. Tap a chord, or play the keys.",es:"Metales, maderas, cuerdas y percusión, grabados de verdad. Toca un acorde o toca las teclas."},
+  lead:{en:"Brass, woodwinds, strings, percussion and folk instruments, almost all recorded for real. Tap a chord, or play the keys.",es:"Metales, maderas, cuerdas, percusión e instrumentos de folk, casi todos grabados de verdad. Toca un acorde o toca las teclas."},
   drums:{en:"The drum machine",es:"La caja de ritmos"}, decks:{en:"The turntables",es:"Los tocadiscos"},
   instrument:{en:"Instrument",es:"Instrumento"},
   grpBrass:{en:"Brass",es:"Metales"}, grpWinds:{en:"Woodwinds",es:"Maderas"},
-  grpStrings:{en:"Strings",es:"Cuerdas"}, grpPerc:{en:"Percussion",es:"Percusión"}, grpJazz:{en:"Jazz",es:"Jazz"}, grpBands:{en:"Bands",es:"Bandas"}, grpAll:{en:"Everyone",es:"Todos"},
+  grpStrings:{en:"Strings",es:"Cuerdas"}, grpPerc:{en:"Percussion",es:"Percusión"}, grpJazz:{en:"Jazz",es:"Jazz"}, grpBands:{en:"Bands",es:"Bandas"}, grpFolk:{en:"Folk and country",es:"Folk y country"}, grpAll:{en:"Everyone",es:"Todos"},
   loadingPlayers:{en:"Getting the {name} ready · {n} of {all} players. The ready ones play now.",es:"Preparando: {name} · {n} de {all} instrumentos. Los que están listos ya suenan."},
   drumThree:{en:"A waltz counts in threes, so it plays without your four-beat drum beat.",es:"Un vals cuenta de tres en tres, así que suena sin tu ritmo de batería de cuatro."},
   loading:{en:"Getting the {name} ready… {n} of {all}",es:"Preparando: {name}… {n} de {all}"},
   stand:{en:"Until then you hear a stand-in.",es:"Mientras tanto suena un sustituto."},
   ready:{en:"Ready. Every note is a real player.",es:"Listo. Cada nota es un músico de verdad."},
   readyWho:{en:"Ready: {who}. Every note is a real player.",es:"Listo: {who}. Cada nota es un músico de verdad."},
+  /* AOG-BAND-FOLK-V1: a sound that is not a recording of its own instrument says how it is made */
+  readyMade:{en:"Ready. {how}",es:"Listo. {how}"},
   more:{en:"Ready to play. Adding the loud and short notes… {n} of {all}",es:"Listo para tocar. Sumando las notas fuertes y cortas… {n} de {all}"},
   loadFail:{en:"The recordings did not load. Check the internet, then pick the instrument again.",es:"No cargaron las grabaciones. Revisa el internet y vuelve a elegir el instrumento."},
   chordsH:{en:"Chords",es:"Acordes"},
@@ -104,7 +106,7 @@ const STR={
   padsSending:{en:"Making the chord pads…",es:"Haciendo los pads de acordes…"},
   padsSent:{en:"Sent. The chords are waiting on the Drum Machine.",es:"Enviado. Los acordes te esperan en la caja de ritmos."}, drumsOld:{en:"Open the Drum Machine",es:"Abrir la caja de ritmos"},
   bars:{en:"bars",es:"compases"},
-  credit:{en:"Every note is a real player. The brass, the woodwinds, the strings, the harp and the percussion come from VS Chamber Orchestra: Community Edition by Versilian Studios. The tenor and soprano saxophones come from their Versilian Community Sample Library. The alto saxophone comes from Weresax by Karoryfer Samples. The bagpipes are a Great Highland bagpipe recorded by IowaSpaceWizard (Freesound). All four are given to everyone (public domain).",es:"Cada nota es un músico de verdad. Los metales, las maderas, las cuerdas, el arpa y la percusión vienen de VS Chamber Orchestra: Community Edition de Versilian Studios. Los saxofones tenor y soprano vienen de su Versilian Community Sample Library. El saxofón alto viene de Weresax de Karoryfer Samples. La gaita es una gaita escocesa grabada por IowaSpaceWizard (Freesound). Las cuatro colecciones son regalos para todos (dominio público)."},
+  credit:{en:"Almost every note is a real player. The brass, the woodwinds, the strings, the harp and the percussion come from VS Chamber Orchestra: Community Edition by Versilian Studios. The tenor and soprano saxophones come from their Versilian Community Sample Library. The alto saxophone comes from Weresax by Karoryfer Samples. The bagpipes are a Great Highland bagpipe recorded by IowaSpaceWizard (Freesound). The harmonica (a Hohner Special 20 in C) comes from the Versilian Community Sample Library, the fiddle (a solo violin) from VS Chamber Orchestra, and the banjo (a six-string banjo) from Ganjo by itsclipping. The mandolin, the Dobro and the pedal steel are made here from the recorded guitars of the Guitar room. The melodica is made by the computer. All of them are given to everyone (public domain).",es:"Casi cada nota es un músico de verdad. Los metales, las maderas, las cuerdas, el arpa y la percusión vienen de VS Chamber Orchestra: Community Edition de Versilian Studios. Los saxofones tenor y soprano vienen de su Versilian Community Sample Library. El saxofón alto viene de Weresax de Karoryfer Samples. La gaita es una gaita escocesa grabada por IowaSpaceWizard (Freesound). La armónica (una Hohner Special 20 en Do) viene de la Versilian Community Sample Library, el violín de folk (un violín solista) de VS Chamber Orchestra, y el banjo (un banjo de seis cuerdas) de Ganjo de itsclipping. La mandolina, el dobro y la pedal steel están hechos aquí con las guitarras grabadas de la sala de la guitarra. La melódica la hace la computadora. Todas son regalos para todos (dominio público)."},
   credits:{en:"Full credits",es:"Créditos completos"},
   dark:{en:"Dark",es:"Oscuro"}, light:{en:"Light",es:"Claro"},
   /* AOG-BAND-SCALES-V1 */
@@ -214,6 +216,24 @@ const SOUNDS={
   percussion:{grp:"grpPerc", en:"Percussion section · all", es:"Sección de percusión · toda", parts:["timpani","marimba","xylophone","glockenspiel"], dbl:[["timpani","b5",0]],
     kit:["bd","sn","cy","tri","tamb","roll"], gain:1.124, rev:0.18, stand:"pluck",
     who:{en:"timpani, marimba, xylophone, glockenspiel, bass drum, snare drum, cymbal, triangle and tambourine",es:"timbales, marimba, xilófono, glockenspiel, bombo, caja, platillo, triángulo y pandereta"}},
+  /* AOG-BAND-FOLK-V1 (2026-10-13) — Jimmy: "I would like a Harmonica added to the instruments. The fiddle and banjo as
+     well." ... "DO them all". A real harmonica (VCSL), fiddle (VSCO 2 CE's solo violin) and banjo (Ganjo, a six-string
+     banjo), all CC0; a mandolin (picked, and its tremolo), a Dobro and a pedal steel made here from the Guitar room's
+     recorded guitars (CC0); a melodica made by the computer (no recording with an open licence was found). Made by
+     music-handoff/tools/band/folk.py. A sound that is not a recording of its own instrument says how it is made (made). */
+  harmonica:{grp:"grpFolk", en:"Harmonica", es:"Armónica", gain:1.382, rev:0.14, stand:"wind"},
+  fiddle:  {grp:"grpFolk", en:"Fiddle", es:"Violín de folk", gain:1.238, rev:0.17, stand:"string"},
+  banjo:   {grp:"grpFolk", en:"Banjo", es:"Banjo", gain:1.178, rev:0.12, stand:"pluck"},
+  mandolin:{grp:"grpFolk", en:"Mandolin · picked", es:"Mandolina · punteada", gain:1.468, rev:0.15, stand:"pluck",
+    made:{en:"This mandolin is made here from a recorded guitar.",es:"Esta mandolina está hecha aquí con una guitarra grabada."}},
+  mandolin_trem:{grp:"grpFolk", en:"Mandolin · tremolo", es:"Mandolina · trémolo", gain:1.428, rev:0.16, stand:"string",
+    made:{en:"This mandolin is made here from a recorded guitar.",es:"Esta mandolina está hecha aquí con una guitarra grabada."}},
+  dobro:   {grp:"grpFolk", en:"Dobro (resonator guitar)", es:"Dobro (guitarra de resonador)", gain:1.273, rev:0.16, stand:"pluck",
+    made:{en:"This Dobro is made here from a recorded guitar. Each note slides in.",es:"Este dobro está hecho aquí con una guitarra grabada. Cada nota entra deslizando."}},
+  steel:   {grp:"grpFolk", en:"Pedal steel", es:"Pedal steel (guitarra de acero)", gain:1.52, rev:0.22, stand:"string",
+    made:{en:"This pedal steel is made here from a recorded electric guitar. Each note glides in.",es:"Esta pedal steel está hecha aquí con una guitarra eléctrica grabada. Cada nota entra deslizando."}},
+  melodica:{grp:"grpFolk", en:"Melodica · made by computer", es:"Melódica · hecha por computadora", gain:1.514, rev:0.14, stand:"wind",
+    made:{en:"The computer makes this melodica. It is not a recording.",es:"La computadora hace esta melódica. No es una grabación."}},
   marching:{grp:"grpBands", en:"Marching band",    es:"Banda de marcha", parts:["tuba","trombone","sax","trumpet"], dbl:[["piccolo","top",12]], mono:true, gain:1.1, rev:0.14, stand:"brass",
     who:{en:"tuba, trombone, saxophone, trumpet and piccolo",es:"tuba, trombón, saxofón, trompeta y flautín"}},
   mariachi:{grp:"grpBands", en:"Mariachi",         es:"Mariachi",        parts:["contrabass_pizz","violins","violins","trumpet_vib"], dbl:[["trumpet_vib","mid",0],["harp","b",12]], gain:1.313, rev:0.15, stand:"brass",
@@ -248,11 +268,27 @@ const PLAYER={trumpet:0.89, trombone:1.11, horn:1.18, tuba:1.07, flute:0.93, cla
   timpani:1.299, marimba:1.881, xylophone:1.806, glockenspiel:1.692,
   tenor:1.152, tenor_vib:0.788, soprano:0.917,                     /* AOG-BAND-SAX2-V1 */
   bagpipe:0.677, bagpipe_drones:1.34,                                  /* AOG-BAND-BAGPIPES-V1 */
+  harmonica:0.878, fiddle:0.98, banjo:2.015, mandolin:1.063, mandolin_trem:0.88, dobro:1.039, steel:0.492, melodica:0.884,   /* AOG-BAND-FOLK-V1 */
   kit:5.07};  /* a bass drum stroke as loud as a player's note; the other pieces a little under it (KIT_MIX) */
 /* players whose note is struck or plucked: it rings out by itself, and a key let go lets it ring a moment longer */
 /* AOG-BAND-STEREO-STRINGS-V1: a bow lifted off the string lets it ring a moment longer than a breath stops */
-const BOWED={violins:1, violas:1, cellos:1, contrabass:1};
-const PLUCKED={violins_pizz:1, violas_pizz:1, cellos_pizz:1, contrabass_pizz:1, harp:1, timpani:1, marimba:1, xylophone:1, glockenspiel:1};
+const BOWED={violins:1, violas:1, cellos:1, contrabass:1, fiddle:1, steel:1, mandolin_trem:1};   /* AOG-BAND-FOLK-V1: the steel's and the tremolo's strings ring a moment too */
+const PLUCKED={violins_pizz:1, violas_pizz:1, cellos_pizz:1, contrabass_pizz:1, harp:1, timpani:1, marimba:1, xylophone:1, glockenspiel:1,
+  banjo:1, mandolin:1, dobro:1};
+/* AOG-BAND-FOLK-V1 — a bar on the strings: the Dobro and the pedal steel slide into each held note. A note played soon after
+   another of the same player (within 1.2 s, up to 7 semitones away) glides from that note, as a steel player's bar moves
+   between them; a note on its own, or in a chord, slides up from a semitone below (dip). t: how long the slide takes,
+   a little longer for a longer slide */
+const SLIDE={dobro:{t:0.07, dip:1}, steel:{t:0.12, dip:1}};
+const LASTNOTE=new WeakMap();   /* each context's last held note of each sliding player: {m, at} */
+function slideFor(c, inst, m, when, art){
+  const sl=SLIDE[inst]; if(!sl || art==="stac") return null;
+  let last=LASTNOTE.get(c); if(!last){ last={}; LASTNOTE.set(c, last); }
+  const was=last[inst], gap=was ? when-was.at : 99; let from=-sl.dip;
+  if(was && gap>0.03 && gap<1.2 && was.m!==m && Math.abs(was.m-m)<=7) from=was.m-m;
+  if(!(was && gap<=0.03)) last[inst]={m:m, at:when};
+  return {from:from, t:sl.t+0.012*Math.abs(from)};
+}
 /* the unpitched pieces' levels next to each other (the kit is one player: PLAYER.kit) */
 const KIT_MIX={bd:1, sn:0.74, cy:0.3, tri:0.27, tamb:0.25, roll:0.4};   /* measured: snare 1 dB under the bass drum, cymbal and roll 3, tambourine 5, triangle 6 */
 function soundName(id){ const s=SOUNDS[id]; return s? (S.lang==="es"?s.es:s.en) : id; }
@@ -355,7 +391,8 @@ const RHYTHM_WORDS={
   march:{en:"March · oom-pah",es:"Marcha · um-pa"},
   waltz:{en:"Waltz · oom-pah-pah, three beats",es:"Vals · um-pa-pa, tres tiempos"},
   fanfare:{en:"Fanfare · ta-ta-ta-taa",es:"Fanfarria · ta-ta-ta-taa"},
-  broken:{en:"Broken · one note at a time",es:"Arpegio · una nota a la vez"}
+  broken:{en:"Broken · one note at a time",es:"Arpegio · una nota a la vez"},
+  roll:{en:"Banjo roll · picked forward, eight notes a bar",es:"Roll de banjo · punteo hacia delante, ocho notas por compás"}
 };
 /* a chord's notes in the middle of the keyboard, moved as little as possible from the last chord (the piano's) */
 let lastVoicing=null;
@@ -721,10 +758,12 @@ function windVoice(c, ch, inst, m, v, when, art, swellTo, swellDur){
   const set=SETS[setKey(inst)], man=MAN[inst]; if(!set || !set.ready) return null;
   const snd=SOUNDS[S.sound], vv=Math.max(0.05, Math.min(1, v*(snd.touch||1))), srcs=[], trim=(snd.trim&&snd.trim[inst])||1;   /* touch: a style's lean to the soft or the loud recording */
   const out=gainAt(c, PLAYER[inst]*snd.gain*trim*(0.55+0.45*vv)), rel=gainAt(c, 1);
+  const glide=slideFor(c, inst, m, when, art);   /* AOG-BAND-FOLK-V1 */
   const play=(key, n, g, gTo)=>{
     const buf=set.buf[key]; if(!buf) return null;
     const s=c.createBufferSource(); s.buffer=buf;
     s.playbackRate.value=Math.pow(2, (m-n)/12 - (man.tune[key]||0)/1200);
+    if(glide){ const r=s.playbackRate.value; s.playbackRate.setValueAtTime(r*Math.pow(2, glide.from/12), when); s.playbackRate.exponentialRampToValueAtTime(r, when+glide.t); }
     const gn=gainAt(c, g);
     if(gTo!=null){ gn.gain.setValueAtTime(g, when); gn.gain.linearRampToValueAtTime(gTo, when+swellDur); }
     else if(breathAt(set, key)){ gn.gain.setValueAtTime(0, when); gn.gain.linearRampToValueAtTime(g, when+0.008); }   /* AOG-BAND-BREATH-V1 */
@@ -906,6 +945,10 @@ function barEvents(rh, n){
   if(rh==="march") return [{t:0,w:"b",d:.8,v:.85,a:"stac"},{t:1,w:"c",d:.6,v:.68,a:"stac"},{t:2,w:"f",d:.8,v:.8,a:"stac"},{t:3,w:"c",d:.6,v:.68,a:"stac"}];
   if(rh==="waltz") return [{t:0,w:"b",d:.9,v:.82,a:"stac"},{t:1,w:"c",d:.6,v:.62,a:"stac"},{t:2,w:"c",d:.6,v:.58,a:"stac"}];   /* oom-pah-pah */
   if(rh==="fanfare") return [{t:0,w:"c",d:.3,v:.82,a:"stac"},{t:1/3,w:"c",d:.3,v:.7,a:"stac"},{t:2/3,w:"c",d:.3,v:.76,a:"stac"},{t:1,w:"b",d:2.9,v:.85,a:"sus"},{t:1,w:"c",d:2.9,v:.92,a:"sus"}];
+  /* AOG-BAND-FOLK-V1: a banjo's forward roll, thumb, index, middle, round and round in eighth notes, with the 3 + 3 + 2 lilt
+     of its accents; the bass on beats one and three */
+  if(rh==="roll"){ const p=[0,1,2,0,1,2,0,2].map(k=>n>3 ? Math.round(k*(n-1)/2) : Math.min(k, Math.max(0,n-1)));
+    return [{t:0,w:"b",d:1.9,v:.74,a:"sus"},{t:2,w:"f",d:1.9,v:.7,a:"sus"}].concat(p.map((k,i)=>({t:i*0.5,w:k,d:0.9,v:(i===0||i===3||i===6) ? 0.74 : 0.6,a:"sus"}))); }
   if(rh==="broken"){ const p=(n>3?[0,1,2,3,2,1,0,1]:[0,1,2,1,0,1,2,1]).map(k=>n>4 ? Math.round(k*(n-1)/3) : k);   /* a big group's notes, low to high, spread over the four steps */
     return [{t:0,w:"b",d:3.9,v:.72,a:"sus"}].concat(p.map((k,i)=>({t:i*0.5,w:k,d:0.95,v:i%2 ? 0.6 : 0.7,a:"sus"}))); }
   return [{t:0,w:"b",d:3.9,v:.7,a:"sus"},{t:0,w:"c",d:3.9,v:.7,a:"sus"}];
@@ -920,7 +963,8 @@ const KIT_BEATS={
   march:  [["bd",0,.85],["sn",1,.7],["bd",2,.8],["sn",3,.7]],
   waltz:  [["bd",0,.8],["tri",1,.5],["tri",2,.45]],
   fanfare:[["sn",0,.62],["sn",1/3,.5],["sn",2/3,.56],["bd",1,.85],["cy",1,.6]],
-  broken: [["bd",0,.5],["tri",1,.4],["tri",3,.4]]
+  broken: [["bd",0,.5],["tri",1,.4],["tri",3,.4]],
+  roll:   [["bd",0,.6],["sn",1,.45],["bd",2,.55],["sn",3,.45]]
 };
 /* schedule bar k of the pattern on a context and chain; returns the voices it made */
 /* AOG-FEEL-V1 (2026-10-04) — Jimmy: "A lot of the How the chords are played sounds, sound like fake instruments." Every note
@@ -1171,7 +1215,7 @@ function paintFx(){
 document.addEventListener("change", e=>{ if(e.target && e.target.id==="soundSel") setTimeout(()=>{ if(FXSND!==S.sound) paintFx(); }, 0); });
 window.addEventListener("pagehide", ()=>{ if(paintFx.t){ clearTimeout(paintFx.t); saveFx(); } });
 /* the menu's groups, in this order (each group's sounds in the order of SOUNDS) */
-const GROUP_ORDER=["grpBrass","grpWinds","grpStrings","grpPerc","grpJazz","grpBands","grpAll"];
+const GROUP_ORDER=["grpBrass","grpWinds","grpStrings","grpPerc","grpFolk","grpJazz","grpBands","grpAll"];
 function paintSounds(){
   const sel=$("soundSel"), groups={}, order=[];
   Object.keys(SOUNDS).forEach(id=>{ const g=SOUNDS[id].grp||""; if(!groups[g]){ groups[g]=[]; order.push(g); } groups[g].push(id); });
@@ -1296,7 +1340,8 @@ function paintLoad(){
   const snd=SOUNDS[S.sound], keys=setsOf(S.sound), sets=keys.map(setOf), name=soundName(S.sound).split(" · ")[0].toLowerCase();
   if(sets.some(s=>s.state==="failed")){ line.textContent=t("loadFail"); return; }
   const done=sets.reduce((a,s)=>a+s.done,0), all=keys.reduce((a,k)=>a+filesOf(k).length,0), who=snd.who ? snd.who[S.lang] : "";
-  if(sets.every(s=>s.ready)){ line.textContent = done<all ? t("more",{n:done, all:all}) : who ? t("readyWho",{who:who}) : t("ready"); return; }
+  if(sets.every(s=>s.ready)){ const made=(SOUNDS[S.sound]||{}).made;
+    line.textContent = done<all ? t("more",{n:done, all:all}) : who ? t("readyWho",{who:who}) : made ? t("readyMade",{how:made[S.lang]||made.en}) : t("ready"); return; }
   /* the orchestra counts players: each plays as soon as it is ready */
   if(snd.lean){ line.textContent=t("loadingPlayers",{name:name, n:sets.filter(s=>s.ready).length, all:sets.length}); return; }
   line.textContent=t("loading",{name:name, n:done, all:all})+" "+t("stand");
