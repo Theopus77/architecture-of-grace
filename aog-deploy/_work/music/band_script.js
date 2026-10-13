@@ -236,7 +236,7 @@ const SOUNDS={
     made:{en:"The computer makes this melodica. It is not a recording.",es:"La computadora hace esta melódica. No es una grabación."}},
   marching:{grp:"grpBands", en:"Marching band",    es:"Banda de marcha", parts:["tuba","trombone","sax","trumpet"], dbl:[["piccolo","top",12]], mono:true, gain:1.1, rev:0.14, stand:"brass",
     who:{en:"tuba, trombone, saxophone, trumpet and piccolo",es:"tuba, trombón, saxofón, trompeta y flautín"}},
-  mariachi:{grp:"grpBands", en:"Mariachi",         es:"Mariachi",        parts:["contrabass_pizz","violins","violins","trumpet_vib"], dbl:[["trumpet_vib","mid",0],["harp","b",12]], gain:1.313, rev:0.15, stand:"brass",
+  mariachi:{grp:"grpBands", en:"Mariachi",         es:"Mariachi",        parts:["contrabass_pizz","violins","violins","trumpet_vib"], dbl:[["trumpet_vib","mid",0],["harp","b",12]], keys:["trumpet_vib","violins"], keysLow:"contrabass_pizz", gain:1.313, rev:0.15, stand:"brass",
     who:{en:"two trumpets, violins, harp and a plucked double bass",es:"dos trompetas, violines, arpa y un contrabajo pulsado"}},
   /* AOG-BAND-ORCH-V1 (2026-10-04) — Jimmy: "Can one of the agents make the ORCHESTRA tab, where everyone plays!" Every
      player of the band, voiced as an orchestra is: the bass line on double bass and tuba, the timpani on the root, cellos
@@ -1534,8 +1534,17 @@ function litKeys(){
 const POINTERS=new Map();
 function keyAt(x,y){ const el=document.elementFromPoint(x,y); const k=el && el.closest && el.closest("#kbd [data-m]"); return k||null; }
 function velAt(el, y){ const r=el.getBoundingClientRect(); const f=(y-r.top)/Math.max(1,r.height); return Math.max(0.15, Math.min(1, 0.3+0.7*f)); }
-function keyOn(m, v){ noteOn("k"+m, playerFor(m), m, v); lessonKey(m, v); }
-function keyOff(m){ noteOff("k"+m); lessonKeyUp(m); }
+/* AOG-BAND-KEYS-LEAD-V1 (2026-10-13) — Jimmy: "Hitting the keys in Mariachi sounds like the piano, but when you hit the chords,
+   it sounds Mexican and alive. The keys need fixing." A key in a band that names its lead (keys) plays that lead together,
+   each player in its own range (the mariachi's trumpet and violins), and below them its low player (keysLow, the
+   guitarrón's part on the plucked bass); without them, the one player nearest the note, as before. */
+function keyPlayers(m){
+  const s=SOUNDS[S.sound], inR=p=>{ const r=rangeOf(p); return m>=r[0] && m<=r[1]; };
+  if(s && s.keys){ const got=s.keys.filter(inR); if(got.length) return got; if(s.keysLow && inR(s.keysLow)) return [s.keysLow]; }
+  const p=playerFor(m); return p ? [p] : [];
+}
+function keyOn(m, v){ const ps=keyPlayers(m), vv=ps.length>1 ? v*0.8 : v; if(!ps.length) noteOn("k"+m, null, m, v); ps.forEach((p, i)=>noteOn(i ? "k"+m+"~"+i : "k"+m, p, m, vv)); lessonKey(m, v); }
+function keyOff(m){ noteOff("k"+m); for(let i=1;i<4;i++) noteOff("k"+m+"~"+i); lessonKeyUp(m); }
 function bindKeyboard(){
   const kb=$("kbd");
   /* a held finger is a long press to an iPad, and a long press brings up the magnifier: the keys and the pads keep the touch (AOG-PIANO-NO-LOUPE-V1) */
