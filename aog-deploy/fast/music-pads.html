@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- AOG-FAST-BUILD-V1 source:8993e9f1d08459f1 · MADE BY tools/build-fast.py from music-pads.html: edit music-pads.html, then run it. -->
+<!-- AOG-FAST-BUILD-V1 source:51ed7eeea4a8a983 · MADE BY tools/build-fast.py from music-pads.html: edit music-pads.html, then run it. -->
 <html lang="en">
 <head>
 <script>/* AOG-STUDIO-ONLY-V1 (Jimmy, 2026-10-10: "one location for all the instruments … and that is the studio"): opened on its own address, this room opens inside the Studio instead, at this exact address (its lesson, take or link). Inside the Studio's frame, and for the site's own checks, it stays. */(function(){try{if(window.top!==window||navigator.webdriver)return;var M={"music-pads":"pads","drum-machine":"pads","beat-lab":"pads","music-kit":"kit","drum-kit":"kit","music-piano":"piano","piano":"piano","keys":"piano","music-guitar":"guitar","guitar":"guitar","music-bass":"bass","bass":"bass","music-band":"band","band":"band","music-decks":"decks","decks":"decks","turntables":"decks","music-studio":"studio","studio":"studio","mixing-desk":"studio"},f=(location.pathname.split("/").pop()||"").replace(/\.html$/,""),r=M[f];if(!r)return;var F={pads:"music-pads",kit:"music-kit",piano:"music-piano",guitar:"music-guitar",bass:"music-bass",band:"music-band",decks:"music-decks",studio:"music-studio"};location.replace("/the-studio.html?at="+encodeURIComponent("/"+F[r]+".html"+location.search+location.hash)+"#"+r);}catch(e){}})();</script>
@@ -123,6 +123,10 @@ details.pm-set[open]>summary::before{content:"▾"}
 .pad.hit{background:#ffd36b;color:#1f1206}
 .pad.hit .pk,.pad.hit .pi{color:#3a2a0a}
 .pads.waiting .pad{opacity:.6}
+/* AOG-PADS-CLASSROOM-V1: a boomwhacker's pad is its tube's colour, its note and the colour's name in the ink that reads on it */
+#pads .pad.tube:not(.hit){background-color:var(--tube);background-image:linear-gradient(rgba(255,255,255,.16),rgba(0,0,0,.1));color:var(--tink)}
+#pads .pad.tube:not(.hit) .pi,#pads .pad.tube:not(.hit) .pk,#pads .pad.tube:not(.hit) .pc{color:var(--tink)}
+.pad .pc{font:700 clamp(10px,2.6vw,13px)/1.1 var(--sans)}
 /* AOG-PADS-BIG-V1 (2026-10-11) — the 24 pads on the whole screen */
 .pm-bigrow{display:flex;justify-content:flex-end;margin:0 0 8px}
 #padView{display:none}
@@ -325,6 +329,6 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
   </div>
   <div class="pv-grids" id="pvGrid"></div>
 </div>
-<script src="/front/fd32d7a4e011.js"></script>
+<script src="/front/efe7b8c35b93.js"></script>
 </body>
 </html>
