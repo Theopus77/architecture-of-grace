@@ -21,7 +21,7 @@ const NEW=["trumpet_vib","trumpet_harmon","trumpet_straight","trombone_vib","hor
   await p.goto("http://localhost:9987/music-band.html"); await p.waitForTimeout(800); await p.addScriptTag({content:MEASURE});
   /* the menu */
   const menu=await p.evaluate(()=>({groups:[...document.querySelectorAll("#soundSel optgroup")].map(g=>g.label).join("|"), last:[...document.querySelectorAll("#soundSel optgroup")].pop().textContent, plate:document.querySelector(".plate small").textContent}));
-  ok(menu.groups==="Brass|Woodwinds|Strings|Percussion|Folk and country|Jazz|Bands|Everyone" && menu.last==="Orchestra · everyone plays" && menu.plate==="BRASS · WOODWINDS · STRINGS · PERCUSSION", "the menu's groups, the orchestra alone under Everyone, the plate: "+JSON.stringify(menu));
+  ok(menu.groups==="Brass|Woodwinds|Strings|Percussion|Folk and country|Voices|Jazz|Bands|Everyone" && menu.last==="Orchestra · everyone plays" && menu.plate==="BRASS · WOODWINDS · STRINGS · PERCUSSION", "the menu's groups, the orchestra alone under Everyone, the plate: "+JSON.stringify(menu));
   /* 1. the orchestra: picked, it loads two players at a time, the line counting players; each plays when it is ready */
   await p.selectOption("#soundSel","orchestra");
   const lines=new Set(); let early=null;

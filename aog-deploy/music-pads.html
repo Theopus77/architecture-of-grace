@@ -516,6 +516,13 @@ Object.assign(INST, {
   "b:ukulele":{g:"band",en:"Ukulele",es:"Ukelele",d:"/audio/band/ukulele/",x:"s",n:[59,60,61,62,63,64,65,66,67,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84],c:{"59":14,"60":9,"61":18,"62":8,"63":9,"65":3,"66":3,"67":3,"69":3,"71":14,"72":11,"73":9,"74":11,"75":4,"76":6,"81":9,"82":4,"83":4,"84":7},ring:1},
   "b:boomwhackers":{g:"band",en:"Boomwhackers (tuned tubes)",es:"Boomwhackers (tubos sonoros)",d:"/audio/band/boomwhackers/",x:"s",n:[36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88],ring:1,tubes:1}
 });
+/* AOG-BAND-VOICES-V1 (2026-10-13): the Band's four solo singers (VocalSet, CC BY 4.0) join the Choir in Voices. */
+Object.assign(INST, {
+  "b:voice_f_aa":{g:"voices",en:"Voice · “aah”, a woman",es:"Voz · “aa”, una mujer",d:"/audio/band/voice_f_aa/",x:"s",n:[57,60,63,66,69,72,75,78,81],c:{"57":-3,"60":-3,"63":-3,"66":-3,"69":-10,"72":-10,"75":11,"78":11,"81":11}},
+  "b:voice_f_uu":{g:"voices",en:"Voice · “ooh”, a woman",es:"Voz · “uu”, una mujer",d:"/audio/band/voice_f_uu/",x:"s",n:[57,60,63,66,69,72,75,78,81],c:{"57":-4,"60":-4,"63":-4,"66":-4,"69":-5,"72":-5,"75":11,"78":11,"81":11}},
+  "b:voice_m_aa":{g:"voices",en:"Voice · “aah”, a man",es:"Voz · “aa”, un hombre",d:"/audio/band/voice_m_aa/",x:"s",n:[45,48,51,54,57,60,63,66],c:{"51":-3,"63":-5,"66":-5}},
+  "b:voice_m_uu":{g:"voices",en:"Voice · “ooh”, a man",es:"Voz · “uu”, un hombre",d:"/audio/band/voice_m_uu/",x:"s",n:[45,48,51,54,57,60,63,66],c:{"57":-4,"60":-4}}
+});
 /* the standard Boomwhackers colours of the C major scale (C red, D orange, E yellow, F light green, G dark green, A purple,
    B pink): [tube, ink, short word en, es, full word en, es]. The ink is the one that reads on it (4.5:1 or more). The
    sharps and flats are left plain: their tubes' colours could not be checked. */
@@ -854,6 +861,7 @@ const LEVEL={"inst":{"k:grand":6.9,"k:upright":4.9,"k:epwarm":6.8,"k:epreed":4.6
 /* AOG-PADS-CLASSROOM-V1: the classroom instruments' trims, from pads/level.js --table (the tubes as loud as their sharp
    attack allows without crackling) */
 Object.assign(LEVEL.inst, {"b:recorder":1.8, "b:recorder_alto":5.4, "b:ukulele":9.4, "b:boomwhackers":10.1});
+Object.assign(LEVEL.inst, {"b:voice_f_aa":5.3, "b:voice_f_uu":3.3, "b:voice_m_aa":5.5, "b:voice_m_uu":2.2});   /* AOG-BAND-VOICES-V1: pads/level.js --table */
 function trimOf(grp, k){ const v=LEVEL[grp] && LEVEL[grp][k]; return v ? Math.pow(10, v/20) : 1; }
 /* where a pad sounds: the speakers, or (AOG-PADS-BOUNCE-V1) an offline render of the loop; each keeps its own ringing
    open hats and chops, so a hi-hat or a new chop cuts them in the render just as it does live */
