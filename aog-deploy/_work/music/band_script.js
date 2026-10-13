@@ -291,6 +291,26 @@ function slideFor(c, inst, m, when, art){
 }
 /* the unpitched pieces' levels next to each other (the kit is one player: PLAYER.kit) */
 const KIT_MIX={bd:1, sn:0.74, cy:0.3, tri:0.27, tamb:0.25, roll:0.4};   /* measured: snare 1 dB under the bass drum, cymbal and roll 3, tambourine 5, triangle 6 */
+/* AOG-BAND-CLASSROOM-V1 (2026-10-13) — Jimmy: "DO them all": the instruments learners play in school music class. The
+   recorders are real (VCSL, Versilian Studios, CC0): a Baroque soprano recorder and an alto. No free recording of a
+   ukulele or of boomwhackers could be found, so those two are made (made: the ready line says so): the ukulele from the
+   real nylon strings of FreePats' classical guitar (CC0), shaped like a ukulele's small body; each boomwhacker tube by
+   synthesis, one file per half step, C2 to E6. A ukulele chord is strummed (strum: seconds between its strings, low to
+   high). Made by music-handoff/tools/band/classroom.py; levels from bandt/level.js. Their own entries, kept apart. */
+Object.assign(SOUNDS, {
+  recorder:     {grp:"grpWinds", en:"Recorder", es:"Flauta dulce", gain:1.292, rev:0.16, stand:"wind"},
+  recorder_alto:{grp:"grpWinds", en:"Recorder · alto", es:"Flauta dulce · contralto", gain:1.284, rev:0.16, stand:"wind"},
+  ukulele:      {grp:"grpStrings", en:"Ukulele", es:"Ukelele", gain:1.297, rev:0.12, stand:"pluck", strum:0.014, made:"madeUke"},
+  boomwhackers: {grp:"grpPerc", en:"Boomwhackers (tuned tubes)", es:"Boomwhackers (tubos sonoros)", gain:1.29, rev:0.12, stand:"pluck", made:"madeTubes"}
+});
+Object.assign(PLAYER, {recorder:0.882, recorder_alto:0.904, ukulele:1.241, boomwhackers:1.487});
+Object.assign(PLUCKED, {ukulele:1, boomwhackers:1});
+Object.assign(STR, {
+  creditClass:{en:"The recorders come from the Versilian Community Sample Library too. No free recording of a ukulele or of boomwhackers could be found, so we made those two: the ukulele from the real nylon strings of the FreePats classical guitar (public domain), and the boomwhackers by synthesis.",
+    es:"Las flautas dulces también vienen de la Versilian Community Sample Library. No encontramos una grabación libre de un ukelele ni de boomwhackers, así que hicimos esos dos: el ukelele con las cuerdas de nailon de verdad de la guitarra clásica de FreePats (dominio público), y los boomwhackers por síntesis."},
+  madeUke:{en:"Ready. This ukulele is made here from real nylon guitar strings.",es:"Listo. Este ukelele está hecho aquí con cuerdas de nailon de guitarra de verdad."},
+  madeTubes:{en:"Ready. Each tube's sound is made here, not recorded.",es:"Listo. El sonido de cada tubo está hecho aquí, no grabado."}
+});
 function soundName(id){ const s=SOUNDS[id]; return s? (S.lang==="es"?s.es:s.en) : id; }
 /* the parts of a sound, as written (one player can take two parts) */
 function lineup(id){ return (SOUNDS[id]&&SOUNDS[id].parts) || [id]; }
@@ -877,9 +897,9 @@ function track(vc, when){
   }
 }
 function prune(){ const now=ac?ac.currentTime:0; for(let i=ALL.length-1;i>=0;i--){ const v=ALL[i]; if((v.end&&v.end<now)||(v.natural&&v.natural<now)) ALL.splice(i,1); } }
-function noteOn(key, inst, m, v){
+function noteOn(key, inst, m, v, at){
   if(!inst) return;
-  const c=ctx(), now=c.currentTime;
+  const c=ctx(), now=at!=null ? Math.max(c.currentTime, at) : c.currentTime;
   const old=LIVE.get(key); if(old){ old.stop(now, 0.05); LIVE.delete(key); }
   const vc=makeVoice(c, LIVE_CH, inst, m, v, now, "sus");
   if(!vc) return;
@@ -917,7 +937,8 @@ const padHeld={};
 function holdChord(tag, c, v){
   const vo=voicing(c, lastVoicing); lastVoicing=vo;
   const keys=[];
-  chordParts(c, vo).filter(p=>!p.dup).forEach(p=>{ const key=tag+":"+p.inst+":"+p.m; noteOn(key, p.inst, p.m, (v||0.74)*(p.bass?0.85:1)); keys.push(key); });
+  const sp=(SOUNDS[S.sound]||{}).strum||0, t0=sp ? ctx().currentTime : 0;   /* AOG-BAND-CLASSROOM-V1: a strummed chord */
+  chordParts(c, vo).filter(p=>!p.dup).forEach((p,i)=>{ const key=tag+":"+p.inst+":"+p.m; noteOn(key, p.inst, p.m, (v||0.74)*(p.bass?0.85:1), sp ? t0+i*sp : null); keys.push(key); });
   return keys;
 }
 function padDown(i, v){
@@ -990,11 +1011,11 @@ function scheduleBar(c, ch, k, t0, barSec, swing, prevRef){
     else if(ev.w==="f") who=bass.filter(p=>!p.fifth).map(p=>{ const x=fitIn(p.m+7, p.inst); return x!=null ? {inst:p.inst, m:(x-12>=rangeOf(p.inst)[0]?x-12:x)} : p; });
     else if(ev.w==="c") who=upper;
     else who=upper.length ? [upper[Math.min(ev.w, upper.length-1)]] : [];
-    who.forEach(p=>{
+    who.forEach((p,wi)=>{
       const id=p.inst+":"+p.m+"@"+Math.round((t0+ev.t*beat+late)*1000); if(started[id]) return; started[id]=1;   /* never the same note twice at once (on the grid, before the feel) */
       /* AOG-FEEL-V1: each player a little early or late, a little softer or louder, as players in a band are */
       let hsh=0; for(let q=0;q<p.inst.length;q++) hsh=(hsh*31+p.inst.charCodeAt(q))|0;
-      const pr=feel(k, ei*53+(hsh&1023)+p.m), w2=Math.max(t0, when+0.006*pr());
+      const pr=feel(k, ei*53+(hsh&1023)+p.m), w2=Math.max(t0, when+0.006*pr()+(snd.strum && ev.w==="c" ? wi*snd.strum : 0));   /* AOG-BAND-CLASSROOM-V1: strummed */
       const vc=makeVoice(c, ch, p.inst, p.m, Math.min(1, ev.v*(p.bass?0.9:1)*(1+0.06*pr())), w2, ev.a, ev.to, ev.to!=null?dur:0);
       if(vc) keep(vc, p, w2, dur-(w2-when));
     });
@@ -1195,7 +1216,7 @@ function paintText(){
   $("sendBtn").textContent=t("send"); $("sendPadsBtn").textContent=t("sendPadsBtn"); $("padsBtn").textContent=t("padsBtn"); $("toPadsLab").textContent=t("toPadsLab"); $("sendPadsBtn").setAttribute("aria-label", t("sendPadsAria")); $("padsBtn").setAttribute("aria-label", t("padsAria")); REC.paint();
   $("era").setAttribute("aria-label", t("eraAria"));
   $("nav").innerHTML=navHtml();
-  $("foot").innerHTML=`<p>${t("credit")} <a href="/audio/band/CREDITS.txt">${t("credits")}</a></p>`;
+  $("foot").innerHTML=`<p>${t("credit")} ${t("creditClass")} <a href="/audio/band/CREDITS.txt">${t("credits")}</a></p>`;
   paintSounds(); paintKeySel(); paintProgSel(); paintRhythm(); paintMood(); paintPads(); paintProg(); paintPlay(); paintTempo();
   paintDial(); paintLoad(); paintDrums(); paintScaleUI(); paintAny(); buildKeys(); bpText(); LES.paint();
   paintFx();   /* AOG-ROOM-PEDALS-V1 */
@@ -1340,8 +1361,8 @@ function paintLoad(){
   const snd=SOUNDS[S.sound], keys=setsOf(S.sound), sets=keys.map(setOf), name=soundName(S.sound).split(" · ")[0].toLowerCase();
   if(sets.some(s=>s.state==="failed")){ line.textContent=t("loadFail"); return; }
   const done=sets.reduce((a,s)=>a+s.done,0), all=keys.reduce((a,k)=>a+filesOf(k).length,0), who=snd.who ? snd.who[S.lang] : "";
-  if(sets.every(s=>s.ready)){ const made=(SOUNDS[S.sound]||{}).made;
-    line.textContent = done<all ? t("more",{n:done, all:all}) : who ? t("readyWho",{who:who}) : made ? t("readyMade",{how:made[S.lang]||made.en}) : t("ready"); return; }
+  if(sets.every(s=>s.ready)){ const made=snd.made;   /* folk: made {en,es}; classroom: made a word key */
+    line.textContent = done<all ? t("more",{n:done, all:all}) : who ? t("readyWho",{who:who}) : made ? (typeof made==="string" ? t(made) : t("readyMade",{how:made[S.lang]||made.en})) : t("ready"); return; }
   /* the orchestra counts players: each plays as soon as it is ready */
   if(snd.lean){ line.textContent=t("loadingPlayers",{name:name, n:sets.filter(s=>s.ready).length, all:sets.length}); return; }
   line.textContent=t("loading",{name:name, n:done, all:all})+" "+t("stand");

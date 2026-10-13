@@ -72,7 +72,7 @@ window.__bright=function(d,SR){ let e=0, s=0; for(let i=1;i<d.length;i++){ e+=d[
   ok(["tenor_vib","tenor_modal","soprano_fusion"].every(id=>jz.indexOf(id)>=0), "Jazz has the three new styles: "+jz.join(" "));
   ok(names.join("|")==="Soprano saxophone|Tenor saxophone|Tenor sax · ballad, warm with vibrato|Tenor sax · modal jazz, big and strong|Soprano sax · jazz fusion, light and airy"
     && !/Coltrane|Shorter|Brett/.test(await p.evaluate(()=>document.body.innerText)), "named by style and instrument, never by a player: "+names.join(" | "));
-  ok(await p.evaluate(()=>Object.keys(SOUNDS).length)===61, "The Band has 61 sounds (51, the bagpipes' two, then the eight of Folk and country): "+await p.evaluate(()=>Object.keys(SOUNDS).length));
+  ok(await p.evaluate(()=>Object.keys(SOUNDS).length)===65, "The Band has 65 sounds (51, the bagpipes' two, the eight of Folk and country, the classroom's four): "+await p.evaluate(()=>Object.keys(SOUNDS).length));
 
   /* 2. loaded only when picked */
   ok(sax().length===0, "the page opens on the trumpet and fetches no saxophone: "+sax().slice(0,3).join(", "));
