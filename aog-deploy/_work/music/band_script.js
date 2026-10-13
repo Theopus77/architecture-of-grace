@@ -311,6 +311,23 @@ Object.assign(STR, {
   madeUke:{en:"Ready. This ukulele is made here from real nylon guitar strings.",es:"Listo. Este ukelele está hecho aquí con cuerdas de nailon de guitarra de verdad."},
   madeTubes:{en:"Ready. Each tube's sound is made here, not recorded.",es:"Listo. El sonido de cada tubo está hecho aquí, no grabado."}
 });
+/* AOG-BAND-VOICES-V1 (2026-10-13) — Jimmy: "GO AHEAD WITH THE VOICES." Two solo singers from VocalSet (CC BY 4.0): a woman
+   (singer f8, a mezzo-soprano) and a man (singer m6, a baritone), each on "aah" and "ooh", in their own group, Voices. Made
+   by music-handoff/tools/band/world.py on the paused claude/world branch (only the singers came over). Each loads only when
+   picked. A singer's breath lets go gently, as a bow does (BOWED). Levels from bandt/level.js. */
+Object.assign(SOUNDS, {
+  voice_f_aa:{grp:"grpVoices", en:"Voice · “aah”, a woman", es:"Voz · “aa”, una mujer", gain:1.438, rev:0.2, stand:"string"},
+  voice_f_uu:{grp:"grpVoices", en:"Voice · “ooh”, a woman", es:"Voz · “uu”, una mujer", gain:1.268, rev:0.2, stand:"string"},
+  voice_m_aa:{grp:"grpVoices", en:"Voice · “aah”, a man", es:"Voz · “aa”, un hombre", gain:1.164, rev:0.2, stand:"string"},
+  voice_m_uu:{grp:"grpVoices", en:"Voice · “ooh”, a man", es:"Voz · “uu”, un hombre", gain:1.243, rev:0.2, stand:"string"}
+});
+Object.assign(PLAYER, {voice_f_aa:1.011, voice_f_uu:1.173, voice_m_aa:1.078, voice_m_uu:0.993});
+Object.assign(BOWED, {voice_f_aa:1, voice_f_uu:1, voice_m_aa:1, voice_m_uu:1});
+Object.assign(STR, {
+  grpVoices:{en:"Voices",es:"Voces"},
+  creditVoices:{en:"The singers come from VocalSet by Julia Wilkins, Prem Seetharaman, Alison Wahl and Bryan Pardo (CC BY 4.0). We cut, tuned and moved their notes.",
+    es:"Las voces vienen de VocalSet de Julia Wilkins, Prem Seetharaman, Alison Wahl y Bryan Pardo (CC BY 4.0). Cortamos, afinamos y movimos sus notas."}
+});
 function soundName(id){ const s=SOUNDS[id]; return s? (S.lang==="es"?s.es:s.en) : id; }
 /* the parts of a sound, as written (one player can take two parts) */
 function lineup(id){ return (SOUNDS[id]&&SOUNDS[id].parts) || [id]; }
@@ -1230,7 +1247,7 @@ function paintText(){
   $("sendBtn").textContent=t("send"); $("sendPadsBtn").textContent=t("sendPadsBtn"); $("padsBtn").textContent=t("padsBtn"); $("toPadsLab").textContent=t("toPadsLab"); $("sendPadsBtn").setAttribute("aria-label", t("sendPadsAria")); $("padsBtn").setAttribute("aria-label", t("padsAria")); REC.paint();
   $("era").setAttribute("aria-label", t("eraAria"));
   $("nav").innerHTML=navHtml();
-  $("foot").innerHTML=`<p>${t("credit")} ${t("creditClass")} <a href="/audio/band/CREDITS.txt">${t("credits")}</a></p>`;
+  $("foot").innerHTML=`<p>${t("credit")} ${t("creditClass")} ${t("creditVoices")} <a href="/audio/band/CREDITS.txt">${t("credits")}</a></p>`;
   paintSounds(); paintKeySel(); paintProgSel(); paintRhythm(); paintMood(); paintPads(); paintProg(); paintPlay(); paintTempo();
   paintDial(); paintLoad(); paintDrums(); paintScaleUI(); paintAny(); buildKeys(); bpText(); LES.paint();
   paintFx();   /* AOG-ROOM-PEDALS-V1 */
@@ -1250,7 +1267,7 @@ function paintFx(){
 document.addEventListener("change", e=>{ if(e.target && e.target.id==="soundSel") setTimeout(()=>{ if(FXSND!==S.sound) paintFx(); }, 0); });
 window.addEventListener("pagehide", ()=>{ if(paintFx.t){ clearTimeout(paintFx.t); saveFx(); } });
 /* the menu's groups, in this order (each group's sounds in the order of SOUNDS) */
-const GROUP_ORDER=["grpBrass","grpWinds","grpStrings","grpPerc","grpFolk","grpJazz","grpBands","grpAll"];
+const GROUP_ORDER=["grpBrass","grpWinds","grpStrings","grpPerc","grpFolk","grpVoices","grpJazz","grpBands","grpAll"];
 function paintSounds(){
   const sel=$("soundSel"), groups={}, order=[];
   Object.keys(SOUNDS).forEach(id=>{ const g=SOUNDS[id].grp||""; if(!groups[g]){ groups[g]=[]; order.push(g); } groups[g].push(id); });
