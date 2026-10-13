@@ -84,7 +84,8 @@ function ratio(a,b){ const x=lum(a), y=lum(b); return (Math.max(x,y)+0.05)/(Math
     reqs.splice(0); await p.selectOption("#soundSel", id);
     await p.waitForFunction(id=>soundReady(id) && setsOf(id).every(k=>SETS[k].done===SETS[k].total), id, {timeout:60000}).catch(()=>{});
     await p.waitForTimeout(200);
-    const got=new Set(reqs.filter(u=>/\.mp3$/.test(u))), want=man[id].sus.length+man[id].stac.length, own=[...got].every(u=>u.indexOf(id+"/")===0);
+    /* its own files; the only others are the trumpet's last ones still arriving, never another classroom instrument's */
+    const all=reqs.filter(u=>/\.mp3$/.test(u)), got=new Set(all.filter(u=>u.indexOf(id+"/")===0)), want=man[id].sus.length+man[id].stac.length, own=all.every(u=>u.indexOf(id+"/")===0 || /^trumpet/.test(u));
     const sets=await p.evaluate(()=>Object.keys(SETS).sort().join(","));
     lines[id]=await p.textContent("#loadLine");
     ok(got.size===want && own && sets===id, `${id}, picked: fetches its own ${want} files and nothing else (${got.size}; sets ${sets})`);

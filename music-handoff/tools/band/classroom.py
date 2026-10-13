@@ -168,3 +168,10 @@ for inst in INSTS:
     d=os.path.join(BAND,inst); size=sum(os.path.getsize(os.path.join(d,f)) for f in os.listdir(d))
     print("%-14s %2d held/plucked %2d short, %d corrected, left within %.1f cents, %d KB, level shift %.1f dB"%(inst,len(e["sus"]),len(e["stac"]),len(e["tune"]),worst,size//1024,shift[inst]))
 with open(os.path.join(BAND,"manifest.json"),"w") as fh: json.dump(man, fh, separators=(",",":"))
+# AOG-GUITAR-UKE-V1: the Guitar room plays the same ukulele notes; its set.json (the guitar sets' format) lives beside them
+u=man["ukulele"]
+uke_set={"id":"ukulele","instrument":"guitar","name":{"en":"Ukulele","es":"Ukelele"},
+  "source":"Made from Spanish Classical Guitar by Roberto (FreePats), its nylon strings shaped like a ukulele (no free ukulele recording was found)",
+  "url":"https://github.com/freepats/spanish-classical-guitar","license":"CC0-1.0","made":True,"tuning":[67,60,64,69],"vel":[0],"noise":[],"maxShift":3,
+  "zones":[{"f":"%ds.mp3"%n,"m":n,"c":u["tune"].get("%ds"%n,0),"s":None,"v":1,"r":1,"k":"sus","g":1.0} for n in u["sus"]]}
+with open(os.path.join(BAND,"ukulele","set.json"),"w") as fh: json.dump(uke_set, fh, separators=(",",":"))
