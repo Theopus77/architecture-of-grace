@@ -11,7 +11,7 @@ const STR={
   low:{en:"Low",es:"Grave"}, mid:{en:"Middle",es:"Medio"}, high:{en:"High",es:"Agudo"},
   record:{en:"Record to chop",es:"Disco para cortar"}, fromBar:{en:"Start at",es:"Empieza en"}, clen:{en:"Each pad plays",es:"Cada pad suena"}, clen1:{en:"1 beat",es:"1 tiempo"}, clen2:{en:"2 beats",es:"2 tiempos"}, clen4:{en:"1 bar",es:"1 compás"}, about:{en:"about {s} s",es:"unos {s} s"}, barN:{en:"Bar {n}",es:"Compás {n}"}, whole:{en:"The whole take",es:"Toda la toma"},
   matchT:{en:"Use its tempo",es:"Usar su tempo"},
-  g_keys:{en:"Keys",es:"Teclados"}, g_guitar:{en:"Guitar",es:"Guitarra"}, g_bass:{en:"Bass",es:"Bajo"}, g_band:{en:"The band",es:"La banda"},
+  g_keys:{en:"Keys",es:"Teclados"}, g_guitar:{en:"Guitar",es:"Guitarra"}, g_bass:{en:"Bass",es:"Bajo"}, g_band:{en:"The band",es:"La banda"}, g_voices:{en:"Voices",es:"Voces"},
   g_crate:{en:"Records from the turntables",es:"Discos de los tocadiscos"}, g_inbox:{en:"Your takes at the Mixing Desk",es:"Tus tomas en la mesa de mezclas"},
   major:{en:"Major",es:"Mayor"}, minor:{en:"Minor",es:"Menor"}, pmaj:{en:"Major pentatonic",es:"Pentatónica mayor"}, pmin:{en:"Minor pentatonic",es:"Pentatónica menor"},
   blues:{en:"Blues",es:"Blues"}, dorian:{en:"Dorian",es:"Dórica"}, chrom:{en:"Every note",es:"Todas las notas"},
@@ -116,7 +116,7 @@ const INST={
   "k:steel":{g:"keys",en:"Steel drums",es:"Tambores de acero",d:"/audio/piano/steel/",x:"m",L:"sml",n:[25,28,31,34,37,40,43,46,49,52,55,58,61,64,67,70,73,76,79,82,85,88,91,94,97]},
   "k:harp":{g:"keys",en:"Harp",es:"Arpa",d:"/audio/piano/harp2/",x:"m",n:[28,35,38,41,45,48,52,55,59,62,65,69,72,76,79,83,86,89,93,98,101]},
   "k:strings":{g:"keys",en:"Soft strings",es:"Cuerdas suaves",d:"/audio/piano/strings2/",x:"m",n:[36,40,43,47,50,53,57,59,62,65,69,72,76,79,83,86]},
-  "k:choir":{g:"keys",en:"Choir",es:"Coro",d:"/audio/piano/choir/",x:"m",n:[24,27,30,33,36,39,42,45,48,51,54,57,60,63,66,69,72,75,78,81,84,87,90,93,96]},
+  "k:choir":{g:"voices",en:"Choir",es:"Coro",d:"/audio/piano/choir/",x:"m",n:[24,27,30,33,36,39,42,45,48,51,54,57,60,63,66,69,72,75,78,81,84,87,90,93,96]},
   "k:flute":{g:"keys",en:"Flute",es:"Flauta",d:"/audio/piano/flute2/",x:"m",n:[60,64,69,72,76,81,84,88,93,96]},
   "k:strsynth":{g:"keys",en:"'70s string synth",es:"Sintetizador de cuerdas de los 70",d:"/audio/piano/synthstr/",x:"m",n:[24,27,30,33,36,39,42,45,48,51,54,57,60,63,66,69,72,75,78,81,84,87,90,93,96]},
   "k:pad":{g:"keys",en:"Warm synth",es:"Sintetizador cálido",d:"/audio/piano/synthpad/",x:"m",n:[24,27,30,33,36,39,42,45,48,51,54,57,60,63,66,69,72,75,78,81,84,87,90,93,96]},
@@ -147,7 +147,7 @@ const INST={
   /* AOG-PADS-FOLK-V1 (2026-10-13): the Band's folk and country players, tuned (cents) as audio/band/manifest.json tunes them */
   "b:harmonica":{g:"band",en:"Harmonica",es:"Armónica",d:"/audio/band/harmonica/",x:"s",n:[60,64,67,72,76,79,84,88,91,96],c:{"79":-3}},
   "b:fiddle":{g:"band",en:"Fiddle",es:"Violín de folk",d:"/audio/band/fiddle/",x:"s",n:[55,57,60,64,67,69,72,76,79,81,84,88],c:{"55":-3,"57":4,"60":22,"64":5,"67":-3,"76":6,"84":-6,"88":5}},
-  "b:banjo":{g:"band",en:"Banjo",es:"Banjo",d:"/audio/band/banjo/",x:"s",n:[39,40,41,42,43,44,45,46,47,49,50,51,52,53,54,55,56,57,58,59,60,61,63,67,68,70,71],c:{"39":33,"40":42,"41":49,"42":49,"43":42,"44":41,"45":56,"46":43,"47":48,"49":43,"50":52,"51":49,"52":44,"53":45,"54":45,"55":57,"56":55,"57":14,"58":28,"59":40,"60":42,"61":42,"63":18,"67":10,"68":26,"70":47}},
+  /* AOG-BANJO-GS-V1: G#3 plays from G3 a half step up */"b:banjo":{g:"band",en:"Banjo",es:"Banjo",d:"/audio/band/banjo/",x:"s",n:[39,40,41,42,43,44,45,46,47,49,50,51,52,53,54,55,57,58,59,60,61,63,67,68,70,71],c:{"39":33,"40":42,"41":49,"42":49,"43":42,"44":41,"45":56,"46":43,"47":48,"49":43,"50":52,"51":49,"52":44,"53":45,"54":45,"55":57,"57":14,"58":28,"59":40,"60":42,"61":42,"63":18,"67":10,"68":26,"70":47}},
   "b:mandolin":{g:"band",en:"Mandolin · picked",es:"Mandolina · punteada",d:"/audio/band/mandolin/",x:"s",n:[55,58,61,64,67,70,73,76,79,82,85,88],c:{"58":-7,"61":-4,"64":-5,"67":-8,"70":-8,"73":-9,"76":-11,"79":-9,"82":-11,"85":-12,"88":-12}},
   "b:mandolin_trem":{g:"band",en:"Mandolin · tremolo",es:"Mandolina · trémolo",d:"/audio/band/mandolin_trem/",x:"s",n:[55,58,61,64,67,70,73,76,79,82,85,88],c:{"55":-4,"58":-6,"61":-3,"70":-8,"73":-7,"76":-9,"79":-8,"82":-9,"85":-8,"88":-10}},
   "b:dobro":{g:"band",en:"Dobro (resonator guitar)",es:"Dobro (guitarra de resonador)",d:"/audio/band/dobro/",x:"s",n:[43,46,49,52,55,58,61,64,68,71,74,77,80,83,86],c:{"43":-4,"49":-5,"55":-4,"58":-10,"61":-9,"64":-10,"68":-11,"71":-12,"74":-14,"77":-12,"80":-13,"83":-15,"86":-15}},
@@ -1005,7 +1005,7 @@ function opt(v, label, cur){ return `<option value="${v}"${String(v)===String(cu
 function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;"); }
 function bankLabel(i){ const B=S.banks[i]; return "ABCD"[i]+" · "+t("t_"+B.type); }
 function instOptions(cur){
-  return ["keys","guitar","bass","band"].map(g=>`<optgroup label="${esc(t("g_"+g))}">`+Object.keys(INST).filter(k=>INST[k].g===g).map(k=>opt(k, esc(L(INST[k])), cur)).join("")+`</optgroup>`).join("");
+  return ["keys","guitar","bass","band","voices"].map(g=>`<optgroup label="${esc(t("g_"+g))}">`+Object.keys(INST).filter(k=>INST[k].g===g).map(k=>opt(k, esc(L(INST[k])), cur)).join("")+`</optgroup>`).join("");
 }
 function field(id, lab, html, wide){ return `<label class="pm-f${wide?" wide":""}"><span>${esc(lab)}</span><select class="pm-sel" id="${id}">${html}</select></label>`; }
 function paintSetRow(){
