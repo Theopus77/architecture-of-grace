@@ -12,7 +12,12 @@
      .wav(part) → Blob (16-bit stereo .wav, straight from the kept samples)
      .keep(id, parts) · .kept(id, input) → Parts|null · .has(id) → meta|null · .drop(id)   (IndexedDB "aog-stems")
      .words.en / .words.es · .word(key, lang) · .names.en / .names.es (Drums, Bass, Voice, The rest)
+     .clean(input, {quick, kind, signal, onProgress, noX}) → Promise<Parts quality:"model", model:"scnet">: Best quality,
+         a trained model on the device, after the quick split (AOG-STEMS-AI-V1, below); .rekind(modelParts, quickParts)
+     .quality() → "quick"|"best" · .setQuality(q) · .canBest()   (Split quality, kept on this device)
 
+   Since then (AOG-STEMS-AI-V1, the same day): SCNet does run here, at Best quality (below); this listening split is
+   the Quick one, and it still comes first. The first notes, kept for the record:
    How (decided by evidence, 2026-10-12): an on-device model was the first choice, but none could be used here. The
    only weights that could be downloaded (the npm "demucs" package: Hybrid Transformer Demucs v4) are 174 MB, three times
    the 60 MB budget, need about 3 GB at their peak and run at 0.7× real time even on a 14-core desktop's browser
@@ -41,13 +46,21 @@ var WORDS = {
         memory: "This song is too long to split on this device. Try a shorter song.",
         noVoice: "No voice found in this piece.", guitars: "Loud guitars can leave a little of the voice in The rest.",
         hard: "This music is hard to split. Much of it stays in The rest.", classical: "No drum kit here. Drums keeps only real hits, like timpani.",
-        backing: "Some ad-libs and backing voices may stay in The rest.", kindLab: "Kind of music", again: "Split again" },
+        backing: "Some ad-libs and backing voices may stay in The rest.", kindLab: "Kind of music", again: "Split again",
+        clean: "Making the parts cleaner… %n%", cleanDone: "The parts are cleaner now.", cleanKept: "This device kept the quick split.",
+        cleanStopped: "Stopped. The quick parts stay.", cleanGo: "Make the parts cleaner", qLab: "Split quality", qQuick: "Quick", qBest: "Best (slower)",
+        cleanWorse: "The quick parts sounded better here, so they stay.", hearLab: "Hear:", hearQuick: "Quick parts", hearClean: "Clean parts",
+        growl: "A screamed or growled voice can stay in The rest.", unusual: "Unusual sounds can land in another part." },
   es: { open: "Abriendo la canción…", listen: "Escuchando la canción…", split: "Separando la canción…", done: "La canción está en cuatro partes.",
         stopped: "Detenido. La canción quedó como estaba.", failed: "La canción no se separó. Prueba una canción más corta, o cierra otras apps e inténtalo otra vez.",
         memory: "Esta canción es muy larga para separarla en este aparato. Prueba una canción más corta.",
         noVoice: "No se encontró voz en esta pieza.", guitars: "Las guitarras fuertes pueden dejar un poco de la voz en El resto.",
         hard: "Esta música es difícil de separar. Mucho se queda en El resto.", classical: "Aquí no hay batería. Batería guarda solo golpes, como los timbales.",
-        backing: "Algunas voces de fondo pueden quedarse en El resto.", kindLab: "Tipo de música", again: "Separar otra vez" }
+        backing: "Algunas voces de fondo pueden quedarse en El resto.", kindLab: "Tipo de música", again: "Separar otra vez",
+        clean: "Limpiando las partes… %n %", cleanDone: "Las partes ya están más limpias.", cleanKept: "Este aparato se quedó con la separación rápida.",
+        cleanStopped: "Detenido. Se quedan las partes rápidas.", cleanGo: "Limpiar las partes", qLab: "Calidad", qQuick: "Rápida", qBest: "La mejor (más lenta)",
+        cleanWorse: "Aquí las partes rápidas sonaban mejor, así que se quedan.", hearLab: "Oír:", hearQuick: "Partes rápidas", hearClean: "Partes limpias",
+        growl: "Una voz gritada o gutural puede quedarse en El resto.", unusual: "Los sonidos poco comunes pueden caer en otra parte." }
 };
 var KINDW = { en: { auto: "Auto", pop: "Pop", hiphop: "Hip hop and rap", rock: "Rock and metal", classical: "Classical", experimental: "Experimental" },
   es: { auto: "Automático", pop: "Pop", hiphop: "Hip hop y rap", rock: "Rock y metal", classical: "Clásica", experimental: "Experimental" } };
@@ -530,10 +543,13 @@ function learnURL() { if (!scriptURL) return ""; try { return new URL("aog-learn
 
 /* ── the parts, read from the kept 16-bit samples ── */
 var S = 1 / 32767;
+/* a part's samples for one channel: the listening split keeps bass and voice in the middle (one Int16Array for both
+   channels), the model keeps every part in stereo ([left, right]); drums are always a list ([one] or [left, right]) */
+function pc(a, ch) { return a && a.length != null && !(a instanceof Int16Array) ? a[Math.min(ch, a.length - 1)] : a; }
 function partArr(pack, which, ch) {
-  if (which === "drums") return pack.d[Math.min(ch, pack.d.length - 1)];
-  if (which === "bass") return pack.b;
-  if (which === "voice") return pack.v;
+  if (which === "drums") return pc(pack.d, ch);
+  if (which === "bass") return pc(pack.b, ch);
+  if (which === "voice") return pc(pack.v, ch);
   return null;
 }
 function partObj(pack, which) {
@@ -543,7 +559,7 @@ function partObj(pack, which) {
       ch = Math.max(0, Math.min(nch - 1, ch | 0)); if (cache[ch]) return cache[ch];
       var n = pack.len, out = new Float32Array(n), a = partArr(pack, which, ch), i;
       if (a) for (i = 0; i < n; i++) out[i] = a[i] * S;
-      else { var x = pack.x[Math.min(ch, pack.x.length - 1)], d = pack.d[Math.min(ch, pack.d.length - 1)], b = pack.b, v = pack.v;
+      else { var x = pack.x[Math.min(ch, pack.x.length - 1)], d = pc(pack.d, ch), b = pc(pack.b, ch), v = pc(pack.v, ch);
         for (i = 0; i < n; i++) out[i] = (x[i] - d[i] - b[i] - v[i]) * S; }
       cache[ch] = out; return out; },
     free: function () { cache = []; } };
@@ -551,12 +567,18 @@ function partObj(pack, which) {
 /* the one plain line said after a split, where a part is hard */
 function noteOf(pack) {
   var st = pack.stats || {};
+  if (pack.quality === "model") {   /* AOG-STEMS-AI-V1: what is still hard for the model */
+    if (pack.kind === "rock") return "growl";
+    if (st.voice != null && st.voice < 0.003) return "noVoice";
+    return pack.kind === "classical" ? "classical" : pack.kind === "experimental" ? "unusual" : "";
+  }
   if (st.voice != null && st.voice < 0.01) return "noVoice";
   return pack.kind === "rock" ? "guitars" : pack.kind === "experimental" ? "hard" : pack.kind === "classical" ? "classical" : "backing";
 }
 function fromPack(pack) {
   var o = { sr: pack.sr, sampleRate: pack.sr, length: pack.len, numberOfChannels: pack.nch, quality: pack.quality || "listen", pack: pack,
     kind: pack.kind || "pop", auto: pack.auto !== false, stats: pack.stats || null, note: noteOf(pack) };
+  if (pack.model) o.model = pack.model;
   PARTS.forEach(function (k) { o[k] = partObj(pack, k); });
   o.free = function () { PARTS.forEach(function (k) { o[k].free(); }); };
   return o;
@@ -573,7 +595,7 @@ function mixInto(parts, g, out, signal) {
       while (i0 < n) {
         var i1 = Math.min(n, i0 + 65536);
         for (var ch = 0; ch < out.length; ch++) {
-          var y = out[ch], x = P.x[Math.min(ch, P.x.length - 1)], d = P.d[Math.min(ch, P.d.length - 1)], b = P.b, v = P.v;
+          var y = out[ch], x = P.x[Math.min(ch, P.x.length - 1)], d = pc(P.d, ch), b = pc(P.b, ch), v = pc(P.v, ch);
           for (var i = i0; i < i1; i++) y[i] = cx * x[i] + cd * d[i] + cb * b[i] + cv * v[i];
         }
         i0 = i1;
@@ -618,7 +640,11 @@ function tx(stores, mode, fn) {
 function has(id) { return tx(["meta"], "readonly", function (t) { return t.objectStore("meta").get(id); }).catch(function () { return null; }); }
 function keep(id, parts) {
   var P = parts.pack || parts, meta = { id: id, at: Date.now(), sr: P.sr, len: P.len, nch: P.nch, quality: P.quality || "listen", kind: P.kind || "pop", auto: P.auto !== false, stats: P.stats || null };
-  return tx(["meta", "data"], "readwrite", function (t) { t.objectStore("meta").put(meta); t.objectStore("data").put({ id: id, d: P.d, b: P.b, v: P.v }); return null; })
+  if (P.model) meta.model = P.model;
+  var rec = { id: id, d: P.d, b: P.b, v: P.v }; if (P.md) { rec.md = P.md; rec.mb = P.mb; }
+  /* AOG-STEMS-COMPARE-V1: the quick parts are kept beside the model's, so Hear: Quick parts · Clean parts can swap them */
+  if (P.qd && P.qb && P.qv) { rec.qd = P.qd; rec.qb = P.qb; rec.qv = P.qv; meta.hasQuick = true; meta.qkind = P.qkind || "pop"; }
+  return tx(["meta", "data"], "readwrite", function (t) { t.objectStore("meta").put(meta); t.objectStore("data").put(rec); return null; })
     .then(function () { return tx(["meta"], "readonly", function (t) { return t.objectStore("meta").getAll(); }); })
     .then(function (all) { var old = (all || []).sort(function (a, b) { return (b.at || 0) - (a.at || 0); }).slice(MAXK);
       if (old.length) return tx(["meta", "data"], "readwrite", function (t) { old.forEach(function (m) { t.objectStore("meta").delete(m.id); t.objectStore("data").delete(m.id); }); return null; }); })
@@ -642,28 +668,351 @@ function kept(id, input) {
       var d = r[0], buf = r[1];
       if (!d || !buf || buf.sampleRate !== m.sr || buf.length !== m.len || Math.min(2, buf.numberOfChannels) !== m.nch) return null;
       tx(["meta"], "readwrite", function (t) { m.at = Date.now(); t.objectStore("meta").put(m); return null; }).catch(function () {});
-      return toX16(buf).then(function (x) { return fromPack({ sr: m.sr, len: m.len, nch: m.nch, quality: m.quality, kind: m.kind, auto: m.auto, stats: m.stats, x: x, d: d.d, b: d.b, v: d.v }); });
+      return toX16(buf).then(function (x) { return fromPack({ sr: m.sr, len: m.len, nch: m.nch, quality: m.quality, model: m.model, kind: m.kind, auto: m.auto, stats: m.stats, x: x, d: d.d, b: d.b, v: d.v, md: d.md, mb: d.mb }); });
     });
   }).catch(function () { return null; });
 }
 
 /* only the three parts (for a player that already has the song itself, as the Turntables do), if they fit it */
-function keptParts(id, want) {
+function keptParts(id, want, which) {
   return has(id).then(function (m) {
     if (!m || (want && ((want.sr && m.sr !== want.sr) || (want.len && m.len !== want.len)))) return null;
     return tx(["data"], "readonly", function (t) { return t.objectStore("data").get(id); }).then(function (d) {
       if (!d || !d.d || !d.b || !d.v) return null;
       tx(["meta"], "readwrite", function (t) { m.at = Date.now(); t.objectStore("meta").put(m); return null; }).catch(function () {});
-      return { sr: m.sr, len: m.len, nch: m.nch, quality: m.quality, kind: m.kind || "pop", auto: m.auto !== false, stats: m.stats || null, note: noteOf(m), d: d.d, b: d.b, v: d.v };
+      var hq = !!(d.qd && d.qb && d.qv);
+      /* AOG-STEMS-COMPARE-V1: which "quick": the quick parts kept beside the model's (for Hear: Quick parts) */
+      if (which === "quick" && hq) { var q = { sr: m.sr, len: m.len, nch: m.nch, quality: "listen", kind: m.qkind || m.kind || "pop", auto: m.auto !== false, stats: null, d: d.qd, b: d.qb, v: d.qv, hasQuick: true, cmpQuick: true }; q.note = noteOf(q); return q; }
+      return { sr: m.sr, len: m.len, nch: m.nch, quality: m.quality, model: m.model, kind: m.kind || "pop", auto: m.auto !== false, stats: m.stats || null, note: noteOf(m), d: d.d, b: d.b, v: d.v, md: d.md, mb: d.mb, hasQuick: hq };
     });
   }).catch(function () { return null; });
 }
 
+/* ══ AOG-STEMS-AI-V1 (2026-10-12) — Best quality: a trained model, on the device ══════════════════════════════════════
+   Jimmy: "It needs to be improved. Quantum this meaning it needs a big leap in its abilities."
+   The quick split above arrives first (seconds), so the parts work at once. Then, at Best, clean() runs SCNet (a trained
+   separation model, MIT; aog-stems-ai.js, a Worker, loaded only now) over the song in 11 s segments that overlap by 1.1 s
+   and fade into each other, and the parts it makes replace the quick ones. Everything it needs is on this site: the
+   model in models/stems/scnet-v1 (11.9 MB), onnxruntime-web in vendor/onnxruntime-web-1.30.0 (WebGPU where the device
+   has it, else WebAssembly). "The rest" is still the song less the other three, so the four add back exactly.
+     · the kind of music still counts: Classical keeps the quick split's Drums and Bass (only real hits, like timpani, are
+       Drums; the model, which learned pop and rock, hears timpani and low strings as bass) and takes the model's Voice;
+       the model's own drums and bass are kept beside them (md, mb), so choosing another kind needs no new run (rekind);
+     · while the page is out of sight (hidden, or the Studio's hush) no new segment starts; it goes on when you are back;
+     · WebGPU that fails falls back to WebAssembly; a device that cannot run it at all keeps the quick split, and says so.
+   Split quality (Quick · Best (slower)) is kept on this device ("aog.stems.quality.v1"). Best is the default where the
+   device can carry it: WebGPU, or at least 4 GB of memory, or (memory unknown) an iPad or a computer, not a phone. ══ */
+var QKEY = "aog.stems.quality.v1";
+var AI = { noGPU: false, failInit: "", failSeg: 0, last: null, segPause: 0, fakeGPU: "", selftestAll: false, selftest: null, gpuWhy: "" };   /* for the tests */
+function canBest() {
+  var n = G.navigator || {};
+  if (n.gpu && !AI.noGPU) return true;
+  if (typeof n.deviceMemory === "number") return n.deviceMemory >= 4;
+  return !/iPhone|iPod|Android.+Mobile|Mobile.+Firefox|Windows Phone/i.test(n.userAgent || "");
+}
+function quality() { try { var q = G.localStorage.getItem(QKEY); if (q === "quick" || q === "best") return q; } catch (e) {} return canBest() ? "best" : "quick"; }
+function setQuality(q) { try { G.localStorage.setItem(QKEY, q === "best" ? "best" : "quick"); } catch (e) {} }
+function aiURL(f) { try { return new URL(f, scriptURL || G.location.href).href; } catch (e) { return "/" + f; } }
+function later(ms) { return new Promise(function (ok) { setTimeout(ok, ms || 0); }); }
+/* work over n samples, about 10 ms at a time */
+function sliced(n, fn) {
+  var i = 0;
+  return new Promise(function (ok) { (function step() { var until = Date.now() + 10;
+    while (i < n) { var i1 = Math.min(n, i + 32768); fn(i, i1); i = i1; if (Date.now() > until) { setTimeout(step, 0); return; } }
+    ok(); })(); });
+}
+/* ══ AOG-STEMS-RESAMPLE-V1 (2026-10-12) — the song to the model's 44.1 kHz and back, cleanly ══════════════════════════
+   Jimmy, on his iPad: "It sounds nasty!" An iPad plays at 48 kHz, so the Turntables' record is 48 kHz and the model
+   hears 44.1 kHz. The change of rate was made by an OfflineAudioContext, whose buffer player only draws straight lines
+   between samples: on a real song the round trip 48 → 44.1 → 48 kHz kept the sound only 29 dB clean (hiss and fold-back
+   in the highs of every part, and that error landed in The rest). This is a proper band-limited resampler instead
+   (a Kaiser-windowed sinc, 56 zero crossings, β 8.6: flat to 20 kHz, 88 dB down from 22.05 kHz, one exact filter per
+   phase of the rate's ratio): on two real songs the same round trip now keeps 80 to 98 dB, with no delay. In slices of ~10 ms. */
+function bessel0(x) { var s = 1, t = 1, k = 1; for (;;) { t *= (x / (2 * k)) * (x / (2 * k)); s += t; if (t < 1e-12 * s) return s; k++; } }
+function gcd(a, b) { while (b) { var t = a % b; a = b; b = t; } return a; }
+function rsJob(X, from, to, outLen) {
+  from = Math.round(from); to = Math.round(to);
+  var ZC = 56, BETA = 8.6, ROLL = 0.94;
+  var n = X[0].length, m = outLen || Math.round(n * to / from), g = gcd(from, to), up = to / g, dn = from / g;
+  var fc = 0.5 * Math.min(1, to / from) * ROLL, half = ZC / (2 * fc), W = Math.ceil(half), taps = 2 * W + 1, i0b = bessel0(BETA);
+  var bank = up <= 4096 ? new Float32Array(up * taps) : null, one = bank ? null : new Float32Array(taps);
+  function kern(dst, o, frac) {   /* the weights of x[i0 - W + k] for the output at i0 + frac */
+    var s = 0, k;
+    for (k = 0; k < taps; k++) { var t = k - W - frac, v = 0;
+      if (Math.abs(t) < half) { var u = t / half, w = bessel0(BETA * Math.sqrt(Math.max(0, 1 - u * u))) / i0b, z = 2 * fc * t; v = 2 * fc * (z === 0 ? 1 : Math.sin(Math.PI * z) / (Math.PI * z)) * w; }
+      dst[o + k] = v; s += v; }
+    for (k = 0; k < taps; k++) dst[o + k] /= s;   /* every phase passes a steady level exactly */
+  }
+  if (bank) for (var p = 0; p < up; p++) kern(bank, p * taps, p / up);
+  var Y = X.map(function () { return new Float32Array(m); }), j = 0;
+  return {
+    run: function (ms) {
+      var until = Date.now() + ms;
+      while (j < m) {
+        for (var j1 = Math.min(m, j + 2048); j < j1; j++) {
+          var num = j * dn, i0 = Math.floor(num / up), ph = num - i0 * up, h = bank, o = ph * taps;
+          if (!bank) { kern(one, 0, ph / up); h = one; o = 0; }
+          var a = i0 - W, k0 = a < 0 ? -a : 0, k1 = Math.min(taps, n - a);
+          if (X.length === 2) { var xa = X[0], xb = X[1], s0 = 0, s1 = 0; for (var k = k0; k < k1; k++) { var hk = h[o + k]; s0 += xa[a + k] * hk; s1 += xb[a + k] * hk; } Y[0][j] = s0; Y[1][j] = s1; }
+          else for (var c = 0; c < X.length; c++) { var x = X[c], acc = 0; for (k = k0; k < k1; k++) acc += x[a + k] * h[o + k]; Y[c][j] = acc; }
+        }
+        if (Date.now() > until) return false;
+      }
+      return true;
+    },
+    out: function () { return Y; }
+  };
+}
+/* the channels X (Float32Arrays) from one rate to another, len samples (in slices, so the page never waits long) */
+function resample(X, from, to, len, signal) {
+  if (Math.round(from) === Math.round(to) && (!len || len === X[0].length)) return Promise.resolve(X);
+  var job = rsJob(X, from, to, len);
+  return new Promise(function (ok, no) { (function step() {
+    if (signal && signal.aborted) { no(abortErr()); return; }
+    if (job.run(10)) ok(job.out()); else setTimeout(step, 0); })(); });
+}
+/* the song as the model hears it: 44.1 kHz, its first two channels (an AudioBuffer-like object) */
+async function to44(buf, signal) {
+  if (buf.sampleRate === SR0) return buf;
+  var nc = Math.min(2, buf.numberOfChannels), X = [];
+  for (var c = 0; c < nc; c++) X.push(buf.getChannelData(c));
+  var Y = await resample(X, buf.sampleRate, SR0, 0, signal);
+  return { sampleRate: SR0, length: Y[0].length, numberOfChannels: nc, duration: Y[0].length / SR0, getChannelData: function (c) { return Y[Math.min(c, nc - 1)]; } };
+}
+/* the model's Worker: one at a time, started on the first segment, let go at the end */
+function aiWorker(ep, onLoad, signal) {
+  return new Promise(function (ok, no) {
+    var w, cur = null, ready = false, done = false;
+    try { w = new Worker(aiURL("aog-stems-ai.js"), { type: "module" }); } catch (e) { no(e); return; }
+    var hello = setTimeout(function () { if (!ready) fail(new Error("no worker")); }, 20000);
+    if (signal) { if (signal.aborted) { setTimeout(function () { fail(abortErr()); }, 0); } else signal.addEventListener("abort", function () { if (!ready) fail(abortErr()); }); }
+    function fail(e) { if (done) return; done = true; clearTimeout(hello); try { w.terminate(); } catch (x) {} if (!ready) no(e); else if (cur) { var c = cur; cur = null; c.no(e); } }
+    var api = { ep: ep,
+      run: function (id, L, R, tick) { return new Promise(function (ok2, no2) { if (done) { no2(new Error("ended")); return; } cur = { id: id, ok: ok2, no: no2, tick: tick }; w.postMessage({ type: "seg", id: id, L: L, R: R }, [L.buffer, R.buffer]); }); },
+      end: function () { done = true; clearTimeout(hello); try { w.terminate(); } catch (e) {} if (cur) { var c = cur; cur = null; c.no(abortErr()); } } };
+    w.onmessage = function (e) { var d = e.data || {};
+      if (d.type === "hello") { clearTimeout(hello); w.postMessage({ type: "init", ep: AI.failInit === ep ? "fail" : ep, selftest: !!AI.selftestAll, fake: ep === "webgpu" ? AI.fakeGPU || "" : "" }); }
+      else if (d.type === "load") { if (onLoad) onLoad(d.k / d.of); }
+      else if (d.type === "ready") { ready = true; if (d.self) AI.selftest = d.self; ok(api); }
+      else if (d.type === "tick") { if (cur && cur.id === d.id && cur.tick) cur.tick(d.k); }
+      else if (d.type === "seg") { if (cur && cur.id === d.id) { var c = cur; cur = null; c.ok(d); } }
+      else if (d.type === "error") { var er = new Error(d.message || "model"); er.memory = !!d.memory; er.why = d.why || d.message || ""; er.self = d.self || null; if (!ready) { fail(er); } else if (cur) { var c2 = cur; cur = null; c2.no(er); } } };
+    w.onerror = function (e) { if (e && e.preventDefault) e.preventDefault(); var er = new Error("worker failed"); er.memory = ready; fail(er); };
+  });
+}
+/* out of sight (a hidden page, or the Studio's hush): no new segment starts until it is back */
+var hushOn = false;
+if (G.addEventListener && !IS_WORKER) G.addEventListener("aog-hush", function (e) { hushOn = !!(e && e.detail && e.detail.on); });
+function away() { return hushOn || !!(G.document && G.document.hidden); }
+function whenHere(signal) {
+  if (!away()) return Promise.resolve();
+  return new Promise(function (ok) { var t = null;
+    function chk() { if (!away() || (signal && signal.aborted)) { G.removeEventListener("aog-hush", on2); G.document.removeEventListener("visibilitychange", chk); ok(); } }
+    function on2() { setTimeout(chk, 0); }
+    G.addEventListener("aog-hush", on2); G.document.addEventListener("visibilitychange", chk);
+    if (signal) signal.addEventListener("abort", chk); });
+}
+/* AOG-STEMS-GPU-CHECK-V1: why this device's GPU was not used, said only in the console (the learner just gets the parts) */
+function gpuNote(e) {
+  AI.gpuWhy = (e && (e.why || e.message)) || "?"; if (e && e.self) AI.selftest = e.self;
+  try { if (G.console && console.info) console.info("aog-stems: the GPU was not used (" + AI.gpuWhy + "); the parts are made with WebAssembly."); } catch (x) {}
+}
+/* SCNet over the song (44.1 kHz): the parts as 16-bit samples, d, b, v each [left, right] ([one] for a one-channel song) */
+async function runModel(buf, say, signal) {
+  var n = buf.length, two = buf.numberOfChannels > 1, A = buf.getChannelData(0), B = two ? buf.getChannelData(1) : A, i;
+  var chk = function () { if (signal && signal.aborted) throw abortErr(); };
+  /* the song's mean and deviation (of its middle), as the model was trained to hear it */
+  var mean = 0, sq = 0;
+  await sliced(n, function (a, b) { for (var j = a; j < b; j++) mean += 0.5 * (A[j] + B[j]); }); mean /= n;
+  await sliced(n, function (a, b) { for (var j = a; j < b; j++) { var m = 0.5 * (A[j] + B[j]) - mean; sq += m * m; } });
+  var std = Math.sqrt(sq / Math.max(1, n - 1)) + 1e-8, inv = 1 / std; chk();
+  var man = await (await fetch(aiURL("models/stems/scnet-v1/manifest.json"))).json(); chk();
+  var L = man.segment, fade = Math.floor(L / 10), hop = L - fade, border = fade, wide = n > 2 * border, M = wide ? n + 2 * border : n, starts = [];
+  for (var s0 = 0; ; s0 += hop) { starts.push(s0); if (s0 + L >= M) break; }
+  var K = starts.length, nc = two ? 2 : 1, OUT = [0, 1, 2].map(function () { var o = []; for (var c = 0; c < nc; c++) o.push(new Int16Array(n)); return o; });
+  var tail = null, t0 = Date.now();
+  var refl = function (j, len) { var p = 2 * (len - 1); if (p <= 0) return 0; j = ((j % p) + p) % p; return j < len ? j : p - j; };
+  /* the song at padded place j (reflected out by `border` at each end) */
+  var at = function (X, j) { var q = wide ? j - border : j; if (q < 0) q = -q; else if (q >= n) q = 2 * (n - 1) - q; if (q < 0 || q >= n) q = 0; return (X[q] - mean) * inv; };
+  var ep = "wasm", W = null, tries = 0;
+  /* WebGPU only where the device really gives an adapter (a browser can have navigator.gpu and no GPU to give) */
+  if (G.navigator && G.navigator.gpu && !AI.noGPU) { try { if (await G.navigator.gpu.requestAdapter()) ep = "webgpu"; } catch (e) {} }
+  var start = async function () {
+    for (;;) {
+      try { W = await aiWorker(ep, function (f) { say(0.02 * f); }, signal); AI.ep = ep; return; }
+      catch (e) { if (e && e.name === "AbortError") throw e;
+        if (ep === "webgpu") { gpuNote(e); ep = "wasm"; continue; }
+        var er = new Error("kept quick"); er.kept = true; er.memory = !!(e && e.memory); throw er; }
+    }
+  };
+  var abortW = function () { if (W) W.end(); };
+  if (signal) signal.addEventListener("abort", abortW);
+  try {
+    await start(); chk();
+    for (var k = 0; k < K; k++) {
+      await whenHere(signal); chk();
+      if (AI.segPause) await later(AI.segPause);
+      var s = starts[k], len = Math.min(L, M - s), reflect = len > L / 2, SL = new Float32Array(L), SR = new Float32Array(L);
+      for (i = 0; i < L; i++) { var j = i < len ? s + i : reflect ? s + refl(i, len) : -1; if (j >= 0) { SL[i] = at(A, j); SR[i] = two ? at(B, j) : SL[i]; } }
+      var res;
+      for (;;) {
+        try {
+          if (AI.failSeg && k === AI.failSeg - 1) { AI.failSeg = 0; throw Object.assign(new Error("test"), { memory: true }); }
+          res = await W.run(k, SL.slice(), SR.slice(), function (t) { say(0.02 + 0.96 * (k + t / 10) / K); });
+          break;
+        } catch (e) {
+          chk();
+          if (ep === "webgpu" && tries++ < 1) { gpuNote(e); W.end(); ep = "wasm"; await start(); continue; }
+          var er2 = new Error("kept quick"); er2.kept = true; er2.memory = !!(e && e.memory); throw er2;
+        }
+      }
+      /* into the parts: the first `fade` samples fade in over the last segment's tail; the last `fade` wait for the next */
+      var a0 = k > 0 ? Math.min(fade, len) : 0, a1 = k < K - 1 ? L - fade : len, P3 = [res.d, res.b, res.v], ntail = k < K - 1 ? [] : null, sc = std * 32767;
+      var off = s - (wide ? border : 0), q0 = Math.max(0, -off), q1 = Math.min(a1, n - off);   /* the segment's places that are in the song */
+      for (var pi = 0; pi < 3; pi++) {
+        var Y = P3[pi], O = OUT[pi], yl = Y[0], yr = Y[1], tl = tail && tail[pi], O0 = O[0], O1 = nc === 2 ? O[1] : null, ws = 1 / (fade - 1), vl, vr;
+        for (i = q0; i < q1; i++) {
+          if (i < a0) { var wq = i * ws; vl = tl[0][i] * (1 - wq) + yl[i] * wq; vr = tl[1][i] * (1 - wq) + yr[i] * wq; } else { vl = yl[i]; vr = yr[i]; }
+          if (O1) { O0[off + i] = q16s(vl * sc); O1[off + i] = q16s(vr * sc); } else O0[off + i] = q16s(0.5 * (vl + vr) * sc);
+        }
+        if (ntail) ntail.push([yl.slice(L - fade), yr.slice(L - fade)]);
+        await later(0);   /* a part at a time, so the page never waits long */
+      }
+      tail = ntail;
+    }
+    var segMs = Date.now() - t0;
+    AI.last = { ep: ep, segments: K, ms: segMs, sec: n / buf.sampleRate };
+    return { d: OUT[0], b: OUT[1], v: OUT[2], ep: ep, ms: segMs };
+  } finally {
+    if (signal) signal.removeEventListener("abort", abortW);
+    if (W) W.end();
+  }
+}
+function q16s(v) { v = Math.round(v); return v > 32767 ? 32767 : v < -32768 ? -32768 : v; }
+/* parts made at 44.1 kHz, back to the song's own rate and length (AOG-STEMS-RESAMPLE-V1: band-limited, no delay) */
+async function backTo(out, buf, signal) {
+  if (buf.sampleRate === SR0) return out;
+  var n44 = out.d[0].length, res = {};
+  for (var key of ["d", "b", "v"]) {
+    var P = out[key], nc = P.length, X = [];
+    for (var c = 0; c < nc; c++) { var src = P[c], f = new Float32Array(n44); for (var i = 0; i < n44; i++) f[i] = src[i] * S; X.push(f); }
+    out[key] = null;
+    var Y = await resample(X, SR0, buf.sampleRate, buf.length, signal), o = [];
+    for (c = 0; c < nc; c++) { var y = Y[c], q = new Int16Array(buf.length); for (i = 0; i < q.length; i++) q[i] = q16s(y[i] * 32767); o.push(q); }
+    res[key] = o;
+  }
+  res.ep = out.ep; res.ms = out.ms;
+  return res;
+}
+/* each part's share of the song (every third sample) */
+async function shares(pk, e0) {
+  var nch = pk.nch || 1, n = pk.len, E = { d: 0, b: 0, v: 0 };
+  for (var key of ["d", "b", "v"]) { for (var c = 0; c < nch; c++) { var a = pc(pk[key], c), sum = 0; await sliced(n, function (i0, i1) { for (var i = i0 - (i0 % 3); i < i1; i += 3) { var z = a[i] * S; sum += z * z; } }); E[key] += sum; } }
+  var tot = e0 > 0 ? e0 : 1;
+  return { drums: E.d / tot, bass: E.b / tot, voice: E.v / tot, e: e0 };
+}
+async function songEnergy(buf) {
+  var e = 0, nch = Math.min(2, buf.numberOfChannels);
+  for (var c = 0; c < nch; c++) { var a = buf.getChannelData(c); await sliced(a.length, function (i0, i1) { for (var i = i0 - (i0 % 3); i < i1; i += 3) e += a[i] * a[i]; }); }
+  return e;
+}
+/* ══ AOG-STEMS-CHECK-V1 (2026-10-12) — is the model's split sound? ═══════════════════════════════════════════════════
+   Three plain checks on every third sample, for the model's parts and (when there) the quick ones, each with The rest
+   (the song less the three):
+     · excess: all four parts' energy over the song's. Parts that are really apart add up to about the song (≈ 1);
+       parts that fight each other (a broken answer) add up to far more;
+     · leak: the largest likeness (correlation) between two parts that both hold sound;
+     · clip: the share of samples at full scale.
+   The model's split is "worse" (and the quick parts stay, said plainly) when it clips (over 0.1 % and three times the
+   quick split), or its excess is over 1.8 and 1.3 times the quick one's, or its leak is over 0.6 and 0.25 above the quick
+   one's. A good model split passes easily: on real songs its excess is about 1.0 and its leak under 0.3. */
+async function partsCheck(pk, buf, qp) {
+  var nch = Math.min(2, buf.numberOfChannels), n = buf.length;
+  async function one(D, B, V) {
+    var e0 = 0, e1 = 0, e2 = 0, e3 = 0, x01 = 0, x02 = 0, x03 = 0, x12 = 0, x13 = 0, x23 = 0, ex = 0, clip = 0, tot = 0;
+    for (var c = 0; c < nch; c++) {
+      var x = buf.getChannelData(c), d = pc(D, c), b = pc(B, c), v = pc(V, c);
+      await sliced(n, function (i0, i1) {
+        for (var i = i0 - (i0 % 3); i < i1; i += 3) {
+          var di = d[i], bi = b[i], vi = v[i], q0 = di * S, q1 = bi * S, q2 = vi * S, xx = x[i], q3 = xx - q0 - q1 - q2; ex += xx * xx; tot++;
+          if (di >= 32767 || di <= -32767 || bi >= 32767 || bi <= -32767 || vi >= 32767 || vi <= -32767) clip++;
+          e0 += q0 * q0; e1 += q1 * q1; e2 += q2 * q2; e3 += q3 * q3;
+          x01 += q0 * q1; x02 += q0 * q2; x03 += q0 * q3; x12 += q1 * q2; x13 += q1 * q3; x23 += q2 * q3;
+        }
+      });
+    }
+    var E = [e0, e1, e2, e3], X = [[0, x01, x02, x03], [0, 0, x12, x13], [0, 0, 0, x23]], leak = 0, floor = 1e-4 * ex;
+    for (var a = 0; a < 3; a++) for (var z = a + 1; z < 4; z++) if (E[a] > floor && E[z] > floor) leak = Math.max(leak, Math.abs(X[a][z]) / Math.sqrt(E[a] * E[z]));
+    var r3 = function (v) { return Math.round(v * 1000) / 1000; };
+    return { excess: r3(ex > 0 ? (E[0] + E[1] + E[2] + E[3]) / ex : 1), leak: r3(leak), clip: tot ? clip / tot : 0 };
+  }
+  var m = await one(pk.d, pk.b, pk.v), q = qp && qp.d && qp.b && qp.v && pc(qp.d, 0) && pc(qp.d, 0).length === n ? await one(qp.d, qp.b, qp.v) : null;
+  var qx = q || { excess: 1, leak: 0, clip: 0 };
+  var worse = (m.clip > 0.001 && m.clip > 3 * qx.clip) || (m.excess > 1.8 && m.excess > 1.3 * qx.excess) || (m.leak > 0.6 && m.leak > qx.leak + 0.25);
+  return { m: m, q: q, worse: !!worse };
+}
+/* the kind of music, on the model's parts: Classical keeps the quick split's Drums and Bass (see above) */
+function kindParts(pk, qp) {
+  var md = pk.md || pk.d, mb = pk.mb || pk.b;
+  pk.kind = qp.kind || "pop"; pk.auto = qp.auto !== false;
+  if (pk.kind === "classical" && qp.d && qp.b) { pk.md = md; pk.mb = mb; pk.d = qp.d; pk.b = qp.b; }
+  else { pk.d = md; pk.b = mb; delete pk.md; delete pk.mb; }
+  return pk;
+}
+/* clean(input, {quick, kind, signal, onProgress(p, "clean"), noX}) → Promise<Parts quality:"model">.
+   quick: the quick split's Parts (or a function giving them, when its samples have been moved elsewhere): its kind of
+   music, and for Classical its Drums and Bass. A failure that is not a Stop comes with .kept = true: keep the quick split. */
+async function clean(input, opts) {
+  opts = opts || {};
+  var signal = opts.signal || null, last = -1, t0 = Date.now();
+  var say = function (p) { var r = Math.round(p * 100); if (r === last) return; last = r; if (opts.onProgress) try { opts.onProgress(Math.max(0, Math.min(1, p)), "clean"); } catch (e) {} };
+  say(0);
+  var buf = await decode(input);
+  if (signal && signal.aborted) throw abortErr();
+  if (buf.duration > MAX_SEC) throw Object.assign(new Error("too long"), { memory: true, kept: true });
+  var b44 = await to44(buf, signal);
+  var out = await runModel(b44, say, signal);
+  b44 = null;
+  out = await backTo(out, buf, signal);
+  var q = typeof opts.quick === "function" ? await opts.quick() : opts.quick, qp = q ? (q.pack || q) : {};
+  if (opts.kind && PROF[opts.kind]) qp = { kind: opts.kind, auto: false, d: qp.kind === opts.kind ? qp.d : null, b: qp.kind === opts.kind ? qp.b : null };
+  var nch = Math.min(2, buf.numberOfChannels);
+  var pk = { sr: buf.sampleRate, len: buf.length, nch: nch, quality: "model", model: "scnet", d: out.d, b: out.b, v: out.v };
+  pk.x = opts.noX ? null : (qp.x && qp.x[0] && qp.x[0].length === buf.length ? qp.x : await toX16(buf));
+  kindParts(pk, qp);
+  /* AOG-STEMS-COMPARE-V1: the quick parts go along (kept beside these) */
+  if (qp.d && qp.b && qp.v && pc(qp.d, 0) && pc(qp.d, 0).length === buf.length) { pk.qd = qp.d; pk.qb = qp.b; pk.qv = qp.v; pk.qkind = qp.kind || "pop"; pk.hasQuick = true; }
+  if (AI.fakeWorse) { var fv = pk.v; pk.v = fv.map(function (a) { var z = new Int16Array(a.length); for (var i = 0; i < a.length; i++) z[i] = -a[i]; return z; }); }
+  /* AOG-STEMS-CHECK-V1: simple checks, the model's parts against the quick ones; if the model's look worse, the quick stay */
+  var ck = await partsCheck(pk, buf, qp);
+  AI.check = ck;
+  if (ck.worse) throw Object.assign(new Error("worse"), { kept: true, worse: true, check: ck });
+  pk.stats = await shares(pk, await songEnergy(buf));
+  pk.stats.check = ck;
+  pk.stats.ep = out.ep; pk.stats.ms = Date.now() - t0;
+  say(1);
+  return fromPack(pk);
+}
+/* the model's parts with another kind of music (the quick split's, just made with that kind): no new model run */
+async function rekind(model, quick) {
+  var mp = model.pack || model, qp = quick.pack || quick, o = {}, k;
+  for (k in mp) if (Object.prototype.hasOwnProperty.call(mp, k)) o[k] = mp[k];
+  kindParts(o, qp);
+  if (qp.d && qp.b && qp.v) { o.qd = qp.d; o.qb = qp.b; o.qv = qp.v; o.qkind = qp.kind || "pop"; o.hasQuick = true; }
+  var e0 = mp.stats && mp.stats.e;
+  if (e0 > 0) { var st = await shares(o, e0); for (k in mp.stats) if (!(k in st)) st[k] = mp.stats[k]; o.stats = st; }
+  if (model.pack) return fromPack(o);
+  o.note = noteOf(o); return o;
+}
+
+
 var API = {
   version: 1, words: WORDS, names: NAMES, parts: PARTS.slice(), word: word, kinds: KINDS.slice(), kindWords: KINDW,
   split: split, mixInto: mixInto, wav: wav, keep: keep, kept: kept, keptParts: keptParts, has: has, drop: drop,
+  clean: clean, rekind: rekind, quality: quality, setQuality: setQuality, canBest: canBest, model: "scnet",
   /* for the tests: the job itself (to measure on known parts), the settings, the last split's timing */
-  test: { job: stemsJob, kindOf: kindOf, KT: KT, PROF: PROF, tune: function (t) { TEST.tune = t || null; }, defaults: TUNE, noWorker: function (b) { TEST.noWorker = !!b; }, last: function () { return TEST.last; }, fromPack: fromPack }
+  test: { job: stemsJob, kindOf: kindOf, KT: KT, PROF: PROF, tune: function (t) { TEST.tune = t || null; }, defaults: TUNE, noWorker: function (b) { TEST.noWorker = !!b; }, last: function () { return TEST.last; }, fromPack: fromPack, ai: AI,
+    resample: function (X, f, t, len) { var j = rsJob(X, f, t, len); while (!j.run(1e9)); return j.out(); } }
 };
 G.AOGStems = API;
 })(typeof self !== "undefined" ? self : this);

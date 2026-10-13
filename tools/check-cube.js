@@ -45,11 +45,11 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
   const b = await pw.chromium.launch({ args: ["--use-fake-ui-for-media-stream", "--use-fake-device-for-media-stream"] });
   const st = p => p.evaluate(() => JSON.parse(localStorage.getItem("aog.cube.v1")));
   const hist = async p => (await st(p)).hist.length;
-  async function open(vp, touch, hash, speed) {
+  async function open(vp, touch, hash, speed, way) {
     const ctx = await b.newContext({ viewport: vp, isMobile: !!touch, hasTouch: !!touch, permissions: ["camera"] });
     await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, r => r.abort());
     const p = await ctx.newPage(); p.errs = []; p.on("pageerror", e => p.errs.push(e.message));
-    if (speed) await ctx.addInitScript(sp => { try { if (!localStorage.getItem("aog.cube.v1")) localStorage.setItem("aog.cube.v1", JSON.stringify({ speed: sp })); } catch (e) {} }, speed);
+    await ctx.addInitScript(([sp, way]) => { try { if (!localStorage.getItem("aog.cube.v1")) localStorage.setItem("aog.cube.v1", JSON.stringify(Object.assign(sp ? { speed: sp } : {}, way ? { method: way, wayV: 2 } : { method: "steps", wayV: 2 }))); } catch (e) {} }, [speed || null, way || null]);
     await p.goto(URL + "#" + (hash || "learn")); await p.waitForTimeout(800);
     const cdp = await ctx.newCDPSession(p);
     p.tp = (type, pts) => cdp.send("Input.dispatchTouchEvent", { type, touchPoints: type === "touchEnd" ? [] : pts.map(([x, y], id) => ({ x, y, id })) });
@@ -146,6 +146,23 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
     ok(!p.errs.length, `${name}: no page errors (hands) ${p.errs.join("; ")}`);
     await p.ctx.close();
   }
+
+  /* ── the short way first (Jimmy: "Can the shortest way always be deployed first?") and, on a phone, the move and its
+     button in a bar at the bottom, the cube in view above ── */
+  { const p = await open({ width: 390, height: 844 }, true, "solve", "instant", "fresh");
+    await p.evaluate(() => { const S = JSON.parse(localStorage.getItem("aog.cube.v1")); delete S.method; delete S.wayV; localStorage.setItem("aog.cube.v1", JSON.stringify(S)); }); await p.reload(); await p.waitForTimeout(600);
+    await p.evaluate(() => { scrollTo(0, 0); document.querySelector('#panel [data-act="mix"]').click(); });
+    let found = false; try { await p.waitForSelector("#actBar:not([hidden]) [data-act='gnext']", { timeout: 30000 }); found = true; } catch (e) {}
+    const way = await p.$eval("#waySel", s => s.value).catch(() => "");
+    ok(found && way === "short", "Solve with me starts on the short way: a mixed cube gets its short way at once (" + way + ")");
+    await p.evaluate(() => scrollTo(0, 0));
+    const lay = await p.evaluate(() => { const st = document.getElementById("stage").getBoundingClientRect(), bar = document.getElementById("actBar").getBoundingClientRect(), btn = document.querySelector("#actBar [data-act='gnext']").getBoundingClientRect();
+      return { cube: st.top >= 0 && st.bottom <= bar.top + 2, btn: btn.bottom <= innerHeight && btn.top >= 0, text: document.querySelector("#actBar .ab-move").textContent }; });
+    ok(lay.cube && lay.btn && lay.text.length > 3, `iPhone: the whole cube and the I did it / Turn it button are on screen together, no scrolling ("${lay.text}")`);
+    let n = 0; while (n < 40 && await p.$("#actBar:not([hidden]) [data-act='gnext']")) { await p.tap("#actBar [data-act='gnext']"); n++; await p.waitForTimeout(30); }
+    ok(n > 0 && n <= 22 && /Solved!/.test(await p.textContent("#panel")) && await p.evaluate(() => document.getElementById("actBar").hidden), `iPhone: tapping the bar's button follows the short way to Solved (${n} moves), and the bar steps away`);
+    ok(!p.errs.length, "no page errors (short way first) " + p.errs.join("; "));
+    await p.ctx.close(); }
 
   /* ── a computer ── */
   let p = await open({ width: 1280, height: 900 }, false, "learn");
@@ -271,7 +288,17 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
     ok(r.none, "with no cube in the picture the camera says so, and does not guess"); }
   /* six sides through the camera's own steps, then Check my cube */
   const one = await sampleCube(4242, [1, .95, .85], .9, 10);
-  for (const f of ["F", "R", "B", "L", "U", "D"]) await p.evaluate(rgb => AOGCubeLab.camSide(rgb), one.out[f]);
+  /* each side: the camera's reading shows, the learner checks it (and fixes a wrong square), then goes on */
+  let fixedSq = 0;
+  for (const f of ["F", "R", "B", "L", "U", "D"]) {
+    await p.evaluate(rgb => AOGCubeLab.camSide(rgb), one.out[f]); await p.waitForTimeout(80);
+    const want = await p.evaluate(f => AOGCube.facelets(f).map(([pos]) => pos.join(",") + "|" + f), f);
+    const shown = await p.$$eval(".cam [data-ck]", bs => bs.map(b => b.getAttribute("aria-label").split(": ")[1]));
+    const names = { W: "white", Y: "yellow", G: "green", B: "blue", O: "orange", R: "red" };
+    for (let j = 0; j < 9; j++) { const truth = names[one.truth[want[j]]]; if (shown[j] !== truth) { fixedSq++; const L = Object.keys(names).find(k => names[k] === truth); await p.click(`.cam [data-rb="${L}"]`); await p.click(`.cam [data-ck="${j}"]`); } }
+    await p.evaluate(() => AOGCubeLab.camConfirm()); await p.waitForTimeout(80);
+  }
+  ok(fixedSq <= 6, `the camera's per-side reading needed ${fixedSq} square(s) fixed by hand over six sides (lamp light), each fixed right on that side`);
   /* Jimmy: "once I took the shot, I couldn't figure out what to do next" — the sheet stays open on a check screen */
   ok(await p.$$eval(".cam .rgrid", g => g.length) === 6 && /Every color has 9/.test(await p.textContent(".cam")) && !!(await p.$('.cam [data-cam="go"]')),
     "after six sides, a check screen shows all six sides, says the counts are right, and has one button to go on");
@@ -284,6 +311,16 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
   ok(/Every color has 9/.test(await p.textContent(".cam")), "tap the right color, tap the square: fixed");
   await p.click('.cam [data-cam="go"]'); await p.waitForTimeout(400);
   s = await st(p); ok(!(await p.$(".cam")) && /#solve/.test(p.url()) && s.real, "It looks right goes straight to Solve with me with the camera-read cube");
+  /* following along with a real cube: how to hold it, and how the front and top look after the move */
+  { const before = await p.evaluate(() => ({ hold: (document.querySelector("#panel .hold") || {}).textContent || "",
+      pics: [...document.querySelectorAll("#panel .after .rgrid.mini")].map(g => [...g.children].map(x => x.style.background)) }));
+    await p.click('#panel [data-act="gnext"]'); await p.waitForTimeout(150);
+    const now = await p.evaluate(() => { const C = AOGCube, c = AOGCubeLab.cube, sc = JSON.parse(localStorage.getItem("aog.cube.v1")).scheme, home = { Y: "U", W: "D", G: "F", B: "B", O: "R", R: "L" };
+      const H = { W: "#f4f3ee", Y: "#ffd43b", G: "#23a159", B: "#2a62c9", O: "#ff7e1f", R: "#d2303b", P: "#7d3cc0", K: "#ff7eb6" };
+      const rgb = h => "rgb(" + [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16)).join(", ") + ")";
+      return ["F", "U"].map(f => C.facelets(f).map(([pos, dir]) => { const col = c.colorAt(pos, dir); return rgb(H[sc[home[col]] || col]); })); });
+    ok(/Hold your cube:.*on top.*facing you/.test(before.hold), "with a real cube, the card says how to hold it: " + before.hold.trim());
+    ok(before.pics.length === 2 && JSON.stringify(before.pics) === JSON.stringify(now), "the after-move pictures show exactly how the front and top look once the move is done"); }
   /* with a real cube: after each step, does yours look like the screen? */
   let seen = false; n = 0;
   while (n < 300 && !seen && await p.$('#panel [data-act="gnext"]')) { await p.click('#panel [data-act="gnext"]'); n++; seen = !!(await p.$("#panel .checkin")); }
@@ -320,6 +357,16 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
   ok(!p.errs.length, "no page errors (my cube) " + p.errs.join("; "));
   await p.ctx.close();
 
+  /* a browser that says no to the camera: the sheet says how to turn it on, in plain steps */
+  { const b2 = await pw.chromium.launch(); const ctx = await b2.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+    await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, r => r.abort());
+    await ctx.addInitScript(() => { if (navigator.mediaDevices) navigator.mediaDevices.getUserMedia = () => Promise.reject(new DOMException("blocked", "NotAllowedError")); });   /* as a phone does when the site may not use the camera */
+    const q = await ctx.newPage(); await q.goto(URL + "#mine"); await q.waitForTimeout(700);
+    await q.click('#panel [data-act="camera"]'); await q.waitForTimeout(1500);
+    ok(/turned off for this site/.test(await q.textContent(".cam")) && /Website Settings/.test(await q.textContent(".cam")), "camera blocked: the sheet says how to turn it on");
+    await b2.close(); }
+  /* the site's headers let its own pages use the camera (camera=() blocked it on phones) */
+  { const hd = fs.readFileSync(path.join(ROOT, "_headers"), "utf8"); ok(/Permissions-Policy:[^\n]*camera=\(self\)/.test(hd), "_headers lets the site's own pages ask for the camera"); }
   await b.close(); server.close();
   console.log(fails ? `\n${fails} cube check(s) failed.` : "\nThe Cube Lab passes every check.");
   process.exit(fails ? 1 : 0);

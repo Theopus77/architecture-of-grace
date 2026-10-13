@@ -1,0 +1,67 @@
+Split a song into its parts, Best quality (AOG-STEMS-AI-V1, aog-stems-ai.js)
+
+The model: SCNet, "Sparse Compression Network for Music Source Separation"
+  Weiming Tong, Jiaxin Zhu, Jie Chen, Shuai Kang, Tao Jiang, Yang Li, Zhiqiang Wei, Siwei Liu (ICASSP 2024).
+  Code and weights: github.com/starrytong/SCNet, MIT License (copied below), Copyright (c) 2024 starrytong.
+  The checkpoint: the author's SCNet trained on MUSDB18-HQ (10.1 million weights), as hosted with its config in
+  github.com/ZFTurbo/Music-Source-Separation-Training, release v.1.0.6, file scnet_checkpoint_musdb18.ckpt
+  (SHA-256 1bc0d1abb20bfdf966dcd07637bafd03e4bc13653d09ef18bc9b3e342eafe2aa). That repository is MIT License,
+  Copyright (c) 2024 Roman Solovyev (ZFTurbo); its model code (models/scnet, commit 84b1eac0) is what these graphs
+  follow. The SCNet repository, which links these weights, is MIT; @audio/neural-separate (MIT), which ships the same
+  weights converted to ONNX, records that the author confirmed the weights are MIT and may be redistributed converted
+  (github.com/starrytong/SCNet/issues/35).
+
+What is here, and how it was made (tools/stems-model/ in the repository, not published):
+  s0.onnx … s9.onnx   the network between its STFT and its iSTFT, written straight from the checkpoint into ten small
+                      ONNX graphs (encoder, the six dual-path layers, three decoder levels), so a phone's single-threaded
+                      onnxruntime keeps only one stage's memory at a time. Only drums, bass and vocals are made (the
+                      page's "The rest" is the song less those three). Every change to the arithmetic is exact (the
+                      decoder's repeated input folded into its weights; long convolutions cut into bands of rows).
+  weights.bin         the 10.1 million weights in 8 bits with a scale per row (15 of them in 16 bits), 11.6 MB; the
+                      page turns them back into 32-bit numbers as it loads each stage. Against the 32-bit weights the
+                      parts come out 34 to 42 dB the same.
+  manifest.json       where each weight sits.
+
+MIT License (SCNet)
+
+Copyright (c) 2024 starrytong
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+MIT License (Music-Source-Separation-Training)
+
+Copyright (c) 2024 Roman Solovyev (ZFTurbo)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

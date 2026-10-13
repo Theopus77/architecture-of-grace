@@ -8,8 +8,14 @@
  * not run on this file. Forget the bump and returning visitors keep the stale
  * page from their cache.
  */
-const CACHE = 'aog-cache-2026.10.13.m7497'   // SKATEBOARDING: ONLY THE COURSE STAYS (/skateboarding, /skt1…18). ITS DAILY PRACTICE BOOK STAYS (/drops/skate). THE SKATE LAB AND THE FRONT-PAGE AND TOP-BAR SKATE DOORS ARE GONE; /skate AND /skate-lab SEND TO THE COURSE
+const CACHE = 'aog-cache-2026.10.13.m7502'   // SKATEBOARDING: ONLY THE COURSE STAYS (/skateboarding, /skt1…18). ITS DAILY PRACTICE BOOK STAYS (/drops/skate). THE SKATE LAB AND THE FRONT-PAGE AND TOP-BAR SKATE DOORS ARE GONE; /skate AND /skate-lab SEND TO THE COURSE
+// const CACHE = 'aog-cache-2026.10.12.m7501'   // JIMMY: "TAKE THIS OFF THE WEBSITE. LET US SHELF IT FOR THE TIME BEING.": SPLIT A SONG IS HIDDEN IN THE TURNTABLES, LEARN A SONG AND THE MIXING DESK; ITS MODEL AND RUNTIME MOVE TO shelf/stems-ai/ (previous: m7500)
+// const CACHE = 'aog-cache-2026.10.12.m7500'   // JIMMY (IPAD): "IT SOUNDS NASTY!": SPLIT A SONG CHANGES 48 KHZ TO 44.1 AND BACK WITH A CLEAN RESAMPLER (IT DREW STRAIGHT LINES); THE GRAPHICS CHIP MUST PASS A SELF-TEST FIRST; A WORSE CLEAN SPLIT KEEPS THE QUICK ONE; HEAR: QUICK PARTS · CLEAN PARTS (previous: m7499)
+// const CACHE = 'aog-cache-2026.10.12.m7499'   // JIMMY: "QUANTUM THIS … A BIG LEAP IN ITS ABILITIES": SPLIT A SONG AT BEST QUALITY: A TRAINED MODEL (SCNET, MIT) ON THE DEVICE CLEANS THE PARTS AFTER THE QUICK SPLIT (WEBGPU OR WEBASSEMBLY, IN A WORKER, KEPT WITH THE SONG); SPLIT QUALITY: QUICK · BEST (previous: m7498)
+// const CACHE = 'aog-cache-2026.10.12.m7498'   // THE CUBE LAB: THE SHORT WAY FIRST IN SOLVE WITH ME; ON A PHONE THE MOVE AND ITS BUTTON IN A BAR AT THE BOTTOM, THE CUBE IN VIEW (previous: m7497)
+// const CACHE = 'aog-cache-2026.10.12.m7497'   // THE CUBE LAB: THE CAMERA OPENS ON PHONES (camera=(self)); A LIVE VIEW OF THE NINE COLORS, EACH SIDE CHECKED AND FIXED AS IT IS TAKEN, IT LEARNS THE CUBE'S OWN COLORS; WITH A REAL CUBE: HOW TO HOLD IT, AND HOW THE FRONT AND TOP LOOK AFTER EACH MOVE (previous: m7496)
 // const CACHE = 'aog-cache-2026.10.12.m7496'   // THE 3D KITCHEN (/kitchen-lab) AND SEWING ROOM (/sewing-lab): THE SITE'S FIGURE COOKS 9 RECIPES AND ANY RECIPE YOU PLUG IN, AND DEMONSTRATES 28 KITCHEN SKILLS AND 20 SEWING MOVES (HAND STITCHES FRONT AND BACK, BUTTONS, CUTTING, THE MACHINE, PRESSING); FACS LESSONS AND ROOMS GET WATCH IT IN 3D (previous: m7495)
+// const CACHE = 'aog-cache-2026.10.12.m7496'   // THE CUBE LAB'S CAMERA OPENS ON PHONES: _headers camera=() BLOCKED IT, NOW camera=(self); A BLOCKED CAMERA SAYS HOW TO TURN IT ON (previous: m7495)
 // const CACHE = 'aog-cache-2026.10.12.m7495'   // THE DOJO (/dojo): A REALISTIC FIGURE IN A GI SHOWS 36 MARTIAL-ARTS MOVES STEP BY STEP IN 3D (MIRROR, FRONT/SIDE/BEHIND VIEWS, GHOST, PRACTICE TRACKER); EVERY MARTIAL-ARTS UNIT ENDS WITH PRACTICE THE MOVES (SAFE, SOLO, INTO THE AIR) WITH WATCH IT IN 3D BUTTONS (previous: m7494)
 // const CACHE = 'aog-cache-2026.10.12.m7494'   // JIMMY: "A GAME CHANGER IN THE TURN TABLE WORLD": SPLIT A SONG INTO DRUMS, BASS, VOICE AND THE REST ON THE DEVICE (TURNTABLES: PART BUTTONS, VOICE ONLY, NO VOICE, CHOPS FROM PARTS; LEARN A SONG; THE MIXING DESK), FOR EVERY KIND OF MUSIC; LEARN A SONG A STEP UP (PARTS, EASIER CHORDS, CAPO, PICTURES, STEP UP THE SPEED, YOUR BEST, CHORD SHEET); THE SILENT TREATMENT (previous: m7493)
 // const CACHE = 'aog-cache-2026.10.12.m7493'   // THE SKATE LAB IN 3D: A REALISTIC SKATER (THE SITE'S FIGURE) FOR ALL 26 TRICKS IN A ROUNDED, SOFT-LIT PARK; 3D RAMP, OLLIE AND GRINDS ROOMS WITH THEIR GAUGES AND ARROWS IN THE SCENE; FREE SKATE ON THE LAB'S PHYSICS; MOVING AND SEQUENCE VIEWS; A QUESTIONS ROOM; BUILD A BOARD PULLED APART WITH A PARTS LIST. THREE.JS IS KEPT IN THE SITE AND LOADS ONLY ON A 3D TAP (previous: m7492)
@@ -911,6 +917,20 @@ self.addEventListener('fetch', function (e) {
   /* AOG-FRONT-BUILD-V1 (2026-10-11): the front page's code (front/), one file per block, named after what is in it.
      A name never changes its contents, so a saved copy is always right: it comes straight from the store, and only a
      block never seen before is fetched (and kept). */
+  /* AOG-STEMS-AI-V1 (2026-10-12): the separation model and its runtime (about 40 MB, fetched only at Best quality) live in
+     versioned folders whose files never change: a saved copy is used as it is, never fetched again in the background. */
+  if (/\/(vendor\/onnxruntime-web-\d[^\/]*|models\/stems\/[a-z0-9-]+-v\d+)\//.test(req.url)) {
+    e.respondWith(
+      caches.match(req).then(function (hit) {
+        if (hit) return hit;
+        return fetch(req).then(function (r) {
+          if (r && r.status === 200 && r.type === 'basic') { var copy = r.clone(); e.waitUntil(caches.open(KEEP).then(function (c) { return c.put(req, copy); }).catch(function () {})); }
+          return r;
+        });
+      })
+    );
+    return;
+  }
   if (/\/front\/[0-9a-f]+\.js(\?|#|$)/.test(req.url)) {
     e.respondWith(
       caches.match(req).then(function (hit) {

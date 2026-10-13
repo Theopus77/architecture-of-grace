@@ -632,8 +632,9 @@
   }
   function quietMode() { if (STM.st === "on") return "none"; var q = CUR && CUR.rec.quiet; if (q === "voice" && PL.stereo === false) return "none"; return q === "bass" || q === "voice" ? q : "none"; }
   /* ── AOG-STEMS-V1: the song in its parts ── */
-  var STM = { st: "", id: "", parts: null, job: 0, ctl: null, pct: 0, msg: "", note: "", kind: "", auto: true, kept: null };
-  function stmFree() { if (STM.parts && STM.parts.free) STM.parts.free(); STM = { st: "", id: "", parts: null, job: STM.job + 1, ctl: null, pct: 0, msg: "", note: "", kind: "", auto: true, kept: null }; }
+  var STM = { st: "", id: "", parts: null, job: 0, ctl: null, pct: 0, msg: "", note: "", kind: "", auto: true, kept: null, clean: "", cpct: 0, cjob: 0, cctl: null, model: false };
+  function stmFree() { if (STM.parts && STM.parts.free) STM.parts.free(); try { if (STM.cctl) STM.cctl.abort(); } catch (e) {}
+    STM = { st: "", id: "", parts: null, job: STM.job + 1, ctl: null, pct: 0, msg: "", note: "", kind: "", auto: true, kept: null, clean: "", cpct: 0, cjob: STM.cjob + 1, cctl: null, model: false }; }
   var stemsP = null;
   function stemsLib() {
     if (window.AOGStems) return Promise.resolve(window.AOGStems);
@@ -660,7 +661,7 @@
   }
   function isAudio() { return CUR && CUR.L.src !== "midi" && CUR.rec.src !== "midi" && !!CUR.rec.blob; }
   function stmFind() {
-    var rec = CUR && CUR.rec; if (!rec || !isAudio()) return;
+    var rec = CUR && CUR.rec; if (!STEMS_ON || !rec || !isAudio()) return;
     var job = STM.job, id = rec.id;
     stmMeta(id).then(function (m) {
       if (!m || STM.job !== job || !CUR || CUR.rec !== rec) return;
@@ -670,7 +671,7 @@
     }).catch(function () {});
   }
   function stmOn(pt) {
-    STM.st = "on"; STM.parts = pt; STM.id = CUR.rec.id; STM.note = pt.note || ""; STM.kind = pt.kind || ""; STM.auto = pt.auto !== false;
+    STM.st = "on"; STM.parts = pt; STM.id = CUR.rec.id; STM.note = pt.note || ""; STM.kind = pt.kind || ""; STM.auto = pt.auto !== false; STM.model = pt.quality === "model";
     quietWire(); stmRebuild(); paintAll();
   }
   /* the song you hear changes: made again from the parts (the slower copy too) */
@@ -688,26 +689,51 @@
   }
   function stmSplit(kind) {
     if (!CUR || !isAudio() || STM.st === "busy") return;
-    var rec = CUR.rec, job = ++STM.job, had = STM.st === "on";
+    var rec = CUR.rec, job = ++STM.job, had = STM.st === "on", model = STM.model ? STM.parts : null;
+    stmCleanStop(true);
     STM.st = "busy"; STM.pct = 0; STM.msg = ""; paintStm();
     var ctl = window.AbortController ? new AbortController() : null; STM.ctl = ctl;
     stemsLib().then(function (A) {
       if (STM.job !== job) return null;
       return A.split(rec.blob, { lesson: CUR.L, kind: kind && kind !== "auto" ? kind : undefined, signal: ctl ? ctl.signal : undefined,
         onProgress: function (p) { if (STM.job !== job) return; STM.pct = Math.round(p * 100); paintStmLine(); } })
+        /* AOG-STEMS-AI-V1: the model's parts with the new kind of music (no new model run) */
+        .then(function (pt) { return model && STM.job === job ? A.rekind(model, pt) : pt; })
         .then(function (pt) { if (STM.job !== job) return null; return A.keep(rec.id, pt).catch(function () {}).then(function () { return pt; }); });
     }).then(function (pt) {
       if (!pt || STM.job !== job || !CUR || CUR.rec !== rec) return;
       if (STM.parts && STM.parts !== pt && STM.parts.free) STM.parts.free();
       STM.ctl = null; STM.msg = w("splitDone"); stmOn(pt);
+      if (!STM.model && window.AOGStems.quality() === "best") stmClean();
     }, function (e) {
       if (STM.job !== job) return;
       STM.ctl = null; STM.st = had && STM.parts ? "on" : "";
       STM.msg = w(e && e.name === "AbortError" ? "splitStopped" : e && e.memory ? "splitLong" : "splitFail"); paintAll();
     });
   }
+  /* AOG-STEMS-AI-V1 — Split quality, Best: the model's cleaner parts follow the quick ones (they play meanwhile) and take
+     their place when ready; they are kept with the song, so it is done once. Stop keeps the quick parts. */
+  function stmClean() {
+    var A = window.AOGStems;
+    if (!A || !CUR || !isAudio() || STM.st !== "on" || STM.model || STM.clean === "busy") return;
+    var rec = CUR.rec, job = ++STM.cjob, quick = STM.parts, ctl = window.AbortController ? new AbortController() : null;
+    STM.clean = "busy"; STM.cpct = 0; STM.cctl = ctl; STM.msg = ""; paintAll();
+    A.clean(rec.blob, { quick: quick, kind: STM.auto ? undefined : STM.kind, signal: ctl ? ctl.signal : undefined,
+      onProgress: function (p) { if (STM.cjob !== job) return; STM.cpct = Math.round(p * 100); paintStmLine(); } })
+      .then(function (pt) { if (STM.cjob !== job || !CUR || CUR.rec !== rec) return null; return A.keep(rec.id, pt).catch(function () {}).then(function () { return pt; }); })
+      .then(function (pt) {
+        if (!pt || STM.cjob !== job || !CUR || CUR.rec !== rec) return;
+        if (STM.parts && STM.parts !== pt && STM.parts.free) STM.parts.free();
+        STM.clean = ""; STM.cctl = null; STM.msg = A.word("cleanDone", L()); stmOn(pt);
+      }, function (e) {
+        if (STM.cjob !== job) return;
+        STM.clean = ""; STM.cctl = null; STM.msg = A.word(e && e.name === "AbortError" ? "cleanStopped" : e && e.worse ? "cleanWorse" : "cleanKept", L()); paintAll();
+      });
+  }
+  function stmCleanStop(quiet) { if (STM.clean !== "busy") return; STM.cjob++; try { if (STM.cctl) STM.cctl.abort(); } catch (e) {} STM.cctl = null; STM.clean = "";
+    if (!quiet && window.AOGStems) { STM.msg = window.AOGStems.word("cleanStopped", L()); paintAll(); } }
   function stmStop() { if (STM.st !== "busy") return; STM.job++; try { if (STM.ctl) STM.ctl.abort(); } catch (e) {} STM.ctl = null; STM.st = STM.parts ? "on" : ""; STM.msg = w("splitStopped"); paintAll(); }
-  function paintStmLine() { var el = $("lgSplitLine"); if (!el) return; var t = STM.st === "busy" ? w("splitting", { n: STM.pct }) : STM.msg; if (el.textContent !== t) el.textContent = t; }
+  function paintStmLine() { var el = $("lgSplitLine"); if (!el) return; var t = STM.st === "busy" ? w("splitting", { n: STM.pct }) : STM.clean === "busy" && window.AOGStems ? window.AOGStems.word("clean", L()).replace("%n", STM.cpct) : STM.msg; if (el.textContent !== t) el.textContent = t; }
   function paintStm() { if (BOX && CUR) paintAll(); }
   function partsOpts() {
     var bass = H && H.room === "bass", order = bass ? ["bass", "voice", "drums", "other"] : ["voice", "other", "bass", "drums"], cur = preset();
@@ -715,8 +741,9 @@
       return '<option value="p:' + k + '"' + (cur === "p:" + k ? " selected" : "") + ">" + esc(w("pNo" + k)) + "</option>"; }))
       .concat(cur === "p:mine" ? ['<option value="p:mine" selected>' + esc(w("pMine")) + "</option>"] : []).join("");
   }
+  var STEMS_ON = false;   /* AOG-STEMS-SHELF-V1 (2026-10-12) — Jimmy: "Take this off the website. Let us shelf it for the time being." */
   function stmHtml() {
-    if (!isAudio()) return "";
+    if (!STEMS_ON || !isAudio()) return "";
     if (STM.st === "busy") return '<div class="lg-ctl"><button type="button" class="pbtn clear" id="lgSplitStop">' + esc(w("stopWork")) + '</button></div><p class="line" id="lgSplitLine" aria-live="polite">' + esc(w("splitting", { n: STM.pct })) + "</p>";
     if (STM.st !== "on") return '<div class="lg-ctl"><button type="button" class="pbtn" id="lgSplit">' + esc(w("split")) + '</button></div><p class="line" id="lgSplitLine" aria-live="polite">' + esc(STM.msg || w("splitLine")) + "</p>";
     var A = window.AOGStems, l = levels(), lang = L();
@@ -726,7 +753,12 @@
       (A && STM.note ? '<p class="line note" id="lgSplitNote">' + esc(A.word(STM.note, lang)) + "</p>" : "") +
       (A ? '<div class="row"><label class="field"><span class="plab">' + esc(w("pKind")) + '</span><select id="lgKind">' + A.kinds.map(function (k) { var sel = (STM.auto ? "auto" : STM.kind) === k;
         return '<option value="' + k + '"' + (sel ? " selected" : "") + ">" + esc(A.kindWords[lang][k] + (k === "auto" && STM.auto && STM.kind ? " · " + A.kindWords[lang][STM.kind] : "")) + "</option>"; }).join("") + "</select></label></div>" : "") +
-      '<p class="line" id="lgSplitLine" aria-live="polite">' + esc(STM.msg) + "</p>";
+      /* AOG-STEMS-AI-V1: Split quality, and the cleaner parts on their way */
+      (A ? '<div class="row"><label class="field"><span class="plab">' + esc(A.word("qLab", lang)) + '</span><select id="lgQual">' + ["quick", "best"].map(function (q) {
+        return '<option value="' + q + '"' + (A.quality() === q ? " selected" : "") + ">" + esc(A.word(q === "best" ? "qBest" : "qQuick", lang)) + "</option>"; }).join("") + "</select></label></div>" : "") +
+      (A && STM.clean === "busy" ? '<div class="lg-ctl"><button type="button" class="pbtn clear" id="lgCleanStop">' + esc(w("stopWork")) + "</button></div>"
+        : A && !STM.model && A.quality() === "best" ? '<div class="lg-ctl"><button type="button" class="pbtn" id="lgClean">' + esc(A.word("cleanGo", lang)) + "</button></div>" : "") +
+      '<p class="line" id="lgSplitLine" aria-live="polite">' + esc(STM.clean === "busy" && A ? A.word("clean", lang).replace("%n", STM.cpct) : STM.msg) + "</p>";
   }
   var lvT = 0;
   function setLevels(l, now) { CUR.rec.levels = l; keepSoon(); clearTimeout(lvT); if (now) stmRebuild(); else lvT = setTimeout(stmRebuild, 250); }
@@ -1166,6 +1198,9 @@
     if ((b = $("lgSplit"))) b.onclick = function () { stmSplit(); };
     if ((b = $("lgSplitStop"))) b.onclick = stmStop;
     if ((b = $("lgKind"))) b.onchange = function () { var v = this.value; this.blur(); stmSplit(v); };
+    if ((b = $("lgQual"))) b.onchange = function () { var v = this.value; this.blur(); if (!window.AOGStems) return; window.AOGStems.setQuality(v); if (v === "best") stmClean(); else { stmCleanStop(true); paintAll(); } };
+    if ((b = $("lgClean"))) b.onclick = function () { stmClean(); };
+    if ((b = $("lgCleanStop"))) b.onclick = function () { stmCleanStop(); };
     var lv = $("lgIn") ? $("lgIn").querySelectorAll("[data-lv]") : [];
     [].forEach.call(lv, function (r) { r.oninput = function () { var l = levels(); l[r.getAttribute("data-lv")] = Math.max(0, Math.min(1, +r.value / 100)); var o = $("lgLv_" + r.getAttribute("data-lv")); if (o) o.textContent = r.value + "%";
       var q = $("lgQuiet"); setLevels(l); if (q) { q.innerHTML = partsOpts(); } }; });
@@ -1507,7 +1542,7 @@
       source: function () { var s = PL.src; return s ? { loop: s.loop, a: s.loopStart, b: s.loopEnd, rate: s.playbackRate.value } : null; },
       state: function () { return api().state(); },
       /* AOG-STEMS-V1 */
-      stems: function () { return { st: STM.st, kind: STM.kind, auto: STM.auto, note: STM.note, levels: CUR ? levels() : null, preset: CUR ? preset() : "", base: PL.base ? { len: PL.base.length, sr: PL.base.sampleRate } : null, mode: PL.fxMode || "" }; },
+      stems: function () { return { st: STM.st, kind: STM.kind, auto: STM.auto, note: STM.note, levels: CUR ? levels() : null, preset: CUR ? preset() : "", base: PL.base ? { len: PL.base.length, sr: PL.base.sampleRate } : null, mode: PL.fxMode || "", clean: STM.clean, cpct: STM.cpct, model: STM.model, quality: STM.parts ? STM.parts.quality : "" }; },
       baseData: function () { return baseBuf().then(function (b) { return { len: b.length, sr: b.sampleRate, ch0: b.getChannelData(0), ch1: b.numberOfChannels > 1 ? b.getChannelData(1) : null }; }); }
     }
   };

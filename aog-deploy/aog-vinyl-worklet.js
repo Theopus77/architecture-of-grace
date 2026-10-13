@@ -118,7 +118,9 @@
     if (this.pOn) {
       var P = this.P, c = this.pc, go = c[3], cd = (c[0] - go) * PS, cb = (c[1] - go) * PS, cv = (c[2] - go) * PS;
       var dl = hermite(P.dL, i1, f), dr = P.dR === P.dL ? dl : hermite(P.dR, i1, f), mid = cb * hermite(P.b, i1, f) + cv * hermite(P.v, i1, f);
-      sL = go * sL + cd * dl + mid; sR = go * sR + cd * dr + mid;
+      /* AOG-STEMS-AI-V1: the model's bass and voice are stereo (their own right channel); the listening split's sit in the middle */
+      var midR = P.mono ? mid : cb * hermite(P.bR, i1, f) + cv * hermite(P.vR, i1, f);
+      sL = go * sL + cd * dl + mid; sR = go * sR + cd * dr + midR;
     }
     this.oL = sL; this.oR = sR;
   };
@@ -132,7 +134,7 @@
     var q = this.preq; if (!q) return true;
     var g = this.pg, P = this.P, go = g[3], cd = (g[0] - go) * PS, cb = (g[1] - go) * PS, cv = (g[2] - go) * PS, e = Math.min(q.n, q.i + max);
     for (var i = q.i; i < e; i++) { var x = q.a + i, l = this.L ? this.L[x] || 0 : 0, r = this.R ? this.R[x] || 0 : 0;
-      if (P) { var m = cb * (P.b[x] || 0) + cv * (P.v[x] || 0); l = go * l + cd * (P.dL[x] || 0) + m; r = go * r + cd * (P.dR[x] || 0) + m; }
+      if (P) { var m = cb * (P.b[x] || 0) + cv * (P.v[x] || 0), mR = P.mono ? m : cb * (P.bR[x] || 0) + cv * (P.vR[x] || 0); l = go * l + cd * (P.dL[x] || 0) + m; r = go * r + cd * (P.dR[x] || 0) + mR; }
       q.L[i] = l; q.R[i] = r; }
     q.i = e; return e >= q.n;
   };
@@ -291,7 +293,7 @@
       /* AOG-STEMS-V1 */
       case "parts":
         if (m.off || !this.L || !m.dL || m.dL.length !== this.len) { this.P = null; this.pOn = false; this.pc = [1, 1, 1, 1]; this.pg = [1, 1, 1, 1]; break; }
-        this.P = { dL: m.dL, dR: m.dR || m.dL, b: m.b, v: m.v };
+        this.P = { dL: m.dL, dR: m.dR || m.dL, b: m.b, v: m.v, bR: m.bR || m.b, vR: m.vR || m.v, mono: !(m.bR && m.bR !== m.b) && !(m.vR && m.vR !== m.v) };
         break;
       case "pgain":
         if (!this.P || !m.g) break;

@@ -45,6 +45,8 @@ const SPY = `(() => {
 })();`;
 async function routes(ctx) {
   await ctx.route(/^https?:\/\/(?!localhost)/, r => r.abort());
+  /* this suite is the quick split's; the model's Best quality (which would follow it) is stems/ai.js's */
+  await ctx.addInitScript(() => { try { localStorage.setItem("aog.stems.quality.v1", "quick"); } catch (e) {} });
   await ctx.route(/\/__h\.html$/, r => r.fulfill({ contentType: "text/html", body: `<!doctype html><html lang="en"><meta charset="utf-8"><script src="/aog-stems.js"></script><script>${SONG}</script>` }));
   const R = { "drum-machine": "music-pads.html", "the-studio": "the-studio.html", turntables: "music-decks.html" };
   await ctx.route(/\/(drum-machine|the-studio|turntables)(\?[^#]*)?$/, r => r.fulfill({ path: path.join(ROOT, R[new URL(r.request().url()).pathname.slice(1)]), contentType: "text/html" }));
