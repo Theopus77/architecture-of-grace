@@ -22,7 +22,7 @@ function ok(c,m){ if(c){ passes++; console.log("PASS "+m); } else { fails++; con
       await sel("keySel",0); await p.click("#clearBtn"); await p.click("#ownBtn"); for(const i of [0,5,3,4,0,1,3,0]) await pad(i); await p.click("#ownBtn");
     } else {
       await sel("keySel", sg.key);
-      const minorNow=await p.evaluate(()=>S.minor); if(minorNow!==sg.minor) await p.click(sg.minor?"#minBtn":"#majBtn");
+      const minorNow=await p.evaluate(()=>S.minor); if(minorNow!==sg.minor){ await p.click(sg.minor?"#minBtn":"#majBtn"); await p.waitForTimeout(60); }   /* as a hand would: the song hears the mood before the tempo moves (aog-song.js) */
       await range("bpm", sg.bpm); await sel("soundSel", sg.sound); await sel("rhythmSel", sg.rhythm);
       if(sg.preset){ await sel("progSel", sg.preset); }
       else {

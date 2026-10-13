@@ -98,15 +98,19 @@
       if (ratio(shown, bg) >= FLOOR) continue;
       var c = toward(shown, bg);
       if (!mark && hov && hov.contains(e)) continue; // the hovered row is judged by hoverCheck
-      if (mark) { if (e.hasAttribute("data-aog-legible")) continue; e.setAttribute(mark, e.style.getPropertyValue("color") || ""); }
+      if (mark) { if (e.hasAttribute("data-aog-legible")) continue; e.setAttribute(mark, e.style.getPropertyValue("color") || ""); marked[mark] = 1; }
       else if (!e.hasAttribute("data-aog-legible")) e.setAttribute("data-aog-legible", e.style.getPropertyValue("color") || "");
       e.style.setProperty("color", "rgb(" + c.r + "," + c.g + "," + c.b + ")", "important");
     }
   }
   sweep.gen = 1;
+  /* AOG-LEGIBLE-STEADY-V1 (2026-10-13, Jimmy: the piano "hits a glitch so I can't keep tempo"): every touch on a key
+     looked through the whole page for hover fixes to undo, though there were none; now only when one was made */
+  var marked = {};
   function reset(attr) {
     /* the theme flipped: every correction was for the old colours */
     attr = attr || "data-aog-legible";
+    if (attr !== "data-aog-legible") { if (!marked[attr]) return; marked[attr] = 0; }
     var fixed = D.querySelectorAll("[" + attr + "]");
     for (var i = 0; i < fixed.length; i++) {
       var old = fixed[i].getAttribute(attr);
