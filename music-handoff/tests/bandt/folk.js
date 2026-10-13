@@ -156,7 +156,9 @@ const HELD=["harmonica","fiddle","mandolin_trem","steel","melodica"], RINGS=["ba
   ok(tk && tk.n>=3 && tk.ps.join()==="banjo" && tk.sound==="banjo", "a take records the banjo: "+JSON.stringify(tk));
 
   /* 1 again · the words: the ready line, the credit, Spanish */
-  await p.selectOption("#spSound", "melodica"); await p.waitForTimeout(1500);
+  await p.selectOption("#spSound", "melodica");
+  /* AOG-BAND-STEADY-V1: the melodica's extra layers come once the keys have been still, so the ready line can take a few seconds */
+  await p.waitForFunction(() => /The computer makes this melodica/.test(document.body.innerText), null, { timeout: 15000 }).catch(() => {});
   const txt=await p.evaluate(()=>document.body.innerText);
   ok(/The computer makes this melodica\. It is not a recording\./.test(txt), "the melodica says it is made by the computer, not recorded");
   await p.selectOption("#spSound", "harmonica"); await p.waitForTimeout(1200);
