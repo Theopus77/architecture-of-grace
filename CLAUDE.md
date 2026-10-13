@@ -128,7 +128,7 @@ layouts seems sort of silly." The Recording Studio (`the-studio.html`, /the-stud
 ## The front page starts on Student (standing order from Jimmy, 2026-10-10)
 
 "Show everything … overwhelms me." `index.html` opens on Student (the Studio,
-the Lab Bench, the Cube, Skateboarding, Quiet Space; no Daily Practice, no Check-in). Teacher leads with the
+the Lab Bench, the Cube, Quiet Space; no Daily Practice, no Check-in). Teacher leads with the
 Dashboard, The Courses, SEL and Daily Practice. Parent has the most doors. Show
 everything stays one tap away. The sets are `SETS` in AOG-AUDIENCE-START-V1.
 The words under the title follow the choice too (`HERO`, AOG-HERO-AUDIENCE-V1):
@@ -201,40 +201,16 @@ every Learn step reach the end; the three kinds of help, practising one step, th
 color reader, symbols, Read aloud (never on its own) and the move card. Do not push while it fails; add a
 check for anything new the hands can do.
 
-## Skateboarding and the Skate Lab (Jimmy, 2026-10-11: "a history of skateboarding curriculum … k12 and adult … how to do tricks, grinds … from a science perspective")
+## Skateboarding (Jimmy, 2026-10-11: "a history of skateboarding curriculum … k12 and adult … how to do tricks, grinds … from a science perspective")
 
 - The course is `_work/skt` (id `skt`, 18 units in six bands: K–2 … 11–12 and **Adult**, the first course with an
   Adult band), built like every other course; Daily Practice is the `skate` book (`_work/ddworld/skt.py`).
   Unlike Sports History it **teaches technique**, always safety first (helmet, pads, a safe place, a grown-up near
   children; never stairs, rails, traffic or holding onto a vehicle). Directions say front foot and back foot.
-- The Skate Lab is `skate-lab.html` (/skate) and its engine `aog-skate.js`. **Build a board is its mainstay** (Jimmy,
-  2026-10-11): /skate always opens on it, it is first in the room menu and on the front page's Skateboarding door; an
-  address naming a room (/skate#ollie) still opens that room. After any change to either, run
-
-      node tools/check-skate.js
-
-  It checks the physics (√(2gh) on a frictionless ramp, energy kept, v²/(2μg) whatever the mass, hang time,
-  tan θ = v²/(gR), L = Iω), Build a board (every suggested setup fits and never bites; the parts list follows the setup),
-  every trick's moving demo (its steps match the list; it plays once and lights its step), progress kept, the Questions search, every room in English and Spanish on an iPhone and an iPad, and calm (still until Go,
-  a run plays once, reduce motion shows the end at once). Do not push while it fails; add a check for anything new.
-- A new trick joins TRICKS (its words in `aog-skate-book.js`) with a moving demo in DEMOS (keys in time; `popDemo` and `grindDemo` build the
-  ollie and curb families). The skater is drawn without a face (no faces in the site's art). It should look right to a
-  teenager who skates (Jimmy, 2026-10-11: "a teenager would laugh at this"): real clothes and shoes, a relaxed athletic
-  stance, the head looking where the board goes, steady rolling speed, the camera riding along.
-- The trick book also plays every demo in 3D (Jimmy, 2026-10-12: "three.js 3d engine … we are the 1%"): `aog-skate3d.js`
-  (AOG-SKATE-3D-V1), a skatepark and a jointed skater posed from the same demo frames, loaded with import() only when
-  someone picks 3D. three.js is kept in the site (`vendor/three-0.160.0`, MIT), never fetched from elsewhere. It renders
-  only when a step plays or the camera is dragged; nothing moves on its own. A new trick needs nothing extra for 3D.
-- Silent until used (Jimmy, 2026-10-12: "this has to be silent when not being used … lighting fast"). A visit to /skate
-  downloads only the lab itself: the trick words and answers wait in `aog-skate-book.js` (AOG-SKATE-BOOK-V1) until the
-  Trick book or Questions opens; three.js waits until 3D is tapped, every visit (it never starts on its own); leaving 3D
-  lets go of the 3D drawing and the graphics chip. Nothing asks for animation frames while idle. check-skate tests all of it.
-  Add new trick words to `aog-skate-book.js`, not to `aog-skate.js`.
-- The 3D views (Jimmy, 2026-10-12: "more realism … do 1-3"): the trick book's rider is the site's figure
-  (`aog-figure3d.js`, outfit "skate", feet held to the board with `ik.leg`); the Ramp, Ollie and Grinds rooms have a
-  2D/3D switch with their gauges, arrows and stop flag in the scene; Free skate (`#free`) drives the rider with Push,
-  ←, →, Ollie, Kickflip and Grind on the lab's own physics, starts only on a press and stops by itself at rest. All
-  3D loads only on a tap and is let go when you leave it.
+- Only the course and its Daily Practice book are kept (Jimmy, 2026-10-13: "Except for the course itself (the
+  written material), get rid of everything else that is skateboarding related"; then "The daily practice you may
+  keep"). The Skate Lab (/skate), its 3D trick book, the front-page Skateboarding door and the top bar's skate door are gone; /skate and /skate-lab send
+  to the course (/skateboarding). Don't add them back unless Jimmy asks.
 
 ## The Microscope Lab, in depth (Jimmy, 2026-10-12: "a quantum leap forward in the Micro")
 
@@ -271,7 +247,8 @@ demand and staying still, pointing, and iPhone and iPad in English and Spanish. 
 
 "This has to be silent when not being used … lighting fast connectivity." Every page, now and later: nothing moves,
 redraws or makes a sound while nobody touches it, and a page that is not itself a 3D room loads no 3D or heavy engine
-(three.js, `aog-*3d.js`, `aog-micro-3d.js`, star catalogues) until someone taps for it. Leaving 3D frees the graphics
+(three.js, `aog-*3d.js`, `aog-figure3d.js`, `aog-3dkit.js`, `aog-micro-3d.js`, star catalogues) until someone taps for
+it. The 3D rooms (the Dojo, the Kitchen, the Sewing Room) may build their scene as they open, then must be still. Leaving 3D frees the graphics
 chip. After any change to a page with animation, 3D or sound, run
 
     node tools/check-silent.js <the pages you changed>     # or with no pages, every page in its list

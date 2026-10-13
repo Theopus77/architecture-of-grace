@@ -13,10 +13,10 @@
       var SETS = {
         teacher: ["dashboard","courses","sel","drafts","today","studio","bench","crosswalk"],
         family:  ["today","drafts","talk","checkin","families","sel","courses","studio","bench","faith","quiet","privacy"],
-        student: ["studio","bench","cube","skate","quiet"]   /* Jimmy, 2026-10-10: Daily Drafts off Student ("I don't think they would want to do that for enjoyment"); the Cube on Student ("I want it on the student page") */
+        student: ["studio","bench","cube","quiet"]   /* Jimmy, 2026-10-10: Daily Drafts off Student ("I don't think they would want to do that for enjoyment"); the Cube on Student ("I want it on the student page") */
       };
       var GROUPS = [
-        ["This week","Esta semana",["today","drafts","studio","bench","cube","skate","checkin","talk"]],
+        ["This week","Esta semana",["today","drafts","studio","bench","cube","checkin","talk"]],
         ["The house","La casa",["courses","sel","faith","families"]],
         ["For the building","Para la escuela",["dashboard","crosswalk","pd","privacy","contact"]]
       ];

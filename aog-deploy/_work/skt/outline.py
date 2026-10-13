@@ -4,7 +4,6 @@
 # Three threads run through every band: HISTORY (people, places, dates), HOW TO (tricks and grinds,
 # taught step by step, always with safety first) and SCIENCE (forces, energy, friction, torque, balance).
 # This book DOES teach technique, unlike Sports History and The Measured Step (Jimmy's request).
-# Interactive engine: /skate (skate-lab.html), rooms #balance #ramp #ollie #grind #flip #tricks.
 # Daily Practice: /drops/skate/K | 3-5 | 6-8 | 9-10 | 11-12 | adult
 # Sister: spt (Sports History). Link, don't copy.
 
@@ -171,22 +170,22 @@ UNITS = [
 ]
 
 LINKS = {
- 1: [("/skate#build", "Skate Lab: Build a board"), ("/drops/skate/K", "Daily Practice: Skateboarding, K–2")],
- 2: [("/skate#balance", "Skate Lab: Balance"), ("/drops/skate/1", "Daily Practice: Skateboarding, K–2")],
- 3: [("/skate#ramp", "Skate Lab: Ramp and energy"), ("/drops/skate/2", "Daily Practice: Skateboarding, K–2")],
+ 1: [("/drops/skate/K", "Daily Practice: Skateboarding, K–2")],
+ 2: [("/drops/skate/1", "Daily Practice: Skateboarding, K–2")],
+ 3: [("/drops/skate/2", "Daily Practice: Skateboarding, K–2")],
  4: [("/sports", "Sports History"), ("/drops/skate/3", "Daily Practice: Skateboarding, 3–5")],
- 5: [("/skate#ramp", "Skate Lab: Ramp and energy"), ("/drops/skate/4", "Daily Practice: Skateboarding, 3–5")],
- 6: [("/skate#build", "Skate Lab: Build a board"), ("/skate#tricks", "Skate Lab: Trick book"), ("/drops/skate/5", "Daily Practice: Skateboarding, 3–5")],
- 7: [("/skate#ramp", "Skate Lab: Ramp and energy"), ("/drops/skate/6", "Daily Practice: Skateboarding, 6–8")],
- 8: [("/skate#ollie", "Skate Lab: Ollie"), ("/drops/skate/7", "Daily Practice: Skateboarding, 6–8")],
- 9: [("/skate#flip", "Skate Lab: Flip tricks"), ("/drops/skate/8", "Daily Practice: Skateboarding, 6–8")],
+ 5: [("/drops/skate/4", "Daily Practice: Skateboarding, 3–5")],
+ 6: [("/drops/skate/5", "Daily Practice: Skateboarding, 3–5")],
+ 7: [("/drops/skate/6", "Daily Practice: Skateboarding, 6–8")],
+ 8: [("/drops/skate/7", "Daily Practice: Skateboarding, 6–8")],
+ 9: [("/drops/skate/8", "Daily Practice: Skateboarding, 6–8")],
  10: [("/sports", "Sports History"), ("/drops/skate/9-10", "Daily Practice: Skateboarding, 9–10")],
- 11: [("/skate#grind", "Skate Lab: Grinds and friction"), ("/drops/skate/9-10", "Daily Practice: Skateboarding, 9–10")],
- 12: [("/skate#balance", "Skate Lab: Balance and turning"), ("/skate#flip", "Skate Lab: Spin")],
+ 11: [("/drops/skate/9-10", "Daily Practice: Skateboarding, 9–10")],
+ 12: [],
  13: [("/sports", "Sports History"), ("/drops/skate/11-12", "Daily Practice: Skateboarding, 11–12")],
- 14: [("/skate#build", "Skate Lab: Build a board"), ("/skate#ramp", "Skate Lab: Ramp design"), ("/drops/skate/11-12", "Daily Practice: Skateboarding, 11–12")],
- 15: [("/skate#tricks", "Skate Lab: Trick book"), ("/skate#flip", "Skate Lab: Flip tricks")],
+ 14: [("/drops/skate/11-12", "Daily Practice: Skateboarding, 11–12")],
+ 15: [],
  16: [("/sports", "Sports History"), ("/drops/skate/adult", "Daily Practice: Skateboarding, Adult")],
- 17: [("/skate#build", "Skate Lab: Build a board"), ("/skate#tricks", "Skate Lab: Trick book"), ("/drops/skate/adult", "Daily Practice: Skateboarding, Adult")],
- 18: [("/skate#grind", "Skate Lab: Grinds and friction"), ("/skate#ramp", "Skate Lab: Ramp design")],
+ 17: [("/drops/skate/adult", "Daily Practice: Skateboarding, Adult")],
+ 18: [],
 }
