@@ -221,7 +221,7 @@ COURSES = [
                   "Cada dato se comprueba con documentos: actas de juicios y de logias, casos judiciales y audiencias. Las leyendas se llaman leyendas. Los grupos criminales y de odio se estudian solo en los grados 6–12. Todo es texto original escrito para este curso.")),
     # AOG-SKT-V1 (2026-10-11) — Skateboarding: history, how to (tricks and grinds, safety first) and the science, K–12 and Adult.
     dict(cid="skt", file="skateboarding-hub.html", slug="skateboarding", name=("Skateboarding", "Skateboarding"), contents="skateboarding-course",
-         drops="skate", res="science", kicker=("A course of study · K–12 and Adult", "Un curso de estudio · K–12 y adultos"),
+         drops=None, res="science", kicker=("A course of study · K–12 and Adult", "Un curso de estudio · K–12 y adultos"),
          lede=("Skateboarding's history, how to do tricks and grinds, and the science of balance. Grades K–12 and adults.",
                "La historia del skate, cómo hacer trucos y grinds, y la ciencia del equilibrio. Grados K–12 y adultos."),
          daily=("Ten short lines a day: history, tricks and the science of skating.",
@@ -273,13 +273,6 @@ EXPLORE = {
     "/world-cultures": (C_, "World Cultures", "Culturas del mundo", "How people live together around the world, K–12.", "Cómo vive la gente en el mundo, K–12."),
     "/us-history": (C_, "U.S. History 6–8", "Historia de EE. UU. 6–8", "The story of the United States, as a full course.", "La historia de Estados Unidos, como un curso completo."),
     "/sports": (C_, "Sports History", "Historia del deporte", "How games got their fields, rules and leagues, K–12.", "Cómo los juegos recibieron sus campos, reglas y ligas, K–12."),
-    "/skate#build": (R_, "Skate Lab: build a board", "Laboratorio de Skate: arma una tabla", "A whole setup for your size, with the reason for each part.", "Una tabla completa para tu tamaño, con la razón de cada pieza."),
-    "/skate#tricks": (R_, "Skate Lab: the trick book", "Laboratorio de Skate: libro de trucos", "Where each foot goes, the steps and what helps.", "Dónde va cada pie, los pasos y lo que ayuda."),
-    "/skate#balance": (R_, "Skate Lab: balance and turning", "Laboratorio de Skate: equilibrio y giros", "Move your center of mass and watch the board.", "Mueve tu centro de masa y mira la tabla."),
-    "/skate#ramp": (R_, "Skate Lab: ramp and energy", "Laboratorio de Skate: rampa y energía", "Drop in and watch stored energy become speed.", "Entra a la rampa y mira cómo la energía se vuelve rapidez."),
-    "/skate#ollie": (R_, "Skate Lab: the ollie", "Laboratorio de Skate: el ollie", "The tail as a lever and the front foot's friction, step by step.", "La cola como palanca y la fricción del pie de adelante, paso a paso."),
-    "/skate#flip": (R_, "Skate Lab: flips and spins", "Laboratorio de Skate: flips y giros", "A 3D board turning about its three axes.", "Una tabla en 3D girando sobre sus tres ejes."),
-    "/skate#grind": (R_, "Skate Lab: grinds and friction", "Laboratorio de Skate: grinds y fricción", "Will you reach the end of the rail?", "¿Llegarás al final del barandal?"),
     "/s24": (("Social Studies", "Estudios Sociales"), "Economics in Social Studies", "Economía en Estudios Sociales", "The economics room in the Social Studies hub.", "La sala de economía en Estudios Sociales."),
 }
 # the rooms the old religions and economics doors listed on each band (kept, so no door is lost)
@@ -440,6 +433,7 @@ def picker(h, o):
 </div>'''
 
 def practice(h):
+    if not h.get("drops"): return ""
     opts = "".join(f'<option value="{g}" data-en="{E(a)}" data-es="{E(b)}">{E(a)}</option>' for g, a, b in GRADES)
     d = h["drops"]
     return f'''<section class="dr-practice no-print" aria-labelledby="h-practice">

@@ -7,9 +7,9 @@ ten strands per band; items [mc|tf|voc|open]. Re-run after editing cul.py / med.
 import json, os, re, sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-import cul, med, spt, mar, unr, sec, skt
+import cul, med, spt, mar, unr, sec
 PAGE = os.path.join(HERE, '..', '..', 'daily-drops.html')
-SUBJECTS = [('cul', 'CUL', cul), ('med', 'MED', med), ('spt', 'SPT', spt), ('mar', 'MAR', mar), ('unr', 'UNR', unr), ('sec', 'SEC', sec), ('skt', 'SKT', skt)]
+SUBJECTS = [('cul', 'CUL', cul), ('med', 'MED', med), ('spt', 'SPT', spt), ('mar', 'MAR', mar), ('unr', 'UNR', unr), ('sec', 'SEC', sec)]
 GRADES = [('K', 'k2'), ('1', 'k2'), ('2', 'k2'), ('3', '35'), ('4', '35'), ('5', '35'),
           ('6', '68'), ('7', '68'), ('8', '68'), ('9-10', '912'), ('11-12', '912'), ('adult', 'adult')]
 BEGIN, END = '/* ══ AOG-DD-WORLDHEALTH-V1 BEGIN', '/* ══ AOG-DD-WORLDHEALTH-V1 END ══ */'
@@ -35,7 +35,6 @@ out = [BEGIN + ' ══ (2026-09-27) World Cultures and Societies; Medicine and 
        '   Built by _work/ddworld/build.py from cul.py, med.py, spt.py, mar.py, unr.py. Edit those, not this block.',
        '   Sports History and The Measured Step: history only, items from the courses\' own lessons.',
        '   The Unseen Realm (AOG-UNR-V1): the primary documents, every scholar\'s idea named as theirs.',
-       '   Skateboarding (AOG-SKT-V1): history, how to do tricks with safety first, and the science; K–12 and Adult.',
        '   Balanced: ideologies described with what supporters and critics say. Traditional medicine',
        '   described respectfully, with what the evidence shows. Bands K–2, 3–5, 6–8, 9–12, Adult. */']
 errs = []
