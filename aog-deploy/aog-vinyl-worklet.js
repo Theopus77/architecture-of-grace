@@ -55,6 +55,9 @@
     this.rate = 0;             /* current speed, buffer samples per output sample */
     this.handOn = false;
     this.handRate = 0;         /* what the hand is doing, in nominal speeds */
+    /* AOG-DJ-SCRATCH-V1 — the hand by PLACE: where the finger has turned the record to (hX, buffer samples from the
+       grab point hP0), how fast it was going (hV), and when, on this clock (hTe, frames; hOff maps the page's clock) */
+    this.hX = null; this.hV = 0; this.hTe = -1; this.hA = 0; this.hB = 1; this.hOff = Infinity; this.hP0 = 0; this.hFirst = false;
     this.motorOn = false;
     this.pitch = 1;            /* pitch slider */
     this.rpm = 1;              /* 1 = 33⅓, 1.35 = 45 */
@@ -162,6 +165,7 @@
     if (!(p >= 1)) p = 1;
     if (p > last) p = last;
     if (Math.abs(this.rate) > 1e-4 || this.handOn) { this.xfPos = this.pos; this.xf = this.xfLen; }
+    if (this.handOn && this.hX !== null) this.hP0 += p - this.pos;      /* a loop or a jump under the hand: the hand moves with it */
     this.pos = p; this.ended = false; this.jumps++;
   };
   /* drop back onto the shadow needle */
@@ -181,6 +185,25 @@
       case "hand":
         if (m.on && !this.handOn) { this.leave(); this.pend = null; }      /* the record it WOULD have been playing */
         if (!m.on && this.handOn && this.slip) this.back();
+        /* AOG-DJ-SCRATCH-V1 — the page says where the finger has turned the record to (x, seconds of record since it
+           landed), how fast (v) and when (ts, the page's clock). The page's clock is mapped onto this one by how long moves
+           usually take to get here (followed slowly), so the record follows the finger's own timing: a move that waited
+           longer on the way does not shake it. The hand lands on the record at the speed it is turning (for 30 ms at most);
+           the first move then takes the record from wherever that left it, so catching a record never yanks it back. */
+        if (m.on && typeof m.x === "number" && this.L) {
+          var bs = this.sr * (this.srRatio || 1), sv = this.srRatio || 1;
+          if (!this.handOn || this.hX === null) {
+            this.hP0 = this.pos; this.hX = 0; this.hV = (m.v || 0) * sv; this.hTe = this.frame; this.hA = this.frame + 0.015 * this.sr; this.hB = this.frame + 0.03 * this.sr; this.hFirst = true;
+          } else {
+            var live = typeof m.ts === "number" && !m.still;
+            if (live) { var o = this.frame - m.ts * this.sr / 1000;
+              if (!(Math.abs(o - this.hOff) < 0.1 * this.sr)) this.hOff = o; else this.hOff += (o - this.hOff) * 0.03; }
+            this.hX = m.x * bs; this.hV = (m.v || 0) * sv;
+            this.hTe = live ? m.ts * this.sr / 1000 + this.hOff : -1;
+            this.hA = this.frame + 0.025 * this.sr; this.hB = this.frame + 0.08 * this.sr;   /* carried on while the next move is due, then let go of over 55 ms */
+            if (this.hFirst && live) { this.hFirst = false; this.hP0 = this.pos - this.hX - this.hV * (this.frame - this.hTe); }
+          }
+        } else this.hX = null;
         this.handOn = !!m.on; this.handRate = m.rate || 0;
         break;
       case "motor":
@@ -380,6 +403,7 @@
     this.aim();
     var runRate = this._run, target = this._target, k = this._k;
     var peak = 0, last = this.len - 3;
+    var hK = 1 - Math.exp(-1 / (0.0025 * sr)), hKp = 1 / (0.010 * sr), hMax = 16 * (this.srRatio || 1), hLim = 0.008 * sr * (this.srRatio || 1);
 
     for (var i = 0; i < n; i++) {
       if (this.sched.length && f0 + i >= this.sched[0].frame) {       /* booked for this sample */
@@ -389,15 +413,36 @@
         if (!L) { for (var zz = i; zz < n; zz++) { outL[zz] = 0; outR[zz] = 0; } break; }
         last = this.len - 3;
       }
-      this.rate += (target - this.rate) * k;
+      var hT = 0, servo = this.handOn && this.hX !== null;
+      if (servo) {
+        /* AOG-DJ-SCRATCH-V1 — under the hand the record goes where the finger is. The finger's last place, carried on at its
+           speed while the next move is due (25 ms after this one arrived), then eased off over 55 ms (a late move still
+           finds the record moving; a hand that stops does not drag it far past), is the target. The platter takes the
+           finger's speed straight away and closes what is left of the gap over 10 ms, through a 2.5 ms grip. Critically
+           damped (10 = 4 × 2.5): it lands without overshoot, ringing or zipper noise. */
+        hT = this.hP0 + this.hX; var ff = 0;
+        if (this.hTe >= 0) { var fs = f0 + i;
+          if (fs <= this.hA) { hT += this.hV * (fs - this.hTe); ff = this.hV; }
+          else { var hw = this.hB - this.hA, hu = fs < this.hB ? fs - this.hA : hw;
+            hT += this.hV * (this.hA - this.hTe + hu - hu * hu / (2 * hw)); ff = this.hV * (1 - hu / hw); } }
+        /* a move held up on the way (a busy page) lands far from the record: the record closes 8 ms of it and lets the
+           rest go, instead of racing to catch up (a race is a squeal) */
+        var he = hT - this.pos;
+        if (he > hLim) { this.hP0 -= he - hLim; hT -= he - hLim; he = hLim; } else if (he < -hLim) { this.hP0 -= he + hLim; hT -= he + hLim; he = -hLim; }
+        var cmd = ff + he * hKp;
+        if (cmd > hMax) cmd = hMax; else if (cmd < -hMax) cmd = -hMax;
+        this.rate += (cmd - this.rate) * hK;
+        if (ff === 0 && this.rate < 1e-4 && this.rate > -1e-4 && hT - this.pos < 0.5 && hT - this.pos > -0.5) this.rate = 0;
+      } else this.rate += (target - this.rate) * k;
       /* AOG-STEMS-V1 · AOG-SILENT-V1: a record coasting to a stop does stop (an endless creep kept the page from resting) */
-      if (target === 0 && this.rate < 1e-4 && this.rate > -1e-4) this.rate = 0;
+      if (!servo && target === 0 && this.rate < 1e-4 && this.rate > -1e-4) this.rate = 0;
       var p = this.pos;
 
-      if (p < 1) { p = this.pos = 1; if (this.rate < 0) this.rate = 0; }
+      if (p < 1) { p = this.pos = 1; if (this.rate < 0) this.rate = 0; if (servo && hT < 1) this.hP0 += 1 - hT; }
       if (p > last) {
         this.pos = last;
-        if (this.rate > 0) { this.rate = 0; this.motorOn = false; this.ended = true; target = 0; this.pend = null; }
+        if (servo) { if (this.rate > 0) this.rate = 0; if (hT > last) this.hP0 -= hT - last; }
+        else if (this.rate > 0) { this.rate = 0; this.motorOn = false; this.ended = true; target = 0; this.pend = null; }
         p = last;
       }
 

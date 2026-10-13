@@ -2344,7 +2344,7 @@ function loop(){
     if(d.buf){
       d.rot = (d.pos / d.buf.sampleRate) * DEG_PER_SEC;
       /* a held hand that stops moving is a hand holding the record still */
-      if(d.held && performance.now() - d.lastMove > 55){ d.handRate *= 0.45; send(d, { t:"hand", on:true, rate:d.handRate }); d.lastMove = performance.now(); }
+      if(d.held && performance.now() - d.lastMove > 40){ d.handRate *= 0.45; send(d, { t:"hand", on:true, rate:d.handRate, x:d.handX || 0, v:0, still:true }); d.lastMove = performance.now(); }
     }
     paintDeck(d);
     const moving = d.buf && (d.motor || Math.abs(d.rate) > 0.01 || d.held);
@@ -3321,7 +3321,11 @@ function bind(){
       LX.flips[deck.id] = 0; deck._sgn = 0;
       deck.held = true; deck.lastMove = lastT;
       deck.handRate = deck.rate;                    /* you catch it at the speed it is turning */
-      send(deck, { t:"hand", on:true, rate:deck.handRate });
+      /* AOG-DJ-SCRATCH-V1 — the engine is told where the finger has turned the record to (x, seconds of record), how
+         fast it was going (v) and when (ts): it puts the record there itself, so the sound follows the finger a few
+         milliseconds after the move arrives instead of trailing the ~70 ms the speed used to be averaged over. */
+      deck.handX = 0;
+      send(deck, { t:"hand", on:true, rate:deck.handRate, x:0, v:deck.rate, ts:(e.timeStamp > 0 ? e.timeStamp : lastT) });
     };
     p.onpointermove = (e)=>{
       const deck = d(); if(!deck || !deck.held) return;
@@ -3353,7 +3357,13 @@ function bind(){
       if(deck.handRate > 16) deck.handRate = 16;
       if(deck.handRate < -16) deck.handRate = -16;
       deck.lastMove = now;
-      send(deck, { t:"hand", on:true, rate:deck.handRate });
+      /* the finger's own speed over its last ~16 ms: the place keeps the record on the finger (and steady), the speed
+         only makes it prompt */
+      let j = trail.length - 2; while(j > 0 && last.t - trail[j].t < 16) j--;
+      const pv = trail[j], vdt = (last.t - pv.t)/1000;
+      const v = vdt > 0.002 ? Math.max(-16, Math.min(16, ((last.a - pv.a)/vdt) / DEG_PER_SEC * TOUCH[touch])) : deck.handRate;
+      deck.handX = spun / DEG_PER_SEC * TOUCH[touch];
+      send(deck, { t:"hand", on:true, rate:deck.handRate, x:deck.handX, v, ts:last.t });
     };
     const up = ()=>{
       const deck = d(); if(!deck || !deck.held) return;
