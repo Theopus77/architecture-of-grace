@@ -256,6 +256,51 @@ const PLUCKED={violins_pizz:1, violas_pizz:1, cellos_pizz:1, contrabass_pizz:1, 
 /* the unpitched pieces' levels next to each other (the kit is one player: PLAYER.kit) */
 const KIT_MIX={bd:1, sn:0.74, cy:0.3, tri:0.27, tamb:0.25, roll:0.4};   /* measured: snare 1 dB under the bass drum, cymbal and roll 3, tambourine 5, triangle 6 */
 function soundName(id){ const s=SOUNDS[id]; return s? (S.lang==="es"?s.es:s.en) : id; }
+/* ══ AOG-BAND-WORLD-V1 (2026-10-13) — Jimmy: "DO them all." Instruments of the world and a solo voice, in two new groups,
+   each named with the place its tradition comes from. Real players: a sitar (Dr. Narayan Bhagawan Raikar, CC0), an erhu
+   (D. Smolken, Karoryfer Samples, CC0), a didgeridoo (VCSL, Versilian Studios, CC0) and two singers from VocalSet (CC BY
+   4.0): a woman (a mezzo-soprano) and a man (a baritone), each on "aah" and "ooh". No recording of a koto or a pan flute
+   was found that we may share, so the computer makes those two, and their names and the ready line say so (made).
+   Made by music-handoff/tools/band/world.py (sources, licences and every step at its top). Each loads only when picked.
+   bend: each note starts lower and glides up into place (from semitones, held hold s, over dur s): the sitar's meend, the
+   erhu's slide. vib: the bow's vibrato (hz, cents each way, after delay s, growing over fade s), as the erhu library's own
+   instrument adds it. drone: one note under every chord, the home note of the key (a didgeridoo plays one note). ══ */
+Object.assign(SOUNDS, {
+  sitar:   {grp:"grpWorld", en:"Sitar · India", es:"Sitar · India", gain:1, rev:0.18, stand:"pluck"},
+  sitar_meend:{grp:"grpWorld", en:"Sitar · India, with meend (a glide up into each note)", es:"Sitar · India, con meend (sube deslizándose a cada nota)", parts:["sitar"], bend:{from:-2, hold:0.07, dur:0.28}, gain:1, rev:0.18, stand:"pluck"},
+  koto:    {grp:"grpWorld", en:"Koto · Japan (computer-made)", es:"Koto · Japón (hecho por computadora)", made:true, gain:1, rev:0.2, stand:"pluck"},
+  erhu:    {grp:"grpWorld", en:"Erhu · China", es:"Erhu · China", vib:{hz:5.8, cents:28, delay:0.25, fade:0.4}, gain:1, rev:0.18, stand:"string"},
+  erhu_slide:{grp:"grpWorld", en:"Erhu · China, with slides", es:"Erhu · China, con deslizamientos", parts:["erhu"], bend:{from:-2, hold:0.02, dur:0.16}, vib:{hz:5.8, cents:28, delay:0.3, fade:0.4}, gain:1, rev:0.18, stand:"string"},
+  panflute:{grp:"grpWorld", en:"Pan flute · the Andes (computer-made)", es:"Flauta de pan · los Andes (hecha por computadora)", made:true, gain:1, rev:0.22, stand:"wind"},
+  didgeridoo:{grp:"grpWorld", en:"Didgeridoo · Aboriginal Australia (hold the home note)", es:"Didgeridoo · Australia aborigen (mantén la nota de casa)", drone:true, gain:1, rev:0.12, stand:"wind"},
+  didgeridoo_rhythm:{grp:"grpWorld", en:"Didgeridoo · Aboriginal Australia, with a rhythm (hold the home note)", es:"Didgeridoo · Australia aborigen, con ritmo (mantén la nota de casa)", drone:true, gain:1, rev:0.12, stand:"wind"},
+  voice_f_aa:{grp:"grpVoices", en:"Voice · “aah”, a woman", es:"Voz · “aa”, una mujer", gain:1, rev:0.2, stand:"string"},
+  voice_f_uu:{grp:"grpVoices", en:"Voice · “ooh”, a woman", es:"Voz · “uu”, una mujer", gain:1, rev:0.2, stand:"string"},
+  voice_m_aa:{grp:"grpVoices", en:"Voice · “aah”, a man", es:"Voz · “aa”, un hombre", gain:1, rev:0.2, stand:"string"},
+  voice_m_uu:{grp:"grpVoices", en:"Voice · “ooh”, a man", es:"Voz · “uu”, un hombre", gain:1, rev:0.2, stand:"string"}
+});
+Object.assign(PLAYER, {sitar:1, koto:1, erhu:1, panflute:1, didgeridoo:1, didgeridoo_rhythm:1, voice_f_aa:1, voice_f_uu:1, voice_m_aa:1, voice_m_uu:1});
+Object.assign(PLUCKED, {sitar:1, koto:1});
+Object.assign(BOWED, {erhu:1, voice_f_aa:1, voice_f_uu:1, voice_m_aa:1, voice_m_uu:1});   /* a bow, or a singer's breath, lets go gently */
+Object.assign(STR, {
+  grpWorld:{en:"World",es:"Del mundo"}, grpVoices:{en:"Voices",es:"Voces"},
+  readyMade:{en:"Ready. The computer makes this sound: we found no recording of it we may share.",es:"Listo. La computadora hace este sonido: no encontramos una grabación que podamos compartir."}
+});
+STR.credit={
+  en:STR.credit.en.replace("Every note is a real player.", "Every note is a real player, except the koto and the pan flute, which the computer makes.")+
+    " The sitar was recorded by Dr. Narayan Bhagawan Raikar, the erhu by D. Smolken (Karoryfer Samples) and the didgeridoo by Versilian Studios; all three are given to everyone (public domain). The singers come from VocalSet by Julia Wilkins, Prem Seetharaman, Alison Wahl and Bryan Pardo (CC BY 4.0); we cut, tuned and moved their notes. We found no koto or pan flute recording we may share.",
+  es:STR.credit.es.replace("Cada nota es un músico de verdad.", "Cada nota es un músico de verdad, menos el koto y la flauta de pan, que los hace la computadora.")+
+    " El sitar lo grabó el Dr. Narayan Bhagawan Raikar; el erhu, D. Smolken (Karoryfer Samples); y el didgeridoo, Versilian Studios: los tres son regalos para todos (dominio público). Las voces vienen de VocalSet de Julia Wilkins, Prem Seetharaman, Alison Wahl y Bryan Pardo (CC BY 4.0); cortamos, afinamos y movimos sus notas. No encontramos una grabación de koto ni de flauta de pan que podamos compartir."
+};
+/* the glide into a note and the vibrato (bend, vib above): on the note's own playback rate, so a loop keeps its seams */
+function worldMove(c, s, snd, when, srcs){
+  const P=s.playbackRate, r=P.value;
+  if(snd.bend){ const b=snd.bend, lo=r*Math.pow(2, b.from/12); P.setValueAtTime(lo, when); if(b.hold) P.setValueAtTime(lo, when+b.hold); P.exponentialRampToValueAtTime(r, when+(b.hold||0)+b.dur); }
+  if(snd.vib){ const v=snd.vib, o=c.createOscillator(), g=gainAt(c, 0);
+    o.frequency.value=v.hz; g.gain.setValueAtTime(0, when+v.delay); g.gain.linearRampToValueAtTime(r*(Math.pow(2, v.cents/1200)-1), when+v.delay+v.fade);
+    o.connect(g); g.connect(P); o.start(when); srcs.push(o);
+    s.addEventListener("ended", ()=>{ try{ o.stop(); }catch(e){} try{ o.disconnect(); g.disconnect(); }catch(e){} }); }   /* never left running */
+}
 /* the parts of a sound, as written (one player can take two parts) */
 function lineup(id){ return (SOUNDS[id]&&SOUNDS[id].parts) || [id]; }
 /* every player a sound needs, once each (the parts and the doublings): these are the recordings it loads */
@@ -396,6 +441,7 @@ function chordParts(c, vo){
   const has={}, add=(inst, m, bs, fifth)=>{ if(m==null || has[inst+":"+m]) return; has[inst+":"+m]=1; const p={inst:inst, m:m}; if(bs) p.bass=true; if(fifth) p.fifth=true; out.push(p); };
   const f5=fifthOf(c);   /* the timpani's second drum: the chord's own fifth (AOG-BAND-SCALES-V1: Any chord has some without a perfect one) */
   if(parts.length===1 && SOUNDS[S.sound] && SOUNDS[S.sound].roots){ const inst=parts[0]; add(inst, fitIn(bass, inst), true); if(f5!=null) add(inst, fitIn(bass+f5, inst), true, true); return out; }
+  if(parts.length===1 && SOUNDS[S.sound] && SOUNDS[S.sound].drone){ const inst=parts[0]; add(inst, fitIn(36+S.key, inst), true); return out; }   /* AOG-BAND-WORLD-V1: the home note under every chord */
   if(parts.length===1){
     const inst=parts[0], seen={};
     vo.forEach(m=>{ const x=fitIn(m, inst); if(x!=null && !seen[x]){ seen[x]=1; out.push({inst:inst, m:x}); } });
@@ -725,6 +771,7 @@ function windVoice(c, ch, inst, m, v, when, art, swellTo, swellDur){
     const buf=set.buf[key]; if(!buf) return null;
     const s=c.createBufferSource(); s.buffer=buf;
     s.playbackRate.value=Math.pow(2, (m-n)/12 - (man.tune[key]||0)/1200);
+    if(art!=="stac" && (snd.bend || snd.vib)) worldMove(c, s, snd, when, srcs);   /* AOG-BAND-WORLD-V1 */
     const gn=gainAt(c, g);
     if(gTo!=null){ gn.gain.setValueAtTime(g, when); gn.gain.linearRampToValueAtTime(gTo, when+swellDur); }
     else if(breathAt(set, key)){ gn.gain.setValueAtTime(0, when); gn.gain.linearRampToValueAtTime(g, when+0.008); }   /* AOG-BAND-BREATH-V1 */
@@ -1179,6 +1226,8 @@ function paintSounds(){
   const opt=id=>`<option value="${id}"${id===S.sound?" selected":""}>${soundName(id)}</option>`;
   sel.innerHTML=order.map(g=>g ? `<optgroup label="${t(g)}">`+groups[g].map(opt).join("")+`</optgroup>` : groups[g].map(opt).join("")).join("");
 }
+GROUP_ORDER.splice(GROUP_ORDER.indexOf("grpAll"), 0, "grpWorld", "grpVoices");   /* AOG-BAND-WORLD-V1: before Everyone */
+
 function paintKeySel(){ $("keySel").innerHTML=KEY_NAMES[S.lang].map((n,i)=>`<option value="${i}"${i===S.key?" selected":""}>${n}</option>`).join(""); }
 function paintProgSel(){
   let html=`<option value="">${t(S.prog.length&&!S.preset?"myOwn":"pickPattern")}</option>`, g=null;
@@ -1296,7 +1345,7 @@ function paintLoad(){
   const snd=SOUNDS[S.sound], keys=setsOf(S.sound), sets=keys.map(setOf), name=soundName(S.sound).split(" · ")[0].toLowerCase();
   if(sets.some(s=>s.state==="failed")){ line.textContent=t("loadFail"); return; }
   const done=sets.reduce((a,s)=>a+s.done,0), all=keys.reduce((a,k)=>a+filesOf(k).length,0), who=snd.who ? snd.who[S.lang] : "";
-  if(sets.every(s=>s.ready)){ line.textContent = done<all ? t("more",{n:done, all:all}) : who ? t("readyWho",{who:who}) : t("ready"); return; }
+  if(sets.every(s=>s.ready)){ line.textContent = done<all ? t("more",{n:done, all:all}) : who ? t("readyWho",{who:who}) : t(snd.made ? "readyMade" : "ready"); return; }
   /* the orchestra counts players: each plays as soon as it is ready */
   if(snd.lean){ line.textContent=t("loadingPlayers",{name:name, n:sets.filter(s=>s.ready).length, all:sets.length}); return; }
   line.textContent=t("loading",{name:name, n:done, all:all})+" "+t("stand");
