@@ -41,6 +41,10 @@ try:
     from kits import STEREO_TRIM
 except ImportError:
     STEREO_TRIM = {}
+try:
+    from kits import FILE_LU                    # AOG-DRUM-PERC-V1
+except ImportError:
+    FILE_LU = {}
 
 OUT = os.path.abspath(os.path.join(HERE, "..", "..", "..", "aog-deploy", "audio", "drums"))
 LEVELS = os.path.join(HERE, "levels.json")
@@ -127,7 +131,30 @@ def make_scratch(t, stereo=False):
     return dsp.fade_in(y, 3)
 
 
-MAKERS = {"slice": make_slice, "chord": make_chord, "chop": make_chop, "scratch": make_scratch}
+def make_stack(t, stereo=False):
+    """AOG-DRUM-PERC-V1: recordings struck together (the tabla's dha: the na and the ghe, both hands at once), each
+    (source, gain, ms late)"""
+    y = np.zeros((1, 2)) if stereo else np.zeros(1)
+    for src, g, ms in t["stack"]:
+        x = from_hit(sources.load2(src) if stereo else sources.load(src))
+        y = dsp.mix_at(y, x, ms / 1000.0, g)
+    return y
+
+
+def make_bend(t, stereo=False):
+    """AOG-DRUM-PERC-V1: the bayan's glide. A recorded ghe, its pitch bent up by `semis` over `over` seconds from `at`,
+    as a player's wrist slides along the skin (the bend is made here; the drum is the recording)"""
+    x = from_hit(sources.load2(t["src"]) if stereo else sources.load(t["src"]))
+    n = len(x); tt = np.arange(n) / SR
+    k = np.clip((tt - t.get("at", 0.06)) / t["over"], 0, 1)
+    rate = 2 ** (t["semis"] * (1 - np.cos(np.pi * k)) / 2 / 12)      # a smooth rise, then held
+    pos = np.cumsum(np.concatenate([[0.0], rate[:-1]]))
+    m = int(np.searchsorted(pos, n - 2))
+    return dsp.varispeed(x, rate[:m])
+
+
+MAKERS = {"slice": make_slice, "chord": make_chord, "chop": make_chop, "scratch": make_scratch,
+          "stack": make_stack, "bend": make_bend}
 
 
 def raw_take(t, stereo=False):
@@ -143,6 +170,8 @@ def raw_take(t, stereo=False):
 def take_sources(t):
     if "parts" in t:
         return [s for s, _ in t["parts"]]
+    if "stack" in t:                            # AOG-DRUM-PERC-V1
+        return [p[0] for p in t["stack"]]
     if "src" in t:
         return [t["src"]]
     return [n[0] if ":" in n[0] else sources_rhodes(n[0]) for n in t.get("notes", [])]
@@ -250,6 +279,7 @@ def all_sources(kit):
                     out += [s for s, _ in t["parts"]]
                 if "src" in t:
                     out.append(t["src"])
+                out += [p[0] for p in t.get("stack", [])]      # AOG-DRUM-PERC-V1
                 for n in t.get("notes", []):
                     out.append(n[0] if ":" in n[0] else sources_rhodes(n[0]))
     return sorted(set(out))
@@ -262,6 +292,10 @@ def levels():
         for p, tg in pads.items():
             if tg is not None and p not in lv[k]:
                 lv[k][p] = round(tg - GUESS[p], 2)
+    for k, pads in FILE_LU.items():             # AOG-DRUM-PERC-V1: these kits set each file's own loudness
+        lv.setdefault(k, {})
+        for p, v in pads.items():
+            lv[k].setdefault(p, v)
     return lv
 
 
