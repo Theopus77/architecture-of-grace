@@ -484,8 +484,17 @@ html:root:root body { --room:#17110c; background-color:#17110c !important;
      the rooms not visited yet are fetched quietly, one file at a time with a pause between: each room's page and its
      code (not its sounds, which are large, and nothing is run). The site's helper (sw.js) keeps them, so the first time
      a door is opened nothing has to come over the network. Never on a phone saving data or on a slow connection. */
+  /* AOG-STEADY-V1 (2026-10-13) — Jimmy: "after 5 notes, it seems to hit a glitch". "Still" was only the Studio's own
+     doors: five seconds after a room opened, the fetching began while the room was being played. Now it waits until no
+     sound has started in any room, and nothing was touched, for five seconds (AOGVU.still), and each file waits again,
+     in a quiet moment. */
   var WARM = {}, warmT = 0;
-  function warmSoon() { clearTimeout(warmT); warmT = setTimeout(warm, 5000); }
+  function calm(fn, own) {
+    var V = window.AOGVU;
+    if (V && V.still && !V.still(5000)) { var t = setTimeout(function () { calm(fn, own); }, 1500); if (own) warmT = t; return; }
+    if (window.requestIdleCallback) requestIdleCallback(fn, { timeout: 2000 }); else fn();
+  }
+  function warmSoon() { clearTimeout(warmT); warmT = setTimeout(function () { calm(warm, true); }, 5000); }
   function warm() {
     var c = navigator.connection; if (c && (c.saveData || /(^|-)2g$/.test(c.effectiveType || ""))) return;
     var next = ROOMS.filter(function (r) { return !WARM[r.id] && !LIVE[r.id]; })[0]; if (!next) return;
@@ -494,7 +503,7 @@ html:root:root body { --room:#17110c; background-color:#17110c !important;
     get("/" + next.file).then(function (res) { return res.ok ? res.text() : ""; }).then(function (html) {
       var urls = [], m, re = /<(?:script[^>]*\ssrc|link[^>]*rel="stylesheet"[^>]*\shref)="([^"]+)"/g;
       while ((m = re.exec(html))) { var u = m[1]; if (!/^(https?:)?\/\//.test(u)) urls.push(new URL(u, location.origin + "/").pathname + (u.split("?")[1] ? "?" + u.split("?")[1] : "")); }
-      var i = 0, step = function () { if (i >= urls.length) { warmSoon(); return; } get(urls[i++]).then(function (x) { return x.blob(); }, function () {}).then(function () { setTimeout(step, 150); }); };
+      var i = 0, step = function () { if (i >= urls.length) { warmSoon(); return; } get(urls[i++]).then(function (x) { return x.blob(); }, function () {}).then(function () { setTimeout(function () { calm(step); }, 150); }); };
       step();
     }, function () {});
   }

@@ -101,11 +101,26 @@
       if (nx) nx.onclick = function () { st.pick = Math.min(LES.length - 1, picked() + 1); save(); paint(); };
     }
     function paintSoon() { clearTimeout(soon); soon = setTimeout(paint, 250); }
+    /* AOG-LESSONS-STEADY-V1 (2026-10-13) — Jimmy, playing on his phone: "after 5 notes, it seems to hit a glitch so I can't
+       keep tempo". A tick made while you play is kept, and drawn on the card, once the instrument has been still for a
+       moment (AOGVU.still: no new sound and no touch for 1.2 s), so drawing the card never lands between two notes.
+       Leaving the page keeps it at once. */
+    var waiting = 0, toSave = false, toPaint = false;
+    function settle() {
+      waiting = 0; var V = window.AOGVU;
+      if (V && V.still && !V.still(1200)) { waiting = setTimeout(settle, 400); return; }
+      if (toSave) { toSave = false; save(); }
+      if (toPaint) { toPaint = false; paintSoon(); }
+    }
+    function later(p) { toSave = true; if (p) toPaint = true; if (!waiting) waiting = setTimeout(settle, 0); }
+    function flush() { if (!toSave && !toPaint) return; clearTimeout(waiting); waiting = 0; if (toSave) { toSave = false; save(); } if (toPaint) { toPaint = false; paint(); } }
+    window.addEventListener("pagehide", flush);
+    document.addEventListener("visibilitychange", function () { if (document.hidden) flush(); });
     var api = {
       /* the lesson on screen stays on screen when it is finished, with Next lesson, until it is pressed */
-      mark: function (id) { if (!STEPS[id] || st.done[id]) return false; if (st.pick == null && LES.length) st.pick = picked(); st.done[id] = true; save(); paintSoon(); return true; },
+      mark: function (id) { if (!STEPS[id] || st.done[id]) return false; if (st.pick == null && LES.length) st.pick = picked(); st.done[id] = true; later(true); return true; },
       marked: function (id) { return !!st.done[id]; },
-      count: function (k) { st.n[k] = (st.n[k] || 0) + 1; save(); return st.n[k]; },
+      count: function (k) { st.n[k] = (st.n[k] || 0) + 1; later(false); return st.n[k]; },
       counted: function (k) { return st.n[k] || 0; },
       paint: paint,
       picked: function () { return LES[picked()]; },

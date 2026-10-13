@@ -1132,6 +1132,16 @@ function leftOf(dec, b){
   for(let i=0;i<L.length;i++) d[i]=L[i]*g;
   return m;
 }
+/* AOG-BAND-STEADY-V1 (2026-10-13) — Jimmy: "after 5 notes, it seems to hit a glitch so I can't keep tempo" (the piano;
+   the band fetched the same way). Resolves once no sound has started and nothing was touched for ms (AOGVU.still), in a
+   quiet moment. */
+let RUSH=0;   /* a take being made (Send, a re-render) needs every recording now: nothing waits */
+function bandStill(ms){
+  return new Promise(res=>{ const V=window.AOGVU, busy=()=>!RUSH && !!(V && V.still && !V.still(ms));
+    const go=()=>{ if(busy()){ setTimeout(go, 500); return; }
+      if(window.requestIdleCallback) requestIdleCallback(()=>{ if(busy()) go(); else res(); }, {timeout:1000}); else setTimeout(res, 0); };
+    go(); });
+}
 function loadInst(key, onStep, lanes){
   const set=setOf(key);
   if(set.job) return set.job;
@@ -1140,12 +1150,16 @@ function loadInst(key, onStep, lanes){
   const dec=new OC(1, 1, 32000);
   const files=filesOf(key), main=mainOf(key); set.total=files.length;
   let idx=0;
-  async function worker(){
+  /* AOG-BAND-STEADY-V1: once the player can play (its held notes are in), the rest (loud and short notes) come one at a
+     time, each when the instrument has been still for a few seconds, so unpacking them never lands between two notes */
+  async function worker(k){
     while(idx<files.length){
+      if(set.ready){ if(k>=1) return; await bandStill(3000); if(idx>=files.length) return; }
       const f=files[idx++];
       try{
         const r=await fetch(fileUrl(key, f)); if(!r.ok) throw new Error(r.status);
-        let b=await decodeWith(dec, await r.arrayBuffer());
+        const ab=await r.arrayBuffer(); if(set.ready) await bandStill(3000);
+        let b=await decodeWith(dec, ab); if(set.ready) await bandStill(3000);
         if(b.numberOfChannels>1 && leftOnly(key)) b=leftOf(dec, b);
         set.buf[f]=b; set.start[f]=onsetOf(b, instOf(key)!=="kit");
         if(f.slice(-1)!=="t" && holds(instOf(key))){ const lp=findLoop(b, set.start[f], parseInt(f,10)); if(lp) set.loop[f]=lp; }   /* AOG-BAND-HOLD-V1 */
@@ -1155,7 +1169,7 @@ function loadInst(key, onStep, lanes){
       if(onStep) onStep();
     }
   }
-  const ws=[]; for(let i=0;i<(lanes||6);i++) ws.push(worker());
+  const ws=[]; for(let i=0;i<(lanes||6);i++) ws.push(worker(i));
   set.job=Promise.all(ws).then(()=>{
     set.state = set.ready ? "ready" : "failed";
     if(!set.ready) set.job=null;
@@ -1524,7 +1538,7 @@ async function bounce(dest){   /* AOG-SEND-TO-PADS-V1: dest "pads" = the whole r
   if(!S.prog.length){ line.textContent=t("sendNeed"); return; }
   btn.disabled=true; line.textContent=t("sending");
   try{
-    await loadSound(S.sound, paintLoad);
+    RUSH++; try{ await loadSound(S.sound, paintLoad); } finally { RUSH--; }
     if(drumsLive() && !DRUM.buf){ ctx(); try{ DRUM.buf=await decodeWith(ac, await DRUM.take.wav.arrayBuffer()); }catch(e){ DRUM.buf=null; } }
     const bpm=curBpm(), barSec=beatsPerBar()*60/bpm, L=S.prog.length;
     const reps=Math.max(1, Math.ceil((22/barSec)/L)), bars=L*reps;
@@ -1600,7 +1614,7 @@ window.AOGRoomRender={
   async render(p){
     p=p||{}; const K=AOGRecorder.notes, evs=K.events(p.events, 20, 108), id=SOUNDS[p.sound] ? p.sound : S.sound;
     const sr=p.sr>=8000 && p.sr<=192000 ? p.sr : 44100, set=p.set||{}, era=typeof set.era==="number" ? Math.max(0, Math.min(1, set.era)) : S.era;
-    await loadSound(id);
+    RUSH++; try{ await loadSound(id); } finally { RUSH--; }
     const oc=K.context(K.sec(evs, p.sec, p.tail==null ? 1.5 : p.tail), sr);
     if(window.AOGAmp && AOGAmp.load) await AOGAmp.load(oc);   /* a pedalboard in the chain, when the band has one */
     const ch=makeChain(oc); await addCrunch(ch);

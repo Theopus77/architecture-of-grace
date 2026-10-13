@@ -56,7 +56,16 @@
      slow check below (a microphone or a cable has no start). The page they sit in is told too, so the Studio's pair
      wakes for the room's sound. */
   var WAKE = [];
+  /* AOG-STEADY-V1 (2026-10-13) — Jimmy: "after 5 notes, it seems to hit a glitch so I can't keep tempo". When the hands
+     last played: every sound a room starts (it wakes the meters, here and in the Studio around it) and every touch or key
+     on this page. AOGVU.still(ms) is true once nothing has happened for ms; work that can wait (the Studio fetching the
+     rooms not opened yet) waits for it, so it never lands between two notes. */
+  var STIR = 0;
+  function stir() { STIR = Date.now(); }
+  try { ["pointerdown", "keydown"].forEach(function (k) { document.addEventListener(k, stir, { capture: true, passive: true }); }); } catch (e) {}
+  function quietFor(ms) { return Date.now() - STIR >= ms; }
   function wake() {
+    STIR = Date.now();
     for (var i = 0; i < WAKE.length; i++) try { WAKE[i](); } catch (e) {}
     try { if (window.parent !== window && window.parent.AOGVU && window.parent.AOGVU.wake) window.parent.AOGVU.wake(); } catch (e) {}
   }
@@ -204,7 +213,7 @@
       HUSHED.forEach(function (c) { try { if (c.state === "suspended") c.resume(); } catch (e) {} }); HUSHED = [];
     }
   }
-  window.AOGVU = { levels: levels, mount: mount, draw: draw, wake: wake, hush: hush, own: ownCtx };
+  window.AOGVU = { levels: levels, mount: mount, draw: draw, wake: wake, hush: hush, own: ownCtx, still: quietFor };
 
   /* ══ AOG-STUDIO-ROOM-SOUND-V1 (Jimmy, 2026-10-09: "1, 3, 2, 4" — 3: make it sound like a real room). One knob, shared by
      every instrument room: Dry, Small room, Studio, Hall. The room is a reverb made here (a stereo tail that dies away and
