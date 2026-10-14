@@ -47,10 +47,10 @@ const APART=()=>{ let n=0; const over=[];
     console.log("== "+dev+" upright");
     const {c, p}=await open(opt, dev);
     /* 1. the pickers */
-    const ui=await p.evaluate(()=>{ const s=document.getElementById("scaleSel"), r=document.getElementById("anyRoot"), k=document.getElementById("anyKind"), vis=el=>!!el && el.getBoundingClientRect().width>0;
+    const ui=await p.evaluate(()=>{ const s=document.getElementById("scaleSel"), r=document.getElementById("anyRoots"), k=document.getElementById("anyKind"), vis=el=>!!el && el.getBoundingClientRect().width>0;
       return {opts:s.options.length, first:s.options[0].value, firstT:s.options[0].textContent, val:s.value, groups:s.querySelectorAll("optgroup").length,
         inGroups:s.querySelectorAll("optgroup option").length, vis:vis(s), say:document.getElementById("scaleSay").textContent,
-        roots:r.options.length, kinds:k.options.length, kgroups:k.querySelectorAll("optgroup").length, play:document.getElementById("anyPlay").textContent, anyVis:vis(r)&&vis(k)&&vis(document.getElementById("anyPlay")),
+        roots:r.querySelectorAll(".ar").length, kinds:k.options.length, kgroups:k.querySelectorAll("optgroup").length, play:document.getElementById("anyPlay").textContent, anyVis:vis(r)&&vis(k)&&vis(document.getElementById("anyPlay")),
         marks:document.querySelectorAll("#kbd .sc").length, size:parseFloat(getComputedStyle(s).fontSize), kbd:document.getElementById("kbd").getBoundingClientRect().top, row:s.getBoundingClientRect().top}; });
     ok(ui.vis && ui.opts===155 && ui.first==="" && ui.firstT==="Off" && ui.val==="" && ui.groups===13 && ui.inGroups===154, `the Scale menu: Off first and picked, 154 scales in ${ui.groups} groups`);
     ok(ui.marks===0 && /Pick a scale/.test(ui.say), "Off: no marks on the keys; the line: "+ui.say);
@@ -88,11 +88,11 @@ const APART=()=>{ let n=0; const over=[];
     await p.evaluate(()=>document.getElementById("langBtn").click()); await p.waitForTimeout(100);
     const es=await p.evaluate(()=>({lab:document.querySelector('[data-t="scaleLab"]').textContent, off:document.getElementById("scaleSel").options[0].textContent,
       g:document.querySelector("#scaleSel optgroup").label, say:document.getElementById("scaleSay").textContent, any:document.querySelector('[data-t="anyH"]').textContent,
-      kind:document.querySelector('[data-t="anyKind"]').textContent, root:document.querySelector('[data-t="anyRoot"]').textContent, play:document.getElementById("anyPlay").textContent,
-      kg:document.querySelector("#anyKind optgroup").label, k0:document.getElementById("anyKind").options[0].textContent, r0:document.getElementById("anyRoot").options[0].textContent,
+      kind:document.querySelector('[data-t="anyKind"]').textContent,  play:document.getElementById("anyPlay").textContent,
+      kg:document.querySelector("#anyKind optgroup").label, k0:document.getElementById("anyKind").options[0].textContent, r0:document.querySelector("#anyRoots .ar").textContent,
       line:document.getElementById("anyLine").textContent}));
     ok(es.lab==="Escala" && es.off==="Apagada" && es.g==="Pentatónicas y blues" && /^Escala dórica de Sol/.test(es.say) && /Sol, la nota casa/.test(es.say), "Spanish: the menu and the line: "+es.say);
-    ok(es.any==="Cualquier acorde" && es.root==="Raíz" && es.kind==="Tipo" && es.play==="▶ Tocar el acorde" && es.kg==="Acordes de tres notas" && es.k0==="Mayor · brillante" && es.r0==="Do", "Spanish: Any chord: "+[es.any,es.root,es.kind,es.play,es.k0,es.line].join(" | "));
+    ok(es.any==="Cualquier acorde: toca una raíz" && es.kind==="Más tipos" && es.play==="▶ Tocar el acorde" && es.kg==="Acordes de tres notas" && es.k0==="Mayor · brillante" && es.r0==="Do", "Spanish: Any chord: "+[es.any,es.kind,es.play,es.k0,es.r0,es.line].join(" | "));
     await p.evaluate(()=>document.getElementById("langBtn").click()); await p.waitForTimeout(100);
     /* 5. any chord: every kind on three roots, on the trumpet */
     await p.waitForFunction(()=>soundReady(S.sound), null, {timeout:60000}).catch(()=>{});
@@ -100,7 +100,7 @@ const APART=()=>{ let n=0; const over=[];
     const run=async(sound, roots, exact)=>{
       await p.selectOption("#soundSel", sound); await p.waitForFunction(id=>soundReady(id), sound, {timeout:90000}).catch(()=>{});
       const bad=[]; let n=0, lit=0;
-      for(const r of roots){ await p.selectOption("#anyRoot", String(r));
+      for(const r of roots){ await p.click(`#anyRoots .ar[data-r="${r}"]`); await p.evaluate("anyRelease()");
         for(const k of await p.evaluate(()=>AOGChords.ids())){
           await p.selectOption("#anyKind", k);
           await p.evaluate("__v=[]"); await p.click("#anyPlay");
@@ -126,7 +126,7 @@ const APART=()=>{ let n=0; const over=[];
       ok(ar.n===45 && ar.bad.length===0, `the timpani: the root and the chord's own fifth, never a note outside the chord (${ar.n})`+(ar.bad.length?" bad: "+ar.bad.slice(0,4).join("; "):""));
     }
     /* the line names the chord and its notes */
-    await p.selectOption("#anyRoot","3"); await p.selectOption("#anyKind","m7b5");
+    await p.click('#anyRoots .ar[data-r="3"]'); await p.selectOption("#anyKind","m7b5");
     ok(/^E♭m7♭5: E♭ G♭ A B♭|^D♯m7♭5: D♯ F♯ A C♯/.test(await p.textContent("#anyLine")), "the line: "+await p.textContent("#anyLine"));
     /* 6. nothing scrolls sideways */
     const sc=await p.evaluate(()=>({sw:document.documentElement.scrollWidth, iw:innerWidth}));

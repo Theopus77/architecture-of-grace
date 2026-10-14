@@ -21,7 +21,7 @@ LAB = {
     "lower": ("Press ◀ Lower", "Pulsa ◀ Más grave"),
     "pad1": ("Tap a chord pad", "Toca un pad de acorde"),
     "padall": ("Play all six chord pads", "Toca los seis pads de acordes"),
-    "seven": ("In the row of chords by the neck, play one of the last four", "En la fila de acordes junto al mástil, toca uno de los cuatro últimos"),
+    "seven": ("In the row of chords by the neck, play one of the last six", "En la fila de acordes junto al mástil, toca uno de los seis últimos"),
     "mute": ("Press ✋ Mute the strings", "Pulsa ✋ Apagar las cuerdas"),
     "keyG": ("Set the Key to G", "Pon el Tono en Sol"),
     "chG": ("Play a G chord", "Toca un acorde de Sol"),
