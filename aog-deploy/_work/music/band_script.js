@@ -1502,6 +1502,14 @@ function anyMark(){
   document.querySelectorAll("#anyRoots .ar").forEach(b=>{ const v=+b.getAttribute("data-r")===r?"true":"false"; if(b.getAttribute("aria-pressed")!==v) b.setAttribute("aria-pressed", v); });
   document.querySelectorAll("#anyKinds .ak").forEach(b=>{ const v=b.getAttribute("data-k")===k?"true":"false"; if(b.getAttribute("aria-pressed")!==v) b.setAttribute("aria-pressed", v); });
 }
+/* AOG-ANY-NEAR-V1 (2026-10-14) — Jimmy (iPad): "May the key get closer to the keyboard. It is still not seeable." Any chord
+   sits right under the chord strip whatever moved the strip (an older copy of aog-labdoors.js a device kept moved only the
+   strip, leaving Any chord under the scale). Checked once the page has settled, and again whenever the strip moves. */
+(function anyNear(){
+  const go=()=>{ const s=document.getElementById("chordStrip"), a=document.getElementById("anyBox"); if(s && a && s.parentNode && s.nextElementSibling!==a) s.after(a); };
+  window.addEventListener("load", ()=>{ go(); setTimeout(go, 400);
+    const s=document.getElementById("chordStrip"); if(s && s.parentNode && window.MutationObserver) new MutationObserver(go).observe(s.parentNode, {childList:true}); });
+})();
 function anyRootsPaint(){
   const rb=$("anyRoots"), kb=$("anyKinds"), sym=anySym(); if(!rb || !kb || !sym) return;
   rb.setAttribute("aria-label", t(ANY_LAB)); kb.setAttribute("aria-label", t(ANY_KLAB));
