@@ -6,7 +6,7 @@
 const LKEY="aog.band.v1";
 /* every recording the page can load: for each instrument, the held notes (soft "s" and loud "l") and the short ones ("t"),
    and a tuning correction in cents for the few that were recorded a little off (made by _work/music/make_band.py) */
-const MAN={"bassoon":{"sus":[34,37,41,45,46,48,55,60,63,68,69,72,75],"susL":[34,37,41,45,46,48,55,60,63,68,69,72,75],"stac":[34,38,41,45,48,51,52,55,57,60,64,67,72],"tune":{},"dir":"bassoon2"},"clarinet":{"sus":[50,53,58,62,65,70,74,77,82,86,89],"susL":[50,53,58,62,65,70,74,77,82,86,89],"stac":[50,53,58,62,65,70,74,77,82,86,89],"tune":{"50t":-30,"53t":-30,"58s":3,"58t":-41,"62s":5,"62t":-33,"65t":-24,"70s":3,"70t":-11,"74s":3,"74t":-20,"77t":-21,"82s":3,"82t":-6,"86t":-3,"89t":-4},"dir":"clarinet2"},"flute":{"sus":[60,64,69,72,76,81,84,88,93,96],"susL":[60,64,69,72,76,81,84,88,93],"stac":[69,72,76,81,84,88,93,96],"tune":{"60s":3,"69t":-4,"93t":4},"dir":"flute2"},"horn":{"sus":[33,36,39,43,46,50,53,57,60,63,66,70,74,77],"susL":[36,39,43,46,50,53,57,60,63,66],"stac":[33,36,39,43,46,50,53,57,60,63,66,70,74,77],"tune":{"33s":-6,"33t":-5,"36t":-31,"57s":-3,"57t":-4,"74t":3},"dir":"horn2"},"oboe":{"sus":[58,62,65,70,74,77,82,86,89],"susL":[58,62,65,70,74,77,82,86,89],"stac":[58,62,65,70,74,77,82,86,89],"tune":{"58l":3,"86t":6,"89t":-4},"dir":"oboe2"},"sax":{"sus":[49,51,53,55,57,59,61,63,65,67,69,71,73,75,77,79,80],"susL":[49,51,53,55,57,59,61,63,65,67,69,71,73,75,77,79,80],"stac":[],"tune":{}},"trombone":{"sus":[34,37,39,41,46,50,53,60,61,63,65],"susL":[34,37,39,41,46,50,53,60,61,63,65],"stac":[34,41,46,53,58,62,65],"tune":{"41t":11},"dir":"trombone2"},"trumpet":{"sus":[53,57,60,63,67,70,74,77,81,84],"susL":[53,57,60,63,67,70,74,77,81,84],"stac":[53,57,60,63,65,67,70,74,77,81,84],"tune":{"53l":-3,"53t":-6,"60t":5,"67l":4,"67s":7,"74l":3,"77t":3,"81l":4,"84t":-3},"dir":"trumpet2"},"tuba":{"sus":[29,34,39,41,46,50,53,58,62],"susL":[34,39,41,46,50,53,58],"stac":[34,39,41,46,50,53,58,62],"tune":{"29s":-6,"34s":-3,"34t":-18,"41l":3,"46t":-15,"50s":4,"50t":-10,"53l":-3,"53t":-5,"58t":-10},"dir":"tuba2"},"bassoon_vib":{"sus":[43,45,48,55,57,60,64,67,69,72],"susL":[43,45,48,55,60,64,67,69,72],"stac":[34,38,41,45,48,51,52,55,57,60,64,67,72],"tune":{},"stacDir":"bassoon","dir":"bassoon_vib2"},"cellos":{"sus":[36,40,43,47,50,53,57,60,64,67,71,74,77],"susL":[36,40,43,47,50,53,57,60,64,67,71,74,77],"stac":[36,40,43,47,50,53,57,60,64,67,71,74,77],"tune":{"36t":5,"40t":14,"47t":4,"53t":4,"57t":4,"60t":8,"77t":7},"dir":"cellos2"},"cellos_pizz":{"sus":[36,40,43,47,50,53,57,60,64,67,71,74,77],"susL":[36,40,43,47,50,53,57,60,64,67,71,74,77],"stac":[],"tune":{"40l":4,"40s":12,"43s":-3,"47l":-8,"47s":-3,"53s":12,"57s":-4,"60l":3,"60s":4,"64s":5,"67s":-3,"71l":3,"71s":3,"74l":13,"74s":4,"77l":6,"77s":-3},"dir":"cellos_pizz2"},"contrabass":{"sus":[30,31,34,36,38,40,42,44,45,49,52,56,59],"susL":[30,31,34,36,38,40,42,44,45,49,52,56,59],"stac":[28,30,31,34,36,38,40,42,44,45,49,52,56,59],"tune":{"28t":-3,"30t":-24,"34t":17,"36t":7,"40t":-7,"45t":11,"49t":6,"52t":17,"56t":-7},"dir":"contrabass2"},"contrabass_pizz":{"sus":[28,30,31,34,36,38,40,42,44,45,49,52,56,59],"susL":[],"stac":[],"tune":{"28s":-10,"30s":-6,"31s":-18,"34s":3,"36s":9,"38s":6,"42s":-10,"44s":4,"45s":18,"56s":-6,"59s":-6},"dir":"contrabass_pizz2"},"flute_vib":{"sus":[60,64,69,72,76,81,84,88,93,96],"susL":[],"stac":[69,72,76,81,84,88,93,96],"tune":{"69t":-4,"93t":4},"stacDir":"flute","dir":"flute_vib2"},"glockenspiel":{"sus":[79,84,91,96,103,108],"susL":[],"stac":[],"tune":{"103s":16,"108s":23,"79s":8,"84s":12,"91s":12,"96s":16},"dir":"glockenspiel2"},"harp":{"sus":[28,31,35,38,41,45,48,52,55,59,62,65,69,72,76,79,83,86,89,93,95,98,101],"susL":[],"stac":[],"tune":{"101s":-30,"28s":-15,"31s":-21,"35s":-13,"38s":-5,"41s":-7,"45s":-4,"52s":-4,"55s":-8,"59s":-12,"62s":-12,"69s":-10,"72s":-10,"76s":-11,"79s":-6,"83s":-8,"86s":-8,"89s":-6,"93s":-18,"95s":-9,"98s":-9},"dir":"harp2"},"horn_mute":{"sus":[46,51,53,60,63,68,70,74,77],"susL":[46,51,53,60,63,68,70],"stac":[],"tune":{},"dir":"horn_mute2"},"kit":{"sus":[],"susL":[],"stac":[],"tune":{},"hits":{"bd":["bd1","bd2"],"sn":["sn1","sn2"],"cy":["cy1","cy2"],"tri":["tri1","tri2"],"tamb":["tamb1","tamb2"],"roll":["roll1"]},"dir":"kit2"},"marimba":{"sus":[41,48,55,59,65,72,79,83,89,96],"susL":[],"stac":[],"tune":{"72s":4,"96s":3},"dir":"marimba2"},"oboe_vib":{"sus":[58,62,65,70,74,77,82,86,89],"susL":[58,62,65,70,74,77,82,86,89],"stac":[58,62,65,70,74,77,82,86,89],"tune":{"58l":3,"74l":3,"82l":3,"86l":-4,"86t":6,"89t":-4},"stacDir":"oboe","dir":"oboe_vib2"},"piccolo":{"sus":[79,84,91,96,103],"susL":[],"stac":[82,91,94,103,106],"tune":{"103t":4,"106t":10,"82t":-5,"84s":-3,"91s":4,"94t":-4,"96s":6},"dir":"piccolo2"},"timpani":{"sus":[42,48,49,52,55],"susL":[42,48,49,52,55],"stac":[41,47,49,52,55],"tune":{"41t":67,"42l":51,"42s":-11,"48l":-58,"48s":-68,"49l":-10,"49s":-9,"49t":46,"52l":36,"52s":-29,"52t":36,"55l":7,"55s":41,"55t":-44},"dir":"timpani2"},"trombone_vib":{"sus":[41,44,46,48,51,53,56,58,60,62,63],"susL":[],"stac":[34,41,46,53,58,62,65],"tune":{"41t":11},"stacDir":"trombone","dir":"trombone_vib2"},"trumpet_harmon":{"sus":[58,60,63,68,70,74,77,81],"susL":[58,60,63,68,70,74,77,81],"stac":[],"tune":{"58l":-3,"58s":-3,"74l":4,"81s":3},"dir":"trumpet_harmon2"},"trumpet_straight":{"sus":[58,60,62,67,70,74,77,81],"susL":[58,60,62,67,70,74,77,81],"stac":[],"tune":{"58s":-4},"dir":"trumpet_straight2"},"trumpet_vib":{"sus":[53,57,60,63,65,67,70,74,77,81,84],"susL":[53,57,60,63,65,67,70,74,77,81,84],"stac":[53,57,60,63,65,67,70,74,77,81,84],"tune":{"53s":-12,"63l":3,"63s":-3,"65l":5,"74l":-4,"74s":4,"77s":4,"84l":-4,"53t":-6,"60t":5,"77t":3,"84t":-3},"stacDir":"trumpet","dir":"trumpet_vib2"},"violas":{"sus":[48,50,52,55,59,62,65,69,72,76,79,83,86],"susL":[48,50,52,55,59,62,65,69,72,76,79,83,86],"stac":[48,52,55,59,62,65,69,72,76,79,83,86],"tune":{"48t":9,"52t":-7,"55t":4,"59t":-5,"65t":6},"dir":"violas2"},"violas_pizz":{"sus":[48,52,55,59,62,65,69,72,76,79,83,86],"susL":[48,52,55,59,62,65,69,72,76,79,83],"stac":[],"tune":{"48l":-5,"52l":-3,"55l":6,"59l":-14,"69l":-15,"69s":-7,"72l":-11,"76l":-7,"79l":-8,"79s":-5,"83s":-12,"86s":-26},"dir":"violas_pizz2"},"violins":{"sus":[55,57,59,62,66,69,72,76,79,83,86],"susL":[55,57,59,62,66,69,72,76,79,83,86],"stac":[55,57,59,62,66,69,72,76,79,83,86],"tune":{"59t":-8,"69t":7},"dir":"violins2"},"violins_pizz":{"sus":[55,57,59,62,66,69,72,76,79,83,86],"susL":[55,57,59,62,66,69,72,76,79,83,86],"stac":[],"tune":{"55s":-5,"57l":-4,"57s":-8,"59s":-7,"62l":-4,"62s":3,"66s":-8,"69l":-3,"76s":-7,"79l":-3,"79s":-5,"83l":-6,"83s":-3,"86l":-11},"dir":"violins_pizz2"},"xylophone":{"sus":[67,72,79,84,91,96,103,108],"susL":[],"stac":[],"tune":{"103s":19,"108s":16,"67s":13,"72s":12,"79s":14,"84s":15,"91s":16,"96s":17},"dir":"xylophone2"},"tenor":{"sus":[44,46,48,50,52,54,56,58,60,62,64,66,68,70,72,74,76,78,80,82,84,86,88],"susL":[44,46,48,50,52,54,56,58,60,62,64,66,68,70,72,74,76,78,80,82,84,86,88],"stac":[44,46,48,50,52,54,56,57,60,62,64,66,68,70,72,74,76,77,80,81,84,86,88],"tune":{"44t":-9,"50t":-6,"54t":4,"60t":-4,"62t":-5,"70t":5,"72t":3,"88t":6}},"tenor_vib":{"sus":[46,48,50,52,54,58,60,62,64,66,70,72,74,76,79,80,82,84,86],"susL":[],"stac":[44,46,48,50,52,54,56,57,60,62,64,66,68,70,72,74,76,77,80,81,84,86,88],"tune":{"46s":-4,"58s":-7,"70s":-4,"48s":3,"72s":-5,"84s":3,"50s":5,"62s":4,"74s":7,"86s":6,"64s":3,"66s":-7,"80s":3,"44t":-9,"50t":-6,"54t":4,"60t":-4,"62t":-5,"70t":5,"72t":3,"88t":6},"stacDir":"tenor"},"soprano":{"sus":[58,62,66,70,74,78,82,88],"susL":[58,62,66,70,74,78,82,88],"stac":[58,62,66,70,74,78,82,86],"tune":{"62s":-3,"58l":-3,"62l":-4,"74l":3,"70t":4,"74t":5,"78t":4}},"bagpipe":{"sus":[68,71,73,75,76,78,80,81,83],"susL":[],"stac":[],"tune":{"68s":51,"71s":-22,"73s":-19,"75s":-30,"76s":-7,"78s":-6,"80s":-37,"81s":-4,"83s":-7}},"bagpipe_drones":{"sus":[52,55,58,61,64],"susL":[],"stac":[],"tune":{"52s":-4,"55s":-4,"58s":-4,"61s":-4,"64s":-4}},"banjo":{"sus":[39,40,41,42,43,44,45,46,47,49,50,51,52,53,54,55,57,58,59,60,61,63,67,68,70,71],"susL":[],"stac":[],"tune":{"39s":33,"40s":42,"41s":49,"42s":49,"43s":42,"44s":41,"45s":56,"46s":43,"47s":48,"49s":43,"50s":52,"51s":49,"52s":44,"53s":45,"54s":45,"55s":57,"57s":14,"58s":28,"59s":40,"60s":42,"61s":42,"63s":18,"67s":10,"68s":26,"70s":47}},"dobro":{"sus":[43,46,49,52,55,58,61,64,68,71,74,77,80,83,86],"susL":[],"stac":[],"tune":{"43s":-4,"49s":-5,"55s":-4,"58s":-10,"61s":-9,"64s":-10,"68s":-11,"71s":-12,"74s":-14,"77s":-12,"80s":-13,"83s":-15,"86s":-15}},"fiddle":{"sus":[55,57,60,64,67,69,72,76,79,81,84,88],"susL":[55,57,60,64,67,69,72,76,79,81,84,88],"stac":[55,57,60,64,67,69,72,76,79,81,84,88],"tune":{"57s":4,"60s":22,"84s":-6,"64s":5,"76s":6,"88s":5,"55s":-3,"67s":-3,"69l":16,"81l":7,"84l":-8,"64l":4,"76l":17,"88l":10,"79l":3,"81t":-7,"64t":-4,"55t":8}},"harmonica":{"sus":[60,64,67,72,76,79,84,88,91,96],"susL":[60,64,72,76,79,84,88,91,96],"stac":[],"tune":{"79s":-3,"84l":-6,"96l":3,"79l":-3,"91l":7}},"mandolin":{"sus":[55,58,61,64,67,70,73,76,79,82,85,88],"susL":[],"stac":[],"tune":{"58s":-7,"61s":-4,"64s":-5,"67s":-8,"70s":-8,"73s":-9,"76s":-11,"79s":-9,"82s":-11,"85s":-12,"88s":-12}},"mandolin_trem":{"sus":[55,58,61,64,67,70,73,76,79,82,85,88],"susL":[],"stac":[],"tune":{"55s":-4,"58s":-6,"61s":-3,"70s":-8,"73s":-7,"76s":-9,"79s":-8,"82s":-9,"85s":-8,"88s":-10}},"melodica":{"sus":[53,56,59,62,65,68,71,74,77,80,83,86,89],"susL":[53,56,59,62,65,68,71,74,77,80,83,86,89],"stac":[],"tune":{"86l":3}},"steel":{"sus":[46,49,52,55,58,61,64,67,70,73,76,79,82,85],"susL":[],"stac":[],"tune":{"46s":10,"49s":6,"52s":9,"55s":8,"58s":10,"61s":8,"64s":4,"67s":6,"73s":-5,"76s":-7,"79s":-10,"82s":-11,"85s":-10}},"recorder":{"sus":[72,74,76,78,80,82,84,86,88,90,91,94,96],"susL":[],"stac":[72,74,76,78,80,82,84,86,88,90,91,94],"tune":{"94s":4,"72s":3,"96s":8,"74s":4,"76s":5,"88s":4,"78s":9,"90s":3,"82t":3,"86t":-3,"76t":6,"78t":7,"80t":10},"source":{"made":false,"by":"Versilian Studios","from":"VCSL, Baroque Soprano Recorder","url":"https://github.com/sgossner/VCSL","license":"CC0-1.0"}},"recorder_alto":{"sus":[65,68,70,72,74,76,78,80,82,84,86,88],"susL":[],"stac":[66,68,70,72,74,76,78,80,82,84,86,88],"tune":{"72s":4,"84s":4,"78s":7,"65s":4,"68s":3,"80s":4,"74t":6,"76t":4,"88t":3,"66t":17,"78t":4,"68t":8},"source":{"made":false,"by":"Versilian Studios","from":"VCSL, Baroque Alto Recorder","url":"https://github.com/sgossner/VCSL","license":"CC0-1.0"}},"ukulele":{"sus":[59,60,61,62,63,64,65,66,67,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84],"susL":[],"stac":[],"tune":{"59s":14,"60s":9,"61s":18,"62s":8,"63s":9,"65s":3,"66s":3,"67s":3,"69s":3,"71s":14,"72s":11,"73s":9,"74s":11,"75s":4,"76s":6,"81s":9,"82s":4,"83s":4,"84s":7},"source":{"made":true,"by":"Roberto (zenvoid.org), FreePats","from":"Spanish Classical Guitar, its nylon strings shaped like a ukulele (no ukulele recording was found)","url":"https://github.com/freepats/spanish-classical-guitar","license":"CC0-1.0"}},"boomwhackers":{"sus":[36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88],"susL":[],"stac":[],"tune":{},"source":{"made":true,"by":"Architecture of Grace","from":"synthesized here (no recording was found)","url":"","license":"CC0-1.0"}}};
+const MAN={"bassoon":{"sus":[34,37,41,45,46,48,55,60,63,68,69,72,75],"susL":[34,37,41,45,46,48,55,60,63,68,69,72,75],"stac":[34,38,41,45,48,51,52,55,57,60,64,67,72],"tune":{},"dir":"bassoon2"},"clarinet":{"sus":[50,53,58,62,65,70,74,77,82,86,89],"susL":[50,53,58,62,65,70,74,77,82,86,89],"stac":[50,53,58,62,65,70,74,77,82,86,89],"tune":{"50t":-30,"53t":-30,"58s":3,"58t":-41,"62s":5,"62t":-33,"65t":-24,"70s":3,"70t":-11,"74s":3,"74t":-20,"77t":-21,"82s":3,"82t":-6,"86t":-3,"89t":-4},"dir":"clarinet2"},"flute":{"sus":[60,64,69,72,76,81,84,88,93,96],"susL":[60,64,69,72,76,81,84,88,93],"stac":[69,72,76,81,84,88,93,96],"tune":{"60s":3,"69t":-4,"93t":4},"dir":"flute2"},"horn":{"sus":[33,36,39,43,46,50,53,57,60,63,66,70,74,77],"susL":[36,39,43,46,50,53,57,60,63,66],"stac":[33,36,39,43,46,50,53,57,60,63,66,70,74,77],"tune":{"33s":-6,"33t":-5,"36t":-31,"57s":-3,"57t":-4,"74t":3},"dir":"horn2"},"oboe":{"sus":[58,62,65,70,74,77,82,86,89],"susL":[58,62,65,70,74,77,82,86,89],"stac":[58,62,65,70,74,77,82,86,89],"tune":{"58l":3,"86t":6,"89t":-4},"dir":"oboe2"},"sax":{"sus":[49,51,53,55,57,59,61,63,65,67,69,71,73,75,77,79,80],"susL":[49,51,53,55,57,59,61,63,65,67,69,71,73,75,77,79,80],"stac":[],"tune":{}},"trombone":{"sus":[34,37,39,41,46,50,53,60,61,63,65],"susL":[34,37,39,41,46,50,53,60,61,63,65],"stac":[34,41,46,53,58,62,65],"tune":{"41t":11},"dir":"trombone2"},"trumpet":{"sus":[53,57,60,63,67,70,74,77,81,84],"susL":[53,57,60,63,67,70,74,77,81,84],"stac":[53,57,60,63,65,67,70,74,77,81,84],"tune":{"53l":-3,"53t":-6,"60t":5,"67l":4,"67s":7,"74l":3,"77t":3,"81l":4,"84t":-3},"dir":"trumpet2"},"tuba":{"sus":[29,34,39,41,46,50,53,58,62],"susL":[34,39,41,46,50,53,58],"stac":[34,39,41,46,50,53,58,62],"tune":{"29s":-6,"34s":-3,"34t":-18,"41l":3,"46t":-15,"50s":4,"50t":-10,"53l":-3,"53t":-5,"58t":-10},"dir":"tuba2"},"bassoon_vib":{"sus":[43,45,48,55,57,60,64,67,69,72],"susL":[43,45,48,55,60,64,67,69,72],"stac":[34,38,41,45,48,51,52,55,57,60,64,67,72],"tune":{},"stacDir":"bassoon","dir":"bassoon_vib2"},"cellos":{"sus":[36,40,43,47,50,53,57,60,64,67,71,74,77],"susL":[36,40,43,47,50,53,57,60,64,67,71,74,77],"stac":[36,40,43,47,50,53,57,60,64,67,71,74,77],"tune":{"36t":5,"40t":14,"47t":4,"53t":4,"57t":4,"60t":8,"77t":7},"dir":"cellos2"},"cellos_pizz":{"sus":[36,40,43,47,50,53,57,60,64,67,71,74,77],"susL":[36,40,43,47,50,53,57,60,64,67,71,74,77],"stac":[],"tune":{"40l":4,"40s":12,"43s":-3,"47l":-8,"47s":-3,"53s":12,"57s":-4,"60l":3,"60s":4,"64s":5,"67s":-3,"71l":3,"71s":3,"74l":13,"74s":4,"77l":6,"77s":-3},"dir":"cellos_pizz2"},"contrabass":{"sus":[30,31,34,36,38,40,42,44,45,49,52,56,59],"susL":[30,31,34,36,38,40,42,44,45,49,52,56,59],"stac":[28,30,31,34,36,38,40,42,44,45,49,52,56,59],"tune":{"28t":-3,"30t":-24,"34t":17,"36t":7,"40t":-7,"45t":11,"49t":6,"52t":17,"56t":-7},"dir":"contrabass2"},"contrabass_pizz":{"sus":[28,30,31,34,36,38,40,42,44,45,49,52,56,59],"susL":[],"stac":[],"tune":{"28s":-10,"30s":-6,"31s":-18,"34s":3,"36s":9,"38s":6,"42s":-10,"44s":4,"45s":18,"56s":-6,"59s":-6},"dir":"contrabass_pizz2"},"flute_vib":{"sus":[60,64,69,72,76,81,84,88,93,96],"susL":[],"stac":[69,72,76,81,84,88,93,96],"tune":{"69t":-4,"93t":4},"stacDir":"flute","dir":"flute_vib2"},"glockenspiel":{"sus":[79,84,91,96,103,108],"susL":[],"stac":[],"tune":{"103s":16,"108s":23,"79s":8,"84s":12,"91s":12,"96s":16},"dir":"glockenspiel2"},"harp":{"sus":[28,31,35,38,41,45,48,52,55,59,62,65,69,72,76,79,83,86,89,93,95,98,101],"susL":[],"stac":[],"tune":{"101s":-30,"28s":-15,"31s":-21,"35s":-13,"38s":-5,"41s":-7,"45s":-4,"52s":-4,"55s":-8,"59s":-12,"62s":-12,"69s":-10,"72s":-10,"76s":-11,"79s":-6,"83s":-8,"86s":-8,"89s":-6,"93s":-18,"95s":-9,"98s":-9},"dir":"harp2"},"horn_mute":{"sus":[46,51,53,60,63,68,70,74,77],"susL":[46,51,53,60,63,68,70],"stac":[],"tune":{},"dir":"horn_mute2"},"kit":{"sus":[],"susL":[],"stac":[],"tune":{},"hits":{"bd":["bd1","bd2"],"sn":["sn1","sn2"],"cy":["cy1","cy2"],"tri":["tri1","tri2"],"tamb":["tamb1","tamb2"],"roll":["roll1"]},"dir":"kit2"},"marimba":{"sus":[41,48,55,59,65,72,79,83,89,96],"susL":[],"stac":[],"tune":{"72s":4,"96s":3},"dir":"marimba2"},"oboe_vib":{"sus":[58,62,65,70,74,77,82,86,89],"susL":[58,62,65,70,74,77,82,86,89],"stac":[58,62,65,70,74,77,82,86,89],"tune":{"58l":3,"74l":3,"82l":3,"86l":-4,"86t":6,"89t":-4},"stacDir":"oboe","dir":"oboe_vib2"},"piccolo":{"sus":[79,84,91,96,103],"susL":[],"stac":[82,91,94,103,106],"tune":{"103t":4,"106t":10,"82t":-5,"84s":-3,"91s":4,"94t":-4,"96s":6},"dir":"piccolo2"},"timpani":{"sus":[42,48,49,52,55],"susL":[42,48,49,52,55],"stac":[41,47,49,52,55],"tune":{"41t":67,"42l":51,"42s":-11,"48l":-58,"48s":-68,"49l":-10,"49s":-9,"49t":46,"52l":36,"52s":-29,"52t":36,"55l":7,"55s":41,"55t":-44},"dir":"timpani2"},"trombone_vib":{"sus":[41,44,46,48,51,53,56,58,60,62,63],"susL":[],"stac":[34,41,46,53,58,62,65],"tune":{"41t":11},"stacDir":"trombone","dir":"trombone_vib2"},"trumpet_harmon":{"sus":[58,60,63,68,70,74,77,81],"susL":[58,60,63,68,70,74,77,81],"stac":[],"tune":{"58l":-3,"58s":-3,"74l":4,"81s":3},"dir":"trumpet_harmon2"},"trumpet_straight":{"sus":[58,60,62,67,70,74,77,81],"susL":[58,60,62,67,70,74,77,81],"stac":[],"tune":{"58s":-4},"dir":"trumpet_straight2"},"trumpet_vib":{"sus":[53,57,60,63,65,67,70,74,77,81,84],"susL":[53,57,60,63,65,67,70,74,77,81,84],"stac":[53,57,60,63,65,67,70,74,77,81,84],"tune":{"53s":-12,"63l":3,"63s":-3,"65l":5,"74l":-4,"74s":4,"77s":4,"84l":-4,"53t":-6,"60t":5,"77t":3,"84t":-3},"stacDir":"trumpet","dir":"trumpet_vib2"},"violas":{"sus":[48,50,52,55,59,62,65,69,72,76,79,83,86],"susL":[48,50,52,55,59,62,65,69,72,76,79,83,86],"stac":[48,52,55,59,62,65,69,72,76,79,83,86],"tune":{"48t":9,"52t":-7,"55t":4,"59t":-5,"65t":6},"dir":"violas2"},"violas_pizz":{"sus":[48,52,55,59,62,65,69,72,76,79,83,86],"susL":[48,52,55,59,62,65,69,72,76,79,83],"stac":[],"tune":{"48l":-5,"52l":-3,"55l":6,"59l":-14,"69l":-15,"69s":-7,"72l":-11,"76l":-7,"79l":-8,"79s":-5,"83s":-12,"86s":-26},"dir":"violas_pizz2"},"violins":{"sus":[55,57,59,62,66,69,72,76,79,83,86],"susL":[55,57,59,62,66,69,72,76,79,83,86],"stac":[55,57,59,62,66,69,72,76,79,83,86],"tune":{"59t":-8,"69t":7},"dir":"violins2"},"violins_pizz":{"sus":[55,57,59,62,66,69,72,76,79,83,86],"susL":[55,57,59,62,66,69,72,76,79,83,86],"stac":[],"tune":{"55s":-5,"57l":-4,"57s":-8,"59s":-7,"62l":-4,"62s":3,"66s":-8,"69l":-3,"76s":-7,"79l":-3,"79s":-5,"83l":-6,"83s":-3,"86l":-11},"dir":"violins_pizz2"},"xylophone":{"sus":[67,72,79,84,91,96,103,108],"susL":[],"stac":[],"tune":{"103s":19,"108s":16,"67s":13,"72s":12,"79s":14,"84s":15,"91s":16,"96s":17},"dir":"xylophone2"},"tenor":{"sus":[44,46,48,50,52,54,56,58,60,62,64,66,68,70,72,74,76,78,80,82,84,86,88],"susL":[44,46,48,50,52,54,56,58,60,62,64,66,68,70,72,74,76,78,80,82,84,86,88],"stac":[44,46,48,50,52,54,56,57,60,62,64,66,68,70,72,74,76,77,80,81,84,86,88],"tune":{"44t":-9,"50t":-6,"54t":4,"60t":-4,"62t":-5,"70t":5,"72t":3,"88t":6}},"tenor_vib":{"sus":[46,48,50,52,54,58,60,62,64,66,70,72,74,76,79,80,82,84,86],"susL":[],"stac":[44,46,48,50,52,54,56,57,60,62,64,66,68,70,72,74,76,77,80,81,84,86,88],"tune":{"46s":-4,"58s":-7,"70s":-4,"48s":3,"72s":-5,"84s":3,"50s":5,"62s":4,"74s":7,"86s":6,"64s":3,"66s":-7,"80s":3,"44t":-9,"50t":-6,"54t":4,"60t":-4,"62t":-5,"70t":5,"72t":3,"88t":6},"stacDir":"tenor"},"soprano":{"sus":[58,62,66,70,74,78,82,88],"susL":[58,62,66,70,74,78,82,88],"stac":[58,62,66,70,74,78,82,86],"tune":{"62s":-3,"58l":-3,"62l":-4,"74l":3,"70t":4,"74t":5,"78t":4}},"bagpipe":{"sus":[68,71,73,75,76,78,80,81,83],"susL":[],"stac":[],"tune":{"68s":51,"71s":-22,"73s":-19,"75s":-30,"76s":-7,"78s":-6,"80s":-37,"81s":-4,"83s":-7}},"bagpipe_drones":{"sus":[52,55,58,61,64],"susL":[],"stac":[],"tune":{"52s":-4,"55s":-4,"58s":-4,"61s":-4,"64s":-4}},"banjo":{"sus":[39,40,41,42,43,44,45,46,47,49,50,51,52,53,54,55,57,58,59,60,61,63,67,68,70,71],"susL":[],"stac":[],"tune":{"39s":33,"40s":42,"41s":49,"42s":49,"43s":42,"44s":41,"45s":56,"46s":43,"47s":48,"49s":43,"50s":52,"51s":49,"52s":44,"53s":45,"54s":45,"55s":57,"57s":14,"58s":28,"59s":40,"60s":42,"61s":42,"63s":18,"67s":10,"68s":26,"70s":47}},"dobro":{"sus":[43,46,49,52,55,58,61,64,68,71,74,77,80,83,86],"susL":[],"stac":[],"tune":{"43s":-4,"49s":-5,"55s":-4,"58s":-10,"61s":-9,"64s":-10,"68s":-11,"71s":-12,"74s":-14,"77s":-12,"80s":-13,"83s":-15,"86s":-15}},"fiddle":{"sus":[55,57,60,64,67,69,72,76,79,81,84,88],"susL":[55,57,60,64,67,69,72,76,79,81,84,88],"stac":[55,57,60,64,67,69,72,76,79,81,84,88],"tune":{"57s":4,"60s":22,"84s":-6,"64s":5,"76s":6,"88s":5,"55s":-3,"67s":-3,"69l":16,"81l":7,"84l":-8,"64l":4,"76l":17,"88l":10,"79l":3,"81t":-7,"64t":-4,"55t":8}},"harmonica":{"sus":[60,64,67,72,76,79,84,88,91,96],"susL":[60,64,72,76,79,84,88,91,96],"stac":[],"tune":{"79s":-3,"84l":-6,"96l":3,"79l":-3,"91l":7}},"mandolin":{"sus":[55,58,61,64,67,70,73,76,79,82,85,88],"susL":[],"stac":[],"tune":{"58s":-7,"61s":-4,"64s":-5,"67s":-8,"70s":-8,"73s":-9,"76s":-11,"79s":-9,"82s":-11,"85s":-12,"88s":-12}},"mandolin_trem":{"sus":[55,58,61,64,67,70,73,76,79,82,85,88],"susL":[],"stac":[],"tune":{"55s":-4,"58s":-6,"61s":-3,"70s":-8,"73s":-7,"76s":-9,"79s":-8,"82s":-9,"85s":-8,"88s":-10}},"melodica":{"sus":[53,56,59,62,65,68,71,74,77,80,83,86,89],"susL":[53,56,59,62,65,68,71,74,77,80,83,86,89],"stac":[],"tune":{"86l":3}},"steel":{"sus":[46,49,52,55,58,61,64,67,70,73,76,79,82,85],"susL":[],"stac":[],"tune":{"46s":10,"49s":6,"52s":9,"55s":8,"58s":10,"61s":8,"64s":4,"67s":6,"73s":-5,"76s":-7,"79s":-10,"82s":-11,"85s":-10}},"recorder":{"sus":[72,74,76,78,80,82,84,86,88,90,91,94,96],"susL":[],"stac":[72,74,76,78,80,82,84,86,88,90,91,94],"tune":{"94s":4,"72s":3,"96s":8,"74s":4,"76s":5,"88s":4,"78s":9,"90s":3,"82t":3,"86t":-3,"76t":6,"78t":7,"80t":10},"source":{"made":false,"by":"Versilian Studios","from":"VCSL, Baroque Soprano Recorder","url":"https://github.com/sgossner/VCSL","license":"CC0-1.0"}},"recorder_alto":{"sus":[65,68,70,72,74,76,78,80,82,84,86,88],"susL":[],"stac":[66,68,70,72,74,76,78,80,82,84,86,88],"tune":{"72s":4,"84s":4,"78s":7,"65s":4,"68s":3,"80s":4,"74t":6,"76t":4,"88t":3,"66t":17,"78t":4,"68t":8},"source":{"made":false,"by":"Versilian Studios","from":"VCSL, Baroque Alto Recorder","url":"https://github.com/sgossner/VCSL","license":"CC0-1.0"}},"ukulele":{"sus":[59,60,61,62,63,64,65,66,67,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84],"susL":[],"stac":[],"tune":{"59s":14,"60s":9,"61s":18,"62s":8,"63s":9,"65s":3,"66s":3,"67s":3,"69s":3,"71s":14,"72s":11,"73s":9,"74s":11,"75s":4,"76s":6,"81s":9,"82s":4,"83s":4,"84s":7},"source":{"made":true,"by":"Roberto (zenvoid.org), FreePats","from":"Spanish Classical Guitar, its nylon strings shaped like a ukulele (no ukulele recording was found)","url":"https://github.com/freepats/spanish-classical-guitar","license":"CC0-1.0"}},"boomwhackers":{"sus":[36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88],"susL":[],"stac":[],"tune":{},"source":{"made":true,"by":"Architecture of Grace","from":"synthesized here (no recording was found)","url":"","license":"CC0-1.0"}},"voice_f_aa":{"sus":[57,60,63,66,69,72,75,78,81],"susL":[],"stac":[],"tune":{"57s":-3,"60s":-3,"63s":-3,"66s":-3,"69s":-10,"72s":-10,"75s":11,"78s":11,"81s":11}},"voice_f_uu":{"sus":[57,60,63,66,69,72,75,78,81],"susL":[],"stac":[],"tune":{"57s":-4,"60s":-4,"63s":-4,"66s":-4,"69s":-5,"72s":-5,"75s":11,"78s":11,"81s":11}},"voice_m_aa":{"sus":[45,48,51,54,57,60,63,66],"susL":[],"stac":[],"tune":{"51s":-3,"63s":-5,"66s":-5}},"voice_m_uu":{"sus":[45,48,51,54,57,60,63,66],"susL":[],"stac":[],"tune":{"57s":-4,"60s":-4}}};
 const RHYTHMS=["long","swell","stabs","offbeat","march","waltz","fanfare","broken","roll"];   /* AOG-BAND-FOLK-V1: the banjo roll */
 /* a waltz has three beats in a bar; everything else, four. A waltz plays without a four-beat drum beat (as on the piano) */
 const RHYTHM_BEATS={waltz:3};
@@ -117,7 +117,7 @@ const STR={
   scaleHome:{en:"{root}, the home note",es:"{root}, la nota casa"},
   scaleBlue:{en:"the blue note",es:"la nota blue"},
   harpScale:{en:"Sweep a finger across the strings. The harp is tuned to the {scale}.",es:"Pasa un dedo por las cuerdas. El arpa está afinada en la {scale}."},
-  anyH:{en:"Any chord",es:"Cualquier acorde"}, anyRoot:{en:"Root",es:"Raíz"}, anyKind:{en:"Kind",es:"Tipo"},
+  anyH:{en:"Any chord: tap a root",es:"Cualquier acorde: toca una raíz"}, anyKind:{en:"More kinds",es:"Más tipos"}, anyKinds:{en:"Kinds of chord",es:"Tipos de acorde"},
   anyPlay:{en:"▶ Play the chord",es:"▶ Tocar el acorde"},
   anyNotes:{en:"{chord}: {notes}",es:"{chord}: {notes}"}
 };
@@ -312,6 +312,23 @@ Object.assign(STR, {
   madeUke:{en:"Ready. This ukulele is made here from real nylon guitar strings.",es:"Listo. Este ukelele está hecho aquí con cuerdas de nailon de guitarra de verdad."},
   madeTubes:{en:"Ready. Each tube's sound is made here, not recorded.",es:"Listo. El sonido de cada tubo está hecho aquí, no grabado."}
 });
+/* AOG-BAND-VOICES-V1 (2026-10-13) — Jimmy: "GO AHEAD WITH THE VOICES." Two solo singers from VocalSet (CC BY 4.0): a woman
+   (singer f8, a mezzo-soprano) and a man (singer m6, a baritone), each on "aah" and "ooh", in their own group, Voices. Made
+   by music-handoff/tools/band/world.py on the paused claude/world branch (only the singers came over). Each loads only when
+   picked. A singer's breath lets go gently, as a bow does (BOWED). Levels from bandt/level.js. */
+Object.assign(SOUNDS, {
+  voice_f_aa:{grp:"grpVoices", en:"Voice · “aah”, a woman", es:"Voz · “aa”, una mujer", gain:1.438, rev:0.2, stand:"string"},
+  voice_f_uu:{grp:"grpVoices", en:"Voice · “ooh”, a woman", es:"Voz · “uu”, una mujer", gain:1.268, rev:0.2, stand:"string"},
+  voice_m_aa:{grp:"grpVoices", en:"Voice · “aah”, a man", es:"Voz · “aa”, un hombre", gain:1.164, rev:0.2, stand:"string"},
+  voice_m_uu:{grp:"grpVoices", en:"Voice · “ooh”, a man", es:"Voz · “uu”, un hombre", gain:1.243, rev:0.2, stand:"string"}
+});
+Object.assign(PLAYER, {voice_f_aa:1.011, voice_f_uu:1.173, voice_m_aa:1.078, voice_m_uu:0.993});
+Object.assign(BOWED, {voice_f_aa:1, voice_f_uu:1, voice_m_aa:1, voice_m_uu:1});
+Object.assign(STR, {
+  grpVoices:{en:"Voices",es:"Voces"},
+  creditVoices:{en:"The singers come from VocalSet by Julia Wilkins, Prem Seetharaman, Alison Wahl and Bryan Pardo (CC BY 4.0). We cut, tuned and moved their notes.",
+    es:"Las voces vienen de VocalSet de Julia Wilkins, Prem Seetharaman, Alison Wahl y Bryan Pardo (CC BY 4.0). Cortamos, afinamos y movimos sus notas."}
+});
 function soundName(id){ const s=SOUNDS[id]; return s? (S.lang==="es"?s.es:s.en) : id; }
 /* the parts of a sound, as written (one player can take two parts) */
 function lineup(id){ return (SOUNDS[id]&&SOUNDS[id].parts) || [id]; }
@@ -322,7 +339,7 @@ function rangeOf(inst){ const m=MAN[inst]; return [m.sus[0]-1, m.sus[m.sus.lengt
 function soundRange(id){ let lo=999, hi=0; partsOf(id).forEach(p=>{ const r=rangeOf(p); lo=Math.min(lo,r[0]); hi=Math.max(hi,r[1]); }); return [lo,hi]; }
 
 /* ── music: keys, chords (the piano's) ── */
-const Q={maj:[0,4,7], min:[0,3,7], dom7:[0,4,7,10], maj7:[0,4,7,11], m7:[0,3,7,10]};
+const Q={maj:[0,4,7], min:[0,3,7], dom7:[0,4,7,10], maj7:[0,4,7,11], m7:[0,3,7,10], dim:[0,3,6]};
 /* AOG-BAND-SCALES-V1: a chord's steps above its root, within one octave: the five above, or any of the 45 kinds in
    aog-chords.js (Any chord). Each pitch once, in the library's order (an add9's 9th after its fifth) */
 function ivs(q){
@@ -332,8 +349,8 @@ function ivs(q){
 }
 /* the chord's own fifth: perfect, or the flat or sharp one it has (none in a chord without one) */
 function fifthOf(c){ const iv=ivs(c.q); return iv.indexOf(7)>=0 ? 7 : iv.indexOf(6)>=0 ? 6 : iv.indexOf(8)>=0 ? 8 : null; }
-const SUF={maj:"", min:"m", dom7:"7", maj7:"maj7", m7:"m7"};
-const SUF_ES={maj:"", min:" m", dom7:"7", maj7:" maj7", m7:" m7"};
+const SUF={maj:"", min:"m", dom7:"7", maj7:"maj7", m7:"m7", dim:"dim"};
+const SUF_ES={maj:"", min:" m", dom7:"7", maj7:" maj7", m7:" m7", dim:" dim"};
 const NAMES={sharp:["C","C♯","D","D♯","E","F","F♯","G","G♯","A","A♯","B"], flat:["C","D♭","D","E♭","E","F","G♭","G","A♭","A","B♭","B"]};
 const SOLFA={sharp:["Do","Do♯","Re","Re♯","Mi","Fa","Fa♯","Sol","Sol♯","La","La♯","Si"], flat:["Do","Re♭","Re","Mi♭","Mi","Fa","Sol♭","Sol","La♭","La","Si♭","Si"]};
 const KEY_NAMES={en:["C","D♭","D","E♭","E","F","F♯","G","A♭","A","B♭","B"], es:["Do","Re♭","Re","Mi♭","Mi","Fa","Fa♯","Sol","La♭","La","Si♭","Si"]};
@@ -344,7 +361,7 @@ function chordName(c){ const pc=((S.key+c.off)%12+12)%12; return rootName(pc, c.
 function rootName(pc, q){
   const major=S.minor?(S.key+3)%12:S.key, deg=((pc-major)%12+12)%12;
   if([0,2,4,5,7,9,11].indexOf(deg)>=0) return pcName(pc);
-  const rel=(q==="min"||q==="m7") ? (pc+3)%12 : pc;
+  const rel=(q==="min"||q==="m7") ? (pc+3)%12 : q==="dim" ? (pc+1)%12 : pc;   /* AOG-CHORDS-12-V1: a dim chord leads up to the note above it (G♯dim, not A♭dim) */
   return (S.lang==="es"?SOLFA:NAMES)[(rel*7)%12<=6?"sharp":"flat"][pc];
 }
 /* six pads: the chords that belong to the key (numbers are steps of the scale) */
@@ -353,6 +370,13 @@ const PADS_MAJOR=[{n:1,off:0,q:"maj"},{n:2,off:2,q:"min"},{n:3,off:4,q:"min"},{n
    The pads count 1 to 6 in a minor key too (they had been the chords' steps in the scale: 1 3 4 5 6 7) */
 const PADS_MINOR=[{n:1,off:0,q:"min"},{n:2,off:3,q:"maj"},{n:3,off:5,q:"min"},{n:4,off:7,q:"min"},{n:5,off:8,q:"maj"},{n:6,off:10,q:"maj"}];
 function pads(){ return S.minor?PADS_MINOR:PADS_MAJOR; }
+/* AOG-CHORDS-12-V1 (2026-10-14) — Jimmy: "CAN WE GET MORE CHORDS FOR THE BAND AND OTHER INSTRUMENTS MAKE IT 10 OR MORE TO
+   SELECT ONE AT A TIME." The chord strip shows twelve: the six pads, then six more every learner meets, spelled for the
+   song's key. In C: Bdim G7 B♭ Fm D A♭. In A minor: E E7 Bdim D B♭ G♯dim. On the chord strip only; the six pads stay
+   exactly as they are (the patterns, the wheel and the lessons count them 1 to 6). */
+const MORE_MAJOR=[{n:7,off:11,q:"dim"},{n:8,off:7,q:"dom7"},{n:9,off:10,q:"maj"},{n:10,off:5,q:"min"},{n:11,off:2,q:"maj"},{n:12,off:8,q:"maj"}];
+const MORE_MINOR=[{n:7,off:7,q:"maj"},{n:8,off:7,q:"dom7"},{n:9,off:2,q:"dim"},{n:10,off:5,q:"maj"},{n:11,off:1,q:"maj"},{n:12,off:11,q:"dim"}];
+function allPads(){ return pads().concat(S.minor?MORE_MINOR:MORE_MAJOR); }
 const C=(off,q)=>({off:off,q:q||"maj"});
 /* the forty-four chord patterns, the same on the piano, the guitar and the bass (AOG-PIANO-PATTERNS-V2, AOG-STRINGS-WAYS-V1),
    in five groups; the ids never change */
@@ -957,13 +981,13 @@ function holdChord(tag, c, v){
   return keys;
 }
 function padDown(i, v){
-  const c=pads()[i]; if(!c) return;
+  const c=allPads()[i]; if(!c) return;   /* AOG-CHORDS-12-V1: 6 to 11 are the chord strip's six more */
   padUp(i);
   padHeld[i]=holdChord("p"+i, c, v);
   const el=document.querySelector('.pad[data-i="'+i+'"]'); if(el) el.classList.add("hit");
   paintWheelState();
   if(S.own && S.prog.length<8){ S.prog.push({off:c.off, q:c.q}); S.preset=""; save(); paintProg(); paintProgSel(); }
-  lessonPad(i);
+  if(i<6) lessonPad(i);
 }
 function padUp(i){
   const keys=padHeld[i]; if(!keys) return;
@@ -1231,7 +1255,7 @@ function paintText(){
   $("sendBtn").textContent=t("send"); $("sendPadsBtn").textContent=t("sendPadsBtn"); $("padsBtn").textContent=t("padsBtn"); $("toPadsLab").textContent=t("toPadsLab"); $("sendPadsBtn").setAttribute("aria-label", t("sendPadsAria")); $("padsBtn").setAttribute("aria-label", t("padsAria")); REC.paint();
   $("era").setAttribute("aria-label", t("eraAria"));
   $("nav").innerHTML=navHtml();
-  $("foot").innerHTML=`<p>${t("credit")} ${t("creditClass")} <a href="/audio/band/CREDITS.txt">${t("credits")}</a></p>`;
+  $("foot").innerHTML=`<p>${t("credit")} ${t("creditClass")} ${t("creditVoices")} <a href="/audio/band/CREDITS.txt">${t("credits")}</a></p>`;
   paintSounds(); paintKeySel(); paintProgSel(); paintRhythm(); paintMood(); paintPads(); paintProg(); paintPlay(); paintTempo();
   paintDial(); paintLoad(); paintDrums(); paintScaleUI(); paintAny(); buildKeys(); bpText(); LES.paint();
   paintFx();   /* AOG-ROOM-PEDALS-V1 */
@@ -1251,7 +1275,7 @@ function paintFx(){
 document.addEventListener("change", e=>{ if(e.target && e.target.id==="soundSel") setTimeout(()=>{ if(FXSND!==S.sound) paintFx(); }, 0); });
 window.addEventListener("pagehide", ()=>{ if(paintFx.t){ clearTimeout(paintFx.t); saveFx(); } });
 /* the menu's groups, in this order (each group's sounds in the order of SOUNDS) */
-const GROUP_ORDER=["grpBrass","grpWinds","grpStrings","grpPerc","grpFolk","grpJazz","grpBands","grpAll"];
+const GROUP_ORDER=["grpBrass","grpWinds","grpStrings","grpPerc","grpFolk","grpVoices","grpJazz","grpBands","grpAll"];
 function paintSounds(){
   const sel=$("soundSel"), groups={}, order=[];
   Object.keys(SOUNDS).forEach(id=>{ const g=SOUNDS[id].grp||""; if(!groups[g]){ groups[g]=[]; order.push(g); } groups[g].push(id); });
@@ -1344,7 +1368,7 @@ function paintWheelState(){
   const svg=$("wheel"); if(!svg) return;
   const k=curChord(), now=k ? wheelKeyOf(k) : "";
   const hit=new Set(); if(WHEEL.press) hit.add(WHEEL.press);
-  Object.keys(padHeld).forEach(i=>{ const c=pads()[+i]; if(c) hit.add(wheelKeyOf(c)); });
+  Object.keys(padHeld).forEach(i=>{ const c=allPads()[+i]; if(c) hit.add(wheelKeyOf(c)); });
   const hand=handChordKey(); if(hand) hit.add(hand);
   svg.querySelectorAll(".wd").forEach(g=>{ const key=g.getAttribute("data-k"), h=hit.has(key);
     if(g.classList.contains("hit")!==h) g.classList.toggle("hit", h);
@@ -1451,12 +1475,44 @@ function paintAny(){
   const box=$("anyBox"); if(!box) return;
   box.hidden=!libsIn(); if(!libsIn()) return;
   const r=anyRoot(), k=anyKind();
-  $("anyRoot").innerHTML=[0,1,2,3,4,5,6,7,8,9,10,11].map(i=>`<option value="${i}"${i===r?" selected":""}>${esc(pcName(i))}</option>`).join("");
   $("anyKind").innerHTML=AOGChords.GROUPS.map(([g,ids])=>`<optgroup label="${esc(AOGChords.group(g,S.lang))}">`
     +ids.map(id=>`<option value="${id}"${id===k?" selected":""}>${esc(AOGChords.label(id,S.lang))}</option>`).join("")+`</optgroup>`).join("");
   $("anyPlay").textContent=t("anyPlay");
-  $("anyLine").textContent=t("anyNotes",{chord:anyName(), notes:ivs(k).map(i=>pcName(r+i)).join(" ")});
+  anyRootsPaint(); anySay();
 }
+function anySay(){ const r=anyRoot(), k=anyKind(); $("anyLine").textContent=t("anyNotes",{chord:anyName(), notes:ivs(k).map(i=>pcName(r+i)).join(" ")}); }
+const ANY_LAB="anyH", ANY_KLAB="anyKinds";
+function anyRootNow(){ return anyRoot(); }
+function anyKindNow(){ return anyKind(); }
+function anySym(){ return libsIn() ? (k=>AOGChords.sym(k)) : null; }
+function anyHoldOn(){ if(!libsIn()) return; anyRelease();
+  SC.hold=holdChord("a", {off:((anyRoot()-S.key)%12+12)%12, q:anyKind()}, 0.74); lessonUse(""); anySay(); }
+function anyRootDown(r){ SC.root=r; scSave(); anyMark(); anyHoldOn(); }
+function anyKindDown(k){ if(!(window.AOGChords && AOGChords.KINDS[k])) return; SC.kind=k; scSave(); $("anyKind").value=k; anyMark(); anyHoldOn(); }
+function anyRootUp(){ anyRelease(); }
+/* AOG-ANY-ROOTS-V1: a root or a quick kind plays while it is held, as a chord on the strip does */
+const QUICK_KINDS=["maj","min","dom7","maj7","m7","sus4"];
+function anyTap(b, down, up){
+  b.onpointerdown=(e)=>{ if(e.button>0) return; e.preventDefault(); try{ b.setPointerCapture(e.pointerId); }catch(err){} b.classList.add("hit"); down(); };
+  b.onpointerup=b.onpointercancel=b.onlostpointercapture=()=>{ if(!b.classList.contains("hit")) return; b.classList.remove("hit"); up(); };
+  b.onkeydown=(e)=>{ if((e.key==="Enter"||e.key===" ") && !e.repeat){ e.preventDefault(); e.stopPropagation(); down(); setTimeout(up, 300); } };
+  b.addEventListener("touchstart",(e)=>{ if(e.cancelable) e.preventDefault(); },{passive:false});
+}
+function anyMark(){
+  const r=anyRootNow(), k=anyKindNow();
+  document.querySelectorAll("#anyRoots .ar").forEach(b=>{ const v=+b.getAttribute("data-r")===r?"true":"false"; if(b.getAttribute("aria-pressed")!==v) b.setAttribute("aria-pressed", v); });
+  document.querySelectorAll("#anyKinds .ak").forEach(b=>{ const v=b.getAttribute("data-k")===k?"true":"false"; if(b.getAttribute("aria-pressed")!==v) b.setAttribute("aria-pressed", v); });
+}
+function anyRootsPaint(){
+  const rb=$("anyRoots"), kb=$("anyKinds"), sym=anySym(); if(!rb || !kb || !sym) return;
+  rb.setAttribute("aria-label", t(ANY_LAB)); kb.setAttribute("aria-label", t(ANY_KLAB));
+  const rh=[0,1,2,3,4,5,6,7,8,9,10,11].map(i=>`<button type="button" class="ar" data-r="${i}" aria-pressed="false">${rootName(i,"maj")}</button>`).join("");
+  if(rb._h!==rh){ rb.innerHTML=rh; rb._h=rh; rb.querySelectorAll(".ar").forEach(b=>anyTap(b, ()=>anyRootDown(+b.getAttribute("data-r")), anyRootUp)); }
+  const es=S.lang==="es", kh=QUICK_KINDS.map(k=>`<button type="button" class="ak" data-k="${k}" aria-pressed="false">${k==="maj"?(es?"Mayor":"Major"):k==="min"?(es?"Menor":"Minor"):sym(k)}</button>`).join("");
+  if(kb._h!==kh){ kb.innerHTML=kh; kb._h=kh; kb.querySelectorAll(".ak").forEach(b=>anyTap(b, ()=>anyKindDown(b.getAttribute("data-k")), anyRootUp)); }
+  anyMark();
+}
+
 function anyRelease(){ clearTimeout(SC.tm); const keys=SC.hold; SC.hold=null; if(keys) keys.forEach(k=>noteOff(k)); }
 /* the chord the pads play, on any root: its notes near the middle, moved little from the last chord, the root under them */
 function anyPlay(){
@@ -1468,7 +1524,6 @@ function anyPlay(){
 }
 function bindScales(){
   $("scaleSel").onchange=()=>pickScale($("scaleSel").value);
-  $("anyRoot").onchange=()=>{ SC.root=+$("anyRoot").value; scSave(); paintAny(); };
   $("anyKind").onchange=()=>{ SC.kind=$("anyKind").value; scSave(); paintAny(); };
   $("anyPlay").onclick=()=>anyPlay();
 }
@@ -1621,13 +1676,14 @@ function bindOctHeld(){
 function paintStrips(){
   document.querySelectorAll(".cstrip").forEach(box=>{
     box.setAttribute("aria-label", t("chordsH"));
-    box.innerHTML=pads().map((c,i)=>`<button type="button" class="cs" data-i="${i}">${chordName(c)}</button>`).join("");
+    box.innerHTML=allPads().map((c,i)=>`<button type="button" class="cs${i>=6?" more":""}" data-i="${i}">${chordName(c)}</button>`).join("");   /* AOG-CHORDS-12-V1 */
     box.querySelectorAll(".cs").forEach(b=>{ const i=+b.getAttribute("data-i");
       b.onpointerdown=(e)=>{ if(e.button>0) return; e.preventDefault(); try{ b.setPointerCapture(e.pointerId); }catch(err){} b.classList.add("hit"); padDown(i, 0.74); };
       b.onpointerup=b.onpointercancel=b.onlostpointercapture=()=>{ if(!b.classList.contains("hit")) return; b.classList.remove("hit"); padUp(i); };
       b.onkeydown=(e)=>{ if((e.key==="Enter"||e.key===" ") && !e.repeat){ e.preventDefault(); e.stopPropagation(); padDown(i, 0.74); setTimeout(()=>padUp(i), 300); } };
       b.addEventListener("touchstart",(e)=>{ if(e.cancelable) e.preventDefault(); },{passive:false}); });
   });
+  anyRootsPaint();   /* AOG-ANY-ROOTS-V1: the roots are spelled for the key */
 }
 /* ══ AOG-PLAY-V1 (2026-10-04) — the keys sideways ════════════════════════════════════════════════════════════════
    Jimmy: "When you turn the iPhone or iPad horizontally, you can play … like a real instrument." Turned on its side, a
@@ -1813,7 +1869,7 @@ function bind(){
     h.setAttribute("data-theme", d); h.classList.toggle("dark", d==="dark"); try{ localStorage.setItem("aog.interior.ws.v1.theme", d); }catch(e){} paintText(); };
   /* after a menu is picked with a finger or the mouse, it gives focus back, so Space plays instead of reopening the menu */
   bindScales();
-  ["soundSel","keySel","progSel","rhythmSel","scaleSel","anyRoot","anyKind"].forEach(id=>{ const el=$(id);
+  ["soundSel","keySel","progSel","rhythmSel","scaleSel","anyKind"].forEach(id=>{ const el=$(id);
     el.addEventListener("pointerdown",()=>{ el._ptr=true; });
     el.addEventListener("change",()=>{ if(el._ptr){ el._ptr=false; setTimeout(()=>el.blur(),0); } }); });
   bindKeyboard();

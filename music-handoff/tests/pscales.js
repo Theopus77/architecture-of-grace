@@ -17,9 +17,9 @@ let fails=0, passes=0; function ok(c,m){ if(c){ passes++; console.log("PASS "+m)
     const D=dev+": ";
     // the two pickers, close to the keys
     const lay=await p.evaluate(()=>{ const r=id=>document.getElementById(id).getBoundingClientRect(), kb=r("kbd"), sc=r("scaleSel"), ap=r("anyPlay");
-      return {there:["scaleSel","anyRoot","anyKind","anyPlay"].every(id=>{ const e=document.getElementById(id); return e && e.offsetWidth>0; }),
+      return {there:["scaleSel","anyRoots","anyKind","anyPlay"].every(id=>{ const e=document.getElementById(id); return e && e.offsetWidth>0; }),
         gap:Math.round(sc.top-kb.bottom), sw:document.scrollingElement.scrollWidth, iw:innerWidth, btnH:Math.round(ap.height),
-        fonts:["scaleSel","anyRoot","anyKind"].map(id=>parseFloat(getComputedStyle(document.getElementById(id)).fontSize))}; });
+        fonts:["scaleSel","anyKind"].map(id=>parseFloat(getComputedStyle(document.getElementById(id)).fontSize))}; });
     ok(lay.there, D+"the Scale menu, the Root and Kind menus and the Play button are on the page");
     ok(lay.gap>=0 && lay.gap<200, D+"the Scale menu sits just under the keys ("+lay.gap+"px)");
     ok(lay.fonts.every(f=>f>=16) && lay.btnH>=44, D+"menus 16px or larger, the button easy to tap ("+lay.fonts.join(",")+"; "+lay.btnH+"px)");
@@ -61,7 +61,7 @@ let fails=0, passes=0; function ok(c,m){ if(c){ passes++; console.log("PASS "+m)
     await p.selectOption("#keySel","2"); await p.waitForTimeout(60);
     const kd=await p.evaluate(()=>({pcs:[...new Set([...document.querySelectorAll("#kbd .sc-in")].map(e=>(+e.dataset.m)%12))].sort((a,b)=>a-b).join(), home:[...document.querySelectorAll("#kbd .sc-home")].every(e=>(+e.dataset.m)%12===2), say:document.getElementById("scaleName").textContent}));
     ok(kd.pcs==="0,2,4,5,7,9,11" && kd.home && kd.say==="D Dorian scale", D+"key of D: the marks move to D Dorian ("+kd.pcs+")");
-    ok(await p.evaluate(()=>document.getElementById("anyRoot").value==="2"), D+"until a root is picked, the Any chord root follows the key (D)");
+    ok(await p.evaluate(()=>document.querySelector('#anyRoots .ar[aria-pressed="true"]').getAttribute("data-r")==="2"), D+"until a root is picked, the Any chord root follows the key (D)");
     // follows the mood, one choice for each
     await p.click("#minBtn"); await p.waitForTimeout(60);
     const mn=await p.evaluate(()=>({v:document.getElementById("scaleSel").value, n:document.querySelectorAll("#kbd .sc-in").length}));
@@ -79,15 +79,15 @@ let fails=0, passes=0; function ok(c,m){ if(c){ passes++; console.log("PASS "+m)
     ok(await p.evaluate(()=>document.querySelectorAll("#kbd .sc-in").length>0), D+"moving up an octave keeps the marks");
     await p.click("#downBtn"); await p.selectOption("#keySel","0"); await p.waitForTimeout(60);
     // any chord: menus
-    const cm=await p.evaluate(()=>{ const k=document.getElementById("anyKind"), r=document.getElementById("anyRoot"), L=window.AOGChords;
-      return {n:k.querySelectorAll("optgroup option").length, g:k.querySelectorAll("optgroup").length, roots:[...r.options].map(o=>o.text).join(" "),
+    const cm=await p.evaluate(()=>{ const k=document.getElementById("anyKind"), r=document.getElementById("anyRoots"), L=window.AOGChords;
+      return {n:k.querySelectorAll("optgroup option").length, g:k.querySelectorAll("optgroup").length, roots:[...r.querySelectorAll(".ar")].map(o=>o.textContent).join(" "),
         same:[...k.querySelectorAll("optgroup")].every((g,i)=>g.label===L.group(L.GROUPS[i][0],"en"))}; });
-    ok(cm.n===45 && cm.g===5 && cm.same && cm.roots==="C D♭ D E♭ E F F♯ G A♭ A B♭ B", D+"45 kinds in 5 groups; 12 roots: "+cm.roots);
+    ok(cm.n===45 && cm.g===5 && cm.same && cm.roots==="C D♭ D E♭ E F F♯ G A♭ A B♭ B", D+"45 kinds in 5 groups; 12 root buttons (AOG-ANY-ROOTS-V1): "+cm.roots);
     // every kind, a few roots: exactly its notes, lit on the keys
     bad=[]; let n=0;
     const kinds=await p.evaluate(()=>window.AOGChords.ids());
     for(const root of [0,5,10]){
-      await p.selectOption("#anyRoot", String(root));
+      if(dev.startsWith("iPhone")) await p.tap(`#anyRoots .ar[data-r="${root}"]`); else await p.click(`#anyRoots .ar[data-r="${root}"]`);
       for(const id of kinds){
         await p.selectOption("#anyKind", id);
         if(dev.startsWith("iPhone")) await p.tap("#anyPlay"); else await p.click("#anyPlay");
@@ -109,16 +109,16 @@ let fails=0, passes=0; function ok(c,m){ if(c){ passes++; console.log("PASS "+m)
     const ln=await p.evaluate(()=>document.getElementById("anyLine").textContent);
     ok(ln==="B♭13♭9: B♭ · D · A♭ · B · G", D+"the line names the chord and its notes: "+ln);
     // the six pads are still there and still play
-    ok(await p.evaluate(()=>document.querySelectorAll("#pads .pad").length===6 && document.querySelectorAll("#chordStrip .cs").length===6), D+"the six chord pads and the chord strip are as they were");
+    ok(await p.evaluate(()=>document.querySelectorAll("#pads .pad").length===6 && document.querySelectorAll("#chordStrip .cs").length===12), D+"the six chord pads are as they were; the chord strip has them and six more (AOG-CHORDS-12-V1)");
     // Spanish
     await p.evaluate(()=>document.getElementById("langBtn").click()); await p.waitForTimeout(100);
     const es=await p.evaluate(()=>{ const L=window.AOGScales, s=document.getElementById("scaleSel");
       return {g:s.querySelector("optgroup").label===L.WORDS["sg_"+L.GROUPS[0][0]].es, o:s.options[1].text===L.WORDS["sc_"+L.GROUPS[0][1][0]].es, off:s.options[0].text,
         say:document.getElementById("scaleName").textContent, play:document.getElementById("anyPlay").textContent,
-        kg:document.getElementById("anyKind").querySelector("optgroup").label, root:document.getElementById("anyRoot").options[2].text,
+        kg:document.getElementById("anyKind").querySelector("optgroup").label, root:document.querySelectorAll("#anyRoots .ar")[2].textContent,
         labs:[...document.querySelectorAll('[data-t="scaleLab"],[data-t="anyRootLab"],[data-t="anyKindLab"]')].map(e=>e.textContent).join(" | ")}; });
     ok(es.g && es.o && es.off==="Apagada · sin escala" && es.say==="Escala dórica de Do" && es.play==="▶ Tocar este acorde" && es.kg==="Acordes de tres notas" && es.root==="Re"
-      && es.labs==="Mostrar una escala en las teclas | Cualquier acorde · raíz | Tipo de acorde", D+"en español: "+JSON.stringify(es));
+      && es.labs==="Cualquier acorde: toca una raíz | Más tipos | Mostrar una escala en las teclas", D+"en español: "+JSON.stringify(es));
     await p.evaluate(()=>document.getElementById("langBtn").click()); await p.waitForTimeout(60);
     const sw=await p.evaluate(()=>({sw:document.scrollingElement.scrollWidth, iw:innerWidth}));
     ok(sw.sw<=sw.iw, D+"still nothing sideways with a scale on ("+sw.sw+"/"+sw.iw+")");

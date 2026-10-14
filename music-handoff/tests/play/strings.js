@@ -57,7 +57,7 @@ const cents=(a,b)=>1200*Math.log2(a/b);
     ok(lay.zoom==="1", "the play view is not zoomed (zoom "+lay.zoom+")");
     ok(lay.sw<=lay.iw && lay.sh<=lay.ih+1, `nothing scrolls: ${lay.sw}×${lay.sh} in ${lay.iw}×${lay.ih}`);
     ok(lay.w.every((x,i)=>i===0||x<lay.w[i-1]) && lay.w[lay.w.length-1]>=44, `${lay.n} frets, closer together towards the body: ${lay.w.join(", ")} px`);
-    ok(lay.chords.n===10 && lay.chords.left && lay.chords.h>0.9 && lay.chords.gap>=16, `the chords stand at the nut end of the neck, the neck's whole height, ${Math.round(lay.chords.gap)} px clear of the open strings`);
+    ok(lay.chords.n===12 && lay.chords.left && lay.chords.h>0.9 && lay.chords.gap>=16, `the chords stand at the nut end of the neck, the neck's whole height, ${Math.round(lay.chords.gap)} px clear of the open strings`);
     ok(lay.strip<=0.19, `a slim strum strip (${Math.round(lay.strip*100)}% of the neck)`);
     ok(lay.low && lay.nutLeft, "screen facing you: the low string at the bottom, the nut on the left, the strum strip on the right");
     ok(lay.pad, "the play view keeps clear of the notch and the home bar (safe-area padding)");
@@ -65,15 +65,15 @@ const cents=(a,b)=>1200*Math.log2(a/b);
 
     /* AOG-CHORDSTRIP-V1: ♪ Notes (the first way): a fret plays the moment it is touched; the chord strip plays a chord */
     const md=await p.evaluate(()=>({tap:PV.tap, notes:document.getElementById("pvTap").getAttribute("aria-pressed"), strip:[...document.querySelectorAll("#pvStrip .cs")].map(b=>{ const k=b.querySelector("kbd"); return k ? b.textContent.slice(0, -k.textContent.length) : b.textContent; })   /* its key (AOG-CHORD-KEYS-10-V1) is not part of the name */}));
-    ok(md.tap && md.notes==="true" && md.strip.join(" ")==="C Dm Em F G Am G7 Cadd9 D7 Em7", "♪ Notes is on, and the chords sit by the neck (the six, then G7 Cadd9 D7 Em7): "+md.strip.join(" "));
+    ok(md.tap && md.notes==="true" && md.strip.join(" ")==="C Dm Em F G Am Bdim G7 B♭ Fm D A♭", "♪ Notes is on, and the chords sit by the neck (the six, then the six more, AOG-CHORDS-12-V1): "+md.strip.join(" "));
     await p.evaluate("muteAll(); __v=[]"); { const q=await at(2,5); await T("touchStart",[q]); await p.waitForTimeout(60); await T("touchEnd",[]); }
     ok(JSON.stringify(await p.evaluate("__v.map(x=>x.m)"))==="[55]", "♪ Notes: a touch on a fret plays it at once (G)");
     await p.evaluate("muteAll(); __v=[]");
     { const b2=await p.evaluate(()=>{ const r=document.querySelector('#pvStrip .cs[data-i="0"]').getBoundingClientRect(); return {x:r.x+r.width/2, y:r.y+r.height/2}; });
       await T("touchStart",[b2]); await p.waitForTimeout(120); await T("touchEnd",[]); await p.waitForTimeout(40); }
     ok(JSON.stringify(await p.evaluate("__v.map(x=>x.m)"))==="[48,52,55,60,64]", "a tap on C in the strip strums a C chord: "+JSON.stringify(await p.evaluate("__v.map(x=>x.m)")));
-    /* AOG-CHORDS-MORE-V1: the second row plays its own shapes */
-    for(const [i,want,name] of [[7,[48,52,55,62,64],"Cadd9"],[6,[43,47,50,55,59,65],"G7"]]){
+    /* AOG-CHORDS-MORE-V1, AOG-CHORDS-12-V1: the six more play their own shapes */
+    for(const [i,want,name] of [[7,[43,47,50,55,59,65],"G7"]]){
       await p.evaluate("muteAll(); __v=[]");
       const b3=await p.evaluate(i=>{ const r=document.querySelector(`#pvStrip .cs[data-i="${i}"]`).getBoundingClientRect(); return {x:r.x+r.width/2, y:r.y+r.height/2}; }, i);
       await T("touchStart",[b3]); await p.waitForTimeout(120); await T("touchEnd",[]); await p.waitForTimeout(40);
@@ -216,8 +216,8 @@ const cents=(a,b)=>1200*Math.log2(a/b);
     ok(!u.on && !u.play && u.inRig && u.rowFirst, "upright, the neck stays on the page as it was (thick string on top)");
     ok(/sideways/.test(u.turn), "one quiet line: "+u.turn);
     ok(u.big==="none" && u.sw<=390, "no computer button on a phone; no sideways scroll");
-    const cs=await p.evaluate(()=>{ const st=document.getElementById("chordStrip"), nk=document.getElementById("neckBox"); return {n:st.querySelectorAll(".cs").length, above:st.getBoundingClientRect().bottom<=nk.getBoundingClientRect().top+1 && nk.getBoundingClientRect().top-st.getBoundingClientRect().bottom<40+document.querySelector(".krow").getBoundingClientRect().height+12, w:document.querySelector("#chordStrip .cs").getBoundingClientRect().width}; });
-    ok(cs.n===10 && cs.above && cs.w>=44, `upright, the six chords and the four more sit just above the neck, only Lower and Higher between (AOG-KROW-NEAR-V1) (${Math.round(cs.w)} px each)`);
+    const cs=await p.evaluate(()=>{ const st=document.getElementById("chordStrip"), nk=document.getElementById("neckBox"); return {n:st.querySelectorAll(".cs").length, above:st.getBoundingClientRect().bottom<=nk.getBoundingClientRect().top+1 && nk.getBoundingClientRect().top-st.getBoundingClientRect().bottom<40+document.querySelector(".krow").getBoundingClientRect().height+document.getElementById("anyRow").getBoundingClientRect().height+24, w:document.querySelector("#chordStrip .cs").getBoundingClientRect().width}; });
+    ok(cs.n===12 && cs.above && cs.w>=44, `upright, the six chords and the six more sit just above the neck, only Any chord (AOG-ANY-ROOTS-V1) and Lower and Higher between (AOG-KROW-NEAR-V1) (${Math.round(cs.w)} px each)`);
     await p.setViewportSize({width:844,height:390}); await p.waitForTimeout(300); await p.setViewportSize({width:390,height:844}); await p.waitForTimeout(300);
     ok(await p.evaluate("document.getElementById('pvTurn').hidden"), "once turned, the line does not come back");
     ok(errs.length===0, "no page errors "+errs.join(" | ")); await c.close(); }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- AOG-FAST-BUILD-V1 source:8622ae270925936c · MADE BY tools/build-fast.py from music-guitar.html: edit music-guitar.html, then run it. -->
+<!-- AOG-FAST-BUILD-V1 source:20d2daa29e0cf702 · MADE BY tools/build-fast.py from music-guitar.html: edit music-guitar.html, then run it. -->
 <html lang="en">
 <head>
 <script>/* AOG-STUDIO-ONLY-V1 (Jimmy, 2026-10-10: "one location for all the instruments … and that is the studio"): opened on its own address, this room opens inside the Studio instead, at this exact address (its lesson, take or link). Inside the Studio's frame, and for the site's own checks, it stays. */(function(){try{if(window.top!==window||navigator.webdriver)return;var M={"music-pads":"pads","drum-machine":"pads","beat-lab":"pads","music-kit":"kit","drum-kit":"kit","music-piano":"piano","piano":"piano","keys":"piano","music-guitar":"guitar","guitar":"guitar","music-bass":"bass","bass":"bass","music-band":"band","band":"band","music-decks":"decks","decks":"decks","turntables":"decks","music-studio":"studio","studio":"studio","mixing-desk":"studio"},f=(location.pathname.split("/").pop()||"").replace(/\.html$/,""),r=M[f];if(!r)return;var F={pads:"music-pads",kit:"music-kit",piano:"music-piano",guitar:"music-guitar",bass:"music-bass",band:"music-band",decks:"music-decks",studio:"music-studio"};location.replace("/the-studio.html?at="+encodeURIComponent("/"+F[r]+".html"+location.search+location.hash)+"#"+r);}catch(e){}})();</script>
@@ -192,10 +192,11 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
 .neck .nk-key rect{fill:#f6efe0;stroke:#0b0b0c;stroke-width:1}
 .neck .nk-key text{fill:#1a1408}
 html.aog-keys .keys-line{display:block}
+.cs kbd{display:none}   /* AOG-CHORDS-12-V1: a computer key's letter shows only once the keys are used (it read "G77" on a phone) */
 html.aog-keys .cs kbd,html.aog-keys .pad kbd{display:inline-block;margin-top:.35rem;font:700 .66rem/1.4 var(--sans);color:#5a4b2b;border:1px solid #8b7a55;border-radius:4px;padding:0 .35em}
 .touch-line{display:block}
 @media (hover:hover) and (pointer:fine){
-  .pad kbd{display:inline-block;margin-top:.35rem;font:700 .66rem/1.4 var(--sans);color:#5a4b2b;border:1px solid #8b7a55;border-radius:4px;padding:0 .35em}
+  .pad kbd,.cs kbd{display:inline-block;margin-top:.35rem;font:700 .66rem/1.4 var(--sans);color:#5a4b2b;border:1px solid #8b7a55;border-radius:4px;padding:0 .35em}
   .keys-line{display:block}
   .touch-line{display:none}
 }
@@ -206,8 +207,23 @@ html.aog-keys .cs kbd,html.aog-keys .pad kbd{display:inline-block;margin-top:.35
   .pbtn.play{min-width:0;flex:1 1 100%}
   .nk-any .pbtn{flex:1 1 100%}
 }
-/* AOG-ANYCHORD-V1: any chord, under the pattern by the neck */
-.nk-any{margin-top:.2rem} .nk-any .field.small{min-width:6.5rem} .nk-anyline{margin:.45rem 0 .8rem;font-weight:700}
+/* AOG-ANY-ROOTS-V1 (2026-10-14) — Jimmy: "CAN THE root chords be more up and can we figure out a easier / quicker way to
+   switch chord roots?" Any chord sits right under the chord strip: twelve roots, one tap each, and six quick kinds beside
+   the menu of the rest. Two rows of six on a phone, one row of twelve where the page is wide enough. */
+.any{margin:.1rem 0 .7rem}
+.any>.plab{display:block;margin:0 0 .35rem}
+.aroots,.akq{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
+.akrow{margin-top:.5rem;align-items:flex-end}
+.akq{flex:1 1 100%}
+@media (min-width:1000px){ .aroots{grid-template-columns:repeat(12,minmax(0,1fr))} .akq{flex:1 1 24rem} }
+.ar,.ak{min-height:44px;min-width:0;padding:0 .15rem;border-radius:10px;border:1px solid #0a0b0d;color:#1f1a10;
+  background:linear-gradient(#f4ecd9,#ddcdaa);box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 2px 0 #07080a;
+  font:800 1rem/1.05 var(--sans);touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+.ak{font-size:.86rem}
+.ar[aria-pressed="true"],.ak[aria-pressed="true"]{background:#24324a;color:#fff6df}
+.ar.hit,.ak.hit{background:linear-gradient(#ffe08a,#e0a640);color:#1f1a10}
+/* AOG-ANYCHORD-V1: any chord (now under the chord strip, AOG-ANY-ROOTS-V1) */
+.nk-anyline{margin:.45rem 0 .2rem;font-weight:700}
 .nk-anyline:empty{display:none}
 @media print{ .rig,.bench-bar,header{display:none!important} }
 /* AOG-CHORDSTRIP-V1: the six chords in one row, right on top of the instrument */
@@ -217,17 +233,19 @@ html.aog-keys .cs kbd,html.aog-keys .pad kbd{display:inline-block;margin-top:.35
   font:800 1.05rem/1 var(--sans);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
 .cs.hit{background:linear-gradient(#ffe08a,#e0a640);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 1px 0 #07080a}
-.cs.more{background:linear-gradient(#efe6cf,#d9c79f);font-size:.95rem}   /* AOG-CHORDS-MORE-V1: the four more, a shade apart */
-.cstrip:not(.pv-chords) .cs.more:nth-child(7){grid-column:2}   /* upright: the four more sit centred under the six */
+/* AOG-CHORDS-12-V1: the six more, a shade apart; a name too long for its button goes onto two lines. Two rows of six on a
+   phone (upright and sideways) and an iPad upright; one row of twelve where the page is wide enough */
+.cs.more{background:linear-gradient(#efe6cf,#d9c79f);font-size:.95rem;white-space:normal;line-height:1.05;text-overflow:clip}
+@media (min-width:1000px){ .cstrip:not(.pv-chords){grid-template-columns:repeat(12,minmax(0,1fr))} }
 /* AOG-PLAY-CHORDS-V1 — Jimmy: "Can the chords be on the neck and make the strumming bar a bit smaller." Sideways, the six
    chords stand in a column at the nut end of the neck (the fretting hand picks the chord, the other strums), so the neck
    has the whole height; mirrored (Left-handed, Screen faces away) they move with the nut. */
-/* AOG-CHORDS-MORE-V1: the six, then the four more beside them; AOG-PLAY-ROOM-V1 (Jimmy: "Allow some more space between the
+/* AOG-CHORDS-12-V1: the six, then the six more beside them; AOG-PLAY-ROOM-V1 (Jimmy: "Allow some more space between the
    open notes and the chords"): a clear gap before the open strings */
 #playView .cstrip.pv-chords{flex:0 0 auto;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(6,minmax(0,1fr));grid-auto-flow:column;gap:5px;
   width:clamp(118px,16vw,210px);margin:0 18px 20px 0}
 body.pv-left #playView .cstrip.pv-chords{order:2;margin:0 0 20px 18px}
-#playView .cs.more{font-size:.9rem}
+#playView .cs.more{font-size:.9rem;line-height:1.05}
 #playView .cs{min-height:0;font-size:1rem}
 /* ══ AOG-PLAY-V1 — the neck sideways. A phone or tablet turned on its side (or a computer's "Play on the whole screen"):
    the page steps aside and the neck fills the screen, clear of the notch and the home bar. Nothing moves on its own. The
@@ -408,13 +426,17 @@ body.pv-left .pv-drawer{left:auto;right:0}
         </div>
         <div class="prog nk-prog" id="prog2"></div>
         <p class="line nk-theory" data-t="theoryLine"></p>
-        <div class="row nk-any" id="anyRow"><!-- AOG-ANYCHORD-V1 (Jimmy, 2026-10-05): any chord at all, from the shared library (aog-chords.js); it lights on the neck as a chord button does -->
-          <label class="field small"><span class="plab" data-t="anyRootLab"></span><select id="anyRoot"></select></label>
-          <label class="field"><span class="plab" data-t="anyKindLab"></span><select id="anyKind"></select></label>
-          <button type="button" class="pbtn" id="anyBtn" data-t="anyBtn"></button>
-        </div>
-        <p class="line nk-anyline" id="anyLine" aria-live="polite"></p>
         <div class="cstrip" id="chordStrip" role="group"></div><!-- AOG-CHORDSTRIP-V1: the six chords, on top of the neck -->
+        <div class="any nk-any" id="anyRow"><!-- AOG-ANY-ROOTS-V1: Any chord, right under the chord strip: a root with one tap -->
+          <span class="plab" data-t="anyRootLab"></span>
+          <div class="aroots" id="anyRoots" role="group"></div>
+          <div class="row akrow">
+            <div class="akq" id="anyKinds" role="group"></div>
+            <label class="field"><span class="plab" data-t="anyKindLab"></span><select id="anyKind"></select></label>
+            <button type="button" class="pbtn" id="anyBtn" data-t="anyBtn"></button>
+          </div>
+          <p class="line nk-anyline" id="anyLine" aria-live="polite"></p>
+        </div>
         <div class="krow"><!-- AOG-KROW-NEAR-V1 (Jimmy, 2026-10-05: "The lower or higher fret board needs to sit nearer the instruments"): right above the instrument -->
           <button type="button" class="pbtn" id="downBtn"></button>
           <span class="range" id="fretsOut" aria-live="polite"></span>
@@ -507,6 +529,6 @@ body.pv-left .pv-drawer{left:auto;right:0}
   </div>
 </div>
 
-<script src="/front/877eb7f745c8.js"></script>
+<script src="/front/7cfa17c8489d.js"></script>
 </body>
 </html>

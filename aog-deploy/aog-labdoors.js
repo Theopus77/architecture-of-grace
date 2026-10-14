@@ -157,6 +157,9 @@
         [].slice.call(krow.children).forEach(function (e) { if (!up.test(e.id || "")) recRow.appendChild(e); });
         if (!recRow.children.length) recRow = null;
       }
+      /* AOG-ANY-ROOTS-V1 (Jimmy, 2026-10-14: "CAN THE root chords be more up"): Any chord stays right under the chord strip */
+      var anyR = D.getElementById("anyRoots"), anyB = anyR && anyR.closest(".any");
+      if (anyB && anyB.parentNode === pblk && strip) { var sa = lead.indexOf(strip); if (sa >= 0) lead.splice(sa + 1, 0, anyB); }
       /* AOG-AMP-NEAR-V1: the guitar's and bass's "Pedals on" strip stays right under the neck */
       var pn = D.getElementById("pedalsNear");
       if (pn && pn.parentNode === pblk) { var at = lead.indexOf(inst); if (at >= 0) lead.splice(at + 1, 0, pn); }

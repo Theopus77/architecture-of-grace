@@ -24,10 +24,10 @@ const spy = f => f.evaluate(() => { window.__pd = []; if (!window.padDown.__spy)
     await p.mouse.click(5, 300); await spy(p);
     for (const k of KEYS.concat(["Minus", "Equal"])) { await p.keyboard.press(k); await p.waitForTimeout(60); }
     const got = await p.evaluate(() => window.__pd.join(","));
-    ok(got === "0,1,2,3,4,5,6,7,8,9", `${inst}: 1 to 0 play the ten chords in order, − and = nothing more: ${got}`);
+    ok(got === "0,1,2,3,4,5,6,7,8,9,10,11", `${inst}: 1 to 0, − and = play the twelve chords in order (AOG-CHORDS-12-V1): ${got}`);
     const caps = await p.evaluate(() => [...document.querySelectorAll("#chordStrip .cs")].map(b => { const k = b.querySelector("kbd"); return k && getComputedStyle(k).display !== "none" ? k.textContent : "?"; }).join(""));
     const line = await p.evaluate(() => { const r = document.querySelector("#keyMap .km-row"); return [...r.querySelectorAll("kbd")].map(k => k.textContent).join("") + " " + r.querySelector(".km-say").textContent; });
-    ok(caps === "1234567890" && line === "1234567890 the chords", `${inst}: each chord shows its key (${caps}); the picture of the keys says so: ${line}`);
+    ok(caps === "1234567890−=" && line === "1234567890−= the chords", `${inst}: each chord shows its key (${caps}); the picture of the keys says so: ${line}`);
     await p.evaluate(() => { const b = document.getElementById("langBtn"); if (b) b.click(); }); await p.waitForTimeout(400);
     ok(await p.evaluate(() => document.querySelector("#keyMap .km-row .km-say").textContent) === "los acordes", inst + ": in Spanish too");
     await p.evaluate(() => { const b = document.getElementById("langBtn"); if (b) b.click(); });

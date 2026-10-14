@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- AOG-FAST-BUILD-V1 source:dfa5502f65150cd7 · MADE BY tools/build-fast.py from music-piano.html: edit music-piano.html, then run it. -->
+<!-- AOG-FAST-BUILD-V1 source:3910caac7777dbd2 · MADE BY tools/build-fast.py from music-piano.html: edit music-piano.html, then run it. -->
 <html lang="en">
 <head>
 <script>/* AOG-STUDIO-ONLY-V1 (Jimmy, 2026-10-10: "one location for all the instruments … and that is the studio"): opened on its own address, this room opens inside the Studio instead, at this exact address (its lesson, take or link). Inside the Studio's frame, and for the site's own checks, it stays. */(function(){try{if(window.top!==window||navigator.webdriver)return;var M={"music-pads":"pads","drum-machine":"pads","beat-lab":"pads","music-kit":"kit","drum-kit":"kit","music-piano":"piano","piano":"piano","keys":"piano","music-guitar":"guitar","guitar":"guitar","music-bass":"bass","bass":"bass","music-band":"band","band":"band","music-decks":"decks","decks":"decks","turntables":"decks","music-studio":"studio","studio":"studio","mixing-desk":"studio"},f=(location.pathname.split("/").pop()||"").replace(/\.html$/,""),r=M[f];if(!r)return;var F={pads:"music-pads",kit:"music-kit",piano:"music-piano",guitar:"music-guitar",bass:"music-bass",band:"music-band",decks:"music-decks",studio:"music-studio"};location.replace("/the-studio.html?at="+encodeURIComponent("/"+F[r]+".html"+location.search+location.hash)+"#"+r);}catch(e){}})();</script>
@@ -179,6 +179,21 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
 .sc-say:empty,#anyLine:empty{display:none}
 .sc-lg{display:inline-flex;align-items:center;gap:.4rem;margin-right:1rem;white-space:nowrap}
 .sc-lg .sd{display:inline-block;margin:0}
+/* AOG-ANY-ROOTS-V1 (2026-10-14) — Jimmy: "CAN THE root chords be more up and can we figure out a easier / quicker way to
+   switch chord roots?" Any chord sits right under the chord strip: twelve roots, one tap each, and six quick kinds beside
+   the menu of the rest. Two rows of six on a phone, one row of twelve where the page is wide enough. */
+.any{margin:.1rem 0 .7rem}
+.any>.plab{display:block;margin:0 0 .35rem}
+.aroots,.akq{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
+.akrow{margin-top:.5rem;align-items:flex-end}
+.akq{flex:1 1 100%}
+@media (min-width:1000px){ .aroots{grid-template-columns:repeat(12,minmax(0,1fr))} .akq{flex:1 1 24rem} }
+.ar,.ak{min-height:44px;min-width:0;padding:0 .15rem;border-radius:10px;border:1px solid #0a0b0d;color:#1f1a10;
+  background:linear-gradient(#f4ecd9,#ddcdaa);box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 2px 0 #07080a;
+  font:800 1rem/1.05 var(--sans);touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+.ak{font-size:.86rem}
+.ar[aria-pressed="true"],.ak[aria-pressed="true"]{background:#24324a;color:#fff6df}
+.ar.hit,.ak.hit{background:linear-gradient(#ffe08a,#e0a640);color:#1f1a10}
 #anyPlay{min-width:9rem}
 @media (max-width:520px){ #anyPlay{flex:1 1 100%} }
 @media (hover:hover) and (pointer:fine){
@@ -282,8 +297,13 @@ details.all-lessons[open]>summary::before{content:"\25BE"}
   font:800 1.05rem/1 var(--sans);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
 .cs.hit{background:linear-gradient(#ffe08a,#e0a640);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 1px 0 #07080a}
-#playView .cstrip{flex:0 0 auto;margin:0 0 4px}
-#playView .cs{min-height:40px}
+#playView .cstrip{flex:0 0 auto;margin:0 0 4px;gap:5px}
+#playView .cs{min-height:44px}
+/* AOG-CHORDS-12-V1: the six more, a shade apart; a name too long for its button goes onto two lines. Two rows of six on a
+   phone upright and an iPad upright; one row of twelve on a phone on its side and where the page is wide enough */
+.cs.more{background:linear-gradient(#efe6cf,#d9c79f);font-size:.95rem;white-space:normal;line-height:1.05;text-overflow:clip}
+@media (min-width:1000px){ .cstrip:not(.pv-chords){grid-template-columns:repeat(12,minmax(0,1fr))} }
+@media (orientation:landscape) and (max-height:600px){ #playView .cstrip{grid-template-columns:repeat(12,minmax(0,1fr))} }   /* a phone on its side: one row, so the keys keep their height */
 /* ══ AOG-PLAY-V1 (2026-10-04) — the keys sideways: a phone or tablet turned on its side shows only the instrument, filling
    the screen, clear of the notch and the home bar: a keyboard: two octaves on a phone, three on an iPad. Not zoomed (a finger lands on the key it touches). ══ */
 .bp{display:none}
@@ -439,6 +459,16 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
         <h2 data-t="keysH"></h2>
         <p class="line" id="midiLine" aria-live="polite"></p>
         <div class="cstrip" id="chordStrip" role="group"></div><!-- AOG-CHORDSTRIP-V1: the six chords, on top of the keys -->
+        <div class="any" id="anyRow"><!-- AOG-ANY-ROOTS-V1: Any chord, right under the chord strip: a root with one tap -->
+          <span class="plab" data-t="anyRootLab"></span>
+          <div class="aroots" id="anyRoots" role="group"></div>
+          <div class="row akrow">
+            <div class="akq" id="anyKinds" role="group"></div>
+            <label class="field"><span class="plab" data-t="anyKindLab"></span><select id="anyKind"></select></label>
+            <button type="button" class="pbtn" id="anyPlay"></button>
+          </div>
+          <p class="line" id="anyLine" aria-live="polite"></p>
+        </div>
         <div class="krow"><!-- AOG-KROW-NEAR-V1 (Jimmy, 2026-10-05: "The lower or higher fret board needs to sit nearer the instruments"): right above the instrument -->
           <button type="button" class="pbtn" id="downBtn"></button>
           <span class="range" id="rangeOut" aria-live="polite"></span>
@@ -458,12 +488,6 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
           <label class="field"><span class="plab" data-t="scaleLab"></span><select id="scaleSel"></select></label>
         </div>
         <p class="line sc-say" id="scaleSay" aria-live="polite"></p>
-        <div class="row sc-row" id="anyRow">
-          <label class="field small"><span class="plab" data-t="anyRootLab"></span><select id="anyRoot"></select></label>
-          <label class="field"><span class="plab" data-t="anyKindLab"></span><select id="anyKind"></select></label>
-          <button type="button" class="pbtn" id="anyPlay"></button>
-        </div>
-        <p class="line" id="anyLine" aria-live="polite"></p>
         <p class="line touch-line" data-t="touchLine"></p>
         <p class="line" id="bpTurn" hidden></p><!-- AOG-PLAY-V1: once, quietly, on a phone or tablet held upright -->
         <p class="line keys-line" data-t="keysLine1"></p>
@@ -539,6 +563,6 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
   <div class="bp-main" id="bpMain"></div>
 </div>
 
-<script src="/front/ac981606fc78.js"></script>
+<script src="/front/d2361738f61d.js"></script>
 </body>
 </html>

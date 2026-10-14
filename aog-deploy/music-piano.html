@@ -178,6 +178,21 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
 .sc-say:empty,#anyLine:empty{display:none}
 .sc-lg{display:inline-flex;align-items:center;gap:.4rem;margin-right:1rem;white-space:nowrap}
 .sc-lg .sd{display:inline-block;margin:0}
+/* AOG-ANY-ROOTS-V1 (2026-10-14) — Jimmy: "CAN THE root chords be more up and can we figure out a easier / quicker way to
+   switch chord roots?" Any chord sits right under the chord strip: twelve roots, one tap each, and six quick kinds beside
+   the menu of the rest. Two rows of six on a phone, one row of twelve where the page is wide enough. */
+.any{margin:.1rem 0 .7rem}
+.any>.plab{display:block;margin:0 0 .35rem}
+.aroots,.akq{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
+.akrow{margin-top:.5rem;align-items:flex-end}
+.akq{flex:1 1 100%}
+@media (min-width:1000px){ .aroots{grid-template-columns:repeat(12,minmax(0,1fr))} .akq{flex:1 1 24rem} }
+.ar,.ak{min-height:44px;min-width:0;padding:0 .15rem;border-radius:10px;border:1px solid #0a0b0d;color:#1f1a10;
+  background:linear-gradient(#f4ecd9,#ddcdaa);box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 2px 0 #07080a;
+  font:800 1rem/1.05 var(--sans);touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+.ak{font-size:.86rem}
+.ar[aria-pressed="true"],.ak[aria-pressed="true"]{background:#24324a;color:#fff6df}
+.ar.hit,.ak.hit{background:linear-gradient(#ffe08a,#e0a640);color:#1f1a10}
 #anyPlay{min-width:9rem}
 @media (max-width:520px){ #anyPlay{flex:1 1 100%} }
 @media (hover:hover) and (pointer:fine){
@@ -281,8 +296,13 @@ details.all-lessons[open]>summary::before{content:"\25BE"}
   font:800 1.05rem/1 var(--sans);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
 .cs.hit{background:linear-gradient(#ffe08a,#e0a640);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 1px 0 #07080a}
-#playView .cstrip{flex:0 0 auto;margin:0 0 4px}
-#playView .cs{min-height:40px}
+#playView .cstrip{flex:0 0 auto;margin:0 0 4px;gap:5px}
+#playView .cs{min-height:44px}
+/* AOG-CHORDS-12-V1: the six more, a shade apart; a name too long for its button goes onto two lines. Two rows of six on a
+   phone upright and an iPad upright; one row of twelve on a phone on its side and where the page is wide enough */
+.cs.more{background:linear-gradient(#efe6cf,#d9c79f);font-size:.95rem;white-space:normal;line-height:1.05;text-overflow:clip}
+@media (min-width:1000px){ .cstrip:not(.pv-chords){grid-template-columns:repeat(12,minmax(0,1fr))} }
+@media (orientation:landscape) and (max-height:600px){ #playView .cstrip{grid-template-columns:repeat(12,minmax(0,1fr))} }   /* a phone on its side: one row, so the keys keep their height */
 /* ══ AOG-PLAY-V1 (2026-10-04) — the keys sideways: a phone or tablet turned on its side shows only the instrument, filling
    the screen, clear of the notch and the home bar: a keyboard: two octaves on a phone, three on an iPad. Not zoomed (a finger lands on the key it touches). ══ */
 .bp{display:none}
@@ -438,6 +458,16 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
         <h2 data-t="keysH"></h2>
         <p class="line" id="midiLine" aria-live="polite"></p>
         <div class="cstrip" id="chordStrip" role="group"></div><!-- AOG-CHORDSTRIP-V1: the six chords, on top of the keys -->
+        <div class="any" id="anyRow"><!-- AOG-ANY-ROOTS-V1: Any chord, right under the chord strip: a root with one tap -->
+          <span class="plab" data-t="anyRootLab"></span>
+          <div class="aroots" id="anyRoots" role="group"></div>
+          <div class="row akrow">
+            <div class="akq" id="anyKinds" role="group"></div>
+            <label class="field"><span class="plab" data-t="anyKindLab"></span><select id="anyKind"></select></label>
+            <button type="button" class="pbtn" id="anyPlay"></button>
+          </div>
+          <p class="line" id="anyLine" aria-live="polite"></p>
+        </div>
         <div class="krow"><!-- AOG-KROW-NEAR-V1 (Jimmy, 2026-10-05: "The lower or higher fret board needs to sit nearer the instruments"): right above the instrument -->
           <button type="button" class="pbtn" id="downBtn"></button>
           <span class="range" id="rangeOut" aria-live="polite"></span>
@@ -457,12 +487,6 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
           <label class="field"><span class="plab" data-t="scaleLab"></span><select id="scaleSel"></select></label>
         </div>
         <p class="line sc-say" id="scaleSay" aria-live="polite"></p>
-        <div class="row sc-row" id="anyRow">
-          <label class="field small"><span class="plab" data-t="anyRootLab"></span><select id="anyRoot"></select></label>
-          <label class="field"><span class="plab" data-t="anyKindLab"></span><select id="anyKind"></select></label>
-          <button type="button" class="pbtn" id="anyPlay"></button>
-        </div>
-        <p class="line" id="anyLine" aria-live="polite"></p>
         <p class="line touch-line" data-t="touchLine"></p>
         <p class="line" id="bpTurn" hidden></p><!-- AOG-PLAY-V1: once, quietly, on a phone or tablet held upright -->
         <p class="line keys-line" data-t="keysLine1"></p>
@@ -681,8 +705,8 @@ const STR={
   scaleSay:{en:"{root} {name} scale",es:"Escala {name} de {root}"},
   lgHome:{en:"{root}, the home note",es:"{root}, la nota casa"},
   lgBlue:{en:"the blue note",es:"la nota blue"},
-  anyRootLab:{en:"Any chord · root",es:"Cualquier acorde · raíz"},
-  anyKindLab:{en:"Kind of chord",es:"Tipo de acorde"},
+  anyRootLab:{en:"Any chord: tap a root",es:"Cualquier acorde: toca una raíz"},
+  anyKindLab:{en:"More kinds",es:"Más tipos"}, anyKinds:{en:"Kinds of chord",es:"Tipos de acorde"},
   anyPlay:{en:"▶ Play this chord",es:"▶ Tocar este acorde"},
   anyNotes:{en:"{chord}: {notes}",es:"{chord}: {notes}"}
 };
@@ -783,9 +807,9 @@ const SOUNDS={
 function soundName(id){ const s=SOUNDS[id]; return s? (S.lang==="es"?s.es:s.en) : id; }
 
 /* ── music: keys, chords, voicings ── */
-const Q={maj:[0,4,7], min:[0,3,7], dom7:[0,4,7,10], maj7:[0,4,7,11], m7:[0,3,7,10]};
-const SUF={maj:"", min:"m", dom7:"7", maj7:"maj7", m7:"m7"};
-const SUF_ES={maj:"", min:" m", dom7:"7", maj7:" maj7", m7:" m7"};
+const Q={maj:[0,4,7], min:[0,3,7], dom7:[0,4,7,10], maj7:[0,4,7,11], m7:[0,3,7,10], dim:[0,3,6]};
+const SUF={maj:"", min:"m", dom7:"7", maj7:"maj7", m7:"m7", dim:"dim"};
+const SUF_ES={maj:"", min:" m", dom7:"7", maj7:" maj7", m7:" m7", dim:" dim"};
 const NAMES={sharp:["C","C♯","D","D♯","E","F","F♯","G","G♯","A","A♯","B"], flat:["C","D♭","D","E♭","E","F","G♭","G","A♭","A","B♭","B"]};
 const SOLFA={sharp:["Do","Do♯","Re","Re♯","Mi","Fa","Fa♯","Sol","Sol♯","La","La♯","Si"], flat:["Do","Re♭","Re","Mi♭","Mi","Fa","Sol♭","Sol","La♭","La","Si♭","Si"]};
 const KEY_NAMES={en:["C","D♭","D","E♭","E","F","F♯","G","A♭","A","B♭","B"], es:["Do","Re♭","Re","Mi♭","Mi","Fa","Fa♯","Sol","La♭","La","Si♭","Si"]};
@@ -797,7 +821,7 @@ function chordName(c){ const pc=((S.key+c.off)%12+12)%12; return rootName(pc, c.
 function rootName(pc, q){
   const major=S.minor?(S.key+3)%12:S.key, deg=((pc-major)%12+12)%12;
   if([0,2,4,5,7,9,11].indexOf(deg)>=0) return pcName(pc);
-  const rel=(q==="min"||q==="m7") ? (pc+3)%12 : pc;
+  const rel=(q==="min"||q==="m7") ? (pc+3)%12 : q==="dim" ? (pc+1)%12 : pc;   /* AOG-CHORDS-12-V1: a dim chord leads up to the note above it (G♯dim, not A♭dim) */
   return (S.lang==="es"?SOLFA:NAMES)[(rel*7)%12<=6?"sharp":"flat"][pc];
 }
 /* six pads: the chords that belong to the key (numbers are steps of the scale) */
@@ -806,6 +830,13 @@ const PADS_MAJOR=[{n:1,off:0,q:"maj"},{n:2,off:2,q:"min"},{n:3,off:4,q:"min"},{n
    The pads count 1 to 6 in a minor key too (they had been the chords' steps in the scale: 1 3 4 5 6 7) */
 const PADS_MINOR=[{n:1,off:0,q:"min"},{n:2,off:3,q:"maj"},{n:3,off:5,q:"min"},{n:4,off:7,q:"min"},{n:5,off:8,q:"maj"},{n:6,off:10,q:"maj"}];
 function pads(){ return S.minor?PADS_MINOR:PADS_MAJOR; }
+/* AOG-CHORDS-12-V1 (2026-10-14) — Jimmy: "CAN WE GET MORE CHORDS FOR THE BAND AND OTHER INSTRUMENTS MAKE IT 10 OR MORE TO
+   SELECT ONE AT A TIME." The chord strip shows twelve: the six pads, then six more every learner meets, spelled for the
+   song's key. In C: Bdim G7 B♭ Fm D A♭. In A minor: E E7 Bdim D B♭ G♯dim. On the chord strip only; the six pads stay
+   exactly as they are (the patterns, the wheel and the lessons count them 1 to 6). */
+const MORE_MAJOR=[{n:7,off:11,q:"dim"},{n:8,off:7,q:"dom7"},{n:9,off:10,q:"maj"},{n:10,off:5,q:"min"},{n:11,off:2,q:"maj"},{n:12,off:8,q:"maj"}];
+const MORE_MINOR=[{n:7,off:7,q:"maj"},{n:8,off:7,q:"dom7"},{n:9,off:2,q:"dim"},{n:10,off:5,q:"maj"},{n:11,off:1,q:"maj"},{n:12,off:11,q:"dim"}];
+function allPads(){ return pads().concat(S.minor?MORE_MINOR:MORE_MAJOR); }
 const C=(off,q)=>({off:off,q:q||"maj"});
 /* AOG-PIANO-PATTERNS-V2 (2026-10-03) — Jimmy: "Are there more chord patterns that can be added to the list?" Nine more,
    eighteen, in groups (g) so the menu stays easy to read. AOG-STRINGS-WAYS-V1 (2026-10-04) — Jimmy: "start a chord pattern
@@ -1794,7 +1825,7 @@ function setSus(on){
    ══════════════════════════════════════════════════════════════════════════ */
 const padHeld={};
 function padDown(i, v){
-  const c=pads()[i]; if(!c) return;
+  const c=allPads()[i]; if(!c) return;   /* AOG-CHORDS-12-V1: 6 to 11 are the chord strip's six more */
   const vo=voicing(c, lastVoicing); lastVoicing=vo;
   const notes=vo.concat([bassOf(c)]);
   padUp(i);
@@ -1803,7 +1834,7 @@ function padDown(i, v){
   const el=document.querySelector('.pad[data-i="'+i+'"]'); if(el) el.classList.add("hit");
   paintWheelState();   /* AOG-PIANO-WHEEL-V2 */
   if(S.own && S.prog.length<8){ S.prog.push({off:c.off, q:c.q}); S.preset=""; save(); paintProg(); paintProgSel(); }
-  onPad(i, c);   /* AOG-PIANO-LESSONS-V1 */
+  if(i<6) onPad(i, c);   /* AOG-PIANO-LESSONS-V1 */
 }
 function padUp(i){
   const notes=padHeld[i]; if(!notes) return;
@@ -2163,7 +2194,7 @@ function paintWheelState(){
   const svg=$("wheel"); if(!svg) return;
   const k = S.playing && PLAY.cur>=0 && S.prog.length ? S.prog[PLAY.cur%S.prog.length] : null, now = k ? wheelKeyOf(k) : "";
   const hit=new Set(); if(WHEEL.press) hit.add(WHEEL.press);
-  Object.keys(padHeld).forEach(i=>{ const c=pads()[+i]; if(c) hit.add(wheelKeyOf(c)); });
+  Object.keys(padHeld).forEach(i=>{ const c=allPads()[+i]; if(c) hit.add(wheelKeyOf(c)); });
   const hand=handChordKey(); if(hand) hit.add(hand);
   /* AOG-PIANO-STEADY-V1: most notes change nothing on the wheel; then it is left alone */
   const sig=[...hit].sort().join(",")+"|"+now;
@@ -2258,13 +2289,14 @@ function buildKeys(){
 function paintStrips(){
   document.querySelectorAll(".cstrip").forEach(box=>{
     box.setAttribute("aria-label", t("chordsH"));
-    box.innerHTML=pads().map((c,i)=>`<button type="button" class="cs" data-i="${i}">${chordName(c)}</button>`).join("");
+    box.innerHTML=allPads().map((c,i)=>`<button type="button" class="cs${i>=6?" more":""}" data-i="${i}">${chordName(c)}</button>`).join("");   /* AOG-CHORDS-12-V1 */
     box.querySelectorAll(".cs").forEach(b=>{ const i=+b.getAttribute("data-i");
       b.onpointerdown=(e)=>{ if(e.button>0) return; e.preventDefault(); try{ b.setPointerCapture(e.pointerId); }catch(err){} b.classList.add("hit"); padDown(i, 0.74); };
       b.onpointerup=b.onpointercancel=b.onlostpointercapture=()=>{ if(!b.classList.contains("hit")) return; b.classList.remove("hit"); padUp(i); };
       b.onkeydown=(e)=>{ if((e.key==="Enter"||e.key===" ") && !e.repeat){ e.preventDefault(); e.stopPropagation(); padDown(i, 0.74); setTimeout(()=>padUp(i), 300); } };
       b.addEventListener("touchstart",(e)=>{ if(e.cancelable) e.preventDefault(); },{passive:false}); });
   });
+  anyRootsPaint();   /* AOG-ANY-ROOTS-V1: the roots are spelled for the key */
 }
 /* ══ AOG-PLAY-V1 (2026-10-04) — the piano sideways ════════════════════════════════════════════════════════════════
    Jimmy: "When you turn the iPhone or iPad horizontally, you can play … like a real instrument." Turned on its side, a
@@ -2445,7 +2477,6 @@ function paintScaleSel(){
 function paintScale(){
   const kb=$("kbd"), L=scLib(), id=scaleId(), sc=id!=="off" ? L.SCALES[id] : null;
   const sel=$("scaleSel"); if(sel && sel.options.length && sel.value!==id) sel.value=id;
-  const ar=$("anyRoot"); if(ar && ar.options.length && ar.value!==String(anyRoot())) ar.value=String(anyRoot());   /* not picked yet: it follows the key */
   const pcs=new Set(sc ? sc.iv.map(i=>(S.key+i)%12) : []), blue=(sc && sc.blue!=null) ? (S.key+sc.blue)%12 : -1;
   if(kb) kb.querySelectorAll("[data-m]").forEach(el=>{ const pc=(+el.getAttribute("data-m"))%12, on=pcs.has(pc);
     el.classList.toggle("sc-in", on); el.classList.toggle("sc-home", on && pc===S.key); el.classList.toggle("sc-blue", on && pc===blue && pc!==S.key); });
@@ -2458,14 +2489,43 @@ function paintScale(){
 function anyRoot(){ return SC.root==null ? S.key : SC.root; }
 function anyKind(){ const L=chLib(); return (L && L.KINDS[SC.kind]) ? SC.kind : "maj"; }
 function paintAnySel(){
-  const r=$("anyRoot"), k=$("anyKind"), L=chLib(); if(!r || !k) return;
-  r.innerHTML=KEY_NAMES[S.lang].map((n,i)=>`<option value="${i}">${n}</option>`).join("");
-  r.value=String(anyRoot());
+  const k=$("anyKind"), L=chLib(); if(!k) return;
   k.innerHTML=L ? L.GROUPS.map(([g,ids])=>`<optgroup label="${escH(L.group(g,S.lang))}">`+ids.map(id=>`<option value="${id}">${escH(L.label(id,S.lang))}</option>`).join("")+`</optgroup>`).join("") : "";
   if(L) k.value=anyKind();
   $("anyPlay").textContent=t("anyPlay");
   $("anyLine").textContent="";
+  anyRootsPaint();
 }
+const ANY_LAB="anyRootLab", ANY_KLAB="anyKinds";
+function anyRootNow(){ return anyRoot(); }
+function anyKindNow(){ return anyKind(); }
+function anySym(){ const L=chLib(); return L ? (k=>L.sym(k)) : null; }
+function anyRootDown(r){ SC.root=r; scSave(); anyMark(); anyDown(0.74); }
+function anyKindDown(k){ const L=chLib(); if(!(L && L.KINDS[k])) return; SC.kind=k; scSave(); $("anyKind").value=k; anyMark(); anyDown(0.74); }
+function anyRootUp(){ clearTimeout(ANY.tm); padUp("any"); }
+/* AOG-ANY-ROOTS-V1: a root or a quick kind plays while it is held, as a chord on the strip does */
+const QUICK_KINDS=["maj","min","dom7","maj7","m7","sus4"];
+function anyTap(b, down, up){
+  b.onpointerdown=(e)=>{ if(e.button>0) return; e.preventDefault(); try{ b.setPointerCapture(e.pointerId); }catch(err){} b.classList.add("hit"); down(); };
+  b.onpointerup=b.onpointercancel=b.onlostpointercapture=()=>{ if(!b.classList.contains("hit")) return; b.classList.remove("hit"); up(); };
+  b.onkeydown=(e)=>{ if((e.key==="Enter"||e.key===" ") && !e.repeat){ e.preventDefault(); e.stopPropagation(); down(); setTimeout(up, 300); } };
+  b.addEventListener("touchstart",(e)=>{ if(e.cancelable) e.preventDefault(); },{passive:false});
+}
+function anyMark(){
+  const r=anyRootNow(), k=anyKindNow();
+  document.querySelectorAll("#anyRoots .ar").forEach(b=>{ const v=+b.getAttribute("data-r")===r?"true":"false"; if(b.getAttribute("aria-pressed")!==v) b.setAttribute("aria-pressed", v); });
+  document.querySelectorAll("#anyKinds .ak").forEach(b=>{ const v=b.getAttribute("data-k")===k?"true":"false"; if(b.getAttribute("aria-pressed")!==v) b.setAttribute("aria-pressed", v); });
+}
+function anyRootsPaint(){
+  const rb=$("anyRoots"), kb=$("anyKinds"), sym=anySym(); if(!rb || !kb || !sym) return;
+  rb.setAttribute("aria-label", t(ANY_LAB)); kb.setAttribute("aria-label", t(ANY_KLAB));
+  const rh=[0,1,2,3,4,5,6,7,8,9,10,11].map(i=>`<button type="button" class="ar" data-r="${i}" aria-pressed="false">${rootName(i,"maj")}</button>`).join("");
+  if(rb._h!==rh){ rb.innerHTML=rh; rb._h=rh; rb.querySelectorAll(".ar").forEach(b=>anyTap(b, ()=>anyRootDown(+b.getAttribute("data-r")), anyRootUp)); }
+  const es=S.lang==="es", kh=QUICK_KINDS.map(k=>`<button type="button" class="ak" data-k="${k}" aria-pressed="false">${k==="maj"?(es?"Mayor":"Major"):k==="min"?(es?"Menor":"Minor"):sym(k)}</button>`).join("");
+  if(kb._h!==kh){ kb.innerHTML=kh; kb._h=kh; kb.querySelectorAll(".ak").forEach(b=>anyTap(b, ()=>anyKindDown(b.getAttribute("data-k")), anyRootUp)); }
+  anyMark();
+}
+
 /* the notes: the root where the keys show it (between C3 and B4), the rest above it, within about an octave and a half */
 function anyNotes(){
   const L=chLib(), k=L && L.KINDS[anyKind()]; if(!k) return [];
@@ -2486,8 +2546,7 @@ function anyUp(){ if(!padHeld.any) return; const held=performance.now()-ANY.at; 
 function bindScales(){
   $("scaleSel").onchange=()=>{ const v=$("scaleSel").value, L=scLib(); if(v!=="off" && !(L && L.SCALES[v])) return;
     if(S.minor) SC.min=v; else SC.maj=v; scSave(); paintScale(); };
-  $("anyRoot").onchange=()=>{ const v=+$("anyRoot").value; if(v>=0 && v<12){ SC.root=v; scSave(); } };
-  $("anyKind").onchange=()=>{ const v=$("anyKind").value, L=chLib(); if(L && L.KINDS[v]){ SC.kind=v; scSave(); } };
+  $("anyKind").onchange=()=>{ const v=$("anyKind").value, L=chLib(); if(L && L.KINDS[v]){ SC.kind=v; scSave(); anyMark(); } };
   const b=$("anyPlay"); let downAt=0;
   b.onpointerdown=(e)=>{ if(e.button>0) return; if(e.pointerType==="mouse") e.preventDefault(); downAt=performance.now();
     try{ b.setPointerCapture(e.pointerId); }catch(err){} anyDown(0.74); };
@@ -2602,7 +2661,7 @@ function bind(){
     h.setAttribute("data-theme", d); h.classList.toggle("dark", d==="dark"); try{ localStorage.setItem("aog.interior.ws.v1.theme", d); }catch(e){} paintText(); };
   /* after a menu is picked with a finger or the mouse, it gives focus back, so Space plays instead of
      reopening the menu; a keyboard user keeps focus on the menu as usual */
-  ["soundSel","keySel","progSel","rhythmSel","scaleSel","anyRoot","anyKind"].forEach(id=>{ const el=$(id);
+  ["soundSel","keySel","progSel","rhythmSel","scaleSel","anyKind"].forEach(id=>{ const el=$(id);
     el.addEventListener("pointerdown",()=>{ el._ptr=true; });
     el.addEventListener("change",()=>{ if(el._ptr){ el._ptr=false; setTimeout(()=>el.blur(),0); } }); });
   bindScales();   /* AOG-PIANO-SCALES-V1 */

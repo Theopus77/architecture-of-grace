@@ -27,16 +27,16 @@ function needed(iv){ const top=Math.max(...iv); return iv.filter(i=>!((i===7 && 
     const ui=await p.evaluate(()=>{
       const row=document.getElementById("anyRow"), neck=document.getElementById("neck"), strip=document.getElementById("chordStrip"), th=document.querySelector(".nk-theory");
       const r=row.getBoundingClientRect(), n=neck.getBoundingClientRect();
-      return {roots:[...document.querySelectorAll("#anyRoot option")].map(o=>o.textContent), groups:[...document.querySelectorAll("#anyKind optgroup")].map(g=>g.label),
+      return {roots:[...document.querySelectorAll("#anyRoots .ar")].map(o=>o.textContent), groups:[...document.querySelectorAll("#anyKind optgroup")].map(g=>g.label),
         kinds:[...document.querySelectorAll("#anyKind option")].map(o=>({v:o.value, t:o.textContent, g:o.parentNode.label})),
-        order:!!(th.compareDocumentPosition(row)&Node.DOCUMENT_POSITION_FOLLOWING) && !!(row.compareDocumentPosition(strip)&Node.DOCUMENT_POSITION_FOLLOWING),
+        order:!!(th.compareDocumentPosition(strip)&Node.DOCUMENT_POSITION_FOLLOWING) && !!(strip.compareDocumentPosition(row)&Node.DOCUMENT_POSITION_FOLLOWING) && Math.abs(r.top-strip.getBoundingClientRect().bottom)<=24,
         sameBlock:row.closest(".blk")===neck.closest(".blk"), gap:Math.round(n.top-r.bottom), right:Math.round(r.right), w:innerWidth,
         btn:document.getElementById("anyBtn").textContent, lab:[...row.querySelectorAll(".plab")].map(x=>x.textContent).join(" | ") };
     });
-    ok(ui.order && ui.sameBlock, "the Any chord row sits under the pattern and its line, above the chord strip and the neck");
+    ok(ui.order && ui.sameBlock, "the Any chord row sits right under the chord strip, above the neck (AOG-ANY-ROOTS-V1)");
     ok(ui.gap>=0 && ui.gap<420, `the neck starts ${ui.gap}px under it`);
     ok(ui.right<=ui.w, `the row fits the screen (${ui.right} of ${ui.w}px)`);
-    ok(ui.roots.length===12 && ui.roots.join(" ")==="C D♭ D E♭ E F F♯ G A♭ A B♭ B", "12 roots: "+ui.roots.join(" "));
+    ok(ui.roots.length===12 && ui.roots.join(" ")==="C D♭ D E♭ E F F♯ G A♭ A B♭ B", "12 root buttons, spelled as the chords are (AOG-ANY-ROOTS-V1): "+ui.roots.join(" "));
     ok(ui.groups.length===5 && ui.groups.join("|")===lib.gen.join("|"), "5 groups: "+ui.groups.join(" | "));
     ok(ui.kinds.length===45 && ui.kinds.map(k=>k.v).join()===lib.ids.join(), `45 kinds, in the library's order (${ui.kinds.length})`);
     const wrongText=ui.kinds.filter((k,i)=>k.t!==(lib.sym[i]?lib.sym[i]+" · ":"")+lib.len[i]);
@@ -83,10 +83,10 @@ function needed(iv){ const top=Math.max(...iv); return iv.filter(i=>!((i===7 && 
 
     /* 3. choosing in the menu: lit on the neck, and only the chord's notes play */
     await p.evaluate(()=>{ window.__v=[]; const mv=window.makeVoice; window.makeVoice=function(cx,ch,id,m){ if(cx===ac) window.__v.push(m); return mv.apply(this,arguments); }; });
-    await p.locator("#anyRoot").scrollIntoViewIfNeeded();
+    await p.locator("#anyRoots").scrollIntoViewIfNeeded();
     for(const [root, id] of [[2,"m7b5"],[7,"thirteenb9"],[9,"sus4"],[0,"maj"],[10,"dom7s5s9"],[4,"five"]]){
       await p.evaluate(()=>{ window.__v=[]; });
-      await p.selectOption("#anyRoot", String(root)); await p.selectOption("#anyKind", id); await p.waitForTimeout(120);
+      await p.click(`#anyRoots .ar[data-r="${root}"]`); await p.selectOption("#anyKind", id); await p.waitForTimeout(120);
       const r=await p.evaluate(()=>({hand:S.hand, key:S.key, fit:[...document.querySelectorAll("#neck .dot.fit, #neck .dot.now")].map(g=>g.getAttribute("data-c")), pale:[...document.querySelectorAll("#neck .dot.fit")].map(g=>g.getAttribute("data-c")),
         roots:[...document.querySelectorAll("#neck .dot.root")].map(g=>g.getAttribute("data-c")), shp:GTR?shapeFor(S.hand):null, played:window.__v.slice(),
         line:document.getElementById("anyLine").textContent, f0:S.fret0, n:NECK.n}));
@@ -118,13 +118,13 @@ function needed(iv){ const top=Math.max(...iv); return iv.filter(i=>!((i===7 && 
     /* 4. in Spanish */
     await p.evaluate(()=>{ try{ localStorage.setItem("aog.lang","es"); }catch(e){} });
     await p.reload(); await p.waitForTimeout(1200);
-    const es=await p.evaluate(()=>({roots:[...document.querySelectorAll("#anyRoot option")].map(o=>o.textContent), groups:[...document.querySelectorAll("#anyKind optgroup")].map(g=>g.label),
+    const es=await p.evaluate(()=>({roots:[...document.querySelectorAll("#anyRoots .ar")].map(o=>o.textContent), groups:[...document.querySelectorAll("#anyKind optgroup")].map(g=>g.label),
       kinds:[...document.querySelectorAll("#anyKind option")].map(o=>o.textContent), lab:[...document.querySelectorAll("#anyRow .plab")].map(x=>x.textContent).join(" | "),
       btn:document.getElementById("anyBtn").textContent}));
     ok(es.roots.join(" ")==="Do Re♭ Re Mi♭ Mi Fa Fa♯ Sol La♭ La Si♭ Si", "Spanish roots: "+es.roots.join(" "));
     ok(es.groups.join("|")===lib.ges.join("|"), "Spanish groups: "+es.groups.join(" | "));
     ok(es.kinds.length===45 && es.kinds.every((t,i)=>t===(lib.sym[i]?lib.sym[i]+" · ":"")+lib.les[i]), "Spanish kinds, e.g. "+es.kinds[19]);
-    ok(/Cualquier acorde/.test(es.lab) && /Tipo de acorde/.test(es.lab) && /Tocar este acorde/.test(es.btn), `Spanish words: ${es.lab} · ${es.btn}`);
+    ok(/Cualquier acorde/.test(es.lab) && /Más tipos/.test(es.lab) && /Tocar este acorde/.test(es.btn), `Spanish words: ${es.lab} · ${es.btn}`);
     await p.locator("#anyKind").scrollIntoViewIfNeeded();
     await p.selectOption("#anyKind", "m7"); await p.waitForTimeout(100);
     const esLine=await p.evaluate(()=>document.getElementById("anyLine").textContent);
