@@ -1952,10 +1952,18 @@ function anyMark(){
   document.querySelectorAll("#anyRoots .ar").forEach(b=>{ const v=+b.getAttribute("data-r")===r?"true":"false"; if(b.getAttribute("aria-pressed")!==v) b.setAttribute("aria-pressed", v); });
   document.querySelectorAll("#anyKinds .ak").forEach(b=>{ const v=b.getAttribute("data-k")===k?"true":"false"; if(b.getAttribute("aria-pressed")!==v) b.setAttribute("aria-pressed", v); });
 }
+/* AOG-ANY-NEAR-V1 (2026-10-14) — Jimmy (iPad): "May the key get closer to the keyboard. It is still not seeable." Any chord
+   sits right under the chord strip whatever moved the strip (an older copy of aog-labdoors.js a device kept moved only the
+   strip, leaving Any chord under the scale). Checked once the page has settled, and again whenever the strip moves. */
+(function anyNear(){
+  const go=()=>{ const s=document.getElementById("chordStrip"), a=document.getElementById("anyRow"); if(s && a && s.parentNode && s.nextElementSibling!==a) s.after(a); };
+  window.addEventListener("load", ()=>{ go(); setTimeout(go, 400);
+    const s=document.getElementById("chordStrip"); if(s && s.parentNode && window.MutationObserver) new MutationObserver(go).observe(s.parentNode, {childList:true}); });
+})();
 function anyRootsPaint(){
   const rb=$("anyRoots"), kb=$("anyKinds"), sym=anySym(); if(!rb || !kb || !sym) return;
   rb.setAttribute("aria-label", t(ANY_LAB)); kb.setAttribute("aria-label", t(ANY_KLAB));
-  const rh=[0,1,2,3,4,5,6,7,8,9,10,11].map(i=>`<button type="button" class="ar" data-r="${i}" aria-pressed="false">${pcName(i)}</button>`).join("");
+  const rh=[0,1,2,3,4,5,6,7,8,9,10,11].map(i=>`<button type="button" class="ar" data-r="${i}" aria-pressed="false">${rootName(i,"maj")}</button>`).join("");
   if(rb._h!==rh){ rb.innerHTML=rh; rb._h=rh; rb.querySelectorAll(".ar").forEach(b=>anyTap(b, ()=>anyRootDown(+b.getAttribute("data-r")), anyRootUp)); }
   const es=S.lang==="es", kh=QUICK_KINDS.map(k=>`<button type="button" class="ak" data-k="${k}" aria-pressed="false">${k==="maj"?(es?"Mayor":"Major"):k==="min"?(es?"Menor":"Minor"):sym(k)}</button>`).join("");
   if(kb._h!==kh){ kb.innerHTML=kh; kb._h=kh; kb.querySelectorAll(".ak").forEach(b=>anyTap(b, ()=>anyKindDown(b.getAttribute("data-k")), anyRootUp)); }
