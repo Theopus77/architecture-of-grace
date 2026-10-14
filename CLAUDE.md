@@ -153,6 +153,19 @@ Home Screen opens that place, full screen.
   muted green-grey), one sage accent, one kind of card, no glows, stripes or lifts.
   It is not one of `aog-chapel.js`'s navy rooms. Keep it so.
 
+## Thinking-skills checklists (Jimmy, 2026-10-14)
+
+"Executive function checklist to use for students … shared digitally or printed like the other slips."
+
+- Every checklist lives in one file, `aog-ef-slips.js` (`AOG_EF`). `slip.html` adds each one to its slips
+  (`/slip.html?s=efstart` …), `/ef` (`ef.html`) lists them with Open, Share/Copy link and Print, and the
+  Dashboard hands them out and charts the weekly self-check (`efself`). Never copy a step into another page.
+- A new checklist joins `AOG_EF`, the Thinking skills group in `aog-topbar.js`, and VIEWS in
+  `tools/check-contrast.js`.
+- Students read "thinking skills"; teachers read "executive function". Steps are short "I" sentences
+  about what helps.
+- On paper each checklist fits one page (`/ef` Print; Print all makes one page each). Keep lists short.
+
 ## The Adult Edition (Book 6)
 
 - Seven pages: `/adult`, `/adult/curriculum` (the whole manual), `/adult/lessons` (one lesson at a time),

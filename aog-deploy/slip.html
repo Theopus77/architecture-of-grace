@@ -82,6 +82,7 @@ textarea{min-height:84px;resize:vertical}
 <body>
 <script src="/aog-topbar.js"></script>
 <script src="/aog-sky.js"></script>
+<script src="/aog-ef-slips.js"></script>
 <div class="wrap" id="app" role="main"></div>
 <script>
 (function(){
@@ -245,6 +246,8 @@ SLIPS.fri=wk("fri",["Friday check-in","Registro del viernes"],["How was your wee
    {id:"plans",kind:"pick",max:99,more:true,q:["Weekend plans","Planes para el fin de semana"],o:[["😴 Rest","😴 Descansar"],["👨‍👩‍👧 Family","👨‍👩‍👧 Familia"],["🧑‍🤝‍🧑 Friends","🧑‍🤝‍🧑 Amigos"],["🌳 Outside","🌳 Afuera"],["⚽ Sports","⚽ Deportes"],["🚗 A trip","🚗 Un viaje"],["🎮 Games","🎮 Juegos"],["🙏 Faith or community","🙏 Fe o comunidad"],["🤷 Not sure yet","🤷 Todavía no sé"]]},
    {id:"tell",kind:"note",q:["Anything you want your teacher to know before the weekend? (optional)","¿Algo que quieras que sepa tu maestro/a antes del fin de semana? (opcional)"]}]);
 
+/* AOG-EF-SLIPS-V1 (2026-10-14) — the thinking-skills (executive function) checklists live in /aog-ef-slips.js; each joins the slips here. */
+if(window.AOG_EF) window.AOG_EF.forEach(function(e){ if(!SLIPS[e.id]) SLIPS[e.id]=e; });
 var id=String(Q.get("s")||"").toLowerCase(); if(id==="weekly"){ var dw=new Date().getDay(); id=dw===1?"mon":(dw>=4||dw===0||dw===6)?"fri":"mid"; } var S=SLIPS[id], app=document.getElementById("app");
 /* AOG-PTS-PERIODS-V1 (2026-10-03) — Jimmy: "What if this was used at a junior high / middle school?" … "Periods homeroom 1-10".
    ?day=periods&n=7 gives the school sheet Homeroom and Period 1–n (n from 1 to 10) in place of the elementary parts of the day. */
