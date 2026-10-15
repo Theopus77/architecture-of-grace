@@ -143,6 +143,49 @@
            CK("bag", "Get my things ready", "Preparar mis cosas", [["Homework in my folder", "La tarea en mi carpeta"], ["Lunch or lunch money, and water", "El almuerzo o el dinero, y agua"], ["Anything special today (gym clothes, a note, a library book)", "Algo especial de hoy (ropa de gimnasia, una nota, un libro de la biblioteca)"]]),
            CK("go", "Out the door", "Salir", [["Look at the clock: on time", "Mirar el reloj: a tiempo"], ["Coat and shoes for the weather", "Abrigo y zapatos según el clima"], ["One kind word on the way out", "Una palabra amable al salir"]])] },
 
+    /* ── AOG-EF-RULES-V1 (2026-10-15) — Jimmy: "Arbitrary rules cause rebellion. Make executive functioning material
+       related to helping stop this." A rule with no reason a student can see takes away choice, and people push back
+       to win it back (Brehm's reactance; Deci & Ryan: autonomy, competence, belonging). Three lists answer it: one for
+       the moment a rule feels unfair (pause, find the reason, speak up the strong way), one for an adult and a student
+       to talk a rule through at a calm time (after Greene's Collaborative & Proactive Solutions: the student's concern
+       first, then the adult's, then a plan that works for both), and one for writing a rule that makes sense. The
+       adults' side, the reason test and words that invite a yes, is AOG_EF_RULES below. ── */
+    { id: "efrule", art: "school", talk: true, skill: ["When a rule feels unfair", "Cuando una regla parece injusta"], area: ["Flexible thinking and speaking up", "Pensamiento flexible y hablar por mí"],
+      why: ["Turns \"that's not fair\" into a question and a better idea, instead of a fight.", "Convierte \"no es justo\" en una pregunta y una idea mejor, en vez de una pelea."],
+      see: ["Pushes back: \"That's not fair!\"", "Se opone: \"¡No es justo!\""],
+      when: ["When a rule or direction feels pointless or unfair. Practice it on a calm day first.", "Cuando una regla o instrucción parece sin sentido o injusta. Practíquenla primero en un día tranquilo."],
+      k: ["Thinking skills · When a rule feels unfair", "Habilidades para pensar · Cuando una regla parece injusta"], h: ["When a rule doesn't make sense to me", "Cuando una regla no tiene sentido para mí"],
+      lead: ["It is okay to feel a rule is unfair. These steps help you get answers and be heard. Tap each one you try.", "Está bien sentir que una regla es injusta. Estos pasos te ayudan a tener respuestas y a ser escuchado. Toca cada uno que intentes."],
+      qs: [CK("pause", "First, pause", "Primero, una pausa", [["Notice the thought: \"This feels unfair\"", "Notar el pensamiento: \"Esto se siente injusto\""], ["Take one slow breath before I answer", "Respirar lento una vez antes de responder"], ["Follow it for now. That does not mean I agree.", "Seguirla por ahora. Eso no quiere decir que estoy de acuerdo."]]),
+           CK("why", "Find the reason", "Buscar la razón", [["Guess what it is for: safety, learning, fairness or kindness", "Adivinar para qué es: seguridad, aprendizaje, justicia o amabilidad"], ["Ask: \"Can you help me understand why?\"", "Preguntar: \"¿Me ayuda a entender por qué?\""], ["Listen to the whole answer", "Escuchar toda la respuesta"]]),
+           CK("speak", "Speak up the strong way", "Hablar de la forma fuerte", [["Pick a calm time, not in front of everyone", "Elegir un momento tranquilo, no frente a todos"], ["Say what worries me about the rule", "Decir lo que me preocupa de la regla"], ["Offer another way that still keeps the reason", "Proponer otra forma que cumpla la misma razón"]]),
+           { id: "sense", kind: "scale", q: ["How much sense does the rule make to me now?", "¿Cuánto sentido tiene la regla para mí ahora?"], o: [["None yet", "Ninguno todavía"], ["A little", "Un poco"], ["Some", "Algo"], ["Most of it", "Casi todo"], ["It makes sense", "Tiene sentido"]] },
+           NOTE("idea", "The rule, and my idea for a better way (optional)", "La regla y mi idea para una forma mejor (opcional)")] },
+
+    { id: "eftalk", art: "house", together: true, skill: ["Talking a rule through, together", "Hablar de una regla, juntos"], area: ["Solving problems together", "Resolver problemas juntos"],
+      why: ["An adult and a student work out a rule problem at a calm time, so both sides count and the plan is shared.", "Un adulto y un estudiante resuelven un problema con una regla en un momento tranquilo, para que cuenten los dos lados y el plan sea de ambos."],
+      see: ["The same rule fight keeps coming back", "La misma pelea por una regla se repite"],
+      when: ["At a calm time, never in the moment. About ten minutes, side by side.", "En un momento tranquilo, nunca en el momento del problema. Unos diez minutos, lado a lado."],
+      k: ["Thinking skills · Talk it through", "Habilidades para pensar · Hablarlo juntos"], h: ["Let's talk about a rule", "Hablemos de una regla"],
+      lead: ["Do this together, when everyone is calm. The student goes first. There are no wrong answers.", "Háganlo juntos, cuando todos estén tranquilos. El estudiante va primero. No hay respuestas incorrectas."],
+      qs: [NOTE("rule", "The rule we are talking about", "La regla de la que hablamos"),
+           CK("hear", "1 · The student's side", "1 · El lado del estudiante", [["The student says what is hard about the rule", "El estudiante dice qué es difícil de la regla"], ["The adult listens and asks, \"What else?\"", "El adulto escucha y pregunta: \"¿Qué más?\""], ["The adult says it back until the student says, \"Yes, that's it\"", "El adulto lo repite hasta que el estudiante dice: \"Sí, eso es\""]]),
+           CK("adult", "2 · The adult's side", "2 · El lado del adulto", [["The adult gives the reason in one sentence", "El adulto da la razón en una frase"], ["The reason is safety, learning, fairness or kindness", "La razón es seguridad, aprendizaje, justicia o amabilidad"]]),
+           CK("solve", "3 · Solve it together", "3 · Resolverlo juntos", [["The student offers an idea first", "El estudiante propone una idea primero"], ["We pick a plan that works for both of us", "Elegimos un plan que funcione para los dos"], ["We set a day to check how it is going", "Fijamos un día para ver cómo va"]]),
+           { id: "rule2", kind: "one", q: ["What happened to the rule?", "¿Qué pasó con la regla?"], o: [["We kept it, and now it makes sense", "La mantuvimos y ahora tiene sentido"], ["We changed how it works", "Cambiamos cómo funciona"], ["We let it go", "La quitamos"], ["We need more time", "Necesitamos más tiempo"]] },
+           NOTE("plan", "Our plan, and the day we check in", "Nuestro plan y el día para revisar")] },
+
+    { id: "efmyrule", art: "school", skill: ["Making a rule that makes sense", "Hacer una regla que tenga sentido"], area: ["Planning and seeing other sides", "Planear y ver otros puntos de vista"],
+      why: ["Students write a rule with its reason and test it, so the class owns its rules. Rules students help make are the rules they keep.", "Los estudiantes escriben una regla con su razón y la prueban, para que las reglas sean de la clase. Las reglas que ayudan a hacer son las que cumplen."],
+      see: ["The class needs rules, or one keeps getting broken", "La clase necesita reglas, o una se rompe seguido"],
+      when: ["At the start of the year, a new term or a class meeting.", "Al inicio del año, de un periodo o en una reunión de clase."],
+      k: ["Thinking skills · A rule that makes sense", "Habilidades para pensar · Una regla con sentido"], h: ["A rule that makes sense", "Una regla que tiene sentido"],
+      lead: ["A good rule has a reason everyone can say. Write one, then check it.", "Una buena regla tiene una razón que todos pueden decir. Escribe una y luego revísala."],
+      qs: [NOTE("rule", "The rule, said as what to do", "La regla, dicha como lo que hay que hacer"),
+           NOTE("reason", "What it is for (the reason)", "Para qué sirve (la razón)"),
+           CK("test", "Check my rule", "Revisar mi regla", [["It says what to do, not only what not to do", "Dice qué hacer, no solo qué no hacer"], ["Its reason is safety, learning, fairness or kindness", "Su razón es seguridad, aprendizaje, justicia o amabilidad"], ["It is fair to everyone, adults too when it fits", "Es justa para todos, también para los adultos cuando aplica"], ["Someone could keep it even on a hard day", "Alguien podría cumplirla aun en un día difícil"], ["It is short enough to remember", "Es lo bastante corta para recordarla"]]),
+           NOTE("fix", "If someone forgets it, how do we help them get back on track?", "Si alguien la olvida, ¿cómo le ayudamos a retomar el camino?")] },
+
     { id: "efself", self: true, skill: ["My thinking skills this week", "Mis habilidades para pensar esta semana"], area: ["All eleven, as the student sees them", "Las once, como las ve el estudiante"],
       why: ["The student rates each skill, picks one to grow, and picks a checklist to help. It charts on the dashboard.", "El estudiante califica cada habilidad, elige una para crecer y una lista que le ayude. Se grafica en el tablero."],
       see: ["You want the student's own view", "Quieres la mirada del propio estudiante"],
@@ -164,6 +207,24 @@
   self.qs.push({ id: "tool", kind: "one", q: ["A checklist that could help", "Una lista que me podría ayudar"],
                  o: EF.slice(0, EF.length - 1).map(function (e) { return [e.skill[0], e.skill[1]]; }) });
   self.qs.push(NOTE("words", "Anything you want your teacher to know? (optional)", "¿Algo que quieras que sepa tu maestro? (opcional)"));
+
+  /* AOG-EF-RULES-V1 — the adults' side, shown and printed on /ef#rules. The reason test before a rule; words that
+     invite a yes (a reason with every rule, a choice inside it, when-then, a calm time to talk). After PBIS (a few rules,
+     said as what to do, taught with their reasons), Reeve's autonomy-supportive teaching and Greene's CPS. */
+  window.AOG_EF_RULES = {
+    test: [["I can say its reason in one sentence.", "Puedo decir su razón en una frase."],
+           ["The reason is safety, learning, fairness or kindness, not \"because I said so.\"", "La razón es seguridad, aprendizaje, justicia o amabilidad, no \"porque lo digo yo\"."],
+           ["It says what to do.", "Dice qué hacer."],
+           ["Students helped make it, or can ask about it.", "Los estudiantes ayudaron a hacerla, o pueden preguntar por ella."],
+           ["I keep it the same way, every day, for everyone.", "La aplico igual, cada día, para todos."],
+           ["When it is broken, there is a way to fix it, not only a consequence.", "Cuando se rompe, hay una forma de arreglarlo, no solo una consecuencia."],
+           ["The class has five rules or fewer.", "La clase tiene cinco reglas o menos."]],
+    say: [[["Because I said so.", "Porque lo digo yo."], ["The reason is ___. Want to talk about it at lunch?", "La razón es ___. ¿Quieres que lo hablemos en el almuerzo?"]],
+          [["You have to do this now.", "Tienes que hacerlo ahora."], ["This needs to be done. Which part do you want to start with?", "Esto hay que hacerlo. ¿Con qué parte quieres empezar?"]],
+          [["If you don't finish, no recess.", "Si no terminas, no hay recreo."], ["When this part is done, then it's recess.", "Cuando termines esta parte, sigue el recreo."]],
+          [["Stop arguing.", "Deja de discutir."], ["I hear you. Let's find a calm time to talk it through.", "Te escucho. Busquemos un momento tranquilo para hablarlo."]],
+          [["Rules are rules.", "Las reglas son las reglas."], ["If this rule isn't working, let's look at it together.", "Si esta regla no funciona, revisémosla juntos."]]]
+  };
 
   window.AOG_EF = EF;
   window.AOG_EF_SELF = SK;   /* the skills on the weekly self-check, for the dashboard's charts */

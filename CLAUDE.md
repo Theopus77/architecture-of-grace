@@ -165,6 +165,10 @@ Home Screen opens that place, full screen.
 - Students read "thinking skills"; teachers read "executive function". Steps are short "I" sentences
   about what helps.
 - On paper each checklist fits one page (`/ef` Print; Print all makes one page each). Keep lists short.
+- Rules that make sense (Jimmy, 2026-10-15: "Arbitrary rules cause rebellion. Make executive functioning material
+  related to helping stop this."): three student lists (`efrule`, `eftalk` done together, `efmyrule`) and the adults'
+  guide at `/ef#rules` (the reason test and words that invite a yes, `AOG_EF_RULES`). Pushback is a need for
+  fairness and a say; never call it defiance.
 
 ## The Adult Edition (Book 6)
 
