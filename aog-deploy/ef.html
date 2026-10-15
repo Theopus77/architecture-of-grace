@@ -79,6 +79,22 @@ select{width:100%;min-height:48px;font-size:17px;padding:8px 12px;border:1.5px s
 .rt .acts{display:flex;gap:8px;flex-wrap:wrap}
 .rt .said{flex-basis:100%;margin:0}
 .rt .said:empty{display:none}
+.rules{margin-top:14px;scroll-margin-top:90px}
+.rules.lit{border-color:var(--gold);box-shadow:0 0 0 2px var(--gold)}
+.rules .area{display:inline-block;font:800 11.5px/1.3 Inter,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--ink);background:var(--chip);border-radius:999px;padding:4px 10px;margin:0 0 8px}
+.rules h3{font:600 19px/1.25 Fraunces,Georgia,serif;margin:18px 0 6px;color:var(--ink)}
+.rtest{list-style:none;margin:6px 0 0;padding:0}
+.rtest li{display:flex;gap:10px;align-items:flex-start;margin:0 0 8px}
+.rtest li::before{content:"";flex:none;width:18px;height:18px;margin-top:3px;border:2px solid var(--gold);border-radius:4px}
+.rsay{display:grid;gap:8px}
+.rsay .pair{display:grid;grid-template-columns:1fr;gap:4px;padding:10px 12px;background:var(--chip);border-radius:12px}
+@media (min-width:720px){.rsay .pair{grid-template-columns:1fr 1.4fr;gap:14px}}
+.rsay .no{color:var(--soft)}
+.rsay .no b,.rsay .yes b{display:block;font:800 11px/1.3 Inter,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--soft);margin-bottom:2px}
+.rsay .yes{color:var(--ink);font-weight:600}
+.rlinks{display:flex;flex-wrap:wrap;gap:8px}
+.jhwhy{margin:6px 0 0;padding-left:1.2em}
+.jhwhy li{margin:0 0 8px}
 .foot{color:var(--soft);font-size:14px;text-align:center;margin-top:18px}
 
 /* ── the paper sheets: drawn into #paper only when printing ── */
@@ -88,46 +104,73 @@ select{width:100%;min-height:48px;font-size:17px;padding:8px 12px;border:1.5px s
   body{background:#fff;color:#111}
   body.printing > :not(#paper){display:none !important}
   body.printing #paper{display:block}
-  .sheet{color:#111;font:14pt/1.4 -apple-system,"Segoe UI",Inter,Arial,sans-serif}
   .sheet + .sheet{break-before:page;page-break-before:always}
-  /* the site's pencil-sketch skin (aog-sketch.js) dresses boxes and empty blocks; paper sheets stay plain */
-  .sheet,.sheet *{box-shadow:none !important;outline:0 !important;background-image:none !important}
-  .sheet .sk{font:800 9.5pt/1.3 Inter,Arial,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#6B4E12;margin:0 0 4pt}
-  .sheet h2{font:600 26pt/1.1 Fraunces,Georgia,serif;margin:0 0 10pt;color:#111}
-  .sheet .who{display:flex;gap:18pt;margin:0 0 10pt;font-weight:700}
-  .sheet .who span{flex:1;border-bottom:1.2pt solid #333;padding-bottom:10pt}
-  .sheet .who span.d{flex:0 0 32%}
-  .sheet .ld{margin:0 0 12pt;color:#333}
-  .sheet .sec{border:1pt solid #bbb;border-radius:9pt;padding:10pt 12pt;margin:0 0 10pt;break-inside:avoid;background:#fff !important}
-  .sheet .sec h3{font:700 15pt/1.25 Fraunces,Georgia,serif;margin:0 0 8pt;color:#111}
-  .sheet .bx{display:flex;gap:10pt;align-items:flex-start;margin:0 0 8pt}
-  .sheet .bx:last-child{margin-bottom:0}
-  .sheet .bx i{flex:none;width:15pt;height:15pt;border:1.5pt solid #222;border-radius:3pt;margin-top:1pt;background:#fff !important}
-  .sheet .row{display:flex;flex-wrap:wrap;gap:6pt 16pt}
-  .sheet .row .bx{margin:0}
-  .sheet .wl{border:0 !important;border-bottom:1pt solid #888 !important;border-radius:0 !important;background:none !important;height:28pt}
-  .sheet table{width:100%;border-collapse:collapse}
-  .sheet th,.sheet td{border:1pt solid #bbb;padding:4pt 5pt;text-align:center;vertical-align:middle}
-  .sheet th:first-child,.sheet td:first-child{text-align:left;font-weight:700}
-  .sheet thead th:not(:first-child){width:13%}
-  .sheet thead th{font-size:9pt;font-weight:700;background:#F3ECDC !important}
-  .sheet td o{display:inline-block;width:13pt;height:13pt;border:1.3pt solid #222;border-radius:50%}
-  /* the weekly self-check holds eleven skills on one page */
-  .sheet.dense{font-size:10pt;line-height:1.3}
-  .sheet.dense h2{font-size:22pt;margin-bottom:6pt}
-  .sheet.dense .ld{margin-bottom:8pt}
-  .sheet.dense .sec{padding:6pt 9pt;margin-bottom:6pt}
-  .sheet.dense .who{margin-bottom:6pt}
-  .sheet.dense .who span{padding-bottom:6pt}
-  .sheet.dense .sec h3{font-size:12pt;margin-bottom:4pt}
-  .sheet.dense .bx{gap:6pt}
-  .sheet.dense .bx i{width:11pt;height:11pt}
-  .sheet.dense .row{gap:3pt 12pt}
-  .sheet.dense .wl{height:20pt}
-  .sheet.dense table{font-size:10pt}
-  .sheet.dense th,.sheet.dense td{padding:2.5pt 4pt}
-  .sheet .ft{margin-top:10pt;font-size:9pt;color:#555;display:flex;justify-content:space-between;gap:10pt}
 }
+/* ── the paper sheets: drawn into #paper only to print. They are measured first and drawn snug, trim, dense or tight
+   only when they would run past one page. ── */
+#paper.measure{display:block;position:absolute;left:-10000px;top:0;width:7.5in;visibility:hidden}
+.sheet{color:#111;font:14pt/1.4 -apple-system,"Segoe UI",Inter,Arial,sans-serif}
+/* the site's pencil-sketch skin (aog-sketch.js) dresses boxes and empty blocks; paper sheets stay plain */
+.sheet,.sheet *{box-shadow:none !important;outline:0 !important;background-image:none !important}
+.sheet .sk{font:800 9.5pt/1.3 Inter,Arial,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#6B4E12;margin:0 0 4pt}
+.sheet h2{font:600 26pt/1.1 Fraunces,Georgia,serif;margin:0 0 10pt;color:#111}
+.sheet .who{display:flex;gap:18pt;margin:0 0 10pt;font-weight:700}
+.sheet .who span{flex:1;border-bottom:1.2pt solid #333;padding-bottom:10pt}
+.sheet .who span.d{flex:0 0 32%}
+.sheet .ld{margin:0 0 12pt;color:#333}
+.sheet .sec{border:1pt solid #bbb;border-radius:9pt;padding:10pt 12pt;margin:0 0 10pt;break-inside:avoid;background:#fff !important}
+.sheet .sec h3{font:700 15pt/1.25 Fraunces,Georgia,serif;margin:0 0 8pt;color:#111}
+.sheet .bx{display:flex;gap:10pt;align-items:flex-start;margin:0 0 8pt}
+.sheet .bx:last-child{margin-bottom:0}
+.sheet .bx i{flex:none;width:15pt;height:15pt;border:1.5pt solid #222;border-radius:3pt;margin-top:1pt;background:#fff !important}
+.sheet .row{display:flex;flex-wrap:wrap;gap:6pt 16pt}
+.sheet .row .bx{margin:0}
+.sheet .wl{border:0 !important;border-bottom:1pt solid #888 !important;border-radius:0 !important;background:none !important;height:28pt}
+.sheet table{width:100%;border-collapse:collapse}
+.sheet th,.sheet td{border:1pt solid #bbb;padding:4pt 5pt;text-align:center;vertical-align:middle}
+.sheet th:first-child,.sheet td:first-child{text-align:left;font-weight:700}
+.sheet thead th:not(:first-child){width:13%}
+.sheet thead th{font-size:9pt;font-weight:700;background:#F3ECDC !important}
+.sheet td o{display:inline-block;width:13pt;height:13pt;border:1.3pt solid #222;border-radius:50%}
+.sheet.snug{font-size:12pt;line-height:1.35}
+.sheet.snug h2{font-size:22pt;margin-bottom:6pt}
+.sheet.snug .who{margin-bottom:6pt}
+.sheet.snug .who span{padding-bottom:6pt}
+.sheet.snug .ld{margin-bottom:8pt}
+.sheet.snug .sec{padding:7pt 10pt;margin-bottom:7pt}
+.sheet.snug .sec h3{font-size:13pt;margin-bottom:5pt}
+.sheet.snug .sec > .bx:not(:last-child){margin-bottom:5pt}
+.sheet.snug .bx i{width:13pt;height:13pt}
+.sheet.snug .wl{height:22pt}
+.sheet.snug .pair{padding:4pt 0}
+/* the weekly self-check holds eleven skills on one page; any sheet still too long is drawn dense, then tight */
+.sheet.dense{font-size:10pt;line-height:1.3}
+.sheet.dense h2{font-size:22pt;margin-bottom:6pt}
+.sheet.dense .ld{margin-bottom:8pt}
+.sheet.dense .sec{padding:6pt 9pt;margin-bottom:6pt}
+.sheet.dense .who{margin-bottom:6pt}
+.sheet.dense .who span{padding-bottom:6pt}
+.sheet.dense .sec h3{font-size:12pt;margin-bottom:4pt}
+.sheet.dense .bx{gap:6pt}
+.sheet.dense .bx i{width:11pt;height:11pt}
+.sheet.dense .row{gap:3pt 12pt}
+.sheet.dense .wl{height:20pt}
+.sheet.dense table{font-size:10pt}
+.sheet.dense th,.sheet.dense td{padding:2.5pt 4pt}
+.sheet.dense .pair{padding:3pt 0}
+.sheet.trim .sec .wl:nth-child(4){display:none}
+.sheet.tight .sec{padding:5pt 8pt;margin-bottom:5pt}
+.sheet.tight{font-size:9.5pt;line-height:1.25}
+.sheet.tight .row{gap:2pt 10pt}
+.sheet.tight table{font-size:9.5pt}
+.sheet.tight th,.sheet.tight td{padding:2pt 3pt}
+.sheet.tight .who{margin-bottom:4pt}
+.sheet .pair{display:flex;gap:10pt;border-top:1pt solid #ddd;padding:6pt 0}
+.sheet .pair:first-child{border-top:0}
+.sheet .pair span{flex:1}
+.sheet .pair span:first-child{color:#555}
+.sheet .pair b{display:block;font:800 8pt/1.3 Inter,Arial,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#6B4E12}
+.sheet .ft{margin-top:10pt;font-size:9pt;color:#555;display:flex;justify-content:space-between;gap:10pt}
 </style>
 </head>
 <body>
@@ -160,13 +203,46 @@ select{width:100%;min-height:48px;font-size:17px;padding:8px 12px;border:1.5px s
 
   <div class="grid" id="list"></div>
 
+  <!-- AOG-EF-RULES-V1 (2026-10-15) — Jimmy: "Arbitrary rules cause rebellion. Make executive functioning material related
+       to helping stop this." The adults' side; the three student lists (efrule, eftalk, efmyrule) are cards above. The
+       words come from AOG_EF_RULES in /aog-ef-slips.js, so the page and the paper copy never differ. -->
+  <section class="card rules" id="rules" aria-labelledby="h-rules">
+    <span class="area"><span data-en="For adults" data-es="Para adultos">For adults</span></span>
+    <h2 id="h-rules"><span data-en="Rules that make sense" data-es="Reglas que tienen sentido">Rules that make sense</span></h2>
+    <p><span data-en="Students push back hardest on rules that seem to have no reason. That pushback is a need for fairness and a say, not a flaw. Rules with a reason, made together, are the rules that get kept." data-es="Los estudiantes se oponen más a las reglas que parecen no tener razón. Esa resistencia es una necesidad de justicia y de tener voz, no un defecto. Las reglas con razón, hechas juntos, son las que se cumplen.">Students push back hardest on rules that seem to have no reason. That pushback is a need for fairness and a say, not a flaw. Rules with a reason, made together, are the rules that get kept.</span></p>
+    <h3><span data-en="The reason test" data-es="La prueba de la razón">The reason test</span></h3>
+    <p class="sub"><span data-en="Before you make or keep a rule, check it." data-es="Antes de hacer o mantener una regla, revísala.">Before you make or keep a rule, check it.</span></p>
+    <ul class="rtest" id="rtest"></ul>
+    <h3><span data-en="Words that invite a yes" data-es="Palabras que invitan al sí">Words that invite a yes</span></h3>
+    <div class="rsay" id="rsay"></div>
+    <h3><span data-en="For students" data-es="Para los estudiantes">For students</span></h3>
+    <div class="rlinks" id="rlinks"></div>
+    <div class="acts" style="margin-top:14px"><button type="button" class="btn main" id="printRules"><span data-en="Print this guide" data-es="Imprimir esta guía">Print this guide</span></button><button type="button" class="btn" id="printRulesAll"><span data-en="Print both guides and the rule checklists" data-es="Imprimir las dos guías y las listas de reglas">Print both guides and the rule checklists</span></button></div>
+  </section>
+
+  <!-- AOG-EF-JH-V1 (2026-10-15) — Jimmy: "A lot of behavioral issues in junior high are caused by this." Grades 6-8:
+       why pushback peaks there, what works, and the words; AOG_EF_RULES.jh. -->
+  <section class="card rules" id="jh" aria-labelledby="h-jh">
+    <span class="area"><span data-en="For adults · Grades 6–8" data-es="Para adultos · Grados 6–8">For adults · Grades 6–8</span></span>
+    <h2 id="h-jh"><span data-en="Rules in junior high" data-es="Las reglas en la secundaria">Rules in junior high</span></h2>
+    <h3><span data-en="Why pushback peaks here" data-es="Por qué la resistencia aumenta aquí">Why pushback peaks here</span></h3>
+    <ul class="jhwhy" id="jhwhy"></ul>
+    <h3><span data-en="What works" data-es="Lo que funciona">What works</span></h3>
+    <ul class="rtest" id="jhdo"></ul>
+    <h3><span data-en="Words for this age" data-es="Palabras para esta edad">Words for this age</span></h3>
+    <div class="rsay" id="jhsay"></div>
+    <h3><span data-en="For students" data-es="Para los estudiantes">For students</span></h3>
+    <div class="rlinks" id="jhlinks"></div>
+    <div class="acts" style="margin-top:14px"><button type="button" class="btn main" id="printJh"><span data-en="Print this guide" data-es="Imprimir esta guía">Print this guide</span></button></div>
+  </section>
+
   <section class="card" aria-labelledby="h-rt" style="margin-top:14px">
     <h2 id="h-rt"><span data-en="Daily routine checklists" data-es="Listas de rutinas diarias">Daily routine checklists</span></h2>
     <p class="sub"><span data-en="Three more step lists for every day. Open one to print it from there." data-es="Tres listas de pasos más para cada día. Abre una para imprimirla desde ahí.">Three more step lists for every day. Open one to print it from there.</span></p>
     <div id="routines"></div>
   </section>
 
-  <p class="foot"><span data-en="Built on the research on executive function (Dawson and Guare; Barkley; Diamond). This page saves nothing." data-es="Basado en la investigación sobre funciones ejecutivas (Dawson y Guare; Barkley; Diamond). Esta página no guarda nada.">Built on the research on executive function (Dawson and Guare; Barkley; Diamond). This page saves nothing.</span></p>
+  <p class="foot"><span data-en="Built on the research on executive function (Dawson and Guare; Barkley; Diamond) and on why people resist rules (Brehm; Deci and Ryan; Reeve; Greene; Eccles and Midgley; Yeager). This page saves nothing." data-es="Basado en la investigación sobre funciones ejecutivas (Dawson y Guare; Barkley; Diamond) y sobre por qué las personas se resisten a las reglas (Brehm; Deci y Ryan; Reeve; Greene; Eccles y Midgley; Yeager). Esta página no guarda nada.">Built on the research on executive function (Dawson and Guare; Barkley; Diamond) and on why people resist rules (Brehm; Deci and Ryan; Reeve; Greene; Eccles and Midgley; Yeager). This page saves nothing.</span></p>
 </main>
 <div id="paper" aria-hidden="true"></div>
 <script>
@@ -188,6 +264,10 @@ function linkFor(id){ var q=["s="+id], d=destParam(), o=raw("aog.org.id");
   return location.origin+"/slip.html?"+q.join("&"); }
 function connected(){ return !!(raw("aog.sync.url")&&raw("aog.sync.writekey")); }
 
+/* AOG-EF-RULES-V1 — the three student lists that answer "that's not fair" */
+var RULES=["efrule","eftalk","efmyrule"], JH=["efpublic","efpitch"];
+function pairs(list){ return list.map(function(x){ return '<div class="pair"><span class="no"><b>'+t("Instead of","En vez de")+'</b>'+esc(tx(x[0]))+'</span><span class="yes"><b>'+t("Try","Prueba")+'</b>'+esc(tx(x[1]))+'</span></div>'; }).join(""); }
+function byId(id){ return EF.filter(function(e){ return e.id===id; })[0]; }
 /* the routine checklists already on slip.html (AOG-SLIP-SKETCH-V1); listed here, not copied */
 var RT=[["school",["At school: arrive and leave","En la escuela: llegar e irme"]],["homecheck",["At home: homework and pack up","En casa: tarea y preparar todo"]],["bedtime",["At home: getting ready for bed","En casa: prepararme para dormir"]]];
 function steps(e){ return e.qs.filter(function(q){ return q.kind==="check"; }).map(function(q){
@@ -212,8 +292,22 @@ function paintList(){
     return '<div class="rt"><b>'+esc(tx(r[1]))+'</b><span class="acts"><a class="btn" href="'+esc(linkFor(r[0]))+'">'+t("Open","Abrir")+'</a>'
       +'<button type="button" class="btn" data-share="'+r[0]+'">'+(sh?t("Share link","Compartir enlace"):t("Copy link","Copiar enlace"))+'</button></span>'
       +'<p class="said" data-said="'+r[0]+'" aria-live="polite"></p></div>'; }).join("");
+  var R=window.AOG_EF_RULES;
+  if(R){
+    D.getElementById("rtest").innerHTML=R.test.map(function(x){ return '<li>'+esc(tx(x))+'</li>'; }).join("");
+    D.getElementById("rsay").innerHTML=pairs(R.say);
+    var jl=function(ids){ return ids.map(function(id){ var e=byId(id); return e?'<a class="btn" href="#ef-'+id+'" data-jump="'+id+'">'+esc(tx(e.skill))+'</a>':""; }).join(""); };
+    D.getElementById("rlinks").innerHTML=jl(RULES);
+    var J=R.jh;
+    if(J){ D.getElementById("jhwhy").innerHTML=J.why.map(function(x){ return '<li>'+esc(tx(x))+'</li>'; }).join("");
+      D.getElementById("jhdo").innerHTML=J.do.map(function(x){ return '<li>'+esc(tx(x))+'</li>'; }).join("");
+      D.getElementById("jhsay").innerHTML=pairs(J.say);
+      D.getElementById("jhlinks").innerHTML=jl(JH.concat(["efrule","eftalk"])); }
+  }
   var sel=D.getElementById("seeing"), keep=sel.value;
-  sel.innerHTML='<option value="">'+t("Choose what you notice…","Elige lo que notas…")+'</option>'+EF.map(function(e){ return '<option value="'+e.id+'">'+esc(tx(e.see))+' → '+esc(tx(e.skill))+'</option>'; }).join("");
+  sel.innerHTML='<option value="">'+t("Choose what you notice…","Elige lo que notas…")+'</option>'+EF.map(function(e){ return '<option value="'+e.id+'">'+esc(tx(e.see))+' → '+esc(tx(e.skill))+'</option>'; }).join("")
+    +(window.AOG_EF_RULES?'<option value="rules">'+t("Rules keep starting fights → Rules that make sense (for adults)","Las reglas causan peleas → Reglas que tienen sentido (para adultos)")+'</option>'
+      +'<option value="jh">'+t("Pushback in grades 6–8 → Rules in junior high (for adults)","Resistencia en los grados 6–8 → Las reglas en la secundaria (para adultos)")+'</option>':"");
   sel.value=keep;
   D.getElementById("sheetSt").innerHTML=connected()
     ? '<span><b>'+t("Your Sheet is connected.","Tu Hoja está conectada.")+'</b> '+t("Links from this page send answers to it.","Los enlaces de esta página le envían las respuestas.")+'</span>'
@@ -238,8 +332,31 @@ function sheet(e){
     i++; }
   return h+'<div class="ft"><span>'+t("Thinking-skills checklist","Lista de habilidades para pensar")+'</span><span>architectureofgrace.com/ef</span></div></section>';
 }
+function rulesSheet(){ var R=window.AOG_EF_RULES;
+  return '<section class="sheet"><p class="sk">'+t("For adults · Thinking skills","Para adultos · Habilidades para pensar")+'</p><h2>'+t("Rules that make sense","Reglas que tienen sentido")+'</h2>'
+    +'<p class="ld">'+t("Students push back hardest on rules that seem to have no reason. That pushback is a need for fairness and a say, not a flaw. Rules with a reason, made together, are the rules that get kept.","Los estudiantes se oponen más a las reglas que parecen no tener razón. Esa resistencia es una necesidad de justicia y de tener voz, no un defecto. Las reglas con razón, hechas juntos, son las que se cumplen.")+'</p>'
+    +'<div class="sec"><h3>'+t("The reason test: before you make or keep a rule","La prueba de la razón: antes de hacer o mantener una regla")+'</h3>'+R.test.map(function(x){ return '<div class="bx"><i></i><span>'+esc(tx(x))+'</span></div>'; }).join("")+'</div>'
+    +'<div class="sec"><h3>'+t("Words that invite a yes","Palabras que invitan al sí")+'</h3>'+R.say.map(function(x){ return '<div class="pair"><span><b>'+t("Instead of","En vez de")+'</b>'+esc(tx(x[0]))+'</span><span><b>'+t("Try","Prueba")+'</b>'+esc(tx(x[1]))+'</span></div>'; }).join("")+'</div>'
+    +'<div class="sec"><h3>'+t("When a rule fight keeps coming back","Cuando la pelea por una regla se repite")+'</h3>'
+    +[["Talk at a calm time, never in the moment.","Hablen en un momento tranquilo, nunca en el momento del problema."],["The student's side first. Say it back until they say \"Yes, that's it.\"","Primero el lado del estudiante. Repítelo hasta que diga: \"Sí, eso es\"."],["Then your reason, in one sentence.","Luego tu razón, en una frase."],["Ask for their idea first. Pick a plan that works for both of you.","Pide su idea primero. Elijan un plan que funcione para los dos."]].map(function(x,i){ return '<div class="bx"><span style="font-weight:800;min-width:14pt">'+(i+1)+'</span><span>'+esc(tx(x))+'</span></div>'; }).join("")
+    +'<p style="margin:6pt 0 0;font-size:11pt;color:#444">'+t("The checklist \"Let's talk about a rule\" walks you both through it.","La lista \"Hablemos de una regla\" los guía a los dos.")+'</p></div>'
+    +'<div class="ft"><span>'+t("Brehm; Deci and Ryan; Reeve; Greene; PBIS","Brehm; Deci y Ryan; Reeve; Greene; PBIS")+'</span><span>architectureofgrace.com/ef</span></div></section>'; }
+function jhSheet(){ var J=window.AOG_EF_RULES.jh, pl=function(x){ return '<div class="bx"><i></i><span>'+esc(tx(x))+'</span></div>'; };
+  return '<section class="sheet"><p class="sk">'+t("For adults · Grades 6–8","Para adultos · Grados 6–8")+'</p><h2>'+t("Rules in junior high","Las reglas en la secundaria")+'</h2>'
+    +'<div class="sec"><h3>'+t("Why pushback peaks here","Por qué la resistencia aumenta aquí")+'</h3>'+J.why.map(function(x){ return '<p style="margin:0 0 5pt">'+esc(tx(x))+'</p>'; }).join("")+'</div>'
+    +'<div class="sec"><h3>'+t("What works","Lo que funciona")+'</h3>'+J.do.map(pl).join("")+'</div>'
+    +'<div class="sec"><h3>'+t("Words for this age","Palabras para esta edad")+'</h3>'+J.say.map(function(x){ return '<div class="pair"><span><b>'+t("Instead of","En vez de")+'</b>'+esc(tx(x[0]))+'</span><span><b>'+t("Try","Prueba")+'</b>'+esc(tx(x[1]))+'</span></div>'; }).join("")+'</div>'
+    +'<p style="margin:6pt 0 0;font-size:10.5pt;color:#444">'+t("For students: \"When I get called out in front of people\" and \"My pitch: change a rule.\"","Para los estudiantes: \"Cuando me llaman la atención frente a otros\" y \"Mi propuesta: cambiar una regla\".")+'</p>'
+    +'<div class="ft"><span>'+t("Eccles and Midgley; Yeager, Dahl and Dweck; Okonofua, Paunesku and Walton","Eccles y Midgley; Yeager, Dahl y Dweck; Okonofua, Paunesku y Walton")+'</span><span>architectureofgrace.com/ef#jh</span></div></section>'; }
 function printThese(list){
-  D.getElementById("paper").innerHTML=list.map(sheet).join("");
+  var P=D.getElementById("paper");
+  P.innerHTML=list.map(function(x){ return x==="rules"?rulesSheet():x==="jh"?jhSheet():sheet(x); }).join("");
+  /* one page each: a Letter page holds 10 in (960 px) inside its margins; a sheet that would run over is drawn
+     snug, then with two writing lines (trim), then dense, then tight, measured at the paper's own width before printing */
+  P.classList.add("measure");
+  var ss=P.querySelectorAll(".sheet"), LV=["snug","trim","dense","tight"];
+  for(var k=0;k<ss.length;k++){ for(var v=0;v<LV.length&&ss[k].offsetHeight>930;v++) ss[k].classList.add(LV[v]); }
+  P.classList.remove("measure");
   D.body.classList.add("printing"); window.print();
 }
 window.addEventListener("afterprint",function(){ D.body.classList.remove("printing"); D.getElementById("paper").innerHTML=""; });
@@ -257,11 +374,13 @@ D.addEventListener("click",function(ev){
   }
 });
 D.getElementById("printAll").addEventListener("click",function(){ printThese(EF); });
-D.getElementById("seeing").addEventListener("change",function(){
-  var c=D.getElementById("ef-"+this.value); if(!c) return;
-  var lit=D.querySelectorAll(".ef.lit"); for(var i=0;i<lit.length;i++) lit[i].classList.remove("lit");
-  c.classList.add("lit"); c.scrollIntoView({block:"start"}); var a=c.querySelector("[data-open]"); if(a) a.focus({preventScroll:true});
-});
+D.getElementById("printRules").addEventListener("click",function(){ printThese(["rules"]); });
+D.getElementById("printRulesAll").addEventListener("click",function(){ printThese(["rules","jh"].concat(RULES.concat(JH).map(byId).filter(Boolean))); });
+D.getElementById("printJh").addEventListener("click",function(){ printThese(["jh"]); });
+function jumpTo(c){ if(!c) return; var lit=D.querySelectorAll(".lit"); for(var i=0;i<lit.length;i++) lit[i].classList.remove("lit");
+  c.classList.add("lit"); c.scrollIntoView({block:"start"}); var a=c.querySelector("[data-open],button"); if(a) a.focus({preventScroll:true}); }
+D.addEventListener("click",function(ev){ var a=ev.target.closest&&ev.target.closest("a[data-jump]"); if(!a) return; ev.preventDefault(); jumpTo(D.getElementById("ef-"+a.getAttribute("data-jump"))); });
+D.getElementById("seeing").addEventListener("change",function(){ jumpTo(this.value==="rules"||this.value==="jh"?D.getElementById(this.value):D.getElementById("ef-"+this.value)); });
 
 paintList();
 /* the bar's EN | ES sets <html lang>; this page draws its list again in the new language */

@@ -398,7 +398,7 @@ function send(){
   var follow=!!(S.follow&&S.follow(Object.keys(r.nums).reduce(function(o,k){ o[k]=r.nums[k]-1; return o; },{ today:r.words.today })));
   var row=S.weekly?weeklyRow(now,d):{ action:"checkin", checkinType:"slip-"+id, slipType:id, studentId:who, respondentId:S.parent?"parent":who, respondentRole:S.parent?"parent":"student",
     timestamp:now.toISOString(), date:d, period:Q.get("period")||"", classId:Q.get("classId")||"", grade:Q.get("grade")||"",
-    note:[r.words.bricks,r.words.steps,r.words.words,r.words.topic,r.words.help,r.words.well].filter(Boolean).join(" · "), followUp:follow, source:"link",
+    note:[r.words.bricks,r.words.steps,r.words.words,r.words.topic,r.words.help,r.words.well].filter(Boolean).join(" · "), followUp:follow||!!(S.talk&&TALK), tellAdult:S.talk?(TALK?"yes":"no"):"", source:"link",
     extra:JSON.stringify({ series:"slip", slip:id, v:1, lang:ES?"es":"en", answers:r.words, scale:r.nums, goalId:Q.get("goal")||"", goalTitle:Q.get("gt")||"", unit:Q.get("u")||"", pts:ptsPack() }) };
   if(S.weekly) jSet("aog.weekly.mine",(jGet("aog.weekly.mine",[])||[]).concat([{w:S.weekly,who:who,ts:now.toISOString(),answers:JSON.parse(row.extra).answers,talk:TALK}]).slice(-60));
   var mine=jGet("aog.slips.mine",[])||[]; mine.push(Object.assign({},row,{mine:true})); jSet("aog.slips.mine",mine.slice(-300));
