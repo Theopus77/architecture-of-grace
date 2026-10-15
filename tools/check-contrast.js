@@ -31,7 +31,7 @@ const VIEWS = ["telescope.html#sky","telescope.html#lab","music-drums.html#lesso
   /* the Cube Lab's other two views (AOG-CUBE-LAB-V1, 2026-10-10) */
   "cube-lab.html#solve","cube-lab.html#mine",
   /* the thinking-skills checklists (AOG-EF-SLIPS-V1, 2026-10-14): slip.html draws each from /aog-ef-slips.js */
-  "slip.html?s=efstart","slip.html?s=efplan","slip.html?s=eforg","slip.html?s=eftime","slip.html?s=effocus","slip.html?s=efstuck","slip.html?s=efcheck","slip.html?s=efcalm","slip.html?s=efremember","slip.html?s=efswitch","slip.html?s=efstudy","slip.html?s=efmorning","slip.html?s=efrule","slip.html?s=eftalk","slip.html?s=efmyrule","slip.html?s=efself","ef.html#rules"];
+  "slip.html?s=efstart","slip.html?s=efplan","slip.html?s=eforg","slip.html?s=eftime","slip.html?s=effocus","slip.html?s=efstuck","slip.html?s=efcheck","slip.html?s=efcalm","slip.html?s=efremember","slip.html?s=efswitch","slip.html?s=efstudy","slip.html?s=efmorning","slip.html?s=efrule","slip.html?s=eftalk","slip.html?s=efmyrule","slip.html?s=efpublic","slip.html?s=efpitch","slip.html?s=efself","ef.html#rules","ef.html#jh"];
 const pages = args.length ? args : fs.readdirSync(ROOT).filter(f => f.endsWith(".html")).concat(ROOMS.map(r => "index.html#" + r)).concat(VIEWS);
 
 const TYPES = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".png": "image/png", ".svg": "image/svg+xml", ".json": "application/json", ".jpg": "image/jpeg", ".webp": "image/webp" };

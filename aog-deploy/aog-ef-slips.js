@@ -186,6 +186,33 @@
            CK("test", "Check my rule", "Revisar mi regla", [["It says what to do, not only what not to do", "Dice qué hacer, no solo qué no hacer"], ["Its reason is safety, learning, fairness or kindness", "Su razón es seguridad, aprendizaje, justicia o amabilidad"], ["It is fair to everyone, adults too when it fits", "Es justa para todos, también para los adultos cuando aplica"], ["Someone could keep it even on a hard day", "Alguien podría cumplirla aun en un día difícil"], ["It is short enough to remember", "Es lo bastante corta para recordarla"]]),
            NOTE("fix", "If someone forgets it, how do we help them get back on track?", "Si alguien la olvida, ¿cómo le ayudamos a retomar el camino?")] },
 
+    /* ── AOG-EF-JH-V1 (2026-10-15) — Jimmy: "A lot of behavioral issues in junior high are caused by this." At 11 to 14
+       the need for a say and for respect climbs just as school gives less of both (Eccles and Midgley, stage-environment
+       fit), and being corrected in front of friends is felt as a public loss (Yeager, Dahl and Dweck). Two lists for
+       grades 6-8: keeping your cool when called out in front of people, and turning pushback into a pitch. ── */
+    { id: "efpublic", art: "school", talk: true, skill: ["When I'm corrected in front of others", "Cuando me corrigen frente a otros"], area: ["Staying calm when others are watching", "Mantener la calma cuando otros miran"],
+      why: ["Being called out in front of friends stings, and teens push back to win back respect. This keeps both the respect and the moment.", "Que te llamen la atención frente a tus amigos duele, y los adolescentes se defienden para recuperar el respeto. Esto cuida el respeto y el momento."],
+      see: ["Reacts big when corrected in front of the class", "Reacciona fuerte cuando lo corrigen frente a la clase"],
+      when: ["Grades 6 to 8 most of all. Practice it on a calm day. Adults agree to correct in private when they can.", "Sobre todo en los grados 6 a 8. Practíquenla en un día tranquilo. Los adultos acuerdan corregir en privado cuando puedan."],
+      k: ["Thinking skills · In front of others", "Habilidades para pensar · Frente a otros"], h: ["When I get called out in front of people", "Cuando me llaman la atención frente a otros"],
+      lead: ["Getting corrected in front of people stings. You can keep your respect and stay out of trouble. Tap each step you use.", "Que te corrijan frente a otros duele. Puedes cuidar tu respeto y no meterte en problemas. Toca cada paso que uses."],
+      qs: [CK("now", "In the moment", "En el momento", [["Keep my face and voice calm, even if I'm mad inside", "Mantener la cara y la voz tranquilas, aunque por dentro esté enojado"], ["Say something short: \"Okay\" or \"Got it\"", "Decir algo corto: \"Está bien\" o \"Entendido\""], ["Do it now. Save the argument for later.", "Hacerlo ahora. Dejar la discusión para después."]]),
+           CK("later", "Later, in private", "Después, en privado", [["Ask: \"Can we talk after class?\"", "Preguntar: \"¿Podemos hablar después de clase?\""], ["Tell what happened from my side", "Contar lo que pasó desde mi lado"], ["Say what felt unfair or embarrassing", "Decir lo que se sintió injusto o vergonzoso"], ["Ask for what would help next time", "Pedir lo que ayudaría la próxima vez"]]),
+           { id: "signal", kind: "one", q: ["A quiet signal that would work for me", "Una señal discreta que me funcionaría"], o: [["A tap on the desk", "Un toque en el escritorio"], ["A sticky note", "Una nota adhesiva"], ["A quiet word up close", "Unas palabras en voz baja, de cerca"], ["A look and a nod", "Una mirada y un gesto"], ["Something else", "Otra cosa"]] },
+           { id: "kept", kind: "scale", q: ["How well did I keep my cool?", "¿Qué tan bien mantuve la calma?"], o: [["Not this time", "Esta vez no"], ["A little", "Un poco"], ["Partly", "En parte"], ["Mostly", "En gran parte"], ["All the way", "Por completo"]] }] },
+
+    { id: "efpitch", art: "school", skill: ["Pitching a rule change", "Proponer un cambio a una regla"], area: ["Planning, seeing other sides and speaking up", "Planear, ver otros lados y hablar por mí"],
+      why: ["Turns pushback into a proposal: the rule, what it protects, a better way and a trial. Students get a real say; adults get a plan they can say yes to.", "Convierte la resistencia en una propuesta: la regla, lo que protege, una forma mejor y una prueba. Los estudiantes tienen voz de verdad; los adultos, un plan al que pueden decir que sí."],
+      see: ["Has strong opinions about how things should run", "Tiene ideas firmes sobre cómo deberían ser las cosas"],
+      when: ["Grades 6 to 12. Any time a student says a rule is pointless. Set a time to hear the pitch.", "Grados 6 a 12. Cada vez que un estudiante dice que una regla no tiene sentido. Fijen un momento para escuchar la propuesta."],
+      k: ["Thinking skills · My pitch", "Habilidades para pensar · Mi propuesta"], h: ["My pitch: change a rule", "Mi propuesta: cambiar una regla"],
+      lead: ["A strong pitch shows you understand why the rule exists, then offers something better. Fill it in, then ask for a time to present it.", "Una buena propuesta muestra que entiendes por qué existe la regla y luego ofrece algo mejor. Llénala y pide un momento para presentarla."],
+      qs: [NOTE("rule", "The rule I want to change", "La regla que quiero cambiar"),
+           NOTE("problem", "The problem it causes, for me or for others", "El problema que causa, para mí o para otros"),
+           NOTE("protects", "What the rule is trying to protect", "Lo que la regla intenta proteger"),
+           NOTE("idea", "My idea, and how it still protects that", "Mi idea, y cómo sigue protegiendo eso"),
+           CK("ready", "Before I pitch it", "Antes de presentarla", [["I can say the adult's side fairly", "Puedo decir el lado del adulto de forma justa"], ["My idea works for the whole class, not only me", "Mi idea funciona para toda la clase, no solo para mí"], ["I suggest a trial: try it for two weeks", "Propongo una prueba: intentarlo dos semanas"], ["I say how we will know if it works", "Digo cómo sabremos si funciona"], ["I ask for a calm time to present it", "Pido un momento tranquilo para presentarla"]])] },
+
     { id: "efself", self: true, skill: ["My thinking skills this week", "Mis habilidades para pensar esta semana"], area: ["All eleven, as the student sees them", "Las once, como las ve el estudiante"],
       why: ["The student rates each skill, picks one to grow, and picks a checklist to help. It charts on the dashboard.", "El estudiante califica cada habilidad, elige una para crecer y una lista que le ayude. Se grafica en el tablero."],
       see: ["You want the student's own view", "Quieres la mirada del propio estudiante"],
@@ -223,7 +250,25 @@
           [["You have to do this now.", "Tienes que hacerlo ahora."], ["This needs to be done. Which part do you want to start with?", "Esto hay que hacerlo. ¿Con qué parte quieres empezar?"]],
           [["If you don't finish, no recess.", "Si no terminas, no hay recreo."], ["When this part is done, then it's recess.", "Cuando termines esta parte, sigue el recreo."]],
           [["Stop arguing.", "Deja de discutir."], ["I hear you. Let's find a calm time to talk it through.", "Te escucho. Busquemos un momento tranquilo para hablarlo."]],
-          [["Rules are rules.", "Las reglas son las reglas."], ["If this rule isn't working, let's look at it together.", "Si esta regla no funciona, revisémosla juntos."]]]
+          [["Rules are rules.", "Las reglas son las reglas."], ["If this rule isn't working, let's look at it together.", "Si esta regla no funciona, revisémosla juntos."]]],
+    /* AOG-EF-JH-V1 — junior high (grades 6-8), shown at /ef#jh. Eccles and Midgley (stage-environment fit); Yeager, Dahl
+       and Dweck (status and respect); Okonofua, Paunesku and Walton, PNAS 2016 (empathic discipline halved suspensions
+       in middle school). */
+    jh: {
+      why: [["At 11 to 14, the need for a say and for respect grows fast. Junior high often gives less of both: more rules, less choice. That mismatch drives much of the pushback.", "Entre los 11 y los 14 años, la necesidad de tener voz y respeto crece rápido. La secundaria suele dar menos de ambas: más reglas, menos opciones. Ese desajuste causa mucha de la resistencia."],
+            ["Being seen matters most at this age. A correction in front of friends feels like a public loss, and many students fight to win it back.", "Lo que piensan los demás importa mucho a esta edad. Una corrección frente a los amigos se siente como una derrota pública, y muchos luchan por recuperarse."],
+            ["Teens test rules to find out if they are fair. A rule that holds up to the question earns respect.", "Los adolescentes ponen a prueba las reglas para saber si son justas. Una regla que resiste la pregunta gana respeto."],
+            ["Respect works. In one middle-school study, teachers who saw students' views as worth hearing cut suspensions in half.", "El respeto funciona. En un estudio en secundaria, los maestros que vieron las opiniones de los estudiantes como dignas de escuchar redujeron las suspensiones a la mitad."]],
+      do: [["Correct in private: walk over, speak low, walk away.", "Corrige en privado: acércate, habla bajo, aléjate."],
+           ["Give the reason with the rule, every time.", "Da la razón con la regla, siempre."],
+           ["Offer a real choice inside the rule.", "Ofrece una opción real dentro de la regla."],
+           ["Let students pitch changes, and say yes when you can.", "Deja que propongan cambios y di que sí cuando puedas."],
+           ["Repair after a clash: \"I was sharp earlier. Let's reset.\"", "Repara después de un choque: \"Fui brusco antes. Empecemos de nuevo.\""]],
+      say: [[["Put that phone away, now! (in front of the class)", "¡Guarda ese teléfono ya! (frente a la clase)"], ["(Up close, quietly) Phone in the bin for work time. You'll have it at the bell.", "(De cerca, en voz baja) El teléfono va a la caja durante el trabajo. Lo tendrás al sonar el timbre."]],
+            [["Don't talk back to me.", "No me contestes."], ["You disagree. Tell me after class and I'll listen.", "No estás de acuerdo. Dímelo después de clase y te escucharé."]],
+            [["You're being disrespectful.", "Me estás faltando al respeto."], ["That came out sharp. Want to try it again?", "Eso sonó brusco. ¿Quieres intentarlo otra vez?"]],
+            [["I don't care whose fault it was.", "No me importa de quién fue la culpa."], ["Tell me what happened from your side first.", "Cuéntame primero lo que pasó desde tu lado."]]]
+    }
   };
 
   window.AOG_EF = EF;

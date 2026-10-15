@@ -93,6 +93,8 @@ select{width:100%;min-height:48px;font-size:17px;padding:8px 12px;border:1.5px s
 .rsay .no b,.rsay .yes b{display:block;font:800 11px/1.3 Inter,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--soft);margin-bottom:2px}
 .rsay .yes{color:var(--ink);font-weight:600}
 .rlinks{display:flex;flex-wrap:wrap;gap:8px}
+.jhwhy{margin:6px 0 0;padding-left:1.2em}
+.jhwhy li{margin:0 0 8px}
 .foot{color:var(--soft);font-size:14px;text-align:center;margin-top:18px}
 
 /* ── the paper sheets: drawn into #paper only when printing ── */
@@ -158,6 +160,11 @@ select{width:100%;min-height:48px;font-size:17px;padding:8px 12px;border:1.5px s
 .sheet.dense .pair{padding:3pt 0}
 .sheet.trim .sec .wl:nth-child(4){display:none}
 .sheet.tight .sec{padding:5pt 8pt;margin-bottom:5pt}
+.sheet.tight{font-size:9.5pt;line-height:1.25}
+.sheet.tight .row{gap:2pt 10pt}
+.sheet.tight table{font-size:9.5pt}
+.sheet.tight th,.sheet.tight td{padding:2pt 3pt}
+.sheet.tight .who{margin-bottom:4pt}
 .sheet .pair{display:flex;gap:10pt;border-top:1pt solid #ddd;padding:6pt 0}
 .sheet .pair:first-child{border-top:0}
 .sheet .pair span{flex:1}
@@ -210,7 +217,23 @@ select{width:100%;min-height:48px;font-size:17px;padding:8px 12px;border:1.5px s
     <div class="rsay" id="rsay"></div>
     <h3><span data-en="For students" data-es="Para los estudiantes">For students</span></h3>
     <div class="rlinks" id="rlinks"></div>
-    <div class="acts" style="margin-top:14px"><button type="button" class="btn main" id="printRules"><span data-en="Print this guide" data-es="Imprimir esta guía">Print this guide</span></button><button type="button" class="btn" id="printRulesAll"><span data-en="Print the guide and the three checklists" data-es="Imprimir la guía y las tres listas">Print the guide and the three checklists</span></button></div>
+    <div class="acts" style="margin-top:14px"><button type="button" class="btn main" id="printRules"><span data-en="Print this guide" data-es="Imprimir esta guía">Print this guide</span></button><button type="button" class="btn" id="printRulesAll"><span data-en="Print both guides and the rule checklists" data-es="Imprimir las dos guías y las listas de reglas">Print both guides and the rule checklists</span></button></div>
+  </section>
+
+  <!-- AOG-EF-JH-V1 (2026-10-15) — Jimmy: "A lot of behavioral issues in junior high are caused by this." Grades 6-8:
+       why pushback peaks there, what works, and the words; AOG_EF_RULES.jh. -->
+  <section class="card rules" id="jh" aria-labelledby="h-jh">
+    <span class="area"><span data-en="For adults · Grades 6–8" data-es="Para adultos · Grados 6–8">For adults · Grades 6–8</span></span>
+    <h2 id="h-jh"><span data-en="Rules in junior high" data-es="Las reglas en la secundaria">Rules in junior high</span></h2>
+    <h3><span data-en="Why pushback peaks here" data-es="Por qué la resistencia aumenta aquí">Why pushback peaks here</span></h3>
+    <ul class="jhwhy" id="jhwhy"></ul>
+    <h3><span data-en="What works" data-es="Lo que funciona">What works</span></h3>
+    <ul class="rtest" id="jhdo"></ul>
+    <h3><span data-en="Words for this age" data-es="Palabras para esta edad">Words for this age</span></h3>
+    <div class="rsay" id="jhsay"></div>
+    <h3><span data-en="For students" data-es="Para los estudiantes">For students</span></h3>
+    <div class="rlinks" id="jhlinks"></div>
+    <div class="acts" style="margin-top:14px"><button type="button" class="btn main" id="printJh"><span data-en="Print this guide" data-es="Imprimir esta guía">Print this guide</span></button></div>
   </section>
 
   <section class="card" aria-labelledby="h-rt" style="margin-top:14px">
@@ -219,7 +242,7 @@ select{width:100%;min-height:48px;font-size:17px;padding:8px 12px;border:1.5px s
     <div id="routines"></div>
   </section>
 
-  <p class="foot"><span data-en="Built on the research on executive function (Dawson and Guare; Barkley; Diamond) and on why people resist rules (Brehm; Deci and Ryan; Reeve; Greene). This page saves nothing." data-es="Basado en la investigación sobre funciones ejecutivas (Dawson y Guare; Barkley; Diamond) y sobre por qué las personas se resisten a las reglas (Brehm; Deci y Ryan; Reeve; Greene). Esta página no guarda nada.">Built on the research on executive function (Dawson and Guare; Barkley; Diamond) and on why people resist rules (Brehm; Deci and Ryan; Reeve; Greene). This page saves nothing.</span></p>
+  <p class="foot"><span data-en="Built on the research on executive function (Dawson and Guare; Barkley; Diamond) and on why people resist rules (Brehm; Deci and Ryan; Reeve; Greene; Eccles and Midgley; Yeager). This page saves nothing." data-es="Basado en la investigación sobre funciones ejecutivas (Dawson y Guare; Barkley; Diamond) y sobre por qué las personas se resisten a las reglas (Brehm; Deci y Ryan; Reeve; Greene; Eccles y Midgley; Yeager). Esta página no guarda nada.">Built on the research on executive function (Dawson and Guare; Barkley; Diamond) and on why people resist rules (Brehm; Deci and Ryan; Reeve; Greene; Eccles and Midgley; Yeager). This page saves nothing.</span></p>
 </main>
 <div id="paper" aria-hidden="true"></div>
 <script>
@@ -242,7 +265,8 @@ function linkFor(id){ var q=["s="+id], d=destParam(), o=raw("aog.org.id");
 function connected(){ return !!(raw("aog.sync.url")&&raw("aog.sync.writekey")); }
 
 /* AOG-EF-RULES-V1 — the three student lists that answer "that's not fair" */
-var RULES=["efrule","eftalk","efmyrule"];
+var RULES=["efrule","eftalk","efmyrule"], JH=["efpublic","efpitch"];
+function pairs(list){ return list.map(function(x){ return '<div class="pair"><span class="no"><b>'+t("Instead of","En vez de")+'</b>'+esc(tx(x[0]))+'</span><span class="yes"><b>'+t("Try","Prueba")+'</b>'+esc(tx(x[1]))+'</span></div>'; }).join(""); }
 function byId(id){ return EF.filter(function(e){ return e.id===id; })[0]; }
 /* the routine checklists already on slip.html (AOG-SLIP-SKETCH-V1); listed here, not copied */
 var RT=[["school",["At school: arrive and leave","En la escuela: llegar e irme"]],["homecheck",["At home: homework and pack up","En casa: tarea y preparar todo"]],["bedtime",["At home: getting ready for bed","En casa: prepararme para dormir"]]];
@@ -271,12 +295,19 @@ function paintList(){
   var R=window.AOG_EF_RULES;
   if(R){
     D.getElementById("rtest").innerHTML=R.test.map(function(x){ return '<li>'+esc(tx(x))+'</li>'; }).join("");
-    D.getElementById("rsay").innerHTML=R.say.map(function(x){ return '<div class="pair"><span class="no"><b>'+t("Instead of","En vez de")+'</b>'+esc(tx(x[0]))+'</span><span class="yes"><b>'+t("Try","Prueba")+'</b>'+esc(tx(x[1]))+'</span></div>'; }).join("");
-    D.getElementById("rlinks").innerHTML=RULES.map(function(id){ var e=byId(id); return e?'<a class="btn" href="#ef-'+id+'" data-jump="'+id+'">'+esc(tx(e.skill))+'</a>':""; }).join("");
+    D.getElementById("rsay").innerHTML=pairs(R.say);
+    var jl=function(ids){ return ids.map(function(id){ var e=byId(id); return e?'<a class="btn" href="#ef-'+id+'" data-jump="'+id+'">'+esc(tx(e.skill))+'</a>':""; }).join(""); };
+    D.getElementById("rlinks").innerHTML=jl(RULES);
+    var J=R.jh;
+    if(J){ D.getElementById("jhwhy").innerHTML=J.why.map(function(x){ return '<li>'+esc(tx(x))+'</li>'; }).join("");
+      D.getElementById("jhdo").innerHTML=J.do.map(function(x){ return '<li>'+esc(tx(x))+'</li>'; }).join("");
+      D.getElementById("jhsay").innerHTML=pairs(J.say);
+      D.getElementById("jhlinks").innerHTML=jl(JH.concat(["efrule","eftalk"])); }
   }
   var sel=D.getElementById("seeing"), keep=sel.value;
   sel.innerHTML='<option value="">'+t("Choose what you notice…","Elige lo que notas…")+'</option>'+EF.map(function(e){ return '<option value="'+e.id+'">'+esc(tx(e.see))+' → '+esc(tx(e.skill))+'</option>'; }).join("")
-    +(window.AOG_EF_RULES?'<option value="rules">'+t("Rules keep starting fights → Rules that make sense (for adults)","Las reglas causan peleas → Reglas que tienen sentido (para adultos)")+'</option>':"");
+    +(window.AOG_EF_RULES?'<option value="rules">'+t("Rules keep starting fights → Rules that make sense (for adults)","Las reglas causan peleas → Reglas que tienen sentido (para adultos)")+'</option>'
+      +'<option value="jh">'+t("Pushback in grades 6–8 → Rules in junior high (for adults)","Resistencia en los grados 6–8 → Las reglas en la secundaria (para adultos)")+'</option>':"");
   sel.value=keep;
   D.getElementById("sheetSt").innerHTML=connected()
     ? '<span><b>'+t("Your Sheet is connected.","Tu Hoja está conectada.")+'</b> '+t("Links from this page send answers to it.","Los enlaces de esta página le envían las respuestas.")+'</span>'
@@ -310,9 +341,16 @@ function rulesSheet(){ var R=window.AOG_EF_RULES;
     +[["Talk at a calm time, never in the moment.","Hablen en un momento tranquilo, nunca en el momento del problema."],["The student's side first. Say it back until they say \"Yes, that's it.\"","Primero el lado del estudiante. Repítelo hasta que diga: \"Sí, eso es\"."],["Then your reason, in one sentence.","Luego tu razón, en una frase."],["Ask for their idea first. Pick a plan that works for both of you.","Pide su idea primero. Elijan un plan que funcione para los dos."]].map(function(x,i){ return '<div class="bx"><span style="font-weight:800;min-width:14pt">'+(i+1)+'</span><span>'+esc(tx(x))+'</span></div>'; }).join("")
     +'<p style="margin:6pt 0 0;font-size:11pt;color:#444">'+t("The checklist \"Let's talk about a rule\" walks you both through it.","La lista \"Hablemos de una regla\" los guía a los dos.")+'</p></div>'
     +'<div class="ft"><span>'+t("Brehm; Deci and Ryan; Reeve; Greene; PBIS","Brehm; Deci y Ryan; Reeve; Greene; PBIS")+'</span><span>architectureofgrace.com/ef</span></div></section>'; }
+function jhSheet(){ var J=window.AOG_EF_RULES.jh, pl=function(x){ return '<div class="bx"><i></i><span>'+esc(tx(x))+'</span></div>'; };
+  return '<section class="sheet"><p class="sk">'+t("For adults · Grades 6–8","Para adultos · Grados 6–8")+'</p><h2>'+t("Rules in junior high","Las reglas en la secundaria")+'</h2>'
+    +'<div class="sec"><h3>'+t("Why pushback peaks here","Por qué la resistencia aumenta aquí")+'</h3>'+J.why.map(function(x){ return '<p style="margin:0 0 5pt">'+esc(tx(x))+'</p>'; }).join("")+'</div>'
+    +'<div class="sec"><h3>'+t("What works","Lo que funciona")+'</h3>'+J.do.map(pl).join("")+'</div>'
+    +'<div class="sec"><h3>'+t("Words for this age","Palabras para esta edad")+'</h3>'+J.say.map(function(x){ return '<div class="pair"><span><b>'+t("Instead of","En vez de")+'</b>'+esc(tx(x[0]))+'</span><span><b>'+t("Try","Prueba")+'</b>'+esc(tx(x[1]))+'</span></div>'; }).join("")+'</div>'
+    +'<p style="margin:6pt 0 0;font-size:10.5pt;color:#444">'+t("For students: \"When I get called out in front of people\" and \"My pitch: change a rule.\"","Para los estudiantes: \"Cuando me llaman la atención frente a otros\" y \"Mi propuesta: cambiar una regla\".")+'</p>'
+    +'<div class="ft"><span>'+t("Eccles and Midgley; Yeager, Dahl and Dweck; Okonofua, Paunesku and Walton","Eccles y Midgley; Yeager, Dahl y Dweck; Okonofua, Paunesku y Walton")+'</span><span>architectureofgrace.com/ef#jh</span></div></section>'; }
 function printThese(list){
   var P=D.getElementById("paper");
-  P.innerHTML=list.map(function(x){ return x==="rules"?rulesSheet():sheet(x); }).join("");
+  P.innerHTML=list.map(function(x){ return x==="rules"?rulesSheet():x==="jh"?jhSheet():sheet(x); }).join("");
   /* one page each: a Letter page holds 10 in (960 px) inside its margins; a sheet that would run over is drawn
      snug, then with two writing lines (trim), then dense, then tight, measured at the paper's own width before printing */
   P.classList.add("measure");
@@ -337,11 +375,12 @@ D.addEventListener("click",function(ev){
 });
 D.getElementById("printAll").addEventListener("click",function(){ printThese(EF); });
 D.getElementById("printRules").addEventListener("click",function(){ printThese(["rules"]); });
-D.getElementById("printRulesAll").addEventListener("click",function(){ printThese(["rules"].concat(RULES.map(byId).filter(Boolean))); });
+D.getElementById("printRulesAll").addEventListener("click",function(){ printThese(["rules","jh"].concat(RULES.concat(JH).map(byId).filter(Boolean))); });
+D.getElementById("printJh").addEventListener("click",function(){ printThese(["jh"]); });
 function jumpTo(c){ if(!c) return; var lit=D.querySelectorAll(".lit"); for(var i=0;i<lit.length;i++) lit[i].classList.remove("lit");
   c.classList.add("lit"); c.scrollIntoView({block:"start"}); var a=c.querySelector("[data-open],button"); if(a) a.focus({preventScroll:true}); }
 D.addEventListener("click",function(ev){ var a=ev.target.closest&&ev.target.closest("a[data-jump]"); if(!a) return; ev.preventDefault(); jumpTo(D.getElementById("ef-"+a.getAttribute("data-jump"))); });
-D.getElementById("seeing").addEventListener("change",function(){ jumpTo(this.value==="rules"?D.getElementById("rules"):D.getElementById("ef-"+this.value)); });
+D.getElementById("seeing").addEventListener("change",function(){ jumpTo(this.value==="rules"||this.value==="jh"?D.getElementById(this.value):D.getElementById("ef-"+this.value)); });
 
 paintList();
 /* the bar's EN | ES sets <html lang>; this page draws its list again in the new language */
