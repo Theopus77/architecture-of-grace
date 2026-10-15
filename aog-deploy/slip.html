@@ -247,7 +247,7 @@ SLIPS.fri=wk("fri",["Friday check-in","Registro del viernes"],["How was your wee
    {id:"tell",kind:"note",q:["Anything you want your teacher to know before the weekend? (optional)","¿Algo que quieras que sepa tu maestro/a antes del fin de semana? (opcional)"]}]);
 
 /* AOG-EF-SLIPS-V1 (2026-10-14) — the thinking-skills (executive function) checklists live in /aog-ef-slips.js; each joins the slips here. */
-if(window.AOG_EF) window.AOG_EF.forEach(function(e){ if(!SLIPS[e.id]) SLIPS[e.id]=e; });
+if(window.AOG_EF) window.AOG_EF.concat(window.AOG_EF_STRONG||[]).forEach(function(e){ if(!SLIPS[e.id]) SLIPS[e.id]=e; });   /* AOG-EF-STRONG-V1: and the character lists for boys */
 var id=String(Q.get("s")||"").toLowerCase(); if(id==="weekly"){ var dw=new Date().getDay(); id=dw===1?"mon":(dw>=4||dw===0||dw===6)?"fri":"mid"; } var S=SLIPS[id], app=document.getElementById("app");
 /* AOG-PTS-PERIODS-V1 (2026-10-03) — Jimmy: "What if this was used at a junior high / middle school?" … "Periods homeroom 1-10".
    ?day=periods&n=7 gives the school sheet Homeroom and Period 1–n (n from 1 to 10) in place of the elementary parts of the day. */
