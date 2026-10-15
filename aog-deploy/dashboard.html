@@ -265,6 +265,9 @@ const SLIPS=[["checkin","Start of class · How are you arriving?","Inicio de cla
    in their own group in the hand-out menu. Every one also lives on /ef with its share link and paper copy. */
 const EFSLIPS=(window.AOG_EF||[]).map(e=>["slip-"+e.id,"Thinking skills · "+e.skill[0],"Habilidades para pensar · "+e.skill[1]]);
 SLIPS.push(...EFSLIPS);
+/* AOG-EF-STRONG-V1 (2026-10-15) — the character lists for boys and young men, in their own group */
+const FSLIPS=(window.AOG_EF_STRONG||[]).map(e=>["slip-"+e.id,"Strength and character · "+e.skill[0],"Fuerza y carácter · "+e.skill[1]]);
+SLIPS.push(...FSLIPS);
 const TOOLS=[["disclosure","If a student discloses","Si un estudiante revela"],["coreg","Co-regulation script","Guion de co-regulación"],["findfunction","Find the function","Encuentra la función"],["scenarios","When a student…","Cuando un estudiante…"],["reflection","Teacher reflection","Reflexión docente"],["convostarters","Conversation starters","Para iniciar conversaciones"],["glossary","Glossary","Glosario"]];
 const TXT={
  en:{mtss:"MTSS Report",today:"Today",hand:"Hand out",students:"Students",checkins:"Check-ins",trends:"Trends",brick:"Brick by brick",inbox:"Inbox",papers:"IEP paperwork",reports:"Reports",setup:"Set up",more:"More",
@@ -589,6 +592,8 @@ SLIPSCALE["slip-efcheck"]={sure:["Sure about their work","Seguro de su trabajo"]
 SLIPSCALE["slip-efcalm"]={now:["Ready to work again","Listo para volver al trabajo"]};
 SLIPSCALE["slip-efrule"]={sense:["How much sense the rule made","Cuánto sentido tuvo la regla"]};
 SLIPSCALE["slip-efpublic"]={kept:["Kept their cool when corrected","Mantuvo la calma al ser corregido"]};
+SLIPSCALE["slip-efcontrol"]={control:["Stayed in control","Se mantuvo en control"]};
+if(window.AOG_EF_GROW){ SLIPSCALE["slip-efgrow"]={}; window.AOG_EF_GROW.forEach(k=>{ SLIPSCALE["slip-efgrow"][k[0]]=[k[1].split(":")[0],k[2].split(":")[0]]; }); }
 if(window.AOG_EF_SELF){ SLIPSCALE["slip-efself"]={}; window.AOG_EF_SELF.forEach(k=>{ SLIPSCALE["slip-efself"][k[0]]=[k[1],k[2]]; }); }
 /* AOG-SLIP-PARENT-V1 — the notes a parent sends from home, named for the charts (they are not handed out in class) */
 const PSLIPS=[["slip-home","Evening at home · How was the evening?","Tarde en casa · ¿Cómo estuvo la tarde?"],["slip-morning","Morning at home · How did the morning go?","Mañana en casa · ¿Cómo estuvo la mañana?"],["slip-homework","Homework at home · How did it go?","Tarea en casa · ¿Cómo le fue?"]];
@@ -1278,7 +1283,7 @@ const SICON={
 const SCOL={math:"#2F63B8",ela:"#B87A12",write:"#C2552A",science:"#2E8B57",'social-studies':"#A8323E",spanish:"#B8457A",facs:"#7B4FA0",religion:"#3F4AA6",bible:"#7A3B2E",quran:"#1F6B4A",talmud:"#2E5A8A",hindu:"#B5562B",buddhist:"#A0701A",chinese:"#9B2F2F",cultures:"#2F6F8F",health:"#2E8B6A",economics:"#6E7C22",foundry:"#A85A24",
   mth:"#2F63B8",sci:"#2E8B57",ssc:"#A8323E",ush:"#A8323E",fcs:"#7B4FA0",rel:"#3F4AA6",spa:"#B8457A",eco:"#6E7C22",checkin:"#1F8080",exit:"#B87A12",'slip-test':"#2F63B8",'slip-posttest':"#1F8080",'slip-endclass':"#B87A12",'slip-repair':"#A8323E",'slip-team':"#2E8B57",'slip-unit':"#7B4FA0",'slip-goal':"#8A6516",'slip-home':"#B8457A",reflection:"#3F4AA6",myvoice:"#B8457A",weekly:"#1F8080",prac:"#5E6B7A"};
 /* AOG-EF-SLIPS-V1 — one look for every thinking-skills checklist: a light bulb with a tick */
-EFSLIPS.forEach(s=>{ SICON[s[0]]='<path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.8.8 1 1.5 1 2.5h6c0-1 .2-1.7 1-2.5A6 6 0 0 0 12 3z"/><path d="M10 10l1.5 1.5L14.5 8"/>'; SCOL[s[0]]="#2F6B52"; });
+EFSLIPS.concat(FSLIPS).forEach(s=>{ SICON[s[0]]='<path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.8.8 1 1.5 1 2.5h6c0-1 .2-1.7 1-2.5A6 6 0 0 0 12 3z"/><path d="M10 10l1.5 1.5L14.5 8"/>'; SCOL[s[0]]="#2F6B52"; });
 function itemKey(it){ if(it.t==="dd") return it.s; if(it.t==="unit") return it.p; if(it.t==="prac") return "prac"; if(it.t==="slip") return /^weekly/.test(it.i)?"weekly":String(it.i).split("?")[0]; return "prac"; }
 /* AOG-DASH-SKETCHBOOK-V1 — the pencil drawing at the top of a card, the same drawings the home table uses */
 function dsk(n){ return '<span class="dsk" aria-hidden="true"><img src="/img/banners/'+n+'-pencil-900.webp" alt="" width="900" height="315" loading="lazy" decoding="async"></span>'; }
@@ -1323,8 +1328,9 @@ function today(){
     +'<div class="row"><button class="btn add" type="button" data-add="as">+ '+T("add")+'</button></div></section>'
   +'<section class="card hand" style="--ac:var(--c5)">'+dsk("page-turn-ins")+'<p class="k">'+T("hand")+'</p><h2>'+T("sl")+'</h2><p class="s">'+T("slS")+'</p>'
     +'<label class="f" for="slI">'+T("slip")+'</label><select id="slI">'+SLIPS.filter(s=>!/^slip-ef/.test(s[0])).map(s=>opt(s[0],lang==="es"?s[2]:s[1],s[0]===sl.i)).join("")
-      +(EFSLIPS.length?'<optgroup label="'+(lang==="es"?"Habilidades para pensar (funciones ejecutivas)":"Thinking skills (executive function)")+'">'+EFSLIPS.map(s=>opt(s[0],(lang==="es"?s[2]:s[1]).split(" · ")[1],s[0]===sl.i)).join("")+'</optgroup>':"")+'</select>'
-      +(/^slip-ef/.test(sl.i)?'<p class="s" style="margin:6px 0 0"><a href="/ef" style="color:inherit;font-weight:700">'+(lang==="es"?"Ver todas las listas y sus copias en papel ›":"See every checklist and its paper copy ›")+'</a></p>':"")+(sl.i==="slip-points"?ptsEditor("ptsA"):"")
+      +(EFSLIPS.length?'<optgroup label="'+(lang==="es"?"Habilidades para pensar (funciones ejecutivas)":"Thinking skills (executive function)")+'">'+EFSLIPS.map(s=>opt(s[0],(lang==="es"?s[2]:s[1]).split(" · ")[1],s[0]===sl.i)).join("")+'</optgroup>':"")
+      +(FSLIPS.length?'<optgroup label="'+(lang==="es"?"Fuerza y carácter (para muchachos)":"Strength and character (for boys)")+'">'+FSLIPS.map(s=>opt(s[0],(lang==="es"?s[2]:s[1]).split(" · ")[1],s[0]===sl.i)).join("")+'</optgroup>':"")+'</select>'
+      +(/^slip-ef/.test(sl.i)?'<p class="s" style="margin:6px 0 0"><a href="/ef'+(FSLIPS.some(x=>x[0]===sl.i)?'#strong':'')+'" style="color:inherit;font-weight:700">'+(lang==="es"?"Ver todas las listas y sus copias en papel ›":"See every checklist and its paper copy ›")+'</a></p>':"")+(sl.i==="slip-points"?ptsEditor("ptsA"):"")
     +'<div class="row"><button class="btn add" type="button" data-add="sl">+ '+T("add")+'</button></div></section>'
   +'</div>'
   +'<section class="card tray"><p class="k" style="color:var(--goldInk)">'+T("tray")+'</p>'

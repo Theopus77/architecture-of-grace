@@ -235,6 +235,85 @@
                  o: EF.slice(0, EF.length - 1).map(function (e) { return [e.skill[0], e.skill[1]]; }) });
   self.qs.push(NOTE("words", "Anything you want your teacher to know? (optional)", "¿Algo que quieras que sepa tu maestro? (opcional)"));
 
+  /* ══ AOG-EF-STRONG-V1 (2026-10-15) — STRENGTH AND CHARACTER FOR BOYS ════════════════════════════════════════════
+     Jimmy: "Biblical masculinity." He chose a character tool for boys, then: "Make it secular but with biblical
+     undertones. Just make one without biblical references." So no verse, name or prayer appears, and any school can use
+     it; the picture of a man underneath is the old one: strength under control, listening before speaking, owning a
+     wrong and making it right, courage that protects the one left out, feelings said out loud, leading by serving,
+     keeping your word when it costs, growing in mind, body, heart and with people. Never "real men don't…": every step
+     says what a strong man does. Written for boys and young men; the steps work for anyone. */
+  var SA = function (en, es) { return ["Strength and character · " + en, "Fuerza y carácter · " + es]; };
+  var STRONG = [
+    { id: "efcontrol", art: "school", skill: ["Strength under control", "Fuerza bajo control"], area: ["Self-control", "Dominio propio"],
+      why: ["The strongest person in the room is the one in charge of himself. These steps turn that into what to do when anger rises.", "La persona más fuerte del lugar es la que se domina a sí misma. Estos pasos lo convierten en qué hacer cuando sube el enojo."],
+      see: ["Anger turns into shoving, yelling or fists", "El enojo se vuelve empujones, gritos o golpes"],
+      when: ["Teach it on a calm day. Use it after a close call, and practice it before the next one.", "Enséñela en un día tranquilo. Úsela después de un momento difícil y practíquela antes del próximo."],
+      k: SA("Self-control", "Dominio propio"), h: ["Strength under control", "Fuerza bajo control"],
+      lead: ["Strong is not loud. Strong is in charge of himself. Tap each step you use.", "Ser fuerte no es gritar. Ser fuerte es dominarse a uno mismo. Toca cada paso que uses."],
+      qs: [CK("notice", "When anger rises", "Cuando sube el enojo", [["Notice it in my body: hot face, tight fists", "Notarlo en mi cuerpo: cara caliente, puños apretados"], ["Hands still, voice low", "Manos quietas, voz baja"], ["Listen first, talk second, get angry last", "Escuchar primero, hablar después, enojarme al último"]]),
+           CK("choose", "Choose what a strong man does", "Elegir lo que hace un hombre fuerte", [["Walk away when I need to. That takes strength.", "Alejarme cuando lo necesito. Eso requiere fuerza."], ["Use my strength to help, never to hurt", "Usar mi fuerza para ayudar, nunca para lastimar"], ["Come back calm and talk it out", "Volver tranquilo y hablarlo"]]),
+           { id: "control", kind: "scale", q: ["How well did I stay in control?", "¿Qué tan bien me controlé?"], o: [["Not this time", "Esta vez no"], ["A little", "Un poco"], ["Partly", "En parte"], ["Mostly", "En gran parte"], ["All the way", "Por completo"]] }] },
+
+    { id: "efown", art: "school", skill: ["Owning my mistakes", "Hacerme cargo de mis errores"], area: ["Honesty and making it right", "Honestidad y reparación"],
+      why: ["Saying \"I did it\" with no excuse, then making it right, is one of the hardest and strongest things a person does. It is how a young man grows.", "Decir \"lo hice\" sin excusas y luego arreglarlo es de lo más difícil y fuerte que hace una persona. Así crece un joven."],
+      see: ["Blames others or hides what happened", "Culpa a otros o esconde lo que pasó"],
+      when: ["After a mistake, once the heat is gone. Pairs with \"After a hard moment\".", "Después de un error, cuando ya pasó el enojo. Va con \"Después de un momento difícil\"."],
+      k: SA("Owning it", "Hacerme cargo"), h: ["Owning my mistakes", "Hacerme cargo de mis errores"],
+      lead: ["Everyone gets it wrong sometimes. A strong man owns it and makes it right. Tap each step you do.", "Todos nos equivocamos a veces. Un hombre fuerte se hace cargo y lo arregla. Toca cada paso que hagas."],
+      qs: [CK("own", "Own it", "Hacerme cargo", [["Say \"I did it\" with no excuses", "Decir \"lo hice\" sin excusas"], ["Say sorry to the person I hurt, face to face", "Pedir perdón a la persona que lastimé, cara a cara"]]),
+           CK("fix", "Make it right", "Arreglarlo", [["Fix it, replace it or pay it back, and then some", "Arreglarlo, reponerlo o devolverlo, y un poco más"], ["Decide what I will do next time", "Decidir qué haré la próxima vez"], ["Start fresh. Yesterday does not decide today.", "Empezar de nuevo. Lo de ayer no decide lo de hoy."]]),
+           NOTE("plan", "What I will do next time (optional)", "Lo que haré la próxima vez (opcional)")] },
+
+    { id: "efcourage", art: "school", talk: true, skill: ["Courage to do right", "Valor para hacer lo correcto"], area: ["Courage", "Valor"],
+      why: ["Most courage is quiet: saying no when friends say yes, asking respectfully for a fair chance, standing next to the one being picked on. Brave and kind together.", "Casi todo el valor es callado: decir que no cuando los amigos dicen que sí, pedir con respeto una oportunidad justa, ponerse al lado de quien molestan. Valiente y amable a la vez."],
+      see: ["Goes along with the group, or stands by when someone is picked on", "Sigue al grupo, o se queda mirando cuando molestan a alguien"],
+      when: ["Before a hard week, a new group or a trip. Grades 4 and up.", "Antes de una semana difícil, un grupo nuevo o un viaje. Del grado 4 en adelante."],
+      k: SA("Courage", "Valor"), h: ["Courage to do right", "Valor para hacer lo correcto"],
+      lead: ["Be strong and brave. Brave can be quiet. Tap each step you take.", "Sé fuerte y valiente. Ser valiente puede ser en silencio. Toca cada paso que des."],
+      qs: [CK("no", "Stand firm", "Mantenerme firme", [["Say no, even when my friends say yes", "Decir que no, aunque mis amigos digan que sí"], ["Ask respectfully and offer a fair test", "Pedir con respeto y ofrecer una prueba justa"]]),
+           CK("protect", "Protect others", "Proteger a otros", [["Stand with someone who is left out or picked on", "Ponerme al lado de alguien excluido o molestado"], ["Stop and help, even a stranger", "Detenerme y ayudar, aunque sea a un desconocido"], ["Tell a trusted adult when someone could get hurt", "Avisar a un adulto de confianza cuando alguien podría salir lastimado"]]),
+           NOTE("brave", "A brave thing I did or want to do (optional)", "Algo valiente que hice o quiero hacer (opcional)")] },
+
+    { id: "effeel", art: "house", talk: true, skill: ["Strong enough to feel", "Lo bastante fuerte para sentir"], area: ["Feelings", "Sentimientos"],
+      why: ["Strong men grieve, worry and cry, and say so. Holding it all in does not make a man stronger; saying it out loud to the right person does.", "Los hombres fuertes sienten dolor, preocupación y lloran, y lo dicen. Guardarlo todo no hace a un hombre más fuerte; decirlo a la persona adecuada, sí."],
+      see: ["Keeps it all inside, then it comes out sideways", "Se guarda todo y luego le sale de otra forma"],
+      when: ["Any time. Good after a loss, a change at home or a hard week.", "En cualquier momento. Bueno después de una pérdida, un cambio en casa o una semana difícil."],
+      k: SA("Feelings", "Sentimientos"), h: ["Strong enough to feel", "Lo bastante fuerte para sentir"],
+      lead: ["Feelings are not weakness. Strong men feel deeply. Tap each step you try.", "Los sentimientos no son debilidad. Los hombres fuertes sienten mucho. Toca cada paso que intentes."],
+      qs: [CK("name", "Name it", "Ponerle nombre", [["Name what I feel: sad, mad, scared, ashamed, lonely", "Decir lo que siento: triste, enojado, con miedo, con vergüenza, solo"], ["It is okay to cry. Strong men do.", "Está bien llorar. Los hombres fuertes lloran."]]),
+           CK("share", "Let it out the right way", "Sacarlo de buena manera", [["Write it down, or say it in a quiet moment", "Escribirlo, o decirlo en un momento tranquilo"], ["Talk to a friend I trust", "Hablar con un amigo de confianza"], ["Talk to a man I look up to", "Hablar con un hombre al que admiro"]]),
+           { id: "feel", kind: "pick", max: 3, q: ["What I'm feeling most", "Lo que más siento"], o: [["Sad", "Triste"], ["Mad", "Enojado"], ["Scared", "Con miedo"], ["Ashamed", "Con vergüenza"], ["Lonely", "Solo"], ["Okay", "Bien"], ["Glad", "Contento"]] }] },
+
+    { id: "efserve", art: "house", skill: ["Leading by serving", "Liderar sirviendo"], area: ["Service and integrity", "Servicio e integridad"],
+      why: ["The greatest leader is the one who serves. A leader keeps his word and works hard when no one is watching.", "El mejor líder es el que sirve. Un líder cumple su palabra y trabaja duro aunque nadie lo vea."],
+      see: ["Wants to lead; ready to learn how", "Quiere liderar; listo para aprender cómo"],
+      when: ["Once a week, or with a new job in class, on a team or at home.", "Una vez por semana, o con una tarea nueva en clase, en un equipo o en casa."],
+      k: SA("Leading", "Liderar"), h: ["Leading by serving", "Liderar sirviendo"],
+      lead: ["The greatest leader is the one who serves. Tap each one you did this week.", "El mejor líder es el que sirve. Toca cada una que hiciste esta semana."],
+      qs: [CK("serve", "Serve", "Servir", [["Do the job no one wants, without being asked", "Hacer el trabajo que nadie quiere, sin que me lo pidan"], ["Help without needing credit", "Ayudar sin necesitar reconocimiento"], ["Treat girls and women with honor, as I would my own family", "Tratar a las muchachas y mujeres con honra, como a mi propia familia"]]),
+           CK("lead", "Lead", "Liderar", [["Keep my word, even when it costs me", "Cumplir mi palabra, aunque me cueste"], ["Work hard at what is in front of me", "Trabajar duro en lo que tengo enfrente"], ["Be an example, even though I am young", "Ser un ejemplo, aunque sea joven"]]),
+           NOTE("did", "One way I served this week (optional)", "Una forma en que serví esta semana (opcional)")] },
+
+    { id: "efgrow", self: true, skill: ["Growing strong in four ways", "Crecer fuerte de cuatro formas"], area: ["A weekly look", "Una mirada semanal"],
+      why: ["A young man grows in four ways: in mind, in body, in heart and with people. One look a week. It charts on the Dashboard.", "Un joven crece de cuatro formas: en la mente, en el cuerpo, en el corazón y con la gente. Una mirada por semana. Se grafica en el tablero."],
+      see: ["You want his own view of how he is growing", "Quiere la mirada del propio joven sobre cómo está creciendo"],
+      when: ["Once a week, at home, in a group or with a mentor.", "Una vez por semana, en casa, en un grupo o con un mentor."],
+      k: SA("My week", "Mi semana"), h: ["Growing strong this week", "Crecer fuerte esta semana"],
+      lead: ["Tap how each one went this week. There are no wrong answers.", "Toca cómo te fue en cada una esta semana. No hay respuestas incorrectas."],
+      qs: [] }
+  ];
+  var GROW = [["mind", "In mind: learning and good choices", "En la mente: aprender y elegir bien"],
+              ["body", "In body: sleep, food, moving, self-control", "En el cuerpo: dormir, comer, moverme, dominio propio"],
+              ["heart", "In heart: quiet time, thankfulness, what I stand for", "En el corazón: momentos de calma, gratitud, lo que defiendo"],
+              ["people", "With people: kindness, respect, friends, family", "Con la gente: amabilidad, respeto, amigos, familia"]];
+  var grow = STRONG[STRONG.length - 1];
+  GROW.forEach(function (g) { grow.qs.push({ id: g[0], kind: "scale", q: [g[1], g[2]], o: HOW }); });
+  grow.qs.push({ id: "next", kind: "one", q: ["The one I want to grow next week", "La que quiero hacer crecer la próxima semana"], o: GROW.map(function (g) { return [g[1].split(":")[0], g[2].split(":")[0]]; }) });
+  grow.qs.push(NOTE("step", "One small step I will take (optional)", "Un pequeño paso que daré (opcional)"));
+  window.AOG_EF_STRONG = STRONG;
+  window.AOG_EF_GROW = GROW;   /* the four parts of the weekly look, for the dashboard's charts */
+
+
   /* AOG-EF-RULES-V1 — the adults' side, shown and printed on /ef#rules. The reason test before a rule; words that
      invite a yes (a reason with every rule, a choice inside it, when-then, a calm time to talk). After PBIS (a few rules,
      said as what to do, taught with their reasons), Reeve's autonomy-supportive teaching and Greene's CPS. */

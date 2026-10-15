@@ -236,6 +236,17 @@ select{width:100%;min-height:48px;font-size:17px;padding:8px 12px;border:1.5px s
     <div class="acts" style="margin-top:14px"><button type="button" class="btn main" id="printJh"><span data-en="Print this guide" data-es="Imprimir esta guía">Print this guide</span></button></div>
   </section>
 
+  <!-- AOG-EF-STRONG-V1 (2026-10-15) — Jimmy: "Biblical masculinity", then "Make it secular but with biblical undertones.
+       Just make one without biblical references." A character tool for boys and young men: checklists like the ones
+       above, no verse, name or prayer, so any school can use it (AOG_EF_STRONG). -->
+  <section class="card rules" id="strong" aria-labelledby="h-strong">
+    <span class="area"><span data-en="For boys and young men" data-es="Para muchachos y jóvenes">For boys and young men</span></span>
+    <h2 id="h-strong"><span data-en="Strength and character" data-es="Fuerza y carácter">Strength and character</span></h2>
+    <p><span data-en="Five checklists and a weekly look. Strength here means strength under control, used to protect and to serve, and honest about feelings and mistakes. The steps work for anyone." data-es="Cinco listas y una mirada semanal. Aquí, la fuerza es fuerza bajo control, usada para proteger y servir, y honesta con los sentimientos y los errores. Los pasos sirven para cualquiera.">Five checklists and a weekly look. Strength here means strength under control, used to protect and to serve, and honest about feelings and mistakes. The steps work for anyone.</span></p>
+    <div class="grid" id="strongList" style="margin-top:12px"></div>
+    <div class="acts" style="margin-top:14px"><button type="button" class="btn main" id="printStrong"><span data-en="Print all six (one per page)" data-es="Imprimir las seis (una por página)">Print all six (one per page)</span></button></div>
+  </section>
+
   <section class="card" aria-labelledby="h-rt" style="margin-top:14px">
     <h2 id="h-rt"><span data-en="Daily routine checklists" data-es="Listas de rutinas diarias">Daily routine checklists</span></h2>
     <p class="sub"><span data-en="Three more step lists for every day. Open one to print it from there." data-es="Tres listas de pasos más para cada día. Abre una para imprimirla desde ahí.">Three more step lists for every day. Open one to print it from there.</span></p>
@@ -248,7 +259,7 @@ select{width:100%;min-height:48px;font-size:17px;padding:8px 12px;border:1.5px s
 <script>
 (function(){
 "use strict";
-var D=document, H=D.documentElement, EF=window.AOG_EF||[];
+var D=document, H=D.documentElement, EF=window.AOG_EF||[], STRONG=window.AOG_EF_STRONG||[];
 function ES(){ return String(H.getAttribute("lang")||"en").toLowerCase().indexOf("es")===0; }
 function t(en,es){ return ES()?es:en; }
 function tx(p){ return p?t(p[0],p[1]):""; }
@@ -267,7 +278,7 @@ function connected(){ return !!(raw("aog.sync.url")&&raw("aog.sync.writekey")); 
 /* AOG-EF-RULES-V1 — the three student lists that answer "that's not fair" */
 var RULES=["efrule","eftalk","efmyrule"], JH=["efpublic","efpitch"];
 function pairs(list){ return list.map(function(x){ return '<div class="pair"><span class="no"><b>'+t("Instead of","En vez de")+'</b>'+esc(tx(x[0]))+'</span><span class="yes"><b>'+t("Try","Prueba")+'</b>'+esc(tx(x[1]))+'</span></div>'; }).join(""); }
-function byId(id){ return EF.filter(function(e){ return e.id===id; })[0]; }
+function byId(id){ return EF.concat(STRONG).filter(function(e){ return e.id===id; })[0]; }
 /* the routine checklists already on slip.html (AOG-SLIP-SKETCH-V1); listed here, not copied */
 var RT=[["school",["At school: arrive and leave","En la escuela: llegar e irme"]],["homecheck",["At home: homework and pack up","En casa: tarea y preparar todo"]],["bedtime",["At home: getting ready for bed","En casa: prepararme para dormir"]]];
 function steps(e){ return e.qs.filter(function(q){ return q.kind==="check"; }).map(function(q){
@@ -276,7 +287,7 @@ function selfSteps(e){ return '<ul>'+e.qs.filter(function(q){ return q.kind==="s
 
 function paintList(){
   var sh=navigator.share&&matchMedia("(pointer:coarse)").matches;
-  D.getElementById("list").innerHTML=EF.map(function(e){
+  var card=function(e){
     return '<article class="card ef" id="ef-'+e.id+'" aria-labelledby="t-'+e.id+'">'
       +'<span class="area">'+esc(tx(e.area))+'</span>'
       +'<h3 id="t-'+e.id+'">'+esc(tx(e.skill))+'</h3>'
@@ -287,7 +298,9 @@ function paintList(){
       +'<button type="button" class="btn" data-share="'+e.id+'">'+(sh?t("Share link","Compartir enlace"):t("Copy link","Copiar enlace"))+'</button>'
       +'<button type="button" class="btn" data-print="'+e.id+'">'+t("Print","Imprimir")+'</button></div>'
       +'<p class="said" data-said="'+e.id+'" aria-live="polite"></p>'
-      +'</article>'; }).join("");
+      +'</article>'; };
+  D.getElementById("list").innerHTML=EF.map(card).join("");
+  D.getElementById("strongList").innerHTML=STRONG.map(card).join("");
   D.getElementById("routines").innerHTML=RT.map(function(r){
     return '<div class="rt"><b>'+esc(tx(r[1]))+'</b><span class="acts"><a class="btn" href="'+esc(linkFor(r[0]))+'">'+t("Open","Abrir")+'</a>'
       +'<button type="button" class="btn" data-share="'+r[0]+'">'+(sh?t("Share link","Compartir enlace"):t("Copy link","Copiar enlace"))+'</button></span>'
@@ -307,7 +320,8 @@ function paintList(){
   var sel=D.getElementById("seeing"), keep=sel.value;
   sel.innerHTML='<option value="">'+t("Choose what you notice…","Elige lo que notas…")+'</option>'+EF.map(function(e){ return '<option value="'+e.id+'">'+esc(tx(e.see))+' → '+esc(tx(e.skill))+'</option>'; }).join("")
     +(window.AOG_EF_RULES?'<option value="rules">'+t("Rules keep starting fights → Rules that make sense (for adults)","Las reglas causan peleas → Reglas que tienen sentido (para adultos)")+'</option>'
-      +'<option value="jh">'+t("Pushback in grades 6–8 → Rules in junior high (for adults)","Resistencia en los grados 6–8 → Las reglas en la secundaria (para adultos)")+'</option>':"");
+      +'<option value="jh">'+t("Pushback in grades 6–8 → Rules in junior high (for adults)","Resistencia en los grados 6–8 → Las reglas en la secundaria (para adultos)")+'</option>':"")
+    +(STRONG.length?'<option value="strong">'+t("Character for boys and young men → Strength and character","Carácter para muchachos y jóvenes → Fuerza y carácter")+'</option>':"");
   sel.value=keep;
   D.getElementById("sheetSt").innerHTML=connected()
     ? '<span><b>'+t("Your Sheet is connected.","Tu Hoja está conectada.")+'</b> '+t("Links from this page send answers to it.","Los enlaces de esta página le envían las respuestas.")+'</span>'
@@ -317,7 +331,7 @@ function paintList(){
 /* ── paper: one page per checklist ── */
 function paperLead(e){ var s=tx(e.lead); return s.replace(/^Tap /,"Tick ").replace(/ Tap /," Tick ").replace(/\btap\b/g,"tick").replace(/^Toca /,"Marca ").replace(/\btoca\b/g,"marca"); }
 function sheet(e){
-  var h='<section class="sheet'+(e.self?' dense':'')+'"><p class="sk">'+esc(tx(e.k))+'</p><h2>'+esc(tx(e.h))+'</h2>'
+  var h='<section class="sheet"><p class="sk">'+esc(tx(e.k))+'</p><h2>'+esc(tx(e.h))+'</h2>'
     +'<div class="who"><span>'+t("Name","Nombre")+'</span><span class="d">'+t("Date","Fecha")+'</span></div><p class="ld">'+esc(paperLead(e))+'</p>';
   var qs=e.qs, i=0;
   while(i<qs.length){ var q=qs[i];
@@ -330,7 +344,8 @@ function sheet(e){
     else if(q.kind==="one"||q.kind==="pick") h+='<div class="sec"><h3>'+esc(tx(q.q))+'</h3><div class="row">'+q.o.map(function(o){ return '<span class="bx"><i></i>'+esc(tx(o))+'</span>'; }).join("")+'</div></div>';
     else if(q.kind==="note") h+='<div class="sec"><h3>'+esc(tx(q.q))+'</h3><div class="wl"></div><div class="wl"></div>'+(e.self?'':'<div class="wl"></div>')+'</div>';
     i++; }
-  return h+'<div class="ft"><span>'+t("Thinking-skills checklist","Lista de habilidades para pensar")+'</span><span>architectureofgrace.com/ef</span></div></section>';
+  var fa=STRONG.indexOf(e)>=0;
+  return h+'<div class="ft"><span>'+(fa?t("Strength and character","Fuerza y carácter"):t("Thinking-skills checklist","Lista de habilidades para pensar"))+'</span><span>architectureofgrace.com/ef'+(fa?'#strong':'')+'</span></div></section>';
 }
 function rulesSheet(){ var R=window.AOG_EF_RULES;
   return '<section class="sheet"><p class="sk">'+t("For adults · Thinking skills","Para adultos · Habilidades para pensar")+'</p><h2>'+t("Rules that make sense","Reglas que tienen sentido")+'</h2>'
@@ -364,9 +379,9 @@ window.addEventListener("afterprint",function(){ D.body.classList.remove("printi
 function say(id,msg){ var p=D.querySelector('[data-said="'+id+'"]'); if(p) p.innerHTML=msg; }
 D.addEventListener("click",function(ev){
   var b=ev.target.closest&&ev.target.closest("button"); if(!b) return;
-  var pid=b.getAttribute("data-print"); if(pid){ printThese(EF.filter(function(e){ return e.id===pid; })); return; }
+  var pid=b.getAttribute("data-print"); if(pid){ printThese([byId(pid)].filter(Boolean)); return; }
   var sid=b.getAttribute("data-share"); if(sid){
-    var e=EF.filter(function(x){ return x.id===sid; })[0], url=linkFor(sid), ttl=e?tx(e.h):t("Checklist","Lista");
+    var e=byId(sid), url=linkFor(sid), ttl=e?tx(e.h):t("Checklist","Lista");
     if(navigator.share&&matchMedia("(pointer:coarse)").matches){ navigator.share({title:ttl,url:url}).catch(function(){}); return; }
     var shown=function(){ say(sid,t("Copied. Paste it where your class finds links.","Copiado. Pégalo donde tu clase encuentra los enlaces.")); };
     var manual=function(){ say(sid,t("Copy this link:","Copia este enlace:")+'<input class="linkbox" readonly value="'+esc(url)+'" aria-label="'+esc(t("Link","Enlace"))+'">'); var i=D.querySelector('[data-said="'+sid+'"] input'); if(i){ i.focus(); i.select(); } };
@@ -376,11 +391,12 @@ D.addEventListener("click",function(ev){
 D.getElementById("printAll").addEventListener("click",function(){ printThese(EF); });
 D.getElementById("printRules").addEventListener("click",function(){ printThese(["rules"]); });
 D.getElementById("printRulesAll").addEventListener("click",function(){ printThese(["rules","jh"].concat(RULES.concat(JH).map(byId).filter(Boolean))); });
+D.getElementById("printStrong").addEventListener("click",function(){ printThese(STRONG); });
 D.getElementById("printJh").addEventListener("click",function(){ printThese(["jh"]); });
 function jumpTo(c){ if(!c) return; var lit=D.querySelectorAll(".lit"); for(var i=0;i<lit.length;i++) lit[i].classList.remove("lit");
   c.classList.add("lit"); c.scrollIntoView({block:"start"}); var a=c.querySelector("[data-open],button"); if(a) a.focus({preventScroll:true}); }
 D.addEventListener("click",function(ev){ var a=ev.target.closest&&ev.target.closest("a[data-jump]"); if(!a) return; ev.preventDefault(); jumpTo(D.getElementById("ef-"+a.getAttribute("data-jump"))); });
-D.getElementById("seeing").addEventListener("change",function(){ jumpTo(this.value==="rules"||this.value==="jh"?D.getElementById(this.value):D.getElementById("ef-"+this.value)); });
+D.getElementById("seeing").addEventListener("change",function(){ jumpTo(/^(rules|jh|strong)$/.test(this.value)?D.getElementById(this.value):D.getElementById("ef-"+this.value)); });
 
 paintList();
 /* the bar's EN | ES sets <html lang>; this page draws its list again in the new language */

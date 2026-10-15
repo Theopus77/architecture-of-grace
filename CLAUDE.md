@@ -172,6 +172,10 @@ Home Screen opens that place, full screen.
 - Junior high (Jimmy, 2026-10-15: "A lot of behavioral issues in junior high are caused by this."): `efpublic`
   (called out in front of people) and `efpitch` (pitch a rule change) for grades 6–8, and `/ef#jh` for adults
   (`AOG_EF_RULES.jh`: why pushback peaks at 11–14, what works, words for this age).
+- Strength and character for boys (Jimmy, 2026-10-15: "Biblical masculinity", then "Make it secular but with
+  biblical undertones. Just make one without biblical references."): six lists in `AOG_EF_STRONG` at `/ef#strong`,
+  in the Dashboard's own group and the top bar's Check-in slips door. No verse, name or prayer; the values underneath
+  stay: strength under control, used to protect and serve, honest about feelings and mistakes. Never "real men don't…".
 
 ## The Adult Edition (Book 6)
 
