@@ -25,9 +25,13 @@ module.exports=async function(PASSES, ONLY, pages){
       const groups=[...new Set(rows.map(r=>r.art+"|"+r.v))];
       for(const g of groups){ const rr=rows.filter(r=>r.art+"|"+r.v===g);
         const st=C.stats(rr); if(st) console.log(`pass ${pass} ${inst.padEnd(16)} ${g.padEnd(9)} dev ${st.dev.db.toFixed(1)} @${st.dev.m}  jump ${st.jump.db.toFixed(1)} @${st.jump.m}  spread ${st.spread.toFixed(1)}`);
-        if(g.endsWith("|0.6") && g.startsWith("sus")) continue;   /* the blend: two recordings at once, the curve only */
         const near=rr.filter(r=>Math.abs(r.m-mid)<=2); if(!near.length) continue;
         const L=pmean(near.map(r=>r.lufs));
+        /* the blend (a medium touch: both recordings at once): each note's own trim there, n+"b", worth sin(π·0.6) of
+           itself at this strength */
+        if(g.startsWith("sus|0.6")){ const byn={}; rr.forEach(r=>{ const n=parseInt(r.f); if(isFinite(n)) (byn[n]=byn[n]||[]).push(r); });
+          Object.keys(byn).forEach(n=>{ const e=pmean(byn[n].map(r=>r.lufs))-pmean(byn[n].map(r=>L+N(r.m))); (err[n+"b"]=err[n+"b"]||[]).push(e/Math.sin(Math.PI*0.6)); });
+          continue; }
         const by={}; rr.forEach(r=>{ if(r.f && r.f.slice(-1)!=="*") (by[r.f]=by[r.f]||[]).push(r); });
         /* each recording: how far off its notes are, and (where they spread over three semitones or more) how that changes as
            it is played above or below its own note: a straight line through (shift, error) */
@@ -38,8 +42,9 @@ module.exports=async function(PASSES, ONLY, pages){
       const next=Object.assign({}, cur);
       Object.keys(err).forEach(f=>{ const e=err[f].reduce((a,b)=>a+b,0)/err[f].length; next[f]=Math.max(-6, Math.min(6, Math.round(((cur[f]||0)-e)*10)/10)); });
       /* the middle note's recordings keep their level (bandt/level sets the player there) */
-      const keep=Object.keys(next).filter(f=>Math.abs(parseInt(f)-mid)<=1);
-      if(keep.length){ const d=keep.reduce((s,f)=>s+(next[f]-(cur[f]||0)),0)/keep.length; Object.keys(next).forEach(f=>{ next[f]=Math.round((next[f]-d)*10)/10; }); }
+      /* (the recordings by themselves, and the blends, each kept so) */
+      for(const blend of [false, true]){ const mine=f=>(f.slice(-1)==="b")===blend, keep=Object.keys(next).filter(f=>mine(f) && Math.abs(parseInt(f)-mid)<=1);
+        if(keep.length){ const d=keep.reduce((s,f)=>s+(next[f]-(cur[f]||0)),0)/keep.length; Object.keys(next).forEach(f=>{ if(mine(f)) next[f]=Math.round((next[f]-d)*10)/10; }); } }
       Object.keys(next).forEach(f=>{ moved=Math.max(moved, Math.abs(next[f]-(cur[f]||0))); if(next[f]===0) delete next[f]; });
       if(Object.keys(next).length) man.lvl=next; else delete man.lvl;
       const nextk=Object.assign({}, curk);

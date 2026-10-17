@@ -35,12 +35,17 @@ function summary(res, tag){
 (async()=>{
   const h=await R.open(+(process.env.AOG_LEVELS_PORT||9338));
   let EVEN=fs.existsSync(EVF) ? JSON.parse(fs.readFileSync(EVF, "utf8")) : {};
+  /* a driven amp, a compressor or an envelope filter hears a trim less than 1:1: how much each sound's notes moved for
+     the trims the pass before gave them (its own sensitivity), so the next step is that much bigger */
+  const PREV={};
   for(let pass=1; pass<=PASSES; pass++){
     build();
     const t0=Date.now();
-    const m=await R.strings(h, inst, {layers:true, mute:true, log:1, only:ONLY, pages:+(arg("--pages")||3)});
+    /* what was measured with these very trims is kept (a run that stops picks up where it was) */
+    const key=require("crypto").createHash("md5").update(JSON.stringify(EVEN)).digest("hex").slice(0,10);
+    const m=await R.strings(h, inst, {layers:true, mute:true, log:1, only:ONLY, pages:+(arg("--pages")||3), cache:path.join(require("os").tmpdir(), `aog-levels-${inst}-${key}.cache.json`)});
     if(m.errs.length) console.log("page errors:", m.errs.slice(0,5).join(" | "));
-    const res=m.res, ref=res.__ref, sets=res.__sets||{}, isRef=r=>ref.some(q=>q.s===r.s && q.f===r.f);
+    const res=m.res, ref=res.__ref, sets=res.__sets||{}, isRef=r=>ref.some(q=>q.s===r.s && q.m===r.m);
     fs.writeFileSync(path.join(require("os").tmpdir(), `aog-levels-${inst}-pass${pass}.json`), JSON.stringify(res));
     summary(res, `pass ${pass} measured`);
     if(pass===PASSES) break;
@@ -49,21 +54,36 @@ function summary(res, tag){
       if(id.startsWith("__") || !Array.isArray(res[id]) || !sets[id]) continue;
       const rows=res[id].filter(r=>r.i>=0), {set, n}=sets[id];
       const cur=(EVEN[id] && EVEN[id][0]===set && EVEN[id][1].length===n) ? dec(EVEN[id][1]) : new Array(n).fill(0);
+      /* and each note's own trim, from the lowest open string up (what a recording's trim cannot do: an envelope filter
+         or a wah that peaks on some notes, a short note that dies faster when sped up) */
+      const lo=inst==="bass" ? 28 : 40, NN=Math.max(...rows.map(r=>r.m))-lo+1;   /* TUNING[0], the page's lowest open string */
+      const curN=(EVEN[id] && EVEN[id][2] && EVEN[id][2].length===NN) ? dec(EVEN[id][2]) : new Array(NN).fill(0);
       /* the level to bring each group (a strength layer, held or muted) to: its own level at the room's C */
       const key=r=>r.lay+"|"+r.art, Lref={}, by={};
       rows.forEach(r=>{ (by[r.i]=by[r.i]||[]).push(r); });
       const keys=[...new Set(rows.map(key))];
       keys.forEach(k=>{ const rr=rows.filter(r=>key(r)===k && isRef(r)); if(rr.length) Lref[k]=pmean(rr.map(r=>r.lufs)); });
-      const next=cur.slice();
+      const next=cur.slice(), now={}; Object.keys(by).forEach(i=>{ now[i]=pmean(by[i].map(r=>r.lufs)); });
+      let sens=1; const P=PREV[id];
+      if(P){ let sxy=0, sxx=0; Object.keys(now).forEach(i=>{ if(P.lv[i]==null) return; const dt=(cur[i]-P.t[i])/10, dl=now[i]-P.lv[i]; if(Math.abs(dt)>=0.2){ sxy+=dt*dl; sxx+=dt*dt; } });
+        if(sxx>0.5) sens=Math.max(0.3, Math.min(1.2, sxy/sxx)); }
+      PREV[id]={lv:now, t:cur.slice()};
+      const ez={};
       Object.keys(by).forEach(i=>{ const rr=by[i], k=key(rr[0]); if(Lref[k]==null) return;
-        const err=pmean(rr.map(r=>r.lufs))-Lref[k]; next[i]=cur[i]-10*err; });
+        const err=now[i]-Lref[k]; ez[i]=err; next[i]=cur[i]-10*err/sens; });
+      /* what is left of each note once its recording's own error is taken out: the note's own (half a step a pass) */
+      const nres={}; rows.forEach(r=>{ const k=key(r); if(Lref[k]==null || ez[r.i]==null) return; (nres[r.m]=nres[r.m]||[]).push(r.lufs-Lref[k]-ez[r.i]); });
+      const nextN=curN.slice();
+      Object.keys(nres).forEach(mm=>{ const j=+mm-lo; if(j<0 || j>=NN) return; const a=nres[mm], e=a.reduce((x,y)=>x+y,0)/a.length; nextN[j]=curN[j]-10*0.6*e/sens; });
+      const refM=[...new Set(ref.map(q=>q.m))].map(x=>x-lo).filter(j=>j>=0 && j<NN);
+      if(refM.length){ const d=refM.reduce((x,j)=>x+(nextN[j]-curN[j]),0)/refM.length; for(let j=0;j<NN;j++) nextN[j]-=d; }
       /* the C itself stays where it was (the room's level): each group's trims moved together so the C's recordings keep
          theirs on average */
       keys.forEach(k=>{ const rr=rows.filter(r=>key(r)===k && isRef(r)); if(!rr.length) return;
         const idx=[...new Set(rr.map(r=>r.i))], d=idx.reduce((s,i)=>s+(next[i]-cur[i]),0)/idx.length;
         Object.keys(by).forEach(i=>{ if(key(by[i][0])===k) next[i]-=d; }); });
-      moved=Math.max(moved, ...next.map((x,i)=>Math.abs(Math.round(x)-cur[i])));
-      EVEN[id]=[set, enc(next)];
+      moved=Math.max(moved, ...next.map((x,i)=>Math.abs(Math.round(x)-cur[i])), ...nextN.map((x,j)=>Math.abs(Math.round(x)-curN[j])));
+      EVEN[id]=[set, enc(next), enc(nextN)];
     }
     fs.writeFileSync(EVF, JSON.stringify(EVEN, null, 0).replace(/\],"/g, '],\n"')+"\n");
     console.log(`pass ${pass}: ${((Date.now()-t0)/60000).toFixed(1)} min, largest change ${(moved/10).toFixed(1)} dB; written ${path.relative(process.cwd(), EVF)}`);

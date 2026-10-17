@@ -20,7 +20,7 @@ function serve(port){ return http.createServer((q,r)=>{ let u=decodeURIComponent
 
 /* several pages render side by side: none of them may be slowed as a page in the background is */
 const ARGS=["--autoplay-policy=no-user-gesture-required", "--disable-background-timer-throttling", "--disable-renderer-backgrounding",
-  "--disable-backgrounding-occluded-windows", "--disable-features=IntensiveWakeUpThrottling"];
+  "--disable-backgrounding-occluded-windows", "--disable-features=IntensiveWakeUpThrottling", "--js-flags=--expose-gc"];   /* gc: hundreds of offline contexts in a row */
 let LAUNCH=null;
 /* the browser again if it went away (a long run on a shared machine can lose it): one launch for every page that asks */
 async function browser(h){ if(h.b && h.b.isConnected()) return h.b; if(!LAUNCH) LAUNCH=pw.chromium.launch({args:ARGS}).then(b=>{ h.b=b; LAUNCH=null; return b; }); return LAUNCH; }
@@ -42,13 +42,23 @@ async function page(h, name, init){
 /* several pages at once (each its own renderer, so the renders really run side by side): each page takes the next id
    in turn, one evaluate per id; a page that crashes is opened again and the id tried once more */
 async function spread(h, name, ids, n, fn, arg, init){
-  const res={}, errs=[], todo=ids.slice(), tries={};
+  const res={}, errs=[], tries={};
+  /* arg.cache: a file of the sounds already measured this way (a long run picks up where it stopped) */
+  const cache=arg && arg.cache, C0=cache && fs.existsSync(cache) ? JSON.parse(fs.readFileSync(cache, "utf8")) : {};
+  const todo=ids.filter(id=>!(C0[id] && C0[id][id]));
+  ids.forEach(id=>{ if(C0[id] && C0[id][id]) for(const [k,v] of Object.entries(C0[id])){ if(k==="__sets") Object.assign(res.__sets=res.__sets||{}, v); else res[k]=v; } });
   const worker=async()=>{ let p=null;
     while(todo.length){ const id=todo.shift();
       try{ if(!p || p.isClosed()) p=await Promise.race([page(h, name, init), new Promise((_,no)=>setTimeout(()=>no(new Error("the page did not open in 2 minutes")), 120000))]); const t0=Date.now();
-        const r=await Promise.race([p.evaluate(fn, Object.assign({}, arg, {ids:[id]})), new Promise((_,no)=>setTimeout(()=>no(new Error("took over 30 minutes")), 30*60000))]);
+        const r=await Promise.race([p.evaluate(fn, Object.assign({}, arg, {ids:[id]})), new Promise((_,no)=>{ setTimeout(()=>no(new Error("took over "+(+(process.env.AOG_LEVELS_MAXMIN||10))+" minutes")), (+(process.env.AOG_LEVELS_MAXMIN||10))*60000);
+          /* a page whose renderer went away (a crash, or a machine that ends other programs' browsers) can leave its
+             evaluate waiting for ever: it counts as a failure at once, and the sound is tried again on a new page */
+          p.once("crash", ()=>no(new Error("the page crashed"))); p.once("close", ()=>no(new Error("the page closed"))); })]);
         for(const [k,v] of Object.entries(r)){ if(k==="__sets") Object.assign(res.__sets=res.__sets||{}, v); else res[k]=v; }
-        if(arg && arg.log) process.stderr.write(`  ${name} ${id} ${((Date.now()-t0)/1000).toFixed(0)} s\n`); }
+        if(cache && Array.isArray(r[id])){ const c=fs.existsSync(cache) ? JSON.parse(fs.readFileSync(cache, "utf8")) : {}; c[id]=r; fs.writeFileSync(cache, JSON.stringify(c)); }
+        if(arg && arg.log) process.stderr.write(`  ${name} ${id} ${((Date.now()-t0)/1000).toFixed(0)} s\n`);
+        /* arg.fresh: a new page for each sound (a room whose every note builds an amp keeps memory it never gives back) */
+        if(arg && arg.fresh){ errs.push(...p.errs); try{ await Promise.race([p.close(), new Promise(r=>setTimeout(r,5000))]); }catch(e){} p=null; } }
       catch(e){ errs.push(id+": "+String(e.message).split("\n")[0]); if(process.env.AOG_LEVELS_TRACE) process.stderr.write("  retry "+id+": "+String(e.message).split("\n")[0]+"\n"); try{ if(p) await Promise.race([p.close(), new Promise(r=>setTimeout(r,5000))]); }catch(e2){} p=null;
         tries[id]=(tries[id]||0)+1; if(tries[id]<4) todo.push(id); }
     }
@@ -58,9 +68,11 @@ async function spread(h, name, ids, n, fn, arg, init){
 }
 /* ── the Guitar and the Bass (strings_page.html): every string at every fret, each take of each recording in turn ── */
 const STRINGS_FN=async(opt)=>{
-  const res={};
+  const res={}; let N=0;
   const one=async(id, m, v, s, o)=>{
     if(opt.trace) console.log("lv one "+id+" "+m+" "+v+" "+s);
+    /* each render leaves an amp, its cabinet and a room behind: let them go every few renders, or a page runs out of memory */
+    if((++N)%12===0 && window.gc) window.gc();
     const oc=new OfflineAudioContext(2, Math.round(44100*0.46), 44100); await AOGAmp.load(oc);
     S.sound=id; const ch=makeChain(oc); ch.master.gain.value=volGain(0.8); setSound(ch, id); setEra(ch, 0, 0);
     const vc=makeVoice(oc, ch, id, m, v, 0.05, s, o); if(!vc) return null;
@@ -105,7 +117,7 @@ const STRINGS_FN=async(opt)=>{
 async function strings(h, inst, opt){
   opt=opt||{};
   const p=await page(h, `music-${inst}.html`); const ids=opt.only||await p.evaluate(()=>Object.keys(SOUNDS)); await p.close();
-  return spread(h, `music-${inst}.html`, ids, opt.pages||3, STRINGS_FN, opt);
+  return spread(h, `music-${inst}.html`, ids, opt.pages||3, STRINGS_FN, Object.assign({fresh:true}, opt));
 }
 
 /* each recording of a strings set by itself, as it reaches the amp (its level in the set: its gain over the median of

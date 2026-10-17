@@ -859,6 +859,10 @@ function lvlOf(man, key, d){
     new Set(Object.keys(L).concat(Object.keys(K))).forEach(k=>{ t[k]=[L[k]||0, K[k]||0]; }); } }
   const x=t && t[key]; return x ? Math.pow(10, (x[0]+x[1]*(d||0))/20) : 1;
 }
+/* AOG-LEVEL-EVEN-V1: two recordings of one note played together (the soft and the loud, blended by how hard) can add up
+   louder or softer than either alone: manifest "lvl" n+"b" is that note's own trim in the middle (dB at a medium touch,
+   none at the softest and the hardest) */
+function midOf(man, n, vv){ const B=man.lvl && man.lvl[n+"b"]; return B ? Math.pow(10, B*Math.sin(Math.PI*vv)/20) : 1; }
 /* one player, one note. Held notes ("sus") blend the soft and the loud recording by how hard you play, as a player's
    tone grows brighter as it grows louder; a swell slides that blend from soft to loud. Short notes ("stac") are their
    own recording. */
@@ -894,7 +898,8 @@ function windVoice(c, ch, inst, m, v, when, art, swellTo, swellDur){
     const blend=x=>{ const a=Math.cos(x*Math.PI/2), b=Math.sin(x*Math.PI/2); return (hasS&&hasL) ? [a, b] : hasL ? [0, b+0.4*a] : lift ? [a+2.5*b, 0] : [1, 0]; };
     const [gS, gL]=blend(vv);
     if(swellTo!=null){ const [tS, tL]=blend(Math.max(0.05, Math.min(1, swellTo))); if(hasS) main=play(n+"s", n, gS, tS); if(hasL){ const r=play(n+"l", n, gL, tL); main=main||r; } }
-    else { if(hasS) main=play(n+"s", n, gS); if(hasL && gL>0.02){ const r=play(n+"l", n, gL); main=main||r; } }
+    else { const BM=midOf(man, n, vv);   /* AOG-LEVEL-EVEN-V1: where the soft and loud recordings meet */
+      if(hasS) main=play(n+"s", n, gS*BM); if(hasL && gL>0.02){ const r=play(n+"l", n, gL*BM); main=main||r; } }
   }
   if(!main) return null;
   out.connect(rel); rel.connect(ch.bus); rel.connect(ch.send);
