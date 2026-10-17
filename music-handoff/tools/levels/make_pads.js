@@ -30,7 +30,10 @@ module.exports=async function(PASSES, ONLY, pages){
       const N=x=>Math.max(-3, Math.min(1.5, 0.5*(line(x)-line(REF[0]))));
       for(const v of [...new Set(all.map(r=>r.v))]){ const rows=all.filter(r=>r.v===v), st=C.stats(rows);
         if(st) console.log(`pass ${pass} ${id.padEnd(20)} v${v}  dev ${st.dev.db.toFixed(1)} @${st.dev.m}  jump ${st.jump.db.toFixed(1)} @${st.jump.m}  spread ${st.spread.toFixed(1)}`);
-        const ref=rows.filter(r=>REF.indexOf(r.m)>=0); if(!ref.length) continue; const L=pmean(ref.map(r=>r.lufs));
+        let ref=rows.filter(r=>REF.indexOf(r.m)>=0);
+        /* an instrument above or below middle C (a recorder, a piccolo, a tuba): its own notes nearest it */
+        if(!ref.length && rows.length){ const c=rows.reduce((a,r)=>Math.abs(r.m-64)<Math.abs(a-64)?r.m:a, rows[0].m); ref=rows.filter(r=>Math.abs(r.m-c)<=1); }
+        if(!ref.length) continue; const L=pmean(ref.map(r=>r.lufs));
         /* a band player's medium hit plays its soft and loud recordings at once: those notes shape the curve only (the two
            recordings are trimmed where each plays alone, the softest and the hardest hits) */
         const by={}; rows.forEach(r=>{ if(r.f.indexOf("+")<0) (by[r.f]=by[r.f]||[]).push(r); });
@@ -42,7 +45,8 @@ module.exports=async function(PASSES, ONLY, pages){
       const next=Object.assign({}, cur);
       Object.keys(err).forEach(f=>{ const e=err[f].reduce((a,b)=>a+b,0)/err[f].length, lim=f.slice(-1)==="k" ? 1 : 9; next[f]=Math.max(-lim, Math.min(lim, (cur[f]||0)-e)); });
       /* where the instrument's level is set stays where it was */
-      const keepF=[...new Set(all.filter(r=>REF.indexOf(r.m)>=0 && r.f.indexOf("+")<0).map(r=>r.f))];
+      let keepF=[...new Set(all.filter(r=>REF.indexOf(r.m)>=0 && r.f.indexOf("+")<0).map(r=>r.f))];
+      if(!keepF.length && all.length){ const c=all.reduce((a,r)=>Math.abs(r.m-64)<Math.abs(a-64)?r.m:a, all[0].m); keepF=[...new Set(all.filter(r=>Math.abs(r.m-c)<=1 && r.f.indexOf("+")<0).map(r=>r.f))]; }
       if(keepF.length){ const d=keepF.reduce((s,f)=>s+((next[f]||0)-(cur[f]||0)),0)/keepF.length; Object.keys(next).forEach(f=>{ if(f.slice(-1)!=="k") next[f]-=d; }); }
       Object.keys(next).forEach(f=>{ const k=f.slice(-1)==="k"; next[f]=k ? Math.round(next[f]*100)/100 : Math.round(next[f]*10)/10; moved=Math.max(moved, Math.abs(next[f]-(cur[f]||0))); if(Math.abs(next[f])<(k?0.02:0.15)) delete next[f]; });
       T[id]=next;
