@@ -125,7 +125,7 @@ const state = p => p.evaluate(() => ({ hash: location.hash, title: document.titl
     const file = { bass: "music-bass.html", pads: "music-pads.html", studio: "music-studio.html", piano: "music-piano.html", decks: "music-decks.html" }[room];
     await arrived(m, file); await m.waitForTimeout(800);
     const fit = await m.evaluate(() => { const r = el => el.getBoundingClientRect(), fr = document.getElementById("room"), mt = document.getElementById("mt"),
-      btn = [...document.querySelectorAll(".sh-doors a, #mtList a, #mtList .lay, #mtAdd, #own")].filter(x => x.offsetParent);
+      btn = [...document.querySelectorAll(".sh-doors a, #mtList a, #mtAdd, #own")].filter(x => x.offsetParent);   /* My Track's strips are marks, not buttons (AOG-STUDIO-SUPREME-V1) */
       return { iw: innerWidth, ih: innerHeight, sw: document.scrollingElement.scrollWidth, sh: document.scrollingElement.scrollHeight, frame: Math.round(r(fr).height), mtBottom: Math.round(r(mt).bottom),
         minBtn: Math.min(...btn.map(x => Math.round(r(x).height))), cur: !!document.querySelector(".sh-doors a[aria-current]") && r(document.querySelector(".sh-doors a[aria-current]")).right <= innerWidth + 1 }; });
     const pc = await m.evaluate(`(${PROBE})()`), pk = await m.evaluate(`(${CALM})()`);
