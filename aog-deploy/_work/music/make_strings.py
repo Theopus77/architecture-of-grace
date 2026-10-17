@@ -7,7 +7,7 @@ _work/music/strings_page.html. Edit that page, then build both:
 
   python3 _work/music/make_strings.py        (from aog-deploy/)
 """
-import html, os
+import html, json, os
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.normpath(os.path.join(HERE, "..", ".."))
@@ -35,6 +35,10 @@ def build():
         src = f.read()
     for inst, words in PAGES.items():
         out = src.replace("@@INST@@", inst).replace("@@SLUG@@", inst)
+        # AOG-LEVEL-EVEN-V1: each sound's trim for each recording (music-handoff/tools/levels/make.js writes them)
+        ev = os.path.join(HERE, "strings_even_%s.json" % inst)
+        even = json.load(open(ev, encoding="utf-8")) if os.path.exists(ev) else {}
+        out = out.replace("@@EVEN@@", json.dumps(even, separators=(",", ":"), sort_keys=True, ensure_ascii=True))
         for k, v in words.items():
             out = out.replace("@@%s@@" % k, html.escape(v, quote=True))
         left = [w for w in out.split("@@")[1::2] if w.isupper() and len(w) < 20]

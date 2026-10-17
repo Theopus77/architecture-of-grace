@@ -866,6 +866,21 @@ function trimOf(grp, k){ const v=LEVEL[grp] && LEVEL[grp][k]; return v ? Math.po
 /* where a pad sounds: the speakers, or (AOG-PADS-BOUNCE-V1) an offline render of the loop; each keeps its own ringing
    open hats and chops, so a hi-hat or a new chop cuts them in the render just as it does live */
 const LIVE={c:null, dest:null, open:[[],[],[],[]], chop:[null,null,null,null]};
+/* AOG-LEVEL-EVEN-V1 (2026-10-17) — Jimmy: "I would like all the instruments to be checked for sound levels … some notes and
+   some scales were higher than others". Each recording is brought to one peak as it loads (tidy), and a peak is not
+   loudness: a note with a sharp first instant came out softer than its neighbours, one with a soft start louder. Each
+   instrument's recordings now have their own trims (EVENPADS[instrument][file], dB), so its notes sit on one smooth
+   line (half its natural slope kept, never more than 3 dB): made by music-handoff/tools/levels/make.js pads and written
+   between the two markers. Worked out once a recording first plays, then one more factor in the gain a note sets. */
+/* AOG-LEVEL-EVEN-V1 table start */
+const EVENPADS={};
+/* AOG-LEVEL-EVEN-V1 table end */
+const EVENX=new Map();
+function padEven(inst, url){
+  const k=inst+"|"+url; let e=EVENX.get(k);
+  if(e===undefined){ const t=EVENPADS[inst], d=t && t[url.slice(url.lastIndexOf("/")+1).replace(/\.mp3$/,"")]; e=d ? Math.pow(10, d/20) : 1; EVENX.set(k, e); }
+  return e;
+}
 function trigger(bi, pi, vel, when, T){
   if(T ? !isReady(bi) : !canPlay(bi)) return null;   /* a file of the loop waits for every sound; live playing does not */
   const d=padDefs(bi)[pi]; if(!d) return null;
@@ -916,7 +931,7 @@ function trigger(bi, pi, vel, when, T){
     const tb=BUFV.get(Y.url); if(!tb) return;   /* a note not here yet stays quiet; the others play */
     const s=c.createBufferSource(), g=c.createGain();
     s.buffer=tb.b; s.playbackRate.value=Math.pow(2, (m-z.m)/12-(Y.c||0)/1200)*rate;
-    g.gain.setValueAtTime(0, when); g.gain.linearRampToValueAtTime(lv*tb.g*Y.g*mono(tb.b), when+Math.max(0.005, tb.fade));
+    g.gain.setValueAtTime(0, when); g.gain.linearRampToValueAtTime(lv*tb.g*Y.g*mono(tb.b)*padEven(B.inst, Y.url), when+Math.max(0.005, tb.fade));
     s.connect(g); g.connect(out); s.start(when, tb.off); const v={s:s, g:g, url:Y.url}; vs.push(v);
     if(live){ RING.push(v); s.onended=()=>{ try{ s.disconnect(); g.disconnect(); }catch(e){} const k=RING.indexOf(v); if(k>=0) RING.splice(k,1); v.done=true; if(vs.every(x=>x.done)) unplug(); }; }
     });

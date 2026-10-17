@@ -1557,6 +1557,7 @@ function recIndex(R, meta){
   lays.forEach(v=>{ const zs=by.sus.filter(z=>(z.v||1)===v); L.long[v]=med(zs.map(z=>rmsOf(z,0.01,0.26))); L.short[v]=med(zs.map(z=>rmsOf(z,0,0.06))); });
   const mz=(by.mute||[]).concat(by.stac||[]); if(mz.length) L.mute=med(mz.map(z=>rmsOf(z,0,0.06)));
   if(by.hammer) new Set(by.hammer.map(z=>z.v||1)).forEach(v=>{ L.hammer[v]=med(by.hammer.filter(z=>(z.v||1)===v).map(z=>rmsOf(z,0.01,0.26))); });
+  meta.zones.forEach((z,i)=>{ z.i=i; }); R.ev={};   /* AOG-LEVEL-EVEN-V1: each recording's place, for its trim */
   R.meta=meta; R.by=by; R.layers=[...lays].sort((a,b)=>a-b); R.top=R.layers[R.layers.length-1]; R.lvl=L;
   R.noise=recRel(meta).filter(n=>R.buf[n.f]); R.slap=recSlaps(meta).filter(n=>R.buf[n.f]);
   if(R.slap.length) R.lvl.slap=med(R.slap.map(n=>rmsOf(n,0,0.03)));
@@ -1567,6 +1568,22 @@ function recRel(meta){ return (meta.noise||[]).filter(n=>(n.k||"release")==="rel
 function recSlaps(meta){ return (meta.noise||[]).filter(n=>n.k==="slap"); }
 /* the layer for how hard a note is played (vel holds each layer's lower bound), then the recording: the nearest note
    (a tie goes to the one below), on its own string when the set knows strings; its takes in turn */
+/* AOG-LEVEL-EVEN-V1 (2026-10-17) — Jimmy: "I was trying to jam out on the bass and I was playing some notes and some scales
+   were higher than others". Every recording of a set is as loud as the next one (the sets were evened when they were
+   made), but each sound's amp, cabinet and tone shape them differently: through a bass cabinet the low E's recordings came
+   out a few dB under the high ones, and one string's recording a dB over the next string's at the same pitch. So each
+   sound has its own trim for each recording (EVEN[sound] = [set, one letter a recording, in set.json's order]: "O" is
+   0 dB, each letter up or down 0.1 dB), measured through the sound's whole chain at every fret of every string by
+   music-handoff/tools/levels/make.js, which writes them to strings_even_<inst>.json; make_strings.py builds them in.
+   It is one more factor in the gain a note already sets, worked out once when a sound first plays a set. */
+const EVEN=@@EVEN@@;
+function evenOf(R, id, z){
+  const k=id+"|"+R.id; let a=R.ev && R.ev[k];
+  if(a===undefined){ const e=EVEN[id]; a=null;
+    if(e && e[0]===R.id && e[1].length===R.meta.zones.length){ a=new Float32Array(e[1].length); for(let i=0;i<a.length;i++) a[i]=Math.pow(10, (e[1].charCodeAt(i)-79)/200); }
+    (R.ev=R.ev||{})[k]=a; }
+  return a && z.i!=null ? a[z.i] : 1;
+}
 function recLayer(R, v){ const vel=R.meta.vel||[0]; let lay=1; vel.forEach((b,i)=>{ if(v>=b) lay=i+1; }); return lay; }
 function recPick(R, kind, m, v, s){
   const all=R.by[kind]; if(!all || !all.length) return null;
@@ -1610,7 +1627,7 @@ function recVoice(c, ch, id, m, v, when, s, o, R){
   let pk=recPick(R, kind, m, slapS ? 1 : vv, s);
   if(!pk && kind!=="sus"){ kind="sus"; pk=recPick(R, kind, m, slapS ? 1 : vv, s); }
   if(!pk) return null;
-  const z=pk.z, buf=R.buf[z.f], base=0.2*velAmp(vv)*lift*(z.g||1);
+  const z=pk.z, buf=R.buf[z.f], base=0.2*velAmp(vv)*lift*(z.g||1)*evenOf(R, id, z);
   /* the made string sits at 0.2 × the loudness curve over its first quarter second; a recording is brought there too
      (a muted note: as loud at the pick as a held one) */
   const amp = kind==="sus" ? base/L.long[pk.lay] : kind==="hammer" ? 0.7*base/(L.hammer[pk.lay]||L.long[top]) : base*(L.short[top]/L.long[top])/L.mute;
@@ -1636,7 +1653,7 @@ function recVoice(c, ch, id, m, v, when, s, o, R){
     const ns=c.createBufferSource(); ns.buffer=nb; const ng=gainAt(c, 0.2*velAmp(vv)*lift*(n.g||1)/(L.slap||L.long[top])*snd.rslap); ns.connect(ng); ng.connect(pan||rel);
     ns.start(when, R.at[n.f]); nodes.push(ns); }
   const zs=pop && snd.rpop ? (recPick(R, "stac", m, 1, s)||{}).z : null;
-  if(zs){ const ps=c.createBufferSource(), hp=c.createBiquadFilter(), sa=0.2*velAmp(vv)*lift*(zs.g||1)*(L.short[top]/L.long[top])/L.mute*snd.rpop, pg=gainAt(c, sa);
+  if(zs){ const ps=c.createBufferSource(), hp=c.createBiquadFilter(), sa=0.2*velAmp(vv)*lift*(zs.g||1)*evenOf(R, id, zs)*(L.short[top]/L.long[top])/L.mute*snd.rpop, pg=gainAt(c, sa);
     ps.buffer=R.buf[zs.f]; ps.playbackRate.value=recRate(zs, m); hp.type="highpass"; hp.frequency.value=1000; hp.Q.value=0.7;
     ps.connect(hp); hp.connect(pg); pg.connect(pan||rel); pg.gain.setTargetAtTime(0, when+0.015, 0.008); ps.start(when, R.at[zs.f]); ps.stop(when+0.12); nodes.push(ps); }
   if(snd.rclick && !soft){ const cbs=pickClick(id);
@@ -1647,7 +1664,7 @@ function recVoice(c, ch, id, m, v, when, s, o, R){
      the two high ones (as the made one) */
   if(snd.twelve && s!=null){ const up=s<4?12:0, p2=recPick(R, "sus", m+up, vv, null);
     if(p2){ const det=s<4?1:Math.pow(2,4/1200), s2=c.createBufferSource(); s2.buffer=R.buf[p2.z.f]; s2.playbackRate.value=recRate(p2.z, m+up)*det;
-      const a2=0.2*velAmp(vv)*lift*(p2.z.g||1)/L.long[p2.lay]*(s<4?0.5:0.7), g2=gainAt(c, a2/Math.max(1e-9, amp));
+      const a2=0.2*velAmp(vv)*lift*(p2.z.g||1)*evenOf(R, id, p2.z)/L.long[p2.lay]*(s<4?0.5:0.7), g2=gainAt(c, a2/Math.max(1e-9, amp));
       s2.connect(g2); g2.connect(head===src?g:head); s2.start(when+0.009, R.at[p2.z.f]+(soft?0.03:0)); nodes.push(s2); pairs.push([s2, p2.z, up, det]); } }
   const vc=voiceShell(c, ch.bus, nodes, rel);
   vc.tau=snd.damp; vc.natural=when+Math.max(0.05, buf.duration-off)/rate;
@@ -1850,7 +1867,7 @@ function recSynthVoice(c, ch, id, m, v, when, s, R){
     const src=c.createBufferSource(); src.buffer=b; src.playbackRate.value=recRate(z, mm)*Math.pow(2, det/1200);
     if(z.lp){ src.loop=true; src.loopStart=(R.lead[z.f]||0)+z.lp[0]; src.loopEnd=(R.lead[z.f]||0)+z.lp[1]; }
     /* from the organ's steady tone (its loop), not its own slow, dark swell: the synth's envelope makes the start */
-    const g=gainAt(c, gain*(z.g||1)/L.long[pk.lay]); src.connect(g); g.connect(to); src.start(when, z.lp ? src.loopStart : R.at[z.f]); nodes.push(src); pairs.push([src, z, det, mm-m]); return z; };
+    const g=gainAt(c, gain*(z.g||1)*evenOf(R, id, z)/L.long[pk.lay]); src.connect(g); g.connect(to); src.start(when, z.lp ? src.loopStart : R.at[z.f]); nodes.push(src); pairs.push([src, z, det, mm-m]); return z; };
   let into=lpf;
   if(snd.rdrive){ const pre=gainAt(c, snd.rdrive); let ws=null; try{ ws=new WaveShaperNode(c, {curve:DRIVE, oversample:"2x"}); }catch(e){ ws=c.createWaveShaper(); ws.curve=DRIVE; }
     pre.connect(ws); ws.connect(lpf); into=pre; }
@@ -1877,7 +1894,7 @@ function recSynthStraight(c, ch, id, m, v, when, s, R){
   const snd=SOUNDS[id], vv=Math.max(0.05,Math.min(1,v)), pk=recPick(R, "sus", m, vv, null); if(!pk) return null;
   const z=pk.z, b=R.buf[z.f], src=c.createBufferSource(); src.buffer=b; src.playbackRate.value=recRate(z, m);
   if(z.lp){ src.loop=true; src.loopStart=(R.lead[z.f]||0)+z.lp[0]; src.loopEnd=(R.lead[z.f]||0)+z.lp[1]; }
-  const peak=0.2*velAmp(vv), amp=gainAt(c, peak*(z.g||1)/R.lvl.long[pk.lay]);
+  const peak=0.2*velAmp(vv)*evenOf(R, id, z), amp=gainAt(c, peak*(z.g||1)/R.lvl.long[pk.lay]);
   amp.gain.setValueAtTime(0, when); amp.gain.linearRampToValueAtTime(peak*(z.g||1)/R.lvl.long[pk.lay], when+0.003);
   src.connect(amp);
   const lvl=gainAt(c, snd.gain), rel=gainAt(c,1); amp.connect(lvl);
