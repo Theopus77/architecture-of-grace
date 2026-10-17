@@ -6,7 +6,7 @@
      .analyze(input, {onProgress(p 0..1, wordKey), worker:true, name, signal}) → Promise<Lesson>
          input: an AudioBuffer, or an ArrayBuffer / Blob / File of an audio file (a MIDI file is read by fromMidi).
          The heavy listening runs in a Web Worker (aog-learn-worker.js), so the page stays calm; without Workers it runs
-         here in small slices (about 4 ms, never past 12) between frames. Nothing leaves the device. The worker ends when the lesson is
+         here in small slices (about 6 ms, never past 12) between frames. Nothing leaves the device. The worker ends when the lesson is
          done. signal (an AbortSignal) stops it: the promise rejects with an error named "AbortError".
      .fromMidi(ArrayBuffer, {name}) → Lesson     (Standard MIDI File, types 0 and 1; exact notes)
      .sections(lesson) → [{t,d,kind,letter}]     the parts from a lesson's chords and bars alone (older lessons, MIDI)
@@ -86,15 +86,11 @@ function percentile(arr, q) { var n = arr.length; if (!n) return 0; var c = Floa
 function log2(x) { return Math.log(x) / Math.LN2; }
 function hzToMidi(f) { return 69 + 12 * log2(f / 440); }
 
-/* a slice timer: on the page it gives the browser a moment every SLICE ms, and every loop asks it often enough that no slice
-   runs much past that, even before the code is warm (the silent treatment: slices of 12 ms or less); in the worker it never
-   waits. The moment is a timer, so the page's own timers and drawing get their turn; it is set from a message to itself,
-   so it does not wait the 4 ms a timer set inside a timer waits. */
-var SLICE = 4, MC = null, MQ = [];
-function getYield() { return function (f) {
-  if (typeof MessageChannel !== "function") { setTimeout(f, 0); return; }
-  if (!MC) { MC = new MessageChannel(); MC.port1.onmessage = function () { var g = MQ.shift(); if (g) setTimeout(g, 0); }; }
-  MQ.push(f); MC.port2.postMessage(0); }; }
+/* a slice timer: on the page it gives the browser a moment every SLICE ms (a timer, so the page's own timers and drawing get
+   their turn), and every loop asks it often enough that no slice runs much past that, even before the code is warm (the
+   silent treatment: slices of 12 ms or less); in the worker it never waits */
+var SLICE = 6;
+function getYield() { return function (f) { setTimeout(f, 0); }; }
 function Ticker(budget, signal) { this.b = budget || 0; this.t0 = now(); this.sig = signal || null; }
 Ticker.prototype.due = function () { return this.b > 0 && now() - this.t0 > this.b; };
 /* before a step that runs whole (a few ms when the code is cold): a fresh slice once half of this one is used */
@@ -340,7 +336,7 @@ async function harmonicPeaks(x, T, prog) {
   for (var f = 0; f < nF + hw; f++) {
     if (f < nF) { var st = f * H - half, buf = ring[f % W];
       for (i = 0; i < N; i++) { var j = st + i; frame[i] = (j >= 0 && j < x.length) ? x[j] * win[i] : 0; }
-      rmag(frame, buf); }
+      rmag(frame, buf); if (T.due()) await T.yield(); }
     var g = f - hw; if (g < 0 || g >= nF) continue;
     var cur = ring[g % W], a0 = Math.max(0, g - hw), a1 = Math.min(nF - 1, g + hw), cnt = a1 - a0 + 1, mx = 0;
     for (k = 1; k <= K; k++) {
@@ -350,6 +346,7 @@ async function harmonicPeaks(x, T, prog) {
       var p = selectK(vb, c, c >> 1), h2 = h * h, p2 = p * p, v = cur[k] * h2 / (h2 + p2 + 1e-12);
       Y[k] = v; if (v > mx) mx = v;
       if (k >= kS0) PS[g] += cur[k] * p2 / (h2 + p2 + 1e-12); else if (k >= kL0 && k <= kL1) PL[g] += cur[k] * p2 / (h2 + p2 + 1e-12);
+      if ((k & 255) === 0 && T.due()) await T.yield();
     }
     Y[0] = 0; Y[K + 1] = 0;
     var thr = Math.max(mx * 0.003, 0.05), np = 0;
@@ -406,7 +403,7 @@ async function beatChroma(P, tune, beats, sec, T) {
     FB[g] = t + 0.05 + HIEDGE < end ? bi : -1;   /* the struck part listens only where the window does not reach the next beat */
     for (k = 0; k < 12; k++) { var v = FC[fo + k]; Ct[bi * 12 + k] += v * fw; if (v < lo[bi * 12 + k]) lo[bi * 12 + k] = v; }
     Et[bi] += fe; W[bi] += fw; Wn[bi]++;
-    if ((g & 7) === 0) if (T && T.due()) await T.yield();
+    if ((g & 1) === 0) if (T && T.due()) await T.yield();
   }
   if (GAM) for (bi = 0; bi < nB; bi++) if (W[bi] > 0) { var sc = Wn[bi] / W[bi]; for (k = 0; k < 12; k++) Ct[bi * 12 + k] *= sc; }
   /* and what rises above the beat's own floor (a stab over a held bass note): the notes that were struck, not the ones ringing on */
@@ -958,8 +955,8 @@ async function analyzePCM(x, opts) {
     p = clamp(p, 0, 1); if (p < lastP) p = lastP; lastP = p; if (cb) try { cb(r4(p), key); } catch (e) {} }
   function stage(a, b, key) { report(a, key); return function (f) { report(a + (b - a) * f, key); }; }
   var sec = x.length / SR, i, peak = 0;
-  for (i = 0; i < x.length; i++) { var av = x[i] < 0 ? -x[i] : x[i]; if (av > peak) peak = av; if ((i & 32767) === 0 && T.due()) await T.yield(); }
-  if (peak > 0) { var gn = 0.9 / peak; for (i = 0; i < x.length; i++) { x[i] *= gn; if ((i & 32767) === 0 && T.due()) await T.yield(); } }
+  for (i = 0; i < x.length; i++) { var av = x[i] < 0 ? -x[i] : x[i]; if (av > peak) peak = av; if ((i & 8191) === 0 && T.due()) await T.yield(); }
+  if (peak > 0) { var gn = 0.9 / peak; for (i = 0; i < x.length; i++) { x[i] *= gn; if ((i & 8191) === 0 && T.due()) await T.yield(); } }
 
   /* beat */
   var ON = await onsetEnvelope(x, T, stage(0.05, 0.17, "beat"));
@@ -1300,7 +1297,7 @@ function decode(ab) {
 function toMono22k(buf, T) {     /* T: on the page, a slice timer (a long song is not copied all at once) */
   if (buf.sampleRate === SR) { var n = buf.length, out = new Float32Array(n), ch = buf.numberOfChannels;
     return (async function () { for (var c = 0; c < ch; c++) { var d = buf.getChannelData(c);
-      for (var i = 0; i < n; i++) { out[i] += d[i] / ch; if ((i & 32767) === 0 && T && T.due()) { await T.yield(); d = buf.getChannelData(c); } } } return out; })(); }
+      for (var i = 0; i < n; i++) { out[i] += d[i] / ch; if ((i & 8191) === 0 && T && T.due()) { await T.yield(); d = buf.getChannelData(c); } } } return out; })(); }
   var C = OAC(), len = Math.max(1, Math.ceil(buf.length * SR / buf.sampleRate)), ctx = new C(1, len, SR), src = ctx.createBufferSource();
   src.buffer = buf; src.connect(ctx.destination); src.start(0);
   return new Promise(function (res, rej) { var done = false;
