@@ -1003,6 +1003,7 @@ html.in-studio .st-chassis{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 
         <p class="st-line" data-t="carryLine" style="margin:0 0 .7rem"></p>
         <label class="st-field st-name"><span class="st-lab" data-t="songName"></span><input type="text" id="songName" maxlength="80" autocomplete="off" enterkeyhint="done"></label>
         <h3 class="st-h3" data-t="fileH"></h3>
+        <p class="st-line" data-t="fileWhat" style="margin:0 0 .6rem"></p><!-- AOG-DESK-PROJECT-V1 -->
         <div class="st-row"><button type="button" class="st-btn st-go" id="fileSave"></button><button type="button" class="st-btn" id="fileOpen"></button></div>
         <input type="file" id="fileIn" hidden>
         <p class="st-line" id="fileLine" aria-live="polite"></p>
@@ -1162,6 +1163,8 @@ const STR={
   outShare:{en:"Share…",es:"Compartir…"}, outShareAria:{en:"Share {name}",es:"Compartir {name}"},
   outDownload:{en:"Download",es:"Descargar"}, outDownloadAria:{en:"Download {name}",es:"Descargar {name}"},
   outStems:{en:"Each track on its own (.zip)",es:"Cada pista sola (.zip)"},
+  outStemsG:{en:"Each track and group on its own (.zip)",es:"Cada pista y cada grupo solos (.zip)"},   /* AOG-DESK-STEMS-GROUPS-V1 */
+  stemGroup:{en:"group",es:"grupo"},
   outStemsMaking:{en:"Making each track… {a} of {b}",es:"Haciendo cada pista… {a} de {b}"},
   outStemsReady:{en:"Each track on its own: {n} files in one .zip",es:"Cada pista sola: {n} archivos en un .zip"},
   outShared:{en:"Sent.",es:"Enviado."}, outSaved:{en:"Saved: {name}.",es:"Guardado: {name}."},
@@ -1209,9 +1212,10 @@ const STR={
   carryLine:{en:"Take this song to your iPhone, iPad or computer and keep working on it there.",es:"Lleva esta canción a tu iPhone, iPad o computadora y sigue trabajando en ella allí."},
   songName:{en:"Song name",es:"Nombre de la canción"}, myName:{en:"My song",es:"Mi canción"},
   fileH:{en:"With a song file",es:"Con un archivo de canción"},
-  fileSave:{en:"Save song file",es:"Guardar archivo de canción"}, fileOpen:{en:"Open a song file",es:"Abrir un archivo de canción"},
+  fileSave:{en:"Save my song",es:"Guardar mi canción"}, fileOpen:{en:"Open my song",es:"Abrir mi canción"},   /* AOG-DESK-PROJECT-V1 */
+  fileWhat:{en:"One file holds the whole desk and its sound. It stays on your device. Move it with AirDrop or Files.",es:"Un archivo guarda toda la mesa y su sonido. Se queda en tu aparato. Muévelo con AirDrop o Archivos."},
   fileMaking:{en:"Making your song file…",es:"Haciendo tu archivo de canción…"},
-  fileSaved:{en:"Saved: {name}. On an iPhone or iPad it is in the Files app, under Downloads. Open it on your other device with Open a song file.",es:"Guardado: {name}. En un iPhone o iPad está en la app Archivos, en Descargas. Ábrelo en tu otro aparato con Abrir un archivo de canción."},
+  fileSaved:{en:"Saved: {name}. On an iPhone or iPad it is in the Files app, under Downloads. Open it on your other device with Open my song.",es:"Guardado: {name}. En un iPhone o iPad está en la app Archivos, en Descargas. Ábrelo en tu otro aparato con Abrir mi canción."},
   fileNeed:{en:"Put a recording on a track first.",es:"Primero pon una grabación en una pista."},
   fileBad:{en:"That is not a song file from the Mixing Desk.",es:"Ese no es un archivo de canción de la mesa de mezclas."},
   reading:{en:"Opening your song…",es:"Abriendo tu canción…"},
@@ -2867,7 +2871,7 @@ async function renderSong(only){
   const oc=new OC(2, frames+lat, MIX_SR); await dmFxReady(oc);   /* AOG-DESK-DUCK-V1: the ducking's own small processor, first */
   await deskRoomLoad(oc, SONG.master.room);   /* AOG-REAL-ROOMS-V1: the real room first, so the mix is always the same */
   const E=makeEngine(oc, false);
-  if(only!=null) E.tr.forEach((T,j)=>{ T.fader.gain.value=j===only ? faderBase(j) : 0; });   /* AOG-DESK-AUTO-V1: a drawn volume is on its own gain */
+  if(only!=null) E.tr.forEach((T,j)=>{ T.fader.gain.value=(Array.isArray(only) ? only.indexOf(j)>=0 : j===only) ? faderBase(j) : 0; });   /* AOG-DESK-AUTO-V1: a drawn volume is on its own gain · AOG-DESK-STEMS-GROUPS-V1: or a group of tracks */
   schedule(E, 0, end, 0);
   const buf=await render(oc);
   return {Lc:buf.getChannelData(0).subarray(lat, lat+frames), Rc:(buf.numberOfChannels>1 ? buf.getChannelData(1) : buf.getChannelData(0)).subarray(lat, lat+frames), frames:frames};
@@ -2917,24 +2921,58 @@ function songTitle(){ const n=(SONG.name||"").trim(); return n || t("myName"); }
 function fileSlug(){ const n=songTitle().normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,40)||t("file");
   const d=new Date(), z=x=>String(x).padStart(2,"0");
   return n+"-"+d.getFullYear()+"-"+z(d.getMonth()+1)+"-"+z(d.getDate())+"-"+z(d.getHours())+z(d.getMinutes())+".aogsong"; }
-/* the whole song, as one file */
+/* the whole song, as one file. AOG-DESK-PROJECT-V1 (2026-10-17): "Save my song" makes a .aogsong that is a zip (stored, so it
+   is quick and every recording comes back to the byte): song.json (the desk as it is: the arrangement, the mixer, the
+   master, the markers …, and each recording's file) and audio/<id>.wav for every recording and take. Nothing else goes in:
+   never the locker's address or key (aog.studio.locker.v1) or the Sheet's (aog.sync.*), which live only in this device's
+   storage and are not part of SONG. A song file from before (AOGSONG1) still opens. */
 async function songFile(){
-  const parts=[], meta=[];
+  const files=[], meta=[];
   for(const c of dmAllClips()){   /* AOG-DESK-TAKES-V1: each take's recording too */
     const v=await sget(c.id); if(!v || !v.wav) continue;
-    meta.push({id:c.id, size:v.wav.size}); parts.push(v.wav);
+    const f="audio/"+c.id+".wav"; meta.push({id:c.id, size:v.wav.size, file:f}); files.push({name:f, data:new Uint8Array(await blobAB(v.wav))});
   }
   if(!meta.length) return null;
-  const head=new TextEncoder().encode(JSON.stringify({kind:"aog-song", v:1, at:Date.now(), song:SONG, clips:meta}));
-  const pre=new Uint8Array(12); for(let i=0;i<8;i++) pre[i]=SONG_MAGIC.charCodeAt(i);
-  new DataView(pre.buffer).setUint32(8, head.length, true);
-  return new Blob([pre, head].concat(parts), {type:"application/octet-stream"});
+  const head=new TextEncoder().encode(JSON.stringify({kind:"aog-song", v:2, at:Date.now(), app:"The Mixing Desk", song:SONG, clips:meta}));
+  return new Blob([zipStore([{name:"song.json", data:head}].concat(files))], {type:"application/octet-stream"});
+}
+/* a zip made by zipStore (stored entries) into {name: Blob}; null when it is not one, or any part is missing or changed */
+async function zipRead(blob){
+  if(!blob || blob.size<22) return null;
+  const tail=new DataView(await blobAB(blob.slice(blob.size-22)));
+  if(tail.getUint32(0, true)!==0x06054b50) return null;
+  const n=tail.getUint16(10, true), cs=tail.getUint32(12, true), co=tail.getUint32(16, true);
+  if(!(n>0 && n<=2000) || co+cs+22!==blob.size) return null;
+  const cd=new DataView(await blobAB(blob.slice(co, co+cs))), dec=new TextDecoder(), out=new Map();
+  let p=0;
+  for(let k=0;k<n;k++){
+    if(p+46>cs || cd.getUint32(p, true)!==0x02014b50) return null;
+    const meth=cd.getUint16(p+10, true), crc=cd.getUint32(p+16, true), csz=cd.getUint32(p+20, true), usz=cd.getUint32(p+24, true), nl=cd.getUint16(p+28, true), el=cd.getUint16(p+30, true), cl=cd.getUint16(p+32, true), lo=cd.getUint32(p+42, true);
+    if(meth!==0 || csz!==usz || p+46+nl>cs) return null;
+    const name=dec.decode(new Uint8Array(cd.buffer, cd.byteOffset+p+46, nl)); p+=46+nl+el+cl;
+    const lh=new DataView(await blobAB(blob.slice(lo, lo+30))); if(lh.byteLength<30 || lh.getUint32(0, true)!==0x04034b50) return null;
+    const d0=lo+30+lh.getUint16(26, true)+lh.getUint16(28, true); if(d0+csz>co) return null;
+    const part=blob.slice(d0, d0+csz); if(crc32(new Uint8Array(await blobAB(part)))!==crc) return null;
+    out.set(name, part);
+  }
+  return out;
 }
 /* a song file back into {song, wavs}; null when it is not one */
 async function readSongFile(blob){
   try{
     if(!blob || blob.size<12) return null;
     const pre=new Uint8Array(await blobAB(blob.slice(0,12)));
+    if(pre[0]===0x50 && pre[1]===0x4b && pre[2]===3 && pre[3]===4){   /* AOG-DESK-PROJECT-V1: the zip */
+      const Z=await zipRead(blob); if(!Z || !Z.has("song.json")) return null;
+      const h=JSON.parse(new TextDecoder().decode(await blobAB(Z.get("song.json"))));
+      if(!h || h.kind!=="aog-song" || h.v!==2 || !Array.isArray(h.clips) || h.clips.length>NT*(DM_MAX_TAKES+1)) return null;
+      const wavs=new Map();
+      for(const m of h.clips){ if(!m || typeof m.id!=="string" || !/^c[a-z0-9]{4,40}$/.test(m.id)) return null; const b=Z.get("audio/"+m.id+".wav"); if(!b || b.size<=44 || (m.size && b.size!==m.size)) return null; wavs.set(m.id, b); }
+      const song=cleanSong(h.song);
+      song.tracks.forEach(x=>{ if(x.clip && !wavs.has(x.clip.id)) x.clip=null; dmTakesHave(x, wavs); });
+      if(!song.tracks.some(x=>x.clip)) return null;
+      return {song:song, wavs:wavs};
+    }
     for(let i=0;i<8;i++) if(pre[i]!==SONG_MAGIC.charCodeAt(i)) return null;
     const hl=new DataView(pre.buffer).getUint32(8, true);
     if(!(hl>0 && hl<=4*1024*1024 && 12+hl<=blob.size)) return null;
@@ -3432,17 +3470,24 @@ async function sendOut(){
   try{ await chopsLook(); }catch(e){ OUT.chopSrc=null; }   /* AOG-DESK-CHOPS-OUT-V1 */
   OUT.busy=false; btn.disabled=false; paintOut();
 }
+/* AOG-DESK-STEMS-GROUPS-V1: the groups heard in the mix (two or more of their tracks), each as one more file */
+function stemGroups(list){ return GROUPS.map(g=>({g:g, tr:list.filter(i=>SONG.tracks[i].grp===g)})).filter(o=>o.tr.length>=2); }
 async function sendStems(){
   const line=$("outLine"); if(OUT.busy || !OUT.song) return;
   const list=SONG.tracks.map((x,i)=>i).filter(i=>SONG.tracks[i].clip && audible(i) && BUF.has(SONG.tracks[i].clip.id));
   if(!list.length) return;
   OUT.busy=true; paintOut();
   try{
-    const files=[];
+    const files=[], G=stemGroups(list), all=list.length+G.length;
     for(let k=0;k<list.length;k++){
-      line.textContent=t("outStemsMaking",{a:k+1, b:list.length});
+      line.textContent=t("outStemsMaking",{a:k+1, b:all});
       const i=list[k], {Lc, Rc}=await renderSong(i);
       files.push({name:songSlug()+"-"+t("trackFile")+"-"+(i+1)+"-"+(slugOf(trackName(i))||t("trackFile"))+".wav", data:new Uint8Array(wavBuf(Lc, Rc, MIX_SR, OUT.song.g, BITS))});
+    }
+    for(let k=0;k<G.length;k++){
+      line.textContent=t("outStemsMaking",{a:list.length+k+1, b:all});
+      const {Lc, Rc}=await renderSong(G[k].tr), gw=STR["gp_"+G[k].g] ? t("gp_"+G[k].g) : G[k].g;
+      files.push({name:songSlug()+"-"+(slugOf(t("stemGroup"))||"group")+"-"+(slugOf(gw)||G[k].g)+".wav", data:new Uint8Array(wavBuf(Lc, Rc, MIX_SR, OUT.song.g, BITS))});
     }
     dropOut("stems");
     OUT.stems=outItem({file:new File([zipStore(files)], songSlug()+"-tracks.zip", {type:"application/zip"}), n:files.length});
@@ -3557,7 +3602,7 @@ function paintOut(){
     `<p class="st-line" id="outLoud">${esc(lv)}</p>`+
     (left.length ? `<p class="st-line">${esc(t("outLeft",{list:left.map(i=>t("trackLow",{n:i+1})).join(", ")}))}</p>` : "")+
     (OUT.stems ? outRow("stems", t("outStemsReady",{n:OUT.stems.n})) :
-      `<div class="st-row" style="margin-top:.6rem"><button type="button" class="st-btn" id="stemBtn"${OUT.busy ? " disabled" : ""}>${esc(t("outStems"))}</button></div>`)+
+      `<div class="st-row" style="margin-top:.6rem"><button type="button" class="st-btn" id="stemBtn"${OUT.busy ? " disabled" : ""}>${esc(t(stemGroups(SONG.tracks.map((x,i)=>i).filter(i=>SONG.tracks[i].clip && audible(i))).length ? "outStemsG" : "outStems"))}</button></div>`)+
     (OUT.voice ? outRow("voice", t("outVoiceReady")) : voiceHeard() ?
       `<div class="st-row" style="margin-top:.6rem"><button type="button" class="st-btn" id="voiceOutBtn"${OUT.busy ? " disabled" : ""}>${esc(t("outVoice"))}</button></div>` : "")+
     (OUT.chops ? outRow("chops", t("outChopsReady",{n:OUT.chops.n})) : OUT.chopSrc ?   /* AOG-DESK-CHOPS-OUT-V1 */
@@ -4883,7 +4928,7 @@ Object.assign(window.__aogStudio, { AUTO:AUTO, AUI:AUI, drawnAt:drawnAt, autoCor
 /* AOG-DESK-MORE-V1: for the tests (music-handoff/tests/studio/more.js, more2.js) */
 Object.assign(window.__aogStudio, { echoTime:echoTime, songPos:songPos, songChanged:songChanged, selectTrack:selectTrack, paintAll:paintAll, restore:restore, sget:sget, skeys:skeys, chainLatency:chainLatency, ECHO_T:ECHO_T });
 /* AOG-DESK-MASTER-V1, AOG-DESK-WARP-V1 …: for the desk tests (music-handoff/tests/desk/) */
-Object.assign(window.__aogStudio, { glueEff:glueEff, proMaster:proMaster, WW:WW, warpWork:warpWork, WARPN:WARPN, keepOf:keepOf, needStretch:needStretch, spd:spd, stretchReady:stretchReady, ensureStretch:ensureStretch, applyAll:applyAll, save:save, cleanSong:cleanSong, songEndMusic:songEndMusic, clipStart:clipStart, pAt:pAt, pLen:pLen, ratio:ratio });
+Object.assign(window.__aogStudio, { zipRead:zipRead, zipStore:zipStore, stemGroups:stemGroups, glueEff:glueEff, proMaster:proMaster, WW:WW, warpWork:warpWork, WARPN:WARPN, keepOf:keepOf, needStretch:needStretch, spd:spd, stretchReady:stretchReady, ensureStretch:ensureStretch, applyAll:applyAll, save:save, cleanSong:cleanSong, songEndMusic:songEndMusic, clipStart:clipStart, pAt:pAt, pLen:pLen, ratio:ratio });
 </script>
 </body>
 </html>
