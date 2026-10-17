@@ -128,6 +128,53 @@
               clap: P("XSTICK", [1, 2, 1]), tom: P("TOM", [1, 1, 1]), rim: P("FLOOR", [1, 1, 1]), bell: P("CRASH", [1, 1, 1]) } }
   };
   var IDS = ["D", "E", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y"];
+  /* ══ AOG-DRUM-PERC-V1 (2026-10-13) — HAND PERCUSSION, HAND DRUMS AND THE TABLA ══════════════════════════════════════
+     Jimmy: "DO them all." Four recorded kits, eight pads each (music-handoff/tools/drumkits/kits_perc.py): the school's
+     hand percussion; the djembe and cajón (with maracas, hand claps and the bell of a djembe group); the congas and
+     bongos; and the tabla. Every pad says what it is in plain words, in English and Spanish (en, es). drum: the pads of
+     one drum share it, so a new stroke stops the ring of the last one, as a hand on the skin does (a muted triangle
+     stops the open one; the bayan's ke stops its ghe). look: how the Drum Kit draws a pad that is not a drum ("small",
+     "cym"). Nearly every strength has two or three takes, played in turn. Real recordings, CC0: VCSL, Virtuosity Drums, Swirly Drums, FreePats World percussion, and dio_333's tabla
+     strokes (via Sonic Pi). The few strokes no free recording has are shaped here from the same drum's recordings,
+     and CREDITS.txt says which. A kit downloads only when it is picked, like every recorded kit. */
+  function W2(name, n, en, es, extra) { var o = { en: en, es: es }; if (extra) for (var k in extra) o[k] = extra[k]; return P(name, n, o); }
+  KITS.HP = { dir: "handperc", en: "Hand percussion", es: "Percusión de mano", hand: 1,
+    pads: { kick: W2("WBLOW", [3, 3, 3], "Woodblock · low", "Bloque de madera · grave", { look: "small" }),
+            snare: W2("TAMBHIT", [2, 2, 2], "Tambourine · hit", "Pandereta · golpe"),
+            ch: W2("EGG", [2, 2, 2], "Egg shaker", "Huevo sonoro"),
+            oh: W2("TAMBSHK", [2, 3, 2], "Tambourine · shake", "Pandereta · sacudida"),
+            clap: W2("CLAVES", [2, 2, 2], "Claves", "Claves", { look: "small" }),
+            tom: W2("WBHIGH", [3, 3, 3], "Woodblock · high", "Bloque de madera · agudo"),
+            rim: W2("TRIMUTE", [2, 2, 2], "Triangle · muted", "Triángulo · apagado", { drum: "tri", look: "small" }),
+            bell: W2("TRIOPEN", [2, 2, 2], "Triangle · open", "Triángulo · abierto", { drum: "tri", look: "cym" }) } };
+  KITS.HD = { dir: "handdrums", en: "Hand drums · djembe and cajón", es: "Tambores de mano · yembé y cajón", hand: 1,
+    pads: { kick: W2("DJBASS", [2, 2, 2], "Djembe · bass", "Yembé · grave", { drum: "dj" }),
+            snare: W2("DJSLAP", [2, 2, 2], "Djembe · slap", "Yembé · golpe seco", { drum: "dj" }),
+            ch: W2("MARACA", [2, 2, 2], "Maracas", "Maracas"),
+            oh: W2("DJTONE", [2, 2, 2], "Djembe · tone", "Yembé · tono", { drum: "dj" }),
+            clap: W2("CLAP", [1, 2, 2], "Hand claps", "Palmas", { look: "small" }),
+            tom: W2("CAJBASS", [2, 3, 2], "Cajón · bass", "Cajón · grave"),
+            rim: W2("CAJSLAP", [2, 3, 2], "Cajón · slap", "Cajón · golpe seco"),
+            bell: W2("COWBELL", [1, 1, 1], "Cowbell", "Cencerro", { look: "small" }) } };
+  KITS.HC = { dir: "congas", en: "Hand drums · congas and bongos", es: "Tambores de mano · congas y bongós", hand: 1,
+    pads: { kick: W2("CGBASS", [2, 2, 2], "Conga · bass", "Conga · grave", { drum: "cg" }),
+            snare: W2("CGSLAP", [2, 2, 2], "Conga · slap", "Conga · golpe seco", { drum: "cg" }),
+            ch: W2("CGMUTE", [2, 2, 2], "Conga · muted", "Conga · apagado", { drum: "cg" }),
+            oh: W2("CGOPEN", [2, 2, 2], "Conga · open", "Conga · abierto", { drum: "cg" }),
+            clap: W2("TUMBA", [2, 2, 2], "Tumba · open", "Tumba · abierto"),
+            tom: W2("BGLOW", [2, 2, 2], "Bongo · low", "Bongó · grave"),
+            rim: W2("BGHIGH", [2, 2, 2], "Bongo · high", "Bongó · agudo", { drum: "bg" }),
+            bell: W2("BGSLAP", [2, 2, 2], "Bongo · slap", "Bongó · golpe seco", { drum: "bg" }) } };
+  KITS.TB = { dir: "tabla", en: "Tabla", es: "Tabla", hand: 1,
+    pads: { kick: W2("GHE", [2, 2, 2], "Bayan · ghe (low)", "Bayan · ghe (grave)", { drum: "bayan" }),
+            snare: W2("NA", [1, 1, 1], "Dayan · na", "Dayan · na", { drum: "dayan" }),
+            ch: W2("TE", [2, 2, 2], "Dayan · te", "Dayan · te", { drum: "dayan" }),
+            oh: W2("TIN", [2, 2, 2], "Dayan · tin", "Dayan · tin", { drum: "dayan" }),
+            clap: W2("TUN", [2, 2, 2], "Dayan · tun", "Dayan · tun", { drum: "dayan" }),
+            tom: W2("GLIDE", [1, 2, 2], "Bayan · glide", "Bayan · deslizado", { drum: "bayan" }),
+            rim: W2("KE", [2, 2, 2], "Bayan · ke (closed)", "Bayan · ke (cerrado)", { drum: "bayan" }),
+            bell: W2("DHA", [2, 2, 2], "Dha (both hands)", "Dha (las dos manos)", { drum: "bayan" }) } };
+  IDS.push("HP", "HD", "HC", "TB");
   var LAYERS = ["s", "m", "h"];
   function made(b, id) { var k = KITS[b], p = k && k.pads[id]; return !!(p && p.made); }
 
@@ -163,6 +210,27 @@
     { id: "break70s", en: "Break from an old record", es: "Break de un disco viejo", kit: "Y", bpm: 92, swing: 0.58,
       map: { kick: [2,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0], snare: [0,0,0,0,2,0,0,0,0,0,0,3,2,0,0,0], ch: [1,0,1,0,1,0,1,0,1,0,1,0,1,0,0,0], oh: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0] } }
   ];
+  /* AOG-DRUM-PERC-V1: a groove for each new kit (hand:1 = it plays on its own kit; the Drum Kit and the Drum Machine
+     switch to that kit when it is picked, and nothing plays until Play is pressed). The tabla plays teental, the
+     sixteen-beat cycle: dha dhin dhin dha | dha dhin dhin dha | dha tin tin ta | ta dhin dhin dha, one beat every two
+     steps at 60 (120 beats a minute, a calm middle speed), in two parts of eight beats. Dhin is tin and ghe together. */
+  STARTERS.push(
+    { id: "schoolband", en: "Classroom percussion", es: "Percusión para la clase", kit: "HP", bpm: 96, swing: 0.50, hand: 1,
+      map: { ch: [1,0,3,0,1,0,3,0,1,0,3,0,1,0,3,0], kick: [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], tom: [0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],
+             oh: [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0], bell: [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
+    { id: "djembe", en: "Djembe and bell", es: "Yembé y campana", kit: "HD", bpm: 100, swing: 0.50, hand: 1,
+      map: { kick: [2,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0], oh: [0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1], snare: [0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0],
+             bell: [1,0,0,0,3,0,0,0,1,0,0,0,3,0,0,0] } },
+    { id: "cajon", en: "Cajón groove", es: "Ritmo de cajón", kit: "HD", bpm: 92, swing: 0.50, hand: 1,
+      map: { tom: [2,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0], rim: [0,0,3,0,2,0,0,0,0,0,3,0,2,0,0,3], ch: [1,0,3,0,1,0,3,0,1,0,3,0,1,0,3,0] } },
+    { id: "tumbao", en: "Conga tumbao", es: "Tumbao de conga", kit: "HC", bpm: 100, swing: 0.50, hand: 1,
+      map: { kick: [3,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0], ch: [0,0,3,0,0,0,3,0,0,0,3,0,0,0,0,0], snare: [0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0],
+             oh: [0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0], clap: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0] } },
+    { id: "teental", en: "Tabla · teental (16 beats)", es: "Tabla · teental (16 tiempos)", kit: "TB", bpm: 60, swing: 0.50, hand: 1,
+      map: { bell: [2,0,0,0,0,0,1,0,1,0,0,0,0,0,1,0], oh: [0,0,1,0,1,0,0,0,0,0,1,0,1,0,0,0], kick: [0,0,1,0,1,0,0,0,0,0,1,0,1,0,0,0] },
+      parts: [{ len: 16, map: { bell: [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0], oh: [0,0,1,0,1,0,0,0,0,0,1,0,1,0,0,0],
+        snare: [0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0], kick: [0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0] } }] }
+  );
   /* a beat in parts: part 2 goes in the next part of the song, and the track plays them in turn. Put my beat back
      returns that part and the track as they were; a one-part beat picked afterwards stops the track again. */
   function clone(o) { return JSON.parse(JSON.stringify(o)); }
@@ -195,8 +263,9 @@
     loading: { en: "Getting the recorded drums ready…", es: "Preparando la batería grabada…" },
     failed:  { en: "The recorded drums did not load. Check the internet, then pick the kit again.",
                es: "La batería grabada no se cargó. Revisa el internet y vuelve a elegir el kit." },
-    credit:  { en: "The recorded kits are real drums and percussion, free for everyone (CC0), from Karoryfer Samples, Versilian Studios and Jeff Learman. Kit L is a real 909 drum machine, recorded by Janne G:son Berg (CC BY 4.0). Kits A and B play a real 1978 drum machine (CC0).",
-               es: "Los kits grabados son batería y percusión de verdad, libres para todos (CC0), de Karoryfer Samples, Versilian Studios y Jeff Learman. El kit L es una caja de ritmos 909 de verdad, grabada por Janne G:son Berg (CC BY 4.0). Los kits A y B tocan una caja de ritmos de verdad de 1978 (CC0)." },
+    credit:  { en: "The recorded kits are real drums and percussion, free for everyone (CC0), from Karoryfer Samples, Versilian Studios and Jeff Learman. Kit L is a real 909 drum machine, recorded by Janne G:son Berg (CC BY 4.0). Kits A and B play a real 1978 drum machine (CC0). The hand percussion, hand drums and tabla are real too (CC0): Versilian Studios, Karoryfer Samples, FreePats and dio_333. A few strokes are shaped here from the same drum.",
+               es: "Los kits grabados son batería y percusión de verdad, libres para todos (CC0), de Karoryfer Samples, Versilian Studios y Jeff Learman. El kit L es una caja de ritmos 909 de verdad, grabada por Janne G:son Berg (CC BY 4.0). Los kits A y B tocan una caja de ritmos de verdad de 1978 (CC0). La percusión de mano, los tambores de mano y la tabla también son de verdad (CC0): Versilian Studios, Karoryfer Samples, FreePats y dio_333. Algunos golpes se hacen aquí a partir del mismo tambor." },
+    handGroup: { en: "Hand drums and percussion", es: "Tambores de mano y percusión" },
     credits: { en: "Full credits", es: "Créditos completos" }
   };
   function w(k, lang) { var o = WORDS[k]; return o ? (lang === "es" ? o.es : o.en) : k; }
@@ -204,6 +273,10 @@
   function has(b) { return Object.prototype.hasOwnProperty.call(KITS, b); }
   function machine(b) { return !!(has(b) && KITS[b].machine); }   /* AOG-DRUM-909-V1: a drum machine, recorded */
   function label(b) { var k = KITS[b]; return k ? [k.en, k.es] : ["", ""]; }
+  /* AOG-DRUM-PERC-V1: the pad's own words in plain English or Spanish ("" when it has none: the page uses its own) */
+  function padWord(b, id, lang) { var k = KITS[b], p = k && k.pads[id]; return p && p.en ? (lang === "es" ? p.es : p.en) : ""; }
+  function drumOf(b, id) { var k = KITS[b], p = k && k.pads[id]; return (p && p.drum) || ""; }
+  function look(b, id) { var k = KITS[b], p = k && k.pads[id]; return (p && p.look) || ""; }
   function padNames(b) { var k = KITS[b], o = {}; if (!k) return o; for (var id in k.pads) o[id] = k.pads[id].name; return o; }
   function files(b, id) {
     var k = KITS[b], p = k && k.pads[id], out = {};
@@ -420,7 +493,7 @@
     var g = w("group", LANG);
     Array.prototype.forEach.call((doc || root.document).querySelectorAll("[data-bank],[data-simple-bank]"), function (el) {
       var b = el.getAttribute("data-bank") || el.getAttribute("data-simple-bank");
-      if (has(b) && !machine(b)) el.setAttribute("data-aog-group", g);
+      if (has(b) && !machine(b)) el.setAttribute("data-aog-group", KITS[b].hand ? w("handGroup", LANG) : g);   /* AOG-DRUM-PERC-V1 */
     });
     paintLines();
   }
@@ -440,6 +513,10 @@
   root.AOGDrumKit = {
     ids: IDS.slice(), starters: STARTERS, parts: parts, unparts: unparts, has: has, machine: machine, made: made, label: label, padNames: padNames, files: files,
     load: load, post: post, route: route, playDirect: playDirect, state: function (b) { return STATE[b] || null; },
-    ready: function (b) { return !!DATA[b]; }, lineHtml: lineHtml, decorate: decorate, creditHtml: creditHtml, words: WORDS
+    ready: function (b) { return !!DATA[b]; },
+    /* AOG-DRUM-PERC-V1: a pad's own words, the drum it belongs to, how the Drum Kit draws it, and the hand-drum kits */
+    padWord: padWord, drumOf: drumOf, look: look, hand: function (b) { return !!(has(b) && KITS[b].hand); },
+    takes: function (b, id) { var p = has(b) && KITS[b].pads[id]; return p ? p.n.slice() : [0, 0, 0]; },   /* the takes of each strength: soft, normal, hard */
+    lineHtml: lineHtml, decorate: decorate, creditHtml: creditHtml, words: WORDS
   };
 })(window);
