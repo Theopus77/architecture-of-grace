@@ -27,7 +27,8 @@ async function inRoom(m, room) {
   await m.goto(U + "the-studio#" + room);
   await m.waitForFunction(r => { const d = document.getElementById("room").contentDocument; return d && d.readyState === "complete" && d.documentElement.classList.contains("in-studio"); }, room, { timeout: 20000 });
   await m.waitForTimeout(1800);
-  return m.frames().find(x => x.parentFrame() === m.mainFrame());
+  /* the room in sight is #room (the Studio keeps the last rooms open, out of sight, in frames of their own) */
+  return (await m.$("#room")).contentFrame();
 }
 (async () => {
   const b = await pw.chromium.launch({ args: ["--autoplay-policy=no-user-gesture-required"] });
@@ -47,11 +48,14 @@ async function inRoom(m, room) {
       const pc = await f.evaluate(`(${PROBE})()`), pk = await f.evaluate(`(${CALM})()`), sp = await m.evaluate(`(${PROBE})()`);
       /* 4 · AOG-STUDIO-FIRST-V2: the keyboard and string rooms open on their instrument, with their line on a paper slip under it */
       if (["piano", "guitar", "bass", "band"].includes(room)) {
+        /* AOG-ROOMS-COMPACT-V1: the line on how to play waits in More → How to play */
+        if (await f.$("#aogMoreSel")) { await f.selectOption("#aogMoreSel", "how"); await f.waitForTimeout(200); }
         const fs2 = await f.evaluate(r => { const inst = document.getElementById(r === "guitar" || r === "bass" ? "neckBox" : "kbd"), blk = inst && inst.parentNode,
           h2 = blk && [...blk.children].find(e => e.tagName === "H2"), kids = blk ? [...blk.children] : [], slip = [...document.querySelectorAll(".aog-slip")].find(e => e.getClientRects().length);
           const strip = document.getElementById("chordStrip");
           /* AOG-CHORDS-BY-NECK-V1: the chord buttons sit right above the instrument */
-          return { top: kids.indexOf(inst) <= kids.indexOf(h2) + 3, chords: !!strip && strip.getClientRects().length > 0 && kids.indexOf(strip) === kids.indexOf(inst) - 1, slip: !!slip && kids.indexOf(slip) > kids.indexOf(inst),
+          return { top: kids.indexOf(inst) <= kids.indexOf(h2) + (r === "band" ? 5 : 4),   /* Lower and Higher, the chords, Any chord (folded); the Band's menus above its keys */ chords: !!strip && strip.getClientRects().length > 0 && (kids.indexOf(strip) === kids.indexOf(inst) - 1 ||
+              (kids.indexOf(strip) === kids.indexOf(inst) - 2 && kids[kids.indexOf(inst) - 1].classList.contains("any"))),   /* Any chord, when open, between them */ slip: !!slip && kids.indexOf(slip) > kids.indexOf(inst),
             paper: slip ? getComputedStyle(slip).backgroundColor : "" }; }, room);
         ok(fs2.top && fs2.chords && fs2.slip && fs2.paper === "rgb(247, 240, 225)", `${dev}, ${theme}, ${room}: the instrument opens the room, its chords right above it, its line on a paper slip under it: ${JSON.stringify(fs2)}`);
       }

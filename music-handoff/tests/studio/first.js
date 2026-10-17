@@ -78,6 +78,7 @@ const lay = f => f.evaluate(() => __aogStudio.SONG.tracks.map(x => x.clip ? x.cl
     if (dev === "iPhone 13" && theme === "light") {
       await p.click('.sh-doors a[data-room="piano"]'); await arrived(p, "piano");
       const f = inner(p);
+      await f.selectOption("#aogMoreSel", "lessons"); await p.waitForTimeout(300);   /* AOG-ROOMS-COMPACT-V1: Lessons and more is in More → Lessons */
       await f.click("#aogLearn > summary");
       const sel = f.locator("#aogLearn select").filter({ has: f.locator("option") }).last();
       const opts = await sel.evaluate(s => [...s.options].map(o => o.value));
