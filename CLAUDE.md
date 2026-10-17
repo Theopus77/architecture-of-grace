@@ -160,6 +160,9 @@ Home Screen opens that place, full screen.
 - Every slip can be changed (`?s=<id>&edit=1`). The change is kept on the device (`aog.slips.edits.v1`) and rides in the
   slip's shared link as `&x=`; a change from a link is always cleaned (`cleanSpec`) before use. A changed slip still sends
   as `slip-<id>`. Keep question ids stable when changing a built-in slip; the Dashboard reads answers by id.
+- Anyone can make their own slip (Jimmy: "super simple and easy to use for anybody"): "+ Make your own slip" on the list
+  (`?new=1`) or "Save as a new slip" in the editor. Its id is `my-<letters>`; it travels whole in its link (AOG-SLIP-OWN-V1).
+  The editor keeps Save and Preview at the foot of the screen, and a question taken away can be put back. Keep it that simple.
 
 ## Thinking-skills checklists (Jimmy, 2026-10-14)
 
