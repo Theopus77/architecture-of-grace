@@ -19,7 +19,9 @@ if(inst==="pads"){ require("./make_pads.js")(PASSES, ONLY, +(arg("--pages")||3))
 if(inst==="band"){ require("./make_band.js")(PASSES, ONLY, +(arg("--pages")||3)); return; }
 if(inst==="piano"){ require("./make_piano.js")(PASSES, ONLY, +(arg("--pages")||3)); return; }
 const EVF=path.join(R.ROOT, "_work/music/strings_even_"+inst+".json");
-const MAX=47;   /* tenths of a dB: the letters " " to "~" */
+/* tenths of a dB: at most 3 dB either way (the letters reach 4.7). A fuzz, a gate or a resonant synth filter hears a
+   trim hardly at all; pushing harder only changes how it plays, so what is left there is the effect's own character */
+const MAX=30;
 const dec=s=>Array.from(s, ch=>ch.charCodeAt(0)-79);
 const enc=a=>a.map(x=>String.fromCharCode(79+Math.max(-MAX, Math.min(MAX, Math.round(x))))).join("");
 const pmean=a=>10*Math.log10(a.reduce((s,x)=>s+Math.pow(10,x/10),0)/a.length);
@@ -66,7 +68,7 @@ function summary(res, tag){
       const next=cur.slice(), now={}; Object.keys(by).forEach(i=>{ now[i]=pmean(by[i].map(r=>r.lufs)); });
       let sens=1; const P=PREV[id];
       if(P){ let sxy=0, sxx=0; Object.keys(now).forEach(i=>{ if(P.lv[i]==null) return; const dt=(cur[i]-P.t[i])/10, dl=now[i]-P.lv[i]; if(Math.abs(dt)>=0.2){ sxy+=dt*dl; sxx+=dt*dt; } });
-        if(sxx>0.5) sens=Math.max(0.3, Math.min(1.2, sxy/sxx)); }
+        if(sxx>0.5) sens=Math.max(0.6, Math.min(1.2, sxy/sxx)); }
       PREV[id]={lv:now, t:cur.slice()};
       const ez={};
       Object.keys(by).forEach(i=>{ const rr=by[i], k=key(rr[0]); if(Lref[k]==null) return;
@@ -76,11 +78,13 @@ function summary(res, tag){
       const nextN=curN.slice();
       Object.keys(nres).forEach(mm=>{ const j=+mm-lo; if(j<0 || j>=NN) return; const a=nres[mm], e=a.reduce((x,y)=>x+y,0)/a.length; nextN[j]=curN[j]-10*0.6*e/sens; });
       const refM=[...new Set(ref.map(q=>q.m))].map(x=>x-lo).filter(j=>j>=0 && j<NN);
-      if(refM.length){ const d=refM.reduce((x,j)=>x+(nextN[j]-curN[j]),0)/refM.length; for(let j=0;j<NN;j++) nextN[j]-=d; }
+      /* the notes' trims carry only the shape (their mean is the recordings' business), so the two never drift apart */
+      { const used=Object.keys(nres).map(mm=>+mm-lo).filter(j=>j>=0 && j<NN), mn=used.reduce((x,j)=>x+nextN[j],0)/Math.max(1,used.length); used.forEach(j=>{ nextN[j]-=mn; }); }
+      for(let i=0;i<next.length;i++) next[i]=Math.max(-MAX, Math.min(MAX, next[i])); for(let j=0;j<NN;j++) nextN[j]=Math.max(-MAX, Math.min(MAX, nextN[j]));
       /* the C itself stays where it was (the room's level): each group's trims moved together so the C's recordings keep
          theirs on average */
       keys.forEach(k=>{ const rr=rows.filter(r=>key(r)===k && isRef(r)); if(!rr.length) return;
-        const idx=[...new Set(rr.map(r=>r.i))], d=idx.reduce((s,i)=>s+(next[i]-cur[i]),0)/idx.length;
+        const idx=[...new Set(rr.map(r=>r.i))], dn=refM.length ? refM.reduce((x,j)=>x+(nextN[j]-curN[j]),0)/refM.length : 0, d=idx.reduce((s,i)=>s+(next[i]-cur[i]),0)/idx.length+dn;
         Object.keys(by).forEach(i=>{ if(key(by[i][0])===k) next[i]-=d; }); });
       moved=Math.max(moved, ...next.map((x,i)=>Math.abs(Math.round(x)-cur[i])), ...nextN.map((x,j)=>Math.abs(Math.round(x)-curN[j])));
       EVEN[id]=[set, enc(next), enc(nextN)];
