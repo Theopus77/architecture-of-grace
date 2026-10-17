@@ -11,7 +11,7 @@ const STR={
   low:{en:"Low",es:"Grave"}, mid:{en:"Middle",es:"Medio"}, high:{en:"High",es:"Agudo"},
   record:{en:"Record to chop",es:"Disco para cortar"}, fromBar:{en:"Start at",es:"Empieza en"}, clen:{en:"Each pad plays",es:"Cada pad suena"}, clen1:{en:"1 beat",es:"1 tiempo"}, clen2:{en:"2 beats",es:"2 tiempos"}, clen4:{en:"1 bar",es:"1 compás"}, about:{en:"about {s} s",es:"unos {s} s"}, barN:{en:"Bar {n}",es:"Compás {n}"}, whole:{en:"The whole take",es:"Toda la toma"},
   matchT:{en:"Use its tempo",es:"Usar su tempo"},
-  g_keys:{en:"Keys",es:"Teclados"}, g_guitar:{en:"Guitar",es:"Guitarra"}, g_bass:{en:"Bass",es:"Bajo"}, g_band:{en:"The band",es:"La banda"}, g_voices:{en:"Voices",es:"Voces"},
+  g_keys:{en:"Keys",es:"Teclados"}, g_guitar:{en:"Guitar",es:"Guitarra"}, g_bass:{en:"Bass",es:"Bajo"}, g_band:{en:"The band",es:"La banda"}, g_voices:{en:"Voices",es:"Voces"}, g_world:{en:"World",es:"Del mundo"},
   g_crate:{en:"Records from the turntables",es:"Discos de los tocadiscos"}, g_inbox:{en:"Your takes at the Mixing Desk",es:"Tus tomas en la mesa de mezclas"},
   major:{en:"Major",es:"Mayor"}, minor:{en:"Minor",es:"Menor"}, pmaj:{en:"Major pentatonic",es:"Pentatónica mayor"}, pmin:{en:"Minor pentatonic",es:"Pentatónica menor"},
   blues:{en:"Blues",es:"Blues"}, dorian:{en:"Dorian",es:"Dórica"}, chrom:{en:"Every note",es:"Todas las notas"},
@@ -193,6 +193,20 @@ Object.assign(INST, {
   "b:voice_m_aa":{g:"voices",en:"Voice · “aah”, a man",es:"Voz · “aa”, un hombre",d:"/audio/band/voice_m_aa/",x:"s",n:[45,48,51,54,57,60,63,66],c:{"51":-3,"63":-5,"66":-5}},
   "b:voice_m_uu":{g:"voices",en:"Voice · “ooh”, a man",es:"Voz · “uu”, un hombre",d:"/audio/band/voice_m_uu/",x:"s",n:[45,48,51,54,57,60,63,66],c:{"57":-4,"60":-4}}
 });
+/* AOG-PADS-WORLD-V1 (2026-10-13; finished 2026-10-17) — Jimmy: "And finish the world instruments." The Band's world
+   instruments (AOG-BAND-WORLD-V1) in their own group, World. c: their tuning (cents), copied from audio/band/manifest.json
+   (copy it again if music-handoff/tools/band/world.py is run again). r: the notes each can reach; a pad's note outside it
+   moves by octaves into it, so the notes and chords banks play each one where it sounds right (the didgeridoo low). one: a
+   drone plays only the chord's root. ring: a pluck rings out. The koto and the pan flute are made by the computer. */
+Object.assign(INST, {
+  "b:sitar":{g:"world",en:"Sitar · India",es:"Sitar · India",d:"/audio/band/sitar/",x:"s",n:[36,38,40,41,43,45,47,48,50,52,53,55,57,59,60,62,64,65,67,69,71,72,74,76,77,79],c:{"36":16,"38":25,"40":23,"41":22,"45":10,"47":19,"48":11,"50":12,"52":16,"53":11,"55":19,"57":-4,"59":7,"60":7,"62":7,"64":-3,"65":3,"67":11,"69":-10,"71":11,"72":8,"74":12,"76":13,"77":10,"79":10},r:[35,80],ring:1},
+  "b:koto":{g:"world",en:"Koto · Japan (made by computer)",es:"Koto · Japón (hecho por computadora)",d:"/audio/band/koto/",x:"s",n:[48,51,54,57,60,63,66,69,72,75,78,81,84],r:[47,85],ring:1},
+  "b:erhu":{g:"world",en:"Erhu · China",es:"Erhu · China",d:"/audio/band/erhu/",x:"s",n:[62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81],c:{"62":-10,"64":3,"65":3,"66":-8,"67":6,"69":12,"70":3,"72":15,"74":21,"77":17,"79":7,"80":14,"81":25},r:[61,82]},
+  "b:panflute":{g:"world",en:"Pan flute · the Andes (made by computer)",es:"Flauta de pan · los Andes (hecha por computadora)",d:"/audio/band/panflute/",x:"s",n:[55,58,61,64,67,70,73,76,79,82,85,88],r:[54,89]},
+  "b:didgeridoo":{g:"world",en:"Didgeridoo · Aboriginal Australia",es:"Didgeridoo · Australia aborigen",d:"/audio/band/didgeridoo/",x:"s",n:[32,35,38,41],r:[31,42],one:true},
+  "b:didgeridoo_rhythm":{g:"world",en:"Didgeridoo · Aboriginal Australia, with a rhythm",es:"Didgeridoo · Australia aborigen, con ritmo",d:"/audio/band/didgeridoo_rhythm/",x:"s",n:[32,35,38,41],c:{"32":6},r:[31,42],one:true}
+});
+function foldIn(id, m){ const r=(INST[id]||{}).r; if(!r) return m; while(m<r[0]) m+=12; while(m>r[1]) m-=12; return m; }
 /* the standard Boomwhackers colours of the C major scale (C red, D orange, E yellow, F light green, G dark green, A purple,
    B pink): [tube, ink, short word en, es, full word en, es]. The ink is the one that reads on it (4.5:1 or more). The
    sharps and flats are left plain: their tubes' colours could not be checked. */
@@ -496,7 +510,7 @@ function prep(bi){
     st.total=1; p=recBuf(B.rec).then(b=>{ st.got=1; st.buf=b; st.chops=chopsOf(B, b); });
   } else {
     /* AOG-PADS-LAYERS-V1: the strength each note plays first comes first, then its other strengths and takes */
-    p=zonesOf(B.inst).then(zs=>{ st.zones=zs; const first=new Set(), more=new Set(); padDefs(bi).forEach(d=>d.notes.forEach(m=>{ const z=nearest(zs,m); first.add(z.url); zoneUrls(z).forEach(u=>more.add(u)); }));
+    p=zonesOf(B.inst).then(zs=>{ st.zones=zs; const first=new Set(), more=new Set(); padDefs(bi).forEach(d=>d.notes.forEach(m=>{ const z=nearest(zs,foldIn(B.inst,m)); first.add(z.url); zoneUrls(z).forEach(u=>more.add(u)); }));
       const need=[...first].concat([...more].filter(u=>!first.has(u)));
       st.total=need.length; paintLine(); return Promise.all(need.map(u=>getBuf(u).then(()=>{ st.got++; paintLine(); }))); });
   }
@@ -532,6 +546,7 @@ const LEVEL={"inst":{"k:grand":6.9,"k:upright":4.9,"k:epwarm":6.8,"k:epreed":4.6
    attack allows without crackling) */
 Object.assign(LEVEL.inst, {"b:recorder":1.8, "b:recorder_alto":5.4, "b:ukulele":9.4, "b:boomwhackers":10.1});
 Object.assign(LEVEL.inst, {"b:voice_f_aa":5.3, "b:voice_f_uu":3.3, "b:voice_m_aa":5.5, "b:voice_m_uu":2.2});   /* AOG-BAND-VOICES-V1: pads/level.js --table */
+Object.assign(LEVEL.inst, {"b:sitar":9.3, "b:koto":8.7, "b:erhu":5.4, "b:panflute":2.2, "b:didgeridoo":14.8, "b:didgeridoo_rhythm":15.8});   /* AOG-PADS-WORLD-V1: pads/level.js --table */
 function trimOf(grp, k){ const v=LEVEL[grp] && LEVEL[grp][k]; return v ? Math.pow(10, v/20) : 1; }
 /* where a pad sounds: the speakers, or (AOG-PADS-BOUNCE-V1) an offline render of the loop; each keeps its own ringing
    open hats and chops, so a hi-hat or a new chop cuts them in the render just as it does live */
@@ -580,7 +595,7 @@ function trigger(bi, pi, vel, when, T){
   }
   /* a note or a chord: it rings while the pad is held */
   const zs=R.zones||[], vs=[], lv=0.62*(0.3+0.7*vel)/Math.sqrt(d.notes.length);
-  d.notes.forEach(m=>{
+  ((INST[B.inst]||{}).one ? d.notes.slice(0,1) : d.notes).map(m=>foldIn(B.inst, m)).forEach(m=>{   /* AOG-PADS-WORLD-V1 */
     const z=nearest(zs, m);
     layerPick(z, vel).forEach(Y=>{   /* AOG-PADS-LAYERS-V1: the strength (or the two blended) this hit picks */
     const tb=BUFV.get(Y.url); if(!tb) return;   /* a note not here yet stays quiet; the others play */
@@ -1013,7 +1028,7 @@ function opt(v, label, cur){ return `<option value="${v}"${String(v)===String(cu
 function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;"); }
 function bankLabel(i){ const B=S.banks[i]; return "ABCD"[i]+" · "+t("t_"+B.type); }
 function instOptions(cur){
-  return ["keys","guitar","bass","band","voices"].map(g=>`<optgroup label="${esc(t("g_"+g))}">`+Object.keys(INST).filter(k=>INST[k].g===g).map(k=>opt(k, esc(L(INST[k])), cur)).join("")+`</optgroup>`).join("");
+  return ["keys","guitar","bass","band","voices","world"].map(g=>`<optgroup label="${esc(t("g_"+g))}">`+Object.keys(INST).filter(k=>INST[k].g===g).map(k=>opt(k, esc(L(INST[k])), cur)).join("")+`</optgroup>`).join("");
 }
 function field(id, lab, html, wide){ return `<label class="pm-f${wide?" wide":""}"><span>${esc(lab)}</span><select class="pm-sel" id="${id}">${html}</select></label>`; }
 function paintSetRow(){

@@ -72,7 +72,7 @@ window.__bright=function(d,SR){ let e=0, s=0; for(let i=1;i<d.length;i++){ e+=d[
   ok(["tenor_vib","tenor_modal","soprano_fusion"].every(id=>jz.indexOf(id)>=0), "Jazz has the three new styles: "+jz.join(" "));
   ok(names.join("|")==="Soprano saxophone|Tenor saxophone|Tenor sax · ballad, warm with vibrato|Tenor sax · modal jazz, big and strong|Soprano sax · jazz fusion, light and airy"
     && !/Coltrane|Shorter|Brett/.test(await p.evaluate(()=>document.body.innerText)), "named by style and instrument, never by a player: "+names.join(" | "));
-  ok(await p.evaluate(()=>Object.keys(SOUNDS).length)===69, "The Band has 69 sounds (51, the bagpipes' two, the eight of Folk and country, the classroom's four, the four singers): "+await p.evaluate(()=>Object.keys(SOUNDS).length));
+  ok(await p.evaluate(()=>Object.keys(SOUNDS).length)===77, "The Band has 77 sounds (51, the bagpipes' two, the eight of Folk and country, the classroom's four, the four singers, the eight of the World): "+await p.evaluate(()=>Object.keys(SOUNDS).length));
 
   /* 2. loaded only when picked */
   ok(sax().length===0, "the page opens on the trumpet and fetches no saxophone: "+sax().slice(0,3).join(", "));
@@ -158,7 +158,7 @@ window.__bright=function(d,SR){ let e=0, s=0; for(let i=1;i<d.length;i++){ e+=d[
   const es=await p.evaluate(NEW=>({names:NEW.map(id=>[...document.querySelectorAll("#soundSel option")].find(o=>o.value===id).textContent), lang:document.documentElement.lang,
     groups:[...document.querySelectorAll("#soundSel optgroup")].map(o=>o.label).join("|"), line:document.getElementById("loadLine").textContent, foot:document.getElementById("foot").textContent}), NEW);
   ok(es.lang==="es" && es.names.join("|")==="Saxofón soprano|Saxofón tenor|Saxo tenor · balada, cálido con vibrato|Saxo tenor · jazz modal, grande y fuerte|Saxo soprano · jazz fusión, ligero y aireado"
-    && es.groups==="Metales|Maderas|Cuerdas|Percusión|Folk y country|Voces|Jazz|Bandas|Todos", "in Spanish: "+es.names.join(" | "));
+    && es.groups==="Metales|Maderas|Cuerdas|Percusión|Folk y country|Voces|Del mundo|Jazz|Bandas|Todos", "in Spanish: "+es.names.join(" | "));
   ok(/saxos alto y tenor/.test(es.line) && /Los saxofones tenor y soprano vienen de su Versilian Community Sample Library/.test(es.foot), "the big band's line and the credits in Spanish: "+es.line+" / "+es.foot.slice(0,60)+"…");
   /* 9. a phone: nothing sticks out sideways, in Spanish and in English, on the tenor */
   await pick("tenor");

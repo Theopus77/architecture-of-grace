@@ -599,3 +599,8 @@ TARGET = {
 # partly cancelled). Each stereo file of the pad sits this many dB under the old file's level, so the pad plays as
 # loud as before (calib.js, a normal hit, 1987; every other pad moved less than 0.5 dB).
 STEREO_TRIM = {"D": {"bell": -1.7}, "M": {"ch": -0.6}, "N": {"ch": -0.8}, "U": {"clap": -0.6, "rim": -0.6}, "W": {"ch": -0.7}}
+
+# AOG-DRUM-PERC-V1 (2026-10-13): the hand percussion, hand drum and tabla kits live in kits_perc.py
+import kits_perc
+KITS.update(kits_perc.PERC)
+FILE_LU = kits_perc.FILE_LU
