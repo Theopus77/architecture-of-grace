@@ -941,6 +941,7 @@ html.in-studio .st-chassis{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 
         <p class="st-line" data-t="mixerLine" style="margin:0 0 .7rem"></p>
         <div class="st-mixer" id="mixer"></div>
         <div class="st-master" id="master"></div>
+        <div id="proMaster"></div><!-- AOG-DESK-MASTER-V1: more for the whole song (aog-desk-pro.js) -->
       </div>
 
       <div class="st-blk" id="trackBlk">
@@ -1018,6 +1019,7 @@ html.in-studio .st-chassis{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 
   <footer class="foot" id="foot"></footer>
 </div>
 <script src="/aog-desk-more.js"></script><!-- AOG-DESK-MORE-V1: effect slots, takes, sections, the clipboard, versions (loaded first: the desk's code below calls it) -->
+<script src="/aog-desk-pro.js" defer></script><!-- AOG-DESK-PRO-V1: the master strip's panel, groups, loop recording, markers, keys (runs after the desk's code) -->
 <script>
 "use strict";
 /* ══════════════════════════════════════════════════════════════════════════
@@ -1429,6 +1431,7 @@ function cleanSong(r){
     if(ECHO_T[m.et]!=null && m.et!=="d8") d.et=m.et; }   /* AOG-DESK-ECHO-SYNC-V1: only when it is not the dotted eighth */
   s.master.room=DESK_ROOMS.includes(r.master && r.master.room) ? r.master.room : "made";   /* AOG-REAL-ROOMS-V1: a song from before keeps its room */
   dmCleanSong(r, s);   /* AOG-DESK-SECTIONS-V1 */
+  proClean(r, s);   /* AOG-DESK-MASTER-V1 */
   s.sel=Math.round(num(r.sel,0,NT-1,0)); s.startBar=Math.round(num(r.startBar,1,MAX_BARS,1));
   s.loopOn=!!r.loopOn; s.loopFrom=Math.round(num(r.loopFrom,1,MAX_BARS,1)); s.loopTo=Math.round(num(r.loopTo,1,MAX_BARS,4));
   if(s.loopTo<s.loopFrom) s.loopTo=s.loopFrom;
@@ -1592,10 +1595,19 @@ function punchSet(x){
 }
 /* Glue holds the parts together: gentle compression on the whole song */
 function glueSet(m){
+  /* AOG-DESK-MASTER-V1: Glue off (bypass), or set by hand (threshold, ratio, make-up: m.gc); else from the Glue knob, as always */
+  if(m.glueOff) return {thr:0, ratio:1, trim:1};
+  const e=glueEff(m);
+  if(e.ratio<=1 && !e.mk) return {thr:0, ratio:1, trim:1};
+  return {thr:e.thr, ratio:e.ratio, trim:dbGain(-autoMakeupDb(e.thr, e.ratio)+e.mk)};
+}
+/* the Glue's threshold, ratio and make-up as it works now: by hand, or from the knob (0: resting) */
+function glueEff(m){
+  if(m.gc) return {thr:m.gc.thr, ratio:m.gc.ratio, mk:m.gc.mk, hand:true};
   const g=Math.max(0, Math.min(100, m.glue))/100;
-  if(g<=0) return {thr:0, ratio:1, trim:1};
+  if(g<=0) return {thr:0, ratio:1, mk:0};
   const thr=-8-12*g, ratio=1.5+1.5*g, cut=Math.max(0, -6-thr)*(1-1/ratio);
-  return {thr:thr, ratio:ratio, trim:dbGain(-autoMakeupDb(thr, ratio)+0.5*cut)};
+  return {thr:thr, ratio:ratio, mk:0.5*cut};
 }
 const LIM={thr:-2, ratio:20};
 /* the last stage: as it is below 85%; above, it rounds off toward 98%, so the song can never reach full scale */
@@ -1748,6 +1760,7 @@ function makeEngine(c, live){
   E.glue=DC(0.02,0.25); E.glueTrim=G(1); E.mVol=G(1);
   E.lim=DC(0.002,0.12); E.lim.threshold.value=LIM.thr; E.lim.ratio.value=LIM.ratio; E.limTrim=G(dbGain(-autoMakeupDb(LIM.thr, LIM.ratio)));
   E.pre=G(0.5); E.safe=c.createWaveShaper(); E.safe.curve=safeCurve(); E.out=G(1);
+  E.lc=BQ("highpass",30,Math.SQRT1_2); E.lcOn=false;   /* AOG-DESK-MASTER-V1: the Low cut, in the chain only while it is on */
   E.sum.connect(E.mLow); E.mLow.connect(E.mMid); E.mMid.connect(E.mHigh); E.mHigh.connect(E.glue); E.glue.connect(E.glueTrim);
   E.glueTrim.connect(E.mVol); E.mVol.connect(E.lim); E.lim.connect(E.limTrim); E.limTrim.connect(E.pre); E.pre.connect(E.safe); E.safe.connect(E.out);
   E.out.connect(c.destination);
@@ -1793,6 +1806,42 @@ function applyMaster(E){
   setP(E, E.mVol.gain, volGain(m.vol));
   setP(E, E.dly.delayTime, echoTime());
   applyRoom(E);   /* AOG-REAL-ROOMS-V1 */
+  proMaster(E);   /* AOG-DESK-MASTER-V1 */
+}
+/* ══ AOG-DESK-MASTER-V1 (2026-10-17, Jimmy: "DAW to the max") — the whole song's strip, made visible (its panel: aog-desk-pro.js).
+   · the two returns every track sends to after its fader: the Room (the real rooms) and the Echo (in beats of the song), each
+     with a level (SONG.master.rvRet, dlRet; 80 is as before, so a song without them is the same to the bit);
+   · the EQ: Low, Middle, High and a Low cut (a high-pass, 12 dB an octave, only in the chain while it is on), and a bypass;
+   · the Glue: its knob, or a threshold, ratio and make-up set by hand (m.gc), and a bypass (m.glueOff);
+   · the limiter's bypass (m.limOff); the safety ceiling after it always stays.
+   A bypassed compressor keeps its place (ratio 1), so every track stays lined up. ══ */
+const LCUTS=[0,20,30,40,60,80,100,120,160];
+function retGain(v){ return v==null ? 1 : volGain(v); }
+function proMaster(E){
+  const m=SONG.master, eq=!m.eqOff, on=eq && m.lc>0;
+  if(!eq){ setP(E, E.mLow.gain, 0); setP(E, E.mMid.gain, 0); setP(E, E.mHigh.gain, 0); }
+  if(on){ if(E.fresh || !E.live || !E.lcOn) E.lc.frequency.value=m.lc; else setP(E, E.lc.frequency, m.lc); }
+  if(on!==!!E.lcOn){
+    try{ E.sum.disconnect(E.mLow); }catch(e){} try{ E.sum.disconnect(E.lc); }catch(e){} try{ E.lc.disconnect(); }catch(e){}
+    if(on){ E.sum.connect(E.lc); E.lc.connect(E.mLow); } else E.sum.connect(E.mLow);
+    E.lcOn=on; }
+  setP(E, E.revRet.gain, retGain(m.rvRet)); setP(E, E.dlyRet.gain, 0.6*retGain(m.dlRet));
+  const lo=!!m.limOff;
+  setP(E, E.lim.threshold, lo ? 0 : LIM.thr); setP(E, E.lim.ratio, lo ? 1 : LIM.ratio); setP(E, E.limTrim.gain, lo ? 1 : dbGain(-autoMakeupDb(LIM.thr, LIM.ratio)));
+}
+/* the new parts of a song, checked (a song from before has none of them, and keeps none) */
+const GROUPS=["drums","vocals","inst"];
+function proClean(r, s){
+  const m=(r && r.master && typeof r.master==="object") ? r.master : {}, d=s.master;
+  ["rvRet","dlRet"].forEach(k=>{ if(m[k]!=null){ const v=Math.round(num(m[k],0,100,80)); if(v!==80) d[k]=v; } });
+  if(LCUTS.indexOf(+m.lc)>0) d.lc=+m.lc;
+  ["eqOff","glueOff","limOff"].forEach(k=>{ if(m[k]===true) d[k]=true; });
+  if(m.gc && typeof m.gc==="object") d.gc={thr:Math.round(num(m.gc.thr,-40,0,-14)*2)/2, ratio:Math.round(num(m.gc.ratio,1,10,2)*10)/10, mk:Math.round(num(m.gc.mk,0,12,0)*2)/2};
+  if(Array.isArray(r && r.tracks)) r.tracks.slice(0,NT).forEach((x,i)=>{ if(x && GROUPS.indexOf(x.grp)>=0) s.tracks[i].grp=x.grp; });
+  proCleanMore(r, s);
+}
+/* the later parts (markers, the cycle, the click, warp …), from AOG-DESK-REC-V1 on */
+function proCleanMore(r, s){
 }
 function applyAll(E){ for(let i=0;i<NT;i++) applyTrack(E,i); applyMaster(E); }
 function liveApply(fn){ if(LIVE) fn(LIVE); }
@@ -2088,6 +2137,7 @@ function end(){
   if(PLAY.raf) cancelAnimationFrame(PLAY.raf); PLAY.raf=0;
   PLAY.srcs=[]; PLAY.clicks=[]; PLAY.wins=[];
   meterStill(); paintPlay(); paintNowBar(-1);
+  if(typeof dpRest==="function") dpRest();   /* AOG-DESK-MASTER-V1: the meters rest */
 }
 /* the song changed while it plays: carry on from the same place with the new arrangement */
 function reschedule(){
@@ -2130,6 +2180,7 @@ function frame(){
   }
   PLAY.sig=sig;
   meterTick();
+  if(typeof dpFrame==="function") dpFrame(now, pos);   /* AOG-DESK-MASTER-V1: the Glue's meter, stereo and the spectrum (only while playing) */
   PLAY.raf=requestAnimationFrame(frame);
 }
 
@@ -4226,6 +4277,7 @@ function paintMixer(rebuild){
   const et=$("etSel"); if(et && et.value!==(SONG.master.et||"d8")) et.value=SONG.master.et||"d8";   /* AOG-DESK-ECHO-SYNC-V1 */
   const rs=$("roomSel"); if(rs && rs.value!==SONG.master.room) rs.value=SONG.master.room;   /* AOG-REAL-ROOMS-V1 */
   paintConsole();   /* AOG-DESK-FACE-V1 */
+  if(typeof dpPaint==="function") dpPaint();   /* AOG-DESK-MASTER-V1: more for the whole song */
 }
 function syncSlider(r, v){
   const k=r.getAttribute("data-k");
@@ -4604,6 +4656,7 @@ function bind(){
     const r=e.target; if(!r.matches || !r.matches("input[type=range]")) return;
     const i=+r.closest(".st-strip").getAttribute("data-tr"), k=r.getAttribute("data-k"), v=+r.value;
     if(lineOf(i, k)){ syncSlider(r, SONG.tracks[i][k]); markDrawn(r, i); return; }   /* AOG-DESK-AUTO-V1 */
+    if(k==="vol" && typeof dpGroupMove==="function") dpGroupMove(i, v);   /* AOG-DESK-GROUPS-V1: a group's faders move together */
     SONG.tracks[i][k]=v; syncSlider(r, v); liveApply(E=>applyTrack(E,i)); saveSoon();
     /* AOG-LESSONS-V1 */
     if(k==="vol"){ LES.mark("vol1"); if(v<=50) LES.mark("volLow"); lessonSong(); }
@@ -4732,6 +4785,8 @@ Object.assign(window.__aogStudio, { AUTO:AUTO, AUI:AUI, drawnAt:drawnAt, autoCor
   lineChanged:lineChanged, reschedule:reschedule, live:live, get LAT(){ return LAT; } });
 /* AOG-DESK-MORE-V1: for the tests (music-handoff/tests/studio/more.js, more2.js) */
 Object.assign(window.__aogStudio, { echoTime:echoTime, songPos:songPos, songChanged:songChanged, selectTrack:selectTrack, paintAll:paintAll, restore:restore, sget:sget, skeys:skeys, chainLatency:chainLatency, ECHO_T:ECHO_T });
+/* AOG-DESK-MASTER-V1, AOG-DESK-WARP-V1 …: for the desk tests (music-handoff/tests/desk/) */
+Object.assign(window.__aogStudio, { glueEff:glueEff, proMaster:proMaster, spd:spd, stretchReady:stretchReady, ensureStretch:ensureStretch, applyAll:applyAll, save:save, cleanSong:cleanSong, songEndMusic:songEndMusic, clipStart:clipStart, pAt:pAt, pLen:pLen, ratio:ratio });
 </script>
 </body>
 </html>
