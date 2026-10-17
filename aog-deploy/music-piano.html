@@ -374,6 +374,7 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
 <script src="/aog-chords.js" defer></script>
 <script src="/aog-midi.js"></script><!-- AOG-MIDI-V1: a MIDI keyboard, the same in every music room -->
 <script src="/aog-learn-ui.js" defer></script><!-- AOG-LEARN-V1: Learn a song (the player and the teacher; the listening is aog-learn.js, loaded when a song is chosen) -->
+<script src="/aog-onebutton.js" defer></script><!-- AOG-ONEBUTTON-V1: One button (the big button and the switches load when it is opened) -->
 <script>
 (function(){
   function add(src){
@@ -496,6 +497,7 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
       </div>
 
       <div class="blk" id="learnBlk"></div><!-- AOG-LEARN-V1: Learn a song, closed, after the instrument (aog-learn-ui.js draws it) -->
+      <div class="blk" id="oneBlk"></div><!-- AOG-ONEBUTTON-V1: One button, closed (aog-onebutton.js draws it) -->
 
       <div class="blk" id="ampBlk"><!-- AOG-ROOM-PEDALS-V1: the amp, the pedals and the EQ (aog-amp.js draws them) -->
         <h2 data-t="ampH"></h2>
@@ -1763,10 +1765,10 @@ const LIVE=new Map();        /* "k60" a key, "p60" a pad, "m60" a MIDI key → i
 const ALL=[];                /* every voice still sounding, to keep the count kind to the phone */
 function track(vc){ ALL.push(vc); if(ALL.length>48){ const old=ALL.shift(); try{ old.kill(ac.currentTime); }catch(e){} } }
 function prune(){ const now=ac?ac.currentTime:0; for(let i=ALL.length-1;i>=0;i--){ const v=ALL[i]; if((v.end&&v.end<now)||(v.natural&&v.natural<now)) ALL.splice(i,1); } }
-function noteOn(tag, m, v){
+function noteOn(tag, m, v, when){
   if(m<21||m>108) return;
   HANDS.at=performance.now();   /* AOG-PIANO-STEADY-V1 */
-  const c=ctx(), now=c.currentTime, key=tag+m;
+  const c=ctx(), now=Math.max(c.currentTime, when||0), key=tag+m;   /* when: AOG-ONEBUTTON-V1 lands a press on the beat */
   const old=LIVE.get(key); if(old){ old.stop(now, 0.05); LIVE.delete(key); }
   const vc=makeVoice(c, LIVE_CH, S.sound, m, v, now);
   if(!vc) return;
@@ -2451,6 +2453,13 @@ function learnLit(){
 }
 window.AOGLearnRoom={ room:"piano", lang:()=>S.lang, busy:()=>!!S.playing,
   show:(what)=>{ LEARN.chord=what&&what.chord||null; LEARN.ms=what&&what.notes&&what.notes.length?what.notes:null; learnLit(); } };
+/* AOG-ONEBUTTON-V1: one big button, a switch or the space bar plays the piano, in key and in time (aog-onebutton.js) */
+window.AOGOneRoom={ room:"piano", lang:()=>S.lang, ctx:ctx, key:()=>({key:S.key, minor:!!S.minor}), bpm:()=>S.bpm, prog:()=>S.prog,
+  qs:Object.keys(Q), name:chordName, pc:pcName, range:[55,81], root:bassOf, quiet:allOff, strip:()=>allPads(),   /* AOG-ONEBUTTON-12-V1 */
+  grid:()=>S.playing ? {t0:PLAY.t0, beat:PLAY.barSec/beatsPerBar()} : null,
+  chord(c, v, when){ const vo=voicing(c, lastVoicing); lastVoicing=vo; const ns=vo.concat([bassOf(c)]);
+    ns.forEach((m,j)=>noteOn("o", m, v*(j===ns.length-1?0.85:1), when)); return {off(){ ns.forEach(m=>noteOff("o", m)); }}; },
+  note(m, v, when){ noteOn("o", m, v, when); return {off(){ noteOff("o", m); }}; } };
 /* ══ AOG-PIANO-SCALES-V1 (2026-10-05) — Jimmy: "more scales, modes and chords" on every instrument ══════════════════
    Scale: 154 scales and modes from aog-scales.js (the same list as Solo mode on the guitar). Off at first, so the piano
    looks as before. The scale follows the key and the mood; one choice is kept for major and one for minor. A key in the

@@ -333,6 +333,7 @@ body.pv-left .pv-drawer{left:auto;right:0}
 <script src="/aog-soundpick.js" defer></script><!-- AOG-SOUNDPICK-V1: the instrument choice, as two menus beside the instrument -->
 <script src="/aog-labdoors.js" defer></script><!-- AOG-LABDOORS-V1: the nine music labs, as doors -->
 <script src="/aog-learn-ui.js" defer></script><!-- AOG-LEARN-V1: Learn a song (the player and the teacher; the listening is aog-learn.js, loaded when a song is chosen) -->
+<script src="/aog-onebutton.js" defer></script><!-- AOG-ONEBUTTON-V1: One button (the big button and the switches load when it is opened) -->
 <script>
 (function(){
   function add(src){
@@ -459,6 +460,7 @@ body.pv-left .pv-drawer{left:auto;right:0}
       </div>
 
       <div class="blk" id="learnBlk"></div><!-- AOG-LEARN-V1: Learn a song, closed, after the instrument (aog-learn-ui.js draws it) -->
+      <div class="blk" id="oneBlk"></div><!-- AOG-ONEBUTTON-V1: One button, closed (aog-onebutton.js draws it) -->
 
       <div class="blk" id="ampBlk"><!-- AOG-AMP-V1: the amp, the pedals and the EQ (aog-amp.js draws them) -->
         <h2 data-t="ampH"></h2>
@@ -2942,6 +2944,16 @@ window.AOGLearnRoom={ room:INST, lang:()=>S.lang, busy:()=>!!S.playing, shape:le
     if(LEARN.ms && !FINGERS.size && !NECK.play){ const far=LEARN.ms.map(cellFor).filter(cl=>cl && !inReach(cl.f));
       if(far.length){ const f=far[0].f, n=NECK.n||4, to=Math.max(1, Math.min(MAXF-n+1, f-1)); if(to!==S.fret0){ S.fret0=to; buildNeck(); return; } } }
     learnLit(); } };
+/* AOG-ONEBUTTON-V1: one big button, a switch or the space bar plays the @@INST@@, in key and in time (aog-onebutton.js). A
+   chord is strummed (the bass plays its low note) and a note is plucked where the hand can reach it; both ring out. */
+window.AOGOneRoom={ room:INST, lang:()=>S.lang, ctx:ctx, key:()=>({key:S.key, minor:!!S.minor}), bpm:()=>S.bpm, prog:()=>S.prog,
+  qs:Object.getOwnPropertyNames(Q), name:chordName, pc:pcName, range:GTR?[52,76]:[33,55], root:bassRoot, quiet:muteAll, strip:()=>allPads(),   /* AOG-ONEBUTTON-12-V1: dim too */
+  grid:()=>S.playing ? {t0:PLAY.t0, beat:PLAY.barSec/beatsPerBar()} : null,
+  chord(c, v, when){ S.hand={off:c.off, q:c.q}; const at=Math.max(ctx().currentTime, when||0);
+    if(GTR){ let k=0; shapeFor(c).forEach((f,s)=>{ if(f<0){ dampString(s, at); return; } pluckCell(s, f, v*(1-0.03*k), at+k*0.016); k++; }); }
+    else { const cl=cellFor(bassRoot(c)); if(cl) pluckCell(cl.s, cl.f, v, at); }
+    litNeck(); return null; },
+  note(m, v, when){ const cl=cellFor(m); if(!cl) return null; pluckCell(cl.s, cl.f, v, Math.max(ctx().currentTime, when||0)); lessonNote(cl.s, cl.f); return null; } };
 function neckHit(e){
   if(NECK.play) return playHit(e);   /* AOG-PLAY-V1 */
   const svg=$("neck"), r=svg.getBoundingClientRect(); if(!r.width) return null;

@@ -1641,6 +1641,17 @@ function bindMidi(){
     off:(m)=>{ noteOff("m"+m); lessonKeyUp(m); },
     sustain:setSus});
 }
+/* AOG-ONEBUTTON-V1: one big button, a switch or the space bar plays the Band, in key and in time (aog-onebutton.js) */
+window.AOGOneRoom={ room:"band", lang:()=>S.lang, ctx:ctx, key:()=>({key:S.key, minor:!!S.minor}), bpm:()=>S.bpm, prog:()=>S.prog,
+  qs:Object.keys(Q), name:chordName, pc:pcName, range:()=>soundRange(S.sound), root:bassOf, quiet:allOff, strip:()=>allPads(),   /* AOG-ONEBUTTON-12-V1 */
+  grid:()=>S.playing ? {t0:PLAY.t0, beat:PLAY.barSec/beatsPerBar()} : null,
+  chord(c, v, when){ if(!soundReady(S.sound)){ loadSound(S.sound, paintLoad); return false; }
+    const vo=voicing(c, lastVoicing), keys=[]; lastVoicing=vo;
+    chordParts(c, vo).filter(p=>!p.dup).forEach(p=>{ const k="o:"+p.inst+":"+p.m; noteOn(k, p.inst, p.m, v*(p.bass?0.85:1), when); keys.push(k); });
+    return {off(){ keys.forEach(k=>noteOff(k)); }}; },
+  note(m, v, when){ if(!soundReady(S.sound)){ loadSound(S.sound, paintLoad); return false; }
+    const ps=keyPlayers(m), vv=ps.length>1 ? v*0.8 : v; if(!ps.length) return null;   /* a band's lead, as a key plays it (AOG-BAND-KEYS-LEAD-V1) */
+    ps.forEach((p, i)=>noteOn("o"+m+"~"+i, p, m, vv, when)); return {off(){ ps.forEach((p, i)=>noteOff("o"+m+"~"+i)); }}; } };
 /* computer keys: by position, so other keyboard layouts work too */
 const HELD_KEYS=new Map();
 function typing(el){ if(!el||!el.tagName) return false; const tg=el.tagName; return el.isContentEditable||tg==="TEXTAREA"||(tg==="INPUT"&&el.type!=="range"); }
