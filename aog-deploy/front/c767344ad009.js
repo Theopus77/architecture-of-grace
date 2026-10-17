@@ -595,13 +595,25 @@ function makeChain(c){
   ch.comp=c.createDynamicsCompressor();
   ch.comp.threshold.value=-16; ch.comp.knee.value=10; ch.comp.ratio.value=2.5; ch.comp.attack.value=0.006; ch.comp.release.value=0.25;
   ch.lim=c.createDynamicsCompressor();
-  ch.lim.threshold.value=-2; ch.lim.knee.value=0; ch.lim.ratio.value=20; ch.lim.attack.value=0.002; ch.lim.release.value=0.1;
+  /* AOG-STRUM-CLEAN-V1 (2026-10-17, as the Guitar's): the limiter's own output went past full scale (the lift a
+     DynamicsCompressor adds by itself, +1.14 dB, and its 2 ms attack), and the Volume's top or the room sound added after
+     it reached the speakers clipped, heard as static. The limiter now acts at once and holds the −2 dB it is set to
+     (LIM_LIFT taken off), a take's own ceiling follows it, and the room sound sits before it */
+  ch.lim.threshold.value=-2; ch.lim.knee.value=0; ch.lim.ratio.value=20; ch.lim.attack.value=0; ch.lim.release.value=0.1;
   ch.master=c.createGain(); ch.makeup=c.createGain(); ch.makeup.gain.value=1.8;
-  ch.pre.connect(ch.lp); ch.lp.connect(ch.comp); ch.comp.connect(ch.makeup); ch.makeup.connect(ch.lim); ch.lim.connect(ch.master); ch.master.connect(c.destination);
+  ch.ceil=ceilingNode(c, 1/LIM_LIFT);
+  ch.pre.connect(ch.lp); ch.lp.connect(ch.comp); ch.comp.connect(ch.makeup); ch.makeup.connect(ch.lim); ch.lim.connect(ch.ceil.input); ch.ceil.output.connect(ch.master); ch.master.connect(c.destination);
   ch.crunch=null;
   setFx(ch, S.sound);
+  ch.dry=ch.rig ? ch.rig.output : ch.bus;   /* the players, after the pedals: where the Studio's room sound listens */
+  const OFF=window.OfflineAudioContext||window.webkitOfflineAudioContext;
+  if(!(OFF && c instanceof OFF)) try{ if(window.AOGRoom && AOGRoom.live) AOGRoom.live(c, ch.dry, ch.pre); }catch(e){}
   return ch;
 }
+const LIM_LIFT=Math.pow(Math.pow(10, (2-2/20)/20), 0.6);   /* (1 / the limiter's gain at full scale)^0.6, Web Audio's makeup gain */
+const CEIL=(()=>{ const n=4097, d=new Float32Array(n); for(let i=0;i<n;i++){ const x=(i/(n-1)*2-1)*2, a=Math.abs(x); d[i]=Math.sign(x)*(a<=0.9 ? a : 0.9+0.1*Math.tanh((a-0.9)/0.1)); } return d; })();
+function ceilingNode(c, k){ const pre=c.createGain(); pre.gain.value=0.5*(k||1); let ws; try{ ws=new WaveShaperNode(c, {curve:CEIL}); }catch(e){ ws=c.createWaveShaper(); ws.curve=CEIL; }
+  pre.connect(ws); return {input:pre, output:ws}; }
 async function addCrunch(ch){             /* spliced in when ready; until then the chain plays clean */
   /* AOG-ROOM-PEDALS-V1: and the pedals' worklets are in before a recording made offline starts */
   if(ch.rig){ try{ await ch.rig.ready(); }catch(e){} }
@@ -1250,7 +1262,7 @@ function navHtml(){
 window.AOGRoomClock={ align(at){ if(S.playing) start(at); } };
 /* AOG-SONG-V1 (2026-10-11): this room plays at the song's tempo and in its key (aog-song.js); its own tempo and key change the song */
 if(window.AOGSong) AOGSong.keysRoom({get:()=>({bpm:S.bpm, key:S.key, minor:!!S.minor})});
-const REC=AOGRecorder.attach({context:()=>ctx(), tap:()=>LIVE_CH.lim, lang:()=>S.lang, what:{en:"the band",es:"la banda"},
+const REC=AOGRecorder.attach({context:()=>ctx(), tap:()=>LIVE_CH.ceil.output, lang:()=>S.lang, what:{en:"the band",es:"la banda"},
   prefix:{en:"Band",es:"Banda"}, file:{en:"band-take",es:"banda-toma"}, shelf:"bandbench", bpm:()=>curBpm(),
   notes:()=>({room:"band", sound:S.sound, set:{era:S.era}}),   /* AOG-NOTES-V1: the notes, who played them, the band's sound */
   ids:{btn:"recBtn", time:"recTime", line:"recLine", list:"takes"}});
@@ -1268,7 +1280,7 @@ window.AOGRoomRender={
     if(window.AOGAmp && AOGAmp.load) await AOGAmp.load(oc);   /* a pedalboard in the chain, when the band has one */
     const ch=makeChain(oc); await addCrunch(ch);
     setSendLevel(ch, id); ch.lp.frequency.value=eraHz(era); if(ch.crunch) ch.crunch.parameters.get("era").value=era;
-    ch.lim.disconnect(); ch.lim.connect(oc.destination); K.space(oc, ch.lim, oc.destination, p.space);   /* the take is heard before the Volume */
+    ch.ceil.output.disconnect(); ch.ceil.output.connect(oc.destination); K.space(oc, ch.dry, ch.pre, p.space);   /* the take is heard before the Volume; the room before the limiter, as live (AOG-STRUM-CLEAN-V1) */
     const was=S.sound, parts=partsOf(id), kit=(SOUNDS[id]||{}).kit||[];
     S.sound=id;   /* a player's level and touch are the sound's (windVoice reads them as each voice is made) */
     try{
@@ -1628,7 +1640,7 @@ function sounding(){
 function litKeys(){
   const kb=$("kbd"); if(!kb) return;
   const down=new Set(), now=S.playing?sounding():new Set(), fit=new Set(), cc=curChord();
-  LIVE.forEach(vc=>{ if(vc.down) down.add(vc.m); });
+  LIVE.forEach(vc=>{ if(vc.down) down.add(vc.key!=null ? vc.key : vc.m); });   /* AOG-BAND-KEYS-FOLD-V1: a folded note lights the key pressed */
   if(cc) chordPcs(cc).forEach(pc=>fit.add(pc));
   PLAY.sig=[...now].sort((a,b)=>a-b).join(",");
   kb.querySelectorAll("[data-m]").forEach(el=>{ const m=+el.getAttribute("data-m"), d=down.has(m), n=!d&&now.has(m);
@@ -1648,7 +1660,11 @@ function keyPlayers(m){
   if(s && s.keys){ const got=s.keys.filter(inR); if(got.length) return got; if(s.keysLow && inR(s.keysLow)) return [s.keysLow]; }
   const p=playerFor(m); return p ? [p] : [];
 }
-function keyOn(m, v){ const ps=keyPlayers(m), vv=ps.length>1 ? v*0.8 : v; if(!ps.length) noteOn("k"+m, null, m, v); ps.forEach((p, i)=>noteOn(i ? "k"+m+"~"+i : "k"+m, p, m, vv)); lessonKey(m, v); }
+/* AOG-BAND-KEYS-FOLD-V1 (2026-10-17) — Jimmy: yes to "every key always makes a sound". A key beyond the sound's real range
+   (the erhu starts at D4) played nothing, and a silent key feels like a missed note. It now plays the same note an octave
+   (or two, or three) into the range, the nearest first; the key, its lift and the lesson stay the key that was pressed. */
+function keyFold(m){ for(const k of [12,-12,24,-24,36,-36]){ const ps=keyPlayers(m+k); if(ps.length) return [ps, m+k]; } return [[], m]; }
+function keyOn(m, v){ let ps=keyPlayers(m), mm=m; if(!ps.length) [ps, mm]=keyFold(m); const vv=ps.length>1 ? v*0.8 : v; if(!ps.length) noteOn("k"+m, null, m, v); ps.forEach((p, i)=>{ const k=i ? "k"+m+"~"+i : "k"+m; noteOn(k, p, mm, vv); const vc=mm!==m && LIVE.get(k); if(vc){ vc.key=m; litKeys(); } }); lessonKey(m, v); }
 function keyOff(m){ noteOff("k"+m); for(let i=1;i<4;i++) noteOff("k"+m+"~"+i); lessonKeyUp(m); }
 /* AOG-STEADY-ALL-V1 (2026-10-17) — Jimmy: "after a certain number of notes are played, it freezes up for a note or two". A
    finger that lands is already on its key (the event says which), so the page is not asked again what is under it; and a
