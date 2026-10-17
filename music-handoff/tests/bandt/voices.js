@@ -56,7 +56,7 @@ window.__note=async function(id,m,secs){ const SR=32000; S.sound=id; await loadS
     await p.waitForTimeout(150); return {ready:await p.evaluate(id=>soundReady(id), id), sets:await p.evaluate(()=>Object.keys(SETS).sort().join(",")), got:take()}; };
 
   /* 1 · the menu, in English and Spanish */
-  await p.waitForFunction(()=>soundReady(S.sound), null, {timeout:30000});
+  await p.waitForFunction(()=>soundReady(S.sound) && setsOf(S.sound).every(k=>SETS[k].done===SETS[k].total), null, {timeout:60000});   /* the trumpet's short notes too, so a busy machine's late ones are not counted as a singer's */
   const menu=()=>p.evaluate(()=>[...document.querySelectorAll("#soundSel optgroup")].map(o=>[o.label, [...o.querySelectorAll("option")].map(x=>[x.value, x.textContent])]));
   let m=await menu(), g=m.find(x=>x[0]==="Voices");
   ok(g && JSON.stringify(g[1].map(x=>x[0]))===JSON.stringify(VOICES), "a Voices group holds the four: "+(g?g[1].map(x=>x[1]).join(" | "):"none"));
