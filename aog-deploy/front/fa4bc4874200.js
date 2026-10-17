@@ -906,10 +906,12 @@
 
   function init() {
     if (!document.getElementById(ROOT)) return;
-    try { window.aogRightNowAudience = localStorage.getItem("aog.rightnow.audience") || "35"; }
-    catch (e) { window.aogRightNowAudience = "35"; }
+    /* AOG-QS-GROWNUP-V1 (Jimmy, 2026-10-16: "very childish … I don't believe any of my 7th graders would do"):
+       until someone picks an age on this device, the check speaks to grades 6-8, not 3-5. */
+    try { window.aogRightNowAudience = localStorage.getItem("aog.rightnow.audience") || "68"; }
+    catch (e) { window.aogRightNowAudience = "68"; }
     var _rm = { child: "35", teen: "68" }; if (_rm[window.aogRightNowAudience]) window.aogRightNowAudience = _rm[window.aogRightNowAudience];
-    if (typeof RN_TIER === "undefined" || !RN_TIER[window.aogRightNowAudience]) window.aogRightNowAudience = "35";
+    if (typeof RN_TIER === "undefined" || !RN_TIER[window.aogRightNowAudience]) window.aogRightNowAudience = "68";
     document.querySelectorAll("#" + ROOT + " .tk-pill").forEach(function (pill) {
       var q = pill.dataset.q, st = pill.dataset.state;
       pill.addEventListener("click", function () { setPick(q, st, pill); });
