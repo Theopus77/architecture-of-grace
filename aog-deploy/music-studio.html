@@ -898,6 +898,7 @@ html.in-studio .st-chassis{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 
         <!-- AOG-DESK-SECTIONS-V1: the song's sections (Verse, Chorus …), marked on the ruler -->
         <div class="st-tools st-autot" id="secTools"></div>
         <p class="st-line" id="secLine" aria-live="polite"></p>
+        <div id="daBox"></div><!-- AOG-DESK-ARRANGE-V1: repeat a section, add or take out bars, sections from markers (aog-desk-arrange.js) -->
       </div>
 
       <!-- AOG-DESK-FACE-V1 (Jimmy's drawing of the Mixing Desk): the open channel and eight short faders, then the lesson as
@@ -1020,7 +1021,7 @@ html.in-studio .st-chassis{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 
   <footer class="foot" id="foot"></footer>
 </div>
 <script src="/aog-desk-more.js"></script><!-- AOG-DESK-MORE-V1: effect slots, takes, sections, the clipboard, versions (loaded first: the desk's code below calls it) -->
-<script src="/aog-desk-pro.js" defer></script><script src="/aog-desk-rec.js" defer></script><!-- AOG-DESK-PRO-V1: the master strip's panel, groups, loop recording, markers, keys (runs after the desk's code) -->
+<script src="/aog-desk-pro.js" defer></script><script src="/aog-desk-rec.js" defer></script><script src="/aog-desk-arrange.js" defer></script><!-- AOG-DESK-PRO-V1: the master strip's panel, groups, loop recording, markers, keys (runs after the desk's code) -->
 <script>
 "use strict";
 /* ══════════════════════════════════════════════════════════════════════════
@@ -1862,6 +1863,7 @@ function proCleanMore(r, s){
   if(r.punch && typeof r.punch==="object"){ const a=Math.round(num(r.punch.a,1,MAX_BARS,1)), b=Math.round(num(r.punch.b,1,MAX_BARS,a)); s.punch={a:a, b:Math.max(a, b)}; }
   if(s.punchOn && !s.punch) s.punch={a:s.loopFrom, b:s.loopTo};
   if(r.lrec===true) s.lrec=true;
+  if(r.secMk===true) s.secMk=true;   /* AOG-DESK-ARRANGE-V1: the sections follow the markers */
   if(Array.isArray(r.marks)){ const M=[], seen=new Set(); r.marks.slice(0,32).forEach(m=>{ if(!m || typeof m!=="object") return; const b=Math.round(num(m.b,1,MAX_BARS,1)); if(seen.has(b)) return; seen.add(b);
       const o={b:b}, w=typeof m.w==="string" ? m.w.replace(/[\u0000-\u001f]/g,"").trim().slice(0,24) : ""; if(w) o.w=w; M.push(o); });
     M.sort((p,q)=>p.b-q.b); if(M.length) s.marks=M; }
@@ -3857,7 +3859,7 @@ function paintTimeline(){
         const st=pAt(p)/bs, len=p.n*pLen(c,p)/bs, l=Math.min(100, st/n*100), w=Math.max(0.6, Math.min(100-l, len/n*100));
         const nm=(j===0 ? trackName(i) : "")+(p.n>1 ? " ×"+p.n : "");
         /* AOG-DESK-DRAG-V1: data-pc, the piece a hand can take hold of */
-        return `<span class="st-clip${audible(i)?"":" off"}${cur && P.length>1 && j===ks ? " pk" : ""}" data-pc="${j}" style="left:${l.toFixed(4)}%;width:${w.toFixed(4)}%;--c:${colOf(i)}">${waveSvg(c, p, Math.min(4000, Math.max(16, Math.round(w*3.2*z))))}<span class="st-cnm">${esc(nm)}</span></span>`;
+        return `<span class="st-clip${audible(i)?"":" off"}${cur && P.length>1 && j===ks ? " pk" : ""}" data-pc="${j}" style="left:${l.toFixed(4)}%;width:${w.toFixed(4)}%;--c:${colOf(i)}">${waveSvg(c, p, Math.min(4000, Math.max(16, Math.round(w*3.2*z))))}<span class="st-cnm">${esc(nm)}</span><i class="st-lph" data-lph="${j}" aria-hidden="true"></i></span>`;   /* AOG-DESK-CLIPLOOP-V1: its end, dragged to repeat it */
       }).join("");
       const b0=Math.floor(clipStart(c)/bs+1e-6)+1, b1=Math.max(b0, Math.ceil(clipEnd(c,false)/bs-1e-6));
       label=t("laneAria",{n:i+1, name:trackName(i)+", "+t("laneBars",{a:b0, b:b1})});

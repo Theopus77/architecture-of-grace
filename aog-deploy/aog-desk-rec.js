@@ -126,6 +126,8 @@ function drTlRow(){
   M.forEach((m,k)=>{ h+=`<button type="button" class="st-mkf" data-mk="${k}" style="left:${pc((m.b-1)*4)}%" aria-label="${esc(t("mkAria",{n:m.b, w:drMkName(m,k)}))}">${esc(drMkName(m,k))}</button>`; });
   return h+`</span></div>`;
 }
+/* the markers changed: the song shows them, and the sections follow them when that is on (aog-desk-arrange.js) */
+function drMarks(){ if(typeof daMarksChanged==="function" && SONG.secMk) daMarksChanged(); else paintTimeline(); }
 /* ══ go to a bar: stopped, the song starts there; playing, it carries on from there at once ══ */
 function drGo(bar){
   bar=Math.max(1, Math.min(MAX_BARS, Math.round(bar)));
@@ -171,8 +173,8 @@ function drInit(){
     else if(id==="drLrec"){ if(SONG.lrec) delete SONG.lrec; else SONG.lrec=true; save(); }
     else if(id==="drCk"){ CK.on=!CK.on; drCkSave(); }
     else if(id==="drAcc"){ CK.acc=!CK.acc; drCkSave(); }
-    else if(id==="drMkAdd"){ const n=drHereBar(), M=(SONG.marks||[]).filter(m=>m.b!==n); if(M.length>=32) return; M.push({b:n}); M.sort((p,q)=>p.b-q.b); SONG.marks=M; DR.mk=M.findIndex(m=>m.b===n); save(); drSay(t("mkMade",{n:n})); paintTimeline(); }
-    else if(id==="drMkDel"){ const M=SONG.marks||[]; if(!M[DR.mk]) return; M.splice(DR.mk, 1); if(M.length) SONG.marks=M; else delete SONG.marks; DR.mk=-1; save(); drSay(t("mkGone")); paintTimeline(); }
+    else if(id==="drMkAdd"){ const n=drHereBar(), M=(SONG.marks||[]).filter(m=>m.b!==n); if(M.length>=32) return; M.push({b:n}); M.sort((p,q)=>p.b-q.b); SONG.marks=M; DR.mk=M.findIndex(m=>m.b===n); save(); drSay(t("mkMade",{n:n})); drMarks(); }
+    else if(id==="drMkDel"){ const M=SONG.marks||[]; if(!M[DR.mk]) return; M.splice(DR.mk, 1); if(M.length) SONG.marks=M; else delete SONG.marks; DR.mk=-1; save(); drSay(t("mkGone")); drMarks(); }
     else return;
     drPaint(true); const n=document.getElementById(id)||document.getElementById("drView"); if(n) try{ n.focus({preventScroll:true}); }catch(er){}
   });
@@ -185,7 +187,7 @@ function drInit(){
     else if(id==="drCnt"){ if(v>0){ CK.cnt=v; SONG.countIn=true; } else SONG.countIn=false; drCkSave(); save(); paintTransport(); }
     else if(id==="drLvl"){ drCkSave(); return; }
     else if(id==="drMk"){ DR.mk=el.value==="" ? -1 : v; const m=(SONG.marks||[])[DR.mk]; if(m){ drGo(m.b); drSay(t("mkAt",{n:m.b, w:drMkName(m, DR.mk)})); } }
-    else if(id==="drMkB"){ const M=SONG.marks||[], m=M[DR.mk]; if(!m) return; if(M.some((q,k)=>k!==DR.mk && q.b===v)) return; m.b=v; M.sort((p,q)=>p.b-q.b); DR.mk=M.indexOf(m); save(); paintTimeline(); }
+    else if(id==="drMkB"){ const M=SONG.marks||[], m=M[DR.mk]; if(!m) return; if(M.some((q,k)=>k!==DR.mk && q.b===v)) return; m.b=v; M.sort((p,q)=>p.b-q.b); DR.mk=M.indexOf(m); save(); drMarks(); }
     else if(id==="drMkW"){ return; }
     else return;
     drPaint(true); const n=document.getElementById(id); if(n) try{ n.focus({preventScroll:true}); }catch(er){}
@@ -197,6 +199,7 @@ function drInit(){
       const f=document.querySelector(`#cyStrip [data-mk="${DR.mk}"]`); if(f){ f.textContent=drMkName(m, DR.mk); f.setAttribute("aria-label", t("mkAria",{n:m.b, w:drMkName(m, DR.mk)})); } }
   });
   box.addEventListener("keydown", e=>{ if(e.key==="Enter" && e.target.id==="drMkW"){ e.preventDefault(); e.target.blur(); drPaint(true); } });
+  box.addEventListener("focusout", e=>{ if(e.target.id==="drMkW") drMarks(); });
   /* on the song: a marker is a button (Go to it); the loop's ends are dragged */
   const tl=document.getElementById("timeline");
   tl.addEventListener("click", e=>{ const f=e.target.closest && e.target.closest(".st-mkf[data-mk]"); if(!f) return; e.stopPropagation(); const k=+f.getAttribute("data-mk"), m=(SONG.marks||[])[k]; if(!m) return; DR.mk=k; drGo(m.b); drSay(t("mkAt",{n:m.b, w:drMkName(m,k)})); drPaint(true); }, true);

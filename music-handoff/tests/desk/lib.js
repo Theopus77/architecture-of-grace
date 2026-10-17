@@ -14,6 +14,8 @@ const TAKE = SRC.slice(SRC.indexOf("const TAKE = `") + 14, SRC.indexOf("})`;", S
 const h0 = SRC.indexOf("const HELP = `") + 14, HELP = SRC.slice(h0, SRC.indexOf("})();`;", h0) + 5).replace("return T; })();", `
   T.peak = (name, t0, t1) => { const b = T.B[name]; let m = 0; for (let i = Math.max(0, Math.round(t0 * sr)); i < Math.min(b.L.length, Math.round(t1 * sr)); i++) m = Math.max(m, Math.abs(b.L[i]), Math.abs(b.R[i])); return m; };
   T.energy = (name, t0, t1) => { const b = T.B[name]; let s = 0; for (let i = Math.max(0, Math.round(t0 * sr)); i < Math.min(b.L.length, Math.round(t1 * sr)); i++) s += b.L[i] * b.L[i] + b.R[i] * b.R[i]; return s; };
+  T.same = (a, b, t0, t1, sh) => { const A = T.B[a], Bb = T.B[b], o = Math.round(sh * sr); let m = 0;
+    for (let i = Math.round(t0 * sr); i < Math.round(t1 * sr); i++) { const j = i - o; if (j < 0 || j >= A.L.length || i >= Bb.L.length) continue; m = Math.max(m, Math.abs(Bb.L[i] - A.L[j]), Math.abs(Bb.R[i] - A.R[j])); } return m; };
   T.hz = (name, t, w) => { const d = T.B[name].L, a = Math.round(t * sr), n = Math.round(w * sr); let up = 0, f = -1, l = -1;
     for (let i = a + 1; i < a + n; i++) if (d[i - 1] < 0 && d[i] >= 0) { const x = i - 1 + d[i - 1] / (d[i - 1] - d[i]); if (f < 0) f = x; l = x; up++; } return (up - 1) / ((l - f) / sr); };
   return T; })();`);

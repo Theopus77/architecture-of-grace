@@ -834,6 +834,15 @@ function proClean(r, s){
 }
 /* the later parts (markers, the cycle, the click, warp …), from AOG-DESK-REC-V1 on */
 function proCleanMore(r, s){
+  /* AOG-DESK-REC-V1: the punch, a take each time round, the markers */
+  if(r.punchOn===true) s.punchOn=true;
+  if(r.punch && typeof r.punch==="object"){ const a=Math.round(num(r.punch.a,1,MAX_BARS,1)), b=Math.round(num(r.punch.b,1,MAX_BARS,a)); s.punch={a:a, b:Math.max(a, b)}; }
+  if(s.punchOn && !s.punch) s.punch={a:s.loopFrom, b:s.loopTo};
+  if(r.lrec===true) s.lrec=true;
+  if(r.secMk===true) s.secMk=true;   /* AOG-DESK-ARRANGE-V1: the sections follow the markers */
+  if(Array.isArray(r.marks)){ const M=[], seen=new Set(); r.marks.slice(0,32).forEach(m=>{ if(!m || typeof m!=="object") return; const b=Math.round(num(m.b,1,MAX_BARS,1)); if(seen.has(b)) return; seen.add(b);
+      const o={b:b}, w=typeof m.w==="string" ? m.w.replace(/[\u0000-\u001f]/g,"").trim().slice(0,24) : ""; if(w) o.w=w; M.push(o); });
+    M.sort((p,q)=>p.b-q.b); if(M.length) s.marks=M; }
 }
 function applyAll(E){ for(let i=0;i<NT;i++) applyTrack(E,i); applyMaster(E); }
 function liveApply(fn){ if(LIVE) fn(LIVE); }
@@ -1101,8 +1110,10 @@ function play(){
   if(SONG.countIn){
     /* the clicks skip the chain, so they wait the chain's 18 ms too and land exactly on the song's beats */
     const lag=NCOMP*0.006+(LIVE.lag||0);   /* AOG-DESK-FX-V1: and what the effect slots' compressors add */
-    for(let k=0;k<4;k++) PLAY.clicks.push(click(c, T+lag+k*beat, k===0));
-    PLAY.countAt=T; T+=bs;
+    /* AOG-DESK-CLICK-V1: one bar or two, with the click's own sound and level (aog-desk-rec.js) */
+    const nb=typeof dpCountBeats==="function" ? dpCountBeats() : 4;
+    for(let k=0;k<nb;k++) PLAY.clicks.push(typeof dpClickAt==="function" ? dpClickAt(c, T+lag+k*beat, k%4===0 ? 2 : 1) : click(c, T+lag+k*beat, k===0));
+    PLAY.countAt=T; T+=beat*nb;
   } else PLAY.countAt=0;
   PLAY.T0=T; PLAY.beat=beat; PLAY.bar=bs; PLAY.peak=-Infinity; PLAY.sig=""; PLAY.nowBar=-1;
   PLAY.loop=!!SONG.loopOn;
@@ -1134,6 +1145,7 @@ function click(c, when, first){
 function pump(){
   if(!PLAY.on) return;
   const now=ac.currentTime;
+  if(typeof dpMetro==="function") dpMetro(now);   /* AOG-DESK-CLICK-V1: the click, a moment ahead */
   if(PLAY.loop){
     let w=PLAY.wins[PLAY.wins.length-1];
     while(w.at+(w.to-w.from) < now+1.0){
@@ -1200,7 +1212,7 @@ function frame(){
   if(!PLAY.on){ PLAY.raf=0; return; }
   const now=ac.currentTime, pos=songPos(now);
   let sig;
-  if(pos==null){ const n=Math.max(1, Math.min(4, Math.floor((now-PLAY.countAt)/PLAY.beat)+1)); sig="c"+n; if(sig!==PLAY.sig){ posText(t("countIn",{n:n})); ctrCount(n); } }
+  if(pos==null){ const n=(Math.max(0, Math.floor((now-PLAY.countAt)/PLAY.beat+1e-6))%4)+1; sig="c"+n+"."+Math.floor((now-PLAY.countAt)/PLAY.bar); if(sig!==PLAY.sig){ posText(t("countIn",{n:n})); ctrCount(n); } }
   else {
     const bar=Math.floor(pos/PLAY.bar+1e-6), beat=Math.floor((pos-bar*PLAY.bar)/PLAY.beat+1e-6);
     sig=bar+"."+beat;
@@ -2248,14 +2260,32 @@ async function voiceStart(){
     VOICE.withSong=SONG.tracks.some((x,i)=>i!==VOICE_T && x.clip && BUF.has(x.clip.id));
     if(VOICE.withSong){
       const lp=SONG.loopOn, vm=SONG.tracks[VOICE_T].mute; VOICE.keep={loop:lp, mute:vm};
-      SONG.loopOn=false; SONG.tracks[VOICE_T].mute=true; liveApply(E=>applyTrack(E, VOICE_T));
+      /* AOG-DESK-REC-V1: a take each time round keeps the loop playing while you sing; each pass is its own take */
+      VOICE.cyc=lp && SONG.lrec ? {bar:SONG.loopFrom, len:(SONG.loopTo-SONG.loopFrom+1)*barSec()} : null;
+      if(!VOICE.cyc) SONG.loopOn=false; SONG.tracks[VOICE_T].mute=true; liveApply(E=>applyTrack(E, VOICE_T));
       play();
       SONG.loopOn=lp;
       VOICE.T0=PLAY.on ? PLAY.T0 : c.currentTime;
       VOICE.watch=setInterval(()=>{ if(VOICE.rec && !PLAY.on) voiceStop(); }, 120);   /* the song ended: so does the take */
-    } else VOICE.T0=0;
+    } else { VOICE.T0=0; VOICE.cyc=null; }
     VOICE.state="on"; VOICE.busy=false; paintVoice();
   }catch(e){ voiceRelease(); VOICE.busy=false; VOICE.state="fail"; paintVoice(); }
+}
+/* AOG-DESK-REC-V1 · where each take is in the recording (seconds): one pass a time round the loop (the first sound a
+   moment before it, 50 ms, so an early breath is whole; its last notes ring on 0.25 s), or the whole of it */
+function recPasses(sec, head, cyc){
+  if(!cyc) return [{s0:0, s1:sec, head:head, body:sec-head, bar:SONG.startBar}];
+  const P=[];
+  for(let k=0;;k++){ const s=head+k*cyc.len; if(s>sec-0.3) break;
+    const pre=Math.min(0.05, s), e=Math.min(sec, s+cyc.len), s1=Math.min(sec, e+0.25);
+    P.push({s0:s-pre, s1:s1, head:pre, body:e-s, bar:cyc.bar}); }
+  return P;
+}
+/* a take recorded with the punch on plays only the punch's bars (beats pu.a to pu.b of the song) */
+function punchTo(c, pu){
+  const b0=(c.startBar-1)*4, full=fullBeats(c), a=Math.max(0, pu.a-b0), b=Math.min(full, pu.b-b0);
+  if(b-a<0.25) return;
+  c.pieces=[{a:a, b:b, at:b0+a, n:1}]; c.psel=0; tidyPieces(c);
 }
 function voiceRelease(){
   VOICE.rec=false; clearInterval(VOICE.watch); VOICE.watch=0;
@@ -2279,13 +2309,22 @@ async function voiceStop(){
     let head=VOICE.withSong ? (VOICE.T0+VOICE.lat)-VOICE.t0 : Math.min(0.05, sec/4);
     if(!(head>=0)) head=0;
     if(sec-head<0.3){ VOICE.state="short"; VOICE.busy=false; paintVoice(); return; }
-    const blob=wavBlob(L, L, sr), id="c"+Date.now().toString(36)+Math.random().toString(36).slice(2,7);
-    const buf=await decodeWav(blob, sr);
-    await sput(id, {wav:blob}); BUF.set(id, buf);
-    const x=SONG.tracks[VOICE_T], old=x.clip, vn=1+Math.max(0, ...SONG.tracks.map(y=>y.clip && y.clip.voice ? y.clip.vn||0 : 0), VOICE.gone ? VOICE.gone.clip.vn||0 : 0);
-    x.clip=cleanClip({id:id, src:"", name:t("voiceN",{n:vn}), at:Date.now(), voice:true, vn:vn, take:true, sec:sec, bpm:0, bars:0,
-      head:head, body:sec-head, tail:0, bpb:4, startBar:SONG.startBar, trimIn:0, trimOut:0, loops:1, peakDb:peakDbOf(buf)});
-    if(old){ if(old.voice) dmKeepAsTake(x, old); else dropClip(old.id); }   /* AOG-DESK-TAKES-V1: the earlier take stays, as a take lane */
+    /* AOG-DESK-REC-V1: the passes (a take each time round), or the one take, as always */
+    const x=SONG.tracks[VOICE_T], old=x.clip, vn0=1+Math.max(0, ...dmAllClips().map(y=>y.voice ? y.vn||0 : 0), VOICE.gone ? VOICE.gone.clip.vn||0 : 0);
+    const plan=recPasses(sec, head, VOICE.withSong ? VOICE.cyc : null), made=[], t0=Date.now();
+    for(let k=0;k<plan.length;k++){ const q=plan[k], seg=L.subarray(Math.round(q.s0*sr), Math.round(q.s1*sr)), ss=seg.length/sr;
+      const blob=wavBlob(seg, seg, sr), id="c"+(t0+k).toString(36)+Math.random().toString(36).slice(2,7);
+      const buf=await decodeWav(blob, sr);
+      await sput(id, {wav:blob}); BUF.set(id, buf);
+      const cl=cleanClip({id:id, src:"", name:t("voiceN",{n:vn0+k}), at:t0+k, voice:true, vn:vn0+k, take:true, sec:ss, bpm:0, bars:0,
+        head:q.head, body:Math.min(q.body, ss-q.head), tail:Math.max(0, ss-q.head-q.body), bpb:4, startBar:q.bar, trimIn:0, trimOut:0, loops:1, peakDb:peakDbOf(buf)});
+      if(cl) made.push(cl); }
+    if(!made.length){ VOICE.state="short"; VOICE.busy=false; paintVoice(); return; }
+    const pu=SONG.punchOn && SONG.punch ? {a:(SONG.punch.a-1)*4, b:SONG.punch.b*4} : null;
+    x.clip=made[made.length-1];
+    if(old){ if(old.voice || pu) dmKeepAsTake(x, old); else dropClip(old.id); }   /* AOG-DESK-TAKES-V1: the earlier take stays, as a take lane (and always under a punch) */
+    made.slice(0, -1).forEach(c=>dmKeepAsTake(x, c));   /* the earlier passes: take lanes too, to choose from */
+    if(pu){ made.forEach(c=>punchTo(c, pu)); if(old){ dmSetRegion(x, 0, pu.a, old.id); dmSetRegion(x, pu.b, MAX_BARS*4, old.id); } }
     VOICE.state="done"; songChanged();
   }catch(e){ VOICE.state="fail"; }
   VOICE.busy=false; paintVoice();
@@ -2796,7 +2835,7 @@ function paintTimeline(){
         const st=pAt(p)/bs, len=p.n*pLen(c,p)/bs, l=Math.min(100, st/n*100), w=Math.max(0.6, Math.min(100-l, len/n*100));
         const nm=(j===0 ? trackName(i) : "")+(p.n>1 ? " ×"+p.n : "");
         /* AOG-DESK-DRAG-V1: data-pc, the piece a hand can take hold of */
-        return `<span class="st-clip${audible(i)?"":" off"}${cur && P.length>1 && j===ks ? " pk" : ""}" data-pc="${j}" style="left:${l.toFixed(4)}%;width:${w.toFixed(4)}%;--c:${colOf(i)}">${waveSvg(c, p, Math.min(4000, Math.max(16, Math.round(w*3.2*z))))}<span class="st-cnm">${esc(nm)}</span></span>`;
+        return `<span class="st-clip${audible(i)?"":" off"}${cur && P.length>1 && j===ks ? " pk" : ""}" data-pc="${j}" style="left:${l.toFixed(4)}%;width:${w.toFixed(4)}%;--c:${colOf(i)}">${waveSvg(c, p, Math.min(4000, Math.max(16, Math.round(w*3.2*z))))}<span class="st-cnm">${esc(nm)}</span><i class="st-lph" data-lph="${j}" aria-hidden="true"></i></span>`;   /* AOG-DESK-CLIPLOOP-V1: its end, dragged to repeat it */
       }).join("");
       const b0=Math.floor(clipStart(c)/bs+1e-6)+1, b1=Math.max(b0, Math.ceil(clipEnd(c,false)/bs-1e-6));
       label=t("laneAria",{n:i+1, name:trackName(i)+", "+t("laneBars",{a:b0, b:b1})});
@@ -2805,7 +2844,7 @@ function paintTimeline(){
     if(AUTO[x.lane]) lanes+=autoRowHtml(i);   /* AOG-DESK-AUTO-V1: its drawing lane, when one is open */
     lanes+=dmTakeRows(i);   /* AOG-DESK-TAKES-V1: its take lanes */
   }
-  $("timeline").innerHTML=rh+dmSecRow()+lanes+`<span class="st-ph" aria-hidden="true"></span>`;   /* AOG-DESK-FACE-V1 · AOG-DESK-SECTIONS-V1: the sections, under the ruler */
+  $("timeline").innerHTML=rh+(typeof drTlRow==="function" ? drTlRow() : "")+dmSecRow()+lanes+`<span class="st-ph" aria-hidden="true"></span>`;   /* AOG-DESK-FACE-V1 · AOG-DESK-SECTIONS-V1: the sections, under the ruler */
   $("timeline").style.setProperty("--n", String(n));   /* AOG-DESK-ART-V1: the bar lines behind the lanes */
   $("timeline").style.setProperty("--z", String(z)); $("timeline").classList.toggle("zoomed", z>1);   /* AOG-DESK-ZOOM-V1 */
   RULER=[...$("timeline").querySelectorAll(".st-rt i")];
