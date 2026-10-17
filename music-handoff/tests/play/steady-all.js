@@ -21,7 +21,7 @@ const pw = require(require("child_process").execSync("npm root -g").toString().t
 const http = require("http"), fs = require("fs"), path = require("path");
 const ROOT = process.env.AOG_ROOT || path.resolve(__dirname, "../../../aog-deploy");
 let fails = 0; const ok = (c, m) => { console.log((c ? "PASS " : "FAIL ") + m); if (!c) fails++; };
-const RATE = 4, NOTE_MS = 25, LONG_MS = 50, VOICES = 96, N = +process.env.STEADY_NOTES || 300;
+const RATE = +process.env.STEADY_RATE || 4, NOTE_MS = 25, LONG_MS = 50, VOICES = 96, N = +process.env.STEADY_NOTES || 300;
 function serve(port) {
   const T = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".png": "image/png", ".jpg": "image/jpeg", ".webp": "image/webp", ".mp3": "audio/mpeg", ".m4a": "audio/mp4", ".json": "application/json", ".svg": "image/svg+xml", ".woff2": "font/woff2", ".wasm": "application/wasm" };
   return http.createServer((q, r) => {
@@ -67,9 +67,9 @@ const ROOMS = {
     sounds: () => { const ids = Object.keys(SOUNDS), smp = ids.find(k => k !== S.sound && SOUNDS[k].kind === "sample" && SETS[SOUNDS[k].set] && SETS[SOUNDS[k].set].notes.length <= 25 && (SETS[SOUNDS[k].set].layers || []).length === 1), made = ids.find(k => SOUNDS[k].kind !== "sample");
       return [S.sound, smp, made].filter(Boolean); },
     pick: id => { const s = document.getElementById("soundSel"); s.value = id; s.onchange(); } },
-  /* the Band: its first sound, then the mariachi, a folk and a classroom instrument, and a voice */
+  /* the Band: its first sound, then the mariachi, a folk and a classroom instrument, a voice, and the World group's erhu */
   band: { file: "music-band", ready: () => typeof soundReady === "function" && soundReady(S.sound), at: KEYS,
-    sounds: () => [S.sound, "mariachi", "mandolin", "ukulele", "voice_f_aa"].filter((k, i, a) => SOUNDS[k] && a.indexOf(k) === i),
+    sounds: () => [S.sound, "mariachi", "mandolin", "ukulele", "voice_f_aa", "erhu"].filter((k, i, a) => SOUNDS[k] && a.indexOf(k) === i),
     pick: id => { const s = document.getElementById("soundSel"); s.value = id; s.onchange(); } },
   guitar: { file: "music-guitar", ready: () => typeof soundReady === "function" && soundReady(S.sound), at: NECK_AT },
   bass: { file: "music-bass", ready: () => typeof soundReady === "function" && soundReady(S.sound), at: NECK_AT },
@@ -130,7 +130,8 @@ function readTrace(ev) {
 async function play(b, port, id, opts) {
   opts = opts || {};
   const R = ROOMS[id], U = "http://localhost:" + port + "/";
-  const c = await b.newContext({ ...pw.devices["iPhone 13 landscape"], serviceWorkers: "block" });
+  /* (STEADY_DEVICE=ipad: an iPad sideways; STEADY_RATE: another slowing) */
+  const c = await b.newContext({ ...(process.env.STEADY_DEVICE === "ipad" ? { viewport: { width: 1180, height: 820 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2, userAgent: pw.devices["iPad Pro 11 landscape"].userAgent } : pw.devices["iPhone 13 landscape"]), serviceWorkers: "block" });
   await c.addInitScript(PROBE); await c.route(/^https?:\/\/(?!localhost)/, r => r.abort());
   const errs = []; c.on("page", pg => pg.on("pageerror", e => errs.push(e.message)));
   const p = await c.newPage(), cdp = await c.newCDPSession(p);
@@ -197,7 +198,7 @@ async function play(b, port, id, opts) {
   const quiet = P.dn.filter((d, i) => spans.some(s => d.t >= s.S0 && d.t <= s.S1) && !P.st.some(t => t >= d.t - 1 && t < (P.dn[i + 1] ? P.dn[i + 1].t : Infinity)))
     .map(d => (spans.find(s => d.t >= s.S0 && d.t <= s.S1) || {}).sound || id);
   ok(downs.length >= fingers.planned && sounded.length === downs.length, `${label}: ${fingers.planned} fingers landed, every one made its sound (${downs.length} reached the room, ${sounded.length} sounded${quiet.length ? "; silent on " + quiet.join(", ") : ""})`);
-  ok(worst <= NOTE_MS, `${label}: every note's main-thread time to its sound within ${NOTE_MS} ms (worst ${worst.toFixed(1)}, 95% within ${p95.toFixed(1)}; four times slower than a phone)`);
+  ok(worst <= NOTE_MS, `${label}: every note's main-thread time to its sound within ${NOTE_MS} ms (worst ${worst.toFixed(1)}, 95% within ${p95.toFixed(1)}; ${RATE} times slower than a phone)`);
   /* (the trace runs only while a phrase is played) */
   /* a long task: one whose named work (scripts, layout, painting) is 50 ms or more; a garbage collection is shown apart */
   const gcOf = T => tr.gcs.filter(g => g.ts >= T.ts && g.ts <= T.ts + T.dur && (g.name === "MajorGC" || g.name === "MinorGC")).reduce((s, g) => s + tr.td(g), 0);
