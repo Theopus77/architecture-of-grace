@@ -84,7 +84,11 @@ async function routes(ctx, today) {
     window.ac = new AudioContext(); window.h = AOGLive.attach({ mount: "m", kind: "guitar", context: () => ac, out: () => ac.destination, rig: () => ({}), lang: () => "en", bpm: () => 120, tool: "guitar" });</script></body></html>` }));
 }
 const S = f => f.evaluate(() => AOGLearnUI.test.state());
-async function openPanel(f) { await f.evaluate(() => { const b = document.getElementById("lgBox"); b.scrollIntoView({ block: "center" }); if (!b.open) b.querySelector("summary").click(); }); await f.waitForTimeout(200); }
+async function openPanel(f) {
+  /* AOG-ROOMS-COMPACT-V1: inside the Studio, Learn a song waits in More: a person picks it there first */
+  if (await f.evaluate(() => { const b = document.getElementById("lgBox"); return !!(document.getElementById("aogMoreSel") && b && b.closest("[data-aog-sec]") && !b.closest("[data-aog-on]")); }))
+    { await f.selectOption("#aogMoreSel", "learn"); await f.waitForTimeout(200); }
+  await f.evaluate(() => { const b = document.getElementById("lgBox"); b.scrollIntoView({ block: "center" }); if (!b.open) b.querySelector("summary").click(); }); await f.waitForTimeout(200); }
 async function loaded(f, name) { await f.waitForFunction(n => window.AOGLearnUI && AOGLearnUI.test.state().open && AOGLearnUI.test.state().name === n, name, { timeout: 15000 }); await f.waitForTimeout(200); }
 const lit = (f, sel) => f.evaluate(sel => [...document.querySelectorAll(sel)].map(e => e.getAttribute("data-m") || e.getAttribute("data-c")).sort().join(" "), sel);
 const pcs = s => [...new Set(s.split(" ").filter(Boolean).map(m => +m % 12))].sort((x, y) => x - y).join(",");

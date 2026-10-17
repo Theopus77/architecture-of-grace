@@ -95,7 +95,9 @@ const state = p => p.evaluate(() => ({ kind: document.getElementById("spKind").s
       await m.waitForFunction(() => { const d = document.getElementById("room").contentDocument; return d && d.readyState === "complete" && d.documentElement.classList.contains("in-studio") && /guitar/.test(d.location.pathname); }, null, { timeout: 20000 });
       await m.waitForTimeout(1500);
       const f = m.frames().find(x => x.parentFrame() === m.mainFrame());
-      const g = await f.evaluate(() => { const w = document.querySelector(".sp-wrap"), nb = document.getElementById("neckBox"); return !!w && w.previousElementSibling === nb && !w.closest("[hidden]"); });
+      /* AOG-ROOMS-COMPACT-V1: in the Studio they lead the row of controls right under the neck */
+      const g = await f.evaluate(() => { const w = document.querySelector(".sp-wrap"), nb = document.getElementById("neckBox"), c = w && w.closest(".aog-ctl");
+        return !!w && (w.previousElementSibling === nb || (!!c && c.previousElementSibling === nb && c.querySelector(".aog-ctl-row > *") === w)) && !w.closest("[hidden]"); });
       ok(g, `${dev}: in the Recording Studio, the guitar's two menus sit under its neck`);
     }
     await cx.close();
