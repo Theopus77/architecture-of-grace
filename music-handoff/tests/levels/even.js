@@ -3,9 +3,10 @@
    Every note of every sound, room by room, rendered offline through the room's own engine and chain (as a player hears it:
    the room's chain, its amp or finish, pedals off, the Room knob dry, the default volume), one at a time, its first 400 ms
    measured as BS.1770 does (K-weighted loudness; music-handoff/tools/levels). For each sound:
-     · no note more than 1.5 dB off the smooth line through its notes (the instrument's own register shape: a straight line,
-       fitted so one odd note cannot bend it), and no step between neighbouring notes more than 1.5 dB beyond the line's;
-     · no single take, string or recording more than 2 dB off that line;
+     · no note more than 1.5 dB off the smooth curve through its notes (the instrument's own register shape: a parabola,
+       fitted so one odd note cannot bend it, the Band's world players' rule, bandt/world_even.inc), and no step between
+       neighbouring notes more than 1.5 dB beyond the curve's;
+     · no single take, string or recording more than 2 dB off that curve;
      · from its softest note to its loudest at most 4 dB (the Guitar and the Bass) or 5 dB (the Piano, the Band and the
        Drum Machine, whose instruments keep half their natural slope);
      · where its strength layers change (soft to loud recordings), no jump over 1.5 dB beyond what the strength itself

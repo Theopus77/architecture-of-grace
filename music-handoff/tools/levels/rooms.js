@@ -45,11 +45,11 @@ async function spread(h, name, ids, n, fn, arg, init){
   const res={}, errs=[], todo=ids.slice(), tries={};
   const worker=async()=>{ let p=null;
     while(todo.length){ const id=todo.shift();
-      try{ if(!p || p.isClosed()) p=await page(h, name, init); const t0=Date.now();
+      try{ if(!p || p.isClosed()) p=await Promise.race([page(h, name, init), new Promise((_,no)=>setTimeout(()=>no(new Error("the page did not open in 2 minutes")), 120000))]); const t0=Date.now();
         const r=await Promise.race([p.evaluate(fn, Object.assign({}, arg, {ids:[id]})), new Promise((_,no)=>setTimeout(()=>no(new Error("took over 30 minutes")), 30*60000))]);
         for(const [k,v] of Object.entries(r)){ if(k==="__sets") Object.assign(res.__sets=res.__sets||{}, v); else res[k]=v; }
         if(arg && arg.log) process.stderr.write(`  ${name} ${id} ${((Date.now()-t0)/1000).toFixed(0)} s\n`); }
-      catch(e){ errs.push(id+": "+String(e.message).split("\n")[0]); try{ if(p) await p.close(); }catch(e2){} p=null;
+      catch(e){ errs.push(id+": "+String(e.message).split("\n")[0]); if(process.env.AOG_LEVELS_TRACE) process.stderr.write("  retry "+id+": "+String(e.message).split("\n")[0]+"\n"); try{ if(p) await Promise.race([p.close(), new Promise(r=>setTimeout(r,5000))]); }catch(e2){} p=null;
         tries[id]=(tries[id]||0)+1; if(tries[id]<4) todo.push(id); }
     }
     if(p){ errs.push(...p.errs); try{ await p.close(); }catch(e){} } };
@@ -61,7 +61,7 @@ const STRINGS_FN=async(opt)=>{
   const res={};
   const one=async(id, m, v, s, o)=>{
     if(opt.trace) console.log("lv one "+id+" "+m+" "+v+" "+s);
-    const oc=new OfflineAudioContext(2, Math.round(44100*0.5), 44100); await AOGAmp.load(oc);
+    const oc=new OfflineAudioContext(2, Math.round(44100*0.46), 44100); await AOGAmp.load(oc);
     S.sound=id; const ch=makeChain(oc); ch.master.gain.value=volGain(0.8); setSound(ch, id); setEra(ch, 0, 0);
     const vc=makeVoice(oc, ch, id, m, v, 0.05, s, o); if(!vc) return null;
     const buf=await oc.startRendering(), r=__lv.kw(buf, 0.05), R=vc.rec && REAL.sets[vc.rec.set];
@@ -76,10 +76,23 @@ const STRINGS_FN=async(opt)=>{
     if(opt.layers && R){ const b=(R.meta.vel||[0]).concat([1]); V=b.slice(0,-1).map((x,i)=>+((x+b[i+1])/2).toFixed(3)); }
     /* opt.mute: the muted way to play too (chugs, the funk and pop patterns), where the set has short notes */
     const arts=[undefined].concat(opt.mute && GTR && R && (R.by.mute||R.by.stac) && !SOUNDS[id].rstac ? [{art:"mute"}] : []);
+    /* the recording a note will play, as recVoice picks it (the takes move on in turn: pass keep to leave them where they
+       were). A note on another string that plays the same recording at the same pitch sounds the same (but for a slap
+       sound's pop on the high strings), so it is measured once and counted for each string */
+    const snd=SOUNDS[id], slapS=!!(snd.rslap && R && R.slap && R.slap.length);
+    const pick=(m, v, s, o, keep)=>{ if(!R) return null; const save=keep ? JSON.stringify(R.rr) : null;
+      let kind=((o && o.art==="mute") || snd.rstac) ? (R.by.mute?"mute":R.by.stac?"stac":"sus") : "sus";
+      let pk=recPick(R, kind, m, slapS ? 1 : Math.max(0.05, Math.min(1, v)), s); if(!pk && kind!=="sus") pk=recPick(R, "sus", m, slapS ? 1 : v, s);
+      if(keep) R.rr=JSON.parse(save); return pk ? pk.z.f : null; };
+    const done=new Map();
     for(const o of arts) for(const v of (o ? [0.74] : V)) for(let s=0; s<TUNING.length; s++) for(let f=0; f<=MAXF; f++){
       /* each take of the recording this note plays, in turn (opt.takes false: only the first) */
-      const seen=new Set();
-      for(let k=0;k<4;k++){ const r=await one(id, TUNING[s]+f, v, s, o); if(!r || seen.has(r.f)) break; seen.add(r.f); rows.push(r); if(!R || opt.takes===false) break; }
+      const seen=new Set(), m=TUNING[s]+f;
+      for(let k=0;k<4;k++){
+        const zf=pick(m, v, s, o, true), key=zf+"|"+m+"|"+v+"|"+((o&&o.art)||"")+"|"+(slapS && s>=2 ? "pop" : "");
+        if(zf && done.has(key)){ if(seen.has(zf)) break; pick(m, v, s, o, false); seen.add(zf); rows.push(Object.assign({}, done.get(key), {s})); if(opt.takes===false) break; continue; }
+        const r=await one(id, m, v, s, o); if(!r || seen.has(r.f)) break; seen.add(r.f); rows.push(r); if(r.f) done.set(r.f+"|"+m+"|"+v+"|"+((o&&o.art)||"")+"|"+(slapS && s>=2 ? "pop" : ""), r);
+        if(!R || opt.takes===false) break; }
     }
     res[id]=rows;
   }

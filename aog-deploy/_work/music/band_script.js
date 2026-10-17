@@ -850,13 +850,14 @@ function voiceShell(c, out, nodes, rel, endPad){
 function gainAt(c, v){ try{ return new GainNode(c, {gain:v}); }catch(e){ const g=c.createGain(); g.gain.value=v; return g; } }
 function osc(c, type, f){ const o=c.createOscillator(); o.type=type; o.frequency.value=f; return o; }
 /* AOG-LEVEL-EVEN-V1 (2026-10-17) — Jimmy: "I would like all the instruments to be checked for sound levels … some notes and
-   some scales were higher than others". Each player's recordings have their own trims (manifest.json "lvl": dB a file,
-   made by music-handoff/tools/levels/make.js band), so its notes sit on one smooth line across its reach (half its own
-   natural slope kept, never more than 3 dB): a recording that came out louder or softer than its neighbours no longer
-   jumps. Worked out once a player first plays, then one more factor in the gain a note already sets. */
-function lvlOf(man, key){
-  let t=man.lvx; if(t===undefined){ t=man.lvx=null; if(man.lvl){ t=man.lvx={}; Object.keys(man.lvl).forEach(k=>{ t[k]=Math.pow(10, man.lvl[k]/20); }); } }
-  return (t && t[key]) || 1;
+   some scales were higher than others". Each player's recordings have their own trims (manifest.json "lvl": dB a file;
+   "lvk": dB a semitone it is played above or below its own note, as a ring dies faster sped up), made by
+   music-handoff/tools/levels/make.js band, so its notes sit on one smooth line across its reach (half its own natural
+   slope kept, never more than 3 dB): a recording that came out louder or softer than its neighbours no longer jumps. Worked out once a player first plays, then one more factor in the gain a note already sets. */
+function lvlOf(man, key, d){
+  let t=man.lvx; if(t===undefined){ t=man.lvx=null; if(man.lvl || man.lvk){ t=man.lvx={}; const L=man.lvl||{}, K=man.lvk||{};
+    new Set(Object.keys(L).concat(Object.keys(K))).forEach(k=>{ t[k]=[L[k]||0, K[k]||0]; }); } }
+  const x=t && t[key]; return x ? Math.pow(10, (x[0]+x[1]*(d||0))/20) : 1;
 }
 /* one player, one note. Held notes ("sus") blend the soft and the loud recording by how hard you play, as a player's
    tone grows brighter as it grows louder; a swell slides that blend from soft to loud. Short notes ("stac") are their
@@ -868,7 +869,7 @@ function windVoice(c, ch, inst, m, v, when, art, swellTo, swellDur){
   const glide=slideFor(c, inst, m, when, art);   /* AOG-BAND-FOLK-V1 */
   const play=(key, n, g, gTo)=>{
     const buf=set.buf[key]; if(!buf) return null;
-    { const e=lvlOf(man, key); g*=e; if(gTo!=null) gTo*=e; }   /* AOG-LEVEL-EVEN-V1: this recording's own trim */
+    { const e=lvlOf(man, key, m-n); g*=e; if(gTo!=null) gTo*=e; }   /* AOG-LEVEL-EVEN-V1: this recording's own trim */
     const s=c.createBufferSource(); s.buffer=buf;
     s.playbackRate.value=Math.pow(2, (m-n)/12 - (man.tune[key]||0)/1200);
     if(glide){ const r=s.playbackRate.value; s.playbackRate.setValueAtTime(r*Math.pow(2, glide.from/12), when); s.playbackRate.exponentialRampToValueAtTime(r, when+glide.t); }
