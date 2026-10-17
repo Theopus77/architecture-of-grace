@@ -73,4 +73,22 @@ function keyScore(est, ref) { /* MIREX: same 1, fifth 0.5, relative 0.3, paralle
   if (est.minor !== ref.minor && est.key === ref.key) return 0.2;
   return 0;
 }
-module.exports = { TRACKS, crateTruth, fmeasure, chordAcc, noteF, pitchOverlap, keyScore };
+/* the song's parts: est and ref are [{t, kind, letter}] in order (each runs to the next; the last to `end`).
+   bound: F-measure of the part boundaries (within tol seconds) · kind: share of the time the kind (intro/part/end) agrees ·
+   pair: pairwise F of "these two moments are the same part" over the moments both call a part (the letters themselves may
+   differ, only which parts are alike counts) */
+function sectionScore(est, ref, end, tol) {
+  tol = tol || 0.3;
+  const bE = est.slice(1).map(s => s.t), bR = ref.slice(1).map(s => s.t);
+  const bound = !bR.length && !bE.length ? 1 : fmeasure(bE, bR, tol);
+  const at = (list, t) => { let x = null; for (const s of list) if (s.t <= t + 1e-6) x = s; return x; };
+  const t0 = Math.max(ref[0].t, est.length ? est[0].t : 0), T = []; for (let t = t0 + 0.05; t < end - 0.05; t += 0.25) T.push(t);
+  let kOk = 0; const P = [];
+  T.forEach(t => { const r = at(ref, t), e = at(est, t); if (r && e && r.kind === e.kind) kOk++; if (r && e && r.kind === "part" && e.kind === "part") P.push([r.letter, e.letter]); });
+  let both = 0, onlyR = 0, onlyE = 0;
+  for (let i = 0; i < P.length; i++) for (let j = i + 1; j < P.length; j++) { const sr = P[i][0] === P[j][0], se = P[i][1] === P[j][1];
+    if (sr && se) both++; else if (sr) onlyR++; else if (se) onlyE++; }
+  const pp = both + onlyE ? both / (both + onlyE) : 1, pr = both + onlyR ? both / (both + onlyR) : 1;
+  return { bound, kind: T.length ? kOk / T.length : 1, pair: pp + pr ? 2 * pp * pr / (pp + pr) : 0 };
+}
+module.exports = { TRACKS, crateTruth, fmeasure, chordAcc, noteF, pitchOverlap, keyScore, sectionScore };
