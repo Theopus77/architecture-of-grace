@@ -34,14 +34,17 @@ module.exports=async function(PASSES, ONLY, pages){
         /* a band player's medium hit plays its soft and loud recordings at once: those notes shape the curve only (the two
            recordings are trimmed where each plays alone, the softest and the hardest hits) */
         const by={}; rows.forEach(r=>{ if(r.f.indexOf("+")<0) (by[r.f]=by[r.f]||[]).push(r); });
-        Object.keys(by).forEach(f=>{ (err[f]=err[f]||[]).push(pmean(by[f].map(r=>r.lufs))-pmean(by[f].map(r=>L+N(r.m)))); });
+        /* and how that changes as it is played above or below its own note (where its notes spread over three semitones) */
+        Object.keys(by).forEach(f=>{ const pts=by[f].map(r=>[r.m-r.zm, r.lufs-(L+N(r.m))]), xs=pts.map(q=>q[0]);
+          if(pts.length>=4 && Math.max(...xs)-Math.min(...xs)>=3){ const ln=C.line(pts); (err[f]=err[f]||[]).push(ln(0)); (err[f+"k"]=err[f+"k"]||[]).push(ln(1)-ln(0)); }
+          else (err[f]=err[f]||[]).push(pmean(by[f].map(r=>r.lufs))-pmean(by[f].map(r=>L+N(r.m)))); });
       }
       const next=Object.assign({}, cur);
-      Object.keys(err).forEach(f=>{ const e=err[f].reduce((a,b)=>a+b,0)/err[f].length; next[f]=Math.max(-9, Math.min(9, (cur[f]||0)-e)); });
+      Object.keys(err).forEach(f=>{ const e=err[f].reduce((a,b)=>a+b,0)/err[f].length, lim=f.slice(-1)==="k" ? 1 : 9; next[f]=Math.max(-lim, Math.min(lim, (cur[f]||0)-e)); });
       /* where the instrument's level is set stays where it was */
       const keepF=[...new Set(all.filter(r=>REF.indexOf(r.m)>=0 && r.f.indexOf("+")<0).map(r=>r.f))];
-      if(keepF.length){ const d=keepF.reduce((s,f)=>s+((next[f]||0)-(cur[f]||0)),0)/keepF.length; Object.keys(next).forEach(f=>{ next[f]-=d; }); }
-      Object.keys(next).forEach(f=>{ next[f]=Math.round(next[f]*10)/10; moved=Math.max(moved, Math.abs(next[f]-(cur[f]||0))); if(Math.abs(next[f])<0.15) delete next[f]; });
+      if(keepF.length){ const d=keepF.reduce((s,f)=>s+((next[f]||0)-(cur[f]||0)),0)/keepF.length; Object.keys(next).forEach(f=>{ if(f.slice(-1)!=="k") next[f]-=d; }); }
+      Object.keys(next).forEach(f=>{ const k=f.slice(-1)==="k"; next[f]=k ? Math.round(next[f]*100)/100 : Math.round(next[f]*10)/10; moved=Math.max(moved, Math.abs(next[f]-(cur[f]||0))); if(Math.abs(next[f])<(k?0.02:0.15)) delete next[f]; });
       T[id]=next;
     }
     if(pass===PASSES){ console.log(`pass ${pass}: measured only`); break; }

@@ -45,7 +45,7 @@ function summary(res, tag){
     const t0=Date.now();
     /* what was measured with these very trims is kept (a run that stops picks up where it was) */
     const key=require("crypto").createHash("md5").update(JSON.stringify(EVEN)).digest("hex").slice(0,10);
-    const m=await R.strings(h, inst, {layers:true, mute:true, log:1, only:ONLY, pages:+(arg("--pages")||3), cache:path.join(require("os").tmpdir(), `aog-levels-${inst}-${key}.cache.json`)});
+    const m=await R.strings(h, inst, {layers:true, mute:process.argv.indexOf("--nomute")<0, log:1, only:ONLY, pages:+(arg("--pages")||3), cache:path.join(require("os").tmpdir(), `aog-levels-${inst}-${key}.cache.json`)});
     if(m.errs.length) console.log("page errors:", m.errs.slice(0,5).join(" | "));
     const res=m.res, ref=res.__ref, sets=res.__sets||{}, isRef=r=>ref.some(q=>q.s===r.s && q.m===r.m);
     fs.writeFileSync(path.join(require("os").tmpdir(), `aog-levels-${inst}-pass${pass}.json`), JSON.stringify(res));
