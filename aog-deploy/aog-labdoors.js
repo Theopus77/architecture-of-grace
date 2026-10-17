@@ -232,6 +232,200 @@
     var inn = box.lastChild;
     parts.forEach(function (e) { inn.appendChild(e); });
   }
+  /* ══ AOG-ROOMS-COMPACT-V1 (Jimmy, 2026-10-17: "I feel like there is A LOT of scrolling on the studio pages … the guitar
+     page … but it could be for all"). Inside the Studio a room fits its first screen: the instrument and what you play it
+     with (the sound, the chords and the key, Record and Send). Everything else waits behind one More menu right under them
+     (CLAUDE.md: four or more places to look are a drop-down): pick a part and it opens there; Close folds it away. Nothing
+     is taken out and nothing moves house: a part out of sight is only hidden, so every page's own code still finds it.
+     Any chord folds behind one button by the chords. What is open is remembered on this device; a first visit shows the
+     instrument with everything else closed. Duplicates step aside (said once): the key and the chord pattern by the neck
+     repeat the ones in the chords. The Mixing Desk is left as it is. ══ */
+  var CW = {
+    more: ["More", "Más"], choose: ["Choose…", "Elige…"], close: ["Close", "Cerrar"], any: ["Any chord", "Cualquier acorde"],
+    how: ["How to play", "Cómo tocar"], patterns: ["Chord patterns and tempo", "Patrones de acordes y tempo"],
+    scale: ["Scales", "Escalas"], wheel: ["Chord wheel", "Rueda de acordes"], amp: ["Amp and pedals", "Amplificador y pedales"],
+    live: ["Plug in and tune", "Conecta y afina"], dials: ["Sound and volume", "Sonido y volumen"], learn: ["Learn a song", "Aprende una canción"],
+    lessons: ["Lessons", "Lecciones"], timing: ["Timing and repeat", "Tiempo y repetición"], beat: ["Play along with a beat", "Toca con un ritmo"],
+    fx: ["Effects", "Efectos"], records: ["Records", "Discos"], bars: ["Bars to rap", "Rimas para rapear"]
+  };
+  var MORE_KEY = "aog.studio.more.v1", ANY_KEY = "aog.studio.any.v1";
+  function kept(k) { try { var o = JSON.parse(localStorage.getItem(k) || "{}"); return o && typeof o === "object" ? o : {}; } catch (e) { return {}; } }
+  function keep(k, room, v) { try { var o = kept(k); if (v) o[room] = v; else delete o[room]; localStorage.setItem(k, JSON.stringify(o)); } catch (e) {} }
+  function $(i) { return D.getElementById(i); }
+  /* where an element lives in the page, even while its instrument plays on the whole screen (a comment marks its place) */
+  function homeOf(el) {
+    if (!el) return null; if (!el.closest("#pvNeck,#bpMain,#pvGrid,.pv,.bp")) return el;
+    var w = D.createTreeWalker(D.body, NodeFilter.SHOW_COMMENT), n; while ((n = w.nextNode())) if (n.nodeValue === el.id) return n;
+    return null;
+  }
+  function blkOf(el, rig) { while (el && el.parentNode && el.parentNode !== rig) el = el.parentNode; return el && el.parentNode === rig ? el : null; }
+  /* a part's name in the menu: its own heading, as the page wrote it (so it is said once, in the page's language) */
+  function nameOf(s, es) {
+    var h = s.head && s.head(), t = h && (h.textContent || "").replace(/\s+/g, " ").trim().replace(/[:：]$/, "");
+    if (t && t.length < 48) return t === t.toUpperCase() ? t.charAt(0) + t.slice(1).toLowerCase() : t;
+    return CW[s.w || s.k][es ? 1 : 0];
+  }
+  function compactSpec(id) {
+    var q = function (sel, root) { return (root || D).querySelector(sel); }, row = function (el) { return el && el.closest(".row,.pm-row,.kp-row"); };
+    if (/^(piano|guitar|bass|band)$/.test(id)) {
+      var rig = $("rig"); if (!rig) return null;
+      var strings = id === "guitar" || id === "bass", inst = $(strings ? "neckBox" : "kbd"), h2 = q("h2[data-t=neckH],h2[data-t=keysH]", rig);
+      var pblk = h2 && blkOf(h2, rig), at = homeOf(inst); if (!pblk || !at || !pblk.contains(at)) return null;
+      var pads = q("#pads", rig), cblk = pads && blkOf(pads, rig), keyRow = row($("keySel")), sendRow = row($("sendBtn")),
+        recB = $("recBtn"), recRow = recB && recB.closest(".aog-krow-rec"), dials = blkOf($("era"), rig);
+      var kids = function (sel) { return [].filter.call(pblk.querySelectorAll(sel), function (e) { return !e.closest(".aog-ctl"); }); };
+      var sp0 = q(".sp-wrap", rig);
+      /* the Band's section and instrument menus stay above its keys (its drawing); on a phone, where they come under the
+         keys, they lead the row of controls as in the other rooms */
+      var spAfter = sp0 && at && at !== sp0 && !!(at.compareDocumentPosition(sp0) & Node.DOCUMENT_POSITION_FOLLOWING);
+      var ctl = [[id === "band" && !spAfter ? null : sp0, keyRow, $("pedalsNear")], [recRow, sendRow]];
+      return {
+        host: pblk, after: at, ctl: ctl, lines: [$("loadLine"), $("sendLine"), $("padsLine")],
+        dup: strings ? [q(".row.nk-key", pblk), q(".row.nk-pat", pblk), $("prog2")] : [],
+        any: $("anyRoots") && $("anyRoots").closest(".any"), krow: q(".aog-krow-top", pblk), toKrow: strings ? [$("soloMode")] : [],
+        bar: pblk,
+        secs: [
+          { k: "how", el: kids(".touch-line,.keys-line:not([aria-live])").concat([$("pvTurn"), $("bpTurn")]) },   /* a line that answers a key stays */
+          { k: "scale", el: id === "band" ? [$("scaleRow"), $("scaleSay")] : [q(".sc-row", pblk)], head: function () { return q(".sc-row .plab"); } },
+          { k: "patterns", el: [cblk, q(".nk-theory", pblk)] },
+          { k: "wheel", el: [$("wheelBlk")], head: function () { return q("#wheelBlk>h2"); } },
+          { k: "amp", el: [$("ampBlk")], head: function () { return q("#ampBlk>h2"); } },
+          { k: "live", el: [$("liveBlk")], head: function () { return q("#liveBlk h2"); } },
+          { k: "dials", el: [dials] },
+          { k: "learn", el: [$("learnBlk")], head: function () { return q("#lgBox>summary"); }, open: "#lgBox" },
+          { k: "lessons", el: [$("lessons"), $("aogLearn"), $("pgPanel")] }
+        ]
+      };
+    }
+    if (id === "pads") {
+      var cols = q(".pm-cols"), right = cols && cols.children[1]; if (!right) return null;
+      return {
+        /* the loop's file and the take sit at the foot of the sequencer, so record and send show with the pads */
+        moves: [[q(".pm-rec"), right, "end"], [$("bigBtn") && $("bigBtn").parentNode, $("line"), "before"]],
+        barAfter: cols,
+        secs: [
+          { k: "timing", el: [row($("qSel")), row($("rptBtn"))] },
+          { k: "fx", el: [$("ampBlk")], head: function () { return $("fxH"); } },
+          { k: "lessons", el: [$("lessons"), $("aogLearn")] }
+        ]
+      };
+    }
+    if (id === "kit") {
+      var rec = q(".kp-rec"), pn = $("pedalsNear"), kb = $("kitBox"); if (!rec || !kb) return null;
+      return {
+        moves: [[rec, pn && pn.parentNode === kb.parentNode ? pn : kb, "after"]],
+        barAfter: rec,
+        secs: [
+          { k: "how", el: [$("kpTurn")] },
+          { k: "beat", el: [$("beatBox")], head: function () { return $("beatH"); } },
+          { k: "fx", el: [$("ampBlk")], head: function () { return $("fxH"); } },
+          { k: "lessons", el: [$("lessons"), $("aogLearn")] }
+        ]
+      };
+    }
+    if (id === "decks") {
+      var mixer = $("mixer"); if (!mixer || !$("decks")) return null;
+      return {
+        barAfter: mixer,
+        secs: [
+          { k: "how", el: [$("padHint")] },
+          { k: "records", el: [$("made"), $("crate")], head: function () { return q("#made>h3"); } },
+          { k: "bars", el: [$("bars")], head: function () { return q("#bars>h3"); } },
+          { k: "lessons", el: [$("aogLearn"), $("lessons"), $("tagLong"), $("pgPanel")] }
+        ]
+      };
+    }
+    return null;
+  }
+  function compact() {
+    var id = here(); if (!shell || !id || id === "studio" || !D.body) return;
+    var sp = compactSpec(id); if (!sp) return;
+    var es = lang() === "es", W = function (k) { return CW[k][es ? 1 : 0]; };
+    D.documentElement.classList.add("aog-compact");
+    /* 1 · the controls you play with, in one row under the instrument */
+    if (sp.ctl) {
+      var ctl = sp.host.querySelector(".aog-ctl");
+      if (!ctl) {
+        ctl = D.createElement("div"); ctl.className = "aog-ctl";
+        sp.ctl.forEach(function () { var r = D.createElement("div"); r.className = "aog-ctl-row"; ctl.appendChild(r); });
+      }
+      if (ctl.parentNode !== sp.host || ctl.previousSibling !== sp.after) sp.host.insertBefore(ctl, sp.after.nextSibling);
+      sp.ctl.forEach(function (list, i) { var r = ctl.children[i];
+        list.forEach(function (e) { if (e && e.parentNode !== r) r.appendChild(e); }); });
+      var tail = ctl;
+      (sp.lines || []).forEach(function (e) { if (e) { if (tail.nextSibling !== e) sp.host.insertBefore(e, tail.nextSibling); tail = e; } });
+    }
+    (sp.moves || []).forEach(function (m) {
+      var e = m[0], r = m[1]; if (!e || !r || e === r || e.contains(r)) return;
+      if (m[2] === "end") { if (e.parentNode !== r || r.lastElementChild !== e) r.appendChild(e); }
+      else if (m[2] === "before") { if (e.nextSibling !== r) r.parentNode.insertBefore(e, r); }
+      else if (r.nextSibling !== e) r.parentNode.insertBefore(e, r.nextSibling);
+    });
+    if (sp.krow) (sp.toKrow || []).forEach(function (e) { if (e && e.parentNode !== sp.krow) sp.krow.appendChild(e); });
+    (sp.dup || []).forEach(function (e) { if (e && !e.hasAttribute("data-aog-dup")) e.setAttribute("data-aog-dup", ""); });
+    /* 2 · Any chord, folded behind one button beside Lower and Higher */
+    if (sp.any) {
+      var ab = $("aogAnyBtn"), open = !!kept(ANY_KEY)[id];
+      if (!ab) {
+        ab = D.createElement("button"); ab.type = "button"; ab.id = "aogAnyBtn"; ab.className = "pbtn aog-anyb";
+        if (sp.any.id) ab.setAttribute("aria-controls", sp.any.id);
+        ab.addEventListener("click", function () {
+          var on = ab.getAttribute("aria-expanded") !== "true"; keep(ANY_KEY, id, on ? 1 : 0);
+          ab.setAttribute("aria-expanded", on ? "true" : "false"); sp.any.classList.toggle("aog-shut", !on); hwSoon();
+        });
+        ab.setAttribute("aria-expanded", open ? "true" : "false"); sp.any.classList.toggle("aog-shut", !open);
+      }
+      if (sp.krow) { if (ab.parentNode !== sp.krow) sp.krow.appendChild(ab); }
+      else if (!ab.parentNode) sp.any.parentNode.insertBefore(ab, sp.any);
+      if (ab.textContent !== W("any")) ab.textContent = W("any");
+    }
+    /* 3 · More: one menu, then the part you picked */
+    var bar = $("aogMore");
+    if (!bar) {
+      bar = D.createElement("div"); bar.id = "aogMore"; bar.className = "aog-more no-print";
+      bar.innerHTML = '<label class="aog-more-in"><span class="aog-more-l"></span><select id="aogMoreSel"></select></label>';
+      bar.querySelector("select").addEventListener("change", function () { moreShow(this.value, true); });
+    }
+    /* in a room with a row of controls, More is the last of them (labelled like the others); elsewhere a row of its own */
+    var bh = (sp.ctl && sp.host.querySelector(".aog-ctl>.aog-ctl-row:last-child")) || sp.bar;
+    if (sp.barAfter) { if (sp.barAfter.nextSibling !== bar) sp.barAfter.parentNode.insertBefore(bar, sp.barAfter.nextSibling); }
+    else if (bar.parentNode !== bh || bh.lastElementChild !== bar) bh.appendChild(bar);
+    /* a part the page itself keeps hidden (a line only a tablet shows) is not offered */
+    var secs = sp.secs.map(function (s) { s.el = s.el.filter(Boolean); return s; }).filter(function (s) { return s.el.some(function (e) { return !e.hidden; }); });
+    secs.forEach(function (s) { s.el.forEach(function (e) { if (e.getAttribute("data-aog-sec") !== s.k) e.setAttribute("data-aog-sec", s.k); }); });
+    var want = bar.hasAttribute("data-set") ? (bar.getAttribute("data-on") || "") : (kept(MORE_KEY)[id] || "");
+    if (!secs.some(function (s) { return s.k === want; })) want = "";
+    var sel = bar.querySelector("select"), opts = [["", ""]].concat(secs.map(function (s) { return [s.k, nameOf(s, es)]; }));
+    var sig = (es ? "es|" : "en|") + opts.map(function (o) { return o.join("="); }).join("|");
+    if (sel.getAttribute("data-sig") !== sig) {
+      sel.innerHTML = opts.map(function (o) { var e = D.createElement("option"); e.value = o[0]; e.textContent = o[1]; return e.outerHTML; }).join("");
+      sel.setAttribute("data-sig", sig);
+    }
+    var lab = bar.querySelector(".aog-more-l"); if (lab.textContent !== W("more")) lab.textContent = W("more");
+    if (sel.getAttribute("aria-label") !== W("more")) sel.setAttribute("aria-label", W("more"));
+    MORE = { id: id, bar: bar, sel: sel, secs: secs, W: W };
+    moreShow(want, false);
+  }
+  var MORE = null;
+  function moreShow(k, byHand) {
+    var M = MORE; if (!M) return;
+    var bar = M.bar, sel = M.sel;
+    if (byHand) { bar.setAttribute("data-set", ""); keep(MORE_KEY, M.id, k); }
+    if (bar.getAttribute("data-on") !== k) bar.setAttribute("data-on", k);
+    if (sel.value !== k) sel.value = k;
+    var first = sel.options[0], fw = M.W(k ? "close" : "choose"); if (first && first.textContent !== fw) first.textContent = fw;
+    var shown = null;
+    M.secs.forEach(function (s) { s.el.forEach(function (e) {
+      var on = s.k === k; if (on !== e.hasAttribute("data-aog-on")) { if (on) e.setAttribute("data-aog-on", ""); else e.removeAttribute("data-aog-on"); }
+      if (on && !shown && e.getClientRects().length) shown = e; }); });
+    if (!byHand) return;
+    var s = M.secs.filter(function (x) { return x.k === k; })[0];
+    if (s && s.open) { var d = D.querySelector(s.open); if (d && !d.open) d.open = true; }
+    hwSoon();
+    try { window.dispatchEvent(new Event("resize")); } catch (e) {}
+    /* when the part opens low on the screen (or above it), the page brings its top into sight, at once (no gliding) */
+    if (shown) { var r = shown.getBoundingClientRect(); if (r.top < 0 || r.top > innerHeight * 0.7) window.scrollBy(0, r.top - Math.round(innerHeight * 0.15)); }
+  }
   /* AOG-KEYS-AFTER-MENU-V1 (Jimmy, 2026-10-09, on his iPad: "I am trying the church organs and other instruments and they
      don't work using the iPad keyboard"). After a menu is used (the sound, the key, a pattern), an iPad leaves the keyboard
      with that menu, and the instruments rightly ignore keys typed into a menu, so no key played. Once a choice is made the
@@ -256,6 +450,62 @@
     "background-image:linear-gradient(#fbf6ea,#f1e7d1);color:#1f1a12!important;font:italic 400 1.02rem/1.4 Fraunces,Georgia,serif!important;" +
     "box-shadow:0 8px 16px rgba(0,0,0,.45),0 1px 1px rgba(0,0,0,.2);transform:rotate(-.4deg)}" +
     "@media (prefers-reduced-motion:reduce){html.in-studio .aog-slip{transform:none}}";
+  /* AOG-ROOMS-COMPACT-V1: a part out of sight, a duplicate, a folded Any chord; the row of controls; the More menu */
+  if (shell) ss.textContent += "html.in-studio [data-aog-sec]:not([data-aog-on]),html.in-studio [data-aog-dup],html.in-studio .any.aog-shut{display:none!important}" +
+    "html.in-studio.aog-compact #rig .blk>h2[data-t=neckH],html.in-studio.aog-compact #rig .blk>h2[data-t=keysH]{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;margin:0!important}" +
+    "html.in-studio.aog-compact #rig>.plate{display:none}html.in-studio.aog-compact #rig{padding-top:12px}" +   /* the doors name the room: said once */
+    "html.in-studio .aog-ctl{margin:.75rem 0 .1rem}html.in-studio .aog-ctl-row{display:flex;flex-wrap:wrap;gap:.6rem .8rem;align-items:flex-end}" +
+    "html.in-studio .aog-ctl-row+.aog-ctl-row{margin-top:.6rem}html.in-studio .aog-ctl-row:empty{display:none}html.in-studio .aog-ctl-row>*{margin:0!important;min-width:0}" +
+    "html.in-studio .aog-ctl .sp-wrap{flex:1 1 21rem}html.in-studio .aog-ctl .sp-row{flex-wrap:nowrap}html.in-studio .aog-ctl .sp-row .field{flex:1 1 0}" +
+    "html.in-studio .aog-ctl-row>.row{flex:0 1 auto;flex-wrap:nowrap;gap:.6rem}html.in-studio .aog-ctl-row>.row>.field{flex:0 1 8rem}html.in-studio .aog-ctl-row>.row>.field.small{flex:0 0 auto}" +
+    "html.in-studio .aog-ctl .seg{display:flex;flex-wrap:nowrap}html.in-studio .aog-ctl-row>.row:has(#sendBtn){flex-wrap:wrap}" +
+    "html.in-studio .aog-krow-top #soloMode{display:flex;flex-wrap:nowrap;gap:.4rem;margin:0}html.in-studio .aog-krow-top #soloMode>*{margin:0}" +
+    "html.in-studio .aog-ctl .krow{flex:0 1 auto;margin:0}" +
+    "@media (max-width:699px){html.in-studio .aog-ctl #pedalsNear{order:-1}html.in-studio .aog-ctl-row>.row{flex-wrap:wrap}html.in-studio .aog-ctl-row>.row>.field{flex:0 0 6rem}html.in-studio .aog-ctl .sp-wrap{flex-basis:100%}}" +
+    "html.in-studio .aog-ctl #pedalsNear{flex:1 1 100%}html.in-studio .aog-ctl #pedalsNear:has(.aa-none){flex:1 1 13rem}" +
+    "html.in-studio .aog-ctl #pedalsNear .aa-near{margin:0}html.in-studio .aog-ctl #pedalsNear .aa-none{display:none}" +
+    "html.in-studio .aog-ctl #pedalsNear:has(.aa-none) .aa-near{padding:0;border:0;background:none}" +
+    "html.in-studio .aog-ctl #pedalsNear:has(.aa-none) .aa-nearh{margin:0;display:grid;gap:0}html.in-studio .aog-ctl #pedalsNear:has(.aa-none) .aa-nearh select{width:100%}" +
+    "html.in-studio .aog-ctl #pedalsNear:has(.aa-none) .aa-nearh b{font-size:.72rem;letter-spacing:.12em;margin:0 0 .35rem}" +
+    "html.in-studio.aog-compact #pedalsNear .aa-none{display:none}html.in-studio.aog-compact #pedalsNear:has(.aa-none) .aa-near{padding:0;border:0;background:none;margin:.4rem 0}" +
+    "html.in-studio.aog-compact #pedalsNear:has(.aa-none) .aa-nearh{margin:0}" +
+    "html.in-studio .aog-ctl~.line:empty{margin:0}html.in-studio .aog-ctl+.line{margin-top:.45rem}" +
+    "html.in-studio.aog-compact #rig{margin-top:.5rem}" +
+    "html.in-studio .aog-anyb::after{content:' \\25BE'}html.in-studio .aog-anyb[aria-expanded=true]::after{content:' \\25B4'}" +
+    "html.in-studio .aog-more{margin:.9rem 0 .2rem;padding:.8rem 0 0;border-top:1px solid #2f3339}" +
+    "html.in-studio .aog-ctl-row>.aog-more{margin:0 0 0 auto!important;padding:0;border:0;flex:0 1 15rem}" +
+    "html.in-studio .aog-more-in{display:grid;gap:.35rem;margin:0;max-width:24rem}" +
+    "html.in-studio .aog-more-l{font:800 .72rem/1.2 var(--sans,system-ui,sans-serif);letter-spacing:.14em;text-transform:uppercase;color:#e3dac9}" +
+    "html.in-studio .aog-more select{width:100%;min-width:0;min-height:48px;font-size:16px}" +
+    /* a phone held upright: Lower, the frets and Higher on one line, the ways to play under them */
+    "@media (max-width:699px){html.in-studio .aog-krow-top{gap:.4rem .5rem;margin-bottom:.45rem}html.in-studio.aog-compact #rig{margin-top:.2rem;padding-top:9px}html.in-studio .aog-krow-top .range{min-width:0;flex:1 1 auto}" +
+    "html.in-studio .aog-krow-top .pbtn{padding-left:.7rem;padding-right:.7rem}html.in-studio .aog-krow-top #soloMode{margin-right:auto}}" +
+    /* the Drum Machine: the whole-screen button beside the ready line; on a phone on its side the pads and the sequencer
+       side by side, the pads as big as the screen's height allows */
+    "@media (min-width:700px){html.in-studio.aog-compact .pm-bigrow{float:right;margin:0 0 6px .7rem}html.in-studio.aog-compact .pm-cols #pads{clear:both}}" +
+    /* a phone held upright: six pads across, each a finger wide, never over each other */
+    "@media (max-width:699px){html.in-studio.aog-compact .pm-cols .pad{min-height:0;padding:2px}html.in-studio.aog-compact .pm-cols .pad .pn{font-size:11px;overflow-wrap:normal;max-width:100%;overflow:hidden}html.in-studio.aog-compact .pm-cols .pad .pn.long{font-size:10px;overflow-wrap:anywhere}}" +
+    "@media (orientation:landscape) and (max-height:500px){html.in-studio.aog-compact .pm-cols{grid-template-columns:min(58%,calc((100vh - 112px) * 1.5)) minmax(0,1fr);align-items:start}" +
+    "html.in-studio.aog-compact .pm-cols #pads{max-width:none;margin:0}html.in-studio.aog-compact .pm-cols .pad{min-height:0}html.in-studio.aog-compact .pm-cols .pad .pn{font-size:13px}html.in-studio.aog-compact .pm-cols .pad .pn.long{font-size:11px}" +
+    "html.in-studio.aog-compact .pm-cols>div:first-child{display:flex;flex-direction:column}html.in-studio.aog-compact .pm-cols>div:first-child>*{order:3}" +
+    "html.in-studio.aog-compact .pm-cols>div:first-child>.pm-line,html.in-studio.aog-compact .pm-cols>div:first-child>.pm-now{order:0;margin:.1rem 0 .3rem;font-size:.9rem}" +
+    "html.in-studio.aog-compact .pm-cols>div:first-child>#pads{order:1}html.in-studio.aog-compact .pm-cols .pm-bigrow{order:2;float:none;justify-content:flex-start;margin:8px 0 0}}" +
+    /* the Drum Kit: the kit as big as the screen allows, with its menu, Record and More under it */
+    /* the Turntables: a card with nothing open in it steps aside; on a short screen the record is a little smaller, with
+       REV beside it, and the pitch on one line; on a phone on its side the record and Start come first */
+    "html.in-studio.aog-compact #cratecard:not(:has([data-aog-on])){display:none!important}" +
+    "@media (max-width:700px){html.in-studio.aog-compact .deck .platter-wrap{width:min(190px,64%);margin:.3rem auto;position:relative}html.in-studio.aog-compact .deck .platter-wrap .platter{width:100%}" +
+    "html.in-studio.aog-compact .deck .platter-wrap .revc{position:absolute;left:calc(100% + 10px);bottom:0;margin:0}html.in-studio.aog-compact .deck .wave{height:40px}}" +
+    "@media (min-width:701px) and (max-height:860px){html.in-studio.aog-compact .decks .deck .platter-wrap{width:min(172px,100%);position:relative;margin:.35rem auto .3rem}" +
+    "html.in-studio.aog-compact .decks .deck .platter-wrap .revc{position:absolute;left:calc(100% + 14px);bottom:0;margin:0}html.in-studio.aog-compact .deck .wave{height:40px}" +
+    "html.in-studio.aog-compact .deck>label.knob{display:grid;grid-template-columns:auto auto auto minmax(0,1fr);align-items:center;gap:.5rem}html.in-studio.aog-compact .deck>label.knob input{margin:0}}" +
+    "@media (orientation:landscape) and (max-height:500px){html.in-studio.aog-compact .deck{display:flex;flex-direction:column}html.in-studio.aog-compact .deck>*{order:3}" +
+    "html.in-studio.aog-compact .deck>.dhead{order:0}html.in-studio.aog-compact .decks .deck>.platter-wrap{order:1;width:min(128px,100%);margin:.2rem auto}html.in-studio.aog-compact .deck>.row:has([data-play]){order:2}" +
+    "html.in-studio.aog-compact .wrap{padding-top:.4rem}html.in-studio.aog-compact .pairbar{margin-top:0}" +
+    "html.in-studio.aog-compact .xfade.xf-top{position:relative;padding:.1rem 2.6rem;margin:0 0 .5rem}html.in-studio.aog-compact .xf-top .xends{position:absolute;left:.8rem;right:.8rem;top:50%;transform:translateY(-50%);pointer-events:none}" +
+    "html.in-studio.aog-compact .xf-top .xends>:not(:first-child):not(:last-child){visibility:hidden}}" +
+    "html.in-studio.aog-compact .deck>label.knob input{width:100%}" +
+    "html.in-studio.aog-compact #kitBox>svg.kit{width:auto;height:auto;max-width:100%;max-height:max(240px,calc(100vh - 270px));margin:0 auto}";
   var HW = D.createElement("style"); HW.id = "aog-hw-css";
   HW.textContent = "html select.aog-hw{color:#f6e3b4!important;background-color:#121316!important;border:1px solid #5b4a24!important;border-radius:9px!important;" +
     "background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e0b25a' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E\"),linear-gradient(#0b0c0e,#17181c)!important;" +
@@ -294,12 +544,16 @@
   if (shell) {
     /* AOG-STUDIO-SMOOTH-V1: a burst of changes while the room loads asks once, just before the screen is drawn again,
        not once per change (and never shows the room half moved) */
-    var fsT = 0, fsSoon = function () { if (!fsT) fsT = requestAnimationFrame(function () { fsT = 0; firstSurface(); }); };
+    var surface = function () { firstSurface(); try { compact(); } catch (e) {} };   /* AOG-ROOMS-COMPACT-V1 */
+    var fsT = 0, fsSoon = function () { if (!fsT) fsT = requestAnimationFrame(function () { fsT = 0; surface(); }); };
     var later = function () {
-      firstSurface();
+      surface();
       try { var mo = new MutationObserver(function () { if (!fsT && D.querySelector(".aog-course-band:not(.aog-learn *),.pm-guide:not(.aog-learn *)")) fsSoon(); });
         mo.observe(D.body, { childList: true, subtree: true }); setTimeout(function () { mo.disconnect(); }, 15000); } catch (e) {}
-      window.addEventListener("load", firstSurface);
+      window.addEventListener("load", surface);
+      /* a phone turned back upright brings its instrument home from the whole-screen view: the room is fitted again */
+      var rzT = 0; window.addEventListener("resize", function () { clearTimeout(rzT); rzT = setTimeout(fsSoon, 250); });
+      try { new MutationObserver(function () { setTimeout(fsSoon, 60); }).observe(D.documentElement, { attributes: true, attributeFilter: ["lang"] }); } catch (e) {}   /* More's words follow the language */
     };
     if (D.readyState === "loading") D.addEventListener("DOMContentLoaded", later); else later();
   }

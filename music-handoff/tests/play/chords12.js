@@ -119,7 +119,9 @@ const boxInfo=(f, sel)=>f.evaluate(sel=>{ const bs=[...document.querySelectorAll
       for(let t=0;t<40 && !f;t++){ await p.waitForTimeout(250); f=p.frames().find(x=>x.url().indexOf(R.file)>=0) || null; if(f && !(await f.evaluate(()=>document.querySelectorAll("#chordStrip .cs").length===12).catch(()=>false))) f=null; }
       console.log("== "+R.id+" · iPad in the Studio");
       ok(!!f && await f.evaluate(()=>document.documentElement.classList.contains("in-studio")), R.id+": the room is open inside the Studio");
-      if(f){ await f.evaluate(()=>{ const s=document.getElementById("chordStrip"); window.scrollTo(0, s.getBoundingClientRect().top+scrollY-8); }); await p.waitForTimeout(150);
+      if(f){ /* AOG-ROOMS-COMPACT-V1: in the Studio Any chord is folded behind one button by Lower and Higher: open it, as a person would */
+        const ab=await f.$("#aogAnyBtn"); if(ab && await ab.getAttribute("aria-expanded")!=="true"){ await ab.click(); await p.waitForTimeout(200); }
+        await f.evaluate(()=>{ const s=document.getElementById("chordStrip"); window.scrollTo(0, s.getBoundingClientRect().top+scrollY-8); }); await p.waitForTimeout(150);
         const s=await boxInfo(f, "#chordStrip .cs"), r=await boxInfo(f, "#anyRoots .ar");
         ok(s.n===12 && s.rows<=2 && s.w>=44 && s.h>=44 && !s.clip.length && !s.side, `${R.id}: iPad, the chords in ${s.rows} row(s), ${Math.round(s.w)} px each, nothing sideways`);
         ok(r.n===12 && r.w>=44 && r.h>=44 && !r.clip.length, `${R.id}: iPad, the roots ${Math.round(r.w)} px each`);

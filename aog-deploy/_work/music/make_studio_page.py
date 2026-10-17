@@ -19,6 +19,8 @@ The page is a frame, not a list of links:
     comes into the Studio, in that room (each room's head script, ?at=). The "own tab" link is gone. Two Studio tabs
     still hear each other (aog-handoff.js, BroadcastChannel "aog-music").
 The address says the room (/the-studio#bass), so Back, a bookmark and a shared link all land in the right room.
+AOG-STUDIO-SUPREME-V1 (2026-10-17): the frame is one control room in one order (the meter bridge, the eight doors, the room,
+the desk); see the CSS below and STUDIO-HANDOFF.md §33. Test: music-handoff/tests/studio/supreme.js.
 The page draws at full size on a computer (no 85% zoom): the rooms inside have canvases, and a pen must land under the
 finger (CLAUDE.md).
 
@@ -45,203 +47,213 @@ LAYERS = [("pads", ("Drums", "Ritmos")), ("kit", ("Kit", "Batería")), ("piano",
 def esc(t): return html.escape(t, quote=True)
 def sp(pair): return '<span data-en="%s" data-es="%s">%s</span>' % (esc(pair[0]), esc(pair[1]), esc(pair[0]))
 CSS = """
-/* AOG-STUDIO-SHELL-V1 — one house: the doors, the room, My Track */
-body { zoom:1 !important; }   /* full size: the rooms inside draw on canvases (CLAUDE.md, 85% rule) */
-.shell { max-width:1400px; margin:0 auto; padding:0 max(.75rem, env(safe-area-inset-right)) 0 max(.75rem, env(safe-area-inset-left)); }
-.sh-top { display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between; gap:.2rem 1rem; padding:.55rem 0 .35rem; }
-.sh-top h1 { font-family:var(--display); font-size:1.45rem; line-height:1.15; margin:0; letter-spacing:-.01em; color:var(--ink); }
-.sh-tag { margin:0; color:var(--muted); font-size:.95rem; flex:1 1 auto; }
-.sh-own { min-height:44px; display:inline-flex; align-items:center; color:var(--steel); font-weight:700; font-size:.92rem; text-decoration:underline; text-underline-offset:3px; }
-.sh-doors ul { list-style:none; margin:0; padding:2px 2px 6px; display:grid; grid-auto-flow:column; grid-auto-columns:max-content; gap:6px;
-  overflow-x:auto; overscroll-behavior-x:contain; scroll-snap-type:x proximity; -webkit-overflow-scrolling:touch; }
-.sh-doors li { scroll-snap-align:start; }
-.sh-doors a { display:flex; align-items:center; gap:7px; min-height:44px; padding:3px 12px 3px 3px; text-decoration:none; color:var(--ink);
-  background:var(--card); border:1px solid var(--line); border-radius:12px; font:700 .9rem/1.15 var(--sans); white-space:nowrap; }
-.sh-doors .pic { display:block; width:52px; height:38px; flex:0 0 auto; border-radius:8px; overflow:hidden; background:#f3eee2; }
-.sh-doors img { display:block; width:100%; height:100%; object-fit:cover; object-position:60% 50%; }
-.sh-doors a[aria-current="true"] { border:2px solid #c9a24b; box-shadow:inset 0 0 0 1px #c9a24b; }
-.sh-doors a:focus-visible, .mt a:focus-visible, .sh-own:focus-visible { outline:3px solid #c9a24b; outline-offset:2px; }
-@media (min-width:1100px) { .sh-doors ul { grid-auto-flow:row; grid-template-columns:repeat(8,minmax(0,1fr)); overflow:visible; } .sh-doors a { white-space:normal; } }
-.sh-room { display:block; width:100%; height:70vh; border:1px solid var(--line); border-radius:14px; background:var(--bg); }
-.mt { margin:0; position:sticky; bottom:0; z-index:5; display:grid; gap:.3rem; padding:.4rem 0 max(.4rem, env(safe-area-inset-bottom)); background:var(--bg); }
-.mtrow { display:flex; align-items:center; gap:.5rem; min-width:0; }
-/* AOG-STUDIO-TRANSPORT-V1: the studio's transport, the same for every room */
-.tp { display:flex; flex-wrap:wrap; align-items:center; gap:6px; }
-.tp-b { min-height:44px; display:inline-flex; align-items:center; justify-content:center; gap:.35rem; padding:0 .95rem; border-radius:12px;
-  border:1px solid #0a0b0d; background:linear-gradient(#3a3e44,#1c1f23); color:#f3efe6; font:800 .95rem/1.1 var(--sans); text-decoration:none; cursor:pointer; white-space:nowrap; }
-.tp-b:disabled { opacity:.55; cursor:default; }
-.tp-b[hidden] { display:none; }
-.tp-rec { background:linear-gradient(#ffe08a,#e09020); color:#2a1a08; min-width:7.2rem; }
-.tp-rec[aria-pressed="true"] { background:linear-gradient(#ffb1a4,#c4452a); color:#2a0c08; }
-.tp-add { background:linear-gradient(#bfe7c9,#6fbf8b); color:#0d2614; }
-.tp-out { border-color:#5b8fd6; }
-/* AOG-OVERDUB-V1: record over My Track */
-.tp-over[aria-pressed="true"] { border-color:#c9a24b; box-shadow:inset 0 0 0 1px #c9a24b; }
-.tp-from { min-height:44px; max-width:11rem; font:700 16px/1.2 var(--sans); color:#0A1E33; background:#FFFDF8; border:1.5px solid #C9A24A; border-radius:12px; padding:0 .6rem; cursor:pointer; }
-.song-from[hidden] { display:none; }
-.song-from { display:flex; flex-wrap:wrap; align-items:center; gap:.4rem; font-weight:700; color:var(--ink); }
-.tp-from:focus-visible { outline:3px solid #c9a24b; outline-offset:2px; }
-/* AOG-SONG-V1: the song's tempo and key, one tap from every room */
-.tp-song { border-color:#c9a24b; flex:0 0 auto; }
-.song-box { display:grid; gap:.55rem; padding:.7rem .8rem; border:1px solid var(--line); border-radius:14px; background:var(--card); color:var(--ink); }
-.song-box[hidden] { display:none; }
-.song-box h2 { margin:0; font:800 1rem/1.2 var(--sans) !important; letter-spacing:0 !important; color:var(--ink); }
-.song-box p { margin:0; color:var(--muted); font-size:.92rem; }
-.song-row { display:flex; flex-wrap:wrap; align-items:center; gap:.5rem .7rem; }
-.song-row label { font-weight:700; color:var(--ink); }
-.song-row input, .song-row select { min-height:44px; font:700 16px/1.2 var(--sans); color:#0A1E33; background:#FFFDF8; border:1.5px solid #C9A24A; border-radius:10px; padding:0 .6rem; }
-.song-row input { width:5.2rem; text-align:center; }
-.song-b { min-height:44px; min-width:44px; padding:0 .8rem; border-radius:10px; border:1px solid var(--line); background:var(--bg); color:var(--ink); font:800 .95rem/1 var(--sans); cursor:pointer; }
-.song-b[aria-pressed="true"] { border:2px solid #c9a24b; }
-.song-lat { display:grid; gap:.35rem; border-top:1px solid var(--line); padding-top:.55rem; }
-.song-lat h3 { margin:0; font:800 .95rem/1.2 var(--sans) !important; letter-spacing:0 !important; color:var(--ink); }
-.song-lat p { margin:0; }
-.song-lat .song-b { justify-self:start; }
-#latLine { color:var(--ink); font-weight:700; }
-#latLine:empty { display:none; }
-.song-b:focus-visible, .song-row input:focus-visible, .song-row select:focus-visible { outline:3px solid #c9a24b; outline-offset:2px; }
-.tp-line { flex:1 1 12rem; min-width:0; color:var(--ink); font-weight:700; font-size:.92rem; }
-.tp-line:empty { display:none; }
-.tp-b:focus-visible { outline:3px solid #c9a24b; outline-offset:2px; }
+/* ══ AOG-STUDIO-SUPREME-V1 (2026-10-17) — Jimmy: "I want the 'presentation or the room' of the studio / mixing board to be
+   supreme in its presentation and excellence in its structure and handling." The Recording Studio is one control room made
+   of one set of parts, in one order, so you always know where you are:
+     1. the meter bridge along the top: Back, the Studio's name, the room's meters and room sound, EN | ES;
+     2. the eight doors, in song order, every one a single tap (two rows of four on a phone; one row of eight on an upright
+        iPad; a column down the left on an iPad on its side and a computer, where the width is spare and the height is not).
+        The room you are in is lit; the Mixing Desk stands a step apart, because it is the control room;
+     3. the room's window, as large as the screen allows;
+     4. the desk along the bottom: the transport, then My Track (the song's tempo and key, + Add a layer, the layers).
+   Every control is the same kind of key; the drawings sit on paper inserts; the layers are paper scribble strips. Dark in
+   both themes, as a real control room is. Nothing moves on its own, nothing glows. (Older looks: STUDIO-HANDOFF.md §33.) ══ */
+body { zoom:1 !important; }
 /* AOG-STEADY-ALL-V1: the site's floating My notes button sat over the room's instrument (a tap there played nothing and
    opened a drawer over the keys); the Studio has no reading of its own, so it has none */
-.aog-mkbtn { display:none !important; }
+.aog-mkbtn { display:none !important; }   /* full size: the rooms inside draw on canvases (CLAUDE.md, 85% rule) */
+:root { --st-wall:#110d0a; --st-key:#2a251f; --st-key2:#1d1915; --st-edge:#050403; --st-ink:#f4ead6; --st-gold:#e2b55c;
+  --st-paper:#f4ecdb; --st-paper-ink:#1f1a12; --st-key-font:700 .95rem/1.1 Inter, var(--sans); }
+:root { --st-dim:#cdbfa3; }
+html, html[data-theme="dark"] { background:#17110c; }
+html:root:root body { --room:#17110c; background-color:#17110c !important; color:var(--st-ink);   /* the rooms' own colour: the frame and the room are one space */
+  background-image:linear-gradient(180deg, #211a13 0, #17110c 160px) !important; background-attachment:fixed; }
+.aogtop, .aogtop-spacer { display:none !important; }   /* AOG-STUDIO-APP-V1: the site bar steps aside (its code stays: language, theme) */
+.sh-tag { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; margin:0; }   /* said by the transport itself */
+.shell { max-width:1680px; margin:0 auto; padding:0 max(12px, env(safe-area-inset-right)) 0 max(12px, env(safe-area-inset-left));
+  display:grid; grid-template-columns:minmax(0,1fr); grid-template-areas:"top" "doors" "room" "mt"; }
+
+/* the keys: one shape for every control in the Studio */
+.sh-back, .sh-lang, .tp-b, .mt a.tp-b, #mtAdd, .sh-doors a { -webkit-tap-highlight-color:transparent; }
+.sh-back, .tp-b, .mt a.tp-b { min-height:44px; display:inline-flex; align-items:center; justify-content:center; gap:.4rem; padding:0 1rem; border-radius:9px;
+  border:1px solid var(--st-edge); background:linear-gradient(#36302a, var(--st-key) 45%, var(--st-key2)); color:var(--st-ink); font:var(--st-key-font);
+  letter-spacing:.005em; text-decoration:none; white-space:nowrap; cursor:pointer; touch-action:manipulation;
+  box-shadow:inset 0 1px 0 rgba(255,240,215,.13), 0 2px 0 var(--st-edge), 0 3px 6px rgba(0,0,0,.35); }
+.sh-back:active, .tp-b:active, .mt a.tp-b:active { transform:translateY(1px); box-shadow:inset 0 1px 0 rgba(255,240,215,.08), 0 1px 0 var(--st-edge); }
+.tp-b:disabled { opacity:.6; cursor:default; }
+.tp-b[hidden], .mt [hidden], .sh-top [hidden] { display:none !important; }
+.sh-back:focus-visible, .sh-lang button:focus-visible, .tp-b:focus-visible, .sh-doors a:focus-visible, #mtAdd:focus-visible, .song-b:focus-visible,
+.song-row input:focus-visible, .song-row select:focus-visible, .tp-from:focus-visible { outline:3px solid var(--st-gold); outline-offset:2px; }
+
+/* 1 · the meter bridge */
+.sh-top { grid-area:top; display:flex; align-items:center; gap:10px; min-height:54px; padding:5px 0; border-bottom:1px solid rgba(255,236,200,.07); }
+.sh-back { flex:0 0 auto; padding:0 .85rem 0 .6rem; gap:.25rem; }
+.sh-top h1 { flex:1 1 auto; min-width:0; margin:0; font:500 1.32rem/1.12 "Fraunces", var(--display) !important; letter-spacing:-.005em !important; color:var(--st-ink); }
+.sh-bridge { flex:0 0 auto; display:flex; align-items:center; gap:10px; }
+.tp-vu { display:inline-flex; flex:0 0 auto; align-items:center; gap:8px; }
+.tp-vu[hidden] { display:none; }
+.sh-lang { flex:0 0 auto; display:inline-flex; gap:2px; padding:2px; border-radius:10px; border:1px solid var(--st-edge); background:#0b0907;
+  box-shadow:inset 0 1px 3px rgba(0,0,0,.8), 0 1px 0 rgba(255,236,200,.07); }
+.sh-lang button { min-height:40px; min-width:46px; padding:0 .7rem; border:0; border-radius:8px; background:transparent; color:var(--st-dim); font:700 .92rem/1 Inter, var(--sans); cursor:pointer; }
+.sh-lang button[aria-pressed="true"] { background:linear-gradient(#f0cf86,var(--st-gold)); color:#1d1608; }
+
+/* 2 · the doors: dark keys, each with its drawing on a paper insert; the room you are in is lit */
+.sh-doors { grid-area:doors; padding:8px 0; }
+.sh-doors ul { list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:6px; }
+.sh-doors li { min-width:0; display:flex; }
+.sh-doors a { position:relative; flex:1 1 auto; min-width:0; display:flex; align-items:center; justify-content:center; gap:8px; min-height:44px; padding:4px 6px;
+  border-radius:10px; border:1px solid var(--st-edge); background:linear-gradient(#302a24, #221d18); color:var(--st-ink); text-decoration:none; text-align:center;
+  font:700 .86rem/1.15 Inter, var(--sans); box-shadow:inset 0 1px 0 rgba(255,240,215,.1), 0 2px 0 var(--st-edge); }
+.sh-doors a > span:last-child { min-width:0; overflow-wrap:anywhere; hyphens:auto; }
+.sh-doors .pic { display:none; flex:0 0 auto; border-radius:5px; overflow:hidden; background:#f3eee2; box-shadow:0 0 0 1px var(--st-edge), inset 0 0 0 1px rgba(0,0,0,.08); }
+.sh-doors img { display:block; width:100%; height:100%; object-fit:cover; object-position:64% 50%; }
+.sh-doors a[aria-current="true"] { background:linear-gradient(#fbf1d8, #efdcae); color:#1d1608; border-color:#7a5a1c;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.55), 0 0 0 2px var(--st-gold), 0 2px 0 var(--st-edge); }
+.sh-doors a[aria-current="true"]::after { content:""; position:absolute; top:5px; right:5px; width:7px; height:7px; border-radius:50%;
+  background:#c4452a; box-shadow:0 0 0 1px rgba(60,10,0,.5); }   /* the lamp over the door: you are here (a lamp, not a glow) */
+.sh-doors li:last-child { position:relative; }
+
+/* 3 · the room's window */
+main.sh-main { grid-area:room; min-width:0; margin:0; }
+.sh-room { display:block; width:100%; height:70vh; border:0; border-radius:12px; background:#17110c;
+  box-shadow:0 0 0 1px var(--st-edge), 0 0 0 4px #2a241d, 0 0 0 5px var(--st-edge), 0 18px 40px rgba(0,0,0,.5); }
+
+/* 4 · the desk: the transport, then My Track */
+.mt { grid-area:mt; position:relative; z-index:5; margin:8px calc(-1 * max(12px, env(safe-area-inset-right))) 0 calc(-1 * max(12px, env(safe-area-inset-left)));
+  padding:9px max(12px, env(safe-area-inset-right)) max(9px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+  display:flex; flex-wrap:wrap; align-items:center; gap:8px 16px; background:linear-gradient(#29231d, #1b1713 55%, #15120f); border-top:1px solid var(--st-edge);
+  box-shadow:inset 0 1px 0 rgba(255,236,200,.09); }
+.tp { display:flex; align-items:center; gap:6px; flex:0 0 auto; }
+.tp-rec { min-width:7.4rem; color:#ffe1d8; background:linear-gradient(#4d2a22, #3a1f19 45%, #2c1713); }
+.tp-rec[aria-pressed="true"] { background:linear-gradient(#a8402a, #86301f); color:#fff6f2; border-color:#3b0d05; }
+.tp-add { background:linear-gradient(#f6e2a8, #e6c06a 50%, #d2a548); color:#231704; border-color:#5e4512; }
+.tp-out { color:#f3d48e; }
+.tp-back { color:var(--st-ink); }
+/* a message from the transport: a small paper slip just above the desk, not another line */
+.tp-line { position:absolute; left:max(12px, env(safe-area-inset-left)); bottom:100%; margin:0 0 8px; max-width:min(38rem, calc(100% - 24px)); padding:.5rem .85rem;
+  border-radius:3px; background:var(--st-paper); color:var(--st-paper-ink); font:italic 500 1rem/1.3 "Fraunces", var(--serif, Georgia, serif);
+  box-shadow:0 6px 16px rgba(0,0,0,.45), 0 1px 1px rgba(0,0,0,.2); }
+.tp-line:empty { display:none; }
+.mtrow { display:flex; align-items:center; gap:8px; flex:1 1 36rem; min-width:0; }
 /* an ID, so the site's serif heading rule (aog-grace.css) leaves this small label alone */
-#mtH { margin:0; flex:0 0 auto; font:800 .74rem/1.2 var(--sans) !important; letter-spacing:.14em !important; text-transform:uppercase; color:var(--muted); }
-.mt ul { list-style:none; margin:0; padding:2px; display:flex; gap:6px; overflow-x:auto; overscroll-behavior-x:contain; flex:1 1 auto; min-width:0; }
-.mt a, .mt .lay { display:inline-flex; align-items:center; gap:.35rem; min-height:44px; padding:0 .8rem; border-radius:999px; border:1px solid var(--line);
-  background:var(--card); color:var(--ink); font:700 .88rem/1 var(--sans); text-decoration:none; white-space:nowrap; }
-.mt .mk { font-weight:800; color:var(--muted); }
-.mt .on { border-color:#2c7a4e; }
-.mt .on .mk { color:#2c7a4e; }
-:root[data-theme="dark"] .mt .on { border-color:#6fbf8b; }
-:root[data-theme="dark"] .mt .on .mk { color:#6fbf8b; }
-.mt select { flex:0 0 auto; min-height:44px; max-width:11.5rem; font:700 16px/1.2 var(--sans); color:#0A1E33; background:#FFFDF8; border:1.5px solid #C9A24A;
-  border-radius:999px; padding:0 .8rem; cursor:pointer; }
-.mt a.mix { background:var(--steel); border-color:var(--steel); color:#f4f8f9; }
-:root[data-theme="dark"] .mt a.mix { color:#14181e; }
-/* a phone: one slim line above the doors, so the room gets the screen */
-@media (max-width:699px) {
-  .sh-top { flex-wrap:nowrap; align-items:center; padding:.25rem 0 .2rem; }
-  .sh-top h1 { font-size:1.15rem; flex:1 1 auto; }
-  .sh-tag, .sh-own .long { display:none; }
-  .sh-own { white-space:nowrap; }
+#mtH { margin:0; flex:0 0 auto; font:800 .72rem/1.15 Inter, var(--sans) !important; letter-spacing:.14em !important; text-transform:uppercase; color:var(--st-dim) !important; }
+.tp-song { flex:0 0 auto; color:#f3d48e; padding:0 .85rem; }
+#mtAdd { flex:0 1 auto; min-height:44px; max-width:12rem; min-width:0; padding:0 .8rem; border-radius:9px; border:1px solid #4b4130; background:#0d0b09; color:#f3d48e;
+  font:600 16px/1.2 Inter, var(--sans); box-shadow:inset 0 1px 3px rgba(0,0,0,.8), 0 1px 0 rgba(255,236,200,.07); cursor:pointer; }
+#mtAdd option { color:#0A1E33; background:#FFFDF8; }
+/* My Track: the layers, two rows of paper scribble strips; a layer with a take has its lamp on and a ✓ */
+.mt ul { list-style:none; margin:0; padding:2px; flex:1 1 auto; min-width:0; display:grid; grid-auto-flow:column; grid-template-rows:repeat(2, 20px); grid-auto-columns:max-content; gap:4px 5px;
+  overflow-x:auto; overscroll-behavior-x:contain; scrollbar-width:none; }
+.mt ul.more { -webkit-mask-image:linear-gradient(90deg, #000 calc(100% - 26px), transparent); mask-image:linear-gradient(90deg, #000 calc(100% - 26px), transparent); }   /* more strips this way */
+.mt ul::-webkit-scrollbar { display:none; }
+.mt li { display:flex; min-width:0; }
+.mt .lay { flex:1 1 auto; display:inline-flex; align-items:center; gap:.32rem; height:20px; padding:0 .5rem; border-radius:2px; white-space:nowrap;
+  background:#d3c8b0; color:#2f2920; font:italic 500 .84rem/1 "Fraunces", var(--serif, Georgia, serif); box-shadow:0 1px 1px rgba(0,0,0,.5); }
+.mt .lay::before { content:""; flex:0 0 auto; width:6px; height:6px; border-radius:50%; background:#6f675a; box-shadow:inset 0 1px 1px rgba(0,0,0,.5); }
+.mt .lay .mk { font:800 .74rem/1 Inter, var(--sans); color:#1d6b3f; }
+.mt .lay.on { background:var(--st-paper); color:var(--st-paper-ink); }
+.mt .lay.on::before { background:#2f9e5c; box-shadow:0 0 0 1px rgba(10,50,25,.45); }
+
+/* ♩ Song: a paper sheet over the room, just above the desk; Done, Escape or a tap outside closes it */
+.song-box { position:fixed; z-index:40; right:max(12px, env(safe-area-inset-right)); bottom:calc(var(--st-mt, 120px) + 10px); width:min(30rem, calc(100vw - 24px));
+  max-height:calc(100dvh - var(--st-mt, 120px) - 24px); overflow:auto; overscroll-behavior:contain;
+  display:grid; gap:.6rem; padding:.85rem .95rem; border-radius:6px; background:var(--st-paper); color:var(--st-paper-ink); box-shadow:0 14px 36px rgba(0,0,0,.6), 0 0 0 1px var(--st-edge); }
+.song-box[hidden] { display:none; }
+.song-box h2 { margin:0; font:600 1.15rem/1.2 "Fraunces", var(--display) !important; letter-spacing:0 !important; color:var(--st-paper-ink); }
+.song-box h3 { margin:0; font:800 .95rem/1.2 Inter, var(--sans) !important; letter-spacing:0 !important; color:var(--st-paper-ink); }
+.song-box p { margin:0; color:#463c2c; font-size:.94rem; }
+.song-row { display:flex; flex-wrap:wrap; align-items:center; gap:.5rem .6rem; }
+.song-row label, .song-from { font-weight:700; color:var(--st-paper-ink); }
+.song-row input, .song-row select, .tp-from { min-height:44px; font:700 16px/1.2 Inter, var(--sans); color:#0A1E33; background:#FFFDF8; border:1.5px solid #b98f3e; border-radius:9px; padding:0 .6rem; }
+.song-row input { width:5.2rem; text-align:center; }
+.tp-from { max-width:11rem; cursor:pointer; }
+.song-from { display:flex; flex-wrap:wrap; align-items:center; gap:.4rem; }
+.song-from[hidden] { display:none; }
+.song-b { min-height:44px; min-width:44px; padding:0 .85rem; border-radius:9px; border:1px solid #b9a988; background:#fffaf0; color:var(--st-paper-ink); font:800 .95rem/1 Inter, var(--sans); cursor:pointer; }
+.song-b[aria-pressed="true"] { background:#2a251f; color:#f4ead6; border-color:#2a251f; }
+#songDone { margin-left:auto; background:#2a251f; color:#f4ead6; border-color:#2a251f; }
+.song-lat { display:grid; gap:.4rem; border-top:1px solid #d9ccb2; padding-top:.6rem; }
+.song-lat .song-b { justify-self:start; }
+.tp-over[aria-pressed="true"] { background:#fffaf0; color:var(--st-paper-ink); border:2px solid #b98f3e; }
+#latLine { color:var(--st-paper-ink); font-weight:700; }
+#latLine:empty { display:none; }
+
+/* the My Track key: on a phone and an upright iPad, My Track (the song, + Add a layer, the layers) waits one tap away, on a
+   sheet just above the desk, so the room keeps the height (Jimmy: "too much scrolling"). Wider screens show it in the bar. */
+.tp-mt { display:none; }
+.tp-mt .n { display:inline-flex; align-items:center; justify-content:center; min-width:1.35rem; height:1.35rem; padding:0 .3rem; border-radius:999px;
+  background:#2f9e5c; color:#04140a; font:800 .78rem/1 Inter, var(--sans); }
+.tp-mt .n:empty { display:none; }
+@media (max-width:1099px) {
+  .tp-mt { display:inline-flex; margin-left:auto; }
+  .tp-mt[aria-expanded="true"] { background:linear-gradient(#fbf1d8, #efdcae); color:#1d1608; border-color:#7a5a1c; }
+  .mtrow { display:none; position:fixed; z-index:35; left:max(12px, env(safe-area-inset-left)); right:max(12px, env(safe-area-inset-right)); bottom:calc(var(--st-mt, 70px) + 8px);
+    flex-wrap:wrap; align-items:center; gap:10px; padding:12px 12px 14px; border-radius:12px; border:1px solid var(--st-edge);
+    background:linear-gradient(#2c261f, #1d1915); box-shadow:inset 0 1px 0 rgba(255,236,200,.09), 0 14px 36px rgba(0,0,0,.6); }
+  .mt.mt-open .mtrow { display:flex; }
+  #mtH { flex:1 1 100%; font-size:.8rem !important; }
+  #mtAdd { flex:1 1 12rem; max-width:none; }
+  .mt ul { flex:1 1 100%; grid-auto-flow:row; grid-template-rows:none; grid-template-columns:repeat(auto-fill, minmax(7.4rem, 1fr)); grid-auto-columns:auto; gap:6px; overflow:visible; }
+  .mt ul.more { -webkit-mask-image:none; mask-image:none; }
+  .mt .lay { height:30px; font-size:.95rem; padding:0 .6rem; }
 }
-@media (min-width:700px) { .sh-own .short { display:none; } }
+/* a phone held upright: one slim top line, the doors in two rows of four, the transport in one row */
+@media (max-width:699px) {
+  .sh-top { min-height:50px; gap:8px; padding:3px 0; }
+  .sh-top h1 { font-size:1.08rem !important; line-height:1.1; }
+  .sh-back { padding:0 .7rem 0 .45rem; }
+  .sh-lang button { min-width:42px; padding:0 .55rem; }
+  .sh-bridge { display:none; }   /* a phone has no room for the meters; the room keeps its own sound */
+  .sh-doors { padding:5px 0 6px; }
+  .sh-doors ul { gap:5px; }
+  .sh-doors a { font-size:.84rem; padding:2px 5px; }
+  .mt { gap:6px; margin-top:6px; padding-top:6px; padding-bottom:max(6px, env(safe-area-inset-bottom)); }
+  .tp { flex:1 1 100%; }
+  .tp { gap:5px; }
+  .tp .tp-b, .mt .tp a.tp-b { flex:1 1 0; min-width:0; padding:0 .25rem; gap:.3rem; font-size:.85rem; letter-spacing:0; }
+  .tp .tp-add { flex:1 1 100%; order:-1; }
+  .tp-rec { min-width:0; }
+  /* Mix › and ‹ back to a room say what the doors above already say: on a phone the doors do it */
+  .mt .tp #tpMix, .mt .tp #tpBack { display:none !important; }
+}
+/* an upright iPad: the doors in one row of eight, each with its drawing above its name; the desk in one row */
+@media (min-width:700px) {
+  .sh-doors ul { grid-template-columns:repeat(8,minmax(0,1fr)); }
+  .sh-doors a { flex-direction:column; gap:3px; padding:4px 4px 5px; font-size:.8rem; }
+  .sh-doors .pic { display:block; width:48px; height:32px; }
+  .sh-doors li:last-child { margin-left:8px; }
+  .sh-doors li:last-child::before { content:""; position:absolute; left:-8px; top:6px; bottom:6px; width:1px; background:rgba(255,236,200,.14); }
+}
+@media (min-width:700px) and (max-width:1099px) { .sh-doors { padding:6px 0 7px; } .mt { flex-wrap:nowrap; } .tp { flex:1 1 auto; } }
+/* a wide screen that is short: one row of eight, each drawing beside its name */
+@media (min-width:1100px) {
+  .sh-doors a { flex-direction:row; justify-content:flex-start; gap:9px; padding:4px 10px 4px 4px; text-align:left; font-size:.88rem; }
+  .sh-doors .pic { width:48px; height:36px; }
+}
+/* an iPad on its side and a computer: the doors down the left, the room beside them, the desk in one row */
+@media (min-width:1100px) and (min-height:700px) {
+  .shell { grid-template-columns:172px minmax(0,1fr); grid-template-areas:"top top" "doors room" "mt mt"; column-gap:14px; }
+  .sh-doors { padding:7px 0 0; }
+  .sh-doors ul { grid-template-columns:minmax(0,1fr); grid-auto-rows:minmax(54px, auto); gap:7px; }
+  .sh-doors a { padding:5px 10px 5px 5px; font-size:.9rem; }
+  .sh-doors .pic { width:60px; height:44px; }
+  .sh-doors li:last-child { margin:10px 0 0; }
+  .sh-doors li:last-child::before { left:6px; right:6px; top:-9px; bottom:auto; width:auto; height:1px; }
+  main.sh-main { padding-top:7px; }
+  .mt { flex-wrap:nowrap; }
+  .mt ul { grid-template-rows:repeat(2, 22px); }
+  .mt .lay { height:22px; font-size:.88rem; }
+  .mtrow { padding-left:16px; border-left:1px solid var(--st-edge); box-shadow:inset 1px 0 0 rgba(255,236,200,.06); }
+}
+@media (min-width:1100px) and (min-height:700px) and (max-width:1279px) { .tp-b, .mt a.tp-b { padding:0 .75rem; } .tp-rec { min-width:6.6rem; } #mtAdd { max-width:10rem; } }
 /* a phone on its side: the room gets the whole screen, as its own sideways play view expects (LANDSCAPE-HANDOFF.md) */
 @media (orientation:landscape) and (max-height:500px) {
   .aogtop, .aogtop-spacer, .sh-top, .sh-doors, .mt { display:none !important; }
-  .shell { padding:0; }
-  .sh-room { border:0; border-radius:0; }
+  .shell { padding:0; display:block; }
+  main.sh-main { padding:0; }
+  .sh-room { border:0; border-radius:0; box-shadow:none; }
 }
-@media (max-width:699px) { .tp { gap:5px; } .tp-b { padding:0 .55rem; font-size:.88rem; } .tp-rec { min-width:5.9rem; } }
-/* AOG-STUDIO-ROOMY-V1 (Jimmy, 2026-10-09, on his iPad: "With the two even three bars the user loses a huge portion of the
-   screen"). The name, the doors and Own tab share one slim line; on an iPad or a computer the transport and My Track share
-   one bar; a message from the transport floats just above it instead of adding a line. The tag line is said by the transport
-   itself, so it is kept for screen readers only. A phone keeps the name on its own slim line, the doors under it. */
-.sh-tag { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; margin:0; }
-.sh-top { flex-wrap:nowrap; align-items:center; gap:.75rem; padding:.3rem 0; }
-.sh-top h1 { flex:0 0 auto; font-size:1.2rem; white-space:nowrap; }
-.sh-top .sh-doors { flex:1 1 auto; min-width:0; }
-.sh-doors ul { padding:2px; }
-.sh-doors a { padding:2px 10px 2px 2px; font-size:.86rem; }
-.sh-doors .pic { width:42px; height:32px; }
-@media (min-width:1100px) { .sh-doors ul { grid-auto-flow:column; grid-template-columns:none; overflow-x:auto; } .sh-doors a { white-space:nowrap; } }
-.sh-own { flex:0 0 auto; white-space:nowrap; }
-.sh-own .long { display:none; }
-.sh-own .short { display:inline; }
-.tp-line { position:absolute; left:0; bottom:100%; margin:0 0 6px; max-width:min(38rem, 100%); padding:.45rem .8rem; border-radius:10px;
-  background:var(--card); color:var(--ink); border:1px solid var(--line); box-shadow:0 4px 12px rgba(0,0,0,.14); }
-.tp-line:empty { display:none; }
-@media (min-width:700px) {
-  .mt { display:flex; align-items:center; gap:.75rem; }
-  .tp { flex:0 0 auto; flex-wrap:nowrap; }
-  .mtrow { flex:1 1 auto; min-width:0; border-left:1px solid var(--line); padding-left:.75rem; }
-}
-/* AOG-SONG-V1: an iPad held upright has not the width for both: My Track takes its own line under the transport, so
-   nothing (the Song button, + Add a layer) runs off the right edge */
-@media (min-width:700px) and (max-width:1199px) { #mtAdd { max-width:9.6rem; } }   /* an iPad: room left for My Track's marks */
-@media (min-width:700px) and (max-width:1023px) {
-  .mt { flex-wrap:wrap; row-gap:.35rem; }
-  .mtrow { flex:1 1 100%; border-left:0 !important; box-shadow:none !important; padding-left:0; }
-}
-@media (max-width:699px) {
-  .sh-top { flex-wrap:wrap; row-gap:.15rem; }
-  .sh-top h1 { flex:1 1 auto; }
-  .sh-top .sh-doors { order:3; flex:1 1 100%; }
-}
-/* AOG-STUDIO-ART-V1 (Jimmy, 2026-10-09: "THE CEILING IS MUCH MUCH higher in the quality of artistry and details"). The
-   Studio's bar is a strip of the same console as the Mixing Desk: a fine grain, buttons like hardware with their own lights,
-   My Track's layers named on cream scribble strips, a message on a small paper slip. Dark in light and dark themes alike. */
-.sh-top h1 { font-family:"Fraunces", var(--display); font-weight:500; font-size:1.32rem; letter-spacing:-.005em; }
-.mt { margin:0 -.35rem; padding:.55rem .7rem max(.55rem, env(safe-area-inset-bottom)); border-radius:16px 16px 0 0; border:1px solid #040405; border-bottom:0;
-  background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .055 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>"), linear-gradient(180deg,#26282c 0%,#17181b 70%,#121316 100%);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.09), 0 -8px 22px -10px rgba(40,28,8,.45); }
-.tp-b { border:1px solid #050506; border-radius:8px; background:linear-gradient(#36383d,#25262a 60%,#1e1f22); color:#efe6d2;
-  font:600 .95rem/1.1 "Fraunces", var(--serif, Georgia, serif); letter-spacing:.01em;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.13), 0 2px 0 #08090a, 0 3px 7px rgba(0,0,0,.5); }
-.tp-b:active { transform:translateY(1px); box-shadow:inset 0 1px 0 rgba(255,255,255,.08), 0 1px 0 #08090a; }
-.tp-rec { background:linear-gradient(#4a2620,#331a16 60%,#2a1512); color:#ffd9cf; }
-.tp-rec[aria-pressed="true"] { background:linear-gradient(#7a2a1c,#561b12); color:#fff3ee; box-shadow:inset 0 1px 0 rgba(255,255,255,.13), 0 2px 0 #08090a, 0 0 14px rgba(255,90,60,.45); }
-.tp-add { background:linear-gradient(#f6e3ad,#e0b85e 60%,#c99a3e); color:#2a1c06; border-color:#5e4512; }
-.tp-out { background:linear-gradient(#e9c271,#cf9f45 60%,#b58630); color:#241703; border-color:#5e4512; }
-.mt a.tp-b { min-height:44px; padding:0 .95rem; gap:.35rem; border:1px solid #050506; border-radius:8px; background:linear-gradient(#36383d,#25262a 60%,#1e1f22);
-  color:#efe6d2; font:600 .95rem/1.1 "Fraunces", var(--serif, Georgia, serif); white-space:nowrap; }
-.tp-back { color:#efe6d2; }
-.tp-line { background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='p'><feTurbulence type='fractalNoise' baseFrequency='.6' numOctaves='4' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .45  0 0 0 0 .36  0 0 0 0 .2  0 0 0 .09 0'/></filter><rect width='100%25' height='100%25' filter='url(%23p)'/></svg>"), linear-gradient(#fbf6ea,#f3ead6); color:#1f1a12; border:0; border-radius:2px;
-  font:italic 400 .98rem/1.3 "Fraunces", var(--serif, Georgia, serif); box-shadow:0 6px 14px rgba(40,28,8,.28), 0 1px 1px rgba(0,0,0,.15); transform:rotate(-.5deg); background-color:#f7f0e1; }
-#mtH { color:#c2b8a3 !important; text-shadow:0 -1px 0 rgba(0,0,0,.85); }
-.mt select { background:#1b1c20; color:#f3d38e; border:1px solid #4b4130; border-radius:8px; font-family:"Fraunces", var(--serif, Georgia, serif); font-weight:500;
-  box-shadow:inset 0 1px 3px rgba(0,0,0,.7); }
-.mt select option { color:#0A1E33; background:#FFFDF8; }
-@media (min-width:700px) { .mtrow { border-left-color:#050506 !important; box-shadow:inset 1px 0 0 rgba(255,255,255,.05); } }
-.mt .lay { min-height:44px; gap:.4rem; padding:0 .7rem; border:0; border-radius:2px; background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='p'><feTurbulence type='fractalNoise' baseFrequency='.6' numOctaves='4' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .45  0 0 0 0 .36  0 0 0 0 .2  0 0 0 .09 0'/></filter><rect width='100%25' height='100%25' filter='url(%23p)'/></svg>"), linear-gradient(#ece3cf,#dfd3b9); color:#3b3326;
-  font:italic 500 .92rem/1 "Fraunces", var(--serif, Georgia, serif); box-shadow:0 1px 2px rgba(0,0,0,.55); background-color:#e6dcc5; }
-.mt li:nth-child(odd) .lay { transform:rotate(-.6deg); }
-.mt li:nth-child(even) .lay { transform:rotate(.5deg); }
-.mt .lay .mk { font:700 .8rem/1 var(--sans); color:#5e5544; }
-.mt .lay:not(.on) { background-color:#d2c7ad; background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='p'><feTurbulence type='fractalNoise' baseFrequency='.6' numOctaves='4' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .45  0 0 0 0 .36  0 0 0 0 .2  0 0 0 .09 0'/></filter><rect width='100%25' height='100%25' filter='url(%23p)'/></svg>"), linear-gradient(#d8cdb3,#cbbfa3); color:#3d3527; }
-.mt .lay.on { opacity:1; background-color:#f6ecd2; background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='p'><feTurbulence type='fractalNoise' baseFrequency='.6' numOctaves='4' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .45  0 0 0 0 .36  0 0 0 0 .2  0 0 0 .09 0'/></filter><rect width='100%25' height='100%25' filter='url(%23p)'/></svg>"), linear-gradient(#fbf3dc,#f0e2bf); color:#1f1a12; }
-.mt .lay.on .mk { color:#1d6b3f; }
-.mt .lay.on::before { content:""; width:7px; height:7px; border-radius:50%; background:radial-gradient(circle at 35% 30%,#fff 0,#3fbf6f 45%); box-shadow:0 0 6px #3fbf6f; }
-:root[data-theme="dark"] .mt .on { border-color:transparent; }
-:root[data-theme="dark"] .mt .on .mk { color:#1d6b3f; }
-.mt .lay { background-color:#e6dcc5; } .mt .lay:not(.on) { background-color:#d2c7ad; } .mt .lay.on { background-color:#f6ecd2; }   /* the paper's own colour, under its grain */
-.mt ul { padding:4px 2px; }
-@media (max-width:699px) { .mt { margin:0 -.5rem; padding:.45rem .55rem max(.45rem, env(safe-area-inset-bottom)); border-radius:14px 14px 0 0; } .mt a.tp-b { padding:0 .55rem; font-size:.88rem; } }
-@media print { .sh-doors, .mt, .sh-room { display:none; } }
-/* ══ AOG-STUDIO-ROOM-V1 (Jimmy, 2026-10-09: "DO all three") — the Recording Studio is a control room: dim and warm, a
-   lamp's glow from above, faint acoustic slats on the walls. The doors hang like framed drawings; the room you are in is a
-   lit window; the transport sits on the dark desk below. The same in light and dark. Nothing moves. ══ */
-html, html[data-theme="dark"] { background:#17110c; }
-html:root:root body { --room:#17110c; background-color:#17110c !important;
-  background-image:radial-gradient(ellipse 80% 38% at 50% -6%, rgba(255,196,122,.20), rgba(255,196,122,0) 70%),
-    repeating-linear-gradient(90deg, rgba(255,232,200,.022) 0 1px, rgba(0,0,0,0) 1px 6px, rgba(0,0,0,.10) 6px 7px, rgba(0,0,0,0) 7px 72px),
-    linear-gradient(#221a13, #150f0b 60%, #120d09) !important;
-  background-attachment:fixed; color:#efe5cf; }
-.sh-top h1 { color:#f6e9cc; text-shadow:0 1px 0 rgba(0,0,0,.6); }
-.sh-tag { color:#cdbfa3; }
-.sh-own { color:#f0c26e; }
-/* AOG-STUDIO-APP-V1 (Jimmy, 2026-10-10: "In the studio we should get rid of the AOG top bar menu. Allow a back button"):
-   the site bar steps aside (its code stays, so the saved language, theme and reading settings still apply); the Studio's
-   own line carries Back and EN | ES. Back leaves the Studio: to the page you came from, or the front page when the
-   Studio was opened from its Home Screen icon. */
-.aogtop, .aogtop-spacer { display:none !important; }
-.sh-back { flex:0 0 auto; display:inline-flex; align-items:center; gap:.3rem; min-height:44px; padding:0 .8rem 0 .55rem; border-radius:999px;
-  border:1px solid rgba(240,194,110,.55); background:rgba(0,0,0,.28); color:#f6e9cc; font:700 1rem/1 var(--sans); cursor:pointer; }
-.sh-back:hover { background:rgba(240,194,110,.14); }
-.sh-lang { flex:0 0 auto; display:inline-flex; gap:2px; padding:3px; border-radius:999px; border:1px solid rgba(240,194,110,.4); background:rgba(0,0,0,.28); }
-.sh-lang button { min-height:38px; min-width:44px; padding:0 .7rem; border:0; border-radius:999px; background:transparent; color:#e6d8bb; font:700 .9rem/1 var(--sans); cursor:pointer; }
-.sh-lang button[aria-pressed="true"] { background:#f0c26e; color:#1d1608; }
-.sh-back:focus-visible, .sh-lang button:focus-visible { outline:3px solid #f0c26e; outline-offset:2px; }
-@media (max-width:699px) { .sh-back { padding:0 .6rem 0 .4rem; } .sh-lang button { min-width:40px; padding:0 .5rem; } }
-.sh-doors a { background-color:#f1e8d5; color:#1f1a12; border-color:#3a2c1c; box-shadow:0 1px 0 rgba(255,236,200,.08), 0 6px 14px rgba(0,0,0,.45); }
-.sh-doors a[aria-current="true"] { border-color:#e0b25a; box-shadow:0 0 0 1px #e0b25a, 0 0 18px rgba(240,194,110,.35), 0 6px 14px rgba(0,0,0,.45); }
-.sh-room { background:#17110c; border:1px solid #050403; box-shadow:0 0 0 1px rgba(255,214,160,.06), 0 24px 60px rgba(0,0,0,.65), 0 2px 8px rgba(0,0,0,.5); }
-.mt { background:#120d09; box-shadow:0 -1px 0 rgba(255,214,160,.08), 0 -12px 28px rgba(0,0,0,.55); }
-.tp-vu { display:inline-flex; flex:0 0 auto; align-items:center; gap:.5rem; }
-.tp-vu[hidden] { display:none; }
-@media (max-width:699px) { .tp-vu { display:none !important; } }   /* a phone's bar has no room for them; the room's own page shows them */
+@media print { .sh-doors, .mt, .sh-room, .sh-bridge, .sh-lang, .sh-back { display:none; } }
 """
 JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></script>
 <script>
@@ -391,9 +403,13 @@ JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></scrip
     [].forEach.call(D.querySelectorAll(".sh-doors a"), function (a) {
       if (a.getAttribute("data-room") === cur) a.setAttribute("aria-current", "true"); else a.removeAttribute("aria-current"); });
     var ul = D.querySelector(".sh-doors ul"), on = D.querySelector('.sh-doors a[aria-current]');   /* the room you are in, in view */
-    if (ul && on && ul.scrollWidth > ul.clientWidth) { var li = on.parentNode; ul.scrollLeft = Math.max(0, li.offsetLeft - (ul.clientWidth - li.offsetWidth) / 2); }
+    if (ul && on && ul.scrollWidth > ul.clientWidth) { var ur = ul.getBoundingClientRect(), lr = on.getBoundingClientRect(); ul.scrollLeft += (lr.left + lr.width / 2) - (ur.left + ur.width / 2); }
     paintTrack();
   }
+  /* AOG-STUDIO-SUPREME-V1: a soft edge on My Track's strips only while more of them are that way */
+  function edge() { var ul = D.getElementById("mtList"); if (!ul) return; var m = ul.scrollWidth > ul.clientWidth + 2 && ul.scrollLeft + ul.clientWidth < ul.scrollWidth - 2;
+    if (ul.classList.contains("more") !== m) ul.classList.toggle("more", m); }
+  D.getElementById("mtList").addEventListener("scroll", edge, { passive: true });
   /* My Track: a layer is there when its room has a take in the Mixing Desk's list or a recording on its shelf */
   var HAVE = {};
   function paintTrack() {
@@ -402,14 +418,26 @@ JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></scrip
       var on = !!HAVE[l.id], nm = e ? l.name[1] : l.name[0];
       var say = nm + ": " + (on ? (e ? "hay una toma" : "a take is ready") : (e ? "todavía nada" : "nothing yet"));
       /* a mark, not a link: the doors and Add a layer are the ways to a room (CLAUDE.md: four or more places, a menu) */
-      return '<li><span class="lay' + (on ? " on" : "") + '" data-layer="' + l.id + '" role="img" aria-label="' + say + '"><span>' + nm + '</span><span class="mk" aria-hidden="true">' + (on ? "✓" : "—") + "</span></span></li>";
+      return '<li><span class="lay' + (on ? " on" : "") + '" data-layer="' + l.id + '" role="img" aria-label="' + say + '"><span>' + nm + "</span>" + (on ? '<span class="mk" aria-hidden="true">✓</span>' : "") + "</span></li>";
     }).join("");
+    edge();
     /* + Add a layer: the rooms in song order; a layer already there says so */
     var sel = D.getElementById("mtAdd");
     sel.innerHTML = '<option value="">' + (e ? "+ Añadir una capa" : "+ Add a layer") + "</option>" + LAYERS.filter(function (l) { return room(l.id); }).map(function (l) {
       var R = room(l.id); return '<option value="' + l.id + '">' + (e ? R.name[1] : R.name[0]) + (HAVE[l.id] ? " ✓" : "") + "</option>"; }).join("");
     sel.setAttribute("aria-label", e ? "Añadir una capa: elige una sala" : "Add a layer: pick a room");
+    /* AOG-STUDIO-SUPREME-V1: the My Track key (a phone, an upright iPad) says how many layers are there */
+    var k = D.getElementById("mtOpen"), have = LAYERS.filter(function (l) { return HAVE[l.id]; }).length, kt = e ? "Mi pista" : "My Track", kn = have ? String(have) : "";
+    if (k.firstChild.textContent !== kt) k.firstChild.textContent = kt; if (k.lastChild.textContent !== kn) k.lastChild.textContent = kn;
+    att(k, "aria-label", kt + (have ? (e ? ": " + have + (have === 1 ? " capa" : " capas") : ": " + have + (have === 1 ? " layer" : " layers")) : ""));
   }
+  /* the My Track sheet opens above the desk; a tap outside it, Escape, or picking a room puts it away */
+  function mtOpen(on) { var m = D.getElementById("mt"), k = D.getElementById("mtOpen"); if (m.classList.contains("mt-open") === !!on) return;
+    m.classList.toggle("mt-open", !!on); k.setAttribute("aria-expanded", on ? "true" : "false"); }
+  D.getElementById("mtOpen").addEventListener("click", function () { mtOpen(!D.getElementById("mt").classList.contains("mt-open")); });
+  D.addEventListener("pointerdown", function (e) { if (!D.getElementById("mt").classList.contains("mt-open")) return;
+    var t = e.target; if (t && t.closest && t.closest("#mt")) return; mtOpen(false); }, true);
+  D.addEventListener("keydown", function (e) { if (e.key === "Escape" && D.getElementById("mt").classList.contains("mt-open") && D.getElementById("songBox").hidden) { mtOpen(false); D.getElementById("mtOpen").focus(); } });
   async function refresh() {
     var A = window.AOGHandoff, next = {}; if (!A) return;
     var items = [];
@@ -604,7 +632,7 @@ JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></scrip
      follows at once (aog-song.js); a room's own tempo or key changes it too. */
   function songWords() {
     var G = window.AOGSong, s = G && G.get(), b = D.getElementById("tpSong"), nm = G ? G.name(es() ? "es" : "en") : "";
-    var narrow = (window.innerWidth || 0) < 1200, sg = G && G.get();   /* a phone or an iPad: the short way, so My Track keeps its room */
+    var iw = window.innerWidth || 0, narrow = iw >= 1100 && iw < 1200, sg = G && G.get();   /* an iPad on its side: the short way, so My Track keeps its room (narrower screens show it on My Track's sheet, where there is room) */
     var bt = narrow ? "♩" + (sg && sg.hasBpm ? " " + sg.bpm : "") : tw("song") + (nm ? " · " + nm : ""); if (b.textContent !== bt) b.textContent = bt;
     att(b, "aria-label", tw("song").replace("♩ ", "") + (nm ? ": " + nm : ""));
     [["songH", "songH"], ["songBpmL", "songBpmL"], ["songKeyL", "songKeyL"], ["songMaj", "songMaj"], ["songMin", "songMin"], ["songDone", "songDone"]].forEach(function (p) {
@@ -648,6 +676,13 @@ JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></scrip
   D.getElementById("songMaj").addEventListener("click", function () { songSet({ key: +D.getElementById("songKey").value, minor: false }); });
   D.getElementById("songMin").addEventListener("click", function () { songSet({ key: +D.getElementById("songKey").value, minor: true }); });
   D.getElementById("songBox").addEventListener("keydown", function (e) { if (e.key === "Escape") { songOpen(false); D.getElementById("tpSong").focus(); } });
+  /* AOG-STUDIO-SUPREME-V1: the Song sheet lies over the room; a tap above the desk (the doors, the top line) puts it away.
+     The desk's own keys leave it open, so you can set From bar 5 and press Record with it in sight. */
+  D.addEventListener("pointerdown", function (e) { var bx = D.getElementById("songBox"); if (bx.hidden) return;
+    var t = e.target; if (t && t.closest && t.closest("#mt")) return; songOpen(false); }, true);
+  /* a tap in the room (the frame takes the focus) puts both sheets away too */
+  window.addEventListener("blur", function () { setTimeout(function () { var a = D.activeElement; if (!a || a.tagName !== "IFRAME") return;
+    if (!D.getElementById("songBox").hidden) songOpen(false); mtOpen(false); }, 0); });
   if (window.AOGSong) AOGSong.on(songWords);
   /* AOG-ROOM-VU-V1: the small VU meters show the room you are in (its own page's levels), and anything the shell plays */
   if (window.AOGVU) AOGVU.mount(D.getElementById("tpVu"), { source: function () {
@@ -664,8 +699,10 @@ JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></scrip
 
   /* the frame fills the screen between the doors and My Track */
   function size() {
-    var top = fr.getBoundingClientRect().top + (window.scrollY || 0), mt = D.getElementById("mt").offsetHeight;
-    fr.style.height = Math.max(window.innerHeight < 760 ? 300 : 420, Math.floor(window.innerHeight - top - mt - 4)) + "px";   /* a phone: the room takes what is left */
+    var me = D.getElementById("mt"), top = fr.getBoundingClientRect().top + (window.scrollY || 0), mt = me.offsetHeight ? me.offsetHeight + (parseFloat(getComputedStyle(me).marginTop) || 0) : 0;
+    var mh = mt + "px"; if (D.documentElement.style.getPropertyValue("--st-mt") !== mh) D.documentElement.style.setProperty("--st-mt", mh);   /* AOG-STUDIO-SUPREME-V1: the Song sheet sits just above the desk */
+    edge();
+    fr.style.height = Math.max(window.innerHeight < 760 ? 300 : 420, Math.floor(window.innerHeight - top - mt - (mt ? 4 : 0))) + "px";   /* a phone: the room takes what is left */
   }
   /* a room inside the frame says hello (aog-labdoors.js) and asks for another room by its id */
   /* AOG-STUDIO-KEYS-V1 (Jimmy, 2026-10-09: "At the moment nothing works with the keyboard"). Inside the Studio a tap on a
@@ -730,6 +767,7 @@ JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></scrip
   }
   D.getElementById("mtAdd").addEventListener("change", function () {
     var v = this.value, from = room(cur), sel = this; this.value = ""; if (!v) return;
+    mtOpen(false);
     sel.disabled = true;
     addCurrent().then(function (added) {
       sel.disabled = false; go(v, true);
@@ -792,15 +830,17 @@ def build():
            '  <button type="button" class="sh-back" id="shBack"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>%s</button>' % sp(("Back", "Atrás")),
            "  <h1>%s</h1>" % sp(("The Recording Studio", "El estudio de grabación")),
            '  <p class="sh-tag">%s</p>' % sp(("Play · Record · Listen · Mix · Send it out", "Toca · Graba · Escucha · Mezcla · Compártela")),
-           '<nav class="sh-doors" aria-label="Rooms"><ul>']
+           # AOG-STUDIO-SUPREME-V1: the meter bridge (AOG-ROOM-VU-V1: the room's small VU meters and its room sound)
+           '  <div class="sh-bridge"><span class="tp-vu" id="tpVu"></span></div>',
+           '  <div class="sh-lang" role="group" aria-label="Language · Idioma"><button type="button" data-lang="en" lang="en">EN</button><button type="button" data-lang="es" lang="es">ES</button></div>',
+           "</div>",
+           '<nav class="sh-doors" aria-label="Rooms · Salas"><ul>']
     for rid, href, f, pic, name, short, frm, shelf in ROOMS:
         out.append('  <li><a href="#%s" data-room="%s"><span class="pic" aria-hidden="true"><picture><source type="image/webp" srcset="/img/banners/%s-pencil-900.webp">'
                    '<img src="/img/banners/%s-pencil-900.jpg" alt="" width="900" height="315" decoding="async"></picture></span>%s</a></li>'
                    % (rid, rid, pic, pic, sp(short)))
     out += ["</ul></nav>",
-            '  <div class="sh-lang" role="group" aria-label="Language · Idioma"><button type="button" data-lang="en" lang="en">EN</button><button type="button" data-lang="es" lang="es">ES</button></div>',
-            "</div>",
-            '<main><iframe class="sh-room" id="room" title="The Drum Machine" allow="autoplay; fullscreen; clipboard-write; microphone"></iframe></main>',
+            '<main class="sh-main"><iframe class="sh-room" id="room" title="The Drum Machine" allow="autoplay; fullscreen; clipboard-write; microphone"></iframe></main>',
             '<section class="mt" id="mt" aria-label="The studio">'
             '<div class="song-box" id="songBox" hidden role="group" aria-labelledby="songH"><h2 id="songH"></h2><p id="songSay"></p>'
             '<div class="song-row"><label for="songBpm" id="songBpmL"></label><button type="button" class="song-b" id="songDn" aria-label="−1">−</button>'
@@ -815,9 +855,9 @@ def build():
             '<button type="button" class="tp-b tp-add" id="tpAdd" hidden></button><button type="button" class="tp-b" id="tpListen"></button>'
             '<a class="tp-b tp-mix" id="tpMix" href="#studio" data-room="studio"></a><button type="button" class="tp-b tp-back" id="tpBack" hidden></button>'
             '<button type="button" class="tp-b tp-out" id="tpOut"></button>'
-            '<span class="tp-vu" id="tpVu"></span>'   # AOG-ROOM-VU-V1: the room's small VU meters
+            '<button type="button" class="tp-b tp-mt" id="mtOpen" aria-expanded="false" aria-controls="mtRow"><span class="t"></span><span class="n"></span></button>'   # AOG-STUDIO-SUPREME-V1
             '<span class="tp-line" id="tpLine" aria-live="polite"></span></div>'
-            '<div class="mtrow"><h2 id="mtH">%s</h2>'
+            '<div class="mtrow" id="mtRow"><h2 id="mtH">%s</h2>'
             '<button type="button" class="tp-b tp-song" id="tpSong" aria-expanded="false" aria-controls="songBox"></button>'   # AOG-SONG-V1: the song's tempo and key, beside My Track
             '<select id="mtAdd"></select><ul id="mtList"></ul></div></section>' % sp(("My Track", "Mi pista")),
             "</div>"]
