@@ -14,6 +14,14 @@ to everyone under CC0 1.0 Universal (public domain); the LICENSE file of each wa
   gm     Discord SFZ GM Bank: jRhodes GM by Jeff Learman (CC0)  (a 1977 Rhodes Mark I)
   voice  legato_vocal_tutorial: the "a" of Hadzi-Fia, Karoryfer (one singer)
 
+AOG-DRUM-PERC-V1 (2026-10-13): two more CC0 libraries, for the hand percussion, hand drum and tabla kits:
+  fp     FreePats "World percussion" (github.com/freepats/world-percussion, CC0 1.0; LICENSE.txt read): Xavimart's
+         instruments recorded by Xavimart, Gonzalo and Roberto (zenvoid.org) with two Zoom H1 recorders, January 2019:
+         cajón flamenco, bongos, egg shaker, tambourine, maracas (claves and conga there come from VCSL)
+  spi    Sonic Pi's built-in tabla strokes (github.com/sonic-pi-net/sonic-pi, etc/samples/tabla_*.flac): recorded by
+         dio_333 and given to the public domain on Freesound (CC0 1.0); Sonic Pi's etc/samples/README.md lists each
+         one and its licence. Only the tabla_*.flac files are used.
+
 AOG-DRUM-909-V1 (2026-10-05): one more kind of source, not CC0 but CC BY 4.0 (credit given):
   fs     a sound on Freesound, "fs:<user>/<sound id>_<user id>": Freesound's high-quality MP3 copy of it (the original
          WAV needs a login), from cdn.freesound.org. Used for kit L: "TR-909 JGB pack" (pack 1643), sampled by Janne
@@ -36,6 +44,8 @@ REPO = {   # GitHub repository and branch, for files not on this machine
     "vsco": ("sgossner/VSCO-2-CE", "master"),
     "gm": ("sfzinstruments/Discord-SFZ-GM-Bank", "master"),
     "voice": ("sfzinstruments/legato_vocal_tutorial", "master"),
+    "fp": ("freepats/world-percussion", "main"),        # AOG-DRUM-PERC-V1
+    "spi": ("sonic-pi-net/sonic-pi", "dev"),            # AOG-DRUM-PERC-V1: only etc/samples/tabla_*.flac
 }
 LOCAL = {   # clones already on this machine (sparse: only some folders)
     "brd": SCR + "/agent-drumkit/src/karoryfer.big-rusty-drums",
@@ -46,6 +56,8 @@ LOCAL = {   # clones already on this machine (sparse: only some folders)
     "vsco": "/home/user/sgossner/vsco-2-ce",
     "gm": SCR + "/sources/Discord-SFZ-GM-Bank",
     "voice": SCR + "/sources/legato_vocal_tutorial",
+    "fp": SCR + "/sources/world-percussion",
+    "spi": SCR + "/sources/sonic-pi",
 }
 for k in list(LOCAL):
     LOCAL[k] = os.environ.get("AOG_DRUM_SRC_" + k.upper(), LOCAL[k])
