@@ -56,7 +56,7 @@ const PROBE = () => {
   addEventListener("pointerdown", e => P.dn.push({ t: A() }), true);
 };
 /* where a finger plays, in the room's own page */
-const KEYS = () => [...document.querySelectorAll("#kbd [data-m]")].map(el => { const r = el.getBoundingClientRect(), bk = el.classList.contains("bk"); return { bk, x: r.x + r.width / 2, y: r.y + r.height * (bk ? 0.6 : 0.85) }; })
+const KEYS = () => [...document.querySelectorAll("#kbd [data-m]")].map(el => { const r = el.getBoundingClientRect(), bk = el.classList.contains("bk"); return { bk, m: +el.getAttribute("data-m"), x: r.x + r.width / 2, y: r.y + r.height * (bk ? 0.6 : 0.85) }; })
   .filter(k => k.x > 0 && k.x < innerWidth).sort((a, b) => a.bk - b.bk);
 const NECK_AT = () => { const svg = document.getElementById("neck"), r = svg.getBoundingClientRect(), sx = r.width / NECK.W, sy = r.height / NECK.H, out = [];
   for (let i = 0; i < NECK.n; i++) for (let row = 0; row < NECK.rows; row++) { let x = (NECK.fx[i] + NECK.fx[i + 1]) / 2; if (NECK.flip) x = NECK.W - x; out.push({ x: r.x + x * sx, y: r.y + (NECK.top + (row + 0.5) * NECK.rowH) * sy }); }
@@ -70,7 +70,9 @@ const ROOMS = {
   /* the Band: its first sound, then the mariachi, a folk and a classroom instrument, a voice, and the World group's erhu */
   band: { file: "music-band", ready: () => typeof soundReady === "function" && soundReady(S.sound), at: KEYS,
     sounds: () => [S.sound, "mariachi", "mandolin", "ukulele", "voice_f_aa", "erhu"].filter((k, i, a) => SOUNDS[k] && a.indexOf(k) === i),
-    pick: id => { const s = document.getElementById("soundSel"); s.value = id; s.onchange(); } },
+    pick: id => { const s = document.getElementById("soundSel"); s.value = id; s.onchange(); },
+    /* a key beyond every player's reach plays nothing, as on the instrument itself: the phrase stays within reach */
+    reach: ms => ms.map(m => keyPlayers(m).length > 0) },
   guitar: { file: "music-guitar", ready: () => typeof soundReady === "function" && soundReady(S.sound), at: NECK_AT },
   bass: { file: "music-bass", ready: () => typeof soundReady === "function" && soundReady(S.sound), at: NECK_AT },
   pads: { file: "music-pads", ready: () => typeof canPlay === "function" && canPlay(S.bank),
@@ -151,18 +153,20 @@ async function play(b, port, id, opts) {
   const over = at.map((k, i) => own[i] || (top[i] ? "the Studio's " + top[i] : "")).filter(Boolean);
   ok(at.length >= 8 && !over.length, `${id}: every place to play (${at.length}) can be reached by a finger${over.length ? ": " + [...new Set(over)].slice(0, 4).join(", ") + " lies over " + over.length : ""}`);
   at = at.filter((k, i) => !own[i] && !top[i]);
-  const xy = k => ({ x: fr.x + at[k].x, y: fr.y + at[k].y });
+  let use = at.map((k, i) => i);   /* the places this sound can play */
+  const xy = k => ({ x: fr.x + at[use[k]].x, y: fr.y + at[use[k]].y });
   const touch = (type, pts) => cdp.send("Input.dispatchTouchEvent", { type, touchPoints: pts });
   /* the first tap wakes the sound (it is not one of the notes measured) */
   await touch("touchStart", [{ ...xy(0), id: 1 }]); await p.waitForTimeout(120); await touch("touchEnd", [{ ...xy(0), id: 1 }]); await p.waitForTimeout(1500);
   const sounds = R.sounds ? await f.evaluate(R.sounds) : [null];
   const tev = []; cdp.on("Tracing.dataCollected", d => { for (const e of d.value) if (e.ph === "M" || e.ph === "X" || e.name === "TimeStamp") tev.push(e); });
-  const W = Math.min(at.length, 15), fingers = { planned: 0 }, spans = [];
+  const fingers = { planned: 0 }, spans = [];
   let peak = 0, base = 0;
   for (let si = 0; si < sounds.length; si++) {
     if (sounds[si] && si > 0) { await f.evaluate(R.pick, sounds[si]); await f.waitForFunction(R.ready, null, { timeout: 120000 }); await p.waitForTimeout(800);
       await touch("touchStart", [{ ...xy(0), id: 1 }]); await p.waitForTimeout(120); await touch("touchEnd", [{ ...xy(0), id: 1 }]); await p.waitForTimeout(1200); }
-    const plan = phrase(Math.round(N / sounds.length), W);
+    if (R.reach) { const can = await f.evaluate(R.reach, at.map(k => k.m)); use = at.map((k, i) => i).filter(i => can[i]); }
+    const plan = phrase(Math.round(N / sounds.length), Math.min(use.length, 15));
     /* what runs before the first note (an amp's slow wobblers, a keep-alive) is not a voice */
     if (si === 0) base = await f.evaluate("__P.live");
     await f.evaluate(() => { __P.peak = __P.live; });
