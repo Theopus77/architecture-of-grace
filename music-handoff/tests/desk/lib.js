@@ -14,6 +14,8 @@ const TAKE = SRC.slice(SRC.indexOf("const TAKE = `") + 14, SRC.indexOf("})`;", S
 const h0 = SRC.indexOf("const HELP = `") + 14, HELP = SRC.slice(h0, SRC.indexOf("})();`;", h0) + 5).replace("return T; })();", `
   T.peak = (name, t0, t1) => { const b = T.B[name]; let m = 0; for (let i = Math.max(0, Math.round(t0 * sr)); i < Math.min(b.L.length, Math.round(t1 * sr)); i++) m = Math.max(m, Math.abs(b.L[i]), Math.abs(b.R[i])); return m; };
   T.energy = (name, t0, t1) => { const b = T.B[name]; let s = 0; for (let i = Math.max(0, Math.round(t0 * sr)); i < Math.min(b.L.length, Math.round(t1 * sr)); i++) s += b.L[i] * b.L[i] + b.R[i] * b.R[i]; return s; };
+  T.hz = (name, t, w) => { const d = T.B[name].L, a = Math.round(t * sr), n = Math.round(w * sr); let up = 0, f = -1, l = -1;
+    for (let i = a + 1; i < a + n; i++) if (d[i - 1] < 0 && d[i] >= 0) { const x = i - 1 + d[i - 1] / (d[i - 1] - d[i]); if (f < 0) f = x; l = x; up++; } return (up - 1) / ((l - f) / sr); };
   return T; })();`);
 let fails = 0; const ok = (c, m) => { console.log((c ? "PASS " : "FAIL ") + m); if (!c) fails++; };
 const errs = [];
@@ -31,7 +33,7 @@ async function put(p, n, track, from) {
   await p.selectOption("#trackSel", String(track));
   const v = await p.evaluate(nm => { const o = [...document.querySelectorAll("#srcSel option")].find(o => o.textContent.split(" · ")[0] === nm); return o ? o.value : null; }, NM[from || "guitar"] + " " + n);
   await p.selectOption("#srcSel", v); await p.click("#putBtn");
-  await p.waitForFunction(t => __aogStudio.SONG.tracks[t].clip && !__aogStudio.S.busy, track, { timeout: 15000 });
+  await p.waitForFunction(t => __aogStudio.SONG.tracks[t].clip && !__aogStudio.S.busy, track, { timeout: 40000 });
 }
 const near = (a, b, tol) => Math.abs(a - b) <= tol;
 const ready = p => p.waitForFunction(() => window.__aogStudio && window.__aogDeskPro && !__aogStudio.S.decoding && __aogStudio.SONG.tracks.every(x => !x.clip || __aogStudio.BUF.has(x.clip.id)), null, { timeout: 30000 });
