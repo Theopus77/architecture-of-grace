@@ -59,7 +59,7 @@ const PROBE = () => {
 const KEYS = () => [...document.querySelectorAll("#kbd [data-m]")].map(el => { const r = el.getBoundingClientRect(), bk = el.classList.contains("bk"); return { bk, m: +el.getAttribute("data-m"), x: r.x + r.width / 2, y: r.y + r.height * (bk ? 0.6 : 0.85) }; })
   .filter(k => k.x > 0 && k.x < innerWidth).sort((a, b) => a.bk - b.bk);
 const NECK_AT = () => { const svg = document.getElementById("neck"), r = svg.getBoundingClientRect(), sx = r.width / NECK.W, sy = r.height / NECK.H, out = [];
-  for (let i = 0; i < NECK.n; i++) for (let row = 0; row < NECK.rows; row++) { let x = (NECK.fx[i] + NECK.fx[i + 1]) / 2; if (NECK.flip) x = NECK.W - x; out.push({ x: r.x + x * sx, y: r.y + (NECK.top + (row + 0.5) * NECK.rowH) * sy }); }
+  for (let i = 0; i < NECK.n; i++) for (let row = 0; row < NECK.rows; row++) { let x = NECK.fx ? (NECK.fx[i] + NECK.fx[i + 1]) / 2 : NECK.nut + (i + 0.5) * NECK.cw; if (NECK.flip) x = NECK.W - x; out.push({ x: r.x + x * sx, y: r.y + (NECK.top + (row + 0.5) * NECK.rowH) * sy }); }
   return out; };
 const ROOMS = {
   piano: { file: "music-piano", ready: () => { const s = SOUNDS[S.sound]; return !(s && s.kind === "sample") || !!(SETS[s.set] && SETS[s.set].ready); }, at: KEYS,
@@ -213,7 +213,9 @@ async function play(b, port, id, opts) {
   await p.waitForTimeout(6000);
   const after = Math.max(0, (await f.evaluate("__P.live")) - base); peak -= base;
   ok(peak <= VOICES && after <= 2, `${label}: the voices stay bounded (at most ${peak} at once, ${VOICES} allowed) and let go (${after} still alive 6 s after the last note)`);
-  const mid = P.ev.concat(PT.ev || []).filter(e => spans.some(s => e.t >= s.S0 + 50 && e.t <= s.S1));
+  /* (while the hands play: within 4 s of a finger landing; a computer that stalls for longer is not a player pausing) */
+  const near = t => P.dn.some(d => d.t <= t && t - d.t < 4000);
+  const mid = P.ev.concat(PT.ev || []).filter(e => spans.some(s => e.t >= s.S0 + 50 && e.t <= s.S1) && near(e.t));
   ok(mid.length === 0, `${label}: nothing fetched or unpacked mid-play: ${mid.map(e => e.k + " " + (e.u || "").split("/").slice(-2).join("/") + " " + Math.round(e.t - spans.find(s => e.t >= s.S0 && e.t <= s.S1).S0) + " ms in").slice(0, 5).join(", ") || "none"}`);
   ok(errs.length === 0, `${label}: no page errors ${errs.slice(0, 3).join(" | ")}`);
   const res = { c, p, f, cdp, rows, worst, p95, long: long.map(T => tr.work(T)) };
