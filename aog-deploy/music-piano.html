@@ -2230,14 +2230,20 @@ function paintDial(){
   $("vol").value=String(Math.round(S.vol*100)); $("volOut").textContent=Math.round(S.vol*100);
 }
 function paintLoad(){
-  const snd=SOUNDS[S.sound], line=$("loadLine");
-  if(!line) return;
+  const line0=$("loadLine"); if(!line0) return;
+  /* AOG-PIANO-LOAD-QUIET-V1 (2026-10-17): the line is written only when its words change (each write woke three page
+     helpers that watch for changes, a dozen times a second while the layers came in) */
+  const line={set textContent(v){ if(line0.textContent!==v) line0.textContent=v; }};
+  const snd=SOUNDS[S.sound];
   if(snd.kind!=="sample"){ line.textContent=t("built"); return; }
   const set=SETS[snd.set], es=S.lang==="es", name=soundName(S.sound).toLowerCase();
   if(set.state==="failed"){ line.textContent=t("loadFail"); return; }
   /* AOG-PIANO-SOUNDS-V2: a sound can bring its own words (the marimba is "la marimba", the strings are a section) */
   if(set.state==="ready" && set.done>=set.total){ line.textContent=snd.ready?snd.ready[S.lang]:snd.honky?t("readyHonky"):t("ready",{name:(es?"un ":"")+name}); return; }
-  if(set.ready){ line.textContent=t("more",{n:set.done,all:set.total}); return; }
+  if(set.ready){   /* AOG-PIANO-LOAD-QUIET-V1: while the last layers come in (it already plays), the count moves once a second */
+    const now=performance.now(), w=paintLoad.w||0;
+    if(now-w<1000){ if(!paintLoad.q) paintLoad.q=setTimeout(()=>{ paintLoad.q=0; paintLoad(); }, 1000-(now-w)); return; }
+    paintLoad.w=now; line.textContent=t("more",{n:set.done,all:set.total}); return; }
   const firstAll=set.notes.length, the=(snd.the&&snd.the[S.lang])||((es?"el ":"")+name);
   line.textContent=t("loading",{name:the, n:Math.min(set.done, firstAll), all:firstAll})+" "+t(snd.made?"standMade":"stand");
 }
