@@ -869,9 +869,9 @@ main.sh-main { grid-area:room; min-width:0; margin:0; }
      plays. What stays with the Studio: typing in a box or a menu, Tab to move around, and Space or Enter on one of the
      Studio's own buttons. */
   function keyOn(e) {
-    /* AOG-DESK-HANDS-V1: at the Mixing Desk, Undo and Redo (Ctrl/⌘+Z, Ctrl/⌘+Shift+Z, Ctrl+Y) and Alt+← → (a 10 ms nudge) go on to it too */
+    /* AOG-DESK-HANDS-V1: at the Mixing Desk, Undo and Redo (Ctrl/⌘+Z, Ctrl/⌘+Shift+Z, Ctrl+Y) and Alt+← → (a 10 ms nudge) go on to it too; AOG-DESK-KEYS-V2: and Ctrl/⌘+D (copy the piece after itself) and Ctrl/⌘+E (cut it at the playhead) */
     if (e.metaKey || e.ctrlKey || e.altKey) {
-      var deskKey = cur === "studio" && (((e.metaKey || e.ctrlKey) && !e.altKey && /^[zy]$/i.test(e.key)) || (e.altKey && !e.metaKey && !e.ctrlKey && /^Arrow(Left|Right)$/.test(e.key)));
+      var deskKey = cur === "studio" && (((e.metaKey || e.ctrlKey) && !e.altKey && /^[zyde]$/i.test(e.key)) || (e.altKey && !e.metaKey && !e.ctrlKey && /^Arrow(Left|Right)$/.test(e.key)));
       if (!deskKey) return;
     }
     var t = e.target, tag = t && t.tagName;

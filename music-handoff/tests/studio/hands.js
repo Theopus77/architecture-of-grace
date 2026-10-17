@@ -91,7 +91,7 @@ const render = (p, o) => p.evaluate(`${RENDER}(${JSON.stringify(o || {})})`);
     zin: document.getElementById("zoomIn").getAttribute("aria-label"), zout: document.getElementById("zoomOut").getAttribute("aria-label"), out: document.getElementById("zoomOut").disabled,
     redo: document.querySelector('#clipBox [data-act="redo"]').disabled, keys: document.querySelector(".st-keys").textContent }));
   ok(row.t === "ZOOM − 1× + Snap to the beat: On ↶ Undo ↷ Redo" && row.snap === "true" && row.zin === "Zoom in" && row.zout === "Zoom out" && row.out && row.redo
-    && /, and \. nudge the piece, \+ and − zoom, Ctrl\+Z undoes, Ctrl\+Shift\+Z redoes\.$/.test(row.keys), "under the lanes: zoom, snap, undo and redo: " + JSON.stringify(row));
+    && /Ctrl\/⌘ ZUndo \(with Shift, redo\)$/.test(row.keys) && /Nudge the piece 10 ms/.test(row.keys)   /* AOG-DESK-KEYS-V2: the Keys list */, "under the lanes: zoom, snap, undo and redo: " + JSON.stringify(row));
 
   /* 1 · drag with Snap to the beat on: 1.3 beats to the right lands on beat 2 of bar 1 */
   let a = await clipBox(p);
@@ -283,7 +283,7 @@ const render = (p, o) => p.evaluate(`${RENDER}(${JSON.stringify(o || {})})`);
     at: document.querySelector("#atSel option:checked").textContent, keys: document.querySelector(".st-keys").textContent }));
   ok(es.t === "ZOOM − 16× + Ajustar al pulso: No ↶ Deshacer ↷ Rehacer" && es.zin === "Acercar" && es.zout === "Alejar" && es.undo === "Deshacer el último cambio" && /10 ms antes \| 10 ms después/.test(es.b) && /↷ Rehacer/.test(es.b)
     && es.lab === "Volumen de esta parte" && es.xf === "Fundido donde se juntan las partes" && es.xo === "No | 10 ms | 50 ms | 1 pulso | 1 compás" && /^Compás \d+ · pulso \d, \d+ ms (tarde|antes)$|^Compás \d+, \d+ ms (tarde|antes)$/.test(es.at)
-    && /, y \. mueven un poco la parte/.test(es.keys), "Spanish: " + JSON.stringify(es));
+    && /Mover la parte 10 ms/.test(es.keys), "Spanish: " + JSON.stringify(es));
   await p.click("#snapBtn"); await p.waitForTimeout(60);
   ok(await p.textContent("#snapBtn") === "Ajustar al pulso: Sí" && await p.textContent("#tlLine") === "Una parte que arrastras cae en un pulso.", "Spanish, Snap on: " + await p.textContent("#snapBtn"));
   await p.evaluate(() => document.getElementById("langBtn").click());

@@ -223,6 +223,7 @@
     if (!(ST.B > 0)) ST.B = 0.5;
     build();
     range(true); paint();
+    extLoad();   /* AOG-DESK-NOTES-V1: the deluxe note tools (aog-desk-notes.js), loaded the first time the editor opens */
     host.sounds(ST.room).then(function (list) { if (ST && Array.isArray(list)) { ST.sounds = list; paintInst(); } }, function () {});
     var sc = D.getElementById("aprScroll");
     /* the first note in view */
@@ -238,6 +239,7 @@
   function close() {
     if (!ST) return;
     hearStop(); saveDraft();
+    if (window.AOGNotesPro && AOGNotesPro.on) { try { AOGNotesPro.unmount(); } catch (e) {} }
     var host = ST.host, box = D.getElementById("apr"); if (box) box.parentNode.removeChild(box);
     (ST.inert || []).forEach(function (el) { el.inert = false; });
     D.documentElement.classList.remove("apr-open");
@@ -266,7 +268,7 @@
       '<div class="apr-in">' +
       '<div class="apr-top"><h2 id="aprH"></h2><button type="button" class="apr-b" id="aprDone" data-a="done"></button></div>' +
       '<p class="apr-say" id="aprSay"></p>' +
-      '<div class="apr-bar">' +
+      '<div class="apr-bar" id="aprTools">' +
         '<div class="apr-grp" role="group" id="aprPickG"><span class="apr-lab" id="aprPickL"></span><button type="button" class="apr-b" data-a="all" id="aprAll"></button><button type="button" class="apr-b" data-a="box" id="aprBox" aria-pressed="false"></button><button type="button" class="apr-b" data-a="del" id="aprDel"></button><button type="button" class="apr-b" data-a="undo" id="aprUndo"></button><button type="button" class="apr-b" data-a="redo" id="aprRedo"></button><output id="aprCount"></output></div>' +
         '<div class="apr-grp"><label class="apr-lab" for="aprVel" id="aprVelL"></label><input type="range" id="aprVel" min="5" max="100" step="1" value="70"><output id="aprVelO" for="aprVel"></output></div>' +
         '<div class="apr-grp"><label class="apr-lab" for="aprSnap" id="aprSnapL"></label><select id="aprSnap"></select></div>' +
@@ -350,6 +352,7 @@
     for (var b = Math.ceil(ST.b0 / ST.bpb) * ST.bpb; b < ST.b1; b += ST.bpb) { var n = Math.round(b / ST.bpb) + first; hh += '<span style="left:' + ((b - ST.b0) * ST.ppb) + "px;width:" + bar + 'px" aria-label="' + esc(w("bar") + " " + n) + '">' + n + "</span>"; }
     head.innerHTML = hh;
     paintNotes(); paintTools();
+    if (window.AOGNotesPro && AOGNotesPro.on) { try { AOGNotesPro.paint(); } catch (e) {} }
   }
   function noteColor(e) {
     if (e.kit) return "rgb(" + Math.round(120 + 70 * e.v) + "," + Math.round(160 + 50 * e.v) + "," + Math.round(120 + 40 * e.v) + ")";
@@ -622,7 +625,20 @@
     key({ target: sc, key: e.key, code: e.code, shiftKey: e.shiftKey, ctrlKey: e.ctrlKey, metaKey: e.metaKey, altKey: e.altKey, preventDefault: function () { e.preventDefault(); }, stopPropagation: function () {} });
   }
 
-  window.AOGPianoRoll = { open: open, close: close, clean: clean, renderHere: renderHere, isOpen: function () { return !!ST; },
+  /* AOG-DESK-NOTES-V1 (2026-10-17) — the deluxe note tools live in aog-desk-notes.js, fetched the first time the editor
+     opens (the silent treatment); they work on the editor's own notes through this door, so Undo, Redo, the draft and
+     Play it with the changes take them in as any other change */
+  var API = { st: function () { return ST; }, remember: remember, changed: changed, paint: paint, paintNotes: paintNotes, bOf: bOf, tOf: tOf, ids: ids, targets: targets,
+    lang: L, esc: esc, r4: r4, cl: cl, range: function () { return RANGE[ST.room] || [0, 127]; }, noteName: noteName, newId: function () { return UID++; } };
+  var extP = null;
+  function extLoad() {
+    if (window.AOGNotesPro) { try { AOGNotesPro.mount(API); } catch (e) {} return; }
+    if (extP) return;
+    extP = true;
+    try { var s = D.createElement("script"); s.src = "/aog-desk-notes.js"; s.async = true; s.onload = function () { if (ST && window.AOGNotesPro) try { AOGNotesPro.mount(API); } catch (e) {} };
+      s.onerror = function () { extP = null; }; D.head.appendChild(s); } catch (e) { extP = null; }
+  }
+  window.AOGPianoRoll = { open: open, api: function () { return ST ? API : null; }, close: close, clean: clean, renderHere: renderHere, isOpen: function () { return !!ST; },
     /* for the tests (music-handoff/tests/studio/notes.js) */
     _t: { get ST() { return ST; }, act: act, nudge: nudge, addAt: addAt, bOf: function (e) { return bOf(e); }, tOf: function (b) { return tOf(b); }, payload: function () { return payload(); }, setSound: function (id) { setSound(id); } } };
 })();

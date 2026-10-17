@@ -39,7 +39,7 @@ const face = p => p.evaluate(() => ({
   waves: [...document.querySelectorAll("#timeline .st-lane")].map(l => l.querySelectorAll(".st-clip svg.wv path").length).join(""),
   ch: document.querySelector("#chStrip .st-chn").textContent, chWave: !!document.querySelector("#chStrip .st-chw svg.wv path"),
   sel: [...document.querySelectorAll("#chFaders .st-f1.sel")].map(e => e.getAttribute("data-tr")).join(),
-  ph: +getComputedStyle(document.getElementById("timeline")).getPropertyValue("--ph") || 0,
+  ph: +getComputedStyle(document.querySelector("#timeline .st-ph")).getPropertyValue("--ph") || 0,   /* AOG-DESK-SPEED-V1: set on the playhead itself */
   slip: document.getElementById("slip").hidden ? "" : document.getElementById("slip").textContent
 }));
 const setRange = (p, sel, v) => p.evaluate(([sel, v]) => { const r = document.querySelector(sel); r.value = String(v); r.dispatchEvent(new Event("input", { bubbles: true })); }, [sel, v]);
