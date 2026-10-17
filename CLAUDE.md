@@ -153,6 +153,14 @@ Home Screen opens that place, full screen.
   muted green-grey), one sage accent, one kind of card, no glows, stripes or lifts.
   It is not one of `aog-chapel.js`'s navy rooms. Keep it so.
 
+## Slips (Jimmy, 2026-10-17: "Make it easier to access and also allow each 'slip' to be edited")
+
+- `/slip` (also `/slips`) with no `?s=` lists every slip in groups with a Find box. A new slip joins a group in
+  `GROUPS` in `slip.html` (AOG-SLIP-OVERHAUL-V1); one left out still shows under "More slips".
+- Every slip can be changed (`?s=<id>&edit=1`). The change is kept on the device (`aog.slips.edits.v1`) and rides in the
+  slip's shared link as `&x=`; a change from a link is always cleaned (`cleanSpec`) before use. A changed slip still sends
+  as `slip-<id>`. Keep question ids stable when changing a built-in slip; the Dashboard reads answers by id.
+
 ## Thinking-skills checklists (Jimmy, 2026-10-14)
 
 "Executive function checklist to use for students … shared digitally or printed like the other slips."

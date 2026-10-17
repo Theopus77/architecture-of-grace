@@ -76,6 +76,32 @@ textarea{min-height:84px;resize:vertical}
 .artcap{margin:8px 0 0;font-weight:700;color:var(--ink)}
 .done .artpad{margin-top:14px}.done .artcap{color:inherit}
 @media print{.artpad{background:#fff}}
+/* AOG-SLIP-OVERHAUL-V1 — the list of every slip (/slip), the teachers' row under a slip, and the editor (?edit=1) */
+input[type=search],.ed select{width:100%;min-height:48px;font:16px/1.4 inherit;font-family:inherit;padding:10px 12px;border:1px solid #1B2A3D;border-radius:10px;background:var(--card);color:var(--ink)}
+.grp h2{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:20px;line-height:1.25;margin:0 0 4px}
+.srow{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line)}
+.grp h2+.srow{border-top:0}
+.srow[hidden]{display:none}
+.srow .nm{flex:1 1 auto;min-width:0;min-height:44px;display:flex;flex-direction:column;justify-content:center;color:var(--ink);font-weight:700;text-decoration:none}
+.srow .nm small{font-weight:400;font-size:14.5px;color:var(--soft)}
+.srow .nm:focus-visible{outline:3px solid var(--gold);outline-offset:2px;border-radius:6px}
+@media (hover:hover){.srow .nm:hover{text-decoration:underline}}
+.tag{display:inline-block;margin-left:6px;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--goldInk)}
+.mini{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;min-height:44px;padding:0 14px;border-radius:999px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);font:600 15px/1.2 inherit;font-family:inherit;cursor:pointer;text-decoration:none}
+.mini:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.teach{margin:22px 0 0;padding:14px 0 0;border-top:1px solid var(--line)}
+.teach .acts,.ed .acts{display:flex;flex-wrap:wrap;gap:8px}
+.said{margin:8px 0 0;font-weight:600;color:var(--good);min-height:1.2em}
+.linkbox{margin-top:6px}
+.ed label,.ed .lab{display:block;font-weight:700;margin:12px 0 6px}
+.ed label:first-of-type{margin-top:0}
+.ed .orow{display:flex;gap:8px;margin:0 0 8px}
+.ed .orow input{flex:1 1 auto;min-width:0}
+.ed .orow .mini{min-width:48px;min-height:48px;padding:0 12px}
+.ed .acts{margin-top:12px}
+.ed .gbox{border-top:1px solid var(--line);padding-top:8px;margin-top:8px}
+.edfoot{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+@media print{.teach,.mine-note{display:none}}
 
 </style>
 </head>
@@ -248,14 +274,97 @@ SLIPS.fri=wk("fri",["Friday check-in","Registro del viernes"],["How was your wee
 
 /* AOG-EF-SLIPS-V1 (2026-10-14) — the thinking-skills (executive function) checklists live in /aog-ef-slips.js; each joins the slips here. */
 if(window.AOG_EF) window.AOG_EF.concat(window.AOG_EF_STRONG||[]).forEach(function(e){ if(!SLIPS[e.id]) SLIPS[e.id]=e; });   /* AOG-EF-STRONG-V1: and the character lists for boys */
-var id=String(Q.get("s")||"").toLowerCase(); if(id==="weekly"){ var dw=new Date().getDay(); id=dw===1?"mon":(dw>=4||dw===0||dw===6)?"fri":"mid"; } var S=SLIPS[id], app=document.getElementById("app");
+var id=String(Q.get("s")||"").toLowerCase(); if(id==="weekly"){ var dw=new Date().getDay(); id=dw===1?"mon":(dw>=4||dw===0||dw===6)?"fri":"mid"; } var S=SLIPS[id], ORIG=S, app=document.getElementById("app");
+
+/* ══ AOG-SLIP-OVERHAUL-V1 (2026-10-17) — Jimmy: "THE SLIP PAGE — Could it get a overhaul? Make it easier to access and
+   also allow each 'slip' to be edited."
+   · /slip with no slip is the list of every slip (it was a dead end): find one, Open it, or Change it.
+   · Every slip can be changed (?edit=1): its title and note, every question and choice, the order; add or take away
+     questions. The change is kept on this device (aog.slips.edits.v1) and rides in the slip's shared link (&x=), so
+     the class gets the same version. "Go back to the original" undoes it. Words written there show in both languages.
+   · A changed slip still sends as checkinType "slip-<id>"; its extra says edited:1 and carries the questions asked. ══ */
+var EDK="aog.slips.edits.v1", FROM="", EDITING=false, DRAFT=null;
+function b64e(o){ return btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,""); }
+function b64d(s){ s=String(s).replace(/-/g,"+").replace(/_/g,"/"); while(s.length%4) s+="="; return JSON.parse(decodeURIComponent(escape(atob(s)))); }
+function str(v,n){ return String(v==null?"":v).replace(/[\u0000-\u001f]/g," ").trim().slice(0,n); }
+function pr(p,n){ return Array.isArray(p)?[str(p[0],n),str(p[1]!=null&&p[1]!==""?p[1]:p[0],n)]:null; }
+function plist(a,most,n){ return (Array.isArray(a)?a:[]).map(function(p){ return pr(p,n); }).filter(function(p){ return p&&p[0]; }).slice(0,most); }
+var KIND={one:["Pick one","Elige una"],pick:["Pick a few","Elige varias"],scale:["A scale, low to high","Una escala, de menos a más"],check:["A checklist","Una lista de pasos"],note:["Write in words","Escribir con palabras"],points:["Point sheet","Hoja de puntos"]};
+/* a change from a link is never trusted as-is: known kinds only, short words, sensible counts */
+function cleanSpec(o,base){ if(!o||typeof o!=="object"||!Array.isArray(o.qs)) return null;
+  var out={}, seen={};
+  ["k","h"].forEach(function(f){ var p=pr(o[f],120); out[f]=p&&p[0]?p:base[f]; });
+  var l=pr(o.lead,400); out.lead=l&&l[0]?l:base.lead;
+  out.qs=o.qs.slice(0,20).map(function(q){ if(!q||!KIND[q.kind]) return null;
+    var qid=str(q.id,24).replace(/[^\w-]/g,""); if(!qid||seen[qid]) return null; seen[qid]=1;
+    var c={id:qid,kind:q.kind,q:pr(q.q,200)}; if(!c.q||!c.q[0]) return null;
+    var hn=pr(q.hint,200); if(hn&&hn[0]&&q.kind!=="check") c.hint=hn; if(q.more) c.more=true;
+    if(q.kind==="points"){ c.blocks=plist(q.blocks,10,60);
+      c.goals=(Array.isArray(q.goals)?q.goals:[]).map(function(g){ var gt=g&&pr(g.t,60); if(!gt||!gt[0]) return null; var gg={t:gt}, gh=pr(g.h,160), gp=pr(g.p,40); if(gh&&gh[0]) gg.h=gh; if(gp&&gp[0]) gg.p=gp; return gg; }).filter(Boolean).slice(0,5);
+      return (c.blocks.length&&c.goals.length)?c:null; }
+    if(q.kind!=="note"){ c.o=plist(q.o,q.kind==="check"?12:10,120); if(c.o.length<(q.kind==="check"?1:2)) return null;
+      if(q.kind==="pick"){ var m=parseInt(q.max,10); c.max=(m>=1&&m<=99)?m:3; } }
+    return c; }).filter(Boolean);
+  return out.qs.length?out:null; }
+function specOf(s){ return JSON.parse(JSON.stringify({k:s.k,h:s.h,lead:s.lead,qs:s.qs})); }
+function withSpec(base,spec){ var s=Object.assign({},base,spec); s.edited=true; return s; }
+function mine(){ var m=jGet(EDK,{}); return (m&&typeof m==="object")?m:{}; }
+if(S){
+  var XS=null; try{ var xr=Q.get("x"); if(xr){ var xo=b64d(xr); if(xo&&xo.s===id) XS=cleanSpec(xo,ORIG); } }catch(e){}
+  var MS=Q.get("orig")==="1"?null:cleanSpec(mine()[id],ORIG);
+  if(XS){ S=withSpec(ORIG,XS); FROM="link"; } else if(MS){ S=withSpec(ORIG,MS); FROM="mine"; }
+  EDITING=Q.get("edit")==="1";
+}
+/* the plain name of a slip, as a list shows it */
+var NM={school:["My school checklist","Mi lista de la escuela"],homecheck:["My home checklist","Mi lista de la casa"],points:["Grace point sheet · school","Hoja de puntos de gracia · escuela"],homepoints:["Grace point sheet · home","Hoja de puntos de gracia · casa"],home:["Evening note from home","Nota de la tarde desde casa"],morning:["Morning note from home","Nota de la mañana desde casa"],homework:["Homework note from home","Nota de la tarea desde casa"]};
+function nameOf(sid){ var s=SLIPS[sid]; if(NM[sid]) return t(NM[sid][0],NM[sid][1]); if(s.skill) return t(s.skill[0],s.skill[1]); var k=t(s.k[0],s.k[1]), i=k.indexOf(" · "); return i>=0?k.slice(i+3):k; }
+/* this device's Sheet rides in a shared link, as on /ef and the Dashboard */
+function destParam(){ var u=lsGet("aog.sync.url",""), k=lsGet("aog.sync.writekey",""); if(!u||!k) return ""; try{ return b64e({u:u,k:k}); }catch(e){ return ""; } }
+function linkFor(sid){ var q=["s="+sid], d=destParam(), o=lsGet("aog.org.id","");
+  if(d) q.push("dest="+encodeURIComponent(d)); if(o) q.push("org="+encodeURIComponent(o)); if(ES) q.push("lang=es");
+  if(sid===id&&S&&S.edited){ try{ q.push("x="+b64e(Object.assign({s:sid},specOf(S)))); }catch(e){} }
+  return location.origin+"/slip.html?"+q.join("&"); }
+function shareLink(sid,said){ var url=linkFor(sid), ttl=nameOf(sid);
+  if(navigator.share&&matchMedia("(pointer:coarse)").matches){ navigator.share({title:ttl,url:url}).catch(function(){}); return; }
+  var shown=function(){ said.textContent=t("Copied. Paste it where your class finds links.","Copiado. Pégalo donde tu clase encuentra los enlaces."); };
+  var manual=function(){ said.innerHTML=esc(t("Copy this link:","Copia este enlace:"))+'<input type="text" class="linkbox" readonly value="'+esc(url)+'" aria-label="'+esc(t("Link","Enlace"))+'">'; var i=said.querySelector("input"); if(i){ i.focus(); i.select(); } };
+  if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(shown,manual); else manual(); }
+
+/* ── the list of every slip ── */
+if(!S){
+  document.title=t("Slips","Registros")+" — Architecture of Grace";
+  var EFI=(window.AOG_EF||[]).map(function(e){ return e.id; }), STI=(window.AOG_EF_STRONG||[]).map(function(e){ return e.id; });
+  var GROUPS=[[["In class","En clase"],["endclass","test","posttest","unit","goal","team","repair"]],
+    [["Each week","Cada semana"],["mon","mid","fri"]],
+    [["Checklists and point sheets","Listas y hojas de puntos"],["school","homecheck","bedtime","points","homepoints"]],
+    [["From home, for parents","Desde casa, para padres"],["home","morning","homework"]],
+    [["Thinking skills","Habilidades para pensar"],EFI],
+    [["Strength and character","Fuerza y carácter"],STI]];
+  var listed={}; GROUPS.forEach(function(g){ g[1].forEach(function(x){ listed[x]=1; }); });
+  var rest=Object.keys(SLIPS).filter(function(x){ return !listed[x]; }); if(rest.length) GROUPS.push([["More slips","Más registros"],rest]);
+  var MY=mine();
+  var h='<p class="k">'+t("Slips","Registros")+'</p><h1>'+t("Pick a slip","Elige un registro")+'</h1>'
+    +'<p class="lead">'+t("Open one to fill in. Or change its words first, then share its link.","Abre uno para llenarlo. O cambia sus palabras primero y luego comparte su enlace.")+'</p>'
+    +'<label class="q" for="find">'+t("Find a slip","Busca un registro")+'</label><input type="search" id="find" autocomplete="off" spellcheck="false" placeholder="'+esc(t("test, home, bedtime…","examen, casa, dormir…"))+'" style="margin:6px 0 14px">'
+    +'<p class="lead" id="none" hidden>'+t("No slip has that word. Try another.","Ningún registro tiene esa palabra. Prueba otra.")+'</p>';
+  GROUPS.forEach(function(g){ var ids=g[1].filter(function(x){ return SLIPS[x]; }); if(!ids.length) return;
+    h+='<section class="card grp"><h2>'+esc(t(g[0][0],g[0][1]))+'</h2>'+ids.map(function(x){ var s=SLIPS[x], nm=nameOf(x), sub=t(s.h[0],s.h[1]);
+      return '<div class="srow" data-find="'+esc((nm+" "+sub+" "+s.k[0]+" "+s.k[1]).toLowerCase())+'"><a class="nm" href="/slip.html?s='+x+'">'+esc(nm)+(MY[x]?'<span class="tag">'+t("Changed","Cambiado")+'</span>':'')
+        +(sub.toLowerCase()!==nm.toLowerCase()?'<small>'+esc(sub)+'</small>':'')+'</a><a class="mini" href="/slip.html?s='+x+'&amp;edit=1" aria-label="'+esc(t("Change ","Cambiar ")+nm)+'">'+t("Change","Cambiar")+'</a></div>'; }).join("")+'</section>'; });
+  h+='<a class="back" href="/ef">'+t("Thinking-skills checklists to print","Listas de habilidades para imprimir")+' ›</a>';
+  app.innerHTML=h;
+  var fi=document.getElementById("find");
+  fi.addEventListener("input",function(){ var w=fi.value.trim().toLowerCase(), any=false;
+    app.querySelectorAll(".grp").forEach(function(sec){ var shown=0; sec.querySelectorAll(".srow").forEach(function(r){ var on=!w||r.getAttribute("data-find").indexOf(w)>=0; r.hidden=!on; if(on) shown++; }); sec.hidden=!shown; if(shown) any=true; });
+    document.getElementById("none").hidden=any; });
+  return;
+}
 /* AOG-PTS-PERIODS-V1 (2026-10-03) — Jimmy: "What if this was used at a junior high / middle school?" … "Periods homeroom 1-10".
    ?day=periods&n=7 gives the school sheet Homeroom and Period 1–n (n from 1 to 10) in place of the elementary parts of the day. */
-if(S&&id==="points"&&Q.get("day")==="periods"){ var pn=parseInt(Q.get("n"),10); pn=(pn>=1&&pn<=10)?pn:7;
+if(S&&!EDITING&&id==="points"&&Q.get("day")==="periods"){ var pn=parseInt(Q.get("n"),10); pn=(pn>=1&&pn<=10)?pn:7;
   var PB=[["Homeroom","Aula de inicio"]]; for(var pi=1;pi<=pn;pi++) PB.push(["Period "+pi,"Periodo "+pi]);
   S.qs.forEach(function(q){ if(q.kind==="points") q.blocks=PB; });
   S.lead=["Fill it in at the end of each period. Every period is a fresh start. Building adds one brick; Built it adds two.","Llénenla al final de cada periodo. Cada periodo es un nuevo comienzo. Construyendo pone un ladrillo; Lo logré pone dos."]; }
-if(!S){ app.innerHTML='<div class="card"><p class="k">'+t("Slips","Boletos")+'</p><h1>'+t("Which slip?","¿Qué boleto?")+'</h1><p class="lead">'+t("This link is missing its slip. Open the class link your teacher shared.","A este enlace le falta el boleto. Abre el enlace que compartió tu maestro.")+'</p><a class="back" href="/today">'+t("Your work today","Tu trabajo de hoy")+' ›</a></div>'; return; }
 document.title=t(S.k[0],S.k[1])+" — Architecture of Grace";
 
 /* ── where it goes: the link's own Sheet wins (dest= or the short d=), then what this device handed out, then this device's own ── */
@@ -328,8 +437,10 @@ function skyDone(){ if(!window.AOGSky) return ""; var rs=[]; try{ rs=AOGSky.rows
   return '<h2 style="margin:18px 0 0">'+(S.parent?t("A new star in "+who+"'s sky","Una estrella nueva en el cielo de "+who):t("A new star in your sky","Una estrella nueva en tu cielo"))+'</h2>'+AOGSky.html(rs,{mark:true,es:ES})
     +'<p class="lead" style="margin:8px 0 0">'+(S.parent?t("Every note you send lights a star. Seven make a constellation.","Cada nota que envía enciende una estrella. Siete forman una constelación."):t("Every slip you send lights a star. Seven make a constellation. Show your grown-up!","Cada hoja que envías enciende una estrella. Siete forman una constelación. ¡Muéstraselo a un adulto!"))+'</p>'; }
 function paint(){
+  if(EDITING){ edPaint(); return; }
   var h='<p class="k">'+esc(t(S.k[0],S.k[1]))+'</p><h1>'+esc(t(S.h[0],S.h[1]))+'</h1><p class="lead">'+esc(t(S.lead[0],S.lead[1]))+'</p>';
   if(sent){ app.innerHTML=h+'<div class="card done"><h2>'+t("Sent. Thank you.","Enviado. Gracias.")+'</h2><p class="lead" style="margin:0">'+(DEST?((S.parent||S.together)?t("The teacher will see it.","El maestro lo verá."):t("Your teacher will see it.","Tu maestro lo verá.")):t("Saved on this device. This link has no Sheet, so show this screen to your teacher.","Guardado en este aparato. Este enlace no tiene Hoja; muéstrale esta pantalla a tu maestro."))+'</p>'+skyDone()+'<a class="back" href="/today">'+t("Back to your work today","Volver a tu trabajo de hoy")+' ›</a></div>'; return; }
+  if(FROM==="mine") h+='<div class="goalbox mine-note">'+t("This is your changed version of this slip.","Esta es tu versión cambiada de este registro.")+'</div>';
   var ns=names();
   h+='<div class="card"><label class="q" for="who">'+(S.parent?t("Your child's name","El nombre de su hijo"):S.together?t("Student's name","Nombre del estudiante"):t("Your name","Tu nombre"))+'</label>'
     +(ns.length?'<div class="names" style="margin-top:8px">'+ns.map(function(n){ return '<button type="button" data-who="'+esc(n)+'" aria-pressed="'+(n.toLowerCase()===who.toLowerCase())+'">'+esc(n)+'</button>'; }).join("")+'</div>':'')
@@ -349,6 +460,11 @@ function paint(){
   h+='<button type="button" class="send" id="send"'+(busy?' disabled':'')+'>'+(busy?t("Sending…","Enviando…"):((S.parent||S.together)?t("Send to the teacher","Enviar al maestro"):t("Send to my teacher","Enviar a mi maestro")))+'</button><p class="st'+(err?" bad":"")+'" id="st" aria-live="polite">'+esc(err)+'</p>';
   /* AOG-SLIP-PRINT-V1 — a Print button for a paper copy (screen only) */
   h+='<button type="button" class="prt" id="prt">'+t("Print this slip","Imprimir esta hoja")+'</button>';
+  /* AOG-SLIP-OVERHAUL-V1 — for the adult who hands it out: change it, share it, or pick another */
+  h+='<div class="teach"><p class="hint" style="margin:0 0 8px">'+t("For teachers and parents","Para maestros y padres")+'</p><div class="acts">'
+    +'<a class="mini" href="/slip.html?s='+id+'&amp;edit=1">'+t("Change this slip","Cambiar este registro")+'</a>'
+    +'<button type="button" class="mini" id="shr">'+((navigator.share&&matchMedia("(pointer:coarse)").matches)?t("Share link","Compartir enlace"):t("Copy link","Copiar enlace"))+'</button>'
+    +'<a class="mini" href="/slip">'+t("All slips","Todos los registros")+'</a></div><p class="said" id="said" aria-live="polite"></p></div>';
   app.innerHTML=h; wire();
 }
 function wire(){
@@ -368,8 +484,91 @@ function wire(){
     var q=S.qs.filter(function(x){ return x.id===qid; })[0], wb=document.getElementById("wallBox"); if(wb&&q) wb.innerHTML=wallSvg(q); }; });
   var pb=document.getElementById("ptsBy"); if(pb) pb.addEventListener("input",function(){ try{ localStorage.setItem("aog.pts.by",pb.value.trim().toUpperCase().slice(0,6)); }catch(e){} });
   var s=document.getElementById("send"); if(s) s.onclick=send;
-  var pr=document.getElementById("prt"); if(pr) pr.onclick=function(){ window.print(); };
+  var pt=document.getElementById("prt"); if(pt) pt.onclick=function(){ window.print(); };
+  var sh=document.getElementById("shr"); if(sh) sh.onclick=function(){ shareLink(id,document.getElementById("said")); };
 }
+/* ══ AOG-SLIP-OVERHAUL-V1 — the editor. Every box writes into DRAFT as it is typed; Save cleans it and keeps it. ══ */
+function edPaint(){
+  if(!DRAFT) DRAFT=specOf(S);
+  var L=ES?1:0, D=DRAFT, f=function(p){ return esc(p?p[L]:""); };
+  var row=function(path,val,lab,del){ return '<div class="orow"><input type="text" data-f="'+path+'" value="'+esc(val)+'" maxlength="120" aria-label="'+esc(lab)+'">'+(del?'<button type="button" class="mini" data-act="del" data-p="'+path+'" aria-label="'+esc(t("Take away ","Quitar ")+lab)+'">✕</button>':'')+'</div>'; };
+  document.title=t("Change: ","Cambiar: ")+nameOf(id)+" — Architecture of Grace";
+  var h='<p class="k">'+t("Change this slip","Cambia este registro")+'</p><h1>'+esc(nameOf(id))+'</h1>'
+    +'<p class="lead">'+t("Change any words. Add or take away questions. Then press Save.","Cambia las palabras que quieras. Agrega o quita preguntas. Luego toca Guardar.")+'</p>'
+    +'<p class="hint">'+t("Your change stays on this device. When you share the slip's link, your class gets your version. Words you write here show in English and in Spanish.","Tu cambio se queda en este aparato. Cuando compartes el enlace del registro, tu clase recibe tu versión. Las palabras que escribas aquí se ven en inglés y en español.")+'</p>';
+  h+='<div class="card ed"><label for="ed-k">'+t("Small label at the top","Etiqueta pequeña arriba")+'</label><input type="text" id="ed-k" data-f="k" maxlength="120" value="'+f(D.k)+'">'
+    +'<label for="ed-h">'+t("Title","Título")+'</label><input type="text" id="ed-h" data-f="h" maxlength="120" value="'+f(D.h)+'">'
+    +'<label for="ed-lead">'+t("Short note under the title","Nota corta bajo el título")+'</label><textarea id="ed-lead" data-f="lead" maxlength="400">'+f(D.lead)+'</textarea></div>';
+  D.qs.forEach(function(q,qi){ var n=qi+1, P="q."+qi;
+    h+='<div class="card ed" id="edq'+qi+'"><p class="k">'+t("Question ","Pregunta ")+n+' · '+esc(t(KIND[q.kind][0],KIND[q.kind][1]))+'</p>'
+      +'<label for="ed-q'+qi+'">'+t("The question","La pregunta")+'</label><input type="text" id="ed-q'+qi+'" data-f="'+P+'.q" maxlength="200" value="'+f(q.q)+'">';
+    if(q.kind!=="check"&&q.kind!=="points") h+='<label for="ed-hn'+qi+'">'+t("A small help line (you can leave it empty)","Una línea de ayuda (puede quedar vacía)")+'</label><input type="text" id="ed-hn'+qi+'" data-f="'+P+'.hint" maxlength="200" value="'+f(q.hint)+'">';
+    if(q.o){ var few=q.kind==="check"?1:2, most=q.kind==="check"?12:10, word=q.kind==="check"?t("Step ","Paso "):t("Choice ","Opción ");
+      h+='<p class="lab">'+(q.kind==="check"?t("The steps","Los pasos"):q.kind==="scale"?t("The scale, low to high","La escala, de menos a más"):t("The choices","Las opciones"))+'</p>'
+        +q.o.map(function(o,oi){ return row(P+".o."+oi,o[L],word+(oi+1),q.o.length>few); }).join("")
+        +(q.o.length<most?'<button type="button" class="mini" data-act="add" data-p="'+P+'.o">+ '+(q.kind==="check"?t("Add a step","Agregar un paso"):t("Add a choice","Agregar una opción"))+'</button>':'');
+      if(q.kind==="pick"){ var cap=q.max>=99?99:q.max; h+='<label for="ed-mx'+qi+'">'+t("How many can they pick?","¿Cuántas pueden elegir?")+'</label><select id="ed-mx'+qi+'" data-f="'+P+'.max">'
+        +q.o.map(function(o,i){ return '<option value="'+(i+1)+'"'+(cap===i+1?' selected':'')+'>'+(i+1)+'</option>'; }).join("")+'<option value="99"'+(cap===99?' selected':'')+'>'+t("As many as they like","Las que quieran")+'</option></select>'; } }
+    if(q.kind==="points"){
+      h+='<p class="lab">'+t("Parts of the day","Partes del día")+'</p>'+q.blocks.map(function(b,bi){ return row(P+".blocks."+bi,b[L],t("Part ","Parte ")+(bi+1),q.blocks.length>1); }).join("")
+        +(q.blocks.length<10?'<button type="button" class="mini" data-act="add" data-p="'+P+'.blocks">+ '+t("Add a part of the day","Agregar una parte del día")+'</button>':'')
+        +'<p class="lab">'+t("The goals","Las metas")+'</p>'+q.goals.map(function(g,gi){ return '<div class="gbox"><label for="ed-g'+qi+'-'+gi+'">'+t("Goal ","Meta ")+(gi+1)+'</label><div class="orow"><input type="text" id="ed-g'+qi+'-'+gi+'" data-f="'+P+'.goals.'+gi+'.t" maxlength="60" value="'+f(g.t)+'">'
+          +(q.goals.length>1?'<button type="button" class="mini" data-act="del" data-p="'+P+'.goals.'+gi+'" aria-label="'+esc(t("Take away goal ","Quitar meta ")+(gi+1))+'">✕</button>':'')+'</div>'
+          +'<input type="text" data-f="'+P+'.goals.'+gi+'.h" maxlength="160" value="'+f(g.h)+'" aria-label="'+esc(t("What it looks like, goal ","Cómo se ve, meta ")+(gi+1))+'" placeholder="'+esc(t("What it looks like (you can leave it empty)","Cómo se ve (puede quedar vacío)"))+'"></div>'; }).join("")
+        +(q.goals.length<5?'<button type="button" class="mini" data-act="add" data-p="'+P+'.goals" style="margin-top:8px">+ '+t("Add a goal","Agregar una meta")+'</button>':''); }
+    h+='<div class="acts">'+(qi>0?'<button type="button" class="mini" data-act="up" data-q="'+qi+'">↑ '+t("Move up","Subir")+'</button>':'')
+      +(qi<D.qs.length-1?'<button type="button" class="mini" data-act="down" data-q="'+qi+'">↓ '+t("Move down","Bajar")+'</button>':'')
+      +(D.qs.length>1?'<button type="button" class="mini" data-act="delq" data-q="'+qi+'">'+t("Take away this question","Quitar esta pregunta")+'</button>':'')+'</div></div>'; });
+  h+='<div class="card ed"><label for="ed-kind">'+t("Add a question","Agregar una pregunta")+'</label><div class="orow"><select id="ed-kind">'
+    +["one","pick","scale","check","note"].map(function(k){ return '<option value="'+k+'">'+esc(t(KIND[k][0],KIND[k][1]))+'</option>'; }).join("")
+    +'</select><button type="button" class="mini" data-act="addq">'+t("Add","Agregar")+'</button></div></div>';
+  h+='<button type="button" class="send" data-act="save">'+t("Save","Guardar")+'</button><p class="st'+(err?" bad":"")+'" id="st" aria-live="polite">'+esc(err)+'</p>'
+    +'<div class="edfoot"><a class="mini" href="/slip.html?s='+id+'">'+t("Cancel","Cancelar")+'</a>'
+    +(mine()[id]?'<button type="button" class="mini" data-act="orig">'+t("Go back to the original","Volver al original")+'</button>':'')+'</div>';
+  app.innerHTML=h;
+}
+function edAt(path){ var p=path.split("."), q=DRAFT.qs[+p[1]]; return {p:p,q:q}; }
+app.addEventListener("input",function(ev){ if(!EDITING) return; var el=ev.target, path=el.getAttribute&&el.getAttribute("data-f"); if(!path) return;
+  var v=el.value, both=[v,v];
+  if(path==="k"||path==="h"||path==="lead"){ DRAFT[path]=both; return; }
+  var a=edAt(path), p=a.p, q=a.q; if(!q) return;
+  if(p[2]==="max") q.max=+v;
+  else if(p[2]==="q"||p[2]==="hint") q[p[2]]=both;
+  else if(p[2]==="o"||p[2]==="blocks") q[p[2]][+p[3]]=both;
+  else if(p[2]==="goals"&&q.goals[+p[3]]) q.goals[+p[3]][p[4]]=both; });
+app.addEventListener("change",function(ev){ if(EDITING&&ev.target.tagName==="SELECT"&&ev.target.getAttribute("data-f")) ev.target.dispatchEvent(new Event("input",{bubbles:true})); });
+function newId(){ var n=1, has={}; DRAFT.qs.forEach(function(q){ has[q.id]=1; }); while(has["q"+n]) n++; return "q"+n; }
+function edFocus(sel){ var el=app.querySelector(sel); if(el){ el.focus({preventScroll:true}); el.scrollIntoView({block:"center"}); } }
+app.addEventListener("click",function(ev){ if(!EDITING) return; var b=ev.target.closest&&ev.target.closest("[data-act]"); if(!b) return;
+  var act=b.getAttribute("data-act"), qi=+b.getAttribute("data-q"), path=b.getAttribute("data-p")||"", D=DRAFT, focus="";
+  if(act==="add"){ var a=edAt(path), key=a.p[2], arr=a.q[key];
+    if(key==="goals") arr.push({t:["",""]}); else arr.push(["",""]);
+    focus='[data-f="'+path+"."+(arr.length-1)+(key==="goals"?".t":"")+'"]'; }
+  else if(act==="del"){ var d=edAt(path); d.q[d.p[2]].splice(+d.p[3],1); if(d.q.max&&d.q.o&&d.q.max<99&&d.q.max>d.q.o.length) d.q.max=d.q.o.length; }
+  else if(act==="up"&&qi>0){ D.qs.splice(qi-1,0,D.qs.splice(qi,1)[0]); focus="#edq"+(qi-1)+' [data-act="'+(qi-1>0?"up":"down")+'"]'; }
+  else if(act==="down"&&qi<D.qs.length-1){ D.qs.splice(qi+1,0,D.qs.splice(qi,1)[0]); focus="#edq"+(qi+1)+' [data-act="'+(qi+1<D.qs.length-1?"down":"up")+'"]'; }
+  else if(act==="delq"){ D.qs.splice(qi,1); }
+  else if(act==="addq"){ var k=document.getElementById("ed-kind").value, nq={id:newId(),kind:k,q:[t("New question","Pregunta nueva"),t("New question","Pregunta nueva")]};
+    if(k==="one"||k==="pick") nq.o=[["",""],["",""]]; if(k==="pick") nq.max=2;
+    if(k==="scale") nq.o=[["Not yet","Todavía no"],["A little","Un poco"],["Okay","Más o menos"],["Well","Bien"],["Very well","Muy bien"]];
+    if(k==="check") nq.o=[["",""]];
+    D.qs.push(nq); focus="#ed-q"+(D.qs.length-1); }
+  else if(act==="orig"){ if(!window.confirm(t("Go back to the original slip? Your changes will be gone.","¿Volver al registro original? Tus cambios se borrarán."))) return;
+    var m=mine(); delete m[id]; jSet(EDK,m); location.href="/slip.html?s="+id; return; }
+  else if(act==="save"){ edSave(); return; }
+  err=""; edPaint(); if(focus) edFocus(focus); });
+function edSave(){ var D=DRAFT, bad="";
+  D.qs.forEach(function(q,qi){ if(bad) return; ["o","blocks"].forEach(function(k){ if(q[k]) q[k]=q[k].filter(function(o){ return String(o[0]).trim(); }); });
+    if(q.goals) q.goals=q.goals.filter(function(g){ return String(g.t[0]).trim(); });
+    var n=qi+1;
+    if(!String(q.q[0]).trim()) bad=t("Question "+n+" needs words.","La pregunta "+n+" necesita palabras.");
+    else if(q.o&&q.o.length<(q.kind==="check"?1:2)) bad=q.kind==="check"?t("Question "+n+" needs at least one step.","La pregunta "+n+" necesita al menos un paso."):t("Question "+n+" needs at least two choices.","La pregunta "+n+" necesita al menos dos opciones.");
+    else if(q.kind==="points"&&(!q.blocks.length||!q.goals.length)) bad=t("The point sheet needs a part of the day and a goal.","La hoja de puntos necesita una parte del día y una meta."); });
+  if(bad){ err=bad; edPaint(); edFocus("#st"); return; }
+  var spec=cleanSpec(D,ORIG); if(!spec){ err=t("Something is missing. Check each question.","Falta algo. Revisa cada pregunta."); edPaint(); return; }
+  var m=mine(), same=JSON.stringify(spec)===JSON.stringify(cleanSpec(specOf(ORIG),ORIG));
+  if(same) delete m[id]; else m[id]=spec; jSet(EDK,m);
+  location.href="/slip.html?s="+id+(Q.get("lang")?"&lang="+encodeURIComponent(Q.get("lang")):""); }
 /* the answers as words (what a teacher reads) and as numbers (what a chart plots) */
 /* a checklist's count, said plainly */
 function cnt(q){ var n=(A[q.id]||[]).length, m=q.o.length; return n===m?t("All "+m+" done","Las "+m+" listas"):t(n+" of "+m+" done",n+" de "+m+" listas"); }
@@ -399,7 +598,7 @@ function send(){
   var row=S.weekly?weeklyRow(now,d):{ action:"checkin", checkinType:"slip-"+id, slipType:id, studentId:who, respondentId:S.parent?"parent":who, respondentRole:S.parent?"parent":"student",
     timestamp:now.toISOString(), date:d, period:Q.get("period")||"", classId:Q.get("classId")||"", grade:Q.get("grade")||"",
     note:[r.words.bricks,r.words.steps,r.words.words,r.words.topic,r.words.help,r.words.well].filter(Boolean).join(" · "), followUp:follow||!!(S.talk&&TALK), tellAdult:S.talk?(TALK?"yes":"no"):"", source:"link",
-    extra:JSON.stringify({ series:"slip", slip:id, v:1, lang:ES?"es":"en", answers:r.words, scale:r.nums, goalId:Q.get("goal")||"", goalTitle:Q.get("gt")||"", unit:Q.get("u")||"", pts:ptsPack() }) };
+    extra:JSON.stringify({ series:"slip", slip:id, v:1, lang:ES?"es":"en", answers:r.words, scale:r.nums, goalId:Q.get("goal")||"", goalTitle:Q.get("gt")||"", unit:Q.get("u")||"", pts:ptsPack(), edited:S.edited?1:0, asked:S.edited?S.qs.reduce(function(o,q){ o[q.id]=q.q[0]; return o; },{}):undefined }) };
   if(S.weekly) jSet("aog.weekly.mine",(jGet("aog.weekly.mine",[])||[]).concat([{w:S.weekly,who:who,ts:now.toISOString(),answers:JSON.parse(row.extra).answers,talk:TALK}]).slice(-60));
   var mine=jGet("aog.slips.mine",[])||[]; mine.push(Object.assign({},row,{mine:true})); jSet("aog.slips.mine",mine.slice(-300));
   if(!DEST){ sent=true; paint(); return; }
