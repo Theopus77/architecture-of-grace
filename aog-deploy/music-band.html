@@ -2128,7 +2128,7 @@ function sounding(){
 function litKeys(){
   const kb=$("kbd"); if(!kb) return;
   const down=new Set(), now=S.playing?sounding():new Set(), fit=new Set(), cc=curChord();
-  LIVE.forEach(vc=>{ if(vc.down) down.add(vc.m); });
+  LIVE.forEach(vc=>{ if(vc.down) down.add(vc.key!=null ? vc.key : vc.m); });   /* AOG-BAND-KEYS-FOLD-V1: a folded note lights the key pressed */
   if(cc) chordPcs(cc).forEach(pc=>fit.add(pc));
   PLAY.sig=[...now].sort((a,b)=>a-b).join(",");
   kb.querySelectorAll("[data-m]").forEach(el=>{ const m=+el.getAttribute("data-m"), d=down.has(m), n=!d&&now.has(m);
@@ -2148,7 +2148,11 @@ function keyPlayers(m){
   if(s && s.keys){ const got=s.keys.filter(inR); if(got.length) return got; if(s.keysLow && inR(s.keysLow)) return [s.keysLow]; }
   const p=playerFor(m); return p ? [p] : [];
 }
-function keyOn(m, v){ const ps=keyPlayers(m), vv=ps.length>1 ? v*0.8 : v; if(!ps.length) noteOn("k"+m, null, m, v); ps.forEach((p, i)=>noteOn(i ? "k"+m+"~"+i : "k"+m, p, m, vv)); lessonKey(m, v); }
+/* AOG-BAND-KEYS-FOLD-V1 (2026-10-17) — Jimmy: yes to "every key always makes a sound". A key beyond the sound's real range
+   (the erhu starts at D4) played nothing, and a silent key feels like a missed note. It now plays the same note an octave
+   (or two, or three) into the range, the nearest first; the key, its lift and the lesson stay the key that was pressed. */
+function keyFold(m){ for(const k of [12,-12,24,-24,36,-36]){ const ps=keyPlayers(m+k); if(ps.length) return [ps, m+k]; } return [[], m]; }
+function keyOn(m, v){ let ps=keyPlayers(m), mm=m; if(!ps.length) [ps, mm]=keyFold(m); const vv=ps.length>1 ? v*0.8 : v; if(!ps.length) noteOn("k"+m, null, m, v); ps.forEach((p, i)=>{ const k=i ? "k"+m+"~"+i : "k"+m; noteOn(k, p, mm, vv); const vc=mm!==m && LIVE.get(k); if(vc){ vc.key=m; litKeys(); } }); lessonKey(m, v); }
 function keyOff(m){ noteOff("k"+m); for(let i=1;i<4;i++) noteOff("k"+m+"~"+i); lessonKeyUp(m); }
 /* AOG-STEADY-ALL-V1 (2026-10-17) — Jimmy: "after a certain number of notes are played, it freezes up for a note or two". A
    finger that lands is already on its key (the event says which), so the page is not asked again what is under it; and a
