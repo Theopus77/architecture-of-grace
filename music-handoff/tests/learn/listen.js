@@ -248,10 +248,17 @@ const mean = (a, k) => a.reduce((x, s) => x + (s[k] || 0), 0) / a.length;
 
   /* ── no Workers at all: the page listens in slices and keeps breathing; same lesson ── */
   { const W = await open(9284, true);
-    const r = await W.p.evaluate(async ({ ev, sec }) => { const buf = await renderSong(ev, sec); let last = performance.now(), worst = 0, ticks = 0;
+    /* the very same samples on both pages (the browser's own rendering of a song made here differs in its last bit from one
+       rendering to the next): the last song, as 22050 Hz mono (what the listener hears), handed over */
+    const b64 = await p.evaluate(async () => { const buf = window.__last, len = Math.ceil(buf.length * 22050 / buf.sampleRate), ctx = new OfflineAudioContext(1, len, 22050), s = ctx.createBufferSource();
+      s.buffer = buf; s.connect(ctx.destination); s.start(0); const m = (await ctx.startRendering()).getChannelData(0), u = new Uint8Array(m.buffer, m.byteOffset, m.byteLength); let x = "";
+      for (let i = 0; i < u.length; i += 8192) x += String.fromCharCode.apply(null, u.subarray(i, i + 8192)); return btoa(x); });
+    const unpack = b64 => { const s = atob(b64), u = new Uint8Array(s.length); for (let i = 0; i < s.length; i++) u[i] = s.charCodeAt(i);
+      const f = new Float32Array(u.buffer), B = new AudioBuffer({ length: f.length, numberOfChannels: 1, sampleRate: 22050 }); B.copyToChannel(f, 0); return B; };
+    const r = await W.p.evaluate(async ({ x, f }) => { const buf = new Function("return " + f)()(x); let last = performance.now(), worst = 0, ticks = 0;
       const iv = setInterval(() => { const n = performance.now(); worst = Math.max(worst, n - last); last = n; ticks++; }, 16);
-      const L = await AOGLearn.analyze(buf); clearInterval(iv); return { L, worst, ticks, hasWorker: typeof Worker }; }, { ev: SONGS[SONGS.length - 1].ev, sec: SONGS[SONGS.length - 1].sec });
-    const w = await p.evaluate(async () => AOGLearn.analyze(window.__last));
+      const L = await AOGLearn.analyze(buf); clearInterval(iv); return { L, worst, ticks, hasWorker: typeof Worker }; }, { x: b64, f: unpack.toString() });
+    const w = await p.evaluate(async ({ x, f }) => AOGLearn.analyze(new Function("return " + f)()(x)), { x: b64, f: unpack.toString() });
     ok(r.hasWorker === "undefined" && JSON.stringify(r.L) === JSON.stringify(w), "without Workers the page listens itself, and the lesson is the same as the worker's");
     ok(r.worst < 150 && r.ticks > 10, `and the page keeps breathing while it listens (longest pause ${Math.round(r.worst)} ms, ${r.ticks} ticks)`);
     ok(W.errs.length === 0, "no page errors without Workers " + W.errs.join(" | "));

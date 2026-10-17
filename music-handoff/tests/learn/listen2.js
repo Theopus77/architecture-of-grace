@@ -14,7 +14,10 @@
      low confidence; under 3 ms a call for 0.25 s;
    · E5 AOGLearn.simplify and AOGLearn.capo;
    · E6 analyze(…, {signal}) stops when asked (an AbortError), in a worker and on the page alone;
-   · the worker and the page-only way still give the very same lesson; no page errors.
+   · E7 the bass alone (the crate's bars 5-8, before the band comes in) is a power chord on the bass note or N.C.;
+   · the worker and the page-only way still give the very same lesson (on the very same samples: the browser's own rendering
+     of a song made here differs in its last bit from one rendering to the next); no page errors;
+   · the page alone, from cold, never works longer than 12 ms at a time (the longest slice, from the browser's trace).
    Ports 9287 (the page), 9288 (a page without Workers), 9289 (the engine as it was). */
 const pw = require(require("child_process").execSync("npm root -g").toString().trim() + "/playwright");
 const fs = require("fs"), path = require("path"), cp = require("child_process");
@@ -230,6 +233,16 @@ function wellFormed(L) {
   ok(ce >= 0.8 && se >= 0.94, `E2 7ths on short stabs: crate chords (root and quality) ${r3(ce)}${OLDL ? " (was " + r3(mean(C_.map(r => r.o), "chordExact")) + ")" : ""}, synthetic ${r3(se)}`);
   const stab = F_.find(r => r.name === "stab-sevenths-aaba");
   ok(stab.n.chordExact >= 0.9, "E2 and a song made here of short 7th stabs over a held bass (not tuned on): " + r3(stab.n.chordExact));
+  /* E7 the bass alone: in bars 5-8 of every crate song the bass plays before the band comes in; those bars are a power
+     chord on the bass note ("5") or N.C., never a chord the overtones and the drums seem to make */
+  { let tot = 0, good = 0; const say = [];
+    CR.forEach((x, i) => { const L = NEW.C[i], G = M.crateTruth(x.T), bar = 240 / x.T.bpm, names = [];
+      const offs = L.beats.map(t => { let d = 9; G.beats.forEach(g => { if (Math.abs(t - g) < Math.abs(d)) d = t - g; }); return d; }).sort((a, z) => a - z), off = Math.abs(offs[offs.length >> 1]) < 0.07 ? offs[offs.length >> 1] : 0;
+      for (let b = 4; b < 8; b++) { const t0 = b * bar + off, t1 = t0 + bar, root = (9 + x.T.key + x.T.prog[b % 4][0]) % 12;
+        L.chords.forEach(c => { const ov = Math.min(t1, c.t + c.d) - Math.max(t0, c.t); if (ov <= 0.05) return; tot += ov;
+          if (c.root < 0 || (c.q === "5" && c.root === root)) good += ov; if (names[names.length - 1] !== c.name) names.push(c.name); }); }
+      say.push(x.name + " " + names.join(" ")); });
+    ok(good >= 0.9 * tot, `E7 the bass alone before the band: ${r3(good / tot)} of bars 5-8 a power chord on the bass note or N.C. (${say.join(" · ")})`); }
 
   /* ── E3 the song's parts ── */
   console.log("== the song's parts");
@@ -267,10 +280,17 @@ function wellFormed(L) {
 
   /* ── the worker and the page alone still agree, parts and all ── */
   { const W = await open(9288, { noWorker: true });
-    const a = await p.evaluate(async ({ ev, sec }) => AOGLearn.analyze(await renderSong(ev, sec), { name: "x" }), jobsF[1]);
-    const z = await W.p.evaluate(async ({ ev, sec }) => AOGLearn.analyze(await renderSong(ev, sec), { name: "x" }), jobsF[1]);
-    const dk = Object.keys(a).filter(k => JSON.stringify(a[k]) !== JSON.stringify(z[k]));
-    ok(!dk.length && a.sections.length > 3, "the worker and the page alone give the very same lesson, parts and all (" + a.sections.length + " parts) " + dk.map(k => k + ": " + JSON.stringify(a[k]).slice(0, 160) + " vs " + JSON.stringify(z[k]).slice(0, 160)).join(" · "));
+    /* the very same samples on both pages: rendered once (as 22050 Hz mono, what the listener hears), then handed over */
+    const b64 = await p.evaluate(async ({ ev, sec }) => { const buf = await renderSong(ev, sec), len = Math.ceil(buf.length * 22050 / buf.sampleRate), ctx = new OfflineAudioContext(1, len, 22050), s = ctx.createBufferSource();
+      s.buffer = buf; s.connect(ctx.destination); s.start(0); const m = (await ctx.startRendering()).getChannelData(0), u = new Uint8Array(m.buffer, m.byteOffset, m.byteLength); let x = "";
+      for (let i = 0; i < u.length; i += 8192) x += String.fromCharCode.apply(null, u.subarray(i, i + 8192)); return btoa(x); }, jobsF[1]);
+    const unpack = b64 => { const s = atob(b64), u = new Uint8Array(s.length); for (let i = 0; i < s.length; i++) u[i] = s.charCodeAt(i);
+      const f = new Float32Array(u.buffer), B = new AudioBuffer({ length: f.length, numberOfChannels: 1, sampleRate: 22050 }); B.copyToChannel(f, 0); return B; };
+    const a = await p.evaluate(async ({ x, f }) => AOGLearn.analyze(new Function("return " + f)()(x), { name: "x" }), { x: b64, f: unpack.toString() });
+    /* and on the page alone, two listenings at once (they share nothing) */
+    const [z, z2] = await W.p.evaluate(async ({ x, f }) => { const B = new Function("return " + f)()(x); return Promise.all([AOGLearn.analyze(B, { name: "x" }), AOGLearn.analyze(B, { name: "x" })]); }, { x: b64, f: unpack.toString() });
+    const dk = Object.keys(a).filter(k => JSON.stringify(a[k]) !== JSON.stringify(z[k])), dk2 = Object.keys(z).filter(k => JSON.stringify(z[k]) !== JSON.stringify(z2[k]));
+    ok(!dk.length && !dk2.length && a.sections.length > 3, "the worker and the page alone give the very same lesson, parts and all (" + a.sections.length + " parts), and so do two listenings at once on the page alone " + dk.map(k => k + ": " + JSON.stringify(a[k]).slice(0, 160) + " vs " + JSON.stringify(z[k]).slice(0, 160)).join(" · ") + dk2.join(" "));
     /* E6 on the page alone: asked to stop, it stops */
     const st = await W.p.evaluate(async ({ ev, sec }) => { const buf = await renderSong(ev, sec), ctl = new AbortController(); let last = 0, after = 0, stopped = 0;
       const t0 = performance.now(); setTimeout(() => { ctl.abort(); stopped = performance.now(); }, 400);
@@ -291,6 +311,21 @@ function wellFormed(L) {
     console.log(`   page alone, 2½ minutes: ${(br.ms / 1000).toFixed(1)} s; the page got a turn ${br.n} times, 99% within ${br.p99.toFixed(0)} ms, the longest wait ${br.worst.toFixed(0)} ms`);
     ok(br.p99 < 16 && br.worst < 60, "the page alone keeps breathing on a long song (99% of waits under 16 ms)");
     ok(W.errs.length === 0, "no page errors on the page alone " + W.errs.join(" | ")); await W.c.close(); }
+  /* the longest slice: a fresh page alone (the code not yet warm) listens to 2½ minutes, and the browser's own trace gives
+     every task's work on the page's thread (its CPU time: a busy machine stretches the wall time of a task, not this) */
+  { const W = await open(9288, { noWorker: true });
+    await W.p.evaluate(async (u) => { const ab = await (await fetch(u)).arrayBuffer(); const one = await new OfflineAudioContext(1, 1, 22050).decodeAudioData(ab);
+      const n = 150 * 22050, buf = new AudioBuffer({ length: n, numberOfChannels: 1, sampleRate: 22050 }), d = buf.getChannelData(0), s0 = one.getChannelData(0);
+      for (let i = 0; i < n; i++) d[i] = s0[i % s0.length]; window.__long = buf; }, "audio/crate/06-brass-bus.mp3");
+    await b.startTracing(W.p, { categories: ["toplevel", "blink.user_timing"] });
+    const ms = await W.p.evaluate(async () => { const t0 = performance.now(); performance.mark("aog-start"); await AOGLearn.analyze(window.__long); performance.mark("aog-end");
+      const t = performance.now() - t0; await new Promise(r => setTimeout(r, 0)); return t; });
+    const tr = JSON.parse((await b.stopTracing()).toString()), ev = tr.traceEvents || tr, m0 = ev.find(e => e.name === "aog-start"), m1 = ev.find(e => e.name === "aog-end");
+    const tasks = m0 && m1 ? ev.filter(e => e.ph === "X" && /RunTask$/.test(e.name) && e.pid === m0.pid && e.tid === m0.tid && e.ts + e.dur >= m0.ts && e.ts <= m1.ts) : [];
+    const cpu = tasks.map(e => (e.tdur != null ? e.tdur : e.dur) / 1000).sort((a, z) => z - a), wall = tasks.map(e => e.dur / 1000).sort((a, z) => z - a);
+    console.log(`   a fresh page alone, 2½ minutes: ${(ms / 1000).toFixed(1)} s in ${tasks.length} slices; the longest ${cpu.slice(0, 5).map(x => x.toFixed(1)).join(", ")} ms of work (longest wall time ${wall.length ? wall[0].toFixed(0) : "?"} ms)`);
+    ok(tasks.length > 100 && cpu[0] <= 12, `the longest slice on the page alone, from cold: ${cpu.length ? cpu[0].toFixed(1) : "?"} ms (12 ms or less)`);
+    ok(W.errs.length === 0, "no page errors on the fresh page alone " + W.errs.join(" | ")); await W.c.close(); }
   /* E6 in the worker */
   { const st = await p.evaluate(async ({ ev, sec }) => { const buf = await renderSong(ev, sec), ctl = new AbortController(), w0 = window.__workers, e0 = window.__ended;
       let stopped = 0; setTimeout(() => { ctl.abort(); stopped = performance.now(); }, 300);

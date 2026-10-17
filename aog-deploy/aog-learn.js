@@ -6,7 +6,7 @@
      .analyze(input, {onProgress(p 0..1, wordKey), worker:true, name, signal}) → Promise<Lesson>
          input: an AudioBuffer, or an ArrayBuffer / Blob / File of an audio file (a MIDI file is read by fromMidi).
          The heavy listening runs in a Web Worker (aog-learn-worker.js), so the page stays calm; without Workers it runs
-         here in small slices (about 8 ms) between frames. Nothing leaves the device. The worker ends when the lesson is
+         here in small slices (about 6 ms, never past 12) between frames. Nothing leaves the device. The worker ends when the lesson is
          done. signal (an AbortSignal) stops it: the promise rejects with an error named "AbortError".
      .fromMidi(ArrayBuffer, {name}) → Lesson     (Standard MIDI File, types 0 and 1; exact notes)
      .sections(lesson) → [{t,d,kind,letter}]     the parts from a lesson's chords and bars alone (older lessons, MIDI)
@@ -33,7 +33,8 @@
      chords  templates for maj min 7 maj7 m7 sus2 sus4 dim aug 5 and "N" for no chord, on chroma that also counts what
              rises above each beat's floor (a short stab over a held bass), a bass bonus for the root, Viterbi smoothing
              with a key-aware and bar-aware change cost, then the 7ths chord by chord (the 7th against the third and the
-             notes outside the chord); downbeats from where the harmony and the bass change and where the low drums hit.
+             notes outside the chord); a bass playing alone is a power chord on its note ("5"), the drums alone no chord;
+             downbeats from where the harmony and the bass change and where the low drums hit.
      parts   bar-by-bar likeness (chroma and chords) → a dynamic programme cuts the bars, on a four-bar grid, into parts
              that come back whole; alike parts share a letter; quiet edges and parts heard once at the ends are the intro
              and the ending.
@@ -85,11 +86,20 @@ function percentile(arr, q) { var n = arr.length; if (!n) return 0; var c = Floa
 function log2(x) { return Math.log(x) / Math.LN2; }
 function hzToMidi(f) { return 69 + 12 * log2(f / 440); }
 
-/* a slice timer: on the page it gives the browser a moment every ~8 ms (a timer, so the page's own timers and drawing get
-   their turn); in the worker it never waits */
-function getYield() { return function (f) { setTimeout(f, 0); }; }
+/* a slice timer: on the page it gives the browser a moment every SLICE ms, and every loop asks it often enough that no slice
+   runs much past that, even before the code is warm (the silent treatment: slices of 12 ms or less); in the worker it never
+   waits. The moment is a message to itself (the browser draws and answers taps in between, without the 4 ms a timer waits
+   once timers nest), and a timer at least every 50 ms, so the page's own timers surely get their turn too. */
+var SLICE = 6, MC = null, MQ = [], lastTimer = 0;
+function getYield() { return function (f) { var t = now();
+  if (typeof MessageChannel === "function" && t - lastTimer < 50) {
+    if (!MC) { MC = new MessageChannel(); MC.port1.onmessage = function () { var g = MQ.shift(); if (g) g(); }; }
+    MQ.push(f); MC.port2.postMessage(0); }
+  else { lastTimer = t; setTimeout(f, 0); } }; }
 function Ticker(budget, signal) { this.b = budget || 0; this.t0 = now(); this.sig = signal || null; }
 Ticker.prototype.due = function () { return this.b > 0 && now() - this.t0 > this.b; };
+/* before a step that runs whole (a few ms when the code is cold): a fresh slice once half of this one is used */
+Ticker.prototype.soon = function () { return this.b > 0 && now() - this.t0 > 0.5 * this.b; };
 Ticker.prototype.yield = function () { var s = this, y = getYield();
   return new Promise(function (r, j) { y(function () { s.t0 = now(); if (s.sig && s.sig.aborted) j(abortError()); else r(); }); }); };
 /* stopped when asked (AbortSignal): an error named "AbortError", as fetch() gives */
@@ -188,7 +198,8 @@ async function onsetEnvelope(x, T, prog) {
       var d = cur[k] - m; if (d > 0) { s += d; if (k <= kLowB) sl += d; } }
     O[f] = s; Ol[f] = sl; var t = prev; prev = cur; cur = t;
     LB.set(mag.subarray(0, NLB), f * NLB);
-    if ((f & 31) === 0) { if ((f & 127) === 0) prog(f / nF); if (T.due()) await T.yield(); }
+    if ((f & 127) === 0) prog(f / nF);
+    if (T.due()) await T.yield();
   }
   return { O: O, Ol: Ol, R: R, fps: SR / H, H: H, LB: LB, NLB: NLB, N: N };
 }
@@ -213,7 +224,7 @@ async function estimatePeriod(O, fps, T) {
   var minL = Math.floor(fps * 60 / 220), maxL = Math.ceil(fps * 60 / 45), top = Math.min(n - 2, 4 * maxL + 2);
   if (top <= minL + 2) return fps * 60 / 120;
   var ac = new Float64Array(top + 1);
-  for (l = 1; l <= top; l++) { var s = 0, m = n - l; for (i = 0; i < m; i++) s += z[i] * z[i + l]; ac[l] = s / m; if ((l & 7) === 0) if (T && T.due()) await T.yield(); }
+  for (l = 1; l <= top; l++) { var s = 0, m = n - l; for (i = 0; i < m; i++) s += z[i] * z[i + l]; ac[l] = s / m; if (T && T.due()) await T.yield(); }
   function A(x) { if (x >= top) return 0; var a = Math.floor(x), f = x - a; return ac[a] * (1 - f) + ac[a + 1] * f; }
   var best = -Infinity, bestL = fps * 60 / 120;
   for (var L = minL; L <= maxL; L += 0.125) {
@@ -231,7 +242,7 @@ async function trackBeats(O, R, fps, period, T) {
   /* local score: the onset strength over its spread, smoothed by a narrow Gaussian (σ = period/32) */
   var Lw = Math.max(1, Math.round(period / 4)), g = new Float32Array(2 * Lw + 1), Lc = new Float32Array(n);
   for (i = -Lw; i <= Lw; i++) g[i + Lw] = Math.exp(-0.5 * Math.pow(i * 32 / period, 2));
-  for (i = 0; i < n; i++) { var s = 0; for (var j = -Lw; j <= Lw; j++) { var q = i + j; if (q >= 0 && q < n) s += O[q] * g[j + Lw]; } Lc[i] = s / std; if ((i & 2047) === 0) if (T && T.due()) await T.yield(); }
+  for (i = 0; i < n; i++) { var s = 0; for (var j = -Lw; j <= Lw; j++) { var q = i + j; if (q >= 0 && q < n) s += O[q] * g[j + Lw]; } Lc[i] = s / std; if ((i & 255) === 0) if (T && T.due()) await T.yield(); }
   var lo = Math.max(1, Math.round(period / 2)), hi = Math.round(2 * period), pen = new Float32Array(hi + 1);
   for (var d = lo; d <= hi; d++) pen[d] = -TIGHT * Math.pow(Math.log(d / period), 2);
   var C = new Float32Array(n), back = new Int32Array(n), maxL = 0;
@@ -242,8 +253,9 @@ async function trackBeats(O, R, fps, period, T) {
     for (d = lo; d <= hi && i - d >= 0; d++) { var v = C[i - d] + pen[d]; if (v > best) { best = v; arg = i - d; } }
     if (!started && Lc[i] < 0.01 * maxL) { C[i] = Lc[i]; back[i] = -1; }
     else { started = true; if (arg >= 0) { C[i] = Lc[i] + best; back[i] = arg; } else { C[i] = Lc[i]; back[i] = -1; } }
-    if ((i & 1023) === 0) if (T && T.due()) await T.yield();
+    if ((i & 127) === 0) if (T && T.due()) await T.yield();
   }
+  if (T && T.soon()) await T.yield();
   /* the last beat: the last local peak of the running score that is at least half the typical peak */
   var peaks = [];
   for (i = 1; i < n - 1; i++) if (C[i] > C[i - 1] && C[i] >= C[i + 1]) peaks.push(C[i]);
@@ -351,7 +363,8 @@ async function harmonicPeaks(x, T, prog) {
       if (den < 0) dl = clamp(0.5 * (la - lc) / den, -0.5, 0.5);
       pF[o + n2] = (k + dl) * SR / N; pA[o + n2] = Math.exp(lb - 0.25 * (la - lc) * dl); n2++; }
     pN[g] = n2;
-    if ((g & 3) === 0) { if ((g & 63) === 0) prog(g / nF); if (T.due()) await T.yield(); }
+    if ((g & 63) === 0) prog(g / nF);
+    if (T.due()) await T.yield();
   }
   return { pF: pF, pA: pA, pN: pN, nF: nF, MAXP: MAXP, H: H, fps: SR / H, PL: PL, PS: PS };
 }
@@ -361,7 +374,7 @@ async function estimateTuning(P, T) {
   for (var g = 0; g < P.nF; g++) { var o = g * P.MAXP;
     for (var i = 0; i < P.pN[g]; i++) { var f = P.pF[o + i]; if (f < 80 || f > 2000) continue;
       var p = hzToMidi(f), d = p - Math.round(p), a = P.pA[o + i], th = 2 * Math.PI * d; sc += a * Math.cos(th); ss += a * Math.sin(th); }
-    if ((g & 255) === 0) if (T && T.due()) await T.yield(); }
+    if ((g & 31) === 0) if (T && T.due()) await T.yield(); }
   if (!sc && !ss) return 0;
   return Math.atan2(ss, sc) / (2 * Math.PI);    /* semitones, −0.5..0.5 */
 }
@@ -394,7 +407,7 @@ async function beatChroma(P, tune, beats, sec, T) {
     FB[g] = t + 0.05 + HIEDGE < end ? bi : -1;   /* the struck part listens only where the window does not reach the next beat */
     for (k = 0; k < 12; k++) { var v = FC[fo + k]; Ct[bi * 12 + k] += v * fw; if (v < lo[bi * 12 + k]) lo[bi * 12 + k] = v; }
     Et[bi] += fe; W[bi] += fw; Wn[bi]++;
-    if ((g & 63) === 0) if (T && T.due()) await T.yield();
+    if ((g & 7) === 0) if (T && T.due()) await T.yield();
   }
   if (GAM) for (bi = 0; bi < nB; bi++) if (W[bi] > 0) { var sc = Wn[bi] / W[bi]; for (k = 0; k < 12; k++) Ct[bi * 12 + k] *= sc; }
   /* and what rises above the beat's own floor (a stab over a held bass note): the notes that were struck, not the ones ringing on */
@@ -404,7 +417,7 @@ async function beatChroma(P, tune, beats, sec, T) {
     for (g = 0; g < P.nF; g++) { bi = FB[g]; if (bi < 0) continue;
       for (k = 0; k < 12; k++) { var x = FC[g * 12 + k] - lo[bi * 12 + k], o2 = (bi * 12 + k) * HIK;
         if (x > top[o2 + HIK - 1]) { var z = HIK - 1; while (z > 0 && top[o2 + z - 1] < x) { top[o2 + z] = top[o2 + z - 1]; z--; } top[o2 + z] = x; } }
-      if ((g & 255) === 0) if (T && T.due()) await T.yield(); }
+      if ((g & 63) === 0) if (T && T.due()) await T.yield(); }
     for (bi = 0; bi < nB; bi++) for (k = 0; k < 12; k++) Ct[bi * 12 + k] += BETA * Wn[bi] * top[(bi * 12 + k) * HIK + HIK - 1];
   }
   return { Ct: Ct, Cb: Cb, Et: Et, Eb: Eb, nB: nB, Eu: Eu, Ux: Ux };
@@ -441,7 +454,7 @@ function chordScores(BC, templ, isNotes, T) {   /* with a ticker: a promise, in 
     S[so + NSTATE] = (n > 0 ? 0.55 : 2) + 0.6 * Math.max(0, 1 - r / (isNotes ? 0.05 : 0.15)) + (isNotes ? 0 : 0.5 * Math.max(0, flat - 0.55));
   }
   if (!T) { for (i = 0; i < nB; i++) one(i); return S; }
-  return (async function () { for (var q = 0; q < nB; q++) { one(q); if ((q & 31) === 0 && T.due()) await T.yield(); } return S; })();
+  return (async function () { for (var q = 0; q < nB; q++) { one(q); if ((q & 7) === 0 && T.due()) await T.yield(); } return S; })();
 }
 
 /* the 7ths, heard chord by chord: the 7th against the chord's third, and against the notes that are not in the chord. Root and
@@ -470,6 +483,37 @@ function qualityPass(path, BC) {
         else { var em = ev(10);
           if (q === "min" && em >= Q_UP) nq = "m7"; else if (q === "m7" && em <= Q_DOWN.m7) nq = "min"; }
         if (nq !== q) { var ns = r * 10 + QUALS.indexOf(nq); for (b = i; b < j; b++) out[b] = ns; }
+      }
+    }
+    i = j;
+  }
+  return out;
+}
+
+/* bars where only the bass plays (it often comes in before the band): what sounds above it is its own overtones and the
+   drums, so the chord it seems to make is not one. A stretch of one chord whose treble (against the song's) is under ALONE
+   of its bass (against the song's) is a power chord on the bass note ("5"); with no clear bass note in it, no chord. And a
+   stretch with hardly any treble or bass at all (the drums alone) is no chord. Eu and Eb grow as the square root of the
+   sound, so ALONE is about 13 dB, and "hardly any" (a quarter) about 24 dB, under the song. */
+var ALONE = 0.48;
+function bassAlone(path, BC) {
+  var nB = path.length, out = Int16Array.from(path), X = new Float64Array(12), i, j, k, b;
+  function q75(a) { var v = []; for (var z = 0; z < a.length; z++) if (a[z] > 0) v.push(a[z]); return v.length ? percentile(v, 0.75) : 0; }
+  var rU = q75(BC.Eu), rB = q75(BC.Eb);
+  if (!(rU > 0 && rB > 0)) return out;
+  for (i = 0; i < nB;) {
+    var s = path[i]; j = i; while (j < nB && path[j] === s) j++;
+    if (s !== NSTATE) {
+      var eu = 0, eb = 0; X.fill(0);
+      for (b = i; b < j; b++) { eu += BC.Eu[b]; eb += BC.Eb[b]; var n = 0;
+        for (k = 0; k < 12; k++) n += BC.Cb[b * 12 + k] * BC.Cb[b * 12 + k]; n = Math.sqrt(n);
+        if (n > 0) for (k = 0; k < 12; k++) X[k] += BC.Cb[b * 12 + k] / n; }
+      eu /= (j - i) * rU; eb /= (j - i) * rB;
+      if (eb < 0.4 && eu < 0.25) for (b = i; b < j; b++) out[b] = NSTATE;
+      else if (eb >= 0.4 && eu < ALONE * eb) {
+        var r = 0, tot = 0; for (k = 0; k < 12; k++) { tot += X[k]; if (X[k] > X[r]) r = k; }
+        var ns = tot > 0 && X[r] >= 0.25 * tot ? r * 10 + QUALS.indexOf("5") : NSTATE;
+        for (b = i; b < j; b++) out[b] = ns;
       }
     }
     i = j;
@@ -511,7 +555,7 @@ function estimateKey(BC, path, beatDur, hint) {
   for (var m = 0; m < 2; m++) for (var t = 0; t < 12; t++) {
     var corr = pearson(Gc, m ? KK_MIN : KK_MAJ, t), ton = 0, dom = 0;
     var isTonic = function (s) { if (s === NSTATE) return false; var r = (s / 10) | 0, q = QUALS[s % 10];
-      return r === t && (m ? (q === "min" || q === "m7") : (q === "maj" || q === "7" || q === "maj7")); };
+      return r === t && (q === "5" || (m ? (q === "min" || q === "m7") : (q === "maj" || q === "7" || q === "maj7"))); };   /* a power chord fits either */
     for (i = 0; i < nB; i++) { var s = path[i]; if (s === NSTATE) continue; if (isTonic(s)) ton += beatDur[i];
       var r = (s / 10) | 0, q = QUALS[s % 10], maj = q === "maj" || q === "7";
       if ((r === (t + 7) % 12 && (maj || (m && (q === "min" || q === "m7")))) || (m && r === (t + 10) % 12 && maj)) dom += beatDur[i]; }
@@ -730,7 +774,11 @@ async function sectionsOfAudio(BC, path, beats, downbeats, num, endT, TK) {
   var pmax = 0; pres.forEach(function (p) { if (p > pmax) pmax = p; });
   var sim = function (x, y) { var px = pres[x] / (pmax || 1), py = pres[y] / (pmax || 1), lv = Math.min(px, py) / Math.max(px, py, 1e-9);
     return 0.35 * cos(T, x, y) + 0.15 * cos(B, x, y) + 0.4 * cs(x, y) + 0.1 * lv; };
-  return finishSections(bars, beats, num, endT, sim, pres);
+  /* every pair of bars, a row at a time, so a long song's parts are cut in slices too */
+  var SM = new Float64Array(nb * nb);
+  for (i = 0; i < nb; i++) { for (k = i + 1; k < nb; k++) SM[i * nb + k] = sim(i, k); if (TK && TK.due()) await TK.yield(); }
+  if (TK && TK.soon()) await TK.yield();
+  return finishSections(bars, beats, num, endT, function (x, y) { return SM[x * nb + y]; }, pres);
 }
 /* cut the bars into parts; the song may ring on after its last beat (a held last chord): that is (part of) the ending */
 function finishSections(bars, beats, num, endT, sim, pres) {
@@ -755,7 +803,7 @@ async function bassSalience(P, tune, T) {
           if (d < 1) { var v = w * Math.pow(Math.cos(Math.PI * d / 2), 2); sal[so + n - BLO] += v; if (h > 1) up[n - BLO] += v; if (h === 1) low[so + n - BLO] += v; } } } }
     /* a very low note with no overtones at all is the kick drum's tail, not a bass: it barely counts */
     for (k = 0; k < NBP && BLO + k <= 35; k++) { var tot = sal[so + k]; if (tot > 0 && up[k] < 0.12 * tot) { sal[so + k] *= 0.25; low[so + k] *= 0.25; } }
-    if ((g & 63) === 0 && T.due()) await T.yield(); }
+    if ((g & 7) === 0 && T.due()) await T.yield(); }
   return { sal: sal, low: low, en: en };
 }
 function slotsOf(beats, endT, per) {
@@ -781,7 +829,7 @@ async function bassLine(P, BS, beats, endT, ON, tune, T) {
     for (k = 0; ak >= 0 && k < ak - 6; k++) if (fun[k] >= 0.2 * fm && agg[i * NBP + k] >= 0.35 * am && (ak - k) % 12 === 0) { agg[i * NBP + k] = am * 1.05; break; }
     Ein[i] = enAt(slots[i] + 0.1); Eout[i] = enAt(slots[i] - 0.07);
     var sm = 0; for (k = 0; k < NBP; k++) if (agg[i * NBP + k] > sm) sm = agg[i * NBP + k]; E[i] = sm;   /* how clearly a bass note sounds */
-    if ((i & 63) === 0) if (T && T.due()) await T.yield();
+    if ((i & 15) === 0) if (T && T.due()) await T.yield();
   }
   var act = []; for (i = 0; i < nS; i++) if (E[i] > 0) act.push(E[i]);
   if (!act.length) return [];
@@ -800,7 +848,7 @@ async function bassLine(P, BS, beats, endT, ON, tune, T) {
       else { var fromRest = prev[0] - 0.7, move = best - 1.6; v = stay; b = k;
         if (fromRest > v) { v = fromRest; b = 0; } if (arg !== k && move > v) { v = move; b = arg; } }
       cur[k] = v + em[k]; bp[i * NS + k] = b; }
-    var t = prev; prev = cur; cur = t; if ((i & 255) === 0) if (T && T.due()) await T.yield(); }
+    var t = prev; prev = cur; cur = t; if ((i & 63) === 0) if (T && T.due()) await T.yield(); }
   var path = new Int16Array(nS), bs = 0, bv = -Infinity; for (k = 0; k < NS; k++) if (prev[k] > bv) { bv = prev[k]; bs = k; }
   for (i = nS - 1; i >= 0; i--) { path[i] = bs; if (i > 0) bs = bp[i * NS + bs]; }
   /* notes: a new note where the pitch changes, or where the low energy rises again (a re-struck string) */
@@ -818,7 +866,7 @@ async function bassLine(P, BS, beats, endT, ON, tune, T) {
       for (k = 0; k < NBP; k++) if (Math.abs(k - (p - 1)) > 1 && agg[o + k] > s2) s2 = agg[o + k];
       var vv = E[z] / Eref; conf += clamp(2 * (s1 / (s1 + s2 + 1e-9)) - 1, 0, 1) * clamp(vv * 1.5, 0, 1); }
     notes.push({ t: r4(slots[i]), d: r4(slots[j] - slots[i]), m: BLO + p - 1, conf: r2(conf / (j - i)) });
-    i = j; if ((notes.length & 7) === 0) if (T && T.due()) await T.yield(); }
+    i = j; if (T && T.due()) await T.yield(); }
   return notes;
 }
 
@@ -843,7 +891,8 @@ async function melodySalience(P, tune, T, prog) {
         if (pos < 0) { var mi = 0; for (var z = 1; z < MK; z++) if (cV[g * MK + z] < cV[g * MK + mi]) mi = z; if (cV[g * MK + mi] < v) pos = mi; }
         if (pos >= 0) { cP[g * MK + pos] = pm; cV[g * MK + pos] = v; if (n < MK) n++; } } }
     cN[g] = n; for (i = 0; i < n; i++) if (cV[g * MK + i] > top[g]) top[g] = cV[g * MK + i];
-    if ((g & 31) === 0) { if ((g & 127) === 0) prog(g / nF); if (T.due()) await T.yield(); }
+    if ((g & 127) === 0) prog(g / nF);
+    if ((g & 3) === 0 && T.due()) await T.yield();
   }
   return { cP: cP, cV: cV, cN: cN, top: top };
 }
@@ -863,15 +912,15 @@ async function melodyLine(P, MS, beats, endT, ON, tune, T) {
         else { var dp = Math.abs(MS.cP[g * MK + j] - MS.cP[(g - 1) * MK + i]); tr = dp > 12.5 ? -12 : -0.45 * Math.max(0, dp - 0.3); }
         var v = prev[i] + tr; if (v > best) { best = v; arg = i; } }
       cur[j] = best + em[j]; bp[g * NS + j] = arg; }
-    var t = prev; prev = cur; cur = t; if ((g & 511) === 0) if (T && T.due()) await T.yield(); }
+    var t = prev; prev = cur; cur = t; if ((g & 127) === 0) if (T && T.due()) await T.yield(); }
   var st = 0, bv = -Infinity; for (i = 0; i < NS; i++) if (prev[i] > bv) { bv = prev[i]; st = i; }
   var pitch = new Float32Array(nF), val = new Float32Array(nF);
-  for (g = nF - 1; g >= 0; g--) { if (st < MK) { pitch[g] = MS.cP[g * MK + st]; val[g] = MS.cV[g * MK + st]; } if (g > 0) st = bp[g * NS + st]; }
+  for (g = nF - 1; g >= 0; g--) { if (st < MK) { pitch[g] = MS.cP[g * MK + st]; val[g] = MS.cV[g * MK + st]; } if (g > 0) st = bp[g * NS + st]; if ((g & 1023) === 0 && T && T.due()) await T.yield(); }
   /* semitones, smoothed by a median of five frames */
   var q = new Int16Array(nF), win = new Float64Array(5);
   for (g = 0; g < nF; g++) { if (!pitch[g]) { q[g] = 0; continue; } var c = 0;
     for (j = g - 2; j <= g + 2; j++) if (j >= 0 && j < nF && pitch[j]) win[c++] = pitch[j];
-    q[g] = Math.round(selectK(win, c, c >> 1)); }
+    q[g] = Math.round(selectK(win, c, c >> 1)); if ((g & 511) === 0 && T && T.due()) await T.yield(); }
   var notes = [];
   for (g = 0; g < nF;) { if (!q[g]) { g++; continue; } var m = q[g], e = g; while (e < nF && q[e] === m) e++;
     /* split a held run where the note dips and rises again (the same note played twice), heard at the fine time step */
@@ -905,63 +954,64 @@ async function melodyLine(P, MS, beats, endT, ON, tune, T) {
 /* ───────── the whole listening, on 22050 Hz mono samples ───────── */
 async function analyzePCM(x, opts) {
   opts = opts || {};
-  var T = new Ticker(opts.budget || 0, opts.signal), cb = opts.onProgress, lastP = -1;
+  var T = opts.ticker || new Ticker(opts.budget || 0, opts.signal), cb = opts.onProgress, lastP = -1;
   function report(p, key) { if (T.sig && T.sig.aborted) throw abortError();
     p = clamp(p, 0, 1); if (p < lastP) p = lastP; lastP = p; if (cb) try { cb(r4(p), key); } catch (e) {} }
   function stage(a, b, key) { report(a, key); return function (f) { report(a + (b - a) * f, key); }; }
   var sec = x.length / SR, i, peak = 0;
-  for (i = 0; i < x.length; i++) { var av = x[i] < 0 ? -x[i] : x[i]; if (av > peak) peak = av; if ((i & 262143) === 0 && T.due()) await T.yield(); }
-  if (peak > 0) { var gn = 0.9 / peak; for (i = 0; i < x.length; i++) { x[i] *= gn; if ((i & 262143) === 0 && T.due()) await T.yield(); } }
+  for (i = 0; i < x.length; i++) { var av = x[i] < 0 ? -x[i] : x[i]; if (av > peak) peak = av; if ((i & 32767) === 0 && T.due()) await T.yield(); }
+  if (peak > 0) { var gn = 0.9 / peak; for (i = 0; i < x.length; i++) { x[i] *= gn; if ((i & 32767) === 0 && T.due()) await T.yield(); } }
 
   /* beat */
   var ON = await onsetEnvelope(x, T, stage(0.05, 0.17, "beat"));
   var period = await estimatePeriod(ON.O, ON.fps, T);
-  if (T.due()) await T.yield();
+  if (T.soon()) await T.yield();
   var beats = await trackBeats(ON.O, ON.R, ON.fps, period, T);
-  if (T.due()) await T.yield();
+  if (T.soon()) await T.yield();
   if (beats.length < 4) { var p0 = 60 / (60 * ON.fps / period || 120); beats = []; for (var bt0 = 0; bt0 < sec; bt0 += p0) beats.push(bt0); }
   report(0.2, "beat");
 
   /* key (and the harmonic spectrum everything else hears); the drums in it settle where the beat falls */
-  var P = await harmonicPeaks(x, T, stage(0.2, 0.55, "key"));
+  var P = await harmonicPeaks(x, T, stage(0.2, 0.55, "key")); if (T.soon()) await T.yield();
   var PH = fixBeatPhase(P, beats, sec);
-  if (PH.flipped) {
+  if (PH.flipped) { if (T.soon()) await T.yield();
     /* the tracker followed the off-beats: track again with the drums' own beat in the onsets, so it holds the whole song */
-    var O2 = drumOnsets(ON, P); if (T.due()) await T.yield();
-    var b2 = await trackBeats(O2, ON.R, ON.fps, period, T); if (T.due()) await T.yield();
+    var O2 = drumOnsets(ON, P); if (T.soon()) await T.yield();
+    var b2 = await trackBeats(O2, ON.R, ON.fps, period, T); if (T.soon()) await T.yield();
     if (b2.length >= 8) { var PH2 = fixBeatPhase(P, b2, sec); PH = PH2.flipped ? PH2 : { beats: b2 }; }
   }
-  beats = PH.beats;
+  beats = PH.beats; if (T.soon()) await T.yield();
   var bpm = tempoOf(beats) || 60 * ON.fps / period;
   var nB = beats.length, ibi = nB > 1 ? (beats[nB - 1] - beats[0]) / (nB - 1) : 0.5, endT = Math.min(sec, beats[nB - 1] + ibi);
   var lowAcc = new Float64Array(nB);
   for (i = 0; i < nB; i++) { var fr = Math.round(beats[i] * ON.fps), m = 0; for (var z = fr - 2; z <= fr + 2; z++) if (z >= 0 && z < ON.Ol.length && ON.Ol[z] > m) m = ON.Ol[z]; lowAcc[i] = m; }
-  var tune = await estimateTuning(P, T); if (T.due()) await T.yield();
-  var BC = await beatChroma(P, tune, beats, sec, T); if (T.due()) await T.yield();
+  var tune = await estimateTuning(P, T); if (T.soon()) await T.yield();
+  var BC = await beatChroma(P, tune, beats, sec, T); if (T.soon()) await T.yield();
   var beatDur = new Float64Array(nB); for (i = 0; i < nB; i++) beatDur[i] = (i < nB - 1 ? beats[i + 1] : endT) - beats[i];
   var S = await chordScores(BC, TEMPL_AUDIO, false, T), kappa = 20;
-  if (T.due()) await T.yield();
-  var path1 = viterbi(S, nB, chordChangeCost(nB, 1, 0, 2.4), keyPenalty(null), kappa); if (T.due()) await T.yield();
-  var key = estimateKey(BC, path1, beatDur);
-  report(0.6, "key"); if (T.due()) await T.yield();
+  if (T.soon()) await T.yield();
+  var path1 = viterbi(S, nB, chordChangeCost(nB, 1, 0, 2.4), keyPenalty(null), kappa); if (T.soon()) await T.yield();
+  var key = estimateKey(BC, bassAlone(path1, BC), beatDur); if (T.soon()) await T.yield();
+  report(0.6, "key"); if (T.soon()) await T.yield();
 
   /* chords, with bar one */
   report(0.62, "chords");
-  var DB = findDownbeats(BC, path1, lowAcc); if (T.due()) await T.yield();
-  var path = viterbi(S, nB, chordChangeCost(nB, DB.num, DB.phase, 2.4), keyPenalty(key), kappa); if (T.due()) await T.yield();
-  var key2 = estimateKey(BC, path, beatDur, key); if (key2.key !== key.key || key2.minor !== key.minor) { key = key2; path = viterbi(S, nB, chordChangeCost(nB, DB.num, DB.phase, 2.4), keyPenalty(key), kappa); if (T.due()) await T.yield(); }
-  path = qualityPass(path, BC); if (T.due()) await T.yield();
-  var chords = chordSegments(path, S, beats, endT, key); if (T.due()) await T.yield();
+  var DB = findDownbeats(BC, path1, lowAcc); if (T.soon()) await T.yield();
+  var path = viterbi(S, nB, chordChangeCost(nB, DB.num, DB.phase, 2.4), keyPenalty(key), kappa); if (T.soon()) await T.yield();
+  var key2 = estimateKey(BC, bassAlone(path, BC), beatDur, key); if (key2.key !== key.key || key2.minor !== key.minor) { key = key2; path = viterbi(S, nB, chordChangeCost(nB, DB.num, DB.phase, 2.4), keyPenalty(key), kappa); if (T.soon()) await T.yield(); }
+  path = qualityPass(path, BC); if (T.soon()) await T.yield();
+  path = bassAlone(path, BC); if (T.soon()) await T.yield();
+  var chords = chordSegments(path, S, beats, endT, key); if (T.soon()) await T.yield();
   var downbeats = []; for (i = DB.phase; i < nB; i += DB.num) downbeats.push(r4(beats[i]));
-  if (T.due()) await T.yield();
+  if (T.soon()) await T.yield();
   var sections = await sectionsOfAudio(BC, path, beats, downbeats, DB.num, sec, T);
-  report(0.7, "chords"); if (T.due()) await T.yield();
+  report(0.7, "chords"); if (T.soon()) await T.yield();
 
   /* bass */
   report(0.72, "bass");
-  var BS = await bassSalience(P, tune, T); if (T.due()) await T.yield();
-  var bass = await bassLine(P, BS, beats, endT, ON, tune, T); BS = null; if (T.due()) await T.yield();
-  report(0.78, "bass"); if (T.due()) await T.yield();
+  var BS = await bassSalience(P, tune, T); if (T.soon()) await T.yield();
+  var bass = await bassLine(P, BS, beats, endT, ON, tune, T); BS = null; if (T.soon()) await T.yield();
+  report(0.78, "bass"); if (T.soon()) await T.yield();
 
   /* melody */
   var MS = await melodySalience(P, tune, T, stage(0.8, 0.97, "melody"));
@@ -1248,14 +1298,15 @@ function decode(ab) {
     var p = ctx.decodeAudioData(ab.slice(0), function (b) { if (!done) { done = true; res(b); } }, function (e) { if (!done) { done = true; rej(e || new Error("decode")); } });
     if (p && p.then) p.then(function (b) { if (!done) { done = true; res(b); } }, function (e) { if (!done) { done = true; rej(e || new Error("decode")); } }); });
 }
-function toMono22k(buf) {
+function toMono22k(buf, T) {     /* T: on the page, a slice timer (a long song is not copied all at once) */
   if (buf.sampleRate === SR) { var n = buf.length, out = new Float32Array(n), ch = buf.numberOfChannels;
-    for (var c = 0; c < ch; c++) { var d = buf.getChannelData(c); for (var i = 0; i < n; i++) out[i] += d[i] / ch; } return Promise.resolve(out); }
+    return (async function () { for (var c = 0; c < ch; c++) { var d = buf.getChannelData(c);
+      for (var i = 0; i < n; i++) { out[i] += d[i] / ch; if ((i & 32767) === 0 && T && T.due()) { await T.yield(); d = buf.getChannelData(c); } } } return out; })(); }
   var C = OAC(), len = Math.max(1, Math.ceil(buf.length * SR / buf.sampleRate)), ctx = new C(1, len, SR), src = ctx.createBufferSource();
   src.buffer = buf; src.connect(ctx.destination); src.start(0);
   return new Promise(function (res, rej) { var done = false;
-    ctx.oncomplete = function (e) { if (!done) { done = true; res(Float32Array.from(e.renderedBuffer.getChannelData(0))); } };
-    var p = ctx.startRendering(); if (p && p.then) p.then(function (b) { if (!done) { done = true; res(Float32Array.from(b.getChannelData(0))); } }, rej); });
+    ctx.oncomplete = function (e) { if (!done) { done = true; res(e.renderedBuffer.getChannelData(0).slice()); } };
+    var p = ctx.startRendering(); if (p && p.then) p.then(function (b) { if (!done) { done = true; res(b.getChannelData(0).slice()); } }, rej); });
 }
 function readBlob(b) { if (b.arrayBuffer) return b.arrayBuffer(); return new Promise(function (res, rej) { var r = new FileReader(); r.onload = function () { res(r.result); }; r.onerror = function () { rej(r.error); }; r.readAsArrayBuffer(b); }); }
 
@@ -1297,10 +1348,13 @@ function analyzeNow(input, opts, sig) {
     : Promise.resolve({ ab: input instanceof ArrayBuffer ? input : u8Of(input).slice().buffer });
   return get.then(check).then(function (r) {
     if (r.ab && isMidi(r.ab)) { say(0.5, "midi"); var L = fromMidi(r.ab, { name: name }); say(1, "done"); return L; }
-    return (r.buf ? Promise.resolve(r.buf) : decode(r.ab)).then(check).then(toMono22k).then(check).then(function (pcm) {
+    /* on the page, one slice timer from here to the lesson, so no slice runs longer than SLICE ms (and a little); the work
+       starts in a task of its own, not in the caller's */
+    var TK = new Ticker(SLICE, sig);
+    return (r.buf ? Promise.resolve(r.buf) : decode(r.ab)).then(check).then(function (b) { return TK.yield().then(function () { return toMono22k(b, TK); }); }).then(check).then(function (pcm) {
       say(0.04, "open");
       var o = { name: name, onProgress: opts.onProgress, signal: sig };
-      var main = function () { return analyzePCM(pcm, { name: name, onProgress: opts.onProgress, budget: 8, signal: sig }); };
+      var main = function () { return analyzePCM(pcm, { name: name, onProgress: opts.onProgress, ticker: TK, signal: sig }); };
       if (opts.worker === false || typeof G.Worker === "undefined") return main();
       /* the samples move to the worker only once it says it is ready, so if it cannot start the page still listens */
       return inWorker(pcm, o).catch(function (e) { if (e && (e.fromWorker || e.name === "AbortError")) throw e; return main(); });
