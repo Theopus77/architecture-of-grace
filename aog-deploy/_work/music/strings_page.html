@@ -1754,7 +1754,7 @@ function makeChain(c){
      on a mixing desk's bus: added after the Volume it pushed the sum 3 to 5 dB past full scale, more with every strum
      as the room filled */
   const OFF=window.OfflineAudioContext||window.webkitOfflineAudioContext;
-  if(!(OFF && c instanceof OFF)) try{ if(window.AOGRoom && AOGRoom.live) AOGRoom.live(c, ch.post, ch.pre); }catch(e){}
+  if(!(OFF && c instanceof OFF)) try{ if(window.AOGRoom && AOGRoom.live) AOGRoom.live(c, ch.bus, ch.pre); }catch(e){}   /* ch.bus: the strings after the amp, and a real guitar played through the page (AOGLive) */
   return ch;
 }
 const LIM_LIFT=Math.pow(Math.pow(10, (2-2/20)/20), 0.6);   /* (1 / the limiter's gain at full scale)^0.6, Web Audio's makeup gain */
@@ -2631,7 +2631,7 @@ window.AOGRoomRender={
     setSound(ch, id);
     if(set.rig && set.rigOf===id){ try{ const st=AOGAmp.normalize(set.rig, GTR?"guitar":"bass"); if(SOUNDS[id].pick) st.pickup=SOUNDS[id].pick; ch.rig.set(st); }catch(e){} }   /* the amp as it was set for the take */
     ch.lp.frequency.value=eraHz(era); if(ch.crunch) ch.crunch.parameters.get("era").value=era;
-    ch.ceil.output.disconnect(); ch.ceil.output.connect(oc.destination); K.space(oc, ch.post, ch.pre, p.space);   /* the take is heard before the Volume; the room before the limiter, as live (AOG-STRUM-CLEAN-V1) */
+    ch.ceil.output.disconnect(); ch.ceil.output.connect(oc.destination); K.space(oc, ch.bus, ch.pre, p.space);   /* the take is heard before the Volume; the room before the limiter, as live (AOG-STRUM-CLEAN-V1) */
     const same=p.was==null || id===p.was;   /* the recording a note used, only on the sound it was played with */
     const RS=REAL.sets[recOf(id)];
     evs.forEach(e=>{ FORCE_Z=same && e.z!=null ? e.z : null;

@@ -131,7 +131,7 @@ const offlineRun = f => f.evaluate(async N_ => {
     const sr = 44100, oc = new OfflineAudioContext(2, Math.ceil(sr * (N_ * 0.4 + 2)), sr);
     await AOGAmp.load(oc); const ch = makeChain(oc); await addCrunch(ch); setSound(ch, S.sound); ch.trim.gain.value = recTrim(S.sound);
     ch.master.gain.value = volGain(1);
-    AOGRecorder.notes.space(oc, ch.post, ch.pre, 3);   /* the Hall, before the limiter, as live */
+    AOGRecorder.notes.space(oc, ch.bus, ch.pre, 3);   /* the Hall, before the limiter, as live */
     const pads = allPads(), seq = [0, 0, 3, 3, 4, 4, 5, 5, 0, 0, 3, 3, 1, 1, 4, 4], prev = [], starts = [];
     for (let k = 0; k < N_; k++) { const t = 0.3 + k * 0.4, shp = shapeFor(pads[seq[k % seq.length] % pads.length]); starts.push(t); let j = 0;
       shp.forEach((fr, s) => { if (prev[s]) prev[s].stop(t + j * 0.016, SOUNDS[S.sound].damp); prev[s] = null; if (fr < 0) return; prev[s] = makeVoice(oc, ch, S.sound, TUNING[s] + fr, 0.74 * (1 - 0.03 * j), t + j * 0.016, s); j++; }); }
