@@ -227,7 +227,7 @@ const PADS_FN=async(opt)=>{
     Object.assign(S.banks[bi], {type:"notes", inst:id, key:0, scale:"major", oct:low?2:4});
     const lo=Math.max(24, zs[0].m-2), hi=Math.min(96, zs[zs.length-1].m+2), rows=[];
     const keep=window.padDefs;
-    for(const v of (opt.vels||(INST[id].g==="band" ? [0.05, 0.6, 1] : [0.3, 0.6, 0.9]))) for(let m=lo; m<=hi; m++){
+    for(const v of (opt.vels||(INST[id].g==="band" ? [0.01, 0.6, 1] : [0.3, 0.6, 0.9]))) for(let m=lo; m<=hi; m++){
       window.padDefs=()=>[{kind:"note", notes:[m], name:""}];
       READY[bi]={sig:sigOf(S.banks[bi]), state:"ready", zones:zs, got:1, total:1};
       const oc=new OfflineAudioContext(2, Math.round(44100*1.2), 44100), g=oc.createGain(), l=oc.createDynamicsCompressor();
@@ -236,7 +236,9 @@ const PADS_FN=async(opt)=>{
       const T={c:oc, dest:g, open:[[],[],[],[]], chop:[null,null,null,null]};
       const vc=trigger(bi, 0, v, 0.05, T); if(!vc || !vc.parts || !vc.parts.length) continue;
       const r=__lv.kw(await oc.startRendering(), 0.05, 0.4, 0.6);
-      rows.push({m, v, f:vc.parts.map(u=>u.split("/").pop().replace(/\.mp3$/,"")).join("+"), url:vc.parts[0], lufs:r.lufs, peak:r.peak});
+      /* which recordings it played: a band player at the hardest plays its soft one at nothing (cos 90°), so only the loud */
+      const parts=v>=0.999 && vc.parts.length>1 ? vc.parts.slice(1) : vc.parts;
+      rows.push({m, v, zm:nearest(zs, m).m, f:parts.map(u=>u.split("/").pop().replace(/\.mp3$/,"")).join("+"), url:parts[0], lufs:r.lufs, peak:r.peak});
     }
     window.padDefs=keep; READY[bi]={};
     res[id]=rows;

@@ -31,11 +31,13 @@ module.exports=async function(PASSES, ONLY, pages){
       for(const v of [...new Set(all.map(r=>r.v))]){ const rows=all.filter(r=>r.v===v), st=C.stats(rows);
         if(st) console.log(`pass ${pass} ${id.padEnd(20)} v${v}  dev ${st.dev.db.toFixed(1)} @${st.dev.m}  jump ${st.jump.db.toFixed(1)} @${st.jump.m}  spread ${st.spread.toFixed(1)}`);
         const ref=rows.filter(r=>REF.indexOf(r.m)>=0); if(!ref.length) continue; const L=pmean(ref.map(r=>r.lufs));
+        /* a band player's medium hit plays its soft and loud recordings at once: those notes shape the curve only (the two
+           recordings are trimmed where each plays alone, the softest and the hardest hits) */
         const by={}; rows.forEach(r=>{ if(r.f.indexOf("+")<0) (by[r.f]=by[r.f]||[]).push(r); });
         Object.keys(by).forEach(f=>{ (err[f]=err[f]||[]).push(pmean(by[f].map(r=>r.lufs))-pmean(by[f].map(r=>L+N(r.m)))); });
       }
       const next=Object.assign({}, cur);
-      Object.keys(err).forEach(f=>{ const e=err[f].reduce((a,b)=>a+b,0)/err[f].length; next[f]=Math.max(-6, Math.min(6, (cur[f]||0)-e)); });
+      Object.keys(err).forEach(f=>{ const e=err[f].reduce((a,b)=>a+b,0)/err[f].length; next[f]=Math.max(-9, Math.min(9, (cur[f]||0)-e)); });
       /* where the instrument's level is set stays where it was */
       const keepF=[...new Set(all.filter(r=>REF.indexOf(r.m)>=0 && r.f.indexOf("+")<0).map(r=>r.f))];
       if(keepF.length){ const d=keepF.reduce((s,f)=>s+((next[f]||0)-(cur[f]||0)),0)/keepF.length; Object.keys(next).forEach(f=>{ next[f]-=d; }); }
