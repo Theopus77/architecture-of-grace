@@ -88,14 +88,13 @@ function hzToMidi(f) { return 69 + 12 * log2(f / 440); }
 
 /* a slice timer: on the page it gives the browser a moment every SLICE ms, and every loop asks it often enough that no slice
    runs much past that, even before the code is warm (the silent treatment: slices of 12 ms or less); in the worker it never
-   waits. The moment is a message to itself (the browser draws and answers taps in between, without the 4 ms a timer waits
-   once timers nest), and a timer at least every 50 ms, so the page's own timers surely get their turn too. */
-var SLICE = 6, MC = null, MQ = [], lastTimer = 0;
-function getYield() { return function (f) { var t = now();
-  if (typeof MessageChannel === "function" && t - lastTimer < 50) {
-    if (!MC) { MC = new MessageChannel(); MC.port1.onmessage = function () { var g = MQ.shift(); if (g) g(); }; }
-    MQ.push(f); MC.port2.postMessage(0); }
-  else { lastTimer = t; setTimeout(f, 0); } }; }
+   waits. The moment is a timer, so the page's own timers and drawing get their turn; it is set from a message to itself,
+   so it does not wait the 4 ms a timer set inside a timer waits. */
+var SLICE = 6, MC = null, MQ = [];
+function getYield() { return function (f) {
+  if (typeof MessageChannel !== "function") { setTimeout(f, 0); return; }
+  if (!MC) { MC = new MessageChannel(); MC.port1.onmessage = function () { var g = MQ.shift(); if (g) setTimeout(g, 0); }; }
+  MQ.push(f); MC.port2.postMessage(0); }; }
 function Ticker(budget, signal) { this.b = budget || 0; this.t0 = now(); this.sig = signal || null; }
 Ticker.prototype.due = function () { return this.b > 0 && now() - this.t0 > this.b; };
 /* before a step that runs whole (a few ms when the code is cold): a fresh slice once half of this one is used */
