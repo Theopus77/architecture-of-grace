@@ -192,7 +192,7 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
 .st-spd b{font:800 .95rem/1.25 var(--sans);color:#ffe2a8;font-variant-numeric:tabular-nums}
 .st-clip.pk{box-shadow:inset 0 0 0 3px #fffaf0,inset 0 0 0 4px #07080a}
 .st-ed{width:100%;min-height:44px;margin:.45rem 0 0;padding:0 .3rem;font-size:.88rem}
-.st-ed[hidden]{display:none}
+.st-ed[hidden],#mixer .st-strip .st-ed[hidden]{display:inline-flex!important;visibility:hidden}   /* AOG-DESK-LOOK-V2: an empty track keeps the place of its Edit, so every strip's knobs line up */
 .st-recs{display:grid;gap:.55rem}
 .st-rec{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem .8rem;padding:.6rem .7rem;border:1px solid #2f3339;border-radius:12px;background:#181a1e}
 .st-rtx{flex:1 1 14rem;min-width:0;display:grid;gap:.1rem}
@@ -513,7 +513,7 @@ details[open]>.st-steps{margin-bottom:.5rem}
 .st-cph::before{content:"";position:absolute;top:0;left:-5px;border-left:5.5px solid transparent;border-right:5.5px solid transparent;border-top:7px solid #f3d38e}
 .ph-on .st-cph{opacity:1}
 /* Mute and Solo: hardware buttons with their own lights */
-.st-desk .st-chc .st-btn{position:relative;min-height:42px;padding:0 1rem 0 1.65rem;border-radius:6px;border:1px solid #050506;
+.st-desk .st-chc .st-btn{position:relative;min-height:44px;padding:0 1rem 0 1.65rem;border-radius:6px;border:1px solid #050506;
   background:linear-gradient(#34363b,#232428 60%,#1d1e21);color:#ece3cf;font:500 .95rem/1 "Fraunces",var(--serif,Georgia,serif);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 2px 0 #08090a,0 3px 6px rgba(0,0,0,.45)}
 .st-desk .st-chc .st-btn::before{content:"";position:absolute;left:.65rem;top:50%;width:7px;height:7px;margin-top:-3.5px;border-radius:50%;background:#3a3c41;box-shadow:inset 0 1px 1px rgba(0,0,0,.8)}
@@ -588,6 +588,9 @@ details[open]>.st-steps{margin-bottom:.5rem}
 }
 /* AOG-DESK-KEYS-V1: the keys line shows on a computer with a mouse, and anywhere once a key has been pressed */
 .st-cp .st-keys{display:none;margin:.7rem 4px 0;font-size:.86rem;color:#b9b0a1}
+.st-keyl{list-style:none;margin:0;padding:0 4px 10px;display:grid;gap:.35rem .9rem;grid-template-columns:repeat(auto-fill,minmax(15rem,1fr))}
+.st-keyl li{display:flex;gap:.6rem;align-items:baseline;color:#d7cbb8;font-size:.92rem;line-height:1.35}
+.st-keyl kbd{flex:0 0 auto;min-width:4.6rem;font:700 .82rem/1.3 var(--sans);color:#ffe2a8;background:#15171a;border:1px solid #3a3e45;border-radius:6px;padding:.1rem .4rem;text-align:center}
 @media (hover:hover) and (pointer:fine){ .st-cp .st-keys{display:block} }
 html.aog-keys .st-cp .st-keys{display:block}
 @media (prefers-reduced-motion:reduce){ .st-slip{transform:none} }
@@ -720,6 +723,10 @@ html.in-studio .st-chassis{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 
 .st-desk .st-songs small{display:block;font:700 .62rem/1.2 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:#b9ad95;margin-top:2px}
 .st-desk .st-songs .st-led.on{background:radial-gradient(circle at 35% 30%,#fff 0,#3fbf6f 45%);box-shadow:0 0 7px #3fbf6f}
 .st-desk .st-songs:active{transform:translateY(1px)}
+/* AOG-DESK-LOOK-V2 (2026-10-17): on a phone the counter and Your songs share the line only when they fit; else Your songs goes under */
+/* AOG-DESK-TOP-FIT-V1: the counter keeps its full size; Your songs and the lesson note move down a line when there is no room beside it */
+.st-desk .st-top{flex-wrap:wrap} .st-desk .st-read{flex:0 0 auto;max-width:100%}
+@media (max-width:560px){ .st-desk .st-top{flex-wrap:wrap;gap:.6rem} .st-desk .st-songs{flex:1 1 100%;justify-content:center} .st-desk .st-read{flex:1 1 0;min-width:0;padding:.4rem .5rem} .st-ctr{font-size:1.08rem;gap:4px} .st-desk .st-read>span{font-size:.66rem} }
 @media (prefers-reduced-motion:reduce){ .st-desk .st-songs:active{transform:none} }
 /* ══ AOG-DESK-HANDS-V1 (2026-10-11) — Jimmy: "Drag clips along the timeline, zoom in, nudge off the beat, add Redo, a
    volume knob for each clip, and crossfades between pieces." ══ */
@@ -898,6 +905,7 @@ html.in-studio .st-chassis{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 
         <!-- AOG-DESK-SECTIONS-V1: the song's sections (Verse, Chorus …), marked on the ruler -->
         <div class="st-tools st-autot" id="secTools"></div>
         <p class="st-line" id="secLine" aria-live="polite"></p>
+        <div id="daBox"></div><!-- AOG-DESK-ARRANGE-V1: repeat a section, add or take out bars, sections from markers (aog-desk-arrange.js) -->
       </div>
 
       <!-- AOG-DESK-FACE-V1 (Jimmy's drawing of the Mixing Desk): the open channel and eight short faders, then the lesson as
@@ -919,7 +927,8 @@ html.in-studio .st-chassis{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 
         </div>
         <div class="st-fd" id="chFaders"></div>
       </div>
-      <p class="st-line st-keys" data-t="deskKeys"></p><!-- AOG-DESK-KEYS-V1 -->
+      <!-- AOG-DESK-KEYS-V1 · AOG-DESK-KEYS-V2 (2026-10-17): a small Keys list behind a button, on a computer (or once a key is used) -->
+      <details class="st-more st-keys" id="keysBox"><summary data-t="keysBtn"></summary><ul class="st-keyl" id="keysList"></ul></details>
       <!-- AOG-DESK-FACE-V1: the level, where it starts, the loop and the count-in, one tap away -->
         <details class="st-more" id="playMore"><summary data-t="playMore"></summary>
         <div class="st-mrow"><span class="st-lab" data-t="level"></span><canvas class="st-meter" id="meter" role="img"></canvas></div>
@@ -932,6 +941,7 @@ html.in-studio .st-chassis{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 
         </div>
         <p class="st-line" data-t="songLen" style="margin:.6rem 0 0"></p>
         </details>
+        <div id="drBox"></div><!-- AOG-DESK-REC-V1: the loop and punch, the click, markers (aog-desk-rec.js) -->
       </div>
       <div class="st-chassis st-rest">
 
@@ -941,6 +951,7 @@ html.in-studio .st-chassis{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 
         <p class="st-line" data-t="mixerLine" style="margin:0 0 .7rem"></p>
         <div class="st-mixer" id="mixer"></div>
         <div class="st-master" id="master"></div>
+        <div id="proMaster"></div><!-- AOG-DESK-MASTER-V1: more for the whole song (aog-desk-pro.js) -->
       </div>
 
       <div class="st-blk" id="trackBlk">
@@ -1000,6 +1011,7 @@ html.in-studio .st-chassis{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 
         <p class="st-line" data-t="carryLine" style="margin:0 0 .7rem"></p>
         <label class="st-field st-name"><span class="st-lab" data-t="songName"></span><input type="text" id="songName" maxlength="80" autocomplete="off" enterkeyhint="done"></label>
         <h3 class="st-h3" data-t="fileH"></h3>
+        <p class="st-line" data-t="fileWhat" style="margin:0 0 .6rem"></p><!-- AOG-DESK-PROJECT-V1 -->
         <div class="st-row"><button type="button" class="st-btn st-go" id="fileSave"></button><button type="button" class="st-btn" id="fileOpen"></button></div>
         <input type="file" id="fileIn" hidden>
         <p class="st-line" id="fileLine" aria-live="polite"></p>
@@ -1018,6 +1030,7 @@ html.in-studio .st-chassis{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 
   <footer class="foot" id="foot"></footer>
 </div>
 <script src="/aog-desk-more.js"></script><!-- AOG-DESK-MORE-V1: effect slots, takes, sections, the clipboard, versions (loaded first: the desk's code below calls it) -->
+<script src="/aog-desk-pro.js" defer></script><script src="/aog-desk-rec.js" defer></script><script src="/aog-desk-arrange.js" defer></script><!-- AOG-DESK-PRO-V1: the master strip's panel, groups, loop recording, markers, keys (runs after the desk's code) -->
 <script>
 "use strict";
 /* ══════════════════════════════════════════════════════════════════════════
@@ -1092,6 +1105,9 @@ const STR={
   level:{en:"Level",es:"Nivel"}, meterAria:{en:"How loud the song is",es:"Qué tan fuerte suena la canción"},
   songH:{en:"Your song",es:"Tu canción"},
   /* AOG-DESK-FACE-V1 */
+  keysBtn:{en:"Keys",es:"Teclas"},
+  keysList:{en:["Space|Play and stop","R|Record your voice (track 8)","L|Loop on or off","1 to 8|Pick a track","M · S|Mute it · Solo it","↑ ↓|Its fader","← →|Nudge the piece 10 ms (with Shift, a beat)","Ctrl/⌘ D|Copy the piece after itself","Ctrl/⌘ E|Cut the piece at the playhead","+ −|Zoom in and out","Ctrl/⌘ Z|Undo (with Shift, redo)"],
+    es:["Espacio|Tocar y parar","R|Grabar tu voz (pista 8)","L|Bucle sí o no","1 a 8|Elegir una pista","M · S|Silenciarla · Dejarla sola","↑ ↓|Su fader","← →|Mover la parte 10 ms (con Mayús, un pulso)","Ctrl/⌘ D|Copiar la parte después de sí misma","Ctrl/⌘ E|Cortar la parte en el cursor","+ −|Acercar y alejar","Ctrl/⌘ Z|Deshacer (con Mayús, rehacer)"]},
   deskKeys:{en:"On a keyboard: 1 to 8 pick a track, M mutes it, S solos it, ↑ and ↓ move its fader, Space plays and stops. , and . nudge the piece, + and − zoom, Ctrl+Z undoes, Ctrl+Shift+Z redoes.",es:"Con un teclado: del 1 al 8 eligen una pista, M la silencia, S la deja sola, ↑ y ↓ mueven su fader, la barra espaciadora toca y para. , y . mueven un poco la parte, + y − acercan y alejan, Ctrl+Z deshace, Ctrl+Mayús+Z rehace."},
   playMore:{en:"Where it starts, the loop and the level",es:"Dónde empieza, el bucle y el nivel"},
   chH:{en:"Channel strip",es:"Canal"}, fdH:{en:"Mixer",es:"Mezcladora"}, volume:{en:"Volume",es:"Volumen"},
@@ -1158,6 +1174,8 @@ const STR={
   outShare:{en:"Share…",es:"Compartir…"}, outShareAria:{en:"Share {name}",es:"Compartir {name}"},
   outDownload:{en:"Download",es:"Descargar"}, outDownloadAria:{en:"Download {name}",es:"Descargar {name}"},
   outStems:{en:"Each track on its own (.zip)",es:"Cada pista sola (.zip)"},
+  outStemsG:{en:"Each track and group on its own (.zip)",es:"Cada pista y cada grupo solos (.zip)"},   /* AOG-DESK-STEMS-GROUPS-V1 */
+  stemGroup:{en:"group",es:"grupo"},
   outStemsMaking:{en:"Making each track… {a} of {b}",es:"Haciendo cada pista… {a} de {b}"},
   outStemsReady:{en:"Each track on its own: {n} files in one .zip",es:"Cada pista sola: {n} archivos en un .zip"},
   outShared:{en:"Sent.",es:"Enviado."}, outSaved:{en:"Saved: {name}.",es:"Guardado: {name}."},
@@ -1205,9 +1223,10 @@ const STR={
   carryLine:{en:"Take this song to your iPhone, iPad or computer and keep working on it there.",es:"Lleva esta canción a tu iPhone, iPad o computadora y sigue trabajando en ella allí."},
   songName:{en:"Song name",es:"Nombre de la canción"}, myName:{en:"My song",es:"Mi canción"},
   fileH:{en:"With a song file",es:"Con un archivo de canción"},
-  fileSave:{en:"Save song file",es:"Guardar archivo de canción"}, fileOpen:{en:"Open a song file",es:"Abrir un archivo de canción"},
+  fileSave:{en:"Save my song",es:"Guardar mi canción"}, fileOpen:{en:"Open my song",es:"Abrir mi canción"},   /* AOG-DESK-PROJECT-V1 */
+  fileWhat:{en:"One file holds the whole desk and its sound. It stays on your device. Move it with AirDrop or Files.",es:"Un archivo guarda toda la mesa y su sonido. Se queda en tu aparato. Muévelo con AirDrop o Archivos."},
   fileMaking:{en:"Making your song file…",es:"Haciendo tu archivo de canción…"},
-  fileSaved:{en:"Saved: {name}. On an iPhone or iPad it is in the Files app, under Downloads. Open it on your other device with Open a song file.",es:"Guardado: {name}. En un iPhone o iPad está en la app Archivos, en Descargas. Ábrelo en tu otro aparato con Abrir un archivo de canción."},
+  fileSaved:{en:"Saved: {name}. On an iPhone or iPad it is in the Files app, under Downloads. Open it on your other device with Open my song.",es:"Guardado: {name}. En un iPhone o iPad está en la app Archivos, en Descargas. Ábrelo en tu otro aparato con Abrir mi canción."},
   fileNeed:{en:"Put a recording on a track first.",es:"Primero pon una grabación en una pista."},
   fileBad:{en:"That is not a song file from the Mixing Desk.",es:"Ese no es un archivo de canción de la mesa de mezclas."},
   reading:{en:"Opening your song…",es:"Abriendo tu canción…"},
@@ -1299,6 +1318,11 @@ const STR={
   spdNorm:{en:"Normal speed",es:"Velocidad normal"}, spdN:{en:"{n}% speed",es:"{n} % de velocidad"},
   keep:{en:"Keep the pitch",es:"Mantener el tono"},
   keepOn:{en:"Slower or faster, the notes stay in tune.",es:"Más lento o más rápido, las notas siguen afinadas."},
+  /* AOG-DESK-WARP-V1 */
+  warp:{en:"Follow the song's tempo",es:"Seguir el tempo de la canción"},
+  warpOn:{en:"Played at {a} beats a minute, it follows the song: now {b}. It stays on the bars.",es:"Tocada a {a} pulsos por minuto, sigue a la canción: ahora {b}. Se queda en los compases."},
+  warpSaid:{en:"It follows the song's tempo now.",es:"Ahora sigue el tempo de la canción."},
+  warpOff:{en:"It keeps its own speed again.",es:"Vuelve a su propia velocidad."},
   keepOff:{en:"Like a tape: slower sounds lower, faster sounds higher.",es:"Como una cinta: más lento suena más grave, más rápido suena más agudo."},
   tempoSets:{en:"This track sets the song's tempo.",es:"Esta pista marca el tempo de la canción."},
   match:{en:"Match the song's tempo",es:"Igualar el tempo de la canción"},
@@ -1392,6 +1416,8 @@ function cleanClip(c){
     layer:(typeof c.layer==="string" && /^[a-z]{2,10}(:live)?(:over)?$/.test(c.layer)) ? c.layer : "", auto:!!c.auto, lead:!!c.lead };   /* AOG-STUDIO-LISTEN-V1 · AOG-SONG-V1 (lead) */
   if(!(o.sec>0) || !(o.body>0)) return null;
   if(XFADES.indexOf(c.xf)>0) o.xf=c.xf;   /* AOG-DESK-XFADE-V1: only when it is on, so a song without crossfades reads as before */
+  if(c.warp===true && o.bpm>0) o.warp=true;   /* AOG-DESK-WARP-V1: it follows the song's tempo */
+  if(c.lp===true) o.lp=true;   /* AOG-DESK-CLIPLOOP-V1: its end was dragged to repeat it */
   /* AOG-PIANOROLL-V1: a take from the Piano, Guitar, Bass or Band keeps the notes it was played with (checked by aog-pianoroll.js) */
   if(c.notes){ const n=window.AOGPianoRoll ? AOGPianoRoll.clean(c.notes) : (Array.isArray(c.notes.ev) ? c.notes : null); if(n) o.notes=n; }
   /* AOG-STUDIO-INBOX-V1: a take from the list remembers its tool, its number and which take in the list it was */
@@ -1429,6 +1455,7 @@ function cleanSong(r){
     if(ECHO_T[m.et]!=null && m.et!=="d8") d.et=m.et; }   /* AOG-DESK-ECHO-SYNC-V1: only when it is not the dotted eighth */
   s.master.room=DESK_ROOMS.includes(r.master && r.master.room) ? r.master.room : "made";   /* AOG-REAL-ROOMS-V1: a song from before keeps its room */
   dmCleanSong(r, s);   /* AOG-DESK-SECTIONS-V1 */
+  proClean(r, s);   /* AOG-DESK-MASTER-V1 */
   s.sel=Math.round(num(r.sel,0,NT-1,0)); s.startBar=Math.round(num(r.startBar,1,MAX_BARS,1));
   s.loopOn=!!r.loopOn; s.loopFrom=Math.round(num(r.loopFrom,1,MAX_BARS,1)); s.loopTo=Math.round(num(r.loopTo,1,MAX_BARS,4));
   if(s.loopTo<s.loopFrom) s.loopTo=s.loopFrom;
@@ -1521,7 +1548,14 @@ function analyse(rec, info){
 function tempoTrack(){ for(let i=0;i<NT;i++){ const c=SONG.tracks[i].clip; if(c && c.bpm>0) return i; } return -1; }
 /* AOG-STUDIO-EDIT-V1 (Jimmy, 2026-10-04: "a way to edit the tracks that are in the mixer. Cut them up, slow or speed
    them up"): each recording has a speed (50 % to 150 %); the track that sets the tempo sets it at its own speed */
-function spd(c){ return c && c.speed>0 ? c.speed : 1; }
+function spd(c){ if(c && c.warp && c.bpm>0) return warpSp(c); return c && c.speed>0 ? c.speed : 1; }
+/* AOG-DESK-WARP-V1 (2026-10-17, Jimmy: "DAW to the max") — Follow the tempo: a recording with a tempo of its own, set to follow
+   the song (c.warp), plays at the song's tempo, whatever it is: its speed is the song's tempo over its own, its pitch kept
+   (the desk's WSOLA, made in a Worker, aog-desk-warp.js), so its beats stay on the song's bars when the tempo changes. A take
+   with notes (the Piano, Guitar, Bass, Band) is played again by its own room at the new tempo instead (warpNotes). Off, the
+   recording keeps its own speed, as always. Without a song tempo set, it keeps its speed. */
+function warpSp(c){ let b=0; try{ const s=window.AOGSong && AOGSong.get(); if(s && s.hasBpm) b=s.bpm; }catch(e){} return b>0 ? Math.max(0.25, Math.min(4, b/c.bpm)) : (c.speed>0 ? c.speed : 1); }
+function keepOf(c){ return c.keep!==false || !!(c.warp && c.bpm>0); }
 /* AOG-SONG-V1 (2026-10-11): the song has one tempo, kept for the whole Studio (aog-song.js); every room plays in it, and the
    desk's bars are its bars. A song that has none yet takes its first recording's, as before. A track made slower or faster
    here moves on its own; the song's tempo is changed with the Studio's Song button or any room's tempo. */
@@ -1592,10 +1626,19 @@ function punchSet(x){
 }
 /* Glue holds the parts together: gentle compression on the whole song */
 function glueSet(m){
+  /* AOG-DESK-MASTER-V1: Glue off (bypass), or set by hand (threshold, ratio, make-up: m.gc); else from the Glue knob, as always */
+  if(m.glueOff) return {thr:0, ratio:1, trim:1};
+  const e=glueEff(m);
+  if(e.ratio<=1 && !e.mk) return {thr:0, ratio:1, trim:1};
+  return {thr:e.thr, ratio:e.ratio, trim:dbGain(-autoMakeupDb(e.thr, e.ratio)+e.mk)};
+}
+/* the Glue's threshold, ratio and make-up as it works now: by hand, or from the knob (0: resting) */
+function glueEff(m){
+  if(m.gc) return {thr:m.gc.thr, ratio:m.gc.ratio, mk:m.gc.mk, hand:true};
   const g=Math.max(0, Math.min(100, m.glue))/100;
-  if(g<=0) return {thr:0, ratio:1, trim:1};
+  if(g<=0) return {thr:0, ratio:1, mk:0};
   const thr=-8-12*g, ratio=1.5+1.5*g, cut=Math.max(0, -6-thr)*(1-1/ratio);
-  return {thr:thr, ratio:ratio, trim:dbGain(-autoMakeupDb(thr, ratio)+0.5*cut)};
+  return {thr:thr, ratio:ratio, mk:0.5*cut};
 }
 const LIM={thr:-2, ratio:20};
 /* the last stage: as it is below 85%; above, it rounds off toward 98%, so the song can never reach full scale */
@@ -1748,6 +1791,7 @@ function makeEngine(c, live){
   E.glue=DC(0.02,0.25); E.glueTrim=G(1); E.mVol=G(1);
   E.lim=DC(0.002,0.12); E.lim.threshold.value=LIM.thr; E.lim.ratio.value=LIM.ratio; E.limTrim=G(dbGain(-autoMakeupDb(LIM.thr, LIM.ratio)));
   E.pre=G(0.5); E.safe=c.createWaveShaper(); E.safe.curve=safeCurve(); E.out=G(1);
+  E.lc=BQ("highpass",30,Math.SQRT1_2); E.lcOn=false;   /* AOG-DESK-MASTER-V1: the Low cut, in the chain only while it is on */
   E.sum.connect(E.mLow); E.mLow.connect(E.mMid); E.mMid.connect(E.mHigh); E.mHigh.connect(E.glue); E.glue.connect(E.glueTrim);
   E.glueTrim.connect(E.mVol); E.mVol.connect(E.lim); E.lim.connect(E.limTrim); E.limTrim.connect(E.pre); E.pre.connect(E.safe); E.safe.connect(E.out);
   E.out.connect(c.destination);
@@ -1793,6 +1837,51 @@ function applyMaster(E){
   setP(E, E.mVol.gain, volGain(m.vol));
   setP(E, E.dly.delayTime, echoTime());
   applyRoom(E);   /* AOG-REAL-ROOMS-V1 */
+  proMaster(E);   /* AOG-DESK-MASTER-V1 */
+}
+/* ══ AOG-DESK-MASTER-V1 (2026-10-17, Jimmy: "DAW to the max") — the whole song's strip, made visible (its panel: aog-desk-pro.js).
+   · the two returns every track sends to after its fader: the Room (the real rooms) and the Echo (in beats of the song), each
+     with a level (SONG.master.rvRet, dlRet; 80 is as before, so a song without them is the same to the bit);
+   · the EQ: Low, Middle, High and a Low cut (a high-pass, 12 dB an octave, only in the chain while it is on), and a bypass;
+   · the Glue: its knob, or a threshold, ratio and make-up set by hand (m.gc), and a bypass (m.glueOff);
+   · the limiter's bypass (m.limOff); the safety ceiling after it always stays.
+   A bypassed compressor keeps its place (ratio 1), so every track stays lined up. ══ */
+const LCUTS=[0,20,30,40,60,80,100,120,160];
+function retGain(v){ return v==null ? 1 : volGain(v); }
+function proMaster(E){
+  const m=SONG.master, eq=!m.eqOff, on=eq && m.lc>0;
+  if(!eq){ setP(E, E.mLow.gain, 0); setP(E, E.mMid.gain, 0); setP(E, E.mHigh.gain, 0); }
+  if(on){ if(E.fresh || !E.live || !E.lcOn) E.lc.frequency.value=m.lc; else setP(E, E.lc.frequency, m.lc); }
+  if(on!==!!E.lcOn){
+    try{ E.sum.disconnect(E.mLow); }catch(e){} try{ E.sum.disconnect(E.lc); }catch(e){} try{ E.lc.disconnect(); }catch(e){}
+    if(on){ E.sum.connect(E.lc); E.lc.connect(E.mLow); } else E.sum.connect(E.mLow);
+    E.lcOn=on; }
+  setP(E, E.revRet.gain, retGain(m.rvRet)); setP(E, E.dlyRet.gain, 0.6*retGain(m.dlRet));
+  const lo=!!m.limOff;
+  setP(E, E.lim.threshold, lo ? 0 : LIM.thr); setP(E, E.lim.ratio, lo ? 1 : LIM.ratio); setP(E, E.limTrim.gain, lo ? 1 : dbGain(-autoMakeupDb(LIM.thr, LIM.ratio)));
+}
+/* the new parts of a song, checked (a song from before has none of them, and keeps none) */
+const GROUPS=["drums","vocals","inst"];
+function proClean(r, s){
+  const m=(r && r.master && typeof r.master==="object") ? r.master : {}, d=s.master;
+  ["rvRet","dlRet"].forEach(k=>{ if(m[k]!=null){ const v=Math.round(num(m[k],0,100,80)); if(v!==80) d[k]=v; } });
+  if(LCUTS.indexOf(+m.lc)>0) d.lc=+m.lc;
+  ["eqOff","glueOff","limOff"].forEach(k=>{ if(m[k]===true) d[k]=true; });
+  if(m.gc && typeof m.gc==="object") d.gc={thr:Math.round(num(m.gc.thr,-40,0,-14)*2)/2, ratio:Math.round(num(m.gc.ratio,1,10,2)*10)/10, mk:Math.round(num(m.gc.mk,0,12,0)*2)/2};
+  if(Array.isArray(r && r.tracks)) r.tracks.slice(0,NT).forEach((x,i)=>{ if(x && GROUPS.indexOf(x.grp)>=0) s.tracks[i].grp=x.grp; });
+  proCleanMore(r, s);
+}
+/* the later parts (markers, the cycle, the click, warp …), from AOG-DESK-REC-V1 on */
+function proCleanMore(r, s){
+  /* AOG-DESK-REC-V1: the punch, a take each time round, the markers */
+  if(r.punchOn===true) s.punchOn=true;
+  if(r.punch && typeof r.punch==="object"){ const a=Math.round(num(r.punch.a,1,MAX_BARS,1)), b=Math.round(num(r.punch.b,1,MAX_BARS,a)); s.punch={a:a, b:Math.max(a, b)}; }
+  if(s.punchOn && !s.punch) s.punch={a:s.loopFrom, b:s.loopTo};
+  if(r.lrec===true) s.lrec=true;
+  if(r.secMk===true) s.secMk=true;   /* AOG-DESK-ARRANGE-V1: the sections follow the markers */
+  if(Array.isArray(r.marks)){ const M=[], seen=new Set(); r.marks.slice(0,32).forEach(m=>{ if(!m || typeof m!=="object") return; const b=Math.round(num(m.b,1,MAX_BARS,1)); if(seen.has(b)) return; seen.add(b);
+      const o={b:b}, w=typeof m.w==="string" ? m.w.replace(/[\u0000-\u001f]/g,"").trim().slice(0,24) : ""; if(w) o.w=w; M.push(o); });
+    M.sort((p,q)=>p.b-q.b); if(M.length) s.marks=M; }
 }
 function applyAll(E){ for(let i=0;i<NT;i++) applyTrack(E,i); applyMaster(E); }
 function liveApply(fn){ if(LIVE) fn(LIVE); }
@@ -1807,15 +1896,15 @@ const BUF=new Map();
    faster or slower, so the notes move and the time stays: stretched by stF(c) = speed/q (keep the pitch) or 1/q (like a
    tape), played at rate q (or speed × q). Made once and kept, like a speed. */
 function pq(c){ return c && c.pitch ? Math.pow(2, c.pitch/12) : 1; }
-function stF(c){ return c.keep!==false ? spd(c)/pq(c) : 1/pq(c); }
+function stF(c){ return keepOf(c) ? spd(c)/pq(c) : 1/pq(c); }
 function playBuf(cl){
   const b=dmBase(cl); if(!b) return null;   /* AOG-DESK-TUNE-V1: a voice tuned by its slot plays from its tuned copy */
   const sp=spd(cl);
-  if(cl.pitch){ const rate=pq(cl)*(cl.keep!==false ? 1 : sp), f=stF(cl), st=STRETCH.get(cl.id);
+  if(cl.pitch){ const rate=pq(cl)*(keepOf(cl) ? 1 : sp), f=stF(cl), st=STRETCH.get(cl.id);
     if(Math.abs(f-1)<1e-6) return {buf:b, rate:rate, scale:rate/sp};
     if(st && st.base===b && Math.abs(st.sp-f)<1e-6) return {buf:st.buf, rate:rate, scale:rate/sp}; }   /* not ready yet: as without the shift */
   if(Math.abs(sp-1)<1e-3) return {buf:b, rate:1, scale:1};
-  if(cl.keep!==false){ const st=STRETCH.get(cl.id); if(st && st.base===b && Math.abs(st.sp-sp)<1e-3) return {buf:st.buf, rate:1, scale:1/sp}; }
+  if(keepOf(cl)){ const st=STRETCH.get(cl.id); if(st && st.base===b && Math.abs(st.sp-sp)<1e-3) return {buf:st.buf, rate:1, scale:1/sp}; }
   return {buf:b, rate:sp, scale:1};
 }
 /* how loud a track is at song time t, from its fade in and fade out (1 = as recorded) */
@@ -1865,25 +1954,30 @@ function xfGain(W, t, out){
   if(W.lin) return out ? 1-u : u;
   return out ? Math.cos(u*Math.PI/2) : Math.sin(u*Math.PI/2);
 }
-function schedule(E, from, to, at){
-  const out=[], lag=E.lag||0;   /* AOG-DESK-FX-V1: lag, the most a track's compressors hold its sound back (0 without them) */
-  autoSched(E, from, to, at+lag);   /* AOG-DESK-AUTO-V1: the drawn lines, on the same clock as the pieces */
+/* AOG-DESK-SPEED-V1 (2026-10-17, Jimmy: "DAW to the max", a long song with many pieces): schedule() can lay out only the
+   sounds that START between song times lo and hi of the window from–to (each sound is still laid whole, exactly as the
+   whole plan lays it, so the parts added up are the whole plan). The speakers lay a few seconds ahead as the song plays
+   (feed, from pump) and a bounce lays each stretch while it renders (renderSong, at suspend points), so a five-minute
+   song with hundreds of pieces never holds hundreds of sounds at once. Without lo the whole window is laid, as always. */
+function schedule(E, from, to, at, lo, hi){
+  const out=[], lag=E.lag||0, part=lo!=null, first=!part || lo<=from+1e-9;   /* AOG-DESK-FX-V1: lag, the most a track's compressors hold its sound back (0 without them) */
+  if(first) autoSched(E, from, to, at+lag);   /* AOG-DESK-AUTO-V1: the drawn lines, on the same clock as the pieces */
   SONG.tracks.forEach((x,i)=>{
     if(!x.clip) return;
     /* AOG-DESK-FX-V1: a track with fewer compressors in its slots starts that much later, so every track still lines up */
     const sh=at+(lag-(E.fxLat ? E.fxLat[i]||0 : 0));
     /* AOG-DESK-TAKES-V1: a track with takes plays each take where it is chosen (dmGates); without takes, as always */
     const G=dmGates(x);
-    if(!G) schedClip(E, i, x.clip, from, to, sh, null, out);
-    else G.forEach(g=>schedClip(E, i, g.cl, from, to, sh, g, out));
-    dmFxSched(E, i, from, to, sh, out);   /* AOG-DESK-FX-V1: the Chorus and the Doubler sway in time with the song */
+    if(!G) schedClip(E, i, x.clip, from, to, sh, null, out, lo, hi);
+    else G.forEach(g=>schedClip(E, i, g.cl, from, to, sh, g, out, lo, hi));
+    if(first) dmFxSched(E, i, from, to, sh, out);   /* AOG-DESK-FX-V1: the Chorus and the Doubler sway in time with the song */
   });
   return out;
 }
 /* one recording of a track: every piece that sounds between song time `from` and `to`, started at context time `at`.
    G (AOG-DESK-TAKES-V1): where this take is chosen; it fades in and out over a short crossfade (equal power) at each
    switch, and plays nowhere else. Without G this is the plan as it always was. */
-function schedClip(E, i, cl, from, to, at, G, out){
+function schedClip(E, i, cl, from, to, at, G, out, lo, hi){
   const c=E.c, P=playBuf(cl); if(!P) return;
   const sp=spd(cl), cs=clipStart(cl), ce=clipEnd(cl,false), fades=(cl.fadeIn||0)+(cl.fadeOut||0)>0;
   const fi=(cl.fadeIn||0)*songBeat(), fo=(cl.fadeOut||0)*songBeat();
@@ -1895,6 +1989,7 @@ function schedClip(E, i, cl, from, to, at, G, out){
     if(A1-A0<0.003) return;
     (G ? dmGateSpans(G, A0, A1) : [[A0, A1]]).forEach(([a0, a1])=>{
       if(a1-a0<0.003) return;
+      if(lo!=null && (a0<lo-1e-9 || a0>=hi-1e-9)) return;   /* AOG-DESK-SPEED-V1: another stretch lays this one */
       const off=Math.max(0, (s0+(a0-p0)*sp)*P.scale), d=Math.min((a1-a0)*sp*P.scale, P.buf.duration-off);
       if(!(d>0.003)) return;
       const dur=d/(sp*P.scale), e1=a0+dur, when=at+(a0-from);       /* dur: seconds of the song */
@@ -1932,9 +2027,9 @@ const STRETCH=new Map(), SJOB=new Map();
 function needStretch(c){ return Math.abs(stF(c)-1)>1e-3; }   /* AOG-DESK-PITCH-V1: the same as before when there is no pitch shift */
 function stretchReady(c){ const st=STRETCH.get(c.id); return !!(st && st.base===dmBase(c) && Math.abs(st.sp-stF(c))<1e-6); }
 function newBuf(nch, len, sr){ try{ return new AudioBuffer({numberOfChannels:nch, length:len, sampleRate:sr}); }catch(e){ return live().createBuffer(nch, len, sr); } }
-async function wsola(buf, sp, cancelled){
+async function wsola(buf, sp, cancelled, tolSec){
   const sr=buf.sampleRate, nch=buf.numberOfChannels, n=buf.length;
-  const H=Math.max(64, Math.round(0.02*sr)), N=2*H, tol=Math.round(0.012*sr), Ha=H*sp, outN=Math.max(1, Math.round(n/sp));
+  const H=Math.max(64, Math.round(0.02*sr)), N=2*H, tol=Math.round((tolSec||0.012)*sr), Ha=H*sp, outN=Math.max(1, Math.round(n/sp));
   const X=[], Y=[]; for(let ch=0;ch<nch;ch++){ X.push(buf.getChannelData(ch)); Y.push(new Float32Array(outN+N)); }
   const W=new Float32Array(N); for(let j=0;j<N;j++) W[j]=0.5-0.5*Math.cos(2*Math.PI*j/N);
   /* the search listens to a quarter-rate mono copy, then looks again closely around the best place */
@@ -1973,13 +2068,13 @@ function ensureStretch(c){
   if(!needStretch(c)){ STRETCH.delete(c.id); SJOB.delete(c.id); return Promise.resolve(); }
   if(stretchReady(c)) return Promise.resolve();
   const b=dmBase(c); if(!b) return Promise.resolve();
-  const sp=stF(c), key=c.id+"@"+sp+"@"+(b===BUF.get(c.id) ? "" : "tuned"), run=SJOB.get(c.id);
+  const sp=stF(c), wt=!!(c.warp && c.bpm>0), key=c.id+"@"+sp+"@"+(b===BUF.get(c.id) ? "" : "tuned")+(wt ? "@warp" : ""), run=SJOB.get(c.id);
   if(run && run.key===key) return run.p;
   const job={key:key};
   job.p=(async()=>{
     S.stretching++; paintEditLine(); paintFinish();
     try{
-      const out=await wsola(b, sp, ()=>{ const j=SJOB.get(c.id); return !j || j.key!==key; });
+      const out=await stretchOf(c, b, sp, wt, ()=>{ const j=SJOB.get(c.id); return !j || j.key!==key; });
       if(out && SJOB.get(c.id)===job){ STRETCH.set(c.id, {sp:sp, buf:out, base:b}); }
     }catch(e){}
     if(SJOB.get(c.id)===job) SJOB.delete(c.id);
@@ -1989,6 +2084,43 @@ function ensureStretch(c){
   SJOB.set(c.id, job);
   return job.p;
 }
+/* AOG-DESK-WARP-V1: the slower or faster copy is made in a Worker when the browser has one (the same steps, so the same
+   sound); a note take that follows the tempo is played again by its room instead. The Worker lets go after 20 s of rest. */
+const WARP_TOL=0.006;   /* a recording following the tempo looks only 6 ms either way, so every beat stays within 10 ms of its bar */
+async function stretchOf(c, b, sp, wt, cancelled){
+  if(wt && c.notes && !c.pitch && b===BUF.get(c.id)){ const r=await warpNotes(c, sp).catch(()=>null); if(cancelled()) return null; if(r) return r; }
+  const tol=wt ? WARP_TOL : 0.012;
+  const w=await warpWork(b, sp, tol).catch(()=>null);
+  if(cancelled()) return null;
+  return w || wsola(b, sp, cancelled, tol);
+}
+const WW={w:null, n:0, q:new Map(), idle:0, used:0, ok:0};
+function warpWork(buf, sp, tol){
+  if(typeof Worker==="undefined") return Promise.reject(new Error("no worker"));
+  if(!WW.w){ try{ WW.w=new Worker("/aog-desk-warp.js"); }catch(e){ return Promise.reject(e); }
+    WW.w.onmessage=e=>{ const f=WW.q.get(e.data && e.data.id); if(f){ WW.q.delete(e.data.id); f(e.data); } warpIdle(); };
+    WW.w.onerror=()=>{ const q=[...WW.q.values()]; WW.q.clear(); try{ WW.w.terminate(); }catch(e){} WW.w=null; q.forEach(f=>f(null)); }; }
+  clearTimeout(WW.idle); WW.used++;
+  const id=++WW.n, ch=[]; for(let k=0;k<buf.numberOfChannels;k++) ch.push(buf.getChannelData(k).slice());
+  return new Promise((ok, no)=>{ WW.q.set(id, d=>{ if(!d || !d.out) return no(new Error("warp"));
+      const out=newBuf(d.out.length, d.out[0].length, buf.sampleRate); d.out.forEach((a,k)=>out.getChannelData(k).set(a)); WW.ok++; ok(out); });
+    WW.w.postMessage({id:id, ch:ch, sp:sp, tol:tol, sr:buf.sampleRate}, ch.map(a=>a.buffer)); });
+}
+function warpIdle(){ clearTimeout(WW.idle); WW.idle=setTimeout(()=>{ if(WW.w && !WW.q.size){ try{ WW.w.terminate(); }catch(e){} WW.w=null; } }, 20000); }
+/* a take with notes, played again by its room with every note at the song's tempo (its times over sp) */
+async function warpNotes(c, sp){
+  const N=c.notes; if(!N || !Array.isArray(N.ev) || !N.room) return null;
+  /* a note sounds lag after its time (the room's own chain): its sound moves to (t + lag)/sp, so it is played at that − lag */
+  const lag=N.lag||0, at=v=>Math.max(0, Math.round(((v+lag)/sp-lag)*1e4)/1e4), sc=v=>Math.round(v/sp*1e4)/1e4;
+  const ev=N.ev.map(e=>{ const o=Object.assign({}, e, {t:at(e.t), d:Math.max(0.005, sc(e.d))}); if(e.k) o.k=sc(e.k); if(e.g) o.g=e.g.map(q=>[at(q[0]), q[1]]); return o; });
+  const pay={sound:N.sound, was:N.sound, events:ev, sec:c.sec/sp, tail:0, set:N.set, space:N.space, sr:N.sr, ped:(N.ped||[]).map(q=>({t:at(q.t), on:q.on}))};
+  const sh=studioShell(), out=await (sh && sh.renderNotes ? sh.renderNotes(N.room, pay) : window.AOGPianoRoll ? AOGPianoRoll.renderHere(N.room, pay) : null);
+  if(!out || !out.L || !out.L.length) return null;
+  const buf=newBuf(2, out.L.length, out.sr||MIX_SR); buf.copyToChannel(Float32Array.from(out.L), 0); buf.copyToChannel(Float32Array.from(out.R||out.L), 1);
+  WARPN.set(c.id, (WARPN.get(c.id)||0)+1);
+  return buf;
+}
+const WARPN=new Map();   /* how often each note take was played again (for the tests) */
 function stretchAll(){ return dmTuneAll().then(()=>Promise.all(dmAllClips().map(c=>ensureStretch(c)))); }   /* AOG-DESK-TAKES-V1: the takes too · AOG-DESK-TUNE-V1: a tuned voice first */
 
 /* ══ the speakers ══ */
@@ -2023,8 +2155,10 @@ function play(){
   if(SONG.countIn){
     /* the clicks skip the chain, so they wait the chain's 18 ms too and land exactly on the song's beats */
     const lag=NCOMP*0.006+(LIVE.lag||0);   /* AOG-DESK-FX-V1: and what the effect slots' compressors add */
-    for(let k=0;k<4;k++) PLAY.clicks.push(click(c, T+lag+k*beat, k===0));
-    PLAY.countAt=T; T+=bs;
+    /* AOG-DESK-CLICK-V1: one bar or two, with the click's own sound and level (aog-desk-rec.js) */
+    const nb=typeof dpCountBeats==="function" ? dpCountBeats() : 4;
+    for(let k=0;k<nb;k++) PLAY.clicks.push(typeof dpClickAt==="function" ? dpClickAt(c, T+lag+k*beat, k%4===0 ? 2 : 1) : click(c, T+lag+k*beat, k===0));
+    PLAY.countAt=T; T+=beat*nb;
   } else PLAY.countAt=0;
   PLAY.T0=T; PLAY.beat=beat; PLAY.bar=bs; PLAY.peak=-Infinity; PLAY.sig=""; PLAY.nowBar=-1;
   PLAY.loop=!!SONG.loopOn;
@@ -2036,7 +2170,7 @@ function play(){
     PLAY.wins=[{at:T, from:Math.min(from,end), to:end}];
   }
   autoHold(LIVE, c.currentTime);   /* AOG-DESK-AUTO-V1: whatever was laid for the last play is taken back first */
-  PLAY.srcs=schedule(LIVE, PLAY.wins[0].from, PLAY.wins[0].to, PLAY.wins[0].at);
+  PLAY.srcs=[]; feed(c.currentTime);   /* AOG-DESK-SPEED-V1: a few seconds at a time */
   PLAY.on=true;
   pump();
   PLAY.timer=setInterval(pump, 40);
@@ -2056,14 +2190,18 @@ function click(c, when, first){
 function pump(){
   if(!PLAY.on) return;
   const now=ac.currentTime;
+  if(typeof dpMetro==="function") dpMetro(now);   /* AOG-DESK-CLICK-V1: the click, a moment ahead */
+  if(window.AOGDeskRef) AOGDeskRef.pump(now);   /* AOG-DESK-REF-V1: the reference song, along the same windows */
   if(PLAY.loop){
     let w=PLAY.wins[PLAY.wins.length-1];
     while(w.at+(w.to-w.from) < now+1.0){
       const nw={at:w.at+(w.to-w.from), from:PLAY.A, to:PLAY.B};
-      PLAY.wins.push(nw); PLAY.srcs=PLAY.srcs.concat(schedule(LIVE, nw.from, nw.to, nw.at)); w=nw;
+      PLAY.wins.push(nw); w=nw;   /* AOG-DESK-SPEED-V1: feed lays it */
     }
+    feed(now);
     if(PLAY.wins.length>6) PLAY.wins.splice(0, PLAY.wins.length-6);
   } else {
+    feed(now);
     const w=PLAY.wins[PLAY.wins.length-1];
     if(now > w.at+(w.to-w.from)+0.05){ finish(); return; }
   }
@@ -2088,6 +2226,8 @@ function end(){
   if(PLAY.raf) cancelAnimationFrame(PLAY.raf); PLAY.raf=0;
   PLAY.srcs=[]; PLAY.clicks=[]; PLAY.wins=[];
   meterStill(); paintPlay(); paintNowBar(-1);
+  if(typeof dpRest==="function") dpRest();   /* AOG-DESK-MASTER-V1: the meters rest */
+  if(window.AOGDeskRef) AOGDeskRef.stop();   /* AOG-DESK-REF-V1 */
 }
 /* the song changed while it plays: carry on from the same place with the new arrangement */
 function reschedule(){
@@ -2104,8 +2244,19 @@ function reschedule(){
   } else {
     const end=songEnd(); PLAY.wins=[{at:at, from:Math.min(pos,end), to:end}];
   }
-  PLAY.srcs=schedule(LIVE, PLAY.wins[0].from, PLAY.wins[0].to, PLAY.wins[0].at);
+  PLAY.srcs=[]; feed(now);   /* AOG-DESK-SPEED-V1 */
   pump();
+}
+/* AOG-DESK-SPEED-V1: every window to play, laid FEED_SLICE seconds of song at a time, FEED_AHEAD seconds before it is heard */
+const FEED_AHEAD=4, FEED_SLICE=2;
+function feed(now){
+  for(const w of PLAY.wins){
+    if(w.done==null) w.done=w.from;
+    while(w.done<w.to-1e-9 && w.at+(w.done-w.from)<now+FEED_AHEAD){
+      const hi=Math.min(w.to, w.done+FEED_SLICE), last=hi>=w.to-1e-9;
+      const got=schedule(LIVE, w.from, w.to, w.at, w.done, last ? Infinity : hi);
+      for(const s of got) PLAY.srcs.push(s);
+      w.done=last ? w.to : hi; } }
 }
 /* AOG-DESK-AUTO-V1: a line drawn while the song plays: that track's lines are laid again from a moment from now, over
    the windows still to play (the pieces play on untouched; a line cleared went back to its knob in applyTrack) */
@@ -2121,7 +2272,7 @@ function frame(){
   if(!PLAY.on){ PLAY.raf=0; return; }
   const now=ac.currentTime, pos=songPos(now);
   let sig;
-  if(pos==null){ const n=Math.max(1, Math.min(4, Math.floor((now-PLAY.countAt)/PLAY.beat)+1)); sig="c"+n; if(sig!==PLAY.sig){ posText(t("countIn",{n:n})); ctrCount(n); } }
+  if(pos==null){ const n=(Math.max(0, Math.floor((now-PLAY.countAt)/PLAY.beat+1e-6))%4)+1; sig="c"+n+"."+Math.floor((now-PLAY.countAt)/PLAY.bar); if(sig!==PLAY.sig){ posText(t("countIn",{n:n})); ctrCount(n); } }
   else {
     const bar=Math.floor(pos/PLAY.bar+1e-6), beat=Math.floor((pos-bar*PLAY.bar)/PLAY.beat+1e-6);
     sig=bar+"."+beat;
@@ -2130,17 +2281,33 @@ function frame(){
   }
   PLAY.sig=sig;
   meterTick();
+  if(typeof dpFrame==="function") dpFrame(now, pos);   /* AOG-DESK-MASTER-V1: the Glue's meter, stereo and the spectrum (only while playing) */
   PLAY.raf=requestAnimationFrame(frame);
 }
 
 /* ══ the meter: it moves only while the song plays. On a touch screen, or with "reduce motion" set, it shows one
    still mark instead: the loudest point so far, which only ever steps up ══ */
 const MET={lvl:[-90,-90], drawn:-Infinity, last:0, draws:0};
-function stillMeter(){ try{ return matchMedia("(hover: none)").matches || matchMedia("(prefers-reduced-motion: reduce)").matches; }catch(e){ return false; } }
+/* AOG-DESK-SPEED-V1: asked once, then told when it changes (it was asked twice on every frame) */
+let STILLM=null;
+function stillMeter(){
+  if(STILLM) return STILLM.v;
+  try{ const a=matchMedia("(hover: none)"), b=matchMedia("(prefers-reduced-motion: reduce)"); STILLM={v:a.matches || b.matches};
+    const up=()=>{ STILLM.v=a.matches || b.matches; }; try{ a.addEventListener("change", up); b.addEventListener("change", up); }catch(e){} return STILLM.v; }catch(e){ return false; }
+}
 function dbx(db){ return Math.max(0, Math.min(1, (db+48)/48)); }
+/* AOG-DESK-SPEED-V1 (2026-10-17): a meter's size is measured once and again only when it changes (a ResizeObserver), never
+   on every frame: asking the page for a size while the song plays made it lay itself out again 60 times a second */
+const CVSZ=new WeakMap(); let CVRO=null;
+function cvRect(cv){
+  let r=CVSZ.get(cv); if(r) return r;
+  const b=cv.getBoundingClientRect(); r={width:b.width, height:b.height}; if(r.width>0) CVSZ.set(cv, r);
+  try{ if(!CVRO && window.ResizeObserver) CVRO=new ResizeObserver(es=>es.forEach(e=>CVSZ.delete(e.target))); if(CVRO) CVRO.observe(cv); }catch(e){}
+  return r;
+}
 function meterSize(){
   const cv=$("meter"); if(!cv) return;
-  const r=cv.getBoundingClientRect(), dpr=Math.min(2, window.devicePixelRatio||1);
+  const r=cvRect(cv), dpr=Math.min(2, window.devicePixelRatio||1);
   const w=Math.max(1, Math.round(r.width*dpr)), h=Math.max(1, Math.round(r.height*dpr));
   if(cv.width!==w || cv.height!==h){ cv.width=w; cv.height=h; }
 }
@@ -2170,7 +2337,7 @@ const VU_MARKS=[-20,-10,-7,-5,-3,-2,-1,0,1,2,3];
 function vuPos(vu){ const lo=Math.pow(10,-20/20), hi=Math.pow(10,3/20); return Math.max(-0.03, Math.min(1.04, (Math.pow(10, Math.max(-40, Math.min(4, vu))/20)-lo)/(hi-lo))); }
 function vuDraw(cv, db, side){
   if(!cv || !cv.getContext) return;
-  const r=cv.getBoundingClientRect(); if(!(r.width>0 && r.height>0)) return;
+  const r=cvRect(cv); if(!(r.width>0 && r.height>0)) return;   /* AOG-DESK-SPEED-V1 */
   const dpr=Math.min(3, window.devicePixelRatio||1), W=Math.round(r.width), H=Math.round(r.height);
   if(cv.width!==Math.round(W*dpr) || cv.height!==Math.round(H*dpr)){ cv.width=Math.round(W*dpr); cv.height=Math.round(H*dpr); }
   const g=cv.getContext("2d"); g.setTransform(dpr,0,0,dpr,0,0); g.clearRect(0,0,W,H);
@@ -2356,6 +2523,27 @@ function lufsPaint(){
 }
 /* the whole song, measured after a bounce, on the meter */
 function songLoud(Lc, Rc){ const r=loudOf(Lc, Rc, MIX_SR); LU.song=r; lufsPaint(); return r; }
+function songLoudR(r){ LU.song=r; lufsPaint(); return r; }
+/* AOG-DESK-SPEED-V1 (2026-10-17): a whole song's loudness, true peak and .wav are worked out in a Worker made from these very
+   functions (the same steps, so the same numbers and the same bytes); the page stays easy to use while a long song is made.
+   Without a Worker, here as before. It lets go after 20 s of rest. */
+const DW={w:null, n:0, q:new Map(), idle:0, used:0};
+function deskWork(msg, list){
+  if(typeof Worker==="undefined") return Promise.reject(new Error("no worker"));
+  if(!DW.w){ try{
+      const src="\"use strict\";const MIX_SR="+MIX_SR+", TP_PH="+JSON.stringify(TP_PH.map(a=>Array.from(a)))+".map(a=>Float64Array.from(a)), TP_SUM="+TP_SUM+";\n"+
+        [kCoef, kPow, luOf, lufsInt, truePeak, loudOf, wavBuf, wavPcm].map(f=>f.toString()).join("\n")+
+        "\nself.onmessage=e=>{const d=e.data;try{if(d.op==='loud')self.postMessage({id:d.id,v:loudOf(d.L,d.R,d.sr)});else{const ab=wavBuf(d.L,d.R,d.sr,d.g,d.bits);self.postMessage({id:d.id,v:ab},[ab]);}}catch(x){self.postMessage({id:d.id,err:String(x)});}};";
+      DW.w=new Worker(URL.createObjectURL(new Blob([src], {type:"text/javascript"})));
+      DW.w.onmessage=e=>{ const f=DW.q.get(e.data.id); if(f){ DW.q.delete(e.data.id); f(e.data); } clearTimeout(DW.idle); DW.idle=setTimeout(()=>{ if(DW.w && !DW.q.size){ try{ DW.w.terminate(); }catch(er){} DW.w=null; } }, 20000); };
+      DW.w.onerror=()=>{ const q=[...DW.q.values()]; DW.q.clear(); try{ DW.w.terminate(); }catch(er){} DW.w=null; q.forEach(f=>f({err:"worker"})); };
+    }catch(e){ DW.w=null; return Promise.reject(e); } }
+  clearTimeout(DW.idle); DW.used++;
+  const id=++DW.n; msg.id=id;
+  return new Promise((ok, no)=>{ DW.q.set(id, d=>d.err ? no(new Error(d.err)) : ok(d.v)); DW.w.postMessage(msg, list); });
+}
+async function loudOfW(Lc, Rc, sr){ try{ const L=Float32Array.from(Lc), R=Float32Array.from(Rc); return await deskWork({op:"loud", L:L, R:R, sr:sr}, [L.buffer, R.buffer]); }catch(e){ return loudOf(Lc, Rc, sr); } }
+async function wavBufW(Lc, Rc, sr, g, bits){ try{ const L=Float32Array.from(Lc), R=Float32Array.from(Rc); return await deskWork({op:"wav", L:L, R:R, sr:sr, g:g, bits:bits}, [L.buffer, R.buffer]); }catch(e){ return wavBuf(Lc, Rc, sr, g, bits); } }
 
 /* ══ the shelves the instruments fill ══ */
 const SHELF={};
@@ -2729,8 +2917,8 @@ async function makeMix(){
   btn.disabled=true; line.textContent=t("mixing");
   try{
     const {Lc, Rc, frames}=await renderSong(null);
-    const blob=wavBlob(Lc, Rc, MIX_SR, 1, BITS);   /* AOG-DESK-BITS-V1 */
-    try{ songLoud(Lc, Rc); }catch(e){}            /* AOG-DESK-LUFS-V1: the whole song on the loudness meter */
+    const blob=new Blob([await wavBufW(Lc, Rc, MIX_SR, 1, BITS)], {type:"audio/wav"});   /* AOG-DESK-BITS-V1 · AOG-DESK-SPEED-V1: in the Worker */
+    try{ songLoudR(await loudOfW(Lc, Rc, MIX_SR)); }catch(e){}            /* AOG-DESK-LUFS-V1: the whole song on the loudness meter */
     setMix({wav:blob, sec:frames/MIX_SR, bars:songBars(), bpm:songBpm(), body:songEndMusic(), at:Date.now()});
     try{ await sput("mix", {wav:blob, sec:MIX.sec, bars:MIX.bars, bpm:MIX.bpm, body:MIX.body, at:MIX.at}); }catch(e){}
     const out=leftOut();
@@ -2749,8 +2937,14 @@ async function renderSong(only){
   const oc=new OC(2, frames+lat, MIX_SR); await dmFxReady(oc);   /* AOG-DESK-DUCK-V1: the ducking's own small processor, first */
   await deskRoomLoad(oc, SONG.master.room);   /* AOG-REAL-ROOMS-V1: the real room first, so the mix is always the same */
   const E=makeEngine(oc, false);
-  if(only!=null) E.tr.forEach((T,j)=>{ T.fader.gain.value=j===only ? faderBase(j) : 0; });   /* AOG-DESK-AUTO-V1: a drawn volume is on its own gain */
-  schedule(E, 0, end, 0);
+  if(only!=null) E.tr.forEach((T,j)=>{ T.fader.gain.value=(Array.isArray(only) ? only.indexOf(j)>=0 : j===only) ? faderBase(j) : 0; });   /* AOG-DESK-AUTO-V1: a drawn volume is on its own gain · AOG-DESK-STEMS-GROUPS-V1: or a group of tracks */
+  /* AOG-DESK-SPEED-V1: laid a stretch at a time while it renders (the very same sounds as laying them all at once) */
+  const SL=4; let done=0;
+  const lay=upto=>{ while(done<end-1e-9 && done<upto){ const hi=Math.min(end, done+SL), last=hi>=end-1e-9; schedule(E, 0, end, 0, done, last ? Infinity : hi); done=last ? end : hi; } };
+  const whole=!!window.__deskWholePlan;   /* (the tests compare it with the whole plan laid at once) */
+  lay(whole ? end+1 : 2*SL);
+  if(oc.suspend && !whole) for(let s=SL; s<end; s+=SL){ const T=s; oc.suspend(T).then(()=>{ lay(T+2*SL); oc.resume(); }, ()=>{}); }
+  else lay(end+1);
   const buf=await render(oc);
   return {Lc:buf.getChannelData(0).subarray(lat, lat+frames), Rc:(buf.numberOfChannels>1 ? buf.getChannelData(1) : buf.getChannelData(0)).subarray(lat, lat+frames), frames:frames};
 }
@@ -2799,24 +2993,58 @@ function songTitle(){ const n=(SONG.name||"").trim(); return n || t("myName"); }
 function fileSlug(){ const n=songTitle().normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,40)||t("file");
   const d=new Date(), z=x=>String(x).padStart(2,"0");
   return n+"-"+d.getFullYear()+"-"+z(d.getMonth()+1)+"-"+z(d.getDate())+"-"+z(d.getHours())+z(d.getMinutes())+".aogsong"; }
-/* the whole song, as one file */
+/* the whole song, as one file. AOG-DESK-PROJECT-V1 (2026-10-17): "Save my song" makes a .aogsong that is a zip (stored, so it
+   is quick and every recording comes back to the byte): song.json (the desk as it is: the arrangement, the mixer, the
+   master, the markers …, and each recording's file) and audio/<id>.wav for every recording and take. Nothing else goes in:
+   never the locker's address or key (aog.studio.locker.v1) or the Sheet's (aog.sync.*), which live only in this device's
+   storage and are not part of SONG. A song file from before (AOGSONG1) still opens. */
 async function songFile(){
-  const parts=[], meta=[];
+  const files=[], meta=[];
   for(const c of dmAllClips()){   /* AOG-DESK-TAKES-V1: each take's recording too */
     const v=await sget(c.id); if(!v || !v.wav) continue;
-    meta.push({id:c.id, size:v.wav.size}); parts.push(v.wav);
+    const f="audio/"+c.id+".wav"; meta.push({id:c.id, size:v.wav.size, file:f}); files.push({name:f, data:new Uint8Array(await blobAB(v.wav))});
   }
   if(!meta.length) return null;
-  const head=new TextEncoder().encode(JSON.stringify({kind:"aog-song", v:1, at:Date.now(), song:SONG, clips:meta}));
-  const pre=new Uint8Array(12); for(let i=0;i<8;i++) pre[i]=SONG_MAGIC.charCodeAt(i);
-  new DataView(pre.buffer).setUint32(8, head.length, true);
-  return new Blob([pre, head].concat(parts), {type:"application/octet-stream"});
+  const head=new TextEncoder().encode(JSON.stringify({kind:"aog-song", v:2, at:Date.now(), app:"The Mixing Desk", song:SONG, clips:meta}));
+  return new Blob([zipStore([{name:"song.json", data:head}].concat(files))], {type:"application/octet-stream"});
+}
+/* a zip made by zipStore (stored entries) into {name: Blob}; null when it is not one, or any part is missing or changed */
+async function zipRead(blob){
+  if(!blob || blob.size<22) return null;
+  const tail=new DataView(await blobAB(blob.slice(blob.size-22)));
+  if(tail.getUint32(0, true)!==0x06054b50) return null;
+  const n=tail.getUint16(10, true), cs=tail.getUint32(12, true), co=tail.getUint32(16, true);
+  if(!(n>0 && n<=2000) || co+cs+22!==blob.size) return null;
+  const cd=new DataView(await blobAB(blob.slice(co, co+cs))), dec=new TextDecoder(), out=new Map();
+  let p=0;
+  for(let k=0;k<n;k++){
+    if(p+46>cs || cd.getUint32(p, true)!==0x02014b50) return null;
+    const meth=cd.getUint16(p+10, true), crc=cd.getUint32(p+16, true), csz=cd.getUint32(p+20, true), usz=cd.getUint32(p+24, true), nl=cd.getUint16(p+28, true), el=cd.getUint16(p+30, true), cl=cd.getUint16(p+32, true), lo=cd.getUint32(p+42, true);
+    if(meth!==0 || csz!==usz || p+46+nl>cs) return null;
+    const name=dec.decode(new Uint8Array(cd.buffer, cd.byteOffset+p+46, nl)); p+=46+nl+el+cl;
+    const lh=new DataView(await blobAB(blob.slice(lo, lo+30))); if(lh.byteLength<30 || lh.getUint32(0, true)!==0x04034b50) return null;
+    const d0=lo+30+lh.getUint16(26, true)+lh.getUint16(28, true); if(d0+csz>co) return null;
+    const part=blob.slice(d0, d0+csz); if(crc32(new Uint8Array(await blobAB(part)))!==crc) return null;
+    out.set(name, part);
+  }
+  return out;
 }
 /* a song file back into {song, wavs}; null when it is not one */
 async function readSongFile(blob){
   try{
     if(!blob || blob.size<12) return null;
     const pre=new Uint8Array(await blobAB(blob.slice(0,12)));
+    if(pre[0]===0x50 && pre[1]===0x4b && pre[2]===3 && pre[3]===4){   /* AOG-DESK-PROJECT-V1: the zip */
+      const Z=await zipRead(blob); if(!Z || !Z.has("song.json")) return null;
+      const h=JSON.parse(new TextDecoder().decode(await blobAB(Z.get("song.json"))));
+      if(!h || h.kind!=="aog-song" || h.v!==2 || !Array.isArray(h.clips) || h.clips.length>NT*(DM_MAX_TAKES+1)) return null;
+      const wavs=new Map();
+      for(const m of h.clips){ if(!m || typeof m.id!=="string" || !/^c[a-z0-9]{4,40}$/.test(m.id)) return null; const b=Z.get("audio/"+m.id+".wav"); if(!b || b.size<=44 || (m.size && b.size!==m.size)) return null; wavs.set(m.id, b); }
+      const song=cleanSong(h.song);
+      song.tracks.forEach(x=>{ if(x.clip && !wavs.has(x.clip.id)) x.clip=null; dmTakesHave(x, wavs); });
+      if(!song.tracks.some(x=>x.clip)) return null;
+      return {song:song, wavs:wavs};
+    }
     for(let i=0;i<8;i++) if(pre[i]!==SONG_MAGIC.charCodeAt(i)) return null;
     const hl=new DataView(pre.buffer).getUint32(8, true);
     if(!(hl>0 && hl<=4*1024*1024 && 12+hl<=blob.size)) return null;
@@ -3168,14 +3396,32 @@ async function voiceStart(){
     VOICE.withSong=SONG.tracks.some((x,i)=>i!==VOICE_T && x.clip && BUF.has(x.clip.id));
     if(VOICE.withSong){
       const lp=SONG.loopOn, vm=SONG.tracks[VOICE_T].mute; VOICE.keep={loop:lp, mute:vm};
-      SONG.loopOn=false; SONG.tracks[VOICE_T].mute=true; liveApply(E=>applyTrack(E, VOICE_T));
+      /* AOG-DESK-REC-V1: a take each time round keeps the loop playing while you sing; each pass is its own take */
+      VOICE.cyc=lp && SONG.lrec ? {bar:SONG.loopFrom, len:(SONG.loopTo-SONG.loopFrom+1)*barSec()} : null;
+      if(!VOICE.cyc) SONG.loopOn=false; SONG.tracks[VOICE_T].mute=true; liveApply(E=>applyTrack(E, VOICE_T));
       play();
       SONG.loopOn=lp;
       VOICE.T0=PLAY.on ? PLAY.T0 : c.currentTime;
       VOICE.watch=setInterval(()=>{ if(VOICE.rec && !PLAY.on) voiceStop(); }, 120);   /* the song ended: so does the take */
-    } else VOICE.T0=0;
+    } else { VOICE.T0=0; VOICE.cyc=null; }
     VOICE.state="on"; VOICE.busy=false; paintVoice();
   }catch(e){ voiceRelease(); VOICE.busy=false; VOICE.state="fail"; paintVoice(); }
+}
+/* AOG-DESK-REC-V1 · where each take is in the recording (seconds): one pass a time round the loop (the first sound a
+   moment before it, 50 ms, so an early breath is whole; its last notes ring on 0.25 s), or the whole of it */
+function recPasses(sec, head, cyc){
+  if(!cyc) return [{s0:0, s1:sec, head:head, body:sec-head, bar:SONG.startBar}];
+  const P=[];
+  for(let k=0;;k++){ const s=head+k*cyc.len; if(s>sec-0.3) break;
+    const pre=Math.min(0.05, s), e=Math.min(sec, s+cyc.len), s1=Math.min(sec, e+0.25);
+    P.push({s0:s-pre, s1:s1, head:pre, body:e-s, bar:cyc.bar}); }
+  return P;
+}
+/* a take recorded with the punch on plays only the punch's bars (beats pu.a to pu.b of the song) */
+function punchTo(c, pu){
+  const b0=(c.startBar-1)*4, full=fullBeats(c), a=Math.max(0, pu.a-b0), b=Math.min(full, pu.b-b0);
+  if(b-a<0.25) return;
+  c.pieces=[{a:a, b:b, at:b0+a, n:1}]; c.psel=0; tidyPieces(c);
 }
 function voiceRelease(){
   VOICE.rec=false; clearInterval(VOICE.watch); VOICE.watch=0;
@@ -3199,13 +3445,22 @@ async function voiceStop(){
     let head=VOICE.withSong ? (VOICE.T0+VOICE.lat)-VOICE.t0 : Math.min(0.05, sec/4);
     if(!(head>=0)) head=0;
     if(sec-head<0.3){ VOICE.state="short"; VOICE.busy=false; paintVoice(); return; }
-    const blob=wavBlob(L, L, sr), id="c"+Date.now().toString(36)+Math.random().toString(36).slice(2,7);
-    const buf=await decodeWav(blob, sr);
-    await sput(id, {wav:blob}); BUF.set(id, buf);
-    const x=SONG.tracks[VOICE_T], old=x.clip, vn=1+Math.max(0, ...SONG.tracks.map(y=>y.clip && y.clip.voice ? y.clip.vn||0 : 0), VOICE.gone ? VOICE.gone.clip.vn||0 : 0);
-    x.clip=cleanClip({id:id, src:"", name:t("voiceN",{n:vn}), at:Date.now(), voice:true, vn:vn, take:true, sec:sec, bpm:0, bars:0,
-      head:head, body:sec-head, tail:0, bpb:4, startBar:SONG.startBar, trimIn:0, trimOut:0, loops:1, peakDb:peakDbOf(buf)});
-    if(old){ if(old.voice) dmKeepAsTake(x, old); else dropClip(old.id); }   /* AOG-DESK-TAKES-V1: the earlier take stays, as a take lane */
+    /* AOG-DESK-REC-V1: the passes (a take each time round), or the one take, as always */
+    const x=SONG.tracks[VOICE_T], old=x.clip, vn0=1+Math.max(0, ...dmAllClips().map(y=>y.voice ? y.vn||0 : 0), VOICE.gone ? VOICE.gone.clip.vn||0 : 0);
+    const plan=recPasses(sec, head, VOICE.withSong ? VOICE.cyc : null), made=[], t0=Date.now();
+    for(let k=0;k<plan.length;k++){ const q=plan[k], seg=L.subarray(Math.round(q.s0*sr), Math.round(q.s1*sr)), ss=seg.length/sr;
+      const blob=wavBlob(seg, seg, sr), id="c"+(t0+k).toString(36)+Math.random().toString(36).slice(2,7);
+      const buf=await decodeWav(blob, sr);
+      await sput(id, {wav:blob}); BUF.set(id, buf);
+      const cl=cleanClip({id:id, src:"", name:t("voiceN",{n:vn0+k}), at:t0+k, voice:true, vn:vn0+k, take:true, sec:ss, bpm:0, bars:0,
+        head:q.head, body:Math.min(q.body, ss-q.head), tail:Math.max(0, ss-q.head-q.body), bpb:4, startBar:q.bar, trimIn:0, trimOut:0, loops:1, peakDb:peakDbOf(buf)});
+      if(cl) made.push(cl); }
+    if(!made.length){ VOICE.state="short"; VOICE.busy=false; paintVoice(); return; }
+    const pu=SONG.punchOn && SONG.punch ? {a:(SONG.punch.a-1)*4, b:SONG.punch.b*4} : null;
+    x.clip=made[made.length-1];
+    if(old){ if(old.voice || pu) dmKeepAsTake(x, old); else dropClip(old.id); }   /* AOG-DESK-TAKES-V1: the earlier take stays, as a take lane (and always under a punch) */
+    made.slice(0, -1).forEach(c=>dmKeepAsTake(x, c));   /* the earlier passes: take lanes too, to choose from */
+    if(pu){ made.forEach(c=>punchTo(c, pu)); if(old){ dmSetRegion(x, 0, pu.a, old.id); dmSetRegion(x, pu.b, MAX_BARS*4, old.id); } }
     VOICE.state="done"; songChanged();
   }catch(e){ VOICE.state="fail"; }
   VOICE.busy=false; paintVoice();
@@ -3278,8 +3533,8 @@ async function sendOut(){
     if(pk<dbGain(-60)){ line.textContent=t("outSilent"); }
     else {
       dropOut("song"); dropOut("stems"); dropOut("voice"); dropOut("chops");
-      const r=outLevel(songLoud(Lc, Rc)), g=r.g, name=songSlug()+".wav";   /* AOG-DESK-LUFS-V1 */
-      OUT.song=outItem({file:new File([wavBuf(Lc, Rc, MIX_SR, g, BITS)], name, {type:"audio/wav"}), g:g, at:Date.now(), left:leftOut(),
+      const r=outLevel(songLoudR(await loudOfW(Lc, Rc, MIX_SR))), g=r.g, name=songSlug()+".wav";   /* AOG-DESK-LUFS-V1 · AOG-DESK-SPEED-V1: in the Worker */
+      OUT.song=outItem({file:new File([await wavBufW(Lc, Rc, MIX_SR, g, BITS)], name, {type:"audio/wav"}), g:g, at:Date.now(), left:leftOut(),
         bits:BITS, lufs:r.lufs, tpDb:r.tpDb, why:r.why});
       line.textContent="";
     }
@@ -3287,17 +3542,24 @@ async function sendOut(){
   try{ await chopsLook(); }catch(e){ OUT.chopSrc=null; }   /* AOG-DESK-CHOPS-OUT-V1 */
   OUT.busy=false; btn.disabled=false; paintOut();
 }
+/* AOG-DESK-STEMS-GROUPS-V1: the groups heard in the mix (two or more of their tracks), each as one more file */
+function stemGroups(list){ return GROUPS.map(g=>({g:g, tr:list.filter(i=>SONG.tracks[i].grp===g)})).filter(o=>o.tr.length>=2); }
 async function sendStems(){
   const line=$("outLine"); if(OUT.busy || !OUT.song) return;
   const list=SONG.tracks.map((x,i)=>i).filter(i=>SONG.tracks[i].clip && audible(i) && BUF.has(SONG.tracks[i].clip.id));
   if(!list.length) return;
   OUT.busy=true; paintOut();
   try{
-    const files=[];
+    const files=[], G=stemGroups(list), all=list.length+G.length;
     for(let k=0;k<list.length;k++){
-      line.textContent=t("outStemsMaking",{a:k+1, b:list.length});
+      line.textContent=t("outStemsMaking",{a:k+1, b:all});
       const i=list[k], {Lc, Rc}=await renderSong(i);
-      files.push({name:songSlug()+"-"+t("trackFile")+"-"+(i+1)+"-"+(slugOf(trackName(i))||t("trackFile"))+".wav", data:new Uint8Array(wavBuf(Lc, Rc, MIX_SR, OUT.song.g, BITS))});
+      files.push({name:songSlug()+"-"+t("trackFile")+"-"+(i+1)+"-"+(slugOf(trackName(i))||t("trackFile"))+".wav", data:new Uint8Array(await wavBufW(Lc, Rc, MIX_SR, OUT.song.g, BITS))});
+    }
+    for(let k=0;k<G.length;k++){
+      line.textContent=t("outStemsMaking",{a:list.length+k+1, b:all});
+      const {Lc, Rc}=await renderSong(G[k].tr), gw=STR["gp_"+G[k].g] ? t("gp_"+G[k].g) : G[k].g;
+      files.push({name:songSlug()+"-"+(slugOf(t("stemGroup"))||"group")+"-"+(slugOf(gw)||G[k].g)+".wav", data:new Uint8Array(await wavBufW(Lc, Rc, MIX_SR, OUT.song.g, BITS))});
     }
     dropOut("stems");
     OUT.stems=outItem({file:new File([zipStore(files)], songSlug()+"-tracks.zip", {type:"application/zip"}), n:files.length});
@@ -3412,7 +3674,7 @@ function paintOut(){
     `<p class="st-line" id="outLoud">${esc(lv)}</p>`+
     (left.length ? `<p class="st-line">${esc(t("outLeft",{list:left.map(i=>t("trackLow",{n:i+1})).join(", ")}))}</p>` : "")+
     (OUT.stems ? outRow("stems", t("outStemsReady",{n:OUT.stems.n})) :
-      `<div class="st-row" style="margin-top:.6rem"><button type="button" class="st-btn" id="stemBtn"${OUT.busy ? " disabled" : ""}>${esc(t("outStems"))}</button></div>`)+
+      `<div class="st-row" style="margin-top:.6rem"><button type="button" class="st-btn" id="stemBtn"${OUT.busy ? " disabled" : ""}>${esc(t(stemGroups(SONG.tracks.map((x,i)=>i).filter(i=>SONG.tracks[i].clip && audible(i))).length ? "outStemsG" : "outStems"))}</button></div>`)+
     (OUT.voice ? outRow("voice", t("outVoiceReady")) : voiceHeard() ?
       `<div class="st-row" style="margin-top:.6rem"><button type="button" class="st-btn" id="voiceOutBtn"${OUT.busy ? " disabled" : ""}>${esc(t("outVoice"))}</button></div>` : "")+
     (OUT.chops ? outRow("chops", t("outChopsReady",{n:OUT.chops.n})) : OUT.chopSrc ?   /* AOG-DESK-CHOPS-OUT-V1 */
@@ -3509,6 +3771,7 @@ function paintText(){
   $("meter").setAttribute("aria-label", t("meterAria")); $("vuBridge").setAttribute("aria-label", t("meterAria"));
   $("loopFrom").setAttribute("aria-label", t("loopFromAria")); $("loopTo").setAttribute("aria-label", t("loopToAria"));
   $("nav").innerHTML=navHtml();
+  const kl=$("keysList"); if(kl) kl.innerHTML=((STR.keysList||{})[S.lang]||STR.keysList.en).map(r=>{ const [k,w]=r.split("|"); return `<li><kbd>${esc(k)}</kbd><span>${esc(w)}</span></li>`; }).join("");   /* AOG-DESK-KEYS-V2 */
   $("foot").innerHTML=`<p>${esc(t("foot"))}</p>`;
   $("newAskT").textContent=t("newAsk"); $("newYes").textContent=t("newYes"); $("newNo").textContent=t("newNo");
   $("newBtn").textContent=t("newSong"); $("mixBtn").textContent=t("mixBtn");
@@ -3642,7 +3905,7 @@ function hearPiece(){
   if(PLAY.on) stop();
   const p=pcs(c)[pSel(c)], a=Math.max(0, recSec(c,p.a)), b=Math.min(buf.duration, recSec(c,p.b)), cx=live();
   try{ if(cx.state!=="running") cx.resume(); }catch(e){}
-  const src=cx.createBufferSource(), g=cx.createGain(); src.buffer=buf; if(c.keep===false) src.playbackRate.value=spd(c);
+  const src=cx.createBufferSource(), g=cx.createGain(); src.buffer=buf; if(!keepOf(c)) src.playbackRate.value=spd(c);
   const lv=lineOf(SONG.sel, "vol");   /* AOG-DESK-AUTO-V1: a drawn volume, as it is where the piece starts */
   g.gain.value=volGain(lv ? drawnAt(lv, p.at) : SONG.tracks[SONG.sel].vol)*dbGain(p.g||0); src.connect(g);   /* AOG-DESK-CLIPVOL-V1 */ g.connect(cx.destination);
   src.onended=()=>{ if(HEAR.src===src){ HEAR.src=null; paintHear(); } };
@@ -3716,7 +3979,7 @@ function paintTimeline(){
         const st=pAt(p)/bs, len=p.n*pLen(c,p)/bs, l=Math.min(100, st/n*100), w=Math.max(0.6, Math.min(100-l, len/n*100));
         const nm=(j===0 ? trackName(i) : "")+(p.n>1 ? " ×"+p.n : "");
         /* AOG-DESK-DRAG-V1: data-pc, the piece a hand can take hold of */
-        return `<span class="st-clip${audible(i)?"":" off"}${cur && P.length>1 && j===ks ? " pk" : ""}" data-pc="${j}" style="left:${l.toFixed(4)}%;width:${w.toFixed(4)}%;--c:${colOf(i)}">${waveSvg(c, p, Math.min(4000, Math.max(16, Math.round(w*3.2*z))))}<span class="st-cnm">${esc(nm)}</span></span>`;
+        return `<span class="st-clip${audible(i)?"":" off"}${cur && P.length>1 && j===ks ? " pk" : ""}" data-pc="${j}" style="left:${l.toFixed(4)}%;width:${w.toFixed(4)}%;--c:${colOf(i)}">${waveSvg(c, p, Math.min(4000, Math.max(16, Math.round(w*3.2*z))))}<span class="st-cnm">${esc(nm)}</span><i class="st-lph" data-lph="${j}" aria-hidden="true"></i></span>`;   /* AOG-DESK-CLIPLOOP-V1: its end, dragged to repeat it */
       }).join("");
       const b0=Math.floor(clipStart(c)/bs+1e-6)+1, b1=Math.max(b0, Math.ceil(clipEnd(c,false)/bs-1e-6));
       label=t("laneAria",{n:i+1, name:trackName(i)+", "+t("laneBars",{a:b0, b:b1})});
@@ -3725,7 +3988,7 @@ function paintTimeline(){
     if(AUTO[x.lane]) lanes+=autoRowHtml(i);   /* AOG-DESK-AUTO-V1: its drawing lane, when one is open */
     lanes+=dmTakeRows(i);   /* AOG-DESK-TAKES-V1: its take lanes */
   }
-  $("timeline").innerHTML=rh+dmSecRow()+lanes+`<span class="st-ph" aria-hidden="true"></span>`;   /* AOG-DESK-FACE-V1 · AOG-DESK-SECTIONS-V1: the sections, under the ruler */
+  $("timeline").innerHTML=rh+(typeof drTlRow==="function" ? drTlRow() : "")+dmSecRow()+lanes+`<span class="st-ph" aria-hidden="true"></span>`;   /* AOG-DESK-FACE-V1 · AOG-DESK-SECTIONS-V1: the sections, under the ruler */
   $("timeline").style.setProperty("--n", String(n));   /* AOG-DESK-ART-V1: the bar lines behind the lanes */
   $("timeline").style.setProperty("--z", String(z)); $("timeline").classList.toggle("zoomed", z>1);   /* AOG-DESK-ZOOM-V1 */
   RULER=[...$("timeline").querySelectorAll(".st-rt i")];
@@ -3894,7 +4157,7 @@ function paintTrack(){
   const P=pcs(c), k=pSel(c), p=P[k], many=P.length>1, bpb=c.bpb||4, full=fullBeats(c);
   const diff=c.bpm>0 && Math.abs(effBpm(c)-songBpm())>0.5, isTempo=tempoTrack()===i;
   const cuts=cutPlaces(c, p), mid=cuts.length ? cuts[Math.floor((cuts.length-1)/2)] : null;
-  const pct=Math.round(spd(c)*100), keep=c.keep!==false;
+  const pct=Math.round(spd(c)*100), keep=keepOf(c), wp=!!(c.warp && c.bpm>0);
   box.innerHTML=
     `<div class="st-cc" style="--c:${colOf(i)}">
       <div><b>${head}</b></div>
@@ -3925,6 +4188,8 @@ function paintTrack(){
     ${dmPieceRow(c, p)}
     ${lineAt("cut")}
     <h3 class="st-h3">${esc(t("spdH"))}</h3>
+    ${c.bpm>0 ? `<div class="st-row st-pr"><button type="button" class="st-btn" data-act="warp" aria-pressed="${wp?"true":"false"}">${esc(t("warp"))}</button></div>` : ""}
+    ${wp ? `<p class="st-line">${esc(t("warpOn",{a:Math.round(c.bpm), b:Math.round(songBpm())}))}</p>` : `
     <div class="st-spd"><input type="range" id="spdR" min="50" max="150" step="5" value="${pct}" aria-label="${esc(t("spdAria",{n:i+1}))}" aria-valuetext="${esc(spdWords(c,pct))}"><b id="spdOut">${esc(spdWords(c,pct))}</b></div>
     <div class="st-row st-pr">
       <button type="button" class="st-btn" data-act="keep" aria-pressed="${keep?"true":"false"}">${esc(t("keep"))}</button>
@@ -3932,7 +4197,7 @@ function paintTrack(){
       ${c.bpm>0 && clips().filter(x=>x.c.bpm>0 && x.c!==c).length ? `<button type="button" class="st-btn" data-act="spdall">${esc(t("spdAll"))}</button>` : ""}
     </div>
     <p class="st-line">${esc(t(keep ? "keepOn" : "keepOff"))}${isTempo && clips().length>1 ? " "+esc(t("tempoSets")) : ""}</p>
-    ${diff ? `<p class="st-line note">${esc(t("bpmDiff",{a:Math.round(effBpm(c)), b:Math.round(songBpm())}))}</p>` : ""}
+    ${diff ? `<p class="st-line note">${esc(t("bpmDiff",{a:Math.round(effBpm(c)), b:Math.round(songBpm())}))}</p>` : ""}`}
     ${lineAt("spd")}
     ${dmPitchRow(c)}
     <h3 class="st-h3">${esc(t("fadeH"))}</h3>
@@ -4083,6 +4348,7 @@ function clipAct(act){
   }
   else if(act==="drop"){ if(P.length<2){ UNDO.pop(); return; } P.splice(k, 1); c.psel=Math.min(k, P.length-1); S.edMsg=t("dropped"); }
   else if(act==="keep") c.keep=c.keep===false;
+  else if(act==="warp"){ if(!(c.bpm>0)){ UNDO.pop(); return; } if(c.warp) delete c.warp; else c.warp=true; S.edMsg=t(c.warp ? "warpSaid" : "warpOff"); S.edAt="spd"; }   /* AOG-DESK-WARP-V1 */
   else if(act==="match"){ if(!(c.bpm>0)){ UNDO.pop(); return; } c.speed=clampSpeed(songBpm()/c.bpm); }
   else if(act==="spdall"){
     if(!(c.bpm>0)){ UNDO.pop(); return; }
@@ -4226,6 +4492,7 @@ function paintMixer(rebuild){
   const et=$("etSel"); if(et && et.value!==(SONG.master.et||"d8")) et.value=SONG.master.et||"d8";   /* AOG-DESK-ECHO-SYNC-V1 */
   const rs=$("roomSel"); if(rs && rs.value!==SONG.master.room) rs.value=SONG.master.room;   /* AOG-REAL-ROOMS-V1 */
   paintConsole();   /* AOG-DESK-FACE-V1 */
+  if(typeof dpPaint==="function") dpPaint();   /* AOG-DESK-MASTER-V1: more for the whole song */
 }
 function syncSlider(r, v){
   const k=r.getAttribute("data-k");
@@ -4265,12 +4532,15 @@ function laneName(i){
 function playhead(sec){
   const tl=$("timeline"); if(!tl) return;
   const n=tlBars(), bs=barSec(), f=n>0 && bs>0 ? Math.max(0, Math.min(1, sec/(n*bs))) : 0;
-  tl.style.setProperty("--ph", f.toFixed(5)); tl.classList.toggle("ph-live", PLAY.on);   /* AOG-DESK-GLOW-V1 */
+  /* AOG-DESK-SPEED-V1: the playhead's place is set on the playhead alone, so only it is drawn again (set on the whole
+     song, every lane and wave in it was restyled on every frame) */
+  const ph=tl.lastElementChild && tl.lastElementChild.classList.contains("st-ph") ? tl.lastElementChild : tl.querySelector(".st-ph");
+  if(ph) ph.style.setProperty("--ph", f.toFixed(5)); if(tl.classList.contains("ph-live")!==PLAY.on) tl.classList.toggle("ph-live", PLAY.on);   /* AOG-DESK-GLOW-V1 */
   if(PLAY.on) keepPlayhead(f);   /* AOG-DESK-ZOOM-V1 */
   /* AOG-DESK-ART-V1: the open channel's wave has its own playhead, while the song is inside that recording */
   const ch=$("chStrip"), c=SONG.tracks[SONG.sel].clip;
   if(ch){ let g=-1; if(c){ const a=clipStart(c), e=clipEnd(c,false); if(e>a && sec>=a && sec<=e) g=(sec-a)/(e-a); }
-    ch.style.setProperty("--cph", g<0 ? "0" : g.toFixed(4)); ch.classList.toggle("ph-on", g>=0 && PLAY.on); }
+    const cp=ch.querySelector(".st-cph"); if(cp) cp.style.setProperty("--cph", g<0 ? "0" : g.toFixed(4)); const on=g>=0 && PLAY.on; if(ch.classList.contains("ph-on")!==on) ch.classList.toggle("ph-on", on); }
 }
 const CONS={sig:"", open:false};
 function paintConsole(){
@@ -4604,6 +4874,7 @@ function bind(){
     const r=e.target; if(!r.matches || !r.matches("input[type=range]")) return;
     const i=+r.closest(".st-strip").getAttribute("data-tr"), k=r.getAttribute("data-k"), v=+r.value;
     if(lineOf(i, k)){ syncSlider(r, SONG.tracks[i][k]); markDrawn(r, i); return; }   /* AOG-DESK-AUTO-V1 */
+    if(k==="vol" && typeof dpGroupMove==="function") dpGroupMove(i, v);   /* AOG-DESK-GROUPS-V1: a group's faders move together */
     SONG.tracks[i][k]=v; syncSlider(r, v); liveApply(E=>applyTrack(E,i)); saveSoon();
     /* AOG-LESSONS-V1 */
     if(k==="vol"){ LES.mark("vol1"); if(v<=50) LES.mark("volLow"); lessonSong(); }
@@ -4732,6 +5003,8 @@ Object.assign(window.__aogStudio, { AUTO:AUTO, AUI:AUI, drawnAt:drawnAt, autoCor
   lineChanged:lineChanged, reschedule:reschedule, live:live, get LAT(){ return LAT; } });
 /* AOG-DESK-MORE-V1: for the tests (music-handoff/tests/studio/more.js, more2.js) */
 Object.assign(window.__aogStudio, { echoTime:echoTime, songPos:songPos, songChanged:songChanged, selectTrack:selectTrack, paintAll:paintAll, restore:restore, sget:sget, skeys:skeys, chainLatency:chainLatency, ECHO_T:ECHO_T });
+/* AOG-DESK-MASTER-V1, AOG-DESK-WARP-V1 …: for the desk tests (music-handoff/tests/desk/) */
+Object.assign(window.__aogStudio, { DW:DW, deskWork:deskWork, loudOfW:loudOfW, wavBufW:wavBufW, feed:feed, zipRead:zipRead, zipStore:zipStore, stemGroups:stemGroups, glueEff:glueEff, proMaster:proMaster, WW:WW, warpWork:warpWork, WARPN:WARPN, keepOf:keepOf, needStretch:needStretch, spd:spd, stretchReady:stretchReady, ensureStretch:ensureStretch, applyAll:applyAll, save:save, cleanSong:cleanSong, songEndMusic:songEndMusic, clipStart:clipStart, pAt:pAt, pLen:pLen, ratio:ratio });
 </script>
 </body>
 </html>

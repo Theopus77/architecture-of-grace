@@ -1141,6 +1141,7 @@ const HANDS={at:-1e9, rush:0}, STILL_MS=3000;   /* rush: a take being made (Send
 function handsBusy(ms){
   if(HANDS.rush) return false;
   if(performance.now()-HANDS.at < ms) return true;
+  try{ if(window.AOGVU && AOGVU.elsewhere && AOGVU.elsewhere(ms)) return true; }catch(e){}   /* AOG-STEADY-ALL-V1: out of sight, another room is played */
   for(const vc of LIVE.values()) if(vc.down) return true;
   return false;
 }
@@ -2623,25 +2624,41 @@ document.addEventListener("DOMContentLoaded",()=>{ paintScaleSel(); paintAnySel(
 const POINTERS=new Map();
 function keyAt(x,y){ const el=document.elementFromPoint(x,y); const k=el && el.closest && el.closest("#kbd [data-m]"); return k||null; }
 function velAt(el, y){ const r=el.getBoundingClientRect(); const f=(y-r.top)/Math.max(1,r.height); return Math.max(0.15, Math.min(1, 0.3+0.7*f)); }
+/* AOG-STEADY-ALL-V1 (2026-10-17) — Jimmy: "after a certain number of notes are played, it freezes up for a note or two". A
+   finger that lands is already on its key (the event says which), so the page is not asked again what is under it; and a
+   finger held on a key (they rock a little all the time) is known to be on it while it stays inside it, so the page is
+   not laid out again and searched on every small move. Only a finger that leaves its key asks. */
+const PRECT=new Map();
+function keyHere(id, k){
+  if(!k){ PRECT.delete(id); return; }
+  const r=k.getBoundingClientRect(), bk=k.classList.contains("bk"); let bb=0;
+  if(!bk){ const b=k.parentNode && k.parentNode.querySelector(".bk"); if(b) bb=b.getBoundingClientRect().bottom; }   /* above the black keys' ends, it asks */
+  PRECT.set(id, {el:k, l:r.left, r:r.right, t:r.top, b:r.bottom, bk:bk, bb:bb});
+}
+function stillOn(id, x, y){ const p=PRECT.get(id); return !!p && p.el.isConnected && x>=p.l && x<p.r && y>=p.t && y<p.b && (p.bk || y>=p.bb); }
+window.addEventListener("resize", ()=>PRECT.clear());
+window.addEventListener("scroll", ()=>PRECT.clear(), {capture:true, passive:true});
 function bindKeyboard(){
   const kb=$("kbd");
   /* a held finger is a long press to an iPad, and a long press brings up the magnifier: the keys and the pads keep the touch (AOG-PIANO-NO-LOUPE-V1) */
   [kb, $("pads")].forEach(el=>el.addEventListener("touchstart",(e)=>{ if(e.cancelable) e.preventDefault(); },{passive:false}));
   kb.addEventListener("pointerdown",(e)=>{
     if(e.button>0) return; e.preventDefault();
-    const k=keyAt(e.clientX,e.clientY); if(!k) return;
+    const k=(e.target && e.target.closest && e.target.closest("#kbd [data-m]")) || keyAt(e.clientX,e.clientY); if(!k) return;   /* AOG-STEADY-ALL-V1 */
     try{ kb.setPointerCapture(e.pointerId); }catch(err){}
     const m=+k.getAttribute("data-m"); POINTERS.set(e.pointerId, m); noteOn("k", m, velAt(k, e.clientY));
   });
   kb.addEventListener("pointermove",(e)=>{
     if(!POINTERS.has(e.pointerId)) return;
+    if(stillOn(e.pointerId, e.clientX, e.clientY)) return;   /* AOG-STEADY-ALL-V1: still on its key */
     const k=keyAt(e.clientX,e.clientY); const m=k?+k.getAttribute("data-m"):null, was=POINTERS.get(e.pointerId);
-    if(m===was) return;
+    if(m===was){ keyHere(e.pointerId, k); return; }
     if(was!=null && ![...POINTERS.entries()].some(([id,x])=>id!==e.pointerId && x===was)) noteOff("k", was);
     POINTERS.set(e.pointerId, m);
     if(m!=null) noteOn("k", m, velAt(k, e.clientY));
+    keyHere(e.pointerId, k);
   });
-  const up=(e)=>{ if(!POINTERS.has(e.pointerId)) return; const m=POINTERS.get(e.pointerId); POINTERS.delete(e.pointerId);
+  const up=(e)=>{ PRECT.delete(e.pointerId); if(!POINTERS.has(e.pointerId)) return; const m=POINTERS.get(e.pointerId); POINTERS.delete(e.pointerId);
     if(m!=null && ![...POINTERS.values()].some(x=>x===m)) noteOff("k", m); };
   kb.addEventListener("pointerup",up); kb.addEventListener("pointercancel",up); kb.addEventListener("lostpointercapture",up);
 }
