@@ -184,7 +184,10 @@ footer { margin-top:2rem; padding-top:1rem; border-top:1px solid var(--line); co
      4. the desk along the bottom: the transport, then My Track (the song's tempo and key, + Add a layer, the layers).
    Every control is the same kind of key; the drawings sit on paper inserts; the layers are paper scribble strips. Dark in
    both themes, as a real control room is. Nothing moves on its own, nothing glows. (Older looks: STUDIO-HANDOFF.md §33.) ══ */
-body { zoom:1 !important; }   /* full size: the rooms inside draw on canvases (CLAUDE.md, 85% rule) */
+body { zoom:1 !important; }
+/* AOG-STEADY-ALL-V1: the site's floating My notes button sat over the room's instrument (a tap there played nothing and
+   opened a drawer over the keys); the Studio has no reading of its own, so it has none */
+.aog-mkbtn { display:none !important; }   /* full size: the rooms inside draw on canvases (CLAUDE.md, 85% rule) */
 :root { --st-wall:#110d0a; --st-key:#2a251f; --st-key2:#1d1915; --st-edge:#050403; --st-ink:#f4ead6; --st-gold:#e2b55c;
   --st-paper:#f4ecdb; --st-paper-ink:#1f1a12; --st-key-font:700 .95rem/1.1 Inter, var(--sans); }
 :root { --st-dim:#cdbfa3; }
@@ -503,7 +506,8 @@ main.sh-main { grid-area:room; min-width:0; margin:0; }
   function calm(fn, own) {
     var V = window.AOGVU;
     if (V && V.still && !V.still(5000)) { var t = setTimeout(function () { calm(fn, own); }, 1500); if (own) warmT = t; return; }
-    if (window.requestIdleCallback) requestIdleCallback(fn, { timeout: 2000 }); else fn();
+    /* AOG-STEADY-ALL-V1: and still once the quiet moment comes (it can come two seconds later, when playing has begun) */
+    if (window.requestIdleCallback) requestIdleCallback(function () { if (V && V.still && !V.still(5000)) calm(fn, own); else fn(); }, { timeout: 2000 }); else fn();
   }
   function warmSoon() { clearTimeout(warmT); warmT = setTimeout(function () { calm(warm, true); }, 5000); }
   function warm() {
@@ -865,9 +869,9 @@ main.sh-main { grid-area:room; min-width:0; margin:0; }
      plays. What stays with the Studio: typing in a box or a menu, Tab to move around, and Space or Enter on one of the
      Studio's own buttons. */
   function keyOn(e) {
-    /* AOG-DESK-HANDS-V1: at the Mixing Desk, Undo and Redo (Ctrl/⌘+Z, Ctrl/⌘+Shift+Z, Ctrl+Y) and Alt+← → (a 10 ms nudge) go on to it too */
+    /* AOG-DESK-HANDS-V1: at the Mixing Desk, Undo and Redo (Ctrl/⌘+Z, Ctrl/⌘+Shift+Z, Ctrl+Y) and Alt+← → (a 10 ms nudge) go on to it too; AOG-DESK-KEYS-V2: and Ctrl/⌘+D (copy the piece after itself) and Ctrl/⌘+E (cut it at the playhead) */
     if (e.metaKey || e.ctrlKey || e.altKey) {
-      var deskKey = cur === "studio" && (((e.metaKey || e.ctrlKey) && !e.altKey && /^[zy]$/i.test(e.key)) || (e.altKey && !e.metaKey && !e.ctrlKey && /^Arrow(Left|Right)$/.test(e.key)));
+      var deskKey = cur === "studio" && (((e.metaKey || e.ctrlKey) && !e.altKey && /^[zyde]$/i.test(e.key)) || (e.altKey && !e.metaKey && !e.ctrlKey && /^Arrow(Left|Right)$/.test(e.key)));
       if (!deskKey) return;
     }
     var t = e.target, tag = t && t.tagName;

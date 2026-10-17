@@ -149,7 +149,15 @@
   function soonPart(target) {
     if (part.length < 40) part.push(target); else part.whole = true;
     clearTimeout(ptimer);
-    ptimer = setTimeout(function () {
+    ptimer = setTimeout(partRun, 250);
+  }
+  /* AOG-STEADY-ALL-V1 (2026-10-17) — Jimmy: "after a certain number of notes are played, it freezes up for a note or two".
+     A music room changes small parts of its page as you play (a pad's steps, a lesson line); each change was looked at a
+     quarter of a second later, 5–25 ms of reading on a slowed phone, so it landed between two notes. While sound is
+     starting or a finger is down (AOGVU.still), the look waits until the hands have been still for a moment. */
+  function playing() { var V = window.AOGVU; try { return !!(V && V.still && !V.still(1200)); } catch (e) { return false; } }
+  function partRun() {
+      if (playing()) { ptimer = setTimeout(partRun, 600); return; }
       var roots = part, whole = part.whole; part = []; busy = true;
       try {
         if (whole) { sweep.gen++; sweep(); }
@@ -159,7 +167,6 @@
         }
       } catch (e) {}
       setTimeout(function () { busy = false; }, 0);
-    }, 250);
   }
   /* other layers that repaint a room (aog-chapel.js) ask for a fresh look */
   window.aogLegibleRefresh = function () { soon(true); };
@@ -181,12 +188,16 @@
           if (list[i].type === "childList" || list[i].attributeName !== "style") soonPart(tg); }
       }).observe(D.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["class", "hidden", "open"] });
     }
-    D.addEventListener("pointerover", function (e) { hoverCheck(e.target); }, true);
-    D.addEventListener("focusin", function (e) { hoverCheck(e.target); }, true);
+    /* AOG-STEADY-ALL-V1: a finger on an instrument (keys, pads, a neck, a drum, a drawing) is a note, not a hover: it is
+       not measured (each look laid the page out again, inside the touch that plays the note) */
+    var PLAYED = "#pads,#kbd,#neck,#pvStrip,[data-pad],[data-aog-quiet]";
+    function onInstrument(t) { return !!(t && t.nodeType === 1 && ((window.SVGElement && t instanceof SVGElement) || (t.closest && t.closest(PLAYED)))); }
+    D.addEventListener("pointerover", function (e) { if (!onInstrument(e.target)) hoverCheck(e.target); }, true);
+    D.addEventListener("focusin", function (e) { if (!onInstrument(e.target)) hoverCheck(e.target); }, true);
     /* AOG-LEGIBLE-CLICK-V1 (2026-10-03) — a click can turn the button under the pointer gold (the dashboard's
        Teacher / Family / Student switch), and the hover fix made for its old colours stayed: pale words on gold.
        After a click the thing under the pointer is looked at afresh. */
-    D.addEventListener("click", function (e) { var x = e.clientX, y = e.clientY;
+    D.addEventListener("click", function (e) { var x = e.clientX, y = e.clientY; if (onInstrument(e.target)) return;
       setTimeout(function () { reset("data-aog-legible-hover"); hov = null; hoverCheck(D.elementFromPoint(x, y)); }, 60); }, true);
     try { matchMedia("(prefers-color-scheme: dark)").addEventListener("change", function () { soon(true); }); } catch (e) {}
   }

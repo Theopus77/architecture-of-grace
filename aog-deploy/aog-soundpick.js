@@ -73,7 +73,10 @@
     src.addEventListener("change", function () { setTimeout(paint, 0); });
     try { new MutationObserver(function () { setTimeout(paint, 0); }).observe(src, { childList: true, subtree: true }); } catch (e) {}
     try { new MutationObserver(function () { sig = ""; paint(); }).observe(D.documentElement, { attributes: true, attributeFilter: ["lang"] }); } catch (e) {}
-    setInterval(function () { if (!D.hidden) paint(); }, 600);   /* a sound set by the page itself, with no event */
+    /* a sound set by the page itself, with no event. AOG-STEADY-ALL-V1: only a new value is looked at (the whole list was read
+       and compared every 0.6 s, in every room the Studio keeps open, while you played) */
+    var seenV = src.value;
+    setInterval(function () { if (D.hidden || src.value === seenV) return; seenV = src.value; paint(); }, 600);
     var st = D.createElement("style");
     st.textContent = ".sp-wrap{margin:.7rem 0 .2rem}.sp-row{display:flex;flex-wrap:wrap;gap:.6rem .8rem}.sp-row .field{flex:1 1 12rem;min-width:0}" +
       ".sp-row select{width:100%}.sp-wrap .line{margin-top:.35rem}" +

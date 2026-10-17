@@ -3,7 +3,7 @@
 /* ══════════════════════════════════════════════════════════════════════════
    THE GUITAR AND THE BASS (AOG-STRINGS-V1) — one page, built twice
    ══════════════════════════════════════════════════════════════════════════ */
-const INST="guitar", GTR=INST==="guitar";
+const INST="bass", GTR=INST==="guitar";
 const LKEY="aog."+INST+".v1";
 /* the strings, low to high, as note numbers: a guitar E A D G B E, a bass E A D G */
 const TUNING=GTR?[40,45,50,55,59,64]:[28,33,38,43];
@@ -1426,10 +1426,13 @@ function handNow(){
     if(on) out.add(s+":"+(L.f!=null?L.f:0)); });
   return out;
 }
-let handLitT=0;
+let handLitT=0, handLitSig=null;
 function handLitSoon(at){
-  clearTimeout(handLitT);
-  const tick=()=>{ litNeck(); const on=handNow().size>0, ahead=ac && STR_LIVE.some(L=>L && !L.vc.stopped && L.at>ac.currentTime);
+  clearTimeout(handLitT); handLitSig=null;
+  /* AOG-STEADY-ALL-V1: the look ten times a second while a string rings lights the neck only when what rings has changed
+     (a string started, damped or died away), not on every look */
+  const tick=()=>{ const hn=handNow(), sg=[...hn].sort().join(","); if(sg!==handLitSig){ handLitSig=sg; litNeck(); }
+    const on=hn.size>0, ahead=ac && STR_LIVE.some(L=>L && !L.vc.stopped && L.at>ac.currentTime);
     if(on || ahead) handLitT=setTimeout(tick, 90); };
   handLitT=setTimeout(tick, Math.max(0, ((at||0)-(ac?ac.currentTime:0))*1000)+10);
 }
@@ -2338,7 +2341,7 @@ const FINGERS=new Map();      /* each finger (pointer) on the neck → where it 
 const KEYCELLS=new Map();     /* each computer key held → the place it plays */
 function litNeck(){
   const svg=$("neck"); if(!svg) return;
-  try{ keyLetters(); }catch(e){}   /* AOG-STRINGS-KEYS-V2 */
+  try{ keyLetters(true); }catch(e){}   /* AOG-STRINGS-KEYS-V2; AOG-STEADY-ALL-V1: only when they change */
   /* AOG-STRINGS-V2: a pad held down shows its own shape, even while the pattern plays (a metal sound: its power chord) */
   const held=Object.keys(padHeld).length ? S.hand : null;
   const now=S.playing?sounding():new Set(), down=new Set(), fit=new Map(), cc=held||shapeChord();
@@ -2358,7 +2361,8 @@ function litNeck(){
     if(g.classList.contains("fit")!==fi) g.classList.toggle("fit", fi);
     const ro=fv==="root"; if(g.classList.contains("root")!==ro) g.classList.toggle("root", ro); });
   /* the guitar's skipped strings get an × where the open string's name was */
-  svg.querySelectorAll(".nk-x").forEach(x=>{ const sk=!!(shp && shp[+x.getAttribute("data-s")]<0); x.style.display=sk?"":"none";
+  svg.querySelectorAll(".nk-x").forEach(x=>{ const sk=!!(shp && shp[+x.getAttribute("data-s")]<0), xd=sk?"":"none";
+    if(x.style.display===xd && x.__sk===sk) return; x.__sk=sk; x.style.display=xd;   /* AOG-STEADY-ALL-V1: only when it changes */
     const nm=svg.querySelector(`.nk-name[data-s="${x.getAttribute("data-s")}"]`); if(nm) nm.style.display=sk?"none":""; });
   const ll=$("litLine"); if(ll){ const h=!(cc || S.playing); if(ll.hidden!==h) ll.hidden=h; }   /* AOG-STRINGS-QUIET-V1: written only when it changes (each write was a change the page reacted to, on every note) */
   paintWheelState();
@@ -2367,11 +2371,11 @@ function litNeck(){
   handChanged();    /* AOG-HAND-STYLE-V1: the style follows the frets you hold */
   learnLit();       /* AOG-LEARN-V1 */
 }
-/* ══ AOG-LEARN-V1 (2026-10-11) — Learn a song, the guitar's side. aog-learn-ui.js plays the song and teaches; it asks the
+/* ══ AOG-LEARN-V1 (2026-10-11) — Learn a song, the bass's side. aog-learn-ui.js plays the song and teaches; it asks the
    neck to show a chord (the guitar: its shape where the hand is, shapeFor; the bass: the lowest root the hand reaches,
    bassRoot, ringed, and the chord's other notes on the frets in view) or the notes to play (each at its place nearest the
    hand, cellFor; when one is off the frets in view, the neck moves to it, unless a finger is on it). What the hands play
-   (a fret, a strum, a chord button, a MIDI keyboard) reaches it through AOGRecorder.note; a real guitar through
+   (a fret, a strum, a chord button, a MIDI keyboard) reaches it through AOGRecorder.note; a real bass through
    aog-liveinput.js. The neck's own key and tempo stay as they are unless the learner asks (Play in the song's key). ══ */
 var LEARN={chord:null, ms:null};   /* var: litNeck may run before this line does */
 /* AOG-LEARN-V2: the guitar has no capo of its own, so a capo shape (Use the capo in Learn a song) is the open shape the
@@ -2820,12 +2824,19 @@ function pickString(step){
 }
 const STRING_KEYS=Object.keys(NOTE_KEYS);
 const PICK_KEYS=GTR?["KeyZ","KeyX","KeyC","KeyV","KeyB","KeyN"]:[];
-function keysShown(){ try{ return document.documentElement.classList.contains("aog-keys") || matchMedia("(hover:hover) and (pointer:fine)").matches; }catch(e){ return false; } }
+/* AOG-STEADY-ALL-V1 (2026-10-17) — Jimmy: "after a certain number of notes are played, it freezes up for a note or two". Every
+   note lit the neck, and lighting it looked through the whole page for drawings with spots (keyLetters), on the finger
+   landing, on its lifting and ten times a second while a string rang: 3–6 ms each on a slowed phone. The question to the
+   screen is asked once, and from a note the letters are looked at only when what they show has changed. */
+var KL_MQ=null, KL_LAST="";   /* var: the neck may be lit before this line runs */
+function keysShown(){ try{ if(!KL_MQ) KL_MQ=matchMedia("(hover:hover) and (pointer:fine)"); return document.documentElement.classList.contains("aog-keys") || KL_MQ.matches; }catch(e){ return false; } }
 /* the letters on the neck: each note's key beside the spot it plays; the guitar's pick keys on the strum strip */
-function keyLetters(){
+function keyLetters(quick){
   const on=keysShown() && !(window.AOGSolo && AOGSolo.isOn());
   const cells=[];   /* AOG-STRINGS-KEYS-V3: the notes follow the piano's layout (the picture of the keys shows it), so the neck stays clear */
   const sig=[on, cells.join(","), NECK.W, NECK.n, S.fret0].join("|");
+  const nk=$("neck"), here=()=>sig+"|"+(nk?nk.childElementCount:0);   /* AOG-STEADY-ALL-V1: a neck drawn again counts differently */
+  if(quick && here()===KL_LAST) return;
   /* AOG-STRINGS-QUIET-V1: only the drawings with spots to play (the neck, the big view's strip), not every icon on the page */
   const svgs=new Set(); document.querySelectorAll("svg .dot").forEach(d=>{ const o=d.closest("svg"); if(o) svgs.add(o); });
   svgs.forEach(svg=>{
@@ -2840,6 +2851,7 @@ function keyLetters(){
     if(GTR && svg.id==="neck" && NECK.n){ const sx=NECK.nut+NECK.n*NECK.cw+6, cx=sx+(NECK.W-sx-1)/2;
       PICK_KEYS.forEach((k,r)=>cap(cx, NECK.top+r*NECK.rowH+NECK.rowH/2, Math.min(18, NECK.rowH*0.62), k.slice(3))); }
   });
+  KL_LAST=here();
 }
 function scaleNote(i){ const iv=S.minor?[0,2,3,5,7,8,10,12]:[0,2,4,5,7,9,11,12]; return bassRoot({off:0, q:S.minor?"min":"maj"})+iv[i]; }
 function typing(el){ if(!el||!el.tagName) return false; const tg=el.tagName; return el.isContentEditable||tg==="TEXTAREA"||(tg==="INPUT"&&el.type!=="range"); }

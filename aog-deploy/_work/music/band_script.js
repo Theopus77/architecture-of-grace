@@ -1627,7 +1627,7 @@ function sounding(){
 function litKeys(){
   const kb=$("kbd"); if(!kb) return;
   const down=new Set(), now=S.playing?sounding():new Set(), fit=new Set(), cc=curChord();
-  LIVE.forEach(vc=>{ if(vc.down) down.add(vc.m); });
+  LIVE.forEach(vc=>{ if(vc.down) down.add(vc.key!=null ? vc.key : vc.m); });   /* AOG-BAND-KEYS-FOLD-V1: a folded note lights the key pressed */
   if(cc) chordPcs(cc).forEach(pc=>fit.add(pc));
   PLAY.sig=[...now].sort((a,b)=>a-b).join(",");
   kb.querySelectorAll("[data-m]").forEach(el=>{ const m=+el.getAttribute("data-m"), d=down.has(m), n=!d&&now.has(m);
@@ -1647,27 +1647,47 @@ function keyPlayers(m){
   if(s && s.keys){ const got=s.keys.filter(inR); if(got.length) return got; if(s.keysLow && inR(s.keysLow)) return [s.keysLow]; }
   const p=playerFor(m); return p ? [p] : [];
 }
-function keyOn(m, v){ const ps=keyPlayers(m), vv=ps.length>1 ? v*0.8 : v; if(!ps.length) noteOn("k"+m, null, m, v); ps.forEach((p, i)=>noteOn(i ? "k"+m+"~"+i : "k"+m, p, m, vv)); lessonKey(m, v); }
+/* AOG-BAND-KEYS-FOLD-V1 (2026-10-17) — Jimmy: yes to "every key always makes a sound". A key beyond the sound's real range
+   (the erhu starts at D4) played nothing, and a silent key feels like a missed note. It now plays the same note an octave
+   (or two, or three) into the range, the nearest first; the key, its lift and the lesson stay the key that was pressed. */
+function keyFold(m){ for(const k of [12,-12,24,-24,36,-36]){ const ps=keyPlayers(m+k); if(ps.length) return [ps, m+k]; } return [[], m]; }
+function keyOn(m, v){ let ps=keyPlayers(m), mm=m; if(!ps.length) [ps, mm]=keyFold(m); const vv=ps.length>1 ? v*0.8 : v; if(!ps.length) noteOn("k"+m, null, m, v); ps.forEach((p, i)=>{ const k=i ? "k"+m+"~"+i : "k"+m; noteOn(k, p, mm, vv); const vc=mm!==m && LIVE.get(k); if(vc){ vc.key=m; litKeys(); } }); lessonKey(m, v); }
 function keyOff(m){ noteOff("k"+m); for(let i=1;i<4;i++) noteOff("k"+m+"~"+i); lessonKeyUp(m); }
+/* AOG-STEADY-ALL-V1 (2026-10-17) — Jimmy: "after a certain number of notes are played, it freezes up for a note or two". A
+   finger that lands is already on its key (the event says which), so the page is not asked again what is under it; and a
+   finger held on a key (they rock a little all the time) is known to be on it while it stays inside it, so the page is
+   not laid out again and searched on every small move. Only a finger that leaves its key asks. */
+const PRECT=new Map();
+function keyHere(id, k){
+  if(!k){ PRECT.delete(id); return; }
+  const r=k.getBoundingClientRect(), bk=k.classList.contains("bk"); let bb=0;
+  if(!bk){ const b=k.parentNode && k.parentNode.querySelector(".bk"); if(b) bb=b.getBoundingClientRect().bottom; }   /* above the black keys' ends, it asks */
+  PRECT.set(id, {el:k, l:r.left, r:r.right, t:r.top, b:r.bottom, bk:bk, bb:bb});
+}
+function stillOn(id, x, y){ const p=PRECT.get(id); return !!p && p.el.isConnected && x>=p.l && x<p.r && y>=p.t && y<p.b && (p.bk || y>=p.bb); }
+window.addEventListener("resize", ()=>PRECT.clear());
+window.addEventListener("scroll", ()=>PRECT.clear(), {capture:true, passive:true});
 function bindKeyboard(){
   const kb=$("kbd");
   /* a held finger is a long press to an iPad, and a long press brings up the magnifier: the keys and the pads keep the touch (AOG-PIANO-NO-LOUPE-V1) */
   [kb, $("pads")].forEach(el=>el.addEventListener("touchstart",(e)=>{ if(e.cancelable) e.preventDefault(); },{passive:false}));
   kb.addEventListener("pointerdown",(e)=>{
     if(e.button>0) return; e.preventDefault();
-    const k=keyAt(e.clientX,e.clientY); if(!k) return;
+    const k=(e.target && e.target.closest && e.target.closest("#kbd [data-m]")) || keyAt(e.clientX,e.clientY); if(!k) return;   /* AOG-STEADY-ALL-V1 */
     try{ kb.setPointerCapture(e.pointerId); }catch(err){}
     const m=+k.getAttribute("data-m"); POINTERS.set(e.pointerId, m); keyOn(m, velAt(k, e.clientY));
   });
   kb.addEventListener("pointermove",(e)=>{
     if(!POINTERS.has(e.pointerId)) return;
+    if(stillOn(e.pointerId, e.clientX, e.clientY)) return;   /* AOG-STEADY-ALL-V1: still on its key */
     const k=keyAt(e.clientX,e.clientY); const m=k?+k.getAttribute("data-m"):null, was=POINTERS.get(e.pointerId);
-    if(m===was) return;
+    if(m===was){ keyHere(e.pointerId, k); return; }
     if(was!=null && ![...POINTERS.entries()].some(([id,x])=>id!==e.pointerId && x===was)) keyOff(was);
     POINTERS.set(e.pointerId, m);
     if(m!=null) keyOn(m, velAt(k, e.clientY));
+    keyHere(e.pointerId, k);
   });
-  const up=(e)=>{ if(!POINTERS.has(e.pointerId)) return; const m=POINTERS.get(e.pointerId); POINTERS.delete(e.pointerId);
+  const up=(e)=>{ PRECT.delete(e.pointerId); if(!POINTERS.has(e.pointerId)) return; const m=POINTERS.get(e.pointerId); POINTERS.delete(e.pointerId);
     if(m!=null && ![...POINTERS.values()].some(x=>x===m)) keyOff(m); };
   kb.addEventListener("pointerup",up); kb.addEventListener("pointercancel",up); kb.addEventListener("lostpointercapture",up);
 }

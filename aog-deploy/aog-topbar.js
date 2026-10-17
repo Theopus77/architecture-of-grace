@@ -188,9 +188,11 @@
     var m = D.querySelectorAll(".aogtop-menu");
     for (var i = 0; i < m.length; i++) {
       if (m[i] === except) continue;
-      m[i].hidden = true;
+      /* AOG-STEADY-ALL-V1: only what changes is written (a tap anywhere shut the shut menus again, and each write woke the
+         page's helpers that watch for changes, between two notes) */
+      if (!m[i].hidden) m[i].hidden = true;
       var b = D.querySelector('[aria-controls="' + m[i].id + '"]');
-      if (b) b.setAttribute("aria-expanded", "false");
+      if (b && b.getAttribute("aria-expanded") !== "false") b.setAttribute("aria-expanded", "false");
     }
   }
   function menu(btnId, menuId) {

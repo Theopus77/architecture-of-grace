@@ -113,7 +113,7 @@ const waitLine = (p, id, re) => p.waitForFunction(([i, s]) => new RegExp(s).test
   const fname = dl.suggestedFilename(), fpath = path.join(OUT, fname); await dl.saveAs(fpath);
   await waitLine(p, "fileLine", /^Saved/);
   const size = fs.statSync(fpath).size;
-  ok(/^rainy-day-\d{4}-\d\d-\d\d-\d{4}\.aogsong$/.test(fname) && size > 6.5e6 && fs.readFileSync(fpath).slice(0, 8).toString() === "AOGSONG1",
+  ok(/^rainy-day-\d{4}-\d\d-\d\d-\d{4}\.aogsong$/.test(fname) && size > 6.5e6 && fs.readFileSync(fpath).slice(0, 4).toString("latin1") === "PK\x03\x04" && fs.readFileSync(fpath).includes("song.json"),   /* AOG-DESK-PROJECT-V1: a zip of the desk and its sound */
     `the file: ${fname}, ${(size / 1048576).toFixed(1)} MB`);
   ok((await line(p, "fileLine")).startsWith("Saved: " + fname + ". On an iPhone or iPad it is in the Files app"), "the line says where the file went: " + await line(p, "fileLine"));
 
@@ -198,7 +198,7 @@ const waitLine = (p, id, re) => p.waitForFunction(([i, s]) => new RegExp(s).test
 
   /* 10 · Spanish */
   await p.evaluate(() => document.getElementById("langBtn").click());
-  ok((await p.textContent("#carryBlk h2")).trim() === "Tu canción en tus otros aparatos" && (await p.textContent("#fileSave")) === "Guardar archivo de canción" && (await p.textContent("#lkConnect")) === "Conectar",
+  ok((await p.textContent("#carryBlk h2")).trim() === "Tu canción en tus otros aparatos" && (await p.textContent("#fileSave")) === "Guardar mi canción" && (await p.textContent("#lkConnect")) === "Conectar",
     "Spanish: " + (await p.textContent("#carryBlk h2")).trim());
   await p.evaluate(() => document.getElementById("langBtn").click());
 
