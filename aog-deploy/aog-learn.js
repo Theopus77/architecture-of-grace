@@ -6,7 +6,7 @@
      .analyze(input, {onProgress(p 0..1, wordKey), worker:true, name, signal}) → Promise<Lesson>
          input: an AudioBuffer, or an ArrayBuffer / Blob / File of an audio file (a MIDI file is read by fromMidi).
          The heavy listening runs in a Web Worker (aog-learn-worker.js), so the page stays calm; without Workers it runs
-         here in small slices (about 6 ms, never past 12) between frames. Nothing leaves the device. The worker ends when the lesson is
+         here in small slices (about 4 ms, never past 12) between frames. Nothing leaves the device. The worker ends when the lesson is
          done. signal (an AbortSignal) stops it: the promise rejects with an error named "AbortError".
      .fromMidi(ArrayBuffer, {name}) → Lesson     (Standard MIDI File, types 0 and 1; exact notes)
      .sections(lesson) → [{t,d,kind,letter}]     the parts from a lesson's chords and bars alone (older lessons, MIDI)
@@ -90,7 +90,7 @@ function hzToMidi(f) { return 69 + 12 * log2(f / 440); }
    runs much past that, even before the code is warm (the silent treatment: slices of 12 ms or less); in the worker it never
    waits. The moment is a timer, so the page's own timers and drawing get their turn; it is set from a message to itself,
    so it does not wait the 4 ms a timer set inside a timer waits. */
-var SLICE = 6, MC = null, MQ = [];
+var SLICE = 4, MC = null, MQ = [];
 function getYield() { return function (f) {
   if (typeof MessageChannel !== "function") { setTimeout(f, 0); return; }
   if (!MC) { MC = new MessageChannel(); MC.port1.onmessage = function () { var g = MQ.shift(); if (g) setTimeout(g, 0); }; }
