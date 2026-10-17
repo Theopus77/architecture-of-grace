@@ -229,6 +229,9 @@ change to any of them, run
 
     node tools/check-cube.js
 
+Solve with me has one way: the fewest moves (Jimmy, 2026-10-17: "Why is there a short and fast way? It is confusing … I
+want the least possible moves"). No Way menu. The beginner's steps and Level 2 (`aog-cube-l2.js`) are taught in Learn.
+
 It turns the cube with a finger on an iPad and an iPhone (acting like Safari) and with a mouse, and checks:
 a finger on the cube never scrolls the page; the space around the cube never moves it; following the arrow,
 circling a middle square (the steering wheel) and two-finger swipes make the right moves; Solve with me and
