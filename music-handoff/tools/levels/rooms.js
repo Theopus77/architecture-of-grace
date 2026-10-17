@@ -239,7 +239,7 @@ async function pads(h, opt){
 }
 
 /* ── the recorded drum kits (aog-drumkit.js: the Drum Kit's and the Drum Machine's): every pad of every kit, soft, normal
-   and accent, every take, one hit at the Drum Kit's level, its first 200 ms and its peak ── */
+   and accent, every take, one hit at the Drum Kit's level, its first 400 ms and its peak ── */
 const KIT_FN=async(opt)=>{
   const res={};
   for(const b of opt.ids){
@@ -248,10 +248,11 @@ const KIT_FN=async(opt)=>{
     for(const id of Object.keys(AOGDrumKit.padNames(b)||{})) for(const [acc, lay] of [[3,"s"],[0,"m"],[2,"h"]]){
       const seen=[];
       for(let k=0;k<6;k++){
-        const oc=new OfflineAudioContext(2, Math.round(44100*0.45), 44100);
+        const oc=new OfflineAudioContext(2, Math.round(44100*1.1), 44100);
         const o=AOGDrumKit.playDirect(oc, oc.destination, b, id, 0.05, acc, 0.46); if(!o) break;
-        if(seen.indexOf(o.src.buffer.getChannelData(0))>=0){ break; } seen.push(o.src.buffer.getChannelData(0));
-        const r=__lv.kw(await oc.startRendering(), 0.05, 0.2);
+        const d0=o.src.buffer.getChannelData(0), sig=o.src.buffer.length+":"+d0[200]+":"+d0[2000]+":"+d0[9000];   /* each new context has its own copy: the take is known by its samples */
+        if(seen.indexOf(sig)>=0){ break; } seen.push(sig);
+        const r=__lv.kw(await oc.startRendering(), 0.05, 0.4, 0.6);   /* a long stir or roll: its loudest 400 ms in its first second */
         rows.push({pad:id, name:(AOGDrumKit.padNames(b)||{})[id], lay, take:k+1, lufs:r.lufs, peak:r.peak});
       }
     }

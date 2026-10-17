@@ -118,9 +118,11 @@ function starts(room, ch){
     }
     if(room==="decks"){
       const m=await R.decks(h, {pages:2});
-      const lv=Object.entries(m.res).map(([f,a])=>[f, a[0].lufs]), mean=lv.reduce((a,[f,x])=>a+x,0)/Math.max(1,lv.length);
-      const off=lv.filter(([f,x])=>Math.abs(x-mean)>LIM.crate);
-      ok(lv.length>0 && !off.length && !m.errs.length, `decks: ${lv.length} starter records, each within ${LIM.crate} dB of the others once the deck sets its level (mean ${mean.toFixed(1)} LUFS)${off.length?" — "+off.map(([f,x])=>f+" "+f1(x-mean)).join(", "):""}`);
+      /* the deck's own loudness (gated, as streaming services measure it: a speech's pauses do not count) brought to
+         LEVEL_LUFS; and, as a second look, the whole record ungated (BS.1770 without the gate), which a speech reads lower */
+      const lv=Object.entries(m.res).map(([f,a])=>[f, a[0]]), set=lv.map(([f,x])=>[f, x.own+x.trim]);
+      const off=set.filter(([f,x])=>Math.abs(x-(-15))>LIM.crate), ug=lv.map(([f,x])=>x.lufs), us=Math.max(...ug)-Math.min(...ug);
+      ok(lv.length>0 && !off.length && !m.errs.length && us<=2, `decks: ${lv.length} starter records, each brought to the deck's level (−15 LUFS) within ${LIM.crate} dB; ungated, all within ${us.toFixed(1)} dB of each other${off.length?" — off: "+off.map(([f,x])=>f+" "+f1(x+15)).join(", "):""}`);
     }
     console.log(`   ${room}: ${((Date.now()-t1)/60000).toFixed(1)} min`);
   }
