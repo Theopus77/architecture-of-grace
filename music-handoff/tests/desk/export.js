@@ -47,6 +47,9 @@ const STATE = p => p.evaluate(async () => { const st = __aogStudio, ids = []; st
   await p.evaluate(() => { const st = __aogStudio, S = st.SONG; S.marks = [{ b: 2, w: "Verse" }]; S.punch = { a: 2, b: 3 }; S.master.rvRet = 60; S.master.lc = 40; S.tracks[1].clip.warp = true; S.sections = [{ a: 0, b: 8, n: "intro" }]; S.name = "Night drive";
     localStorage.setItem("aog.studio.locker.v1", JSON.stringify({ url: "https://script.google.com/macros/s/AKfycbSECRETLOCKERxyz123/exec", key: "LOCKERKEY12345" })); localStorage.setItem("aog.sync.key", "SHEETKEY99999"); localStorage.setItem("aog.sync.url", "https://script.google.com/macros/s/AKfycbSHEETURL/exec"); st.songChanged(); });
   await p.evaluate(() => __T.render("a")); const ha = await p.evaluate(() => __T.hash("a"));
+  /* the mix itself, carried over to the other device to be compared sample by sample (Chrome's own bounce can differ in the
+     last bit from one bounce to the next, on main too, and the Low cut's filter carries that on; so: the same to −80 dB) */
+  const RA = await p.evaluate(() => { const a = __T.B.a, n = a.L.length, u = new Uint8Array(n * 8); new Float32Array(u.buffer, 0, n).set(a.L); new Float32Array(u.buffer, n * 4, n).set(a.R); let s = ""; for (let i = 0; i < u.length; i += 32768) s += String.fromCharCode.apply(null, u.subarray(i, i + 32768)); return btoa(s); });
   const A = await STATE(p);
   const [dl] = await Promise.all([p.waitForEvent("download"), click(p, "fileSave")]);
   const fname = dl.suggestedFilename(), fpath = path.join(OUTD, fname); await dl.saveAs(fpath);
@@ -58,7 +61,8 @@ const STATE = p => p.evaluate(async () => { const st = __aogStudio, ids = []; st
   await q.setInputFiles("#fileIn", fpath);
   await q.waitForFunction(() => /is on the desk/.test(document.getElementById("fileLine").textContent) && !__aogStudio.S.decoding && __aogStudio.SONG.tracks.every(x => !x.clip || __aogStudio.BUF.has(x.clip.id)), null, { timeout: 40000 });
   const B = await STATE(q); await q.evaluate(HELP); await q.evaluate(() => __T.render("b")); const hb = await q.evaluate(() => __T.hash("b"));
-  ok(B.song === A.song && B.sums === A.sums && hb === ha, `Open my song on an iPhone: the same desk (the song ${B.song.length} characters, the same), every recording byte for byte, and the same mix to the bit (${hb})`);
+  const md = await q.evaluate(ra => { const s = atob(ra), u = new Uint8Array(s.length); for (let i = 0; i < s.length; i++) u[i] = s.charCodeAt(i); const n = u.length / 8, L = new Float32Array(u.buffer, 0, n), R = new Float32Array(u.buffer, n * 4, n), b = __T.B.b; if (b.L.length !== n) return Infinity; let e = 0; for (let i = 0; i < n; i++) e = Math.max(e, Math.abs(L[i] - b.L[i]), Math.abs(R[i] - b.R[i])); return e; }, RA);
+  ok(B.song === A.song && B.sums === A.sums && md < 1e-4, `Open my song on an iPhone: the same desk (the song ${B.song.length} characters, the same), every recording byte for byte, and the same mix (${hb === ha ? "to the bit" : "the most any sample differs: " + md.toExponential(1)})${B.song === A.song ? "" : "; the song differs"}${B.sums === A.sums ? "" : "; a recording differs"}`);
   /* refused: cut short, not a song; a file from before opens */
   const cutf = path.join(OUTD, "cut.aogsong"); fs.writeFileSync(cutf, bytes.slice(0, bytes.length - 5000));
   const junk = path.join(OUTD, "junk.aogsong"); fs.writeFileSync(junk, "PK\x03\x04 this is not a song at all");
