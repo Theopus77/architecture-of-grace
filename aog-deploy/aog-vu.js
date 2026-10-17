@@ -312,8 +312,10 @@
   var ROOM = {
     presets: PRE, get: cur, set: set, chains: CH, lib: roomsLib,
     ir: ir,   /* AOG-NOTES-V1: a room's re-render of its notes puts the same room on them (aog-recorder.js) */
-    live: function (ctx, g) { if (!ctx.__aogRoomLive) { ctx.__aogRoomLive = chain(ctx, g, ctx.destination); } return ctx.__aogRoomLive; },
-    rec: function (ctx, tap, node) { if (tap && node && !node.__aogRoom) node.__aogRoom = chain(ctx, tap, node); },
+    /* AOG-STRUM-CLEAN-V1: a room may put the room sound inside its own chain, before its limiter (from → the room → to);
+       its takes then already carry it. Otherwise it is added to what reaches the speakers */
+    live: function (ctx, g, to) { if (!ctx.__aogRoomLive) { ctx.__aogRoomLive = chain(ctx, g, to || ctx.destination); ctx.__aogRoomLive.inside = !!to; } return ctx.__aogRoomLive; },
+    rec: function (ctx, tap, node) { if (ctx.__aogRoomLive && ctx.__aogRoomLive.inside) return; if (tap && node && !node.__aogRoom) node.__aogRoom = chain(ctx, tap, node); },
     /* the knob: a small black knob with a gold line; a tap turns it one step (Dry → Small room → Studio → Hall → Church → Dry);
        ← → and ↑ ↓ turn it too. Its name shows beside it. */
     knob: function (el, opts) {

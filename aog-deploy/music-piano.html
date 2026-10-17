@@ -1001,13 +1001,25 @@ function makeChain(c){
   ch.comp=c.createDynamicsCompressor();
   ch.comp.threshold.value=-16; ch.comp.knee.value=10; ch.comp.ratio.value=2.5; ch.comp.attack.value=0.006; ch.comp.release.value=0.25;
   ch.lim=c.createDynamicsCompressor();
-  ch.lim.threshold.value=-2; ch.lim.knee.value=0; ch.lim.ratio.value=20; ch.lim.attack.value=0.002; ch.lim.release.value=0.1;
+  /* AOG-STRUM-CLEAN-V1 (2026-10-17, as the Guitar's): the limiter's own output went past full scale (the lift a
+     DynamicsCompressor adds by itself, +1.14 dB, and its 2 ms attack), and the Volume's top or the room sound added after
+     it reached the speakers clipped, heard as static. The limiter now acts at once and holds the −2 dB it is set to
+     (LIM_LIFT taken off), a take's own ceiling follows it, and the room sound sits before it */
+  ch.lim.threshold.value=-2; ch.lim.knee.value=0; ch.lim.ratio.value=20; ch.lim.attack.value=0; ch.lim.release.value=0.1;
   ch.master=c.createGain(); ch.makeup=c.createGain(); ch.makeup.gain.value=1.8;
-  ch.pre.connect(ch.lp); ch.lp.connect(ch.comp); ch.comp.connect(ch.makeup); ch.makeup.connect(ch.lim); ch.lim.connect(ch.master); ch.master.connect(c.destination);
+  ch.ceil=ceilingNode(c, 1/LIM_LIFT);
+  ch.pre.connect(ch.lp); ch.lp.connect(ch.comp); ch.comp.connect(ch.makeup); ch.makeup.connect(ch.lim); ch.lim.connect(ch.ceil.input); ch.ceil.output.connect(ch.master); ch.master.connect(c.destination);
   ch.crunch=null;
   setFx(ch, S.sound);
+  ch.dry=ch.rig ? ch.rig.output : ch.bus;   /* the keys, after the pedals: where the Studio's room sound listens */
+  const OFF=window.OfflineAudioContext||window.webkitOfflineAudioContext;
+  if(!(OFF && c instanceof OFF)) try{ if(window.AOGRoom && AOGRoom.live) AOGRoom.live(c, ch.dry, ch.pre); }catch(e){}
   return ch;
 }
+const LIM_LIFT=Math.pow(Math.pow(10, (2-2/20)/20), 0.6);   /* (1 / the limiter's gain at full scale)^0.6, Web Audio's makeup gain */
+const CEIL=(()=>{ const n=4097, d=new Float32Array(n); for(let i=0;i<n;i++){ const x=(i/(n-1)*2-1)*2, a=Math.abs(x); d[i]=Math.sign(x)*(a<=0.9 ? a : 0.9+0.1*Math.tanh((a-0.9)/0.1)); } return d; })();
+function ceilingNode(c, k){ const pre=c.createGain(); pre.gain.value=0.5*(k||1); let ws; try{ ws=new WaveShaperNode(c, {curve:CEIL}); }catch(e){ ws=c.createWaveShaper(); ws.curve=CEIL; }
+  pre.connect(ws); return {input:pre, output:ws}; }
 async function addCrunch(ch){             /* spliced in when ready; until then the chain plays clean */
   /* AOG-ROOM-PEDALS-V1: and the pedals' worklets are in before a recording made offline starts */
   if(ch.rig){ try{ await ch.rig.ready(); }catch(e){} }
@@ -1974,7 +1986,7 @@ function wavBlob(L, R, sr){
 window.AOGRoomClock={ align(at){ if(S.playing) start(at); } };
 /* AOG-SONG-V1 (2026-10-11): this room plays at the song's tempo and in its key (aog-song.js); its own tempo and key change the song */
 if(window.AOGSong) AOGSong.keysRoom({get:()=>({bpm:S.bpm, key:S.key, minor:!!S.minor})});
-const REC=AOGRecorder.attach({context:()=>ctx(), tap:()=>LIVE_CH.lim, lang:()=>S.lang, what:{en:"the piano",es:"el piano"},
+const REC=AOGRecorder.attach({context:()=>ctx(), tap:()=>LIVE_CH.ceil.output, lang:()=>S.lang, what:{en:"the piano",es:"el piano"},
   prefix:{en:"Piano",es:"Piano"}, file:{en:"piano-take",es:"piano-toma"}, shelf:"keysbench", bpm:()=>curBpm(),
   notes:()=>({room:"piano", sound:S.sound, set:{era:S.era}}),   /* AOG-NOTES-V1: the take keeps its notes, its sound and its era */
   ids:{btn:"recBtn", time:"recTime", line:"recLine", list:"takes"}});
@@ -1994,7 +2006,7 @@ window.AOGRoomRender={
     if(window.AOGAmp && AOGAmp.load) await AOGAmp.load(oc);   /* a pedalboard in the chain, when the piano has one */
     const ch=makeChain(oc); await addCrunch(ch);
     setSendLevel(ch, id); ch.lp.frequency.value=eraHz(era); if(ch.crunch) ch.crunch.parameters.get("era").value=era;
-    ch.lim.disconnect(); ch.lim.connect(oc.destination); K.space(oc, ch.lim, oc.destination, p.space);   /* the take is heard before the Volume */
+    ch.ceil.output.disconnect(); ch.ceil.output.connect(oc.destination); K.space(oc, ch.dry, ch.pre, p.space);   /* the take is heard before the Volume; the room before the limiter, as live (AOG-STRUM-CLEAN-V1) */
     evs.forEach(e=>{ const vc=makeVoice(oc, ch, SOUNDS[e.snd] ? e.snd : id, e.m, e.v, e.t); K.play(vc, e); });
     const buf=await oc.startRendering();
     const live=SOUNDS[S.sound]; if(live && live.kind==="sample" && ids.some(k=>SOUNDS[k].kind==="sample" && SOUNDS[k].set!==live.set)) loadSet(live.set, paintLoad);   /* the piano in your hands again */
