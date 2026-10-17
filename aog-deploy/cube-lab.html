@@ -486,9 +486,9 @@ const T={
   vfyScreen:["On the screen","En la pantalla"], vfyYours:["Your cube","Tu cubo"], vfyAgain:["Check another side","Comprobar otro lado"], vfyDone:["Done","Listo"],
   wayH:["Way","Forma"], wayShort:["The short way","El camino corto"], waySteps:["The steps","Los pasos"], wayFaster:["The faster way","La forma rápida"],
   pPairs:["{n} of 4 pairs in place","{n} de 4 parejas en su lugar"],
-  shortBtn:["Show me the short way","Muéstrame el camino corto"], shortFinding:["Finding the short way…","Buscando el camino corto…"],
-  shortK:["The short way","El camino corto"], shortNone:["The short way could not be found this time. The steps still work.","No se encontró el camino corto esta vez. Los pasos siguen funcionando."],
-  shortMade:["The short way: {n} moves. Follow them one by one.","El camino corto: {n} movimientos. Síguelos uno por uno."],
+  shortBtn:["Show me the short way","Muéstrame el camino corto"], shortFinding:["Finding the fewest moves… a second or two.","Buscando la menor cantidad de movimientos… un segundo o dos."],
+  shortK:["The fewest moves","La menor cantidad de movimientos"], shortNone:["The fewest moves could not be found this time, so the steps will guide you instead.","Esta vez no se encontró la menor cantidad de movimientos, así que los pasos te guiarán."],
+  shortMade:["{n} moves to solve it. Follow them one by one.","{n} movimientos para resolverlo. Síguelos uno por uno."],
   kWhole:["Whole cube","Cubo entero"], kWholeLine:["Turn the whole cube in your hands. Every square moves together.","Gira todo el cubo en tus manos. Todos los cuadros se mueven juntos."],
   kSide:["One side","Un lado"], kSideLine:["Only the {s} moves. Hold the rest still.","Solo se mueve {s}. Sostén el resto quieto."],
   mineShort:["Show your cube to the camera, or tap in its colors.","Muestra tu cubo a la cámara o toca para poner sus colores."],
@@ -573,7 +573,7 @@ const AIM={
   aperm:["Put the top corners in their places.","Pon las esquinas de arriba en su lugar."], aperm0:["Put the top corners in their places.","Pon las esquinas de arriba en su lugar."],
   lineUp:["Line the corners up with their sides.","Alinea las esquinas con sus lados."],
   uperm:["Put the last edges in their places. Almost done.","Pon las últimas aristas en su lugar. Ya casi."], uperm0:["Put the last edges in their places. Almost done.","Pon las últimas aristas en su lugar. Ya casi."],
-  short:["The short way: every move brings the whole cube closer.","El camino corto: cada movimiento acerca todo el cubo."],
+  short:["{n} moves to solve it. Each one brings the whole cube closer.","{n} movimientos para resolverlo. Cada uno acerca todo el cubo."],
   crossOne:["Bring the white and {c} edge straight down to its place, white on the bottom.","Baja la arista blanca y {c} directo a su lugar, con el blanco abajo."],
   pairHold:["Turn the cube so the {a} and {b} spot is at the front right.","Gira el cubo para que el lugar {a} y {b} quede al frente a la derecha."],
   pairOut:["Lift a piece out of the wrong spot, so it can pair up.","Saca una pieza del lugar equivocado, para que pueda hacer pareja."],
@@ -751,14 +751,14 @@ const L=[
     ["Stuck? Tap Show me the next move.","¿Te atoras? Toca Muéstrame el siguiente movimiento."],
     ["The more you practice, the less you need the notes.","Mientras más practiques, menos necesitarás las notas."]]},
  /* AOG-CUBE-L2-V1 — the faster way, in four steps (aog-cube-l2.js) */
- {id:"f-cross", method:"faster", stage:0, t:["Faster 1 · The cross in one go","Rápido 1 · La cruz de una vez"],
+ {id:"f-cross", method:"faster", stage:0, t:["Level 2 · 1 · The cross in one go","Nivel 2 · 1 · La cruz de una vez"],
   goal:["The white cross on the bottom, with no daisy.","La cruz blanca abajo, sin margarita."],
   steps:[["Hold the cube with white on the bottom.","Sostén el cubo con el blanco abajo."],
     ["Find a white edge. Think: where does it go, and which turns take it there?","Busca una arista blanca. Piensa: ¿a dónde va y qué giros la llevan?"],
     ["Bring it down so white is on the bottom and its other color matches its center.","Bájala con el blanco abajo y su otro color junto a su centro."],
     ["Do the next one without knocking out the ones already down. Turn them away and back if you need to.","Haz la siguiente sin sacar las que ya bajaron. Apártalas y regrésalas si hace falta."],
     ["Most crosses take 8 moves or fewer. Look before you turn.","La mayoría de las cruces toman 8 movimientos o menos. Mira antes de girar."]]},
- {id:"f-pairs", method:"faster", stage:1, t:["Faster 2 · Pairs","Rápido 2 · Parejas"],
+ {id:"f-pairs", method:"faster", stage:1, t:["Level 2 · 2 · Pairs","Nivel 2 · 2 · Parejas"],
   goal:["The bottom two layers done, a corner and its edge at a time.","Las dos capas de abajo hechas, una esquina y su arista a la vez."],
   steps:[["A pair is a white corner and the middle edge with its same two colors.","Una pareja es una esquina blanca y la arista del medio con sus mismos dos colores."],
     ["Turn the whole cube so the pair's spot is at the front right.","Gira el cubo entero para que el lugar de la pareja quede al frente a la derecha."],
@@ -766,14 +766,14 @@ const L=[
     ["Join the corner and edge on top, colors matching side by side.","Junta la esquina y la arista arriba, con los colores juntos."],
     ["Drop them in together. When the pair sits right above its spot, R U R' or F' U' F puts it in.","Bájalas juntas. Cuando la pareja está justo encima de su lugar, R U R' o F' U' F la mete."]],
   algs:[{n:["Put a pair in (right)","Meter una pareja (derecha)"], s:"U R U' R'"},{n:["Put a pair in (front)","Meter una pareja (frente)"], s:"U' F' U F"}]},
- {id:"f-oll", method:"faster", stage:2, t:["Faster 3 · The yellow top in two looks","Rápido 3 · La cara amarilla en dos miradas"],
+ {id:"f-oll", method:"faster", stage:2, t:["Level 2 · 3 · The yellow top in two looks","Nivel 2 · 3 · La cara amarilla en dos miradas"],
   goal:["The whole top yellow: first the cross, then the corners.","Toda la cara de arriba amarilla: primero la cruz, luego las esquinas."],
   steps:[["Look 1, the cross: a line? Hold it left to right and do the line moves. An L? Hold it at the back left and do the L moves. A dot? Line moves, then L moves.","Mirada 1, la cruz: ¿una línea? Ponla de izquierda a derecha y haz los de la línea. ¿Una L? Ponla atrás a la izquierda y haz los de la L. ¿Un punto? Los de la línea y luego los de la L."],
     ["Look 2, the corners: look at the yellow on the top and the sides. Each shape has its own set of moves: the fish, the other fish, H, Pi, headlights, T and bow-tie.","Mirada 2, las esquinas: mira el amarillo arriba y a los lados. Cada figura tiene su serie: el pez, el otro pez, H, Pi, faros, T y moño."],
     ["Start with the fish and the other fish. They come up most. Solve with me shows you which one, every time.","Empieza con el pez y el otro pez. Son los que más salen. Resuélvelo conmigo te muestra cuál, cada vez."]],
   algs:[{n:["Line moves","Movimientos de la línea"], s:"F R U R' U' F'"},{n:["L moves","Movimientos de la L"], s:"F U R U' R' F'"},
     {n:["Fish moves","Movimientos del pez"], s:"R U R' U R U2 R'"},{n:["Other fish moves","Movimientos del otro pez"], s:"R U2 R' U' R U' R'"}]},
- {id:"f-pll", method:"faster", stage:3, t:["Faster 4 · The last layer in two looks","Rápido 4 · La última capa en dos miradas"],
+ {id:"f-pll", method:"faster", stage:3, t:["Level 2 · 4 · The last layer in two looks","Nivel 2 · 4 · La última capa en dos miradas"],
   goal:["Every side one color: first the corners, then the edges.","Cada lado de un color: primero las esquinas, luego las aristas."],
   steps:[["Look 1, the corners: find headlights (two corners on one side with the same color). Hold them at the back and do the corner circle moves.","Mirada 1, las esquinas: busca faros (dos esquinas en un lado con el mismo color). Ponlos atrás y haz el círculo de esquinas."],
     ["No headlights at all? Do the Y swap moves from any side.","¿Sin faros? Haz el cambio Y desde cualquier lado."],
@@ -790,7 +790,7 @@ try{
   else { if(localStorage.getItem("aog.lang")==="es") S.lang="es"; if(matchMedia("(prefers-reduced-motion: reduce)").matches) S.speed="instant"; }
 }catch(e){}
 if(!Array.isArray(S.hist)) S.hist=[];
-if(S.wayV!==2){ S.method="short"; S.wayV=2; }   /* the short way first, for everyone (Jimmy, 2026-10-12) */
+if(S.wayV!==3){ S.method="short"; S.wayV=3; }   /* the short way first, for everyone (Jimmy, 2026-10-12) */
 let cube=(S.cube && C.Cube.fromJSON(S.cube)) || new C.Cube();
 function save(){ S.cube=((painting && cubeBeforePaint) || cube).toJSON(); if(S.hist.length>400) S.hist=S.hist.slice(-400);
   try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
@@ -1025,7 +1025,10 @@ let guide=null;
    steps!!! Wowzers." Solve with me starts on the short way; the steps and the faster way stay in the Way menu. If the
    short way can't be found, the steps lead instead. */
 function wayName(){ if(S.view==="learn"){ const l=L[S.lesson]; return (l && l.method) || "steps"; }
-  if(S.method==="short") return shortState==="none" ? "steps" : "short"; return S.method==="faster" ? "faster" : "steps"; }
+  /* AOG-CUBE-ONEWAY-V1 (2026-10-17) — Jimmy: "Why is there a short and fast way? It is confusing … I want the least
+     possible moves." Solve with me has one way: the fewest moves. (Level 2 in Learn still teaches a way to solve by heart.) */
+  if(S.method==="steps" || S.method==="faster") return S.method;   /* only the site's own checks set these now */
+  return shortState==="none" ? "steps" : "short"; }
 function way(){ return WAYS[wayName()]; }
 function getGuide(){
   const key=cube.toJSON();
@@ -1235,12 +1238,12 @@ function solveHtml(){
 function quietRow(lvSel){
   const sh = shortState==="finding" ? `<p class="muted">${esc(t("shortFinding"))}</p>`
     : shortState==="none" ? `<p class="muted">${esc(t("shortNone"))}</p>`
-    : (guide && guide.short) || S.method==="short" ? "" : `<button type="button" class="btn btn-steel" data-act="short">${esc(t("shortBtn"))}</button>`;
-  const waySel=`<label class="startat"><span>${esc(t("wayH"))}</span><select id="waySel">${[["short","wayShort"],["steps","waySteps"],["faster","wayFaster"]].map(([v,k]) => `<option value="${v}" ${(S.method||"short")===v?"selected":""}>${esc(t(k))}</option>`).join("")}</select></label>`;
+    : "";
+  const waySel="";
   return `<div class="btn-row quiet">${sh}</div>
     <div class="btn-row quiet">${waySel}${lvSel}</div>
     <div class="btn-row quiet"><button type="button" class="btn" data-act="fresh">${esc(t("startOver"))}</button><button type="button" class="btn" data-act="mix">${esc(t("newMix"))}</button>
-    ${S.real || S.method==="short"?"":`<label class="startat"><span>${esc(t("startAtH"))}</span><select id="startAt"><option value="">${esc(t("startAtPick"))}</option>${way().STAGES.map((k,i)=>`<option value="${i}">${i+1}. ${esc(tx(STAGE_NAMES[k]))}</option>`).join("")}</select></label>`}</div>`;
+    ${true?"":`<label class="startat"><span>${esc(t("startAtH"))}</span><select id="startAt"><option value="">${esc(t("startAtPick"))}</option>${way().STAGES.map((k,i)=>`<option value="${i}">${i+1}. ${esc(tx(STAGE_NAMES[k]))}</option>`).join("")}</select></label>`}</div>`;
 }
 /* AOG-CUBE-SHORT-V1 — the short way, found off the page (aog-cube-short.js in a worker), then followed like the steps */
 let shortState="", shortWorker=null, shortAsk=0;

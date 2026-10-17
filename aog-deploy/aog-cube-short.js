@@ -124,7 +124,7 @@ function solve(cube, opts){
       phase1(T.twistM[tw*18+m], T.flipM[fl*18+m], T.sliceM[sl*18+m], togo-1, m); path1.pop();
       if(Date.now()-t0>limit || (best && best.length<=enough)) return; }
   }
-  for(let d=0; d<=12; d++){ phase1(tw0, fl0, sl0, d, -1); if(Date.now()-t0>limit || (best && best.length<=enough)) break; }
+  for(let d=0; d<=(opts.depth||12); d++){ phase1(tw0, fl0, sl0, d, -1); if(Date.now()-t0>limit || (best && best.length<=enough)) break; }
   return best ? best.map(m => NAMES[m]) : null;
 }
 
