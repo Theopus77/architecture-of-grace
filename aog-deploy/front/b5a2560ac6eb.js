@@ -400,28 +400,29 @@
   /* ─── Body Map — noticing before naming ───────────────────────────────── */
   var BM_PARTS = {
     head:      ["your head", "tu cabeza"],
-    jaw:       ["your jaw", "tu mandíbula"],
+    jaw:       ["your jaw or throat", "tu mandíbula o tu garganta"],
     shoulders: ["your shoulders", "tus hombros"],
     chest:     ["your chest", "tu pecho"],
     stomach:   ["your stomach", "tu estómago"],
+    arms:      ["your arms", "tus brazos"],
     hands:     ["your hands", "tus manos"],
-    legs:      ["your legs", "tus piernas"]
+    legs:      ["your legs", "tus piernas"],
+    feet:      ["your feet", "tus pies"]
   };
+  /* AOG-BODYMAP-V2 (Jimmy, 2026-10-16: "The body image I don't like.") One calm outline of a person, not
+     stacked blocks; the place you tap lights up inside it. The same places sit under it as words. */
+  var BM_NAMES = {
+    head: ["Head", "Cabeza"], jaw: ["Jaw / throat", "Mandíbula / garganta"], shoulders: ["Shoulders", "Hombros"],
+    chest: ["Chest", "Pecho"], stomach: ["Stomach", "Estómago"], arms: ["Arms", "Brazos"], hands: ["Hands", "Manos"], legs: ["Legs", "Piernas"], feet: ["Feet", "Pies"]
+  };
+  var BM_SVG = '<defs><clipPath id="bmcH"><ellipse cx="100" cy="38" rx="20" ry="24.5"/></clipPath><clipPath id="bmcN"><rect x="90" y="56" width="20" height="26" rx="8"/></clipPath><clipPath id="bmcT"><path d="M87 76 L113 76 Q118 84 132 86 Q143 88 143 102 L141 122 Q137 160 133 196 Q137 214 137 230 Q100 240 63 230 Q63 214 67 196 Q63 160 59 122 L57 102 Q57 88 68 86 Q82 84 87 76 Z"/></clipPath><clipPath id="bmcA"><path d="M64 90 Q51 92 50 108 L44 164 L40 220 Q40 227 46.5 227 Q53 227 53.5 220 L58 168 L64 126 Z"/><path d="M 136 90 Q 149 92 150 108 L 156 164 L 160 220 Q 160 227 153.5 227 Q 147 227 146.5 220 L 142 168 L 136 126 Z"/></clipPath><clipPath id="bmcP"><ellipse cx="46.5" cy="238" rx="8" ry="13"/><ellipse cx="153.5" cy="238" rx="8" ry="13"/></clipPath><clipPath id="bmcL"><path d="M64 222 L99 226 L97.5 300 L95 368 Q89 375 81 368 L76 300 Z"/><path d="M 136 222 L 101 226 L 102.5 300 L 105 368 Q 111 375 119 368 L 124 300 Z"/><path d="M79 350 L96 350 L97.5 374 Q100 394 89 395 L63 395 Q53 393 58 384 Q71 377 77 364 Z"/><path d="M 121 350 L 104 350 L 102.5 374 Q 100 394 111 395 L 137 395 Q 147 393 142 384 Q 129 377 123 364 Z"/></clipPath></defs><g class="bm-line" aria-hidden="true"><ellipse cx="100" cy="38" rx="20" ry="24.5"/><rect x="90" y="56" width="20" height="26" rx="8"/><path d="M87 76 L113 76 Q118 84 132 86 Q143 88 143 102 L141 122 Q137 160 133 196 Q137 214 137 230 Q100 240 63 230 Q63 214 67 196 Q63 160 59 122 L57 102 Q57 88 68 86 Q82 84 87 76 Z"/><path d="M64 90 Q51 92 50 108 L44 164 L40 220 Q40 227 46.5 227 Q53 227 53.5 220 L58 168 L64 126 Z"/><path d="M 136 90 Q 149 92 150 108 L 156 164 L 160 220 Q 160 227 153.5 227 Q 147 227 146.5 220 L 142 168 L 136 126 Z"/><ellipse cx="46.5" cy="238" rx="8" ry="13"/><ellipse cx="153.5" cy="238" rx="8" ry="13"/><path d="M64 222 L99 226 L97.5 300 L95 368 Q89 375 81 368 L76 300 Z"/><path d="M 136 222 L 101 226 L 102.5 300 L 105 368 Q 111 375 119 368 L 124 300 Z"/><path d="M79 350 L96 350 L97.5 374 Q100 394 89 395 L63 395 Q53 393 58 384 Q71 377 77 364 Z"/><path d="M 121 350 L 104 350 L 102.5 374 Q 100 394 111 395 L 137 395 Q 147 393 142 384 Q 129 377 123 364 Z"/></g><g class="bm-skin" aria-hidden="true"><ellipse cx="100" cy="38" rx="20" ry="24.5"/><rect x="90" y="56" width="20" height="26" rx="8"/><path d="M87 76 L113 76 Q118 84 132 86 Q143 88 143 102 L141 122 Q137 160 133 196 Q137 214 137 230 Q100 240 63 230 Q63 214 67 196 Q63 160 59 122 L57 102 Q57 88 68 86 Q82 84 87 76 Z"/><path d="M64 90 Q51 92 50 108 L44 164 L40 220 Q40 227 46.5 227 Q53 227 53.5 220 L58 168 L64 126 Z"/><path d="M 136 90 Q 149 92 150 108 L 156 164 L 160 220 Q 160 227 153.5 227 Q 147 227 146.5 220 L 142 168 L 136 126 Z"/><ellipse cx="46.5" cy="238" rx="8" ry="13"/><ellipse cx="153.5" cy="238" rx="8" ry="13"/><path d="M64 222 L99 226 L97.5 300 L95 368 Q89 375 81 368 L76 300 Z"/><path d="M 136 222 L 101 226 L 102.5 300 L 105 368 Q 111 375 119 368 L 124 300 Z"/><path d="M79 350 L96 350 L97.5 374 Q100 394 89 395 L63 395 Q53 393 58 384 Q71 377 77 364 Z"/><path d="M 121 350 L 104 350 L 102.5 374 Q 100 394 111 395 L 137 395 Q 147 393 142 384 Q 129 377 123 364 Z"/></g><g data-part="head"><rect clip-path="url(#bmcH)" x="0" y="0" width="200" height="50"/></g><g data-part="jaw"><rect clip-path="url(#bmcH)" x="0" y="50" width="200" height="14"/><rect clip-path="url(#bmcN)" x="0" y="56" width="200" height="26"/></g><g data-part="shoulders"><rect clip-path="url(#bmcT)" x="0" y="76" width="200" height="30"/><rect clip-path="url(#bmcA)" x="0" y="84" width="200" height="22"/></g><g data-part="chest"><rect clip-path="url(#bmcT)" x="0" y="106" width="200" height="54"/></g><g data-part="stomach"><rect clip-path="url(#bmcT)" x="0" y="160" width="200" height="80"/></g><g data-part="arms"><rect clip-path="url(#bmcA)" x="0" y="106" width="200" height="124"/></g><g data-part="hands"><rect clip-path="url(#bmcP)" x="0" y="220" width="200" height="40"/></g><g data-part="legs"><rect clip-path="url(#bmcL)" x="0" y="232" width="200" height="126"/></g><g data-part="feet"><rect clip-path="url(#bmcL)" x="0" y="358" width="200" height="42"/></g>';
   function bmBuilder() {
-    return '<div class="tool-modal-icon">🧍</div>'
-      + '<div class="tool-modal-title">' + esc(T(["Where do you notice something?", "¿Dónde notas algo?"])) + '</div>'
-      + '<div class="tool-modal-sub">' + esc(T(["Tap the body. You don’t have to name the feeling yet.", "Toca el cuerpo. No tienes que nombrar lo que sientes todavía."])) + '</div>'
-      + '<svg class="ttx-bm" viewBox="0 0 200 340" role="group" aria-label="' + esc(T(["Body map", "Mapa del cuerpo"])) + '">'
-      +   '<circle  data-part="head"      cx="100" cy="42"  r="26"/>'
-      +   '<rect    data-part="jaw"       x="88"  y="62"  width="24" height="12" rx="6"/>'
-      +   '<rect    data-part="shoulders" x="52"  y="82"  width="96" height="18" rx="9"/>'
-      +   '<rect    data-part="chest"     x="64"  y="104" width="72" height="44" rx="12"/>'
-      +   '<rect    data-part="stomach"   x="68"  y="152" width="64" height="40" rx="12"/>'
-      +   '<rect    data-part="hands"     x="28"  y="100" width="18" height="86" rx="9"/>'
-      +   '<rect    data-part="hands"     x="154" y="100" width="18" height="86" rx="9"/>'
-      +   '<rect    data-part="legs"      x="68"  y="198" width="26" height="112" rx="12"/>'
-      +   '<rect    data-part="legs"      x="106" y="198" width="26" height="112" rx="12"/>'
-      + '</svg>'
+    return '<div class="tool-modal-title">' + esc(T(["Where do you notice something?", "¿Dónde notas algo?"])) + '</div>'
+      + '<div class="tool-modal-sub">' + esc(T(["Tap the place, or its name. You don’t have to name the feeling.", "Toca el lugar o su nombre. No tienes que nombrar lo que sientes."])) + '</div>'
+      + '<svg class="ttx-bm" viewBox="0 0 200 400" role="group" aria-label="' + esc(T(["Body map", "Mapa del cuerpo"])) + '">' + BM_SVG + '</svg>'
+      + '<div class="ttx-bm-parts" role="group" aria-label="' + esc(T(["Places in the body", "Lugares del cuerpo"])) + '">'
+      +   Object.keys(BM_NAMES).map(function (k) { return '<button type="button" class="ttx-choice" data-bmp="' + k + '" aria-pressed="false">' + esc(T(BM_NAMES[k])) + '</button>'; }).join("")
+      + '</div>'
       + '<div class="ttx-grid ttx-bm-extra">'
       +   '<button type="button" class="ttx-choice" data-bm="everywhere">' + esc(T(["Everywhere", "En todas partes"])) + '</button>'
       +   '<button type="button" class="ttx-choice" data-bm="nowhere">' + esc(T(["Nowhere", "En ninguna"])) + '</button>'
@@ -443,16 +444,20 @@
       el.setAttribute("tabindex", "0");
       el.setAttribute("role", "button");
       el.setAttribute("aria-label", T(BM_PARTS[el.getAttribute("data-part")]));
-      function pick() {
-        svg.querySelectorAll("[data-part]").forEach(function (x) { x.classList.remove("on"); });
-        svg.querySelectorAll('[data-part="' + el.getAttribute("data-part") + '"]').forEach(function (x) { x.classList.add("on"); });
-        bmRespond('<p class="ttx-big">' + esc(T(["You noticed something in ", "Notaste algo en "])) + esc(T(BM_PARTS[el.getAttribute("data-part")])) + '.</p>'
-          + '<p class="ttx-note">' + esc(T(["That’s enough for now. You don’t have to name it.", "Con eso basta por ahora. No tienes que nombrarlo."])) + '</p>' + bmNextBtns());
-        bmNextBind();
-      }
+      function pick() { bmPick(el.getAttribute("data-part")); }
       el.addEventListener("click", pick);
       el.addEventListener("keydown", function (ev) { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); pick(); } });
     });
+    document.querySelectorAll(".ttx-bm-parts [data-bmp]").forEach(function (b) {
+      b.addEventListener("click", function () { bmPick(b.getAttribute("data-bmp")); });
+    });
+    function bmPick(part) {
+        svg.querySelectorAll("[data-part]").forEach(function (x) { x.classList.toggle("on", x.getAttribute("data-part") === part); });
+        document.querySelectorAll(".ttx-bm-parts [data-bmp]").forEach(function (x) { x.setAttribute("aria-pressed", x.getAttribute("data-bmp") === part ? "true" : "false"); });
+        bmRespond('<p class="ttx-big">' + esc(T(["You noticed something in ", "Notaste algo en "])) + esc(T(BM_PARTS[part])) + '.</p>'
+          + '<p class="ttx-note">' + esc(T(["That’s enough for now. You don’t have to name it.", "Con eso basta por ahora. No tienes que nombrarlo."])) + '</p>' + bmNextBtns());
+        bmNextBind();
+    }
     document.querySelectorAll(".ttx-bm-extra .ttx-choice").forEach(function (b) {
       b.addEventListener("click", function () {
         var v = b.getAttribute("data-bm");
@@ -904,11 +909,20 @@
       '.ttx-big{font-family:var(--font-serif,Georgia,serif);font-size:21px;font-weight:600;color:var(--navy,#1B3A5F);' +
         'text-align:center;line-height:1.35;margin:18px 0 8px;}' +
       '.ttx-count{font-size:52px;font-weight:800;color:var(--gold,#B8893A);text-align:center;margin:6px 0;font-variant-numeric:tabular-nums;}' +
-      '.ttx-bm{display:block;max-width:190px;margin:14px auto 4px;}' +
-      '.ttx-bm [data-part]{fill:rgba(217,163,59,.18);stroke:var(--navy,#1B3A5F);stroke-width:2;cursor:pointer;}' +
-      '.ttx-bm [data-part]:hover{fill:rgba(217,163,59,.4);}' +
-      '.ttx-bm [data-part].on{fill:var(--gold,#D9A33B);}' +
-      '.ttx-bm [data-part]:focus-visible{outline:none;stroke:var(--gold,#D9A33B);stroke-width:4;}' +
+      '.ttx-bm{display:block;width:min(170px,44vw);height:auto;margin:10px auto 6px;}' +
+      '.ttx-bm .bm-line{fill:#1B2A3D;stroke:#1B2A3D;stroke-width:4;stroke-linejoin:round;}' +
+      '.ttx-bm .bm-skin{fill:#F6F1E7;}' +
+      '.ttx-bm [data-part]{cursor:pointer;fill:transparent;stroke:none;}' +
+      '.ttx-bm [data-part]:hover{fill:rgba(201,162,74,.22);}' +
+      '.ttx-bm [data-part].on{fill:rgba(201,162,74,.8);}' +
+      '.ttx-bm [data-part]:focus{outline:none;}' +
+      '.ttx-bm [data-part]:focus-visible{fill:rgba(201,162,74,.45);}' +
+      '.ttx-bm-parts{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:4px 0 12px;}' +
+      '.ttx-bm-parts .ttx-choice{flex:0 0 auto;min-height:44px;padding:8px 14px;}' +
+      '.ttx-bm-parts .ttx-choice[aria-pressed="true"]{background:#0A1E33;color:#F4EEE2;border-color:#0A1E33;}' +
+      ':root[data-theme="dark"] .ttx-bm .bm-line{fill:#F4EEE2;stroke:#F4EEE2;}' +
+      ':root[data-theme="dark"] .ttx-bm .bm-skin{fill:#13314F;}' +
+      ':root[data-theme="dark"] .ttx-bm-parts .ttx-choice[aria-pressed="true"]{background:#F4EEE2;color:#0A1E33;border-color:#F4EEE2;}' +
       '.ttx-ts-grid .ttx-choice{flex:1 1 44%;}' +
       '.ttx-ts-big{font-family:var(--font-serif,Georgia,serif);font-size:34px;font-weight:700;color:var(--navy,#0A1E33);' +
         'text-align:center;line-height:1.3;padding:26px 14px;margin:12px 0;background:var(--paper,#FBF7EC);' +
@@ -923,7 +937,7 @@
       ':root[data-theme="dark"] .ttx-opt-main b,:root[data-theme="dark"] .ttx-q,:root[data-theme="dark"] .ttx-big,' +
       ':root[data-theme="dark"] .ttx-choice,:root[data-theme="dark"] #aogToolFb .ttfb-b{color:var(--cream,#F4ECDA);}' +
       ':root[data-theme="dark"] .ttx-ts-big{color:var(--cream,#F4ECDA);background:#13212E;}' +
-      ':root[data-theme="dark"] .ttx-bm [data-part]{stroke:var(--cream,#F4ECDA);}' +
+      ':root[data-theme="dark"] .ttx-bm [data-part]{stroke:none;}' +
       /* Just be — one slow orb, nothing else. Still under reduced-motion/low-stim. */
       '.ttx-jb{text-align:center;padding:34px 10px 22px;}' +
       '.ttx-jb-orb{width:110px;height:110px;border-radius:50%;margin:0 auto 26px;' +

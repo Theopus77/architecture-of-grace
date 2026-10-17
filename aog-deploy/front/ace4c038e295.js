@@ -221,7 +221,9 @@
       this.updateDashboardCounters();
 
       // Passport: three DISTINCT tools, awarded at most once per day.
-      if (GraceState.todayDistinctTools.length >= 3 && localStorage.getItem('grace_passport_date') !== graceToday()) {
+      /* AOG-QS-GROWNUP-V1: no surprise badge or sound inside the Quiet Space (a shared device; calm rules). */
+      if (GraceState.todayDistinctTools.length >= 3 && localStorage.getItem('grace_passport_date') !== graceToday() &&
+          !document.documentElement.classList.contains('aog-station-open')) {
         localStorage.setItem('grace_passport_date', graceToday());
         GracePassport.triggerPassportAward();
       }
