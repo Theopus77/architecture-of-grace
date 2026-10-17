@@ -839,6 +839,7 @@ function proCleanMore(r, s){
   if(r.punch && typeof r.punch==="object"){ const a=Math.round(num(r.punch.a,1,MAX_BARS,1)), b=Math.round(num(r.punch.b,1,MAX_BARS,a)); s.punch={a:a, b:Math.max(a, b)}; }
   if(s.punchOn && !s.punch) s.punch={a:s.loopFrom, b:s.loopTo};
   if(r.lrec===true) s.lrec=true;
+  if(r.secMk===true) s.secMk=true;   /* AOG-DESK-ARRANGE-V1: the sections follow the markers */
   if(Array.isArray(r.marks)){ const M=[], seen=new Set(); r.marks.slice(0,32).forEach(m=>{ if(!m || typeof m!=="object") return; const b=Math.round(num(m.b,1,MAX_BARS,1)); if(seen.has(b)) return; seen.add(b);
       const o={b:b}, w=typeof m.w==="string" ? m.w.replace(/[\u0000-\u001f]/g,"").trim().slice(0,24) : ""; if(w) o.w=w; M.push(o); });
     M.sort((p,q)=>p.b-q.b); if(M.length) s.marks=M; }
@@ -1145,6 +1146,7 @@ function pump(){
   if(!PLAY.on) return;
   const now=ac.currentTime;
   if(typeof dpMetro==="function") dpMetro(now);   /* AOG-DESK-CLICK-V1: the click, a moment ahead */
+  if(window.AOGDeskRef) AOGDeskRef.pump(now);   /* AOG-DESK-REF-V1: the reference song, along the same windows */
   if(PLAY.loop){
     let w=PLAY.wins[PLAY.wins.length-1];
     while(w.at+(w.to-w.from) < now+1.0){
@@ -1178,6 +1180,7 @@ function end(){
   PLAY.srcs=[]; PLAY.clicks=[]; PLAY.wins=[];
   meterStill(); paintPlay(); paintNowBar(-1);
   if(typeof dpRest==="function") dpRest();   /* AOG-DESK-MASTER-V1: the meters rest */
+  if(window.AOGDeskRef) AOGDeskRef.stop();   /* AOG-DESK-REF-V1 */
 }
 /* the song changed while it plays: carry on from the same place with the new arrangement */
 function reschedule(){
@@ -2834,7 +2837,7 @@ function paintTimeline(){
         const st=pAt(p)/bs, len=p.n*pLen(c,p)/bs, l=Math.min(100, st/n*100), w=Math.max(0.6, Math.min(100-l, len/n*100));
         const nm=(j===0 ? trackName(i) : "")+(p.n>1 ? " ×"+p.n : "");
         /* AOG-DESK-DRAG-V1: data-pc, the piece a hand can take hold of */
-        return `<span class="st-clip${audible(i)?"":" off"}${cur && P.length>1 && j===ks ? " pk" : ""}" data-pc="${j}" style="left:${l.toFixed(4)}%;width:${w.toFixed(4)}%;--c:${colOf(i)}">${waveSvg(c, p, Math.min(4000, Math.max(16, Math.round(w*3.2*z))))}<span class="st-cnm">${esc(nm)}</span></span>`;
+        return `<span class="st-clip${audible(i)?"":" off"}${cur && P.length>1 && j===ks ? " pk" : ""}" data-pc="${j}" style="left:${l.toFixed(4)}%;width:${w.toFixed(4)}%;--c:${colOf(i)}">${waveSvg(c, p, Math.min(4000, Math.max(16, Math.round(w*3.2*z))))}<span class="st-cnm">${esc(nm)}</span><i class="st-lph" data-lph="${j}" aria-hidden="true"></i></span>`;   /* AOG-DESK-CLIPLOOP-V1: its end, dragged to repeat it */
       }).join("");
       const b0=Math.floor(clipStart(c)/bs+1e-6)+1, b1=Math.max(b0, Math.ceil(clipEnd(c,false)/bs-1e-6));
       label=t("laneAria",{n:i+1, name:trackName(i)+", "+t("laneBars",{a:b0, b:b1})});

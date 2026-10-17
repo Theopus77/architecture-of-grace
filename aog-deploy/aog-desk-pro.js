@@ -17,6 +17,7 @@ const DP_STR={
   pm_lim:{en:"Limiter",es:"Limitador"},
   pm_mt:{en:"Stereo and spectrum",es:"Estéreo y espectro"},
   pm_gp:{en:"Groups",es:"Grupos"},
+  pm_ab:{en:"Compare with a song (A/B)",es:"Comparar con una canción (A/B)"}, pmReady:{en:"Getting it ready…",es:"Preparándolo…"},
   rtLine:{en:"Each track's Room and Echo knobs send here, after its fader.",es:"Las perillas Sala y Eco de cada pista envían aquí, después de su fader."},
   rvRet:{en:"Room return",es:"Retorno de sala"}, dlRet:{en:"Echo return",es:"Retorno de eco"},
   onOff:{en:"{w}: On",es:"{w}: encendido"}, offOn:{en:"{w}: Off",es:"{w}: apagado"},
@@ -43,7 +44,7 @@ const DP_STR={
 };
 Object.assign(STR, DP_STR);
 const DP={open:false, view:"rt", gb:null, at:0, grAt:0, l:null, r:null, corr:null, cs:0, draws:0, spec:null, sbuf:null, eqc:null, msg:""};
-const PM_VIEWS=["rt","eq","gl","lim","mt","gp"];
+const PM_VIEWS=["rt","eq","gl","lim","mt","gp","ab"];
 try{ const v=localStorage.getItem("aog.studio.pm.v1"); if(PM_VIEWS.indexOf(v)>=0) DP.view=v; }catch(e){}
 const DP_CSS=`
 .st-pm{margin-top:12px}
@@ -108,8 +109,12 @@ function dpPane(){
     return `<p class="st-line" style="margin:0">${esc(t("gpLine"))}</p><div class="st-gpr">`+SONG.tracks.map((x,i)=>`<label class="st-field"><span class="st-lab">${esc(t("trackN",{n:i+1})+" · "+laneName(i))}</span><select id="pmG${i}" data-gp="${i}" aria-label="${esc(t("gpAria",{n:i+1}))}">`+
       [""].concat(GROUPS).map(g=>`<option value="${g}"${(x.grp||"")===g?" selected":""}>${esc(g ? t("gp_"+g) : t("gpNone"))}</option>`).join("")+`</select></label>`).join("")+`</div>`+
       (say ? `<p class="st-line" style="margin:0">${esc(say)}</p>` : ""); }
+  if(v==="ab"){ if(window.AOGDeskRef) return `<div id="refPane">${AOGDeskRef.html()}</div>`; dpRefLoad(); return `<div id="refPane"><p class="st-gr">${esc(t("pmReady"))}</p></div>`; }
   return "";
 }
+/* AOG-DESK-REF-V1: Compare with a song is fetched the first time it is opened */
+let DP_REFP=null;
+function dpRefLoad(){ if(window.AOGDeskRef || DP_REFP) return; DP_REFP=true; const s=document.createElement("script"); s.src="/aog-desk-ref.js"; s.async=true; s.onerror=()=>{ DP_REFP=null; }; document.head.appendChild(s); }
 function dpPaint(force){
   const box=document.getElementById("proMaster"); if(!box) return;
   dpCss();

@@ -147,7 +147,7 @@ const R = (p, n) => p.evaluate(n => __T.render(n), n);
   /* 8 · Spanish */
   await p.evaluate(() => document.getElementById("langBtn").click()); await p.waitForTimeout(100); await view(p, "gl");
   const es = await p.evaluate(() => ({ s: document.querySelector("#pmBox summary").textContent, o: [...document.querySelectorAll("#pmView option")].map(o => o.textContent).join(" | "), b: document.getElementById("pmGlOn").textContent, l: [...document.querySelectorAll("#proMaster .st-lab")].map(e => e.textContent).join(" | ") }));
-  ok(es.s === "Más para toda la canción" && es.o === "Retornos de sala y eco | Ecualizador y corte de graves | Unión | Limitador | Estéreo y espectro | Grupos" && es.b === "Unión: encendido" && /Empieza en \| Proporción \| Compensar/.test(es.l), "in Spanish: " + JSON.stringify(es));
+  ok(es.s === "Más para toda la canción" && es.o === "Retornos de sala y eco | Ecualizador y corte de graves | Unión | Limitador | Estéreo y espectro | Grupos | Comparar con una canción (A/B)" && es.b === "Unión: encendido" && /Empieza en \| Proporción \| Compensar/.test(es.l), "in Spanish: " + JSON.stringify(es));
   await p.evaluate(() => document.getElementById("langBtn").click());
   await c.close();
 
