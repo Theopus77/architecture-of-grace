@@ -33,8 +33,10 @@ const add = (p, o) => p.evaluate(`(${TAKE})(${JSON.stringify(o)})`);
 const NM = { guitar: "Guitar take", bass: "Bass take", piano: "Piano take", drums: "Drum take" };
 async function put(p, n, track, from) {
   await p.selectOption("#trackSel", String(track));
+  if (track === 7) await p.waitForTimeout(50);
   const v = await p.evaluate(nm => { const o = [...document.querySelectorAll("#srcSel option")].find(o => o.textContent.split(" · ")[0] === nm); return o ? o.value : null; }, NM[from || "guitar"] + " " + n);
-  await p.selectOption("#srcSel", v); await p.click("#putBtn");
+  if (track === 7) await p.evaluate(([v, t]) => __aogStudio.putOn(v, t), [v, track]);   /* track 8 is the voice's: its menu is out of sight */
+  else { await p.selectOption("#srcSel", v); await p.click("#putBtn"); }
   await p.waitForFunction(t => __aogStudio.SONG.tracks[t].clip && !__aogStudio.S.busy, track, { timeout: 40000 });
 }
 const near = (a, b, tol) => Math.abs(a - b) <= tol;

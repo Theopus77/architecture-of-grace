@@ -36,7 +36,7 @@ const DR_STR={
   mkDef:{en:"Marker {n}",es:"Marca {n}"}, mkAt:{en:"Now at bar {n}: {w}.",es:"Ahora en el compás {n}: {w}."},
   mkMade:{en:"Marker at bar {n}.",es:"Marca en el compás {n}."}, mkGone:{en:"The marker is gone.",es:"La marca ya no está."},
   mkAria:{en:"Go to bar {n}: {w}",es:"Ir al compás {n}: {w}"},
-  cyLab:{en:"Loop",es:"Bucle"}, cyAria:{en:"The loop, bars {a} to {b}. Drag an end to change it.",es:"El bucle, compases {a} a {b}. Arrastra un extremo para cambiarlo."},
+  cyLab:{en:"Loop",es:"Bucle"}, cyLabM:{en:"Loop · marks",es:"Bucle · marcas"}, cyLabOnly:{en:"Markers",es:"Marcas"}, cyAria:{en:"The loop, bars {a} to {b}. Drag an end to change it.",es:"El bucle, compases {a} a {b}. Arrastra un extremo para cambiarlo."},
   puAria:{en:"Punch, bars {a} to {b}",es:"Pinchazo, compases {a} a {b}"},
   cySaid:{en:"The loop is bars {a} to {b}.",es:"El bucle son los compases {a} a {b}."},
   puSaid:{en:"The punch is bars {a} to {b}.",es:"El pinchazo son los compases {a} a {b}."}
@@ -69,7 +69,7 @@ const DR_CSS=`
 .st-cyh{position:absolute;top:0;bottom:0;width:22px;cursor:ew-resize;touch-action:none}
 .st-cyh::before{content:"";position:absolute;top:22%;bottom:22%;left:50%;width:3px;margin-left:-1.5px;border-radius:2px;background:#9cc0f0}
 .st-cyh.a{left:-8px}.st-cyh.b{right:-8px}
-.st-mkf{position:absolute;top:2px;bottom:2px;min-width:44px;transform:translateX(-1px);display:flex;align-items:center;padding:0 6px;border:0;border-left:3px solid #f0c26e;border-radius:0 6px 6px 0;
+.st-mkf{position:absolute;z-index:3;top:2px;bottom:2px;min-width:44px;transform:translateX(-1px);display:flex;align-items:center;padding:0 6px;border:0;border-left:3px solid #f0c26e;border-radius:0 6px 6px 0;
   background:linear-gradient(90deg,rgba(240,194,110,.32),rgba(240,194,110,.10));color:#ffe9b8;font:700 .76rem/1 var(--sans);white-space:nowrap;overflow:hidden;cursor:pointer;touch-action:manipulation}
 .st-mkf:focus-visible{outline:3px solid #c9a24b;outline-offset:1px}
 `;
@@ -119,9 +119,9 @@ function drTlRow(){
   const M=SONG.marks||[];
   if(!SONG.loopOn && !SONG.punchOn && !M.length) return "";
   const W=tlBars()*4, pc=b=>Math.max(0, Math.min(100, b/W*100)).toFixed(4);
-  let h=`<div class="st-cyr"><span class="st-ln st-cyn"><span>${esc(t("cyLab"))}</span></span><span class="st-cyt" id="cyStrip">`;
+  let h=`<div class="st-cyr"><span class="st-ln st-cyn"><span>${esc(t(SONG.loopOn && M.length ? "cyLabM" : SONG.loopOn || SONG.punchOn ? "cyLab" : "cyLabOnly"))}</span></span><span class="st-cyt" id="cyStrip">`;
   if(SONG.loopOn){ const a=(SONG.loopFrom-1)*4, b=SONG.loopTo*4;
-    h+=`<span class="st-cyb" id="cyBand" style="left:${pc(a)}%;width:${(pc(b)-pc(a)).toFixed(4)}%" role="img" aria-label="${esc(t("cyAria",{a:SONG.loopFrom, b:SONG.loopTo}))}"><i class="st-cyh a" data-cy="a" aria-hidden="true"></i><b aria-hidden="true">${SONG.loopFrom}–${SONG.loopTo}</b><i class="st-cyh b" data-cy="b" aria-hidden="true"></i></span>`; }
+    h+=`<span class="st-cyb" id="cyBand" style="left:${pc(a)}%;width:${(pc(b)-pc(a)).toFixed(4)}%" role="img" aria-label="${esc(t("cyAria",{a:SONG.loopFrom, b:SONG.loopTo}))}"><i class="st-cyh a" data-cy="a" aria-hidden="true"></i><i class="st-cyh b" data-cy="b" aria-hidden="true"></i></span>`; }
   if(SONG.punchOn){ const P=drPunch(), a=(P.a-1)*4, b=P.b*4; h+=`<span class="st-puc" style="left:${pc(a)}%;width:${(pc(b)-pc(a)).toFixed(4)}%" role="img" aria-label="${esc(t("puAria",{a:P.a, b:P.b}))}"></span>`; }
   M.forEach((m,k)=>{ h+=`<button type="button" class="st-mkf" data-mk="${k}" style="left:${pc((m.b-1)*4)}%" aria-label="${esc(t("mkAria",{n:m.b, w:drMkName(m,k)}))}">${esc(drMkName(m,k))}</button>`; });
   return h+`</span></div>`;

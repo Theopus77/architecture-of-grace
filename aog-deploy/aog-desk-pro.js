@@ -67,6 +67,7 @@ const DP_CSS=`
 .st-stm i[hidden]{display:none}
 .st-stl{display:flex;justify-content:space-between;font:700 .78rem/1.2 var(--sans);color:#d8cfbf}
 .st-spc{display:block;width:100%;height:110px;border-radius:8px;background:#0b0c0e}
+.st-gtag{display:block;margin:.3rem 0 0;padding:0 .2rem;font:800 .66rem/1.2 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:#e3c98d;min-height:1.2em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .st-gpr{display:grid;gap:.5rem;grid-template-columns:repeat(auto-fit,minmax(13rem,1fr))}
 `;
 function dpCss(){ if(document.getElementById("aog-desk-pro-css")) return; const s=document.createElement("style"); s.id="aog-desk-pro-css"; s.textContent=DP_CSS; document.head.appendChild(s); }
@@ -115,9 +116,17 @@ function dpPane(){
 /* AOG-DESK-REF-V1: Compare with a song is fetched the first time it is opened */
 let DP_REFP=null;
 function dpRefLoad(){ if(window.AOGDeskRef || DP_REFP) return; DP_REFP=true; const s=document.createElement("script"); s.src="/aog-desk-ref.js"; s.async=true; s.onerror=()=>{ DP_REFP=null; }; document.head.appendChild(s); }
+/* AOG-DESK-LOOK-V2: each mixer strip says its group under its name (every strip keeps the line while any track has one) */
+function dpGroupTags(){
+  const any=SONG.tracks.some(x=>x.grp);
+  document.querySelectorAll("#mixer .st-strip").forEach(el=>{ const i=+el.getAttribute("data-tr"), g=SONG.tracks[i] && SONG.tracks[i].grp; let tag=el.querySelector(".st-gtag");
+    if(!any){ if(tag) tag.remove(); return; }
+    if(!tag){ tag=document.createElement("span"); tag.className="st-gtag"; const sh=el.querySelector(".st-sh"); if(sh) sh.insertAdjacentElement("afterend", tag); else el.prepend(tag); }
+    const w=g ? t("gp_"+g) : "\u00a0"; if(tag.textContent!==w) tag.textContent=w; });
+}
 function dpPaint(force){
   const box=document.getElementById("proMaster"); if(!box) return;
-  dpCss();
+  dpCss(); dpGroupTags();
   let h=`<details class="st-more st-pm" id="pmBox"${DP.open?" open":""}><summary>${esc(t("pmSum"))}</summary>`;
   if(DP.open) h+=`<div class="st-pmi"><label class="st-field st-pick"><span class="st-lab">${esc(t("pmShow"))}</span><select id="pmView">`+
     PM_VIEWS.map(k=>`<option value="${k}"${k===DP.view?" selected":""}>${esc(t("pm_"+k))}</option>`).join("")+`</select></label><div class="st-pmp">${dpPane()}</div></div>`;
@@ -186,7 +195,7 @@ function dpSpectrum(){
   const cv=document.getElementById("pmSp"); if(!cv || !ac || !LIVE) return;
   if(!DP.spec){ try{ const a=ac.createAnalyser(), z=ac.createGain(); a.fftSize=4096; a.smoothingTimeConstant=0.7; z.gain.value=0; LIVE.out.connect(a); a.connect(z); z.connect(ac.destination); DP.spec=a; DP.sbuf=new Float32Array(a.frequencyBinCount); }catch(e){ return; } }
   DP.spec.getFloatFrequencyData(DP.sbuf);
-  const r=cv.getBoundingClientRect(), dpr=Math.min(2, window.devicePixelRatio||1), W=Math.max(1, Math.round(r.width*dpr)), H=Math.max(1, Math.round(r.height*dpr));
+  const r=cvRect(cv), dpr=Math.min(2, window.devicePixelRatio||1), W=Math.max(1, Math.round(r.width*dpr)), H=Math.max(1, Math.round(r.height*dpr));
   if(cv.width!==W || cv.height!==H){ cv.width=W; cv.height=H; }
   const g=cv.getContext("2d"), nb=48, sr=ac.sampleRate, bins=DP.sbuf.length; g.clearRect(0,0,W,H);
   g.fillStyle="#f0c26e";
@@ -254,6 +263,48 @@ function dpInit(){
   document.addEventListener("change", e=>{ if(e.target && e.target.type==="range") DP.gb=null; }, true);
   document.addEventListener("pointerup", ()=>{ DP.gb=null; }, true);
   dpPaint(true);
+  dpKeys();
+}
+/* ══ AOG-DESK-KEYS-V2 (2026-10-17) · more keys on a computer: R records your voice, L turns the loop on or off, ← → nudge
+   the piece 10 ms (Shift: a beat), Ctrl/⌘ + D copies the piece after itself, Ctrl/⌘ + E cuts it at the playhead. A key
+   presses what a finger would, so the desk's own rules and Undo follow. Typing in a box keeps its keys. ══ */
+/* AOG-DESK-LOOK-V2 (2026-10-17, Jimmy: faders and knobs that "double-tap to reset"): a double tap (or a double click) puts a
+   fader or knob back where it starts; it moves the slider itself, so the desk's own rules and Undo follow */
+const DP_HOME={vol:80, pan:0, low:0, mid:0, high:0, punch:0, room:0, echo:0};
+function dpHomeOf(r){
+  const id=r.id||"", k=r.getAttribute("data-k"), pm=r.getAttribute("data-pm");
+  if(pm) return {rvRet:80, dlRet:80, low:0, mid:0, high:0, glue:30}[pm];
+  if(r.closest("#master")) return k==="glue" ? 30 : k==="vol" ? 80 : DP_HOME[k];
+  if(r.hasAttribute("data-fv") || id==="cv-vol") return 80;
+  if(id==="drLvl") return 60;
+  return k ? DP_HOME[k] : undefined;
+}
+function dpHome(r){ const v=dpHomeOf(r); if(v==null || r.disabled) return; r.value=String(v); r.dispatchEvent(new Event("input", {bubbles:true})); r.dispatchEvent(new Event("change", {bubbles:true})); DP.homed=(DP.homed||0)+1; }
+function dpTwoTaps(){
+  document.addEventListener("dblclick", e=>{ const r=e.target; if(r && r.type==="range" && r.closest("#desk")) dpHome(r); }, true);
+  /* a finger: two taps on the same slider within 350 ms, close together (a touch ends with touchend; a pen with pointerup) */
+  let last={el:null, t:0, x:0, y:0};
+  const tap=(r, x, y)=>{ if(!r || r.type!=="range" || !r.closest("#desk")) return; const now=performance.now();
+    if(now-last.t<20 && last.el===r) return;   /* the same tap, told twice */
+    if(last.el===r && now-last.t<350 && Math.hypot(x-last.x, y-last.y)<24){ last={el:null, t:now, x:x, y:y}; dpHome(r); } else last={el:r, t:now, x:x, y:y}; };
+  document.addEventListener("touchend", e=>{ const p=e.changedTouches && e.changedTouches[0]; if(p) tap(e.target, p.clientX, p.clientY); }, {capture:true, passive:true});
+  document.addEventListener("pointerup", e=>{ if(e.pointerType==="pen") tap(e.target, e.clientX, e.clientY); }, true);
+}
+function dpKeys(){
+  dpTwoTaps();
+  document.addEventListener("keydown", e=>{
+    const el=e.target, tg=el && el.tagName;
+    if(tg==="INPUT" || tg==="SELECT" || tg==="TEXTAREA" || (el && el.isContentEditable)) return;
+    if(window.AOGPianoRoll && AOGPianoRoll.isOpen && AOGPianoRoll.isOpen()) return;
+    const mod=(e.ctrlKey || e.metaKey) && !e.altKey, i=SONG.sel, c=SONG.tracks[i] && SONG.tracks[i].clip, keys=()=>document.documentElement.classList.add("aog-keys");
+    if(mod && !e.shiftKey && (e.code==="KeyD" || e.code==="KeyE")){ e.preventDefault(); keys(); if(e.repeat || !c) return;
+      if(e.code==="KeyD") clipAct("copy"); else dmSplit();
+      const tl=document.getElementById("tlLine"); if(tl && S.edMsg) tl.textContent=S.edMsg; return; }
+    if(e.ctrlKey || e.metaKey || e.altKey) return;
+    if(e.code==="KeyR"){ e.preventDefault(); keys(); if(!e.repeat && window.AOGStudioRec) AOGStudioRec.toggle(); return; }
+    if(e.code==="KeyL"){ e.preventDefault(); keys(); if(!e.repeat){ const b=document.getElementById("loopBtn"); if(b) b.click(); } return; }
+    if(e.code==="ArrowLeft" || e.code==="ArrowRight"){ e.preventDefault(); keys(); if(c) clipAct((e.shiftKey ? "beat" : "nudge")+(e.code==="ArrowLeft" ? "-" : "+")); return; }
+  });
 }
 dpInit();
 /* for the tests (music-handoff/tests/desk/) */
