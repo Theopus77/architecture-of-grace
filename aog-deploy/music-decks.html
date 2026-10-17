@@ -2354,11 +2354,16 @@ function loop(){
      the page looks four times a second instead of sixty (nothing on it moves); a touch, a key or a record starting brings
      it straight back to every frame */
   if(playing || (eqSeen && (eqDirty || eqUntil || now < liveUntil)) || decks.some(d=>d.motor || d.held || (d.level||0) > 0.002)) LOOPQ.at = now;
-  if(now - LOOPQ.at > 2000) LOOPQ.t = setTimeout(()=>{ LOOPQ.t = 0; loop(); }, 250);
+  /* AOG-REST-IDLE-V1 (2026-10-17): after ten seconds with nothing moving it stops looking altogether (no timer at all);
+     a touch, a key, the page coming back into sight or any sound starting (AOGVU.onWake) wakes it */
+  if(now - LOOPQ.at > 10000) LOOPQ.t = -1;
+  else if(now - LOOPQ.at > 2000) LOOPQ.t = setTimeout(()=>{ LOOPQ.t = 0; loop(); }, 250);
   else requestAnimationFrame(loop);
 }
 const LOOPQ = {at:performance.now(), t:0};
-function loopWake(){ LOOPQ.at = performance.now(); if(LOOPQ.t){ clearTimeout(LOOPQ.t); LOOPQ.t = 0; requestAnimationFrame(loop); } }
+function loopWake(){ LOOPQ.at = performance.now(); if(LOOPQ.t){ if(LOOPQ.t !== -1) clearTimeout(LOOPQ.t); LOOPQ.t = 0; requestAnimationFrame(loop); } }
+try{ window.AOGVU && AOGVU.onWake && AOGVU.onWake(loopWake); }catch(e){}
+document.addEventListener("visibilitychange", ()=>{ if(!document.hidden) loopWake(); });
 ["pointerdown","keydown","wheel","input","change","touchstart"].forEach(ev=>document.addEventListener(ev, loopWake, {capture:true, passive:true}));
 /* ══ AOG-DJ-DESK-V1 (2026-10-08) — two decks on the desk, the third one tap away ══════════════════════════
    The pair (A · B, A · C or B · C) puts its two decks on the desk, the first on the crossfader's left, the

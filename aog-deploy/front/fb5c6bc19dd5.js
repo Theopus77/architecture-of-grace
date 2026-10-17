@@ -3,7 +3,7 @@
 /* ══════════════════════════════════════════════════════════════════════════
    THE GUITAR AND THE BASS (AOG-STRINGS-V1) — one page, built twice
    ══════════════════════════════════════════════════════════════════════════ */
-const INST="guitar", GTR=INST==="guitar";
+const INST="bass", GTR=INST==="guitar";
 const LKEY="aog."+INST+".v1";
 /* the strings, low to high, as note numbers: a guitar E A D G B E, a bass E A D G */
 const TUNING=GTR?[40,45,50,55,59,64]:[28,33,38,43];
@@ -1207,12 +1207,29 @@ function makeChain(c){
   ch.comp=c.createDynamicsCompressor();
   ch.comp.threshold.value=-16; ch.comp.knee.value=10; ch.comp.ratio.value=2.5; ch.comp.attack.value=0.006; ch.comp.release.value=0.25;
   ch.lim=c.createDynamicsCompressor();
-  ch.lim.threshold.value=-2; ch.lim.knee.value=0; ch.lim.ratio.value=20; ch.lim.attack.value=0.002; ch.lim.release.value=0.1;
+  /* AOG-STRUM-CLEAN-V1 (2026-10-17) — Jimmy: "Just playing the guitar, after about 10–15 strums, the music becomes all
+     staticky." The limiter's own output went past full scale on every strum: a DynamicsCompressor lifts its output by
+     itself (its makeup gain, here +1.14 dB) and its 2 ms attack let each strum's attack through, up to +1 dB over, and
+     more often as the strings rang together (120 samples over in strums 1–3, 360 by strums 10–15). The Volume near its
+     top, or the room sound added after it, sent that to the speakers clipped: the static. Now the limiter acts at once
+     (it looks 6 ms ahead), its lift is taken off again (LIM_LIFT), so it holds the −2 dB it is set to, and a take's own
+     ceiling follows it (aog-recorder.js): nothing under 90 % is touched, a peak past it is rounded, none reaches full scale */
+  ch.lim.threshold.value=-2; ch.lim.knee.value=0; ch.lim.ratio.value=20; ch.lim.attack.value=0; ch.lim.release.value=0.1;
   ch.master=c.createGain(); ch.makeup=c.createGain(); ch.makeup.gain.value=1.8;
-  ch.pre.connect(ch.lp); ch.lp.connect(ch.comp); ch.comp.connect(ch.makeup); ch.makeup.connect(ch.lim); ch.lim.connect(ch.master); ch.master.connect(c.destination);
+  ch.ceil=ceilingNode(c, 1/LIM_LIFT);
+  ch.pre.connect(ch.lp); ch.lp.connect(ch.comp); ch.comp.connect(ch.makeup); ch.makeup.connect(ch.lim); ch.lim.connect(ch.ceil.input); ch.ceil.output.connect(ch.master); ch.master.connect(c.destination);
   ch.crunch=null;
+  /* the Studio's room sound (aog-vu.js) sits inside the chain, after the amp and before the limiter, as a reverb return
+     on a mixing desk's bus: added after the Volume it pushed the sum 3 to 5 dB past full scale, more with every strum
+     as the room filled */
+  const OFF=window.OfflineAudioContext||window.webkitOfflineAudioContext;
+  if(!(OFF && c instanceof OFF)) try{ if(window.AOGRoom && AOGRoom.live) AOGRoom.live(c, ch.bus, ch.pre); }catch(e){}   /* ch.bus: the strings after the amp, and a real guitar played through the page (AOGLive) */
   return ch;
 }
+const LIM_LIFT=Math.pow(Math.pow(10, (2-2/20)/20), 0.6);   /* (1 / the limiter's gain at full scale)^0.6, Web Audio's makeup gain */
+const CEIL=(()=>{ const n=4097, d=new Float32Array(n); for(let i=0;i<n;i++){ const x=(i/(n-1)*2-1)*2, a=Math.abs(x); d[i]=Math.sign(x)*(a<=0.9 ? a : 0.9+0.1*Math.tanh((a-0.9)/0.1)); } return d; })();
+function ceilingNode(c, k){ const pre=gainAt(c, 0.5*(k||1)); let ws; try{ ws=new WaveShaperNode(c, {curve:CEIL}); }catch(e){ ws=c.createWaveShaper(); ws.curve=CEIL; }
+  pre.connect(ws); return {input:pre, output:ws}; }
 async function addCrunch(ch){             /* spliced in when ready; until then the chain plays clean */
   try{
     if(!ch.c.audioWorklet) return;
@@ -2063,7 +2080,7 @@ function navHtml(){
 window.AOGRoomClock={ align(at){ if(S.playing) start(at); } };
 /* AOG-SONG-V1 (2026-10-11): this room plays at the song's tempo and in its key (aog-song.js); its own tempo and key change the song */
 if(window.AOGSong) AOGSong.keysRoom({get:()=>({bpm:S.bpm, key:S.key, minor:!!S.minor})});
-const REC=AOGRecorder.attach({context:()=>ctx(), tap:()=>LIVE_CH.lim, lang:()=>S.lang,
+const REC=AOGRecorder.attach({context:()=>ctx(), tap:()=>LIVE_CH.ceil.output, lang:()=>S.lang,
   what:GTR?{en:"the guitar",es:"la guitarra"}:{en:"the bass",es:"el bajo"}, prefix:GTR?{en:"Guitar",es:"Guitarra"}:{en:"Bass",es:"Bajo"},
   file:GTR?{en:"guitar-take",es:"guitarra-toma"}:{en:"bass-take",es:"bajo-toma"}, shelf:INST+"bench", bpm:()=>curBpm(),
   notes:()=>({room:INST, sound:S.sound, set:{era:S.era, rig:rigFor(S.sound), rigOf:S.sound}}),   /* AOG-NOTES-V1: the notes, the sound, its amp as set */
@@ -2083,7 +2100,7 @@ window.AOGRoomRender={
     setSound(ch, id);
     if(set.rig && set.rigOf===id){ try{ const st=AOGAmp.normalize(set.rig, GTR?"guitar":"bass"); if(SOUNDS[id].pick) st.pickup=SOUNDS[id].pick; ch.rig.set(st); }catch(e){} }   /* the amp as it was set for the take */
     ch.lp.frequency.value=eraHz(era); if(ch.crunch) ch.crunch.parameters.get("era").value=era;
-    ch.lim.disconnect(); ch.lim.connect(oc.destination); K.space(oc, ch.lim, oc.destination, p.space);   /* the take is heard before the Volume */
+    ch.ceil.output.disconnect(); ch.ceil.output.connect(oc.destination); K.space(oc, ch.bus, ch.pre, p.space);   /* the take is heard before the Volume; the room before the limiter, as live (AOG-STRUM-CLEAN-V1) */
     const same=p.was==null || id===p.was;   /* the recording a note used, only on the sound it was played with */
     const RS=REAL.sets[recOf(id)];
     evs.forEach(e=>{ FORCE_Z=same && e.z!=null ? e.z : null;
@@ -2371,11 +2388,11 @@ function litNeck(){
   handChanged();    /* AOG-HAND-STYLE-V1: the style follows the frets you hold */
   learnLit();       /* AOG-LEARN-V1 */
 }
-/* ══ AOG-LEARN-V1 (2026-10-11) — Learn a song, the guitar's side. aog-learn-ui.js plays the song and teaches; it asks the
+/* ══ AOG-LEARN-V1 (2026-10-11) — Learn a song, the bass's side. aog-learn-ui.js plays the song and teaches; it asks the
    neck to show a chord (the guitar: its shape where the hand is, shapeFor; the bass: the lowest root the hand reaches,
    bassRoot, ringed, and the chord's other notes on the frets in view) or the notes to play (each at its place nearest the
    hand, cellFor; when one is off the frets in view, the neck moves to it, unless a finger is on it). What the hands play
-   (a fret, a strum, a chord button, a MIDI keyboard) reaches it through AOGRecorder.note; a real guitar through
+   (a fret, a strum, a chord button, a MIDI keyboard) reaches it through AOGRecorder.note; a real bass through
    aog-liveinput.js. The neck's own key and tempo stay as they are unless the learner asks (Play in the song's key). ══ */
 var LEARN={chord:null, ms:null};   /* var: litNeck may run before this line does */
 /* AOG-LEARN-V2: the guitar has no capo of its own, so a capo shape (Use the capo in Learn a song) is the open shape the

@@ -75,8 +75,14 @@
     try { new MutationObserver(function () { sig = ""; paint(); }).observe(D.documentElement, { attributes: true, attributeFilter: ["lang"] }); } catch (e) {}
     /* a sound set by the page itself, with no event. AOG-STEADY-ALL-V1: only a new value is looked at (the whole list was read
        and compared every 0.6 s, in every room the Studio keeps open, while you played) */
+    /* AOG-REST-IDLE-V1 (2026-10-17): no checking every 0.6 s. The page's own sets of the menu (value, selectedIndex) are
+       heard as they happen, and the menus follow at once. */
     var seenV = src.value;
-    setInterval(function () { if (D.hidden || src.value === seenV) return; seenV = src.value; paint(); }, 600);
+    function heard() { if (src.value === seenV) return; seenV = src.value; paint(); }
+    ["value", "selectedIndex"].forEach(function (k) {
+      var d = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, k); if (!d || !d.set) return;
+      try { Object.defineProperty(src, k, { configurable: true, get: function () { return d.get.call(this); }, set: function (v) { d.set.call(this, v); heard(); } }); } catch (e) {}
+    });
     var st = D.createElement("style");
     st.textContent = ".sp-wrap{margin:.7rem 0 .2rem}.sp-row{display:flex;flex-wrap:wrap;gap:.6rem .8rem}.sp-row .field{flex:1 1 12rem;min-width:0}" +
       ".sp-row select{width:100%}.sp-wrap .line{margin-top:.35rem}" +

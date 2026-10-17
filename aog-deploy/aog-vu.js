@@ -60,10 +60,11 @@
      last played: every sound a room starts (it wakes the meters, here and in the Studio around it) and every touch or key
      on this page. AOGVU.still(ms) is true once nothing has happened for ms; work that can wait (the Studio fetching the
      rooms not opened yet) waits for it, so it never lands between two notes. */
-  var STIR = 0;
+  var STIR = 0, ARM = [], LIVEIN = false;   /* AOG-REST-IDLE-V1: the meters' slow checks, and whether a live input is open */
+  function armAll() { for (var i = 0; i < ARM.length; i++) try { ARM[i](); } catch (e) {} }
   /* AOG-STEADY-ALL-V1: a touch in a room is a touch in the Studio too (the turntables' pads and a held finger start no
      new sound, so the Studio did not know the room was being played, and fetched the other rooms meanwhile) */
-  function stir() { STIR = Date.now(); try { if (window.parent !== window && window.parent.AOGVU && window.parent.AOGVU.stir) window.parent.AOGVU.stir(); } catch (e) {} }
+  function stir() { STIR = Date.now(); armAll(); try { if (window.parent !== window && window.parent.AOGVU && window.parent.AOGVU.stir) window.parent.AOGVU.stir(); } catch (e) {} }
   try { ["pointerdown", "keydown"].forEach(function (k) { document.addEventListener(k, stir, { capture: true, passive: true }); }); } catch (e) {}
   /* AOG-STEADY-ALL-V1 (2026-10-17) — Jimmy: "after a certain number of notes are played, it freezes up for a note or two".
      The Studio keeps the last rooms open out of sight, and a room out of sight only knew its own hands: it was "still",
@@ -77,7 +78,7 @@
   }
   function quietFor(ms) { return Date.now() - STIR >= ms && !elsewhere(ms); }
   function wake() {
-    STIR = Date.now();
+    STIR = Date.now(); armAll();
     for (var i = 0; i < WAKE.length; i++) try { WAKE[i](); } catch (e) {}
     try { if (window.parent !== window && window.parent.AOGVU && window.parent.AOGVU.wake) window.parent.AOGVU.wake(); } catch (e) {}
   }
@@ -89,6 +90,11 @@
       var o = P.start;
       P.start = function () { if (!(OWN && OWN.has(this))) wake(); return o.apply(this, arguments); };
     });
+    /* AOG-REST-IDLE-V1: a microphone or a cable has no start; once one is open the slow check keeps listening */
+    var AC = window.AudioContext || window.webkitAudioContext, CP = AC && AC.prototype, oms = CP && CP.createMediaStreamSource;
+    if (oms) CP.createMediaStreamSource = function () { LIVEIN = true; armAll(); return oms.apply(this, arguments); };
+    if (window.MediaStreamAudioSourceNode) { var MS = window.MediaStreamAudioSourceNode;
+      window.MediaStreamAudioSourceNode = function (c, o) { LIVEIN = true; armAll(); return new MS(c, o); }; window.MediaStreamAudioSourceNode.prototype = MS.prototype; }
     var MED = window.HTMLMediaElement && window.HTMLMediaElement.prototype, origPlay = MED && MED.play;
     if (origPlay) MED.play = function () { wake(); return origPlay.apply(this, arguments); };
   } catch (e) {}
@@ -204,8 +210,13 @@
     setTimeout(function () { M.shown = ""; show(null); }, 300);
     try { new ResizeObserver(function () { M.shown = ""; show(still() ? M.peak : (M.n[0] == null ? null : M.n)); }).observe(box); } catch (e) {}
     try { document.fonts && document.fonts.ready.then(function () { M.shown = ""; show(still() ? M.peak : null); }); } catch (e) {}
-    M.timer = setInterval(tick, 500); rouse();
-    M.stop = function () { clearInterval(M.timer); if (M.raf) cancelAnimationFrame(M.raf); M.raf = 0; var i = WAKE.indexOf(rouse); if (i >= 0) WAKE.splice(i, 1); };
+    /* AOG-REST-IDLE-V1 (2026-10-17) — "Rests when idle: no timer while nothing plays." The slow check is for sound with no
+       start of its own (a microphone, a cable, a record turning in a worklet). It runs while a live input is open or for
+       30 s after the last touch or sound; then it stops, and the next touch, sound or input starts it again. */
+    function arm() { if (!M.timer) M.timer = setInterval(tick, 500); }
+    var tick0 = tick; tick = function () { if (!LIVEIN && Date.now() - STIR > 30000) { clearInterval(M.timer); M.timer = 0; return; } tick0(); };
+    ARM.push(arm); arm(); rouse();
+    M.stop = function () { clearInterval(M.timer); M.timer = 0; var j = ARM.indexOf(arm); if (j >= 0) ARM.splice(j, 1); if (M.raf) cancelAnimationFrame(M.raf); M.raf = 0; var i = WAKE.indexOf(rouse); if (i >= 0) WAKE.splice(i, 1); };
     return M;
   }
   /* AOG-STUDIO-KEEP-V1 (2026-10-11): the Studio keeps the last rooms open out of sight; a room out of sight is silent. hush(true)
@@ -226,7 +237,9 @@
       HUSHED.forEach(function (c) { try { if (c.state === "suspended") c.resume(); } catch (e) {} }); HUSHED = [];
     }
   }
-  window.AOGVU = { levels: levels, mount: mount, draw: draw, wake: wake, hush: hush, own: ownCtx, still: quietFor, elsewhere: elsewhere, stir: stir };
+  /* AOG-REST-IDLE-V1: a page that sleeps when nothing happens asks to be woken by any sound starting or any touch (onWake) */
+  function onWake(f) { if (typeof f === "function" && WAKE.indexOf(f) < 0) WAKE.push(f); }
+  window.AOGVU = { levels: levels, mount: mount, draw: draw, wake: wake, hush: hush, own: ownCtx, still: quietFor, elsewhere: elsewhere, stir: stir, onWake: onWake };
 
   /* ══ AOG-STUDIO-ROOM-SOUND-V1 (Jimmy, 2026-10-09: "1, 3, 2, 4" — 3: make it sound like a real room). One knob, shared by
      every instrument room: Dry, Small room, Studio, Hall. The room is a reverb made here (a stereo tail that dies away and
@@ -299,8 +312,10 @@
   var ROOM = {
     presets: PRE, get: cur, set: set, chains: CH, lib: roomsLib,
     ir: ir,   /* AOG-NOTES-V1: a room's re-render of its notes puts the same room on them (aog-recorder.js) */
-    live: function (ctx, g) { if (!ctx.__aogRoomLive) { ctx.__aogRoomLive = chain(ctx, g, ctx.destination); } return ctx.__aogRoomLive; },
-    rec: function (ctx, tap, node) { if (tap && node && !node.__aogRoom) node.__aogRoom = chain(ctx, tap, node); },
+    /* AOG-STRUM-CLEAN-V1: a room may put the room sound inside its own chain, before its limiter (from → the room → to);
+       its takes then already carry it. Otherwise it is added to what reaches the speakers */
+    live: function (ctx, g, to) { if (!ctx.__aogRoomLive) { ctx.__aogRoomLive = chain(ctx, g, to || ctx.destination); ctx.__aogRoomLive.inside = !!to; } return ctx.__aogRoomLive; },
+    rec: function (ctx, tap, node) { if (ctx.__aogRoomLive && ctx.__aogRoomLive.inside) return; if (tap && node && !node.__aogRoom) node.__aogRoom = chain(ctx, tap, node); },
     /* the knob: a small black knob with a gold line; a tap turns it one step (Dry → Small room → Studio → Hall → Church → Dry);
        ← → and ↑ ↓ turn it too. Its name shows beside it. */
     knob: function (el, opts) {
