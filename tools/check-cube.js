@@ -49,7 +49,7 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
     const ctx = await b.newContext({ viewport: vp, isMobile: !!touch, hasTouch: !!touch, permissions: ["camera"] });
     await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, r => r.abort());
     const p = await ctx.newPage(); p.errs = []; p.on("pageerror", e => p.errs.push(e.message));
-    await ctx.addInitScript(([sp, way]) => { try { if (!localStorage.getItem("aog.cube.v1")) localStorage.setItem("aog.cube.v1", JSON.stringify(Object.assign(sp ? { speed: sp } : {}, way ? { method: way, wayV: 2 } : { method: "steps", wayV: 2 }))); } catch (e) {} }, [speed || null, way || null]);
+    await ctx.addInitScript(([sp, way]) => { try { if (!localStorage.getItem("aog.cube.v1")) localStorage.setItem("aog.cube.v1", JSON.stringify(Object.assign(sp ? { speed: sp } : {}, way ? { method: way, wayV: 3 } : { method: "steps", wayV: 3 }))); } catch (e) {} }, [speed || null, way || null]);
     await p.goto(URL + "#" + (hash || "learn")); await p.waitForTimeout(800);
     const cdp = await ctx.newCDPSession(p);
     p.tp = (type, pts) => cdp.send("Input.dispatchTouchEvent", { type, touchPoints: type === "touchEnd" ? [] : pts.map(([x, y], id) => ({ x, y, id })) });
@@ -153,8 +153,8 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
     await p.evaluate(() => { const S = JSON.parse(localStorage.getItem("aog.cube.v1")); delete S.method; delete S.wayV; localStorage.setItem("aog.cube.v1", JSON.stringify(S)); }); await p.reload(); await p.waitForTimeout(600);
     await p.evaluate(() => { scrollTo(0, 0); document.querySelector('#panel [data-act="mix"]').click(); });
     let found = false; try { await p.waitForSelector("#actBar:not([hidden]) [data-act='gnext']", { timeout: 30000 }); found = true; } catch (e) {}
-    const way = await p.$eval("#waySel", s => s.value).catch(() => "");
-    ok(found && way === "short", "Solve with me starts on the short way: a mixed cube gets its short way at once (" + way + ")");
+    const kick = await p.textContent("#panel .kicker").catch(() => ""), menu = await p.$("#waySel");
+    ok(found && /fewest moves/i.test(kick) && !menu, "Solve with me has one way, the fewest moves: a mixed cube gets them at once, with no Way menu (" + kick + ")");
     await p.evaluate(() => scrollTo(0, 0));
     const lay = await p.evaluate(() => { const st = document.getElementById("stage").getBoundingClientRect(), bar = document.getElementById("actBar").getBoundingClientRect(), btn = document.querySelector("#actBar [data-act='gnext']").getBoundingClientRect();
       return { cube: st.top >= 0 && st.bottom <= bar.top + 2, btn: btn.bottom <= innerHeight && btn.top >= 0, text: document.querySelector("#actBar .ab-move").textContent }; });
@@ -219,12 +219,6 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
     ok(/Practice ·/.test(k0) && /is finished/.test(await p.textContent("#panel")) && !!(await p.$('#panel [data-act="drill"]')), `practising one step ends on that step, with Again (${k} moves)`); }
   /* the three kinds of help */
   await p.click('#panel [data-act="undrill"]'); await p.waitForTimeout(200);
-  /* the faster way in Solve with me: chosen under the card, it leads a mixed cube to Solved, in its four steps */
-  { await p.click('#panel [data-act="mix"]'); await p.waitForTimeout(150); await p.selectOption("#waySel", "faster"); await p.waitForTimeout(150);
-    const k0 = await p.textContent("#panel .kicker"); let fn = 0, kinds = new Set();
-    while (fn < 200 && await p.$('#panel [data-act="gnext"]')) { kinds.add((await p.textContent("#panel .kicker")).split("·")[1]); await p.click('#panel [data-act="gnext"]'); fn++; }
-    ok(/of 4/.test(k0) && /Solved!/.test(await p.textContent("#panel")) && fn < 110, `the faster way leads a mixed cube to Solved in ${fn} moves, through its steps (${[...kinds].map(x => (x || "").trim()).join(", ")})`);
-    await p.click('#panel [data-act="mix"]'); await p.waitForTimeout(150); await p.selectOption("#waySel", "steps"); }
   await p.selectOption("#levelSel", "own"); await p.waitForTimeout(150);
   const own = await p.evaluate(() => ({ tok: !!document.querySelector("#panel .move-big .tok"), arrow: document.getElementById("arrow").innerHTML.length, aim: !!document.querySelector("#panel .aim") }));
   ok(!own.tok && !own.arrow && !own.aim, "On my own: no move, no arrow, no goal until asked");
@@ -235,12 +229,6 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
   ok(await p.evaluate(() => !!document.querySelector("#panel .move-big .tok") && document.getElementById("arrow").innerHTML.length > 0), "Show me the move shows the move and its arrow");
   const hb = await hist(p); await p.click('#panel [data-act="gnext"]'); await p.waitForTimeout(150); ok(await hist(p) === hb + 1, "and Turn it turns it");
   await p.selectOption("#levelSel", "every");
-  /* Show me the short way: found off the page, then followed with Turn it to Solved, in about 20 moves */
-  await p.click('#panel [data-act="mix"]'); await p.waitForTimeout(150);
-  await p.click('#panel [data-act="short"]');
-  let shortOk = false; try { await p.waitForSelector("#panel .kicker:has-text('The short way')", { timeout: 30000 }); shortOk = true; } catch (e) {}
-  let sn = 0; if (shortOk) while (sn < 40 && await p.$('#panel [data-act="gnext"]')) { await p.click('#panel [data-act="gnext"]'); sn++; }
-  ok(shortOk && sn > 0 && sn <= 22 && /Solved!/.test(await p.textContent("#panel")), `Show me the short way solves a mixed cube in ${sn} moves (no more than 22)`);
   ok(!p.errs.length, "no page errors (computer) " + p.errs.join("; "));
   await p.ctx.close();
 
