@@ -995,7 +995,8 @@ const SEGS = 8;
 const BANKS = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O"];   /* AOG-DRUM-KITS-V3: and J to O */
 function bankObj(){ const o={}; BANKS.forEach(b=>o[b]={}); return o; }
 /* AOG-DRUM-REAL-V1 (2026-10-04) — the recorded kits (aog-drumkit.js) join the Sounds menu after the kits built here, each with a beat to start from */
-if(window.AOGDrumKit){ AOGDrumKit.ids.forEach(b=>{ if(BANKS.indexOf(b)<0) BANKS.push(b); }); AOGDrumKit.starters.forEach(p=>{ if(!STARTERS.some(x=>x.id===p.id)) STARTERS.push(p); }); }
+/* AOG-DRUM-PERC-V1: the retired machine keeps its own kits; the hand drums and the tabla live in the Drum Machine and the Drum Kit */
+if(window.AOGDrumKit){ const own=b=>!(AOGDrumKit.hand && AOGDrumKit.hand(b)); AOGDrumKit.ids.filter(own).forEach(b=>{ if(BANKS.indexOf(b)<0) BANKS.push(b); }); AOGDrumKit.starters.filter(p=>!p.hand).forEach(p=>{ if(!STARTERS.some(x=>x.id===p.id)) STARTERS.push(p); }); }
 BEATS.forEach(p=>{ if(!STARTERS.some(x=>x.id===p.id)) STARTERS.push(p); });   /* AOG-DRUM-BEATS-V1: after the kits' beats */
 const S = { bench:(function(){ try{ return localStorage.getItem("aog.drums.bench")||"simple"; }catch(e){ return "simple"; } })(), lang: localStorage.getItem("aog.lang")==="es"?"es":"en", theme: document.documentElement.getAttribute("data-theme")||"light",
   view:"home", bpm:96, swing:0.50, vol:0.8, outF:0.78, bit:true, sliderMode:"mix",

@@ -279,8 +279,9 @@ const PAD_WORD={KICK:["Kick","Bombo"],SNARE:["Snare","Caja"],HAT:["Hi-hat","Char
 const KIND={HAT:"hat",OPEN:"hat",CRASH:"cym",RIDE:"cym",CHINA:"cym",SIZZLE:"cym",FLUTTR:"cym",BELL:"cym",BELLS:"cym",
   XSTICK:"small",STICKS:"small",RIM:"small",STIR:"small",PEDAL:"pedal"};
 function padName(b, id){ return (AOGDrumKit.padNames(b)||{})[id]||""; }
-function padWord(b, id){ const n=padName(b, id), w=PAD_WORD[n]; return w ? w[S.lang==="es"?1:0] : (n.charAt(0)+n.slice(1).toLowerCase()); }
-function padKind(b, id){ return KIND[padName(b, id)]||"drum"; }
+function padWord(b, id){ const own=AOGDrumKit.padWord && AOGDrumKit.padWord(b, id, S.lang); if(own) return own;   /* AOG-DRUM-PERC-V1: a pad's own words */
+  const n=padName(b, id), w=PAD_WORD[n]; return w ? w[S.lang==="es"?1:0] : (n.charAt(0)+n.slice(1).toLowerCase()); }
+function padKind(b, id){ return KIND[padName(b, id)]||(AOGDrumKit.look && AOGDrumKit.look(b, id))||"drum"; }
 const KIT_LOOK={
   wine:{sh:["#3a0a0d","#8e1d24","#d9555c","#8e1d24","#5a1015","#2a0709"]},
   blue:{sh:["#06173d","#14408f","#6fa3f0","#1d4fa8","#0d2a6b","#050f2a"]},
@@ -293,6 +294,7 @@ const KIT_LOOK={
 };
 const KIT_OF={A:"ekit",B:"ekit",C:"ekit",D:"ekit",F:"ekit",L:"ekit",E:"maple",G:"burst",H:"maple",I:"wine",J:"blue",K:"pearl",M:"green",N:"maple",O:"pearl",
   P:"maple",Q:"black",R:"pearl",S:"blue",T:"black",U:"burst",V:"pearl",W:"green",X:"burst",Y:"maple"};
+Object.assign(KIT_OF, {HP:"maple", HD:"burst", HC:"green", TB:"maple"});   /* AOG-DRUM-PERC-V1: the hand drums and the tabla */
 const DARK_CYM={K:1,R:1,U:1,V:1};   /* the jazz kits: dark, dry cymbals */
 function kitLook(b){ const L=KIT_LOOK[KIT_OF[b]||"wine"]; return Object.assign({dark:!!DARK_CYM[b]}, L); }
 function drawKit(o){   /* the drum machine's drawing (music-drums.html, AOG-KIT-REAL-V1), with each kit's own instruments */
@@ -441,11 +443,18 @@ function choke(at){   /* stops the open hats that have started by then (a beat's
   for(let i=OPEN.length-1;i>=0;i--){ const o=OPEN[i]; if((o.at||0)>at+0.001) continue; OPEN.splice(i,1); try{ o.gain.gain.setTargetAtTime(0, at, 0.012); o.src.stop(at+0.1); }catch(e){} }
 }
 function light(id, ms){ document.querySelectorAll(`[data-pad="${id}"]`).forEach(el=>{ el.classList.add("hit"); setTimeout(()=>el.classList.remove("hit"), ms||90); }); }
+const RING={};   /* AOG-DRUM-PERC-V1: the last stroke of each hand drum */
 function sound(b, id, when, accent, level){
   const n=padName(b, id);
   if(n==="HAT" || n==="PEDAL") choke(when);
   const o=AOGDrumKit.playDirect(ac, bus, b, id, when, accent, level);
   if(o){ o.at=when; if(n==="OPEN") OPEN.push(o); }
+  /* AOG-DRUM-PERC-V1: one drum, one ring: a new stroke on a hand drum, a muted triangle or the bayan's ke stops the last
+     stroke of that drum still ringing, as the hand on the skin does */
+  const dg=o && AOGDrumKit.drumOf ? AOGDrumKit.drumOf(b, id) : "";
+  if(dg){ const key=b+":"+dg, was=RING[key];
+    if(was && was!==o){ try{ const at=Math.max(when, was.at||0); was.gain.gain.setTargetAtTime(0, at, 0.015); was.src.stop(at+0.12); }catch(e){} }
+    RING[key]=o; }
   return o;
 }
 function hit(b, id, accent){
@@ -517,6 +526,7 @@ function beatText(){
   beatPaint();
 }
 function pickBeat(key){ if(!beatAt(key)) return; S.beat=key; beatOwn(beatAt(key)); save(); $("beatSel").value=key; $("dkBeatSel").value=key;
+  { const hb=beatAt(key); if(hb.hand && hb.kit && hb.kit!==S.bank && KITS().indexOf(hb.kit)>=0) pickKit(hb.kit); }   /* AOG-DRUM-PERC-V1: a hand-drum groove brings its kit */
   if(BT.on){ BT.step=0; BT.part=0; } beatPaint(); LES.mark("beat1"); lessonSong(); }
 function setTempo(n){ S.bpm=Math.max(40, Math.min(220, Math.round(n))); save(); beatPaint();
   LES.mark("tempo1"); if(S.bpm>=140) LES.mark("tfast"); if(S.bpm<=70) LES.mark("tslow"); }
