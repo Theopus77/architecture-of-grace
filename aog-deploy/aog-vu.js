@@ -61,9 +61,21 @@
      on this page. AOGVU.still(ms) is true once nothing has happened for ms; work that can wait (the Studio fetching the
      rooms not opened yet) waits for it, so it never lands between two notes. */
   var STIR = 0;
-  function stir() { STIR = Date.now(); }
+  /* AOG-STEADY-ALL-V1: a touch in a room is a touch in the Studio too (the turntables' pads and a held finger start no
+     new sound, so the Studio did not know the room was being played, and fetched the other rooms meanwhile) */
+  function stir() { STIR = Date.now(); try { if (window.parent !== window && window.parent.AOGVU && window.parent.AOGVU.stir) window.parent.AOGVU.stir(); } catch (e) {} }
   try { ["pointerdown", "keydown"].forEach(function (k) { document.addEventListener(k, stir, { capture: true, passive: true }); }); } catch (e) {}
-  function quietFor(ms) { return Date.now() - STIR >= ms; }
+  /* AOG-STEADY-ALL-V1 (2026-10-17) — Jimmy: "after a certain number of notes are played, it freezes up for a note or two".
+     The Studio keeps the last rooms open out of sight, and a room out of sight only knew its own hands: it was "still",
+     so it unpacked its recordings while another room was being played. A room out of sight (hushed) is still only when
+     the whole Studio is: no sound started and nothing touched in any room (the Studio hears every room's sounds, wake()).
+     AOGVU.elsewhere(ms) says that something is being played in another room right now. */
+  var HUSH_ON = false;
+  function elsewhere(ms) {
+    if (!HUSH_ON) return false;
+    try { var T = window.top; return T !== window && !!(T.AOGVU && T.AOGVU.still && !T.AOGVU.still(ms)); } catch (e) { return false; }
+  }
+  function quietFor(ms) { return Date.now() - STIR >= ms && !elsewhere(ms); }
   function wake() {
     STIR = Date.now();
     for (var i = 0; i < WAKE.length; i++) try { WAKE[i](); } catch (e) {}
@@ -162,7 +174,7 @@
       M.raf = 0;
       if (!seen()) return;
       var v = read(), now = Date.now(), loud = v && Math.max(v[0], v[1]) > -50, rest;
-      if (loud) M.until = now + 1500;
+      if (loud) { M.until = now + 1500; STIR = now; }   /* AOG-STEADY-ALL-V1: sound being heard (a record playing) is not still */
       if (still()) {
         if (loud) { M.quietAt = now; if (!M.peak || v[0] > M.peak[0] + 0.5 || v[1] > M.peak[1] + 0.5) M.peak = [Math.max(v[0], M.peak ? M.peak[0] : -90), Math.max(v[1], M.peak ? M.peak[1] : -90)]; }
         else if (M.peak && now - M.quietAt > 3000) M.peak = null;
@@ -204,6 +216,7 @@
      hush() also tells the page with an "aog-hush" event ({detail:{on}}), so timers, the mic and polling stop out of sight. */
   function ownCtx(c) { if (c && typeof c.suspend === "function" && CTXS.indexOf(c) < 0) CTXS.push(c); return c; }
   function hush(on) {
+    HUSH_ON = !!on;   /* AOG-STEADY-ALL-V1 */
     try { window.dispatchEvent(new CustomEvent("aog-hush", { detail: { on: !!on } })); } catch (e) {}
     if (on) {
       CTXS.forEach(function (c) { try { if (c.state === "running" && HUSHED.indexOf(c) < 0) { c.suspend(); HUSHED.push(c); } } catch (e) {} });
@@ -213,7 +226,7 @@
       HUSHED.forEach(function (c) { try { if (c.state === "suspended") c.resume(); } catch (e) {} }); HUSHED = [];
     }
   }
-  window.AOGVU = { levels: levels, mount: mount, draw: draw, wake: wake, hush: hush, own: ownCtx, still: quietFor };
+  window.AOGVU = { levels: levels, mount: mount, draw: draw, wake: wake, hush: hush, own: ownCtx, still: quietFor, elsewhere: elsewhere, stir: stir };
 
   /* ══ AOG-STUDIO-ROOM-SOUND-V1 (Jimmy, 2026-10-09: "1, 3, 2, 4" — 3: make it sound like a real room). One knob, shared by
      every instrument room: Dry, Small room, Studio, Hall. The room is a reverb made here (a stereo tail that dies away and

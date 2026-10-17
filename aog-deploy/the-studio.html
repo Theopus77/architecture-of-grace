@@ -231,6 +231,9 @@ body { zoom:1 !important; }   /* full size: the rooms inside draw on canvases (C
 .tp-line { flex:1 1 12rem; min-width:0; color:var(--ink); font-weight:700; font-size:.92rem; }
 .tp-line:empty { display:none; }
 .tp-b:focus-visible { outline:3px solid #c9a24b; outline-offset:2px; }
+/* AOG-STEADY-ALL-V1: the site's floating My notes button sat over the room's instrument (a tap there played nothing and
+   opened a drawer over the keys); the Studio has no reading of its own, so it has none */
+.aog-mkbtn { display:none !important; }
 /* an ID, so the site's serif heading rule (aog-grace.css) leaves this small label alone */
 #mtH { margin:0; flex:0 0 auto; font:800 .74rem/1.2 var(--sans) !important; letter-spacing:.14em !important; text-transform:uppercase; color:var(--muted); }
 .mt ul { list-style:none; margin:0; padding:2px; display:flex; gap:6px; overflow-x:auto; overscroll-behavior-x:contain; flex:1 1 auto; min-width:0; }
@@ -492,7 +495,8 @@ html:root:root body { --room:#17110c; background-color:#17110c !important;
   function calm(fn, own) {
     var V = window.AOGVU;
     if (V && V.still && !V.still(5000)) { var t = setTimeout(function () { calm(fn, own); }, 1500); if (own) warmT = t; return; }
-    if (window.requestIdleCallback) requestIdleCallback(fn, { timeout: 2000 }); else fn();
+    /* AOG-STEADY-ALL-V1: and still once the quiet moment comes (it can come two seconds later, when playing has begun) */
+    if (window.requestIdleCallback) requestIdleCallback(function () { if (V && V.still && !V.still(5000)) calm(fn, own); else fn(); }, { timeout: 2000 }); else fn();
   }
   function warmSoon() { clearTimeout(warmT); warmT = setTimeout(function () { calm(warm, true); }, 5000); }
   function warm() {

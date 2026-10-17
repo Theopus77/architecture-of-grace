@@ -86,7 +86,12 @@
        instrument gets the screen: on a phone first, and since AOG-STUDIO-ROOMY-V1 on an iPad and a computer too (Jimmy,
        2026-10-09: the bars were taking "a huge portion of the screen") */
     ss.textContent = "html.in-studio .labdoors,html.in-studio .aogtop,html.in-studio .aogtop-spacer{display:none!important}" +
-      "html.in-studio [data-aog-hero]{display:none!important}";
+      "html.in-studio [data-aog-hero]{display:none!important}" +
+      /* AOG-STEADY-ALL-V1 (2026-10-17) — Jimmy: "after a certain number of notes are played, it freezes up for a note or
+         two". The floating My notes button sat on top of the instrument (the highest keys, the strum strip): a finger
+         landing there played nothing and opened the notes drawer, and the next taps landed on the drawer. Inside the
+         Studio the instrument has the screen. */
+      "html.in-studio .aog-mkbtn{display:none!important}";
     (D.head || D.documentElement).appendChild(ss);
     D.addEventListener("click", function (e) {
       var a = e.target.closest && e.target.closest("a[href]");

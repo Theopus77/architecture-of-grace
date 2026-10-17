@@ -1395,16 +1395,27 @@ function paintSteps(){
   const n=S.bars*16, bi=S.bank, pi=S.sel, on=new Set();
   S.ev.forEach(e=>{ if(e.b===bi && e.p===pi && e.t<loopLen()) on.add(Math.floor(e.t/24)); });
   const d=padDefs(bi)[pi]||{name:""};
-  $("stepsH").textContent=t("stepsH",{n:pi+1, name:d.name});
+  txt("stepsH", t("stepsH",{n:pi+1, name:d.name}));
+  /* AOG-STEADY-ALL-V1 (2026-10-17) — Jimmy: "after a certain number of notes are played, it freezes up for a note or two".
+     Each new pad played made its row of steps again from nothing (and the page's helpers read the new row), between two
+     hits. The steps already there are now changed in place, only where they differ. */
+  const box=$("steps"), kids=box.children;
+  if(kids.length===n){
+    for(let i=0;i<n;i++){ const b=kids[i], cl=`st${i%4===0?" beat":""}${i===stepNow?" now":""}`, pr=String(on.has(i)), al=t("stepN",{n:i+1});
+      if(b.className!==cl) b.className=cl; if(b.getAttribute("aria-pressed")!==pr) b.setAttribute("aria-pressed", pr); if(b.getAttribute("aria-label")!==al) b.setAttribute("aria-label", al); }
+    return;
+  }
   let h=""; for(let i=0;i<n;i++) h+=`<button type="button" class="st${i%4===0?" beat":""}${i===stepNow?" now":""}" data-s="${i}" aria-pressed="${on.has(i)}" aria-label="${esc(t("stepN",{n:i+1}))}">${i%4===0?(i/4+1):""}</button>`;
   $("steps").innerHTML=h;
 }
+/* AOG-STEADY-ALL-V1: words written only when they change (each write is a change the page's helpers look at) */
+function txt(id, v){ const e=$(id); if(e && e.textContent!==v) e.textContent=v; }
 function paintPadSet(){
   const P=padSet(S.bank, S.sel);
-  $("padSetSum").textContent=t("padSet",{n:S.sel+1});
+  txt("padSetSum", t("padSet",{n:S.sel+1}));
   $("vol").value=P.vol; $("tune").value=P.tune; $("pan").value=P.pan;
-  $("volVal").textContent=P.vol+"%"; $("tuneVal").textContent=t("semis",{n:(P.tune>0?"+":"")+P.tune});
-  $("panVal").textContent=P.pan===0 ? t("center") : P.pan<0 ? t("left",{n:-P.pan}) : t("right",{n:P.pan});
+  txt("volVal", P.vol+"%"); txt("tuneVal", t("semis",{n:(P.tune>0?"+":"")+P.tune}));
+  txt("panVal", P.pan===0 ? t("center") : P.pan<0 ? t("left",{n:-P.pan}) : t("right",{n:P.pan}));
 }
 function paintTransport(){
   $("playBtn").textContent=SEQ.on ? t("stop") : t("play"); $("playBtn").setAttribute("aria-pressed", SEQ.on?"true":"false");
