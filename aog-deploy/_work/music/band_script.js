@@ -328,6 +328,45 @@ Object.assign(STR, {
   creditVoices:{en:"The singers come from VocalSet by Julia Wilkins, Prem Seetharaman, Alison Wahl and Bryan Pardo (CC BY 4.0). We cut, tuned and moved their notes.",
     es:"Las voces vienen de VocalSet de Julia Wilkins, Prem Seetharaman, Alison Wahl y Bryan Pardo (CC BY 4.0). Cortamos, afinamos y movimos sus notas."}
 });
+/* AOG-BAND-WORLD-V1 (2026-10-13; finished 2026-10-17) — Jimmy: "DO them all" … "And finish the world instruments." Instruments
+   of the world, in their own group (World / Del mundo), each named with the place its tradition comes from. Real players: a
+   sitar (Dr. Narayan Bhagawan Raikar, CC0), an erhu (D. Smolken, Karoryfer Samples, CC0) and a didgeridoo (VCSL, Versilian
+   Studios, CC0). No koto or pan flute recording we may share was found, so the computer makes those two, and their names,
+   the ready line and the credits say so (made). Made by music-handoff/tools/band/world.py (sources, licences and every step
+   at its top). Each loads only when picked. Levels from bandt/level.js.
+   bend: each note starts lower and glides up into place (from semitones, held hold s, over dur s): the sitar's meend, the
+   erhu's slide. vib: the bow's vibrato (hz, cents each way, after delay s, growing over fade s), as the erhu library's own
+   instrument adds it. drone: one note under every chord, the home note of the key (a didgeridoo holds one note). */
+Object.assign(SOUNDS, {
+  sitar:   {grp:"grpWorld", en:"Sitar · India", es:"Sitar · India", gain:1.264, rev:0.18, stand:"pluck"},
+  sitar_meend:{grp:"grpWorld", en:"Sitar · India, with meend (a glide up into each note)", es:"Sitar · India, con meend (sube deslizándose a cada nota)", parts:["sitar"], bend:{from:-2, hold:0.07, dur:0.28}, gain:1.253, rev:0.18, stand:"pluck"},
+  koto:    {grp:"grpWorld", en:"Koto · Japan (made by computer)", es:"Koto · Japón (hecho por computadora)", gain:1.215, rev:0.2, stand:"pluck",
+    made:{en:"The computer makes this koto. It is not a recording.",es:"La computadora hace este koto. No es una grabación."}},
+  erhu:    {grp:"grpWorld", en:"Erhu · China", es:"Erhu · China", vib:{hz:5.8, cents:28, delay:0.25, fade:0.4}, gain:1.409, rev:0.18, stand:"string"},
+  erhu_slide:{grp:"grpWorld", en:"Erhu · China, with slides", es:"Erhu · China, con deslizamientos", parts:["erhu"], bend:{from:-2, hold:0.02, dur:0.16}, vib:{hz:5.8, cents:28, delay:0.3, fade:0.4}, gain:1.409, rev:0.18, stand:"string"},
+  panflute:{grp:"grpWorld", en:"Pan flute · the Andes (made by computer)", es:"Flauta de pan · los Andes (hecha por computadora)", gain:1.511, rev:0.22, stand:"wind",
+    made:{en:"The computer makes this pan flute. It is not a recording.",es:"La computadora hace esta flauta de pan. No es una grabación."}},
+  didgeridoo:{grp:"grpWorld", en:"Didgeridoo · Aboriginal Australia (hold the home note)", es:"Didgeridoo · Australia aborigen (mantén la nota de casa)", drone:true, gain:2.543, rev:0.12, stand:"wind"},
+  didgeridoo_rhythm:{grp:"grpWorld", en:"Didgeridoo · Aboriginal Australia, with a rhythm (hold the home note)", es:"Didgeridoo · Australia aborigen, con ritmo (mantén la nota de casa)", drone:true, gain:2.531, rev:0.12, stand:"wind"}
+});
+Object.assign(PLAYER, {sitar:1.584, koto:1.468, erhu:0.928, panflute:1.073, didgeridoo:1.416, didgeridoo_rhythm:1.139});
+Object.assign(PLUCKED, {sitar:1, koto:1});
+Object.assign(BOWED, {erhu:1});   /* a bow lets go gently */
+Object.assign(STR, {
+  grpWorld:{en:"World",es:"Del mundo"},
+  creditWorld:{en:"The sitar was recorded by Dr. Narayan Bhagawan Raikar, the erhu by D. Smolken (Karoryfer Samples) and the didgeridoo by Versilian Studios. All three are given to everyone (public domain). We found no koto or pan flute recording we may share, so the computer makes those two.",
+    es:"El sitar lo grabó el Dr. Narayan Bhagawan Raikar; el erhu, D. Smolken (Karoryfer Samples); y el didgeridoo, Versilian Studios. Los tres son regalos para todos (dominio público). No encontramos una grabación de koto ni de flauta de pan que podamos compartir, así que esos dos los hace la computadora."}
+});
+/* the glide into a note and the vibrato (bend, vib above): on the note's own playback rate, so a loop keeps its seams; the
+   vibrato's oscillator stops with the note (it is one of the note's sources) */
+function worldMove(c, s, snd, when, srcs){
+  const P=s.playbackRate, r=P.value;
+  if(snd.bend){ const b=snd.bend, lo=r*Math.pow(2, b.from/12); P.setValueAtTime(lo, when); if(b.hold) P.setValueAtTime(lo, when+b.hold); P.exponentialRampToValueAtTime(r, when+(b.hold||0)+b.dur); }
+  if(snd.vib){ const v=snd.vib, o=c.createOscillator(), g=gainAt(c, 0);
+    o.frequency.value=v.hz; g.gain.setValueAtTime(0, when+v.delay); g.gain.linearRampToValueAtTime(r*(Math.pow(2, v.cents/1200)-1), when+v.delay+v.fade);
+    o.connect(g); g.connect(P); o.start(when); srcs.push(o);
+    s.addEventListener("ended", ()=>{ try{ o.stop(); }catch(e){} try{ o.disconnect(); g.disconnect(); }catch(e){} }); }
+}
 function soundName(id){ const s=SOUNDS[id]; return s? (S.lang==="es"?s.es:s.en) : id; }
 /* the parts of a sound, as written (one player can take two parts) */
 function lineup(id){ return (SOUNDS[id]&&SOUNDS[id].parts) || [id]; }
@@ -477,6 +516,7 @@ function chordParts(c, vo){
   const has={}, add=(inst, m, bs, fifth)=>{ if(m==null || has[inst+":"+m]) return; has[inst+":"+m]=1; const p={inst:inst, m:m}; if(bs) p.bass=true; if(fifth) p.fifth=true; out.push(p); };
   const f5=fifthOf(c);   /* the timpani's second drum: the chord's own fifth (AOG-BAND-SCALES-V1: Any chord has some without a perfect one) */
   if(parts.length===1 && SOUNDS[S.sound] && SOUNDS[S.sound].roots){ const inst=parts[0]; add(inst, fitIn(bass, inst), true); if(f5!=null) add(inst, fitIn(bass+f5, inst), true, true); return out; }
+  if(parts.length===1 && SOUNDS[S.sound] && SOUNDS[S.sound].drone){ const inst=parts[0]; add(inst, fitIn(36+S.key, inst), true); return out; }   /* AOG-BAND-WORLD-V1: the home note under every chord */
   if(parts.length===1){
     const inst=parts[0], seen={};
     vo.forEach(m=>{ const x=fitIn(m, inst); if(x!=null && !seen[x]){ seen[x]=1; out.push({inst:inst, m:x}); } });
@@ -832,6 +872,7 @@ function windVoice(c, ch, inst, m, v, when, art, swellTo, swellDur){
     const s=c.createBufferSource(); s.buffer=buf;
     s.playbackRate.value=Math.pow(2, (m-n)/12 - (man.tune[key]||0)/1200);
     if(glide){ const r=s.playbackRate.value; s.playbackRate.setValueAtTime(r*Math.pow(2, glide.from/12), when); s.playbackRate.exponentialRampToValueAtTime(r, when+glide.t); }
+    if(art!=="stac" && (snd.bend || snd.vib)) worldMove(c, s, snd, when, srcs);   /* AOG-BAND-WORLD-V1 */
     const gn=gainAt(c, g);
     if(gTo!=null){ gn.gain.setValueAtTime(g, when); gn.gain.linearRampToValueAtTime(gTo, when+swellDur); }
     else if(breathAt(set, key)){ gn.gain.setValueAtTime(0, when); gn.gain.linearRampToValueAtTime(g, when+0.008); }   /* AOG-BAND-BREATH-V1 */
@@ -1264,7 +1305,7 @@ function paintText(){
   $("sendBtn").textContent=t("send"); $("sendPadsBtn").textContent=t("sendPadsBtn"); $("padsBtn").textContent=t("padsBtn"); $("toPadsLab").textContent=t("toPadsLab"); $("sendPadsBtn").setAttribute("aria-label", t("sendPadsAria")); $("padsBtn").setAttribute("aria-label", t("padsAria")); REC.paint();
   $("era").setAttribute("aria-label", t("eraAria"));
   $("nav").innerHTML=navHtml();
-  $("foot").innerHTML=`<p>${t("credit")} ${t("creditClass")} ${t("creditVoices")} <a href="/audio/band/CREDITS.txt">${t("credits")}</a></p>`;
+  $("foot").innerHTML=`<p>${t("credit")} ${t("creditClass")} ${t("creditVoices")} ${t("creditWorld")} <a href="/audio/band/CREDITS.txt">${t("credits")}</a></p>`;
   paintSounds(); paintKeySel(); paintProgSel(); paintRhythm(); paintMood(); paintPads(); paintProg(); paintPlay(); paintTempo();
   paintDial(); paintLoad(); paintDrums(); paintScaleUI(); paintAny(); buildKeys(); bpText(); LES.paint();
   paintFx();   /* AOG-ROOM-PEDALS-V1 */
@@ -1284,7 +1325,7 @@ function paintFx(){
 document.addEventListener("change", e=>{ if(e.target && e.target.id==="soundSel") setTimeout(()=>{ if(FXSND!==S.sound) paintFx(); }, 0); });
 window.addEventListener("pagehide", ()=>{ if(paintFx.t){ clearTimeout(paintFx.t); saveFx(); } });
 /* the menu's groups, in this order (each group's sounds in the order of SOUNDS) */
-const GROUP_ORDER=["grpBrass","grpWinds","grpStrings","grpPerc","grpFolk","grpVoices","grpJazz","grpBands","grpAll"];
+const GROUP_ORDER=["grpBrass","grpWinds","grpStrings","grpPerc","grpFolk","grpVoices","grpWorld","grpJazz","grpBands","grpAll"];
 function paintSounds(){
   const sel=$("soundSel"), groups={}, order=[];
   Object.keys(SOUNDS).forEach(id=>{ const g=SOUNDS[id].grp||""; if(!groups[g]){ groups[g]=[]; order.push(g); } groups[g].push(id); });

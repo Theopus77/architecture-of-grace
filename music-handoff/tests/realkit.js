@@ -60,7 +60,8 @@ const LIFT={I:{ch:-54.0},J:{ch:-51.0,oh:-46.7},K:{ch:-49.0},L:{ch:-51.5,oh:-45.5
       return {bank:S.bank, files, rom:VOICES.every(v=>ROMK[b][v.id]&&ROMK[b][v.id].length>1000&&HIK[b][v.id]&&HIK[b][v.id].length>1000), names:VOICES.map(v=>padCaption(v)).join(" ")}; }, k);
     ok(counts[k].bank===k && counts[k].rom, `kit ${k} loads: ${counts[k].files} recordings, pads ${counts[k].names}`);
   }
-  ok(await p.evaluate("Object.keys(ROMK).filter(k=>realKit(k)).length")<=2, "only the last two recorded kits stay in memory: "+await p.evaluate("Object.keys(ROMK).filter(k=>realKit(k)).join(',')"));
+  /* AOG-DRUM-KEEP3-V1: the Drum Machine plays three kits at once, so the last three stay */
+  ok(await p.evaluate("Object.keys(ROMK).filter(k=>realKit(k)).length")<=3, "only the last three recorded kits stay in memory: "+await p.evaluate("Object.keys(ROMK).filter(k=>realKit(k)).join(',')"));
   ok(Math.abs(await p.evaluate("+memUsed().toFixed(3)")-mem0)<0.001, "the recorded kits use none of the 10 s sample memory ("+mem0+" s before and after)");
   /* every pad, three velocities, through the engine (1987 end of the dial) */
   const vel=await p.evaluate(async (REAL)=>{
