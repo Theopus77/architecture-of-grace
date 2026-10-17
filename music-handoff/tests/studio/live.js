@@ -93,6 +93,7 @@ async function tuneRead(p, ms) { await p.waitForTimeout(ms || 1500); return p.ev
   await s.waitForFunction(() => { const d = document.getElementById("room").contentDocument; return d && d.readyState === "complete" && d.documentElement.classList.contains("in-studio") && /music-guitar/.test(d.location.pathname); }, null, { timeout: 20000 });
   await s.waitForTimeout(1200);
   const f = s.frames().find(x => x.parentFrame() === s.mainFrame());
+  await f.selectOption("#aogMoreSel", "live"); await s.waitForTimeout(200);   /* AOG-ROOMS-COMPACT-V1: in the Studio, Plug in waits in More */
   await f.click("#aoglOn"); await f.waitForSelector("#aoglRec", { timeout: 10000 });
   await f.click("#aoglRec"); await f.waitForFunction(() => /Recording/.test(document.getElementById("aoglLine").textContent), null, { timeout: 8000 });
   await s.waitForTimeout(1200); await f.click("#aoglStop");

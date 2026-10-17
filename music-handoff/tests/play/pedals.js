@@ -349,6 +349,9 @@ const onNow = p => p.evaluate(() => [...document.querySelectorAll("#pedalsNear .
       await m.waitForFunction(f => { const fr = document.getElementById("room"), d = fr && fr.contentDocument; return fr && fr.getAttribute("data-file") === "/" + f && d && d.readyState === "complete" && d.documentElement.classList.contains("in-studio"); }, F[id], { timeout: 30000 });
       await m.waitForTimeout(1000);
       const fr = await (await m.$("#room")).contentFrame();
+      /* AOG-ROOMS-COMPACT-V1: in the Studio the whole board waits in More; open it there, as a person would */
+      const part = await fr.evaluate(() => { const s = document.getElementById("aogMoreSel"), k = document.getElementById("ampBlk"); return s && k ? k.getAttribute("data-aog-sec") : null; });
+      if (part) { await fr.selectOption("#aogMoreSel", part); await m.waitForTimeout(250); await fr.evaluate(() => scrollTo(0, 0)); }
       const pos = await fr.evaluate(([inst]) => { const n = document.getElementById("pedalsNear"), i = document.getElementById(inst), blk = document.getElementById("ampBlk"), r = e => e.getBoundingClientRect();
         const s = n.querySelector("select[data-addped]");
         return { shown: !n.hidden && r(n).height > 40, gap: Math.round(r(n).top - r(i).bottom), after: !!(i.compareDocumentPosition(n) & Node.DOCUMENT_POSITION_FOLLOWING), blkAfter: r(blk).top > r(n).bottom,
