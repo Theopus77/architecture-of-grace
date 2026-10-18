@@ -77,7 +77,8 @@ let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails+
       await p.evaluate(()=>{ S.key=9; S.minor=true; S.bpm=100; S.fret0=1; buildNeck(); });
       /* AOG-SOLO-MORE-LICKS-V1: eight groups in the menu, a few licks in each, every lick played below */
       const grp=await p.evaluate(()=>[...document.querySelectorAll("#soLickSel optgroup")].map(g=>({l:g.label, n:g.querySelectorAll("option").length})));
-      const ids=await p.evaluate(()=>[...document.querySelectorAll("#soLickSel option")].map(o=>o.value));
+      /* AOG-SOLO-GTRLICKS-V1: the first 57 are played here; the 65 newer ones (written against chords) in solo/guitarlicks.js */
+      const ids=await p.evaluate(()=>[...document.querySelectorAll("#soLickSel option")].map(o=>o.value).filter(id=>AOGSolo._t.LICKS[id]));
       ok(grp.length>=8 && grp.every(g=>g.n>=2) && ids.length>=57 && new Set(ids).size===ids.length, `${ids.length} licks in ${grp.length} groups: `+grp.map(g=>g.l+" "+g.n).join(", "));
       for(const id of ids){
         await p.selectOption("#soLickSel", id); await p.evaluate(()=>{ window.__v=[]; if(!window.__mv){ window.__mv=window.makeVoice; window.makeVoice=function(cx,ch,i,m,v,w,s){ if(cx===ac) __v.push(m); return __mv.apply(this,arguments); }; } });
