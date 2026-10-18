@@ -8,7 +8,7 @@
  * not run on this file. Forget the bump and returning visitors keep the stale
  * page from their cache.
  */
-const CACHE = 'aog-cache-2026.10.18.m7529'   // 122 GUITAR LICKS (aog-guitar-licks.js) (previous: m7528)
+const CACHE = 'aog-cache-2026.10.18.m7530'   // LICKS ON THE WHOLE SCREEN (aog-solo.js) (previous: m7529)
 // const CACHE = 'aog-cache-2026.10.18.m7528'   // 116 BASS LICKS IN SOLO (aog-bass-licks.js) (previous: m7527)
 // const CACHE = 'aog-cache-2026.10.18.m7527'   // TWELVE NEW DRUM KITS (AOG-DRUM-MORE-V1, AOG-KIT-LEVEL-V1), 8 AND 16 BAR LOOPS (AOG-PADS-16BARS-V1), THE LICKS UNDER THE NECK (AOG-SOLO-LICKNEAR-V2) (previous: m7526)
 // const CACHE = 'aog-cache-2026.10.18.m7526'   // THE CUBE LAB, LEARN: THE LESSON IN A BAR AT THE BOTTOM, ONE STEP AT A TIME (PHONE, UPRIGHT IPAD); EVERY LEARN STEP REWRITTEN IN SIMPLER WORDS (previous: m7525)

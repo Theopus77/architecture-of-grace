@@ -584,6 +584,21 @@ const CSS=`
 #rig .so-licks.so-near .row .pbtn{flex:0 0 auto;min-height:44px;white-space:nowrap}
 #rig .so-licks.so-near .tempo{margin-top:.45rem!important}
 #rig .so-licks.so-near .line{margin:.35rem 0 0}
+/* AOG-SOLO-LICKS-PV-V1: on the whole screen (an iPad, a computer, a phone on its side) the licks are one row under the neck */
+#playView .so-licks.so-pv{flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:6px 0 4px;margin:0;border-top:1px solid rgba(227,218,201,.18)}
+#playView .so-licks.so-pv[hidden]{display:none!important}
+#playView .so-pv .so-h,#playView .so-pv .line{display:none}
+#playView .so-pv .row{display:flex;align-items:center;gap:8px;flex:1 1 auto;min-width:0;margin:0}
+#playView .so-pv .field{display:flex;align-items:center;gap:8px;flex:1 1 auto;min-width:0;margin:0;max-width:30rem}
+#playView .so-pv .plab{font:700 14px/1.1 var(--sans);color:#e3dac9;white-space:nowrap;margin:0}
+#playView .so-pv select{flex:1 1 auto;min-width:0;min-height:40px;border-radius:10px;border:1px solid #5b5446;background:#22242a;color:#f6efdf;font:600 16px/1.1 var(--sans);padding:0 .6rem}
+#playView .so-pv .pbtn{flex:0 0 auto;min-height:40px;border-radius:10px;border:1px solid #5b5446;background:#22242a;color:#f6efdf;font:700 15px/1.1 var(--sans);padding:0 .8rem;white-space:nowrap}
+#playView .so-pv .pbtn[aria-pressed="true"]{background:#ffd36b;color:#1f1206;border-color:#ffd36b}
+#playView .so-pv .tempo{display:flex!important;flex-wrap:nowrap!important;align-items:center;gap:8px;flex:0 1 17rem;min-width:0;margin:0!important}
+#playView .so-pv .tempo .plab{font:700 14px/1.1 var(--sans);color:#e3dac9;white-space:nowrap}
+#playView .so-pv .tempo input{flex:1 1 auto;min-width:4rem}
+#playView .so-pv .tempo b{font:700 14px/1.1 var(--sans);color:#f1e9d6;white-space:nowrap}
+@media (max-width:720px){ #playView .so-pv .tempo{display:none!important} }
 #rig .so-sw{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.75rem}
 #rig .so-sw .pbtn{flex:1 1 9.5rem}
 #rig .pbtn.so-kill{border-color:#c4452a;color:#ffd0c8;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
@@ -671,8 +686,11 @@ function build(){
   /* AOG-SOLO-LICKNEAR-V2 (Jimmy, 2026-10-18: "Play this lick … needs to be closer to the fret board. One is unable to see the
      neck of the guitar while the licks are taking place"): in the Studio the room's controls sit between the neck and the
      solo panel, so the licks were a long scroll below the neck. They now sit right under the neck itself. */
-  const lk=bot.querySelector(".so-licks"), nb=$q("neckBox");
-  if(lk && nb){ lk.classList.add("so-near"); nb.after(lk); }
+  const lk=bot.querySelector(".so-licks");
+  if(lk){ lk.classList.add("so-near"); placeLicks();
+    /* AOG-SOLO-LICKS-PV-V1: the page's whole-screen view (body.aog-play) comes and goes; the licks follow it */
+    try{ let was=document.body.classList.contains("aog-play");
+      new MutationObserver(()=>{ const now=document.body.classList.contains("aog-play"); if(now!==was){ was=now; placeLicks(); } }).observe(document.body, {attributes:true, attributeFilter:["class"]}); }catch(e){} }
   wire();
   SO.built=true;
   return true;
@@ -706,8 +724,19 @@ function paintMode(){
   const rig=$q("rig"); if(rig) rig.classList.toggle("aog-solo-on", SO.on);
   document.body.classList.toggle("aog-solo-on", SO.on);   /* AOG-SOLO-PV-V1: the sideways play view's neck sits outside #rig */
   if(typeof window.pvHintPaint==="function") window.pvHintPaint();
-  $q("soloTop").hidden=!SO.on; $q("soloBottom").hidden=!SO.on; const lk=document.querySelector(".so-licks.so-near"), nb=$q("neckBox"); if(lk){ lk.hidden=!SO.on; if(SO.on && nb && nb.nextElementSibling!==lk) nb.after(lk); }   /* AOG-SOLO-LICKNEAR-V2: right under the neck, even after the Studio lays out the room's controls */
+  $q("soloTop").hidden=!SO.on; $q("soloBottom").hidden=!SO.on; const lk=document.querySelector(".so-licks.so-near"); if(lk){ lk.hidden=!SO.on; if(SO.on) placeLicks(); }   /* AOG-SOLO-LICKNEAR-V2: right under the neck, even after the Studio lays out the room's controls */
   $q("soloMode").querySelectorAll("[data-so-mode]").forEach(b=>b.setAttribute("aria-pressed", String((b.getAttribute("data-so-mode")==="solo")===SO.on)));
+}
+/* AOG-SOLO-LICKNEAR-V2, AOG-SOLO-LICKS-PV-V1 (Jimmy, 2026-10-18: "the licks drop down menu is not visible by the neck"): on
+   the page the licks sit right after the neck; on the whole screen the rest of the page is hidden, so they are a row of the
+   whole-screen view itself, under the neck */
+function placeLicks(){
+  const lk=document.querySelector(".so-licks.so-near"), nb=$q("neckBox"), pv=$q("playView"), pm=$q("pvNeck");
+  if(!lk) return;
+  const inPv=!!(pv && pm && document.body.classList.contains("aog-play"));
+  lk.classList.toggle("so-pv", inPv);
+  if(inPv){ if(lk.parentNode!==pv || pm.nextElementSibling!==lk) pm.after(lk); }
+  else if(nb && nb.nextElementSibling!==lk) nb.after(lk);
 }
 function paintScaleSel(){
   const sel=$q("soScaleSel"); if(!sel) return;
