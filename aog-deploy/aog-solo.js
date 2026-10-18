@@ -769,7 +769,13 @@ function paintLickSel(){
 const BLK={st:""};
 function bassLib(){ return !GTR && window.AOGBassLicks && window.AOGBassLicks.LICKS ? window.AOGBassLicks : null; }
 function lickSet(){ return GTR ? gtrSet() : (bassLib() ? bassLib().LICKS : {}); }
-function lickGroups(){ return GTR ? gtrGroups() : (bassLib() ? bassLib().GROUPS : []); }
+/* AOG-SOLO-LICKS-MATCH-V1 (Jimmy, 2026-10-18: "Make the bass and guitar pages match"): the Guitar's and the Bass's lick
+   menus have the same groups in the same order; Slide (the guitar's own) and Slap (the bass's own) take the same place */
+const LICK_GROUP_ORDER=["blues","rock","arena","hard80","metal","thrash","groove","shred","punk","funk","motown","disco","hiphop",
+  "neosoul","gospel","jazz","latin","reggae","afro","country","surf","pop","slow","dnb","slide","slap","fills"];
+function groupSort(G){ const at=g=>{ const i=LICK_GROUP_ORDER.indexOf(g); return i<0?LICK_GROUP_ORDER.length:i; };
+  return G.map((g,i)=>[g,i]).sort((a,b)=>at(a[0][0])-at(b[0][0]) || a[1]-b[1]).map(x=>x[0]); }
+function lickGroups(){ return GTR ? gtrGroups() : (bassLib() ? (BLK.groups||(BLK.groups=groupSort(bassLib().GROUPS))) : []); }
 /* AOG-SOLO-GTRLICKS-V1 (Jimmy, 2026-10-18: "Can we have around the same amount for guitar licks as well?"): 65 more for the
    guitar in aog-guitar-licks.js, fetched the first time Solo opens on the guitar, written against chords like the bass's.
    The first 57 stay above, unchanged. The menu shows them together: the first eight groups (with their new licks after
@@ -777,11 +783,11 @@ function lickGroups(){ return GTR ? gtrGroups() : (bassLib() ? bassLib().GROUPS 
 const GLK={st:"", set:null, groups:null};
 function gtrLib(){ return GTR && window.AOGGuitarLicks && window.AOGGuitarLicks.LICKS ? window.AOGGuitarLicks : null; }
 function gtrSet(){ const L=gtrLib(); if(!L) return LICKS; return GLK.set||(GLK.set=Object.assign({}, LICKS, L.LICKS)); }
-function gtrGroups(){ const L=gtrLib(); if(!L) return LICK_GROUPS; if(GLK.groups) return GLK.groups;
+function gtrGroups(){ const L=gtrLib(); if(!L) return groupSort(LICK_GROUPS); if(GLK.groups) return GLK.groups;
   const add={}; L.GROUPS.forEach(([g, ids])=>{ add[g]=ids; });
   const out=LICK_GROUPS.map(([g, ids])=>[g, ids.concat(add[g]||[])]);
   L.GROUPS.forEach(([g, ids])=>{ if(!LICK_GROUPS.some(x=>x[0]===g)) out.push([g, ids.slice()]); });
-  return (GLK.groups=out); }
+  return (GLK.groups=groupSort(out)); }
 function gtrLoad(){
   if(!GTR || GLK.st==="loading" || GLK.st==="ready") return;
   const done=()=>{ GLK.st="ready"; Object.assign(WD, gtrLib().WORDS); paintLickSel(); paintLickBtn(); };
