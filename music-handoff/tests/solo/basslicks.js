@@ -143,7 +143,9 @@ async function device(b, nm, vw, errs) {
   /* 3 · every lick plays, every note in range and lit in turn, and ends */
   await f.evaluate(() => { S.key = 9; S.minor = true; S.bpm = 132; buildNeck(); });
   const bad = [], t0 = Date.now(); let notes = 0, lit = 0;
-  for (const id of en.ids) {
+  /* BASSLICKS_QUICK=1: every sixth lick (a quick look while working); the suite plays them all */
+  const play = process.env.BASSLICKS_QUICK ? en.ids.filter((id, i) => i % 6 === 0) : en.ids;
+  for (const id of play) {
     const r = await f.evaluate(async (id) => {
       const sel = document.getElementById("soLickSel"); sel.value = id; sel.dispatchEvent(new Event("change", { bubbles: true }));
       document.getElementById("soLickBtn").click();
@@ -158,7 +160,7 @@ async function device(b, nm, vw, errs) {
     notes += r.n || 0; lit += (r.n || 0) - (r.unlit || 0);
     if (!r.started || !r.ended || r.out || r.unlit) bad.push(JSON.stringify(r));
   }
-  ok(bad.length === 0, `${nm}: all ${en.ids.length} licks played in A minor (${((Date.now() - t0) / 1000).toFixed(0)} s): ${notes} notes, every one on the four strings, ${lit} lit on the neck in turn; each ended by itself ${bad.slice(0, 4).join(" ")}`);
+  ok(bad.length === 0, `${nm}: ${play.length === en.ids.length ? "all " : ""}${play.length} licks played in A minor (${((Date.now() - t0) / 1000).toFixed(0)} s): ${notes} notes, every one on the four strings, ${lit} lit on the neck in turn; each ended by itself ${bad.slice(0, 4).join(" ")}`);
   /* 4 · Stop */
   const st = await f.evaluate(async () => {
     const sel = document.getElementById("soLickSel"), btn = document.getElementById("soLickBtn"); sel.value = "b_mgal"; sel.dispatchEvent(new Event("change", { bubbles: true }));

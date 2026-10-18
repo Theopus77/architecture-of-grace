@@ -921,7 +921,9 @@ class Lead{
   stop(t, tau){ if(this.vc.stopped) return; this.vc.stop(t, tau); this.retire(); }   /* the voice's stop stops its parts (makeLead) */
   kill(t){ this.vc.kill(t); this.retire(); }
   retire(){ if(!this.planAll) DYN.delete(this); if(this.c!==ac) return; const c=this.c, e=(this.vc.end||c.currentTime)+0.4, vg=this.vg;
-    setTimeout(()=>{ try{ vg.disconnect(); }catch(err){} }, Math.max(0, e-c.currentTime)*1000+250); }
+    clearTimeout(this.rt); this.rt=setTimeout(()=>{ try{ vg.disconnect(); }catch(err){} }, Math.max(0, e-c.currentTime)*1000+250); }
+  /* AOG-SOLO-BASSLICKS-V1: a lick stopped early lets its notes go now, not when they would have ended (no timer left behind) */
+  letGo(){ if(!this.rt) return; clearTimeout(this.rt); const vg=this.vg; this.rt=setTimeout(()=>{ try{ vg.disconnect(); }catch(err){} }, 400); }
 }
 function makeLead(s, m, v, when, o, X){
   o=o||{};
@@ -1706,7 +1708,7 @@ function drawLickNow(act){
 function lickStop(natural){
   if(!LICK.on) return;
   LICK.on=false; if(LICK.raf) cancelAnimationFrame(LICK.raf); LICK.raf=0;
-  if(!natural && ac){ const now=ac.currentTime; LICK.voices.forEach(v=>{ if(v.lv){ try{ v.lv.vc.kill(now); v.lv.parts.forEach(p=>p.kill(now)); }catch(e){} DYN.delete(v.lv); } }); }
+  if(!natural && ac){ const now=ac.currentTime; LICK.voices.forEach(v=>{ if(v.lv){ try{ v.lv.vc.kill(now); v.lv.parts.forEach(p=>p.kill(now)); }catch(e){} DYN.delete(v.lv); v.lv.letGo(); } }); }
   LICK.voices.forEach(v=>{ if(v.lv) DYN.delete(v.lv); });
   LICK.voices=[]; LICK.lights=[]; LICK.key=""; if(BAND.over) BAND.over=null;
   const svg=$q("neck"), g=svg && svg.querySelector("#soLick"); if(g) g.innerHTML="";
