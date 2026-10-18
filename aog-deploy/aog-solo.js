@@ -550,12 +550,12 @@ const DEF_LEAD=LEADS[0]||S.sound;
 
 /* ══ what is kept between visits (this browser only) ═════════════════════════ */
 const PKEY="aog."+INST+".solo.v1";
-const P={mode:"chords", scMin:"blues", scMaj:"majpent", tap:false, pinch:false, wah:false, vib:false, lick:"blues", prev:"", auto:"", beat:true, lspd:100, keys:"piano"};
+const P={mode:"chords", scMin:"blues", scMaj:"majpent", tap:false, pinch:false, wah:false, vib:false, lick:GTR?"blues":"b_rk8", prev:"", auto:"", beat:true, lspd:100, keys:"piano"};
 try{ const r=JSON.parse(localStorage.getItem(PKEY)||"null");
   if(r && typeof r==="object"){
     if(r.mode==="solo") P.mode="solo";
     if(SCALES[r.scMin]) P.scMin=r.scMin; if(SCALES[r.scMaj]) P.scMaj=r.scMaj;
-    P.tap=!!r.tap; P.pinch=!!r.pinch; P.wah=!!r.wah; P.vib=!!r.vib; if(LICKS[r.lick]) P.lick=r.lick; if(r.lspd>=25 && r.lspd<=100) P.lspd=Math.round(r.lspd/5)*5;
+    P.tap=!!r.tap; P.pinch=!!r.pinch; P.wah=!!r.wah; P.vib=!!r.vib; if(GTR ? LICKS[r.lick] : /^b_[a-z0-9]+$/.test(String(r.lick||""))) P.lick=r.lick;   /* AOG-SOLO-BASSLICKS-V1: the bass's licks come in with their own file */ if(r.lspd>=25 && r.lspd<=100) P.lspd=Math.round(r.lspd/5)*5;
     if(typeof r.prev==="string" && SOUNDS[r.prev]) P.prev=r.prev; if(r.keys==="scale") P.keys="scale"; if(typeof r.auto==="string") P.auto=r.auto; if(r.beat===false) P.beat=false;
   } }catch(e){}
 P.dfeel="auto"; try{ const r=JSON.parse(localStorage.getItem(PKEY)||"null"); if(r && typeof r.dfeel==="string" && /^[a-z0-9]+$/.test(r.dfeel)) P.dfeel=r.dfeel; }catch(e){}   /* AOG-SOLO-DRUMFEELS-V1 */
@@ -635,13 +635,14 @@ function build(){
   bot.classList.add("so-panel");
   /* AOG-SOLO-LICKNEAR-V1 (Jimmy, 2026-10-04: "the try the lick is too far from the fret board"): the licks sit right
      under the neck, so the lit notes are in view while the lick plays; the switches, the scale and the band follow */
-  bot.innerHTML=`${GTR?`<div class="so-licks"><h3 class="so-h so-first" data-so="lickH"></h3>
+  /* AOG-SOLO-BASSLICKS-V1 (Jimmy, 2026-10-18: "Add some bass licks", "A lot!"): the bass has its licks too, the same block */
+  bot.innerHTML=`<div class="so-licks"><h3 class="so-h so-first" data-so="lickH"></h3>
     <div class="row">
       <label class="field"><span class="plab" data-so="lickLab"></span><select id="soLickSel"></select></label>
       <button type="button" class="pbtn" id="soLickBtn"></button>
     </div>
     <div class="tempo" style="margin-top:.6rem"><span class="plab" style="margin:0" data-so="lickSpeed"></span><input type="range" id="soLickSpd" min="25" max="100" step="5"><b id="soLickSpdOut"></b></div>
-    <p class="line" id="soLickLine" aria-live="polite"></p></div>`:""}
+    <p class="line" id="soLickLine" aria-live="polite"></p></div>
     <div class="so-sw" id="soSw" role="group">
       <button type="button" class="pbtn" id="soTap" aria-pressed="false"></button>
       ${GTR?`<button type="button" class="pbtn" id="soPinch" aria-pressed="false"></button><button type="button" class="pbtn" id="soWah" aria-pressed="false"></button>`:""}
@@ -719,7 +720,7 @@ function paintSoundSel(){
 }
 /* AOG-SOLO-LICKSPEED-V1 (Jimmy, 2026-10-04: "a slide to slow down the leads so one can memorize them"): 25 % to full
    speed. Bends, slides and the lit notes slow down with the notes; the next Play uses the new speed. */
-function lickDesc(){ return w("ld_"+P.lick)+(P.lspd<100?" "+w("spdHelp"):""); }
+function lickDesc(){ if(!lickSet()[P.lick]) return ""; return w("ld_"+P.lick)+(P.lspd<100?" "+w("spdHelp"):""); }
 function lickSpdWord(){ return P.lspd>=100 ? w("spdFull") : w("spdPart",{n:P.lspd}); }
 function paintLickSpd(){
   const r=$q("soLickSpd"); if(!r) return;
@@ -728,8 +729,24 @@ function paintLickSpd(){
 }
 function paintLickSel(){
   const sel=$q("soLickSel"); if(!sel) return;
-  sel.innerHTML=LICK_GROUPS.map(([g,ids])=>`<optgroup label="${esc(w("lg_"+g))}">`+ids.map(id=>`<option value="${id}"${id===P.lick?" selected":""}>${esc(w("lk_"+id))}</option>`).join("")+`</optgroup>`).join("");
+  const G=lickGroups(); if(!GTR && G.length && !lickSet()[P.lick]) P.lick=G[0][1][0];
+  sel.innerHTML=G.map(([g,ids])=>`<optgroup label="${esc(w((GTR?"lg_":"lgb_")+g))}">`+ids.map(id=>`<option value="${id}"${id===P.lick?" selected":""}>${esc(w("lk_"+id))}</option>`).join("")+`</optgroup>`).join("");
+  const b=$q("soLickBtn"); if(b) b.disabled=!G.length;
   const ln=$q("soLickLine"); if(ln && !LICK.on) ln.textContent=lickDesc();
+}
+/* AOG-SOLO-BASSLICKS-V1: the bass's licks live in their own file (aog-bass-licks.js), fetched the first time Solo opens on
+   the bass, so nothing extra loads until it is wanted. They are written against chords and placed on the neck in the key. */
+const BLK={st:""};
+function bassLib(){ return !GTR && window.AOGBassLicks && window.AOGBassLicks.LICKS ? window.AOGBassLicks : null; }
+function lickSet(){ return GTR ? LICKS : (bassLib() ? bassLib().LICKS : {}); }
+function lickGroups(){ return GTR ? LICK_GROUPS : (bassLib() ? bassLib().GROUPS : []); }
+function bassLoad(){
+  if(GTR || BLK.st==="loading" || BLK.st==="ready") return;
+  if(bassLib()){ BLK.st="ready"; Object.assign(WD, bassLib().WORDS); paintLickSel(); return; }
+  BLK.st="loading"; const sc=document.createElement("script"); sc.src="/aog-bass-licks.js"; sc.async=true;
+  sc.onload=()=>{ if(!bassLib()){ BLK.st="failed"; return; } BLK.st="ready"; Object.assign(WD, bassLib().WORDS); paintLickSel(); paintLickBtn(); };
+  sc.onerror=()=>{ BLK.st="failed"; sc.remove(); };
+  document.head.appendChild(sc);
 }
 function paintSwitches(){
   [["soTap","tap"],["soPinch","pinch"],["soWah","wah"],["soVib","vib"]].forEach(([id,k])=>{ const b=$q(id); if(b) b.setAttribute("aria-pressed", P[k]?"true":"false"); });
@@ -772,7 +789,7 @@ function wire(){
   $q("soBand").addEventListener("click",()=>{ BAND.on?bandStop():bandStart(); });
   $q("soBpm").addEventListener("input",()=>{ const v=+$q("soBpm").value, pb=$q("bpm"); if(pb && !pb.disabled){ pb.value=String(v); if(typeof pb.oninput==="function") pb.oninput(); } else S.bpm=v; paintTempo(); paintBandLine(); });
   if($q("soLickSel")){
-    $q("soLickSel").addEventListener("change",(e)=>{ if(LICKS[e.target.value]){ P.lick=e.target.value; keep(); if(!LICK.on) $q("soLickLine").textContent=lickDesc(); } });
+    $q("soLickSel").addEventListener("change",(e)=>{ if(lickSet()[e.target.value]){ P.lick=e.target.value; keep(); if(!LICK.on) $q("soLickLine").textContent=lickDesc(); } });
     $q("soLickBtn").addEventListener("click",()=>{ if(!LICK.on){ const nb=$q("neckBox"); if(nb){ const r=nb.getBoundingClientRect(); if(r.top<0 || r.bottom>innerHeight) nb.scrollIntoView({block:"start", behavior:"instant"}); } } LICK.on?lickStop():playLick(P.lick); });   /* AOG-SOLO-LICKNEAR-V2: the neck in sight as the lick plays */
     $q("soLickSpd").addEventListener("input",(e)=>{ const v=Math.round(clamp(+e.target.value,25,100)/5)*5; if(v===P.lspd) return; P.lspd=v; paintLickSpd(); clearTimeout(wire.st); wire.st=setTimeout(keep,250);
       const ln=$q("soLickLine"); if(ln && !LICK.on) ln.textContent=lickDesc(); });
@@ -796,7 +813,7 @@ function setMode(m, quiet){
     const isLead=LEADS.indexOf(S.sound)>=0 && (GTR || S.sound!=="finger");
     if(!quiet && !isLead && SOUNDS[DEF_LEAD]){ P.prev=S.sound; setSoundId(DEF_LEAD); P.auto=S.sound; }
     if(S.playing && typeof stop==="function") stop();
-    prepBand();
+    prepBand(); bassLoad();
   } else {
     bandStop(); bandForget(); lickStop(); if(SO.killed) killSet(false); if(WH.to!==0 && ac) whamTo(0, 0.04);
     FING.clear(); KEYF.clear(); SOUNDING.length=0;
@@ -903,14 +920,21 @@ class Lead{
   glide(m2, at){ this.base=m2; this.bend=0; this.bendFn=null; this.replan(Math.max(at, this.c.currentTime)); }   /* the page's slideTo */
   stop(t, tau){ if(this.vc.stopped) return; this.vc.stop(t, tau); this.retire(); }   /* the voice's stop stops its parts (makeLead) */
   kill(t){ this.vc.kill(t); this.retire(); }
-  retire(){ if(!this.planAll) DYN.delete(this); const c=this.c, e=(this.vc.end||c.currentTime)+0.4, vg=this.vg;
-    setTimeout(()=>{ try{ vg.disconnect(); }catch(err){} }, Math.max(0, e-c.currentTime)*1000+250); }
+  retire(){ if(!this.planAll) DYN.delete(this); if(this.c!==ac) return; const c=this.c, e=(this.vc.end||c.currentTime)+0.4, vg=this.vg;
+    clearTimeout(this.rt); this.rt=setTimeout(()=>{ try{ vg.disconnect(); }catch(err){} }, Math.max(0, e-c.currentTime)*1000+250); }
+  /* AOG-SOLO-BASSLICKS-V1: a lick stopped early lets its notes go now, not when they would have ended (no timer left behind) */
+  letGo(){ if(!this.rt) return; clearTimeout(this.rt); const vg=this.vg; this.rt=setTimeout(()=>{ try{ vg.disconnect(); }catch(err){} }, 400); }
 }
-function makeLead(s, m, v, when, o){
+function makeLead(s, m, v, when, o, X){
   o=o||{};
-  const c=ctx(); const vg=gainAt(c, o.soft?0:1); vg.connect(soloIn());
-  const chx=Object.create(LIVE_CH); chx.amp=vg;          /* the page's voice, played into this note's own gain */
-  const W0=whamAt(when), vc=makeVoice(c, chx, S.sound, m+W0, v, when, s, o.soft?{soft:true}:o.snap?{pop:true}:undefined);   /* AOG-STRINGS-REAL-V1: a tap starts a recorded note without its pick; a pop is a recorded slap sound's pop */
+  /* X: another context and chain (a lick rendered offline for the tests, AOG-SOLO-BASSLICKS-V1); else the live one */
+  const c=X?X.c:ctx(); const vg=gainAt(c, o.soft?0:1); vg.connect(X?X.ch.amp:soloIn());
+  const chx=Object.create(X?X.ch:LIVE_CH); chx.amp=vg;          /* the page's voice, played into this note's own gain */
+  /* AOG-SOLO-BASSLICKS-V1: a bass lick's notes can also be dead notes (the recorded muted notes) and plain fingered notes
+     on a slap sound (no thump, no pop); everything else is as before */
+  const vo=GTR || !(o.mute || o.plain) ? (o.soft?{soft:true}:o.snap?{pop:true}:undefined)
+    : Object.assign({}, o.soft?{soft:true}:null, o.snap?{pop:true}:null, o.mute?{art:"mute"}:null, o.plain?{plain:true}:null);
+  const W0=whamAt(when), vc=makeVoice(c, chx, S.sound, m+W0, v, when, s, vo);   /* AOG-STRINGS-REAL-V1: a tap starts a recorded note without its pick; a pop is a recorded slap sound's pop */
   if(!vc){ try{ vg.disconnect(); }catch(e){} return null; }
   if(o.soft){ vg.gain.setValueAtTime(0, when); vg.gain.linearRampToValueAtTime(1, when+0.006); }   /* a tap: no pick */
   const lv=new Lead(c, vc, vg, s, m, when); lv.lastT=m+W0;
@@ -921,7 +945,7 @@ function makeLead(s, m, v, when, o){
   vc.kill=function(t){ vKill(t); lv.parts.forEach(p=>{ try{ p.kill(t); }catch(e){} }); };
   if(o.pinch) lv.parts.push(pinchPart(c, lv, m+W0, when));
   if(o.snap && !(vc.rec && SOUNDS[S.sound] && SOUNDS[S.sound].rslap)) snapPart(c, lv, when);   /* a recorded slap sound pops with its own snap */
-  track(lv);
+  if(!X) track(lv);
   return lv;
 }
 /* a string picked (or slapped) by hand: one note at a time on a string, as on the page */
@@ -1411,7 +1435,8 @@ function drumHit(c, B, which, when, v){
 function blog(B, p, t, m){ B.log.push({p, t:+t.toFixed(4), m, ahead:B.c?+(t-B.c.currentTime).toFixed(4):0}); if(B.log.length>600) B.log.splice(0, 100); }
 /* one bar of the band, on any context (live, or offline in a test) */
 function bandBar(c, B, k, t0, barSec){
-  const pr=bandProg(), chords=pr.chords, chord=chords[k%chords.length], next=chords[(k+1)%chords.length]; if(!chord) return;
+  /* AOG-SOLO-BASSLICKS-V1: while a bass lick plays with the band, the band plays the lick's chords (B.over, bar by bar) */
+  const pr=bandProg(), chords=pr.chords, chord=(B.over&&B.over[k])||chords[k%chords.length], next=(B.over&&B.over[k+1])||chords[(k+1)%chords.length]; if(!chord) return;
   const beat=barSec/4, lean=x=>(Math.abs((x%1)-0.5)<1e-6)?(B.swing-0.5)*beat:0, at=x=>t0+x*beat+lean(x);
   const st=B.style, pc=((S.key+chord.off)%12+12)%12, gr=40+((pc-4+12)%12);
   if(B.mix && GTR){ const rg=!!bandRec(B,"gtr"), rb=!!bandRec(B,"bass"), mx=rg ? ((rb?BAND_MIX.full:BAND_MIX.gtr)[st]||1) : 1;
@@ -1471,7 +1496,7 @@ async function bandStart(){
   bandSetup(BAND);
   BS_NOTES.gtr.forEach(n=>bsMake("gtr",n)); if(GTR) BS_NOTES.bass.forEach(n=>bsMake("bass",n)); drumBufs(c);
   BAND.plan=bandPlan(BAND.style);
-  BAND.bpm=bandBpm(); BAND.barSec=240/BAND.bpm; BAND.bar=0; BAND.cur=-1; BAND.chord=null; BAND.voices=[]; BAND.log=[];
+  BAND.bpm=bandBpm(); BAND.barSec=240/BAND.bpm; BAND.bar=0; BAND.cur=-1; BAND.chord=null; BAND.voices=[]; BAND.log=[]; BAND.over=null;
   try{ BAND.mix.gain.cancelScheduledValues(c.currentTime); BAND.mix.gain.setValueAtTime(BAND_LVL, c.currentTime); }catch(e){}
   const T=c.currentTime+0.15;
   if(BAND.beat){
@@ -1486,7 +1511,7 @@ async function bandStart(){
 }
 function bandStop(){
   if(!BAND.on) return;
-  BAND.on=false; const now=BAND.c?BAND.c.currentTime:0;
+  BAND.on=false; BAND.over=null; const now=BAND.c?BAND.c.currentTime:0;
   BAND.voices.forEach(v=>v.kill(now)); BAND.voices=[];
   if(BAND.loop){ try{ BAND.loop.g.gain.setTargetAtTime(0, now, 0.01); BAND.loop.src.stop(now+0.1); }catch(e){} BAND.loop=null; }
   BAND.stopped=now; BAND.cur=-1; BAND.chord=null; if(typeof REAL!=="undefined") REAL.pin=[]; paintBand(); paintBandLoad(); SO.sig=""; soPaint();
@@ -1496,7 +1521,7 @@ function bandTick(now){
   if(!BAND.beat && S.bpm!==BAND.bpm){ const next=BAND.t0+BAND.bar*BAND.barSec, nb=240/S.bpm; BAND.t0=next-BAND.bar*nb; BAND.barSec=nb; BAND.bpm=S.bpm; paintBandLine(); }
   while(BAND.t0+BAND.bar*BAND.barSec < now+0.5){ bandBar(BAND.c, BAND, BAND.bar, BAND.t0+BAND.bar*BAND.barSec, BAND.barSec); BAND.bar++; }
   const cur=Math.floor((now-BAND.t0)/BAND.barSec);
-  if(cur>=0 && cur!==BAND.cur){ BAND.cur=cur; const ch=bandProg().chords; BAND.chord=ch[cur%ch.length]; paintBandProg(); SO.sig=""; soPaint(); }
+  if(cur>=0 && cur!==BAND.cur){ BAND.cur=cur; const ch=bandProg().chords; BAND.chord=(BAND.over&&BAND.over[cur])||ch[cur%ch.length]; paintBandProg(); SO.sig=""; soPaint(); }
   if(BAND.voices.length>240) BAND.voices=BAND.voices.filter(v=>v.end>now);
 }
 function paintTempo(){
@@ -1563,13 +1588,22 @@ function lickFn(list, beat){
 }
 function playLick(id){
   lickStop();
-  const ev=LICKS[id]; if(!ev || !GTR) return;
+  if(!GTR){ playBassLick(id); return; }   /* AOG-SOLO-BASSLICKS-V1 */
+  const ev=LICKS[id]; if(!ev) return;
   const c=ctx(), r=boxRoot(), want=Math.max(1, r);
   if(S.fret0!==want){ S.fret0=want; buildNeck(); if(typeof save==="function") save(); }
   const spd=clamp(P.lspd||100, 25, 100)/100, bpm=clamp(BAND.on?BAND.bpm:curBpm(), 60, 132), beat=60/bpm/spd;
   let T0=c.currentTime+0.12;
   if(BAND.on && spd>=1){ const k=Math.ceil((T0-BAND.t0)/BAND.barSec-1e-6); T0=BAND.t0+k*BAND.barSec; }
-  const notes=lickNotes(id), cur={}, lights=[], voices=[];
+  const notes=lickNotes(id), {voices, lights}=lickVoices(c, notes, T0, beat, null, null);
+  lickGo(id, voices, lights, T0, beat, spd);
+  LICK.log=notes.map(n=>({t:+(T0+n.t*beat).toFixed(4), s:n.s, f:n.f, m:TUNING[n.s]+n.f, k:n.k||"p", q:!!n.q}));
+}
+/* the voices and the lights of a lick: a note on a ringing string played legato (hammer, pull, tap) keeps that string's
+   voice and moves its pitch; any other note starts a new voice and cuts the one before on that string. X: an offline
+   context and chain (the tests' render); B: a bass lick (its slap, pop and dead notes), else the guitar's way */
+function lickVoices(c, notes, T0, beat, X, B){
+  const cur={}, lights=[], voices=[];
   notes.forEach(n=>{
     const at=T0+n.t*beat, end=at+n.d*beat, m=TUNING[n.s]+n.f, k=n.k||"p";
     let v=cur[n.s];
@@ -1577,24 +1611,63 @@ function playLick(id){
     if(legato){ v.list.push({at, m, n}); v.end=Math.max(v.end, end); }
     else {
       if(v) v.cut=at;
-      const sq=(P.pinch||!!n.q) && k!=="g";
-      const lv=makeLead(n.s, m, k==="g"?0.32:(sq?0.62:0.74), at, {soft:k==="t", pinch:sq});
-      v=cur[n.s]={lv, list:[{at, m, n}], end:k==="g"?at+0.035:end, cut:null, ghost:k==="g"};
+      let lv;
+      if(B){ const bo=bassVoice(k, B.slap); lv=makeLead(n.s, m, bo.v, at, bo.o, X); }
+      else { const sq=(P.pinch||!!n.q) && k!=="g"; lv=makeLead(n.s, m, k==="g"?0.32:(sq?0.62:0.74), at, {soft:k==="t", pinch:sq}, X); }
+      v=cur[n.s]={lv, list:[{at, m, n}], end:k==="g"?at+(B?0.06:0.035):end, cut:null, ghost:k==="g"};
       if(lv) voices.push(v);
     }
     lights.push({t0:at, t1:k==="g"?at+0.09:end, s:n.s, n, beat, at});
   });
   /* each light ends when the next note on its string begins */
   lights.forEach(L=>{ const nx=lights.find(M=>M!==L && M.s===L.s && M.t0>L.t0+1e-6); if(nx) L.t1=Math.min(L.t1, nx.t0); });
-  voices.forEach(v=>{ const lv=v.lv, stopAt=v.cut!=null?Math.min(v.cut, v.end):v.end;
-    lv.fn=lickFn(v.list, beat); lv.planAll=true; lv.planEnd=stopAt; lv.until=lv.born-STEP; lv.lastT=NaN; lv.plan(c.currentTime);
-    DYN.add(lv); lv.stop(stopAt, v.ghost?0.012:(v.cut!=null?0.02:((SOUNDS[S.sound]&&SOUNDS[S.sound].damp)||0.04)*1.5)); });
+  voices.forEach(v=>{ const lv=v.lv, stopAt=v.cut!=null?Math.min(v.cut, v.end):v.end; v.stopAt=stopAt;
+    lv.fn=lickFn(v.list, beat); lv.planAll=true; lv.planEnd=stopAt; lv.until=lv.born-STEP; lv.lastT=NaN; lv.plan(X?0:c.currentTime);
+    if(!X) DYN.add(lv); lv.stop(stopAt, v.ghost?0.012:(v.cut!=null?0.02:((SOUNDS[S.sound]&&SOUNDS[S.sound].damp)||0.04)*1.5)); });
+  return {voices, lights};
+}
+function lickGo(id, voices, lights, T0, beat, spd){
   LICK.voices=voices; LICK.lights=lights; LICK.end=Math.max.apply(null, lights.map(L=>L.t1)); LICK.on=true; LICK.id=id; LICK.key=""; LICK.t0=T0; LICK.mk=S.key+(S.minor?"m":"");
-  LICK.log=notes.map(n=>({t:+(T0+n.t*beat).toFixed(4), s:n.s, f:n.f, m:TUNING[n.s]+n.f, k:n.k||"p", q:!!n.q}));
-  LICK.beat=beat; LICK.spd=spd;
+  LICK.beat=beat; LICK.spd=spd; LICK.seen=[];
   const ln=$q("soLickLine"); if(ln) ln.textContent=w("playing",{name:w("lk_"+id)})+" "+w("lickNow");
   paintLickBtn(); wake();
   LICK.raf=requestAnimationFrame(lickFrame);
+}
+/* AOG-SOLO-BASSLICKS-V1: how a bass lick's note is played. A thumb (S) slaps on a slap sound, a pop (P) pops on any sound,
+   a dead note is the recorded muted note, soft; a plain note in a lick that is not a slap lick is fingered, so a slap sound
+   does not slap or pop it (the two high strings pop by themselves on a slap sound otherwise) */
+function bassVoice(k, slap){
+  if(k==="g") return {v:0.3, o:{mute:true, plain:!slap}};
+  if(k==="P") return {v:0.9, o:{snap:true}};
+  if(k==="s") return {v:0.84, o:{}};
+  if(k==="t") return {v:0.66, o:{soft:true}};
+  return {v:0.76, o:slap?{}:{plain:true}};
+}
+function bassLickNow(id){ const L=bassLib(), ev=L && L.LICKS[id]; return ev ? L.compile(ev, {key:S.key, minor:S.minor, tuning:TUNING, maxf:MAXF}) : null; }
+function playBassLick(id){
+  const B=bassLickNow(id); if(!B) return;
+  const c=ctx();
+  /* the hand position the lick is placed in (five frets; the open strings too near the nut) */
+  if(S.fret0!==B.w){ S.fret0=B.w; buildNeck(); if(typeof save==="function") save(); }
+  const spd=clamp(P.lspd||100, 25, 100)/100, bpm=clamp(BAND.on?BAND.bpm:curBpm(), 60, 132), beat=60/bpm/spd;
+  let T0=c.currentTime+0.12;
+  /* with the band: the lick starts on the first bar the band has not planned yet, and the band plays the lick's chords */
+  if(BAND.on && spd>=1){ const k=Math.max(BAND.bar, Math.ceil((T0-BAND.t0)/BAND.barSec-1e-6)); T0=BAND.t0+k*BAND.barSec;
+    if(Math.abs(bpm-BAND.bpm)<1e-6){ BAND.over={}; for(let j=0; j*4<B.beats-1e-6; j++){ const at=4*j; let ch=B.chords[0]; B.chords.forEach(x=>{ if(x.t0<=at+1e-6) ch=x; }); BAND.over[k+j]=ch.band; } } }
+  const {voices, lights}=lickVoices(c, B.notes, T0, beat, null, B);
+  lickGo(id, voices, lights, T0, beat, spd);
+  LICK.B=B;
+  LICK.log=B.notes.map(n=>({t:+(T0+n.t*beat).toFixed(4), s:n.s, f:n.f, m:TUNING[n.s]+n.f, tm:n.tm, tb:n.tb, k:n.k||"p", end:n.sl?n.sl[0]:n.f}));
+}
+/* an offline render of a bass lick, for the tests: its sound, and where its notes stop */
+async function renderLick(id, o){
+  o=o||{}; const B=bassLickNow(id); if(!B) return null;
+  const sr=44100, beat=60/(o.bpm||100), T0=0.1, dur=T0+B.beats*beat+1.4;
+  const oc=new OfflineAudioContext(2, Math.ceil(dur*sr), sr); await AOGAmp.load(oc);
+  const ch=makeChain(oc); setSound(ch, S.sound); ch.master.gain.value=volGain(S.vol); setEra(ch, 0, 0);
+  const r=lickVoices(oc, B.notes, T0, beat, {c:oc, ch}, B);
+  const buf=await oc.startRendering();
+  return {buf, sr, B, beat, T0, starts:B.notes.map(n=>T0+n.t*beat), stops:r.voices.map(v=>v.stopAt), voices:r.voices.length};
 }
 function lickState(L, now){
   const v=LICK.voices.find(x=>x.list.some(e=>e.n===L.n)); const fn=v&&v.lv&&v.lv.fn;
@@ -1623,6 +1696,7 @@ function drawLickNow(act){
   act.forEach(a=>{
     if(!inWin(a.f)) return;
     const [x,y]=cellXY(a.s, a.f), nm=pcName(TUNING[a.s]+a.f), fs=nm.length>3?10:nm.length>2?11.5:13.5;
+    if(LICK.seen) LICK.seen.push(a.s+":"+a.f);
     html+=`<g class="so-now" data-c="${a.s}:${a.f}"><circle cx="${f1(x)}" cy="${f1(y)}" r="${f1(R0)}"/><text x="${f1(x)}" y="${f1(y)}" style="font-size:${fs}px">${nm}</text></g>`;
     if(a.tag){ const tw=w("tg_"+a.tag), ty=y-R0-8>NECK.top+4 ? y-R0-8 : y+R0+9, wd=tw.length*6.4+10;
       html+=`<rect class="so-tagbg" x="${f1(x-wd/2)}" y="${f1(ty-8)}" width="${f1(wd)}" height="16" rx="5"/><text class="so-tag" x="${f1(x)}" y="${f1(ty)}" style="font-size:11px">${esc(tw)}</text>`; }
@@ -1634,9 +1708,9 @@ function drawLickNow(act){
 function lickStop(natural){
   if(!LICK.on) return;
   LICK.on=false; if(LICK.raf) cancelAnimationFrame(LICK.raf); LICK.raf=0;
-  if(!natural && ac){ const now=ac.currentTime; LICK.voices.forEach(v=>{ if(v.lv){ try{ v.lv.vc.kill(now); v.lv.parts.forEach(p=>p.kill(now)); }catch(e){} DYN.delete(v.lv); } }); }
+  if(!natural && ac){ const now=ac.currentTime; LICK.voices.forEach(v=>{ if(v.lv){ try{ v.lv.vc.kill(now); v.lv.parts.forEach(p=>p.kill(now)); }catch(e){} DYN.delete(v.lv); v.lv.letGo(); } }); }
   LICK.voices.forEach(v=>{ if(v.lv) DYN.delete(v.lv); });
-  LICK.voices=[]; LICK.lights=[]; LICK.key="";
+  LICK.voices=[]; LICK.lights=[]; LICK.key=""; if(BAND.over) BAND.over=null;
   const svg=$q("neck"), g=svg && svg.querySelector("#soLick"); if(g) g.innerHTML="";
   for(let s=0;s<TUNING.length;s++) if(!(SOUNDING[s] && SOUNDING[s].bend>0.02)) clearBend(s);
   const ln=$q("soLickLine"); if(ln) ln.textContent=lickDesc();
@@ -1678,7 +1752,8 @@ window.AOGSolo={
   paint:soPaint, down:down, move:move, up:up, key:key,
   setMode:setMode, isOn:()=>SO.on,
   _t:{DRUM_FEELS, P, SO, BAND, LICK, LICKS, FING, KEYF, SOUNDING, WH, Lead, bendFrom, boxRoot, keyCells, lickNotes, renderBand, scalePcs, bluePc,
-      leadsNow, whamTo, killSet, playLick, lickStop, bandStart, bandStop, strumNotes, hotAmp, landChord, bandPlan, BAND_SET, BAND_RT, get LAST(){ return LAST; }}
+      leadsNow, whamTo, killSet, playLick, lickStop, bandStart, bandStop, strumNotes, hotAmp, landChord, bandPlan, BAND_SET, BAND_RT, get LAST(){ return LAST; },
+      bassLickNow, renderLick, bassLoad, BLK, lickSet, lickGroups}
 };
 init();
 })();
