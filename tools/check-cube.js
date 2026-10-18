@@ -129,6 +129,23 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
       await p.tp("touchEnd", []); await p.waitForTimeout(600);
       ok(await screenCube(p) === want, `${name}: two fingers swiped ${dx ? "left" : "up"} turn the whole cube (${mv})`);
     }
+    /* Learn: the lesson in the bar at the bottom, one step at a time, the cube in view above (Jimmy: "the instructions
+       are far too down on the screen") */
+    if (vp.width < 900) {
+      await p.evaluate(() => { location.hash = "learn"; }); await p.waitForTimeout(200);
+      await p.evaluate(() => document.querySelector('#lessonRow [data-lesson="3"]').click()); await p.waitForTimeout(250);
+      await p.evaluate(() => scrollTo(0, 0));
+      const one = await p.evaluate(() => { const bar = document.getElementById("actBar"), br = bar.getBoundingClientRect();
+        return { shown: !bar.hidden, text: (bar.querySelector(".ab-move") || {}).textContent || "", inView: br.bottom <= innerHeight + 1 && br.top > 0 }; });
+      await p.tap('#actBar [data-ls="1"]'); await p.waitForTimeout(100);
+      const two = await p.evaluate(() => (document.querySelector("#actBar .ab-move") || {}).textContent || "");
+      const first = await p.evaluate(() => (document.querySelector("#panel .steps li") || {}).textContent || "");
+      ok(one.shown && one.inView && one.text === first && two !== one.text && two.length > 3, `${name}: Learn shows its steps one at a time in the bar at the bottom, and Next moves on ("${one.text}" → "${two}")`);
+      await p.evaluate(() => { document.getElementById("stage").scrollIntoView({ block: "start" }); });
+      const fits = await p.evaluate(() => { const st = document.getElementById("stage").getBoundingClientRect(), br = document.getElementById("actBar").getBoundingClientRect(); return st.top >= 0 && st.bottom <= br.top + 2; });
+      ok(fits, `${name}: the whole cube and the lesson bar fit on the screen together`);
+      await p.evaluate(() => { location.hash = "learn"; });
+    }
     /* My cube: the camera button and the colors sit right under the cube (Jimmy, iPhone: "too much scrolling") */
     await p.evaluate(() => { location.hash = "mine"; scrollTo(0, 0); }); await p.waitForTimeout(400);
     const gap = await p.evaluate(() => { const s = document.getElementById("stage").getBoundingClientRect(), c = document.querySelector('#panel [data-act="camera"]').getBoundingClientRect(), pal = document.getElementById("paintBar").getBoundingClientRect(); return { cam: c.top - s.bottom, pal: pal.top - s.bottom }; });

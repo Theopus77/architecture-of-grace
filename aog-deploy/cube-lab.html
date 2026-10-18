@@ -197,6 +197,7 @@ a.btn { text-decoration:none; }
 /* words */
 .steps { margin:.4rem 0 .2rem; padding-left:1.4rem; }
 .steps li { margin:.35rem 0; }
+.steps li.now { font-weight:700; }
 .goal { background:var(--steel-soft); border-radius:10px; padding:.55rem .8rem; margin:.5rem 0; }
 .alg { margin:.7rem 0; padding:.7rem .8rem; border-radius:12px; border:1px solid var(--line); background:var(--bg); }
 .alg .name { font-weight:700; margin:0 0 .35rem; }
@@ -302,7 +303,15 @@ footer p { margin-top:2rem; font-size:.9rem; color:var(--muted); max-width:70ch;
   .actbar .ab-move { flex:1 1 auto; margin:0; font:600 1rem/1.25 var(--sans); color:var(--ink); min-width:0; }
   .actbar .btn.big { min-height:56px; padding:0 1.1rem; flex:0 0 auto; }
   .actbar .btn:not(.big) { min-width:48px; min-height:56px; padding:0; font-size:1.3rem; }
-  body.has-actbar { padding-bottom:calc(88px + env(safe-area-inset-bottom)); }
+  body.has-actbar, body.has-lessonbar { padding-bottom:calc(var(--bar-h, 88px) + 8px); }
+  .actbar .ab-lesson { flex:1 1 auto; min-width:0; }
+  .actbar .ab-dots { display:flex; gap:.3rem; margin:0 0 .3rem; }
+  .actbar .ab-dots span { width:.5rem; height:.5rem; border-radius:50%; border:2px solid var(--steel); }
+  .actbar .ab-dots span.done { background:var(--steel); }
+  .actbar .ab-dots span.now { background:var(--steel-soft); box-shadow:0 0 0 2px var(--steel-soft); }
+  body.has-lessonbar .actbar .ab-move { font:600 1.08rem/1.35 var(--sans); }
+  body.has-lessonbar .actbar .btn { min-width:52px; min-height:56px; padding:0; font-size:1.6rem; flex:0 0 auto; }
+  body.has-lessonbar .aog-mkbtn { bottom:calc(var(--bar-h, 84px) + 10px); }
   body.has-actbar .calm .mainrow, body.has-actbar .calm .move-big { display:none; }
   body.has-actbar .aog-mkbtn { bottom:calc(84px + env(safe-area-inset-bottom)); }
   body.has-actbar .aog-mktip { bottom:calc(140px + env(safe-area-inset-bottom)); }
@@ -387,7 +396,7 @@ const T={
   tag:["Learn to solve a Rubik's Cube, one step at a time.","Aprende a resolver un cubo de Rubik, paso a paso."],
   foot:["Turn it on screen, or follow along with a real cube in your hands. Your place is saved on this device.","Gíralo en la pantalla o sigue con un cubo de verdad en tus manos. Tu avance se guarda en este aparato."],
   vLearn:["Learn","Aprende"], vSolve:["Solve with me","Resuélvelo conmigo"], vMine:["My cube","Mi cubo"], micro:["Microscope","Microscopio"],
-  hint:["Drag a row to turn it. Circle a middle square to turn that whole side, like a steering wheel.","Arrastra una fila para girarla. Gira el dedo alrededor de un cuadro del medio para girar todo ese lado, como un volante."],
+  hint:["Drag a row to turn it. Circle a middle square to turn that side.","Arrastra una fila para girarla. Gira el dedo sobre un cuadro del medio para girar ese lado."],
   hintSolve:["Follow the arrow with your finger, or tap Turn it.","Sigue la flecha con el dedo, o toca Girarlo."],
   hintSolveReal:["Follow the arrow on your cube, then tap I did it.","Sigue la flecha en tu cubo y luego toca Ya lo hice."],
   hintPaint:["Pick a color, then tap a square to paint it. Drag the cube to turn it.","Elige un color y toca un cuadro para pintarlo. Arrastra el cubo para girarlo."],
@@ -464,7 +473,7 @@ const T={
   allGood:["Your cube is ready. Let's solve it together.","Tu cubo está listo. Vamos a resolverlo juntos."],
   did:["Did {m}","Hecho: {m}"],
   /* AOG-CUBE-CEILING-V1 (2026-10-11) — Jimmy: "DO them all": the next list, all of it. */
-  hint2:["Two fingers swiped left or right turn the whole cube.","Dos dedos deslizados a la izquierda o a la derecha giran el cubo entero."],
+  hint2:["Two fingers turn the whole cube.","Dos dedos giran todo el cubo."],
   levelH:["Help","Ayuda"], lvEvery:["Every move","Cada movimiento"], lvHint:["A hint","Una pista"], lvOwn:["On my own","Yo solo"],
   showMove:["Show me the move","Muéstrame el movimiento"], giveHint:["Give me a hint","Dame una pista"],
   ownLine:["You lead. Tap Give me a hint any time.","Tú guías. Toca Dame una pista cuando quieras."],
@@ -486,6 +495,7 @@ const T={
   vfySide:["Side: {s}","Lado: {s}"], vfyOk:["It matches the screen. ✓","Coincide con la pantalla. ✓"],
   vfyDiff:["{n} squares look different. They are marked.","{n} cuadros se ven distintos. Están marcados."], vfyDiff1:["1 square looks different. It is marked.","1 cuadro se ve distinto. Está marcado."],
   vfyScreen:["On the screen","En la pantalla"], vfyYours:["Your cube","Tu cubo"], vfyAgain:["Check another side","Comprobar otro lado"], vfyDone:["Done","Listo"],
+  nextStep:["Next","Siguiente"],
   wayH:["Way","Forma"], wayShort:["The short way","El camino corto"], waySteps:["The steps","Los pasos"], wayFaster:["The faster way","La forma rápida"],
   pPairs:["{n} of 4 pairs in place","{n} de 4 parejas en su lugar"],
   fewerBtn:["Find fewer moves","Buscar menos movimientos"], fewerStop:["Stop","Parar"],
@@ -684,115 +694,128 @@ const NOTES={
 /* ── the ten steps ── */
 const L=[
  {id:"meet", t:["Meet the cube","Conoce el cubo"], kind:"ready",
-  goal:["Know the pieces before you turn.","Conoce las piezas antes de girar."],
-  steps:[["The middle square of each side is a center. Centers never move apart. A center tells you that side's color.","El cuadro del medio de cada lado es un centro. Los centros no se separan nunca. El centro te dice el color de ese lado."],
-    ["An edge piece has 2 colors. A corner piece has 3 colors.","Una arista tiene 2 colores. Una esquina tiene 3 colores."],
+  goal:["Learn the parts of the cube.","Conoce las partes del cubo."],
+  steps:[["The middle square of each side is the center.","El cuadro del medio de cada lado es el centro."],
+    ["Centers never move. A center tells you the color of its side.","Los centros no se mueven. El centro te dice el color de su lado."],
+    ["An edge has 2 colors. A corner has 3 colors.","Una arista tiene 2 colores. Una esquina tiene 3 colores."],
     ["Solved means every side is one color.","Resuelto quiere decir que cada lado es de un solo color."],
-    ["We solve in layers: the white bottom first, then the middle, then the yellow top.","Lo resolvemos por capas: primero la base blanca, luego el medio y al final la cara amarilla."],
-    ["On the screen, drag a row to turn it. Tap Back to see the other three sides, and Front to come back.","En la pantalla, arrastra una fila para girarla. Toca Atrás para ver los otros tres lados, y Frente para volver."]]},
+    ["You solve it in layers: the bottom, then the middle, then the top.","Se resuelve por capas: abajo, luego el medio y al final arriba."],
+    ["To turn a row on the screen, drag it with your finger.","Para girar una fila en la pantalla, arrástrala con el dedo."],
+    ["Tap Back to see the other sides. Tap Front to come back.","Toca Atrás para ver los otros lados. Toca Frente para volver."]]},
  {id:"moves", t:["The moves","Los movimientos"], kind:"moves",
-  goal:["Read a move and do it.","Lee un movimiento y hazlo."],
-  steps:[["Each letter names a side: F front, B back, R right, L left, U up (the top), D down (the bottom).","Cada letra nombra un lado: F frente, B atrás, R derecha, L izquierda, U arriba, D abajo."],
-    ["A letter alone: turn that side clockwise, as if you were looking straight at it.","Una letra sola: gira ese lado como las agujas del reloj, como si lo miraras de frente."],
-    ["A letter with ' (say \"prime\"): turn it the other way.","Una letra con ' (se dice \"prima\"): gíralo al revés."],
-    ["A letter with 2: turn it twice.","Una letra con 2: gíralo dos veces."],
-    ["y turns the whole cube, like a globe. The top stays on top.","y gira el cubo entero, como un globo. La cara de arriba sigue arriba."],
-    ["Try all six sides on the pad. Do R, then R'. The cube goes back.","Prueba los seis lados en los botones. Haz R y luego R'. El cubo vuelve como estaba."],
-    ["On the cube: put a finger on the front's middle square and circle it to the right. That is F, like a steering wheel.","En el cubo: pon un dedo en el cuadro del medio del frente y gíralo a la derecha. Eso es F, como un volante."]],
+  goal:["Learn what the letters mean.","Aprende qué quieren decir las letras."],
+  steps:[["Each letter is a side: F front, B back, R right, L left.","Cada letra es un lado: F frente, B atrás, R derecha, L izquierda."],
+    ["U is the top. D is the bottom.","U es arriba. D es abajo."],
+    ["A letter alone: look at that side and turn it like a clock's hands.","Una letra sola: mira ese lado y gíralo como las agujas del reloj."],
+    ["A letter with ' : turn it the other way.","Una letra con ': gíralo al revés."],
+    ["A letter with 2: turn it two times.","Una letra con 2: gíralo dos veces."],
+    ["y means turn the whole cube. The top stays on top.","y quiere decir girar todo el cubo. Lo de arriba sigue arriba."],
+    ["Try it: tap R, then R'. The cube goes back.","Pruébalo: toca R y luego R'. El cubo vuelve."],
+    ["Circle the front's middle square with your finger. That is F.","Gira el dedo alrededor del cuadro del medio del frente. Eso es F."]],
   algs:[{n:["There and back","Ida y vuelta"], s:"R R' U U' F F'"}]},
  {id:"cross", stage:0, t:["The white cross","La cruz blanca"],
-  goal:["A white plus sign on the bottom. Each white edge matches the center beside it.","Un signo más blanco abajo. Cada arista blanca coincide con el centro de al lado."],
-  steps:[["Hold the cube with the yellow center on top. White is on the bottom.","Sostén el cubo con el centro amarillo arriba. El blanco queda abajo."],
-    ["Make a daisy: bring the four white edges up around the yellow center, white side up.","Haz una margarita: sube las cuatro aristas blancas alrededor del centro amarillo, con el blanco hacia arriba."],
-    ["A petal in the way? Turn the top first to move it aside.","¿Un pétalo estorba? Gira primero la cara de arriba para apartarlo."],
-    ["Take one petal. Turn the top until its side color matches the center below it.","Toma un pétalo. Gira la cara de arriba hasta que su color de lado coincida con el centro de abajo."],
-    ["Turn that side twice (like F2). The white edge drops to the bottom.","Gira ese lado dos veces (como F2). La arista blanca baja."],
-    ["Do the same with all four petals.","Haz lo mismo con los cuatro pétalos."]]},
+  goal:["A white plus sign on the bottom.","Un signo más blanco abajo."],
+  steps:[["Hold the cube with yellow on top and white on the bottom.","Sostén el cubo con el amarillo arriba y el blanco abajo."],
+    ["First make a daisy: bring the 4 white edges up around the yellow center.","Primero haz una margarita: sube las 4 aristas blancas alrededor del centro amarillo."],
+    ["Each white edge should show white on top.","Cada arista blanca debe mostrar el blanco arriba."],
+    ["A white edge in the way? Turn the top to move it.","¿Una arista blanca estorba? Gira la parte de arriba para moverla."],
+    ["Pick one white edge on top. Turn the top until its other color matches the center below it.","Elige una arista blanca de arriba. Gira la parte de arriba hasta que su otro color coincida con el centro de abajo."],
+    ["Turn that side two times. The white edge goes to the bottom.","Gira ese lado dos veces. La arista blanca baja."],
+    ["Do this for all 4 white edges.","Haz esto con las 4 aristas blancas."]]},
  {id:"corners", stage:1, t:["The white corners","Las esquinas blancas"],
-  goal:["The whole white side is done, and the first row of every side matches.","Toda la cara blanca está hecha y la primera fila de cada lado coincide."],
-  steps:[["Keep white on the bottom.","Sigue con el blanco abajo."],
-    ["Find a corner on top that has white on it.","Busca una esquina de arriba que tenga blanco."],
-    ["Its other two colors tell you its home, between the two matching centers. Turn the top until the corner sits right above its home.","Sus otros dos colores te dicen dónde va, entre los dos centros que coinciden. Gira la cara de arriba hasta que la esquina quede justo encima de su lugar."],
-    ["Turn the whole cube so that spot is at the front-right.","Gira el cubo entero para que ese lugar quede al frente a la derecha."],
-    ["Do R U R' U' again and again until the corner drops in, white side down. It takes 1, 3 or 5 times.","Haz R U R' U' una y otra vez hasta que la esquina baje, con el blanco abajo. Toma 1, 3 o 5 veces."],
-    ["A white corner stuck on the bottom in the wrong spot? Hold it at the front-right and do R U R' U' once. It comes up.","¿Una esquina blanca atascada abajo en otro lugar? Ponla al frente a la derecha y haz R U R' U' una vez. Sube."]],
+  goal:["The whole bottom is white.","Toda la parte de abajo es blanca."],
+  steps:[["Keep white on the bottom.","Deja el blanco abajo."],
+    ["Find a corner on top with white on it.","Busca una esquina de arriba que tenga blanco."],
+    ["Look at its other 2 colors. Its home is between those 2 centers.","Mira sus otros 2 colores. Su lugar está entre esos 2 centros."],
+    ["Turn the top so the corner sits right above its home.","Gira la parte de arriba para que la esquina quede justo encima de su lugar."],
+    ["Turn the whole cube so that corner is at the front right.","Gira todo el cubo para que esa esquina quede al frente a la derecha."],
+    ["Do the corner moves until the corner goes down, white on the bottom. It takes 1, 3 or 5 times.","Haz los movimientos de esquina hasta que la esquina baje, con el blanco abajo. Toma 1, 3 o 5 veces."],
+    ["A white corner in the wrong spot on the bottom? Hold it at the front right. Do the corner moves once to bring it up.","¿Una esquina blanca en otro lugar de abajo? Ponla al frente a la derecha. Haz los movimientos de esquina una vez para subirla."]],
   algs:[{n:["Corner moves","Movimientos de esquina"], s:"R U R' U'"}]},
  {id:"middle", stage:2, t:["The middle layer","La capa del medio"],
-  goal:["The bottom two layers are done.","Las dos capas de abajo están hechas."],
-  steps:[["Keep white on the bottom. Look at the top layer.","Sigue con el blanco abajo. Mira la capa de arriba."],
-    ["Find an edge on top with no yellow on it.","Busca una arista de arriba que no tenga amarillo."],
-    ["Turn the whole cube so the center that matches its side color faces you. Turn the top until the edge is at the front, over that center.","Gira el cubo entero para que el centro que coincide con su color de lado quede hacia ti. Gira la cara de arriba hasta que la arista quede al frente, sobre ese centro."],
-    ["Look at the edge's top color. It matches the right side? Do the right-hand moves. The left side? Do the left-hand moves.","Mira el color de arriba de la arista. ¿Coincide con el lado derecho? Haz los movimientos a la derecha. ¿Con el izquierdo? Haz los de la izquierda."],
-    ["An edge stuck in the middle the wrong way? Hold it at the front-right and do the right-hand moves once. It comes up.","¿Una arista atascada en el medio al revés? Ponla al frente a la derecha y haz una vez los movimientos a la derecha. Sube."]],
+  goal:["The bottom 2 layers are done.","Las 2 capas de abajo están hechas."],
+  steps:[["Keep white on the bottom.","Deja el blanco abajo."],
+    ["Find an edge on top with no yellow.","Busca una arista de arriba sin amarillo."],
+    ["Turn the whole cube so the center that matches the edge's front color faces you.","Gira todo el cubo para que el centro del mismo color que el frente de la arista quede hacia ti."],
+    ["Turn the top so the edge is right above that center.","Gira la parte de arriba para que la arista quede justo encima de ese centro."],
+    ["Look at the edge's top color. Does it match the right side? Do the right-hand moves.","Mira el color de arriba de la arista. ¿Coincide con el lado derecho? Haz los movimientos a la derecha."],
+    ["Does it match the left side? Do the left-hand moves.","¿Coincide con el lado izquierdo? Haz los movimientos a la izquierda."],
+    ["An edge stuck in the middle the wrong way? Hold it at the front right. Do the right-hand moves once to bring it up.","¿Una arista atascada en el medio al revés? Ponla al frente a la derecha. Haz los movimientos a la derecha una vez para subirla."]],
   algs:[{n:["Right-hand moves","Movimientos a la derecha"], s:"U R U' R' U' F' U F"},{n:["Left-hand moves","Movimientos a la izquierda"], s:"U' L' U L U F U' F'"}]},
  {id:"ycross", stage:3, t:["The yellow cross","La cruz amarilla"],
   goal:["A yellow plus sign on top.","Un signo más amarillo arriba."],
-  steps:[["Look only at the top. Find the yellow edges (not the corners).","Mira solo la cara de arriba. Busca las aristas amarillas (no las esquinas)."],
-    ["A dot (no yellow edges)? Do the moves. You'll see an L or a line.","¿Un punto (sin aristas amarillas)? Haz los movimientos. Verás una L o una línea."],
-    ["An L? Turn the top so the L sits at the back-left, like a clock from 9 to 12. Do the moves.","¿Una L? Gira la cara de arriba para que la L quede atrás a la izquierda, como un reloj de las 9 a las 12. Haz los movimientos."],
-    ["A line? Turn the top so it goes left to right. Do the moves.","¿Una línea? Gira la cara de arriba para que vaya de izquierda a derecha. Haz los movimientos."]],
+  steps:[["Look only at the top. Look at the edges, not the corners.","Mira solo la parte de arriba. Mira las aristas, no las esquinas."],
+    ["A dot (no yellow edges)? Do the moves. You will get an L or a line.","¿Un punto (sin aristas amarillas)? Haz los movimientos. Te saldrá una L o una línea."],
+    ["An L? Turn the top so the L is at the back left. Do the moves.","¿Una L? Gira la parte de arriba para que la L quede atrás a la izquierda. Haz los movimientos."],
+    ["A line? Turn the top so the line goes left to right. Do the moves.","¿Una línea? Gira la parte de arriba para que vaya de izquierda a derecha. Haz los movimientos."]],
   algs:[{n:["Yellow cross moves","Movimientos de la cruz amarilla"], s:"F R U R' U' F'"}]},
  {id:"yface", stage:4, t:["The yellow top","La cara amarilla"],
-  goal:["The whole top is yellow.","Toda la cara de arriba es amarilla."],
-  steps:[["Count the corners with yellow facing up.","Cuenta las esquinas que tienen amarillo hacia arriba."],
-    ["One (a fish)? Turn the top so that corner is at the front-left. Do the moves.","¿Una (un pez)? Gira la cara de arriba para que esa esquina quede al frente a la izquierda. Haz los movimientos."],
-    ["None? Turn the top until the front-left corner shows yellow on its left side. Do the moves.","¿Ninguna? Gira la cara de arriba hasta que la esquina del frente a la izquierda muestre amarillo en su lado izquierdo. Haz los movimientos."],
-    ["Two? Turn the top until the front-left corner shows yellow toward you. Do the moves.","¿Dos? Gira la cara de arriba hasta que la esquina del frente a la izquierda muestre amarillo hacia ti. Haz los movimientos."],
-    ["Look again. Repeat until the top is all yellow.","Mira otra vez. Repite hasta que toda la cara sea amarilla."]],
+  goal:["The whole top is yellow.","Toda la parte de arriba es amarilla."],
+  steps:[["Count the corners with yellow on top.","Cuenta las esquinas que tienen amarillo arriba."],
+    ["One? It looks like a fish. Turn the top so that corner is at the front left. Do the moves.","¿Una? Parece un pez. Gira la parte de arriba para que esa esquina quede al frente a la izquierda. Haz los movimientos."],
+    ["None? Turn the top until the front-left corner has yellow on its left side. Do the moves.","¿Ninguna? Gira la parte de arriba hasta que la esquina del frente a la izquierda tenga amarillo en su lado izquierdo. Haz los movimientos."],
+    ["Two? Turn the top until the front-left corner has yellow facing you. Do the moves.","¿Dos? Gira la parte de arriba hasta que la esquina del frente a la izquierda tenga amarillo hacia ti. Haz los movimientos."],
+    ["Look again. Do it again until the top is all yellow.","Mira otra vez. Repite hasta que la parte de arriba sea toda amarilla."]],
   algs:[{n:["Yellow top moves","Movimientos de la cara amarilla"], s:"R U R' U R U2 R'"}]},
  {id:"ycorners", stage:5, t:["The yellow corners","Las esquinas amarillas"],
-  goal:["Every top corner sits in its home.","Cada esquina de arriba está en su lugar."],
-  steps:[["Look at the sides of the top layer. Find headlights: two corners on one side with the same color.","Mira los lados de la capa de arriba. Busca los faros: dos esquinas en un mismo lado con el mismo color."],
-    ["Turn the top so the headlights are at the back. Do the moves.","Gira la cara de arriba para que los faros queden atrás. Haz los movimientos."],
-    ["No headlights? Do the moves once from any side. Headlights will show up.","¿No hay faros? Haz los movimientos una vez desde cualquier lado. Aparecerán los faros."]],
+  goal:["Each top corner is in its place.","Cada esquina de arriba está en su lugar."],
+  steps:[["Look at the sides of the top layer.","Mira los lados de la capa de arriba."],
+    ["Find headlights: 2 corners on one side with the same color.","Busca faros: 2 esquinas en un lado con el mismo color."],
+    ["Turn the top so the headlights are at the back. Do the moves.","Gira la parte de arriba para que los faros queden atrás. Haz los movimientos."],
+    ["No headlights? Do the moves once. Then you will have headlights.","¿Sin faros? Haz los movimientos una vez. Luego tendrás faros."]],
   algs:[{n:["Corner swap moves","Movimientos para cambiar esquinas"], s:"R' F R' B2 R F' R' B2 R2"}]},
  {id:"yedges", stage:6, t:["The yellow edges","Las aristas amarillas"],
-  goal:["Every side is one color. The cube is solved.","Cada lado es de un solo color. El cubo está resuelto."],
-  steps:[["Turn the top until the corners match their sides.","Gira la cara de arriba hasta que las esquinas coincidan con sus lados."],
-    ["Find a side that is all done, one solid color. Turn the whole cube so that side is at the back.","Busca un lado terminado, de un solo color. Gira el cubo entero para que ese lado quede atrás."],
-    ["Do the moves. Not done yet? Do them once more.","Haz los movimientos. ¿Aún no está? Hazlos una vez más."],
-    ["No side all done? Do the moves once from any side. Then one will be.","¿Ningún lado terminado? Haz los movimientos una vez desde cualquier lado. Luego habrá uno."]],
+  goal:["Every side is one color. Solved!","Cada lado es de un color. ¡Resuelto!"],
+  steps:[["Turn the top until the corners match their sides.","Gira la parte de arriba hasta que las esquinas coincidan con sus lados."],
+    ["Find a side that is all one color. Turn the whole cube so that side is at the back.","Busca un lado de un solo color. Gira todo el cubo para que ese lado quede atrás."],
+    ["Do the moves. Not solved yet? Do them one more time.","Haz los movimientos. ¿Aún no está? Hazlos una vez más."],
+    ["No side all one color? Do the moves once. Then one side will be.","¿Ningún lado de un solo color? Haz los movimientos una vez. Luego habrá uno."]],
   algs:[{n:["Edge cycle moves","Movimientos para girar aristas"], s:"R2 U R U R' U' R' U' R' U R'"}]},
  {id:"all", t:["Solve it all","Resuélvelo todo"], kind:"all",
-  goal:["Solve a mixed cube from start to finish.","Resuelve un cubo mezclado de principio a fin."],
+  goal:["Solve a mixed cube all the way.","Resuelve un cubo mezclado de principio a fin."],
   steps:[["Tap Mix it up.","Toca Mézclalo."],
-    ["Go through the steps in order: white cross, white corners, middle layer, yellow cross, yellow top, yellow corners, yellow edges.","Sigue los pasos en orden: cruz blanca, esquinas blancas, capa del medio, cruz amarilla, cara amarilla, esquinas amarillas, aristas amarillas."],
+    ["Do the steps in order, from the white cross to the yellow edges.","Haz los pasos en orden, de la cruz blanca a las aristas amarillas."],
     ["Stuck? Tap Show me the next move.","¿Te atoras? Toca Muéstrame el siguiente movimiento."],
-    ["The more you practice, the less you need the notes.","Mientras más practiques, menos necesitarás las notas."]]},
+    ["The more you practice, the less help you need.","Mientras más practiques, menos ayuda necesitas."]]},
  /* AOG-CUBE-L2-V1 — the faster way, in four steps (aog-cube-l2.js) */
  {id:"f-cross", method:"faster", stage:0, t:["Level 2 · 1 · The cross in one go","Nivel 2 · 1 · La cruz de una vez"],
-  goal:["The white cross on the bottom, with no daisy.","La cruz blanca abajo, sin margarita."],
+  goal:["The white cross, with no daisy.","La cruz blanca, sin margarita."],
   steps:[["Hold the cube with white on the bottom.","Sostén el cubo con el blanco abajo."],
-    ["Find a white edge. Think: where does it go, and which turns take it there?","Busca una arista blanca. Piensa: ¿a dónde va y qué giros la llevan?"],
-    ["Bring it down so white is on the bottom and its other color matches its center.","Bájala con el blanco abajo y su otro color junto a su centro."],
-    ["Do the next one without knocking out the ones already down. Turn them away and back if you need to.","Haz la siguiente sin sacar las que ya bajaron. Apártalas y regrésalas si hace falta."],
-    ["Most crosses take 8 moves or fewer. Look before you turn.","La mayoría de las cruces toman 8 movimientos o menos. Mira antes de girar."]]},
+    ["Find a white edge. Think: where does it go?","Busca una arista blanca. Piensa: ¿a dónde va?"],
+    ["Bring it down with white on the bottom and its other color by its center.","Bájala con el blanco abajo y su otro color junto a su centro."],
+    ["Do the next one. Do not knock out the ones already down.","Haz la siguiente. No saques las que ya bajaron."],
+    ["Most crosses take 8 moves or fewer. Look first, then turn.","La mayoría de las cruces toman 8 movimientos o menos. Mira primero y luego gira."]]},
  {id:"f-pairs", method:"faster", stage:1, t:["Level 2 · 2 · Pairs","Nivel 2 · 2 · Parejas"],
-  goal:["The bottom two layers done, a corner and its edge at a time.","Las dos capas de abajo hechas, una esquina y su arista a la vez."],
-  steps:[["A pair is a white corner and the middle edge with its same two colors.","Una pareja es una esquina blanca y la arista del medio con sus mismos dos colores."],
-    ["Turn the whole cube so the pair's spot is at the front right.","Gira el cubo entero para que el lugar de la pareja quede al frente a la derecha."],
-    ["A piece stuck in another spot? Hold that spot at the front right and do R U R' to lift it out.","¿Una pieza atascada en otro lugar? Pon ese lugar al frente a la derecha y haz R U R' para sacarla."],
-    ["Join the corner and edge on top, colors matching side by side.","Junta la esquina y la arista arriba, con los colores juntos."],
-    ["Drop them in together. When the pair sits right above its spot, R U R' or F' U' F puts it in.","Bájalas juntas. Cuando la pareja está justo encima de su lugar, R U R' o F' U' F la mete."]],
+  goal:["The bottom 2 layers, one pair at a time.","Las 2 capas de abajo, una pareja a la vez."],
+  steps:[["A pair is a white corner and the middle edge with the same 2 colors.","Una pareja es una esquina blanca y la arista del medio con los mismos 2 colores."],
+    ["Turn the whole cube so the pair's spot is at the front right.","Gira todo el cubo para que el lugar de la pareja quede al frente a la derecha."],
+    ["A piece stuck in another spot? Hold that spot at the front right. Do R U R' to bring it up.","¿Una pieza atascada en otro lugar? Pon ese lugar al frente a la derecha. Haz R U R' para subirla."],
+    ["Put the corner and the edge side by side on top, colors matching.","Pon la esquina y la arista juntas arriba, con los colores iguales."],
+    ["Put them in together with R U R' or F' U' F.","Mételas juntas con R U R' o F' U' F."]],
   algs:[{n:["Put a pair in (right)","Meter una pareja (derecha)"], s:"U R U' R'"},{n:["Put a pair in (front)","Meter una pareja (frente)"], s:"U' F' U F"}]},
  {id:"f-oll", method:"faster", stage:2, t:["Level 2 · 3 · The yellow top in two looks","Nivel 2 · 3 · La cara amarilla en dos miradas"],
-  goal:["The whole top yellow: first the cross, then the corners.","Toda la cara de arriba amarilla: primero la cruz, luego las esquinas."],
-  steps:[["Look 1, the cross: a line? Hold it left to right and do the line moves. An L? Hold it at the back left and do the L moves. A dot? Line moves, then L moves.","Mirada 1, la cruz: ¿una línea? Ponla de izquierda a derecha y haz los de la línea. ¿Una L? Ponla atrás a la izquierda y haz los de la L. ¿Un punto? Los de la línea y luego los de la L."],
-    ["Look 2, the corners: look at the yellow on the top and the sides. Each shape has its own set of moves: the fish, the other fish, H, Pi, headlights, T and bow-tie.","Mirada 2, las esquinas: mira el amarillo arriba y a los lados. Cada figura tiene su serie: el pez, el otro pez, H, Pi, faros, T y moño."],
-    ["Start with the fish and the other fish. They come up most. Solve with me shows you which one, every time.","Empieza con el pez y el otro pez. Son los que más salen. Resuélvelo conmigo te muestra cuál, cada vez."]],
+  goal:["The whole top yellow, in 2 looks.","Toda la parte de arriba amarilla, en 2 miradas."],
+  steps:[["Look 1: make the yellow cross.","Mirada 1: haz la cruz amarilla."],
+    ["A line? Hold it left to right. Do the line moves.","¿Una línea? Ponla de izquierda a derecha. Haz los movimientos de la línea."],
+    ["An L? Hold it at the back left. Do the L moves.","¿Una L? Ponla atrás a la izquierda. Haz los movimientos de la L."],
+    ["A dot? Do the line moves, then the L moves.","¿Un punto? Haz los de la línea y luego los de la L."],
+    ["Look 2: make the corners yellow. Each shape has its own moves.","Mirada 2: pon las esquinas amarillas. Cada figura tiene sus movimientos."],
+    ["Learn the fish moves first. They come up the most.","Aprende primero los del pez. Son los que más salen."]],
   algs:[{n:["Line moves","Movimientos de la línea"], s:"F R U R' U' F'"},{n:["L moves","Movimientos de la L"], s:"F U R U' R' F'"},
     {n:["Fish moves","Movimientos del pez"], s:"R U R' U R U2 R'"},{n:["Other fish moves","Movimientos del otro pez"], s:"R U2 R' U' R U' R'"}]},
  {id:"f-pll", method:"faster", stage:3, t:["Level 2 · 4 · The last layer in two looks","Nivel 2 · 4 · La última capa en dos miradas"],
-  goal:["Every side one color: first the corners, then the edges.","Cada lado de un color: primero las esquinas, luego las aristas."],
-  steps:[["Look 1, the corners: find headlights (two corners on one side with the same color). Hold them at the back and do the corner circle moves.","Mirada 1, las esquinas: busca faros (dos esquinas en un lado con el mismo color). Ponlos atrás y haz el círculo de esquinas."],
-    ["No headlights at all? Do the Y swap moves from any side.","¿Sin faros? Haz el cambio Y desde cualquier lado."],
-    ["Look 2, the edges: a side all done? Hold it at the back and do the edge circle moves. No side done? The H or Z swap.","Mirada 2, las aristas: ¿un lado terminado? Ponlo atrás y haz el círculo de aristas. ¿Ninguno? El cambio H o Z."],
-    ["Turn the top to finish.","Gira la cara de arriba para terminar."]],
+  goal:["Every side one color, in 2 looks.","Cada lado de un color, en 2 miradas."],
+  steps:[["Look 1: fix the corners.","Mirada 1: arregla las esquinas."],
+    ["Find headlights: 2 corners on one side with the same color. Hold them at the back. Do the corner circle moves.","Busca faros: 2 esquinas en un lado con el mismo color. Ponlos atrás. Haz el círculo de esquinas."],
+    ["No headlights? Do the Y swap moves.","¿Sin faros? Haz el cambio Y."],
+    ["Look 2: fix the edges.","Mirada 2: arregla las aristas."],
+    ["One side all done? Hold it at the back. Do the edge circle moves.","¿Un lado terminado? Ponlo atrás. Haz el círculo de aristas."],
+    ["Turn the top to finish.","Gira la parte de arriba para terminar."]],
   algs:[{n:["Corner circle moves","Círculo de esquinas"], s:"R' F R' B2 R F' R' B2 R2"},{n:["Edge circle moves","Círculo de aristas"], s:"R U' R U R U R U' R' U' R2"}]}
 ];
 
 /* ── saved place ── */
-const S={real:false, lang:"en", view:"learn", lesson:0, done:{}, speed:"normal", letters:true, cube:"", hist:[], paint:{}, brush:"W", tried:{}, mix:null, result:null, method:"short", wayV:0, level:"every", drill:null, camRef:null, realStage:0, symbols:false, voice:false, scheme:{U:"Y",D:"W",F:"G",B:"B",R:"O",L:"R"}};
+const S={real:false, lang:"en", view:"learn", lesson:0, done:{}, speed:"normal", letters:true, cube:"", hist:[], paint:{}, brush:"W", tried:{}, mix:null, result:null, learnStep:0, method:"short", wayV:0, level:"every", drill:null, camRef:null, realStage:0, symbols:false, voice:false, scheme:{U:"Y",D:"W",F:"G",B:"B",R:"O",L:"R"}};
 try{
   const st=JSON.parse(localStorage.getItem(KEY)||"null");
   if(st){ Object.keys(S).forEach(k => { if(st[k]!==undefined) S[k]=st[k]; }); }
@@ -1179,7 +1202,7 @@ function learnHtml(){
   const i=S.lesson, l=L[i];
   let h=`<p class="kicker">${esc(t("step"))} ${i+1} ${esc(t("of"))} ${L.length}</p><h2>${esc(tx(l.t))}</h2>
     <p class="goal"><strong>${esc(t("goalW"))}:</strong> ${esc(tx(l.goal))}</p>
-    <ol class="steps">${l.steps.map(s=>`<li>${esc(tx(s))}</li>`).join("")}</ol>`;
+    <ol class="steps">${l.steps.map((s,k)=>`<li class="${k===(S.learnStep||0)?"now":""}">${esc(tx(s))}</li>`).join("")}</ol>`;
   (l.algs||[]).forEach((a,k) => { h+=algBox(a, i+":"+k); });
   if(l.kind==="ready"){
     h+= S.done[i] ? `<p class="state ok">${esc(t("gotIt"))}</p>` : `<div class="btn-row"><button type="button" class="btn btn-good" data-act="ready">${esc(t("ready"))}</button></div>`;
@@ -1376,8 +1399,24 @@ function panel(){
 /* AOG-CUBE-ACTBAR-V1 (2026-10-12) — Jimmy (phone): "The I did it button is too far off the screen, where one has to
    scroll to see the cube." On a phone, Solve with me keeps the move and its button in a bar at the bottom of the
    screen, so the cube stays in view above and nothing needs scrolling. */
+/* AOG-CUBE-LESSONBAR-V1 (2026-10-18) — Jimmy: "When I am trying to learn it the instructions are far too down on the
+   screen." On a phone or an upright iPad, Learn keeps the lesson in the bar at the bottom: one step at a time, in big
+   words, with Back and Next, and the cube in view above. The whole list stays in the card below. */
+function lessonBar(bar){
+  const l=L[S.lesson]; if(!l || !l.steps || !l.steps.length) return false;
+  const n=l.steps.length, k=Math.max(0, Math.min(n-1, S.learnStep||0));
+  bar.innerHTML=`<button type="button" class="btn" data-ls="-1" aria-label="${esc(t("back"))}" ${k?"":"disabled"}>‹</button>
+    <div class="ab-lesson"><p class="ab-dots" aria-hidden="true">${l.steps.map((_,j) => `<span class="${j<k?"done":j===k?"now":""}"></span>`).join("")}</p><p class="ab-move">${esc(tx(l.steps[k]))}</p></div>
+    <button type="button" class="btn btn-good" data-ls="1" aria-label="${esc(t("nextStep"))}" ${k<n-1?"":"disabled"}>›</button>`;
+  bar.querySelectorAll("[data-ls]").forEach(b => b.onclick=() => { S.learnStep=Math.max(0, Math.min(n-1, k+ +b.getAttribute("data-ls"))); save();
+    const ol=$("panel").querySelectorAll(".steps li"); ol.forEach((li,j) => li.classList.toggle("now", j===S.learnStep)); lessonBar(bar); fitBar(bar); });
+  return true;
+}
+function fitBar(bar){ document.body.style.setProperty("--bar-h", (bar.hidden ? 0 : bar.offsetHeight)+"px"); }
 function actBar(){
   const bar=$("actBar"); if(!bar) return;
+  if(S.view==="learn"){ const on=lessonBar(bar); document.body.classList.toggle("has-lessonbar", on); document.body.classList.remove("has-actbar"); bar.hidden=!on; fitBar(bar); return; }
+  document.body.classList.remove("has-lessonbar");
   const main=S.view==="solve" && $("panel").querySelector('.calm [data-act="gnext"], .calm [data-act="reveal"]');
   document.body.classList.toggle("has-actbar", !!main); bar.hidden=!main;
   if(!main){ bar.innerHTML=""; return; }
@@ -1386,6 +1425,7 @@ function actBar(){
   bar.innerHTML=`<p class="ab-move">${esc(words)}</p><button type="button" class="btn btn-good big" data-act="${main.getAttribute("data-act")}">${esc(main.textContent)}</button>
     <button type="button" class="btn" data-act="undo" aria-label="${esc(t("back"))}" ${S.hist.length?"":"disabled"}>↶</button>`;
   bar.querySelectorAll("[data-act]").forEach(b => b.onclick=()=>act(b.getAttribute("data-act")));
+  fitBar(bar);
 }
 const words_=tok => tok ? words(tok) : "";
 function playAlg(k, how){
@@ -1470,7 +1510,7 @@ function setup(stageIdx){
   }
   S.hist=[]; S.mix=null; S.result=null; S.showHint=false; guide=null; S.practice=S.lesson; save(); render(); panel();
 }
-function pick(i){ S.lesson=Math.max(0,Math.min(L.length-1,i)); S.showHint=false; algAt={k:null,i:0}; save(); if(S.view!=="learn") location.hash="learn"; else { paintAll(); window.scrollTo({top:0}); } }
+function pick(i){ S.learnStep=0; S.lesson=Math.max(0,Math.min(L.length-1,i)); S.showHint=false; algAt={k:null,i:0}; save(); if(S.view!=="learn") location.hash="learn"; else { paintAll(); window.scrollTo({top:0}); } }
 
 /* ── the pad, the view row, the bar ── */
 function padHtml(){
