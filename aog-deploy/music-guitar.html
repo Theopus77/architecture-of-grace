@@ -1626,8 +1626,8 @@ function pickClick(id){
 function recVoice(c, ch, id, m, v, when, s, o, R){
   const snd=SOUNDS[id], vv=Math.max(0.05, Math.min(1, v)), soft=!!(o && o.soft), L=R.lvl, top=R.top, lift=snd.rg||snd.gain;
   /* a slap sound: every note slapped or popped hard (the loud layer); the two high strings (or a flick up in Solo mode)
-     pop, the low ones slap */
-  const slapS=!!(snd.rslap && R.slap && R.slap.length && !soft), pop=slapS && ((o && o.pop) || (s!=null && s>=2));
+     pop, the low ones slap; a plain note (a fingered bass lick in Solo mode, AOG-SOLO-BASSLICKS-V1) neither */
+  const slapS=!!(snd.rslap && R.slap && R.slap.length && !soft && !(o && o.plain)), pop=slapS && ((o && o.pop) || (s!=null && s>=2));
   /* rstac: a sound whose every note is short (a muted, thumpy bass) plays the short recordings */
   let kind=((o && o.art==="mute") || (snd.rstac && !soft)) ? (R.by.mute?"mute":R.by.stac?"stac":"sus") : (soft && R.by.hammer) ? "hammer" : "sus";
   let pk=recPick(R, kind, m, slapS ? 1 : vv, s);
