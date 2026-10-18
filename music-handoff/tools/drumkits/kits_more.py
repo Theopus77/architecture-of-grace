@@ -15,6 +15,8 @@ KIT_LEVEL in music-kit.html (--kittable). Credits: aog-deploy/audio/drums/CREDIT
                               a whistle (the apito); the surdo, second surdo, repinique and tamborim parts are played
                               by the nearest real drums (a bass drum, a tom with mallets, a tom with sticks, a small
                               frame drum), as no free recording of those drums was found, and the pads say so
+  BP  Body percussion         body_percussion (sfzinstruments, CC0): stomp, hand clap, finger snap, finger clap, chest,
+                              tummy, heel, cheek
 More kits follow below, one block each.
 
 Where the recordings come from: vcsl (Versilian Community Sample Library, CC0) and the others named in sources.py.
@@ -38,6 +40,9 @@ ROPE = MB + "Snare Drum, Rope Tension/"
 SHK = ID + "Shaker, Large/"
 TOM1 = MB + "Tom 1/"
 TOM2 = MB + "Tom 2/"
+def BO(n):
+    return T("body:Samples/body/%s.wav" % n)
+
 WHIS = "vcsl:Aerophones/Edge-blown Aerophones/Ball Whistle/"
 
 def FPS(rel, **kw):
@@ -135,7 +140,7 @@ MORE = {
     "tom":   {"name": "SURDO2", "s": L(VC(TOM2 + "Mallet/TomL_HitM_v2_rr1_Mid.wav"), VC(TOM2 + "Mallet/TomL_HitM_v2_rr2_Mid.wav")),
               "m": L(VC(TOM2 + "Mallet/TomL_HitM_v3_rr1_Mid.wav"), VC(TOM2 + "Mallet/TomL_HitM_v3_rr2_Mid.wav")),
               "h": L(VC(TOM2 + "Mallet/TomL_HitM_v4_rr1_Mid.wav"), VC(TOM2 + "Mallet/TomL_HitM_v4_rr2_Mid.wav")),
-              "eq": [("hp", 40, .7, 0)], "len": 1.0, "fade": 0.5},
+              "eq": [("hp", 40, .7, 0)], "len": 1.0, "fade": 0.5, "ceil": 0.5},
     "rim":   {"name": "AGOGO", "s": L(VC(ID + "Agogo Bells/Agogo_High_v1_rr1_Mid.wav")), "m": L(VC(ID + "Agogo Bells/Agogo_High_v2_rr1_Mid.wav")),
               "h": L(VC(ID + "Agogo Bells/Agogo_High_v3_rr1_Mid.wav")),
               "eq": [("hp", 500, .7, 0)], "len": 0.6, "fade": 0.3},
@@ -143,11 +148,31 @@ MORE = {
               "h": L(VC(WHIS + "Main_BallWhistle_Long-001.wav")),
               "eq": [("hp", 600, .7, 0)], "len": 1.1, "fade": 0.3},
   }},
+  # ── BP · body percussion: stomps, claps, snaps and pats, all a body can play ────────────────────────────────────────
+  "BP": {"dir": "body", "pads": {
+    "kick":  {"name": "STOMP", "s": L(BO("stomp_l_vl1_rr1"), BO("stomp_r_vl1_rr1")), "m": L(BO("stomp_l_vl2_rr1"), BO("stomp_r_vl2_rr1"), BO("stomp_l_vl2_rr2")),
+              "h": L(BO("stomp_l_vl2_rr4"), BO("stomp_r_vl2_rr4")), "eq": [("hp", 35, .7, 0)], "len": 0.6, "fade": 0.3},
+    "snare": {"name": "CLAP", "s": L(BO("handclap_vl1_rr1"), BO("handclap_vl1_rr2")), "m": L(BO("handclap_vl2_rr1"), BO("handclap_vl2_rr2"), BO("handclap_vl2_rr3")),
+              "h": L(BO("handclap_vl2_rr4"), BO("handclap_vl2_rr5")), "eq": [("hp", 150, .7, 0)], "len": 0.45, "fade": 0.2, "ceil": 0.55},
+    "ch":    {"name": "SNAP", "s": L(BO("snap_l_rr1"), BO("snap_r_rr1")), "m": L(BO("snap_l_rr2"), BO("snap_r_rr2"), BO("snap_l_rr3")),
+              "h": L(BO("snap_l_rr4"), BO("snap_r_rr4")), "eq": [("hp", 400, .7, 0)], "len": 0.35, "fade": 0.15, "ceil": 0.55},
+    "oh":    {"name": "FCLAP", "s": L(BO("fingerclap_vl1_rr1"), BO("fingerclap_vl1_rr2")), "m": L(BO("fingerclap_vl2_rr1"), BO("fingerclap_vl2_rr2"), BO("fingerclap_vl2_rr3")),
+              "h": L(BO("fingerclap_vl2_rr4"), BO("fingerclap_vl2_rr5")), "eq": [("hp", 300, .7, 0)], "len": 0.35, "fade": 0.15, "ceil": 0.55},
+    "clap":  {"name": "CHEST", "s": L(BO("chestthump_l_vl1_rr1"), BO("chestthump_l_vl1_rr2")), "m": L(BO("chestthump_l_vl2_rr1"), BO("chestthump_l_vl2_rr2")),
+              "h": L(BO("chestthump_l_vl2_rr3"), BO("chestthump_l_vl2_rr4")), "eq": [("hp", 50, .7, 0)], "len": 0.45, "fade": 0.2, "ceil": 0.3},
+    "tom":   {"name": "BELLY", "s": L(BO("bellycenter_l_vl1_rr1"), BO("bellycenter_r_vl1_rr1")), "m": L(BO("bellycenter_l_vl2_rr1"), BO("bellycenter_r_vl2_rr1")),
+              "h": L(BO("bellycenter_l_vl2_rr3"), BO("bellycenter_r_vl2_rr3")), "eq": [("hp", 50, .7, 0)], "len": 0.45, "fade": 0.2, "ceil": 0.3},
+    "rim":   {"name": "HEEL", "s": L(BO("heel_l_vl1_rr1"), BO("heel_r_vl1_rr1")), "m": L(BO("heel_l_vl2_rr1"), BO("heel_r_vl2_rr1"), BO("heel_l_vl2_rr2")),
+              "h": L(BO("heel_l_vl2_rr4"), BO("heel_r_vl2_rr4")), "eq": [("hp", 50, .7, 0)], "len": 0.4, "fade": 0.18},
+    "bell":  {"name": "CHEEK", "s": L(BO("cheek_lout_rr1"), BO("cheek_rout_rr1")), "m": L(BO("cheek_lout_rr2"), BO("cheek_rout_rr2")),
+              "h": L(BO("cheek_lout_rr4"), BO("cheek_rout_rr4")), "eq": [("hp", 150, .7, 0)], "len": 0.35, "fade": 0.15, "ceil": 0.3},
+  }},
 }
 
 # the loudness of each pad's normal file (K-weighted, loudest 400 ms), beside the nearest pads of the kits already there
 FILE_LU = {
   "OR": {"kick": -22.5, "snare": -33.0, "ch": -38.0, "oh": -31.0, "clap": -29.0, "tom": -27.0, "rim": -28.0, "bell": -26.0},
-  "SB": {"kick": -23.0, "snare": -32.0, "ch": -38.0, "oh": -31.0, "clap": -28.0, "tom": -25.0, "rim": -31.0, "bell": -32.0},
+  "SB": {"kick": -23.0, "snare": -32.0, "ch": -38.0, "oh": -31.0, "clap": -31.0, "tom": -28.5, "rim": -31.0, "bell": -32.0},
+  "BP": {"kick": -24.0, "snare": -31.0, "ch": -34.0, "oh": -35.0, "clap": -31.5, "tom": -32.0, "rim": -30.0, "bell": -34.5},
   "ME": {"kick": -23.0, "snare": -29.0, "ch": -32.0, "oh": -37.0, "clap": -29.0, "tom": -25.0, "rim": -28.0, "bell": -33.0},
 }

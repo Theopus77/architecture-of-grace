@@ -219,7 +219,28 @@
     tom: W2("FRAMLO", [2, 2, 2], "Frame drum · low", "Tambor de marco · grave"),
     rim: W2("FRAMHI", [2, 2, 2], "Frame drum · high", "Tambor de marco · agudo"),
     bell: W2("ZILLS", [1, 1, 1], "Finger cymbals", "Platillos de dedo", { look: "cym" }) });
-  IDS.push("OR", "ME");
+  /* SB · samba / batucada (VCSL). The caixa is a snare drum, the ganzá a shaker, then an agogô bell and a whistle. No free
+     recording of a surdo, repinique or tamborim was found: the nearest real drums play their parts, and the pads say so */
+  KITS.SB = K("world", "samba", "Samba · batucada", "Samba · batucada", {
+    kick: W2("SURDO", [2, 2, 2], "Bass drum · surdo part", "Bombo · parte del surdo"),
+    snare: W2("CAIXA", [2, 2, 2], "Snare drum · caixa", "Caja · caixa"),
+    ch: W2("GANZA", [2, 2, 2], "Shaker · ganzá", "Sonajero · ganzá", { look: "small" }),
+    oh: W2("TAMBOR", [2, 2, 2], "Small drum · tamborim part", "Tambor pequeño · parte del tamborim", { look: "small" }),
+    clap: W2("REPIQ", [2, 2, 2], "High drum · repinique part", "Tambor agudo · parte del repinique"),
+    tom: W2("SURDO2", [2, 2, 2], "Low drum · second surdo", "Tambor grave · segundo surdo"),
+    rim: W2("AGOGO", [1, 1, 1], "Agogô bell", "Agogó", { look: "small" }),
+    bell: W2("APITO", [1, 1, 1], "Whistle · apito", "Silbato · apito", { look: "small" }) });
+  /* BP · body percussion (body_percussion, sfzinstruments, CC0): everything a body can play, for a class with no drums */
+  KITS.BP = K("hand", "body", "Body percussion", "Percusión corporal", {
+    kick: W2("STOMP", [2, 3, 2], "Stomp", "Pisotón"),
+    snare: W2("CLAP", [2, 3, 2], "Hand clap", "Palmada", { look: "small" }),
+    ch: W2("SNAP", [2, 3, 2], "Finger snap", "Chasquido", { look: "small" }),
+    oh: W2("FCLAP", [2, 3, 2], "Quiet clap (two fingers)", "Palmada suave (dos dedos)", { look: "small" }),
+    clap: W2("CHEST", [2, 2, 2], "Chest pat", "Palmada en el pecho"),
+    tom: W2("BELLY", [2, 2, 2], "Tummy pat", "Palmada en la barriga"),
+    rim: W2("HEEL", [2, 3, 2], "Heel tap", "Golpe de talón", { look: "small" }),
+    bell: W2("CHEEK", [2, 2, 2], "Cheek pop", "Golpe en la mejilla", { look: "small" }) });
+  IDS.push("OR", "ME", "SB", "BP");
   var LAYERS = ["s", "m", "h"];
   function made(b, id) { var k = KITS[b], p = k && k.pads[id]; return !!(p && p.made); }
 
@@ -296,7 +317,25 @@
     /* baladi, "of the country": doum doum - tek doum - tek -, the frame drum underneath */
     { id: "baladi", en: "Darbuka · baladi", es: "Darbuka · baladi", kit: "ME", bpm: 92, swing: 0.50, hand: 1, grp: "world",
       map: { kick: [2,0,1,0,0,0,0,0,2,0,0,0,0,0,0,0], snare: [0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0], ch: [0,0,0,0,3,3,0,0,0,0,3,3,0,0,3,0],
-             tom: [3,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0], oh: [0,0,0,0,3,0,0,0,0,0,0,0,3,0,0,0] } }
+             tom: [3,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0], oh: [0,0,0,0,3,0,0,0,0,0,0,0,3,0,0,0] } },
+    /* a samba school's batucada: the second surdo on 1 and 3 answered by the first on 2 and 4, the caixa's sixteenths,
+       the tamborim's teleco-teco, the ganzá and the agogô; the whistle calls the start of the second part */
+    { id: "batucada", en: "Samba batucada", es: "Batucada de samba", kit: "SB", bpm: 104, swing: 0.54, hand: 1, grp: "world",
+      map: { tom: [1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0], kick: [0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0], snare: [2,3,3,1,2,3,3,1,2,3,3,1,2,3,1,1],
+             oh: [1,0,1,1,0,1,0,1,1,0,1,1,0,1,0,1], ch: [2,3,3,3,2,3,3,3,2,3,3,3,2,3,3,3], rim: [1,0,1,0,0,1,0,1,0,1,0,1,0,0,1,0] },
+      parts: [{ len: 16, map: { bell: [2,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0], tom: [1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0], kick: [0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0],
+        clap: [0,0,0,0,0,0,0,0,2,0,1,1,0,1,0,1], snare: [2,3,3,1,2,3,3,1,2,3,3,1,2,3,1,1], ch: [2,3,3,3,2,3,3,3,2,3,3,3,2,3,3,3] } }] },
+    /* samba-reggae, slower and heavier, as the bloco drummers of Salvador play it */
+    { id: "sambareggae", en: "Samba-reggae", es: "Samba-reggae", kit: "SB", bpm: 92, swing: 0.50, hand: 1, grp: "world",
+      map: { kick: [2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0], tom: [0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,1], clap: [0,0,1,0,0,1,0,0,0,0,1,0,0,1,0,0],
+             snare: [1,0,0,3,1,0,0,3,1,0,0,3,1,0,3,3], ch: [1,3,1,3,1,3,1,3,1,3,1,3,1,3,1,3] } },
+    /* body percussion: stomp, stomp, clap, the stadium beat everyone knows how to join */
+    { id: "bodystomp", en: "Stomp, stomp, clap", es: "Pisotón, pisotón, palmada", kit: "BP", bpm: 80, swing: 0.50, hand: 1, grp: "hand",
+      map: { kick: [2,0,1,0,0,0,0,0,2,0,1,0,0,0,0,0], snare: [0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0] } },
+    /* a body percussion circle: snaps keep time, the chest and tummy answer, a clap on 2 and 4 */
+    { id: "bodycircle", en: "Body percussion circle", es: "Círculo de percusión corporal", kit: "BP", bpm: 96, swing: 0.50, hand: 1, grp: "hand",
+      map: { kick: [1,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0], snare: [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0], ch: [0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0],
+             clap: [0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0], tom: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1], bell: [0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0] } }
   );
   /* a beat in parts: part 2 goes in the next part of the song, and the track plays them in turn. Put my beat back
      returns that part and the track as they were; a one-part beat picked afterwards stops the track again. */

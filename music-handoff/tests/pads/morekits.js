@@ -23,7 +23,7 @@ const TABLE=process.argv.includes("--table"), KTABLE=process.argv.includes("--ki
 const ONLY=(process.argv.slice(2).find(a=>/^[A-Z0-9]{2}(,[A-Z0-9]{2})*$/.test(a))||"").split(",").filter(Boolean);
 let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails++; };
 /* the new kits: id → its folder and its group */
-const ALLNEW={OR:["orchestra","orch"], ME:["mideast","world"]};
+const ALLNEW={OR:["orchestra","orch"], ME:["mideast","world"], SB:["samba","world"], BP:["body","hand"]};
 const NEW=Object.fromEntries(Object.entries(ALLNEW).filter(([k])=>!ONLY.length || ONLY.includes(k)));
 const IDS=Object.keys(NEW), DIRS=Object.fromEntries(Object.entries(ALLNEW).map(([k,v])=>[k,"/audio/drums/"+v[0]+"/"]));
 const GROUP_EN={drums:"Drum sets", electronic:"Electronic", world:"World", orch:"Orchestra and marching", hand:"Hand percussion"};
@@ -121,7 +121,7 @@ window.__bar=T=>{ const e=60/90/2; for(let i=0;i<8;i++){ const t=0.05+i*e; trigg
       await p.selectOption("#grpSel", g.grp).catch(()=>{}); await p.waitForTimeout(150);
       await p.selectOption("#startSel", g.id).catch(()=>{}); await p.waitForTimeout(300);
       const st=await p.evaluate(()=>({kit:S.banks[0].kitA, on:SEQ.on, n:S.ev.filter(e=>e.b===0).length, beat:S.beat&&S.beat.id}));
-      ok(gl && st.kit===g.kit && !st.on && st.n>0 && st.beat===g.id, `the groove ${g.id} sits in its group, brings ${g.kit} and waits for Play`);
+      ok(gl && st.kit===g.kit && !st.on && st.n>0 && st.beat===g.id, `the groove ${g.id} sits in its group, brings ${g.kit} and waits for Play `+(gl&&st.kit===g.kit&&!st.on&&st.n>0&&st.beat===g.id?"":JSON.stringify(st)));
     }
     ok(errs.length===0, "no page errors "+errs.join(" | "));
     await c.close();
