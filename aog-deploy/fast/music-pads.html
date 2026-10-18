@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- AOG-FAST-BUILD-V1 source:fc333acb3ceb2f75 · MADE BY tools/build-fast.py from music-pads.html: edit music-pads.html, then run it. -->
+<!-- AOG-FAST-BUILD-V1 source:884a49be9aa7108d · MADE BY tools/build-fast.py from music-pads.html: edit music-pads.html, then run it. -->
 <html lang="en">
 <head>
 <script>/* AOG-STUDIO-ONLY-V1 (Jimmy, 2026-10-10: "one location for all the instruments … and that is the studio"): opened on its own address, this room opens inside the Studio instead, at this exact address (its lesson, take or link). Inside the Studio's frame, and for the site's own checks, it stays. */(function(){try{if(window.top!==window||navigator.webdriver)return;var M={"music-pads":"pads","drum-machine":"pads","beat-lab":"pads","music-kit":"kit","drum-kit":"kit","music-piano":"piano","piano":"piano","keys":"piano","music-guitar":"guitar","guitar":"guitar","music-bass":"bass","bass":"bass","music-band":"band","band":"band","music-decks":"decks","decks":"decks","turntables":"decks","music-studio":"studio","studio":"studio","mixing-desk":"studio"},f=(location.pathname.split("/").pop()||"").replace(/\.html$/,""),r=M[f];if(!r)return;var F={pads:"music-pads",kit:"music-kit",piano:"music-piano",guitar:"music-guitar",bass:"music-bass",band:"music-band",decks:"music-decks",studio:"music-studio"};location.replace("/the-studio.html?at="+encodeURIComponent("/"+F[r]+".html"+location.search+location.hash)+"#"+r);}catch(e){}})();</script>
@@ -40,7 +40,7 @@ try{if(localStorage.getItem("aog.lang")==="es")document.documentElement.setAttri
        the Mixing Desk, cut into sixteen beats).
      · Near the middle of a pad plays louder, near the edge softer (a drum plays its soft, normal or hard recording).
        Notes and chords ring while the pad is held. A closed hi-hat stops the open one; a new chop stops the last.
-     · The loop: 1, 2 or 4 bars, a tempo, swing, and "line up to" (quantize). Record plays what you tap back on the
+     · The loop: 1, 2, 4, 8 or 16 bars (AOG-PADS-16BARS-V1), a tempo, swing, and "line up to" (quantize). Record plays what you tap back on the
        next time round, on every bank at once. Repeat plays a held pad in time. Undo takes back the last change.
        The steps show the picked pad's hits; tap a step to add or take one away.
      · Each pad has its own volume, pitch and left/right. Everything stays on this device (aog.pads.v1).
@@ -154,9 +154,25 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
 .pad.fit{border-color:#ffd36b;box-shadow:inset 0 -5px 0 #ffd36b}
 .pad.hit .po{background:#1f1206;color:#ffd36b}
 
-/* the steps of the picked pad: 8 to a row on a phone, 16 on a wider screen */
+/* the steps of the picked pad: 8 to a row on a phone, 16 where the sequencer itself is wide (AOG-PADS-16BARS-V1: its own
+   width, so a phone on its side, with the pads beside the steps, keeps 8 to a row and each step a finger wide) */
 .steps{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:4px}
-@media (min-width:600px){ .steps{grid-template-columns:repeat(16,minmax(0,1fr))} }
+.pm-sec.stepsec{container-type:inline-size}
+@container (min-width:560px){ .steps{grid-template-columns:repeat(16,minmax(0,1fr))} }
+@supports not (container-type:inline-size){ @media (min-width:600px){ .steps{grid-template-columns:repeat(16,minmax(0,1fr))} } }
+.st.bar{color:#ffd36b;font-size:12px}
+.st.bar[aria-pressed="true"]{color:#0b2530}
+/* AOG-PADS-16BARS-V1: which bars the steps show, and the bar playing now */
+.pm-barnav{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:0 0 8px}
+.pm-barnav[hidden]{display:none}
+.pm-barnav .pm-b{min-width:48px}
+.pm-barnav .bg[aria-pressed="true"]{background:#ffd36b;border-color:#ffd36b;color:#1f1206}
+.pm-barnav .bg.here:not([aria-pressed="true"])::after{content:" ▶";color:#ffd36b}
+.pm-barnav .pm-f{flex:1 1 9rem;min-width:0}
+.pm-barnow{color:#f1e9da;font:700 .95rem/1.2 var(--sans);margin-left:auto}
+.pm-barnow:empty{display:none}
+.pm-bartools{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.pm-bartools[hidden],.pm-bartools .pm-b[hidden]{display:none!important}
 .st{min-height:40px;border-radius:8px;border:1px solid #4a4f58;background:#24272d;color:#c9bfae;font:700 11px/1 var(--sans);padding:0}
 .st.beat{background:#2c3037}
 .st[aria-pressed="true"]{background:#7fd0e0;border-color:#7fd0e0;color:#0b2530}
@@ -283,9 +299,11 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
             </div>
             <p class="pm-now" id="beatNow" aria-live="polite"></p>
           </div>
-          <div class="pm-sec">
+          <div class="pm-sec stepsec">
             <p class="pm-h" id="stepsH"></p>
+            <div class="pm-barnav" id="barNav" hidden></div><!-- AOG-PADS-16BARS-V1: four bars at a time -->
             <div class="steps" id="steps" role="group"></div>
+            <div class="pm-bartools" id="barTools" hidden><button type="button" class="pm-b" id="barCopy"></button><button type="button" class="pm-b" id="barClear"></button></div>
           </div>
           <details class="pm-set pm-sec" id="padSet">
             <summary id="padSetSum"></summary>
@@ -329,6 +347,6 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
   </div>
   <div class="pv-grids" id="pvGrid"></div>
 </div>
-<script src="/front/5fd27217c736.js"></script>
+<script src="/front/0d7d5d0d3b73.js"></script>
 </body>
 </html>

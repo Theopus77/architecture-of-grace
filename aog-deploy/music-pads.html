@@ -39,7 +39,7 @@ try{if(localStorage.getItem("aog.lang")==="es")document.documentElement.setAttri
        the Mixing Desk, cut into sixteen beats).
      · Near the middle of a pad plays louder, near the edge softer (a drum plays its soft, normal or hard recording).
        Notes and chords ring while the pad is held. A closed hi-hat stops the open one; a new chop stops the last.
-     · The loop: 1, 2 or 4 bars, a tempo, swing, and "line up to" (quantize). Record plays what you tap back on the
+     · The loop: 1, 2, 4, 8 or 16 bars (AOG-PADS-16BARS-V1), a tempo, swing, and "line up to" (quantize). Record plays what you tap back on the
        next time round, on every bank at once. Repeat plays a held pad in time. Undo takes back the last change.
        The steps show the picked pad's hits; tap a step to add or take one away.
      · Each pad has its own volume, pitch and left/right. Everything stays on this device (aog.pads.v1).
@@ -153,9 +153,25 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
 .pad.fit{border-color:#ffd36b;box-shadow:inset 0 -5px 0 #ffd36b}
 .pad.hit .po{background:#1f1206;color:#ffd36b}
 
-/* the steps of the picked pad: 8 to a row on a phone, 16 on a wider screen */
+/* the steps of the picked pad: 8 to a row on a phone, 16 where the sequencer itself is wide (AOG-PADS-16BARS-V1: its own
+   width, so a phone on its side, with the pads beside the steps, keeps 8 to a row and each step a finger wide) */
 .steps{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:4px}
-@media (min-width:600px){ .steps{grid-template-columns:repeat(16,minmax(0,1fr))} }
+.pm-sec.stepsec{container-type:inline-size}
+@container (min-width:560px){ .steps{grid-template-columns:repeat(16,minmax(0,1fr))} }
+@supports not (container-type:inline-size){ @media (min-width:600px){ .steps{grid-template-columns:repeat(16,minmax(0,1fr))} } }
+.st.bar{color:#ffd36b;font-size:12px}
+.st.bar[aria-pressed="true"]{color:#0b2530}
+/* AOG-PADS-16BARS-V1: which bars the steps show, and the bar playing now */
+.pm-barnav{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:0 0 8px}
+.pm-barnav[hidden]{display:none}
+.pm-barnav .pm-b{min-width:48px}
+.pm-barnav .bg[aria-pressed="true"]{background:#ffd36b;border-color:#ffd36b;color:#1f1206}
+.pm-barnav .bg.here:not([aria-pressed="true"])::after{content:" ▶";color:#ffd36b}
+.pm-barnav .pm-f{flex:1 1 9rem;min-width:0}
+.pm-barnow{color:#f1e9da;font:700 .95rem/1.2 var(--sans);margin-left:auto}
+.pm-barnow:empty{display:none}
+.pm-bartools{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.pm-bartools[hidden],.pm-bartools .pm-b[hidden]{display:none!important}
 .st{min-height:40px;border-radius:8px;border:1px solid #4a4f58;background:#24272d;color:#c9bfae;font:700 11px/1 var(--sans);padding:0}
 .st.beat{background:#2c3037}
 .st[aria-pressed="true"]{background:#7fd0e0;border-color:#7fd0e0;color:#0b2530}
@@ -282,9 +298,11 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
             </div>
             <p class="pm-now" id="beatNow" aria-live="polite"></p>
           </div>
-          <div class="pm-sec">
+          <div class="pm-sec stepsec">
             <p class="pm-h" id="stepsH"></p>
+            <div class="pm-barnav" id="barNav" hidden></div><!-- AOG-PADS-16BARS-V1: four bars at a time -->
             <div class="steps" id="steps" role="group"></div>
+            <div class="pm-bartools" id="barTools" hidden><button type="button" class="pm-b" id="barCopy"></button><button type="button" class="pm-b" id="barClear"></button></div>
           </div>
           <details class="pm-set pm-sec" id="padSet">
             <summary id="padSetSum"></summary>
@@ -358,6 +376,16 @@ const STR={
   guide:{en:"New here? How to make a killer song, step by step →",es:"¿Eres nuevo? Cómo hacer una canción increíble, paso a paso →"},   /* AOG-BEATLAB-GUIDE-V1 */
   bgFirst:{en:"First beats",es:"Primeros ritmos"}, bgStyles:{en:"Famous styles",es:"Estilos famosos"},
   stepsH:{en:"Steps for pad {n}: {name}. Tap a step to add or take away a hit.",es:"Pasos del pad {n}: {name}. Toca un paso para poner o quitar un golpe."},
+  /* AOG-PADS-16BARS-V1 */
+  barsAB:{en:"Bars {a}–{b}",es:"Compases {a}–{b}"}, barsShow:{en:"Bars shown",es:"Compases a la vista"}, barsPrev:{en:"Bars before",es:"Compases anteriores"}, barsNext:{en:"Bars after",es:"Compases siguientes"},
+  barNow:{en:"Playing bar {n} of {m}",es:"Suena el compás {n} de {m}"},
+  barCopy:{en:"Copy bank {bank}'s bars {a}–{b} to the rest",es:"Copia los compases {a}–{b} del banco {bank} al resto"},
+  barClear:{en:"Clear bank {bank}'s bars {a}–{b}",es:"Borra los compases {a}–{b} del banco {bank}"},
+  barCopied:{en:"Bank {bank}'s bars {a}–{b} now repeat up to bar {m}. Undo takes it back.",es:"Los compases {a}–{b} del banco {bank} ahora se repiten hasta el compás {m}. Deshacer lo quita."},
+  barCleared:{en:"Bank {bank}'s bars {a}–{b} are empty. Undo brings them back.",es:"Los compases {a}–{b} del banco {bank} están vacíos. Deshacer los recupera."},
+  barsGrew:{en:"Your {n} repeat to fill {m}. Change any bar you like.",es:"Tus {n} se repiten hasta llenar {m}. Cambia el compás que quieras."},
+  barsGrew1:{en:"Your bar repeats to fill {m}. Change any bar you like.",es:"Tu compás se repite hasta llenar {m}. Cambia el compás que quieras."},
+  barsFull:{en:"The loop is full. Clear some hits first.",es:"El bucle está lleno. Borra algunos golpes primero."},
   /* AOG-ROOM-PEDALS-V1 */
   fxH:{en:"Effects",es:"Efectos"},
   fxLine:{en:"The whole machine plays through these. Every effect starts off.",es:"Toda la caja de ritmos suena con estos efectos. Todos empiezan apagados."},
@@ -573,7 +601,9 @@ try{ const r=JSON.parse(localStorage.getItem("aog.pads.v1")||"null"); if(r && r.
 /* AOG-PADS-KINDS-V1 (Jimmy, 2026-10-05: "This is missing chords, as it has notes doubled"): each bank has one job, always:
    A drums, B chords, C notes, D chops. A bank saved with another job gets its own settings back (its hits stay). */
 const KINDS=["drums","chords","notes","chops"];
+const BAR_LENS=[1,2,3,4,8,12,16], MAXEV=8000;   /* AOG-PADS-16BARS-V1: 3 and 12 come with the 12-bar blues; up to 8000 hits */
 S.banks.forEach((B,i)=>{ if(B.type!==KINDS[i]) S.banks[i]=Object.assign({}, DEF.banks[i]); });
+if(BAR_LENS.indexOf(S.bars)<0) S.bars=2;   /* AOG-PADS-16BARS-V1: a loop length this machine knows */
 let saveT=0;
 function save(){ clearTimeout(saveT); saveT=setTimeout(()=>{ try{ localStorage.setItem("aog.pads.v1", JSON.stringify(Object.assign({}, S, {ev:S.ev.map(e=>({b:e.b,p:e.p,t:e.t,v:e.v,len:e.len||0}))}))); }catch(e){} }, 250); }
 function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
@@ -1078,7 +1108,7 @@ function blip(when, top){
 }
 let stepNow=-1;
 function markStep(i, when){
-  const go=()=>{ stepNow=i; const box=$("steps"); const old=box.querySelector(".st.now"); if(old) old.classList.remove("now"); const el=box.querySelector(`.st[data-s="${i}"]`); if(el) el.classList.add("now"); };
+  const go=()=>{ stepNow=i; if(i%16===0) barPlaying(i>>4); const box=$("steps"); const old=box.querySelector(".st.now"); if(old) old.classList.remove("now"); const el=box.querySelector(`.st[data-s="${i}"]`); if(el) el.classList.add("now"); };
   const ms=(when-ac.currentTime)*1000; if(ms>8) setTimeout(()=>{ if(SEQ.on) go(); }, ms); else go();
 }
 function pump(){
@@ -1104,8 +1134,8 @@ function pump(){
 function startTimer(){ if(!SEQ.timer) SEQ.timer=setInterval(pump, 25); pump(); }
 function stopTimer(){ clearInterval(SEQ.timer); SEQ.timer=0; }
 function prepUsed(){ new Set(S.ev.map(e=>e.b)).forEach(b=>{ if(b>=0 && b<4) prep(b); }); }
-function play(){ LES.mark("play1"); if(S.swing>50) LES.mark("playsw"); prepUsed(); const c=ctx(); SEQ.on=true; SEQ.t0=c.currentTime+0.08; SEQ.abs=0; SEQ.map=null; startTimer(); paintTransport(); }
-function stop(){ if(SEQ.on) LES.mark("stop1"); SEQ.on=false; if(SEQ.rec){ SEQ.rec=false; say(t("recOff")); } S.ev.forEach(e=>{ delete e._skip; }); stepNow=-1; const o=$("steps").querySelector(".st.now"); if(o) o.classList.remove("now"); paintTransport(); }
+function play(){ LES.mark("play1"); if(S.swing>50) LES.mark("playsw"); prepUsed(); const c=ctx(); SEQ.on=true; SEQ.t0=c.currentTime+0.08; SEQ.abs=0; SEQ.map=null; SV.follow=true; startTimer(); paintTransport(); }
+function stop(){ if(SEQ.on) LES.mark("stop1"); SEQ.on=false; if(SEQ.rec){ SEQ.rec=false; say(t("recOff")); } S.ev.forEach(e=>{ delete e._skip; }); stepNow=-1; const o=$("steps").querySelector(".st.now"); if(o) o.classList.remove("now"); barPlaying(-1); paintTransport(); }
 function retime(bpm){
   bpm=clamp(Math.round(+bpm||90), 60, 180); if(bpm===S.bpm) return;
   LES.mark("tempo1"); if(bpm>=120) LES.mark("tfast"); if(bpm<=80) LES.mark("tslow");
@@ -1117,7 +1147,7 @@ function retime(bpm){
 function recordHit(bi, pi, vel, when){
   const L=loopLen(), pos=(when-SEQ.t0)/spt(), q=S.q|0;
   const a=q ? Math.round(pos/q)*q : Math.round(pos), tk=((a%L)+L)%L;
-  if(S.ev.length>=4000) return null;
+  if(S.ev.length>=MAXEV) return null;
   const e={b:bi, p:pi, t:tk, v:Math.round(vel*100)/100, len:0};
   const sw=Math.round((S.swing/100-0.5)*48), playAt=a+(sw && tk%48===24 ? sw : 0);
   if(playAt>=SEQ.abs) e._skip=Math.floor(a/L);
@@ -1219,35 +1249,70 @@ document.addEventListener("keyup",(e)=>{ const k=e.key.toLowerCase(); if(KEYMAP[
    so the file repeats with no gap and no click. Nothing goes anywhere until Save or Send is pressed. ═══════════════ */
 const BOUNCE={busy:false, out:null, msg:"", html:""};
 function barsWord(n){ return n===1 ? t("bar1") : t("barsN",{n:n}); }
-function wavBlob(L, R, sr){
-  const n=L.length, bytes=44+n*4, ab=new ArrayBuffer(bytes), v=new DataView(ab);
+/* AOG-PADS-16BARS-V1: a 16-bar loop at a slow tempo is over a minute of sound, so the work is done in slices of a few
+   milliseconds, the page free to answer a tap between them (the standing rule: 12 ms or less) */
+const SLICE_MS=8;
+function breath(){ return new Promise(r=>{ try{ const ch=new MessageChannel(); ch.port1.onmessage=()=>{ ch.port1.close(); r(); }; ch.port2.postMessage(0); }catch(e){ setTimeout(r, 0); } }); }
+async function wavBlob(L, R, sr, here){
+  const n=L.length, head=new ArrayBuffer(44), v=new DataView(head), pcm=new ArrayBuffer(n*4), pv=new DataView(pcm);
   const str=(o,x)=>{ for(let i=0;i<x.length;i++) v.setUint8(o+i, x.charCodeAt(i)); };
-  str(0,"RIFF"); v.setUint32(4,bytes-8,true); str(8,"WAVEfmt "); v.setUint32(16,16,true); v.setUint16(20,1,true); v.setUint16(22,2,true);
+  str(0,"RIFF"); v.setUint32(4,36+n*4,true); str(8,"WAVEfmt "); v.setUint32(16,16,true); v.setUint16(20,1,true); v.setUint16(22,2,true);
   v.setUint32(24,sr,true); v.setUint32(28,sr*4,true); v.setUint16(32,4,true); v.setUint16(34,16,true); str(36,"data"); v.setUint32(40,n*4,true);
-  for(let i=0,o=44;i<n;i++,o+=4){ const l=clamp(L[i],-1,1), r=clamp(R[i],-1,1); v.setInt16(o, l<0?l*32768:l*32767, true); v.setInt16(o+2, r<0?r*32768:r*32767, true); }
-  return new Blob([ab], {type:"audio/wav"});
+  /* a small step at a time, so even the first steps (before the browser has sped this loop up) stay short */
+  let i=0, t0=performance.now();
+  for(let o=0;i<n;){ const end=Math.min(n, i+1024);
+    for(;i<end;i++,o+=4){ const l=clamp(L[i],-1,1), r=clamp(R[i],-1,1); pv.setInt16(o, l<0?l*32768:l*32767, true); pv.setInt16(o+2, r<0?r*32768:r*32767, true); }
+    if(performance.now()-t0>SLICE_MS){ await breath(); t0=performance.now(); } }
+  if(here) return new Blob([head, pcm], {type:"audio/wav"});
+  return (await fileOf(head, pcm)) || wavBlob(L, R, sr, true);   /* (no helper: made again, here) */
+}
+/* the file itself is put together by a helper beside the page (the bytes handed over, not copied), so the page never waits
+   while a minute of sound is copied. No helper: null, and wavBlob makes it here */
+function fileOf(head, pcm){
+  return new Promise(ok=>{
+    let w=null, u="", want=44+pcm.byteLength;
+    try{ u=URL.createObjectURL(new Blob(['onmessage=function(e){postMessage(new Blob([e.data.h,e.data.p],{type:"audio/wav"}));close();};'], {type:"text/javascript"})); w=new Worker(u); }catch(e){ w=null; }
+    if(!w){ if(u) URL.revokeObjectURL(u); ok(null); return; }
+    const done=b=>{ try{ w.terminate(); }catch(e){} URL.revokeObjectURL(u); ok(b); };
+    w.onmessage=e=>done(e.data && e.data.type==="audio/wav" && e.data.size===want ? e.data : null);
+    w.onerror=()=>done(null);
+    try{ w.postMessage({h:head, p:pcm}, [pcm]); }catch(e){ done(null); }
+  });
 }
 async function renderLoop(){
-  const L=loopLen(), sp=spt(), sec=L*sp, sr=44100;
+  const L=loopLen(), sp=spt(), sec=L*sp, sr=44100, bars=S.bars, bpm=S.bpm;   /* as they are when Make is pressed */
   const evs=S.ev.filter(e=>e.t<L && e.b>=0 && e.b<4); if(!evs.length) return null;
   const used=[...new Set(evs.map(e=>e.b))];
   await Promise.all(used.map(b=>prep(b)));
   if(used.some(b=>!isReady(b))) throw new Error("not ready");
   const passes=Math.min(12, 1+Math.ceil(6/sec));          /* enough times round for the longest ring to settle */
   const O=window.OfflineAudioContext||window.webkitOfflineAudioContext;
-  const off=new O(2, Math.ceil(passes*sec*sr)+16, sr);
+  const m=evMap(), ticks=[...m.keys()].sort((a,b)=>a-b);
+  /* AOG-PADS-16BARS-V1: a loop of 8 bars or more is long, so the time round before the one kept is only its last part: 6 s, or
+     back to the start of a held note still sounding then (half the work of a whole time round, for the same sound) */
+  const long=bars>=8 && passes===2;
+  let pre=(passes-1)*sec;
+  if(long){ pre=6; m.forEach((list, tk)=>list.forEach(e=>{ if(!gated(e.b)) return; const at=tk*sp;
+      if(at+Math.max(12, e.len||48)*sp+0.7>sec-6) pre=Math.max(pre, sec-at+0.05); })); pre=Math.min(sec, pre); }
+  const off=new O(2, long ? Math.ceil((pre+sec)*sr)+16 : Math.ceil(passes*sec*sr)+16, sr);
   const M=master(off), g=M.bus; if(M.rig){ try{ await M.rig.ready(); }catch(e){} }   /* AOG-ROOM-PEDALS-V1: the same effects as live */
-  const T={c:off, dest:g, open:[[],[],[],[]], chop:[null,null,null,null]}, m=evMap(), ticks=[...m.keys()].sort((a,b)=>a-b);
-  for(let pass=0;pass<passes;pass++) ticks.forEach(tk=>m.get(tk).forEach(e=>{
-    if(e.b<0 || e.b>3) return;
-    const when=(pass*L+tk)*sp, v=trigger(e.b, e.p, e.v, when, T);
-    if(v && gated(e.b)) v.stop(when+Math.max(12, e.len||48)*sp);
-  }));
+  const T={c:off, dest:g, open:[[],[],[],[]], chop:[null,null,null,null]};
+  /* the hits are laid out in slices (AOG-PADS-16BARS-V1); the map read is this moment's, so a step tapped meanwhile waits for the next file */
+  let t0=performance.now();
+  for(let pass=0;pass<passes;pass++) for(const tk of ticks){
+    m.get(tk).forEach(e=>{
+      if(e.b<0 || e.b>3) return;
+      const when=long ? pre-(passes-1-pass)*sec+tk*sp : (pass*L+tk)*sp; if(when<0) return;
+      const v=trigger(e.b, e.p, e.v, when, T);
+      if(v && gated(e.b)) v.stop(when+Math.max(12, e.len||48)*sp);
+    });
+    if(performance.now()-t0>SLICE_MS){ await breath(); t0=performance.now(); }
+  }
   const buf=await new Promise((ok, no)=>{ off.oncomplete=ev=>ok(ev.renderedBuffer); const p=off.startRendering(); if(p && p.then) p.then(ok, no); });
-  const st=Math.round((passes-1)*sec*sr), n=Math.round(sec*sr);
-  const cut=ch=>{ const d=buf.getChannelData(ch), o=new Float32Array(n); o.set(d.subarray(st, Math.min(d.length, st+n))); return o; };
-  const Lc=cut(0), Rc=cut(1);
-  return {blob:wavBlob(Lc, Rc, sr), sec:n/sr, bpm:S.bpm, bars:S.bars, at:Date.now()};
+  const st=Math.round(long ? pre*sr : (passes-1)*sec*sr), n=Math.round(sec*sr);
+  const cut=ch=>{ const d=buf.getChannelData(ch), a=d.subarray(st, Math.min(d.length, st+n)); if(a.length===n) return a; const o=new Float32Array(n); o.set(a); return o; };
+  const Lc=cut(0); await breath(); const Rc=cut(1); await breath();
+  return {blob:await wavBlob(Lc, Rc, sr), sec:n/sr, bpm:bpm, bars:bars, at:Date.now()};
 }
 function paintBounce(){
   $("bounceBtn").textContent=BOUNCE.busy ? t("bMaking") : t("bounce"); $("bounceBtn").disabled=BOUNCE.busy;
@@ -1394,12 +1459,21 @@ function patPads(P){ const l=patLayout(P); return l ? l.pads : null; }
 /* how long each chord lasts in the loop, in beats: evenly over 4 bars; 3, 6 or 12 chords over 3 bars (the 12-bar blues,
    one beat a bar); otherwise evenly with the last chord, home, holding the beats left over */
 function patBeats(n){
-  if(16%n===0) return {bars:4, beats:Array(n).fill(16/n)};
-  if(12%n===0) return {bars:3, beats:Array(n).fill(12/n)};
-  const b=Math.floor(16/n), out=Array(n).fill(b); out[n-1]+=16-b*n; return {bars:4, beats:out};
+  const idx=Array.from({length:n}, (x,i)=>i);
+  /* AOG-PADS-16BARS-V1: in a loop of 8 bars or more, one chord a bar, the pattern again and again to fill the loop (8 chords
+     over 8 bars; 4 chords four times over 16); bars left over are the last chord's, home, held. The 12-bar blues is 12 bars. */
+  if(S.bars>=8){
+    const B=n===12 ? 12 : n<=S.bars ? S.bars : 16, k=Math.floor(B/n), beats=[], at=[];
+    for(let r=0;r<k;r++) idx.forEach(i=>{ beats.push(4); at.push(i); });
+    beats[beats.length-1]+=4*(B-k*n);
+    return {bars:B, beats:beats, idx:at};
+  }
+  if(16%n===0) return {bars:4, beats:Array(n).fill(16/n), idx:idx};
+  if(12%n===0) return {bars:3, beats:Array(n).fill(12/n), idx:idx};
+  const b=Math.floor(16/n), out=Array(n).fill(b); out[n-1]+=16-b*n; return {bars:4, beats:out, idx:idx};
 }
 function patEach(n){
-  const pb=patBeats(n), b=pb.beats[0], last=pb.beats[n-1];
+  const pb=patBeats(n), b=pb.beats[0], last=pb.beats[pb.beats.length-1];
   if(b!==last) return t("eachLast",{n:b, m:last});
   return b===4 ? t("each1") : b===2 ? t("each2") : b===8 ? t("eachTwoBars") : b===1 ? t("eachBeat") : t("eachBeats",{n:b});
 }
@@ -1440,7 +1514,7 @@ function patToLoop(B){
   const P=patOf(B); if(!P) return; const pp=patPads(P), bi=S.banks.indexOf(B);
   snapshot();
   const pb=patBeats(pp.length); S.bars=pb.bars;   /* AOG-PADS-ALLPATS-V1: 4 bars, or 3 for the 12-bar blues */
-  let at=0; const ev=pp.map((p,i)=>{ const len=pb.beats[i]*PPQ, e={b:bi, p:p, t:at, v:0.8, len:len-12}; at+=len; return e; });
+  let at=0; const ev=pb.idx.map((ci,j)=>{ const len=pb.beats[j]*PPQ, e={b:bi, p:pp[ci], t:at, v:0.8, len:len-12}; at+=len; return e; });
   S.ev=S.ev.filter(e=>e.b!==bi).concat(ev);
   prep(bi); changed(); paintAll(); say(t("patDone",{n:pb.bars}), 6000);
 }
@@ -1520,21 +1594,96 @@ function paintPads(){
   pvPaint();
 }
 function paintSel(){ document.querySelectorAll("#pads .pad").forEach(el=>el.classList.toggle("sel", +el.dataset.p===S.sel)); paintSteps(); paintPadSet(); }
+/* ══ AOG-PADS-16BARS-V1 (2026-10-18) — Jimmy: "Can we get 8 bars in the recording studio as an option? Even 16 bars." The
+   steps show four bars at a time (64 steps, as a 4-bar loop always did), with a choice of which four: buttons for two or
+   three groups, a menu with ◀ ▶ for four. While the loop plays the view follows the bar playing, until a step or a group is
+   touched: from then on it stays where you put it (until Play is pressed again), so it never moves under a finger. ══ */
+const GROUP=4, SV={g:0, follow:true, bar:-1};
+function barGroups(){ return Math.ceil(S.bars/GROUP); }
+function groupBars(g){ return [g*GROUP+1, Math.min(S.bars, (g+1)*GROUP)]; }
+function paintBarNav(){
+  const nav=$("barNav"), tools=$("barTools"), G=barGroups();
+  SV.g=clamp(SV.g, 0, G-1);
+  if(G<2){ if(!nav.hidden){ nav.hidden=true; nav.innerHTML=""; nav.dataset.sig=""; } tools.hidden=true; return; }
+  const lab=g=>{ const ab=groupBars(g); return t("barsAB",{a:ab[0], b:ab[1]}); };
+  const here=SV.bar>=0 ? Math.floor(SV.bar/GROUP) : -1;
+  const now=SV.bar>=0 ? t("barNow",{n:SV.bar+1, m:S.bars}) : "";
+  const sig=[S0.lang, S.bars, SV.g].join(":");
+  if(nav.dataset.sig!==sig){
+    nav.dataset.sig=sig;
+    let h;
+    if(G<4) h=Array.from({length:G}, (x,g)=>`<button type="button" class="pm-b bg" data-g="${g}" aria-pressed="${g===SV.g}">${esc(lab(g))}</button>`).join("");
+    else h=`<button type="button" class="pm-b pm-step" data-gd="-1" aria-label="${esc(t("barsPrev"))}"${SV.g===0?" disabled":""}>◀</button>`
+      +`<label class="pm-f"><span class="sr">${esc(t("barsShow"))}</span><select class="pm-sel" id="barGrp" aria-label="${esc(t("barsShow"))}">`
+      +Array.from({length:G}, (x,g)=>opt(g, esc(lab(g)), SV.g)).join("")+`</select></label>`
+      +`<button type="button" class="pm-b pm-step" data-gd="1" aria-label="${esc(t("barsNext"))}"${SV.g===G-1?" disabled":""}>▶</button>`;
+    nav.innerHTML=h+`<span class="pm-barnow" id="barNow"></span>`;
+    nav.hidden=false;
+  }
+  /* the group playing now is marked in place: nothing under a finger is drawn again while the loop plays */
+  nav.querySelectorAll(".bg").forEach(b=>{ const on=+b.dataset.g===here; if(b.classList.contains("here")!==on) b.classList.toggle("here", on); });
+  txt("barNow", now);
+  const ab=groupBars(SV.g), bank="ABCD"[S.bank];
+  tools.hidden=false;
+  const cp=$("barCopy"); cp.hidden=SV.g>=G-1; txt("barCopy", t("barCopy",{bank:bank, a:ab[0], b:ab[1]}));
+  txt("barClear", t("barClear",{bank:bank, a:ab[0], b:ab[1]}));
+}
+/* the bar playing now (from the loop's own steps): shown, and the view follows it unless a finger has taken over */
+function barPlaying(bar){
+  if(bar===SV.bar) return; SV.bar=bar;
+  if(barGroups()<2) return;
+  if(bar>=0 && SV.follow && Math.floor(bar/GROUP)!==SV.g){ SV.g=Math.floor(bar/GROUP); paintSteps(); return; }
+  paintBarNav();
+}
+function showGroup(g){ SV.follow=false; g=clamp(g, 0, barGroups()-1); if(g===SV.g) return; SV.g=g; paintSteps(); }
+/* copy the bars in view, on the bank in view, over every bar after them; or clear them */
+function copyBars(){
+  const G=barGroups(); if(SV.g>=G-1) return;
+  const bi=S.bank, ab=groupBars(SV.g), lo=(ab[0]-1)*4*PPQ, hi=ab[1]*4*PPQ, span=hi-lo, L=loopLen();
+  const src=S.ev.filter(e=>e.b===bi && e.t>=lo && e.t<hi), keep=S.ev.filter(e=>!(e.b===bi && e.t>=hi && e.t<L)), add=[];
+  for(let at=hi; at<L; at+=span) src.forEach(e=>{ const tt=e.t-lo+at; if(tt<L) add.push({b:e.b, p:e.p, t:tt, v:e.v, len:e.len||0}); });
+  if(keep.length+add.length>MAXEV){ say(t("barsFull")); return; }
+  snapshot(); S.ev=keep.concat(add);
+  changed(); say(t("barCopied",{bank:"ABCD"[bi], a:ab[0], b:ab[1], m:S.bars}), 6000);
+}
+function clearBars(){
+  const bi=S.bank, ab=groupBars(SV.g), lo=(ab[0]-1)*4*PPQ, hi=ab[1]*4*PPQ;
+  if(!S.ev.some(e=>e.b===bi && e.t>=lo && e.t<hi)) return;
+  snapshot(); S.ev=S.ev.filter(e=>!(e.b===bi && e.t>=lo && e.t<hi));
+  changed(); say(t("barCleared",{bank:"ABCD"[bi], a:ab[0], b:ab[1]}), 6000);
+}
+/* a longer loop: when the bars it adds hold nothing, the loop you made repeats to fill them, so it sounds as before */
+function setBars(n){
+  n=BAR_LENS.indexOf(n)>=0 ? n : 2; const was=S.bars; if(n===was) return;
+  const L0=was*4*PPQ, L1=n*4*PPQ;
+  if(n>was && S.ev.some(e=>e.t<L0) && !S.ev.some(e=>e.t>=L0 && e.t<L1)){
+    const src=S.ev.filter(e=>e.t<L0), add=[];
+    for(let at=L0; at<L1; at+=L0) src.forEach(e=>{ if(e.t+at<L1) add.push({b:e.b, p:e.p, t:e.t+at, v:e.v, len:e.len||0}); });
+    if(S.ev.length+add.length<=MAXEV){ snapshot(); S.ev=S.ev.concat(add); say(t(was===1?"barsGrew1":"barsGrew",{n:barsWord(was), m:barsWord(n)}), 6000); }
+  }
+  S.bars=n; changed(); paintGuide();
+}
 function paintSteps(){
-  const n=S.bars*16, bi=S.bank, pi=S.sel, on=new Set();
-  S.ev.forEach(e=>{ if(e.b===bi && e.p===pi && e.t<loopLen()) on.add(Math.floor(e.t/24)); });
+  const G=barGroups(); SV.g=clamp(SV.g, 0, G-1);
+  const s0=SV.g*GROUP*16, n=Math.min(S.bars*16, s0+GROUP*16)-s0, long=S.bars>GROUP, bi=S.bank, pi=S.sel, on=new Set();
+  const lo=s0*24, hi=(s0+n)*24;
+  S.ev.forEach(e=>{ if(e.b===bi && e.p===pi && e.t>=lo && e.t<hi) on.add(Math.floor(e.t/24)); });
   const d=padDefs(bi)[pi]||{name:""};
   txt("stepsH", t("stepsH",{n:pi+1, name:d.name}));
+  paintBarNav();
+  /* a step's number: its beat (1 to 16) in a loop of up to 4 bars; in a longer loop, the bar's number on its first step */
+  const cls=i=>`st${i%4===0?" beat":""}${long && i%16===0?" bar":""}${i===stepNow?" now":""}`, num=i=>long ? (i%16===0 ? String(i/16+1) : "") : (i%4===0 ? String(i/4+1) : "");
   /* AOG-STEADY-ALL-V1 (2026-10-17) — Jimmy: "after a certain number of notes are played, it freezes up for a note or two".
      Each new pad played made its row of steps again from nothing (and the page's helpers read the new row), between two
      hits. The steps already there are now changed in place, only where they differ. */
   const box=$("steps"), kids=box.children;
   if(kids.length===n){
-    for(let i=0;i<n;i++){ const b=kids[i], cl=`st${i%4===0?" beat":""}${i===stepNow?" now":""}`, pr=String(on.has(i)), al=t("stepN",{n:i+1});
-      if(b.className!==cl) b.className=cl; if(b.getAttribute("aria-pressed")!==pr) b.setAttribute("aria-pressed", pr); if(b.getAttribute("aria-label")!==al) b.setAttribute("aria-label", al); }
+    for(let k=0;k<n;k++){ const i=s0+k, b=kids[k], cl=cls(i), pr=String(on.has(i)), al=t("stepN",{n:i+1}), ds=String(i), nm=num(i);
+      if(b.dataset.s!==ds) b.dataset.s=ds; if(b.className!==cl) b.className=cl; if(b.getAttribute("aria-pressed")!==pr) b.setAttribute("aria-pressed", pr); if(b.getAttribute("aria-label")!==al) b.setAttribute("aria-label", al);
+      if(b.textContent!==nm) b.textContent=nm; }
     return;
   }
-  let h=""; for(let i=0;i<n;i++) h+=`<button type="button" class="st${i%4===0?" beat":""}${i===stepNow?" now":""}" data-s="${i}" aria-pressed="${on.has(i)}" aria-label="${esc(t("stepN",{n:i+1}))}">${i%4===0?(i/4+1):""}</button>`;
+  let h=""; for(let k=0;k<n;k++){ const i=s0+k; h+=`<button type="button" class="${cls(i)}" data-s="${i}" aria-pressed="${on.has(i)}" aria-label="${esc(t("stepN",{n:i+1}))}">${num(i)}</button>`; }
   $("steps").innerHTML=h;
 }
 /* AOG-STEADY-ALL-V1: words written only when they change (each write is a change the page's helpers look at) */
@@ -1556,7 +1705,7 @@ function paintControls(){
   $("bankLab").textContent=t("bankLab");
   $("bankSel").innerHTML=[0,1,2,3].map(i=>opt(i, esc(bankLabel(i)), S.bank)).join("");
   $("tempoLab").textContent=t("tempo"); $("tempo").value=S.bpm; $("tDown").setAttribute("aria-label", "−1"); $("tUp").setAttribute("aria-label", "+1");
-  $("barsLab").textContent=t("bars"); $("barsSel").innerHTML=(S.bars===3?[1,2,3,4]:[1,2,4]).map(n=>opt(n, esc(n===1?t("bar1"):t("barsN",{n:n})), S.bars)).join("");
+  $("barsLab").textContent=t("bars"); $("barsSel").innerHTML=BAR_LENS.filter(n=>(n!==3 && n!==12) || n===S.bars).map(n=>opt(n, esc(n===1?t("bar1"):t("barsN",{n:n})), S.bars)).join("");   /* AOG-PADS-16BARS-V1 */
   $("qLab").textContent=t("q"); $("qSel").innerHTML=[[0,"qOff"],[48,"q8"],[24,"q16"],[16,"q16t"],[12,"q32"]].map(([v,k])=>opt(v, esc(t(k)), S.q)).join("");
   $("swLab").textContent=t("sw"); $("swSel").innerHTML=[50,54,58,62,66].map(v=>opt(v, esc(v===50?t("swOff"):t("swN",{n:v})), S.swing)).join("");
   $("rptBtn").textContent=t("rpt"); $("rateLab").textContent=t("rate");
@@ -1719,7 +1868,13 @@ function init(){
   $("clearBtn").onclick=()=>{ if(!S.ev.length) return; snapshot(); S.ev=[]; changed(); LES.mark("clear1"); say(t("cleared")); };
   $("tempo").onchange=()=>retime($("tempo").value);
   $("tDown").onclick=()=>retime(S.bpm-1); $("tUp").onclick=()=>retime(S.bpm+1);
-  $("barsSel").onchange=()=>{ S.bars=+$("barsSel").value; changed(); };
+  $("barsSel").onchange=()=>setBars(+$("barsSel").value);
+  /* AOG-PADS-16BARS-V1: which bars the steps show; a finger on the steps or the groups keeps the view where it is */
+  ["steps","barNav"].forEach(id=>$(id).addEventListener("pointerdown",()=>{ SV.follow=false; }, true));
+  $("barNav").addEventListener("click",(e)=>{ const b=e.target.closest && e.target.closest("button"); if(!b) return;
+    if(b.dataset.g!=null) showGroup(+b.dataset.g); else if(b.dataset.gd!=null) showGroup(SV.g+(+b.dataset.gd)); });
+  $("barNav").addEventListener("change",(e)=>{ if(e.target.id==="barGrp") showGroup(+e.target.value); });
+  $("barCopy").onclick=copyBars; $("barClear").onclick=clearBars;
   $("qSel").onchange=()=>{ S.q=+$("qSel").value; if(S.q===24) LES.mark("q16"); if(S.q===0) LES.mark("qoff"); save(); };
   $("swSel").onchange=()=>{ S.swing=+$("swSel").value; if(S.swing>=54) LES.mark("sw54"); if(S.swing>50 && SEQ.on) LES.mark("playsw"); SEQ.map=null; save(); };
   $("rptBtn").onclick=()=>{ S.rpt=!S.rpt; if(S.rpt) LES.mark("rpt1"); save(); paintTransport(); };
@@ -1731,7 +1886,7 @@ function init(){
   $("grpSel").onchange=()=>{ const g=$("grpSel").value, f=beatFlat().find(x=>x.g===g); if(f) startBeat(f.b.id); };
   const stepBeat=d=>{ const F=beatFlat(), cur=S.beat && S.beat.id, i=F.findIndex(x=>x.b.id===cur); const j=i<0 ? (d>0?0:F.length-1) : (i+d+F.length)%F.length; startBeat(F[j].b.id); };
   $("beatPrev").onclick=()=>stepBeat(-1); $("beatNext").onclick=()=>stepBeat(1);
-  $("steps").addEventListener("click",(e)=>{ const b=e.target.closest && e.target.closest(".st"); if(!b) return;
+  $("steps").addEventListener("click",(e)=>{ const b=e.target.closest && e.target.closest(".st"); if(!b) return; SV.follow=false;
     const i=+b.dataset.s, bi=S.bank, pi=S.sel, lo=i*24, hi=lo+24; snapshot();
     const had=S.ev.some(x=>x.b===bi && x.p===pi && x.t>=lo && x.t<hi);
     LES.mark(had ? "stepdel" : "stepadd");
