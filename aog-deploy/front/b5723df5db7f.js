@@ -693,6 +693,57 @@ function bakeLoop(b, a, z, x, steady){
 }
 function loopEnd(set, n){ return (set.ends && set.ends[n]) || set.loop[1]; }
 function nearest(set, m){ let best=set.notes[0]; set.notes.forEach(n=>{ if(Math.abs(n-m)<Math.abs(best-m)) best=n; }); return best; }
+/* AOG-LEVEL-EVEN-V1 (2026-10-17) — Jimmy: "I would like all the instruments to be checked for sound levels … some notes and
+   some scales were higher than others". Each recording of a sound has its own trim, so its notes sit on one smooth line
+   from the bottom of the keyboard to the top (the piano's own gentle slope kept, at half its size, never more than 3 dB):
+   the grand's C6 was 3 dB under its neighbours, the upright's soft top octaves up to 12 dB. EVENP[sound][layer] = one letter
+   a recording, in its set's notes order ("O" = 0 dB, each letter 0.2 dB up or down, ±9.4 dB at most); [layer+"k"] = how
+   much it leans as it is played higher or lower than it was recorded (a mallet's ring dies faster sped up: "O" none,
+   each letter 0.02 dB a semitone). Measured through the piano's whole
+   chain and written here by music-handoff/tools/levels/make.js piano (between the two markers); worked out once a sound
+   first plays a note, then one more factor in the gain the note already sets. */
+/* AOG-LEVEL-EVEN-V1 table start */
+const EVENP={"accordion":{"m":"[SQNNOOQQURONLRJKKOMMLKIK","mk":"OOOOOOOOOOOOOOOOOOOOOOOOO"},
+"bells":{"m":"OMNMQPRNMNP","mk":"MOOOOOOOOOO"},
+"brass":{"m":"kcb^XNNHSNNMNMNJKHHHHGHHH","mk":"OOOOOOOOOOOOOOOOOOOOOOOOO"},
+"bright":{"m":"S[Q_ZRLIJRINMNRKOKPM]zXb^pSSSS","mk":"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOO","s":"SHJJILKKKOHQPLQNRLPOX_UWUZSSSS","sk":"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOO","l":"RbSf`VKHIRKMMOUDKCHG`mZgcwRRRR","lk":"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOO"},
+"celesta":{"m":"x]E@CFFGKLLMPOPROPOPQOPRT","mk":"OOOOOOOOOOOOOOOOOOOOOOOOO","l":"~~~~sg^\\XPOOOMKLJIFFFEEFI","lk":"OOOOOOOOOOOOOOOOOOOOOOOOO"},
+"choir":{"m":"WTQUORPVTQPUKLQTPNPVOPX~~","mk":"OOOOOOOOOOOOOOOOOOOOOOOOO"},
+"church":{"m":"XKTTYU]NRPJKKUKLMNMJO","mk":"OOOOOOOOOOOOOOOOOOOO:"},
+"clav":{"m":"XVROKKKLMMNNOOPPPQRRSSUUV","mk":"OOOOOOOOOOOOOOOOOOOOOOOOO","s":"BEFGIKLLMNONOOOOOPPOQRTTU","sk":"OOOOOOOOOOOOOOOOOOOOOOOOO","l":"wtnjf`\\XUSSSPNID>;:89;B@D","lk":"OOOOOOOOOOOOOOOOOOOOOOOOO"},
+"ep80":{"m":"TSOOOOOOOOONOPPPSR","mk":"JFPOQTTQOPUVVST]UO"},
+"epreed":{"m":"eba^cYYNOOPNOOOORSTVVWSST","mk":"OOOOOOOOOOOOOOOOOOOOOOOOO","s":"FGIJJKLLMMMMOOPPQQRSRRPQR","sk":"OOOOOOOOOOOOOOOOOOOOOOOOO","l":"~~~~~~~usSPOGE=<BABDDD?@A","lk":"OOOOOOOOOOOOOOOOOOOOOOOOO"},
+"epwarm":{"m":"\\YUPPR\\PGQM^Y]d","mk":"JKRNOIOOQPWRPJO","s":"cUQZOPVVNXXjsj~","sk":"7FFGNHOOPPWROJO","l":"~~nc\\[NGHECG;<H","lk":";>MERBOOJHNIJQO"},
+"felt":{"m":"OJKHIMGPSTPMLOd^`YVWOOO","mk":"OIXKPKSIUVMbjPbd;VYOOOO","s":"OOOOOOOOOOOOOOOOOOOOOOO","sk":"OOOOOOOOOOOOOOOOOOOOOOO","l":"OOOOOOOOOOOOOOOOOOOOOOO","lk":"OOOOOOOOOOOOOOOOOOOOOOO"},
+"glock":{"m":"OOOOOO","mk":"OOOOOO"},
+"gospel":{"m":"ZS\\[VZV\\M]J]M[H]MWIXM^IYQ","mk":"OOOOOOOOOOOOOOOOOOOOOOOOO"},
+"grand":{"m":"SWNYVPLJKQJONNPMPLQOYlTY\\eSSSS","mk":"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOO","s":"SIKJILLLLPIQPLRNRMQOX_TWUZSSSS","sk":"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOO","l":"Os_xo^Z\\TZ]QKXK@K=EALbSOUaOOOO","lk":"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOO"},
+"harp":{"m":"Y^b`RNVPPUOmYS_XqbcvS","mk":"OUOOOVO@OOcOROOOOj\\OO"},
+"harpsi":{"m":"P^JGJJUQNLMKTOOONNKNOOMOOSQJ","mk":"OOOOOOOOOOOOOOOOOOOOOOOOOOOX"},
+"honky":{"m":"NJIEMKDPSWQJRRgge^]ZNNN","mk":"OXXTUNON[ZW_g\\diLQMOOOO","s":"MLLMLOFQU_TIXPj_~z~oMMM","sk":"OSWOLQPZZLJ_iWX`cYwOOOO","l":"H[TMacN_PUR<NRc^PFGKHHH","lk":"OMLJRMB[J^]c[=aJJGOOOOO"},
+"kalimba":{"m":"peKTVACEHChZMW{j{qw","mk":"hbOOOOOOOOOOOOOajUO"},
+"lead":{"m":"XRJKONNMOOOOOOOOOOOOOOPPQ","mk":"OOOOOOOOOOOOOOOOOOOOOOOOO"},
+"marimba":{"m":"D^JFHJOJPw","mk":"DZQTYX[]Yn"},
+"musicbox":{"m":"ycIFFIHHMMNNQOQRQRZ~YYXUU","mk":"OOOOOOOOOOOOOOOOOOOOOOOOO"},
+"organ":{"m":"[OQQPMGLOUMPOPNLNNMLPMMLQ","mk":"OOOOOOOOOOOOOOOOOOOOOOOOO"},
+"pad":{"m":"glZWQNHTPPJWOONOOMLRPDDBA","mk":"OOOOOOOOOOOOOOOOOOOOOOOOO"},
+"rockorgan":{"m":"UUUSRVTTOQSNY?UAVETBT?UEW","mk":"OOOOOOOOOOOOOOOOOOOOOOOOO"},
+"steel":{"m":"VB:<@CEGKMPRPSLPXQQ`TTWXZ","mk":"OOOOOOOOOOOOOOOOOOOOOOOOO","s":"378=AEFHKMNOQOOQLRQRQQSUT","sk":"OOOOOOOOOOOOOOOOOOOOOOOOO","l":"a]XSNHCADGKPYa?h`doblqv|~","lk":"OOOOOOOOOOOOOOOOOOOOOOOOO"},
+"strings":{"m":"lDACTK<ZaO8PVubR","mk":"7O4OOQOOO9O5O0O5"},
+"strsynth":{"m":"KLGLQMKKMNNPPQORQONPOMLNP","mk":"OOOOOOOOOOOOOOOOOOOOOOOOO"},
+"tapeflute":{"m":"LNTOJ[TKHE","mk":"J[MFSQ9A>O"},
+"tapestr":{"m":"pF>CSM<VdS;QYtaU","mk":"<O5OOBOOO.O7O5O1"},
+"theatre":{"m":"NKOLPJONQMOOOOMSONJQNLIOM","mk":"OOOOOOOOOOOOOOOOOOOOOOOOO"},
+"toy":{"m":"FFGIJKKLMOPSRQMRNhKOJ[~~~","mk":"OOOOOOOOOOOOOOOOOOOOOOOOO"},
+"upright":{"m":"OIIFGKFNSTQMMRebd]YZOOO","mk":"OMWMTQSQWXPbhWaaASUOOOO","s":"NKLNGOLMT\\TKTOi^~w~sNNN","sk":"OOUMNQKPSUL^dUYZQXZOOOO","l":"I^UN`cRk[PG:JE]WLADKIII","lk":"ONJDONEKIYDfZYfU6NWOOOO"},
+"vibes":{"m":"hkIGHIKMMTN","mk":"aODOMOOEOXQ"}};
+/* AOG-LEVEL-EVEN-V1 table end */
+function evenP(snd, set, n, layer, m){
+  let t=snd._ev; if(t===undefined){ t=snd._ev=null; const e=EVENP[Object.keys(SOUNDS).find(k=>SOUNDS[k]===snd)];
+    if(e){ t=snd._ev={}; Object.keys(e).forEach(l=>{ if(l.length!==1 || e[l].length!==set.notes.length) return; const k=e[l+"k"]&&e[l+"k"].length===set.notes.length ? e[l+"k"] : null;
+      set.notes.forEach((nn,i)=>{ t[nn+l]=[(e[l].charCodeAt(i)-79)*0.2, k ? (k.charCodeAt(i)-79)*0.02 : 0]; }); }); } }
+  const x=t && t[n+layer]; return x ? Math.pow(10, (x[0]+x[1]*(m-n))/20) : 1;
+}
 function velAmp(v){ return Math.pow(0.3+0.7*Math.max(0,Math.min(1,v)), 1.5); }
 function damper(m){ return m<40?0.34 : m<60?0.24 : m<88?0.15 : 0.9; }   /* the top notes have no dampers */
 
@@ -719,11 +770,14 @@ function sampleVoice(c, ch, snd, m, v, when){
   /* the felt piano is darker, the bright piano opens sooner (and its high notes are turned up, below), a tape is hazy;
      AOG-PIANO-REAL-V1: an organ pipe sounds the same however hard its key is pressed (pipe: open, and only a little softer) */
   lp.frequency.value=snd.tone==="felt" ? Math.max(360*Math.pow(2, v*2.3), 1.3*mtof(m)) : snd.tone==="bright" ? Math.min(19000, 3200*Math.pow(2, v*2.6))
-    : snd.tone==="tape" ? 2600*Math.pow(2, v) : snd.tone==="pipe" ? 19000 : Math.min(19000, 1500*Math.pow(2, v*3.7));
+    : snd.tone==="tape" ? Math.max(2600*Math.pow(2, v), 2.5*mtof(m)) : snd.tone==="pipe" ? 19000 : Math.min(19000, Math.max(1500*Math.pow(2, v*3.7), 2.5*mtof(m)));
+  /* AOG-LEVEL-EVEN-V1: the tone filter never closes below a note's own first partials (2.5 times its pitch), as the felt
+     piano's never did: played softly, the top two octaves had been filtered away to a whisper (the upright's B7 12 dB under
+     its neighbours an octave down), not softer the way the rest of the keyboard is */
   const va=snd.tone==="pipe" ? 0.8+0.2*clampV(v,0,1) : velAmp(v);
   /* AOG-PIANO-REAL-V4: a post sound's level is set after its effect; drive is how hard it goes into it */
   const lv=snd.post ? snd.drive : snd.gain;
-  const g=c.createGain(); g.gain.value=set.gain[n+layer]*va*lv;
+  const g=c.createGain(); g.gain.value=set.gain[n+layer]*va*lv*evenP(snd, set, n, layer, m);
   /* AOG-PIANO-SOUNDS-V2: the new recorded sounds keep a note's sharpest instant under 0.85 even at full strength (each
      recording's peak is measured as it loads; the bright piano's lift can raise it); the three first pianos are as they were */
   if(snd.tone || set.even){ const pk=(set.peak[n+layer]||0)*set.gain[n+layer]*va*lv*(snd.tone==="bright"?1.6:1); if(pk>0.85) g.gain.value*=0.85/pk; }
