@@ -231,6 +231,11 @@ change to any of them, run
 
 Solve with me has one way: the fewest moves (Jimmy, 2026-10-17: "Why is there a short and fast way? It is confusing … I
 want the least possible moves"). No Way menu. The beginner's steps and Level 2 (`aog-cube-l2.js`) are taught in Learn.
+The search looks six ways at once (three axes, and the cube's inverse) and averages about 19.8 moves in 2.5 s. Find
+fewer moves (Jimmy, 2026-10-17: "DO the two upgrades") runs two workers on tap for up to 30 s: one keeps searching,
+`proveLeast` proves how few moves the cube could need. Proven for cubes up to about 13 moves from solved; for a fully
+mixed cube it shows the best found and the proven floor. Proving the exact least for any cube needs gigabytes of
+tables, so it is not done in the browser. Turning the cube, leaving or hiding the tab ends both workers.
 
 It turns the cube with a finger on an iPad and an iPhone (acting like Safari) and with a mouse, and checks:
 a finger on the cube never scrolls the page; the space around the cube never moves it; following the arrow,
