@@ -23,7 +23,7 @@ const TABLE=process.argv.includes("--table"), KTABLE=process.argv.includes("--ki
 const ONLY=(process.argv.slice(2).find(a=>/^[A-Z0-9]{2}(,[A-Z0-9]{2})*$/.test(a))||"").split(",").filter(Boolean);
 let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails++; };
 /* the new kits: id → its folder and its group */
-const ALLNEW={OR:["orchestra","orch"]};
+const ALLNEW={OR:["orchestra","orch"], ME:["mideast","world"]};
 const NEW=Object.fromEntries(Object.entries(ALLNEW).filter(([k])=>!ONLY.length || ONLY.includes(k)));
 const IDS=Object.keys(NEW), DIRS=Object.fromEntries(Object.entries(ALLNEW).map(([k,v])=>[k,"/audio/drums/"+v[0]+"/"]));
 const GROUP_EN={drums:"Drum sets", electronic:"Electronic", world:"World", orch:"Orchestra and marching", hand:"Hand percussion"};

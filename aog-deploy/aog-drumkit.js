@@ -208,7 +208,18 @@
     tom: W2("TIMPLO", [1, 2, 2], "Timpani · low", "Timbal · grave"),
     rim: W2("TIMPHI", [1, 2, 2], "Timpani · high", "Timbal · agudo"),
     bell: W2("GONG", [1, 1, 1], "Gong", "Gong", { look: "cym" }) });
-  IDS.push("OR");
+  /* ME · Middle Eastern: the darbuka (FreePats), a tambourine's jingles (the riq is a tambourine), frame drums and
+     finger cymbals (VCSL). One darbuka, one ring: a new doum, tek or slap stops the last one's ring */
+  KITS.ME = K("world", "mideast", "Middle Eastern · darbuka", "Medio Oriente · darbuka", {
+    kick: W2("DOUM", [2, 3, 2], "Darbuka · doum (low)", "Darbuka · dum (grave)", { drum: "darb" }),
+    snare: W2("TEK", [2, 3, 2], "Darbuka · tek (high)", "Darbuka · tek (agudo)", { drum: "darb" }),
+    ch: W2("KA", [2, 2, 2], "Darbuka · ka (other hand)", "Darbuka · ka (la otra mano)"),
+    oh: W2("JINGLE", [2, 3, 2], "Tambourine · jingles", "Pandereta · sonajas", { look: "small" }),
+    clap: W2("PA", [2, 3, 2], "Darbuka · slap", "Darbuka · golpe seco", { drum: "darb" }),
+    tom: W2("FRAMLO", [2, 2, 2], "Frame drum · low", "Tambor de marco · grave"),
+    rim: W2("FRAMHI", [2, 2, 2], "Frame drum · high", "Tambor de marco · agudo"),
+    bell: W2("ZILLS", [1, 1, 1], "Finger cymbals", "Platillos de dedo", { look: "cym" }) });
+  IDS.push("OR", "ME");
   var LAYERS = ["s", "m", "h"];
   function made(b, id) { var k = KITS[b], p = k && k.pads[id]; return !!(p && p.made); }
 
@@ -277,7 +288,15 @@
     { id: "orchfinale", en: "Big finish with the gong", es: "Gran final con el gong", kit: "OR", bpm: 76, swing: 0.50, hand: 1, grp: "orch",
       map: { tom: [3,3,3,3,3,3,3,3,1,1,1,1,2,2,2,2], snare: [0,0,0,0,0,0,0,0,3,3,3,3,1,1,1,1], oh: [0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0] },
       parts: [{ len: 16, map: { kick: [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], clap: [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], bell: [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-        rim: [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], ch: [0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0] } }] }
+        rim: [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], ch: [0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0] } }] },
+    /* maqsum, the most played rhythm of Arabic music: doum tek - tek doum - tek -, the ka filling in between */
+    { id: "maqsum", en: "Darbuka · maqsum", es: "Darbuka · maqsum", kit: "ME", bpm: 100, swing: 0.50, hand: 1, grp: "world",
+      map: { kick: [2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0], snare: [0,0,1,0,0,0,1,0,0,0,0,0,1,0,0,0], ch: [0,0,0,0,3,0,0,3,0,0,3,0,0,0,3,3],
+             oh: [3,0,3,0,3,0,3,0,3,0,3,0,3,0,3,0], bell: [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
+    /* baladi, "of the country": doum doum - tek doum - tek -, the frame drum underneath */
+    { id: "baladi", en: "Darbuka · baladi", es: "Darbuka · baladi", kit: "ME", bpm: 92, swing: 0.50, hand: 1, grp: "world",
+      map: { kick: [2,0,1,0,0,0,0,0,2,0,0,0,0,0,0,0], snare: [0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0], ch: [0,0,0,0,3,3,0,0,0,0,3,3,0,0,3,0],
+             tom: [3,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0], oh: [0,0,0,0,3,0,0,0,0,0,0,0,3,0,0,0] } }
   );
   /* a beat in parts: part 2 goes in the next part of the song, and the track plays them in turn. Put my beat back
      returns that part and the track as they were; a one-part beat picked afterwards stops the track again. */
