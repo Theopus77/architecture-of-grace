@@ -1,5 +1,5 @@
 /* AOG-SOLO-GTRLICKS-V1 (2026-10-18) — Jimmy: "Can we have around the same amount for guitar licks as well?" The Guitar's
-   Solo mode has 122 licks in 19 groups: the first 57 (aog-solo.js, unchanged) and 65 more (aog-guitar-licks.js, loaded the
+   Solo mode has 161 licks in 26 groups: the first 57 (aog-solo.js, unchanged) and 104 more (aog-guitar-licks.js, loaded the
    first time Solo opens on the Guitar), written against chords like the bass's. Inside the Studio, in the Guitar room:
    0 · by numbers, every new lick in all 24 keys (twelve major, twelve minor): every note on the six strings (E2 to the
        15th fret of the high E string) and in its five-fret hand position; the notes held at once within four frets; it
@@ -11,7 +11,8 @@
        squeals, taps, double-stops, muted rakes, tremolo picking, muted hits. Rendered offline, every lick, old and new
        (A minor, the lead sound): no clicks where notes stop or slide, never over full scale, never silent
    on an iPhone, an iPad and an iPad sideways, at once:
-   1 · the lick menu has every group (19; the first eight with 7 to 9 licks, the new ones 5 or 6), in English and in
+   1 · the lick menu has every group (26, the same groups as the bass's and the guitar's own Slide, in the order aog-solo.js
+       gives them; the first eight with 6 to 9 licks, the new ones 5 or 6), in English and in
        Spanish ("Frases para probar", "Frase", "▶ Tocar esta frase"), a line for each lick in both
    2 · ▶ Play this lick sits right under the neck; pressed from the foot of the page, the neck is in sight as it plays
    3 · every lick, old and new, plays: every note in range, each lit on the neck in turn (on a phone the four frets in
@@ -24,10 +25,14 @@ const path = require("path"), PORT = 9440, srv = require("../srv.js")(PORT);
 const ROOT = process.env.AOG_ROOT || path.resolve(__dirname, "../../../aog-deploy");
 let fails = 0; const ok = (c, m) => { console.log((c ? "PASS " : "FAIL ") + m); if (!c) fails++; };
 const GROUPS_EN = ["Blues", "Rock", "Metal", "Shred and tapping", "Funk and soul", "Country", "Jazz and fusion", "Slow and singing",
-  "Reggae and ska", "Motown and soul", "Latin", "Gospel", "Punk", "Pop", "Neo-soul", "Afrobeat and highlife", "Surf", "Slide and Delta blues", "Fills and turnarounds"];
+  "Reggae and ska", "Motown and soul", "Latin", "Gospel", "Punk", "Pop", "Neo-soul", "Afrobeat and highlife", "Surf", "Slide and Delta blues", "Fills and turnarounds",
+  "Arena rock", "80s hard rock", "Thrash metal", "Groove metal", "Disco", "Hip-hop and R&B", "Drum and bass"];
 const GROUPS_ES = ["Blues", "Rock", "Metal", "Velocidad y tapping", "Funk y soul", "Country", "Jazz y fusión", "Lentas y cantadas",
-  "Reggae y ska", "Motown y soul", "Latino", "Gospel", "Punk", "Pop", "Neo-soul", "Afrobeat y highlife", "Surf", "Slide y blues del Delta", "Rellenos y vueltas"];
-const TOTAL = 122, NEW = 65, OLD = 57;
+  "Reggae y ska", "Motown y soul", "Latino", "Gospel", "Punk", "Pop", "Neo-soul", "Afrobeat y highlife", "Surf", "Slide y blues del Delta", "Rellenos y vueltas",
+  "Rock de estadio", "Hard rock de los 80", "Thrash metal", "Groove metal", "Disco", "Hip-hop y R&B", "Drum and bass"];
+/* the menu's order is aog-solo.js's (LICK_GROUP_ORDER, shared with the bass), so the groups are checked as a set, each with its count */
+const sameSet = (a, b) => a.length === b.length && JSON.stringify([...a].sort()) === JSON.stringify([...b].sort());
+const TOTAL = 161, NEW = 104, OLD = 57;
 /* the first 57 licks as they were before the new ones came (a fingerprint of their notes and of the first eight groups) */
 const OLD_PRINT = "57|8|13ajyn5";
 /* every timer and frame callback, with where it came from (as silent/rest counts them) */
@@ -156,7 +161,7 @@ async function device(b, nm, vw, errs) {
     ids: [...document.querySelectorAll("#soLickSel option")].map(o => o.value), names: [...document.querySelectorAll("#soLickSel option")].map(o => o.textContent),
     h: document.querySelector('.so-licks [data-so="lickH"]').textContent, lab: document.querySelector('.so-licks [data-so="lickLab"]').textContent,
     btn: document.getElementById("soLickBtn").textContent, line: document.getElementById("soLickLine").textContent, sound: S.sound, n: NECK.n }));
-  ok(JSON.stringify(en.groups.map(g => g[0])) === JSON.stringify(GROUPS_EN) && en.groups.slice(0, 8).every(g => g[1] >= 6 && g[1] <= 9) && en.groups.slice(8).every(g => g[1] >= 5 && g[1] <= 9)
+  ok(sameSet(en.groups.map(g => g[0]), GROUPS_EN) && en.groups.every(g => GROUPS_EN.indexOf(g[0]) < 8 ? g[1] >= 6 && g[1] <= 9 : g[1] >= 5 && g[1] <= 9)
     && en.ids.length === TOTAL && new Set(en.ids).size === TOTAL && new Set(en.names).size === TOTAL && en.names.every(x => x && !/^lk_/.test(x)),
     `${nm}: ${en.ids.length} licks in ${en.groups.length} groups: ${en.groups.map(g => g[0] + " " + g[1]).join(", ")}`);
   ok(en.h === "Licks to try" && en.lab === "Lick" && en.btn === "▶ Play this lick" && en.line.length > 20 && !/^ld_/.test(en.line), `${nm}: "${en.h}", "${en.lab}", "${en.btn}"; "${en.line}" (${en.sound}; the neck shows ${en.n} frets)`);
@@ -242,7 +247,7 @@ async function device(b, nm, vw, errs) {
     h: document.querySelector('.so-licks [data-so="lickH"]').textContent, lab: document.querySelector('.so-licks [data-so="lickLab"]').textContent, btn: document.getElementById("soLickBtn").textContent,
     line: document.getElementById("soLickLine").textContent, all: AOGGuitarLicks.ORDER.every(id => { const n = AOGGuitarLicks.WORDS["lk_" + id], d = AOGGuitarLicks.WORDS["ld_" + id]; return n && d && n.es && d.es && n.en && d.en && d.es !== d.en; }) }));
   await f.evaluate(() => document.getElementById("langBtn").click());
-  ok(JSON.stringify(es.groups) === JSON.stringify(GROUPS_ES) && es.h === "Frases para probar" && es.lab === "Frase" && es.btn === "▶ Tocar esta frase" && es.all && es.names.length === TOTAL && es.names.filter((x, i) => x !== en.names[i]).length > 90,
+  ok(sameSet(es.groups, GROUPS_ES) && es.groups.every((g, i) => GROUPS_ES.indexOf(g) === GROUPS_EN.indexOf(en.groups[i][0])) && es.h === "Frases para probar" && es.lab === "Frase" && es.btn === "▶ Tocar esta frase" && es.all && es.names.length === TOTAL && es.names.filter((x, i) => x !== en.names[i]).length > 90,
     `${nm}: Spanish: "${es.h}", "${es.lab}", "${es.btn}"; ${es.groups.join(", ")}; "${es.line}"`);
   /* afterwards it rests: no timer or frame callback from Solo mode */
   const rest = await f.evaluate(async () => { await new Promise(r => setTimeout(r, 2500)); window.__calls = []; await new Promise(r => setTimeout(r, 3000));

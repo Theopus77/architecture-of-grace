@@ -2,7 +2,10 @@
 
    More licks for the Guitar's Solo mode ("Licks to try", aog-solo.js), loaded only when Solo opens on the Guitar. The 57
    first licks stay in aog-solo.js as they were; these join them in the same menu (more in the first groups, and new
-   groups after them). Like the bass's licks (aog-bass-licks.js), each is written against chords, not frets, so it follows
+   groups after them). AOG-SOLO-LICKS-MATCH-V1 (Jimmy, 2026-10-18: "Can any DIME BAG DARRELL or Kirk Hammett type of licks be
+   included in the Guitar licks or Van Halen, Kiss, etc.. Make the bass and guitar pages match."): four more groups of
+   original licks in those players' styles (arena rock, 80s hard rock, thrash, groove metal; no name on screen), and Disco,
+   Hip-hop and R&B, and Drum and bass, so the guitar has every group the bass has. Like the bass's licks (aog-bass-licks.js), each is written against chords, not frets, so it follows
    the song's key and major or minor and lands on the chord's own notes:
 
      chords: "1 4 5 1*2"  a chord a bar (4 beats) unless *n says how many beats. The number is the step of the key's
@@ -116,11 +119,57 @@ const RAW=[
 ["g_fitap","fills","1 1 1*2","1q 3q 8tT 6O 7H 8T 6O 7H | 8T 6O 7H 8T 6O 7H 5T 3O 4H 5T 3O 4H | 1h_V"],
 ["g_fiblues","fills","1d7*2 4d7*2 1d7*2 5d7*2 1*2","1t 3 5 7 5 3 | 1 3 5 7 5 3 | 8 7 6 b6! 5 3 | 1 7, 5, 3, 2, < | 1h_",{cm:"1m7*2 4m7*2 1m7*2 5d7*2 1*2"}],
 ["g_fiend","fills","1 5d7 1*2","8qUQ 5e 3e 1e 3e 5q | 7q 5e 3e 1q <q | 1h_+5+8W"],
-["g_fichrom","fills","1 4*2","1q 5,q 1e 2 b3! 3 | 1h_",{nm:"1q 5,q 1e 2 3 < | 1h_"}]
+["g_fichrom","fills","1 4*2","1q 5,q 1e 2 b3! 3 | 1h_",{nm:"1q 5,q 1e 2 3 < | 1h_"}],
+/* arena rock (in the style of the big 70s arena bands: Kiss) */
+["g_arhook","arena","1 4 1 5 1*2","5q 5e 6e 5q 3q | 1q 1e 2e 3q 1q | 5qUV 3e 1e 3q 5q | 5q 3e 2e 1q 7,q | 1h_V"],
+["g_ardstop","arena","1 4 1*2","5e+8 5+8 6+8 5+8 3q+5 1q+3 | 5e+8 5+8 6+8 5+8 3q+5 1q+3 | 1h_+5V"],
+["g_arbend","arena","1 4 1*2","8qUV 7e 5e 3e 4e 5q | 5qUR 4e 3e 1q 5,q | 1h_W"],
+["g_arriff","arena","1 b7 4 1*2","1q+5 re 1e+5 1q+5 1e+5 1+5 | 1q+5 re 1e+5 1q+5 1e+5 1+5 | 1q+5 re 1e+5 1q+5 1e+5 1+5 | 1h_+5+8",{oct:0, pos:3}],
+["g_arpent","arena","1 4 1 5 1*2","1e 2 3 2 3 5 6 5 | 1 2 3 2 3 5 6 5 | 8 6 5 3 5 3 2 1 | 1 2 3 5 3 2 1 7, | 1h_V",{nm:"1e 3 4 3 5 7 5 4 | 1 3 4 3 5 7 5 4 | 8 7 5 4 5 4 3 1 | 1 3 4 5 3 1 7, 5, | 1h_V"}],
+["g_arcall","arena","1 4 1*2","1q 3e 5e 8qUV 5q | rq 6e 5e 3q 1q | 1h_V"],
+/* 80s hard rock (in the style of Van Halen) */
+["g_hrtap","hard80","1 4 5 1*2","8tT 6O 7H 8T 6O 7H 5T 3O 4H 5T 3O 4H | 8T 6O 7H 8T 6O 7H 5T 3O 4H 5T 3O 4H | 8,T 6,O 7,H 8,T 6,O 7,H 5,T 3,O 4,H 5,T 3,O 4,H | 1h_V"],
+["g_hrlegato","hard80","1 4 1*2","1s 3H 4 5H 7 8H 7O 5 8 7O 5 4O 3 1O 3H 1O | 1 3H 4 5H 7 8H 7O 5 8 7O 5 4O 3 1O 3H 1O | 1h_V"],
+["g_hrdive","hard80","1 4 1*2","8qUQ 7e 5e 3qV 1q | 5qUR 4e 3e 1qV 5,q\\ | 1h_W"],
+["g_hrblues","hard80","1d7 4d7 1*2","8eU 8U 7 8 5 b5! 4 3 | 8qUV 7e 5e 3q 1q | 1h_V",{cm:"1m7 4m7 1*2"}],
+["g_hrrun","hard80","1 1*2","8f 7 5 4 3 1 7 5 4 3 1 7, 5 4 3 1 7, 5, 4 3 1 7, 5, 4, | 1h_V"],
+["g_hrtrill","hard80","1 4 1*2","5s 6H 5O 6H 5O 6H 5O 6H 5O 6H 5O 6H 5O 6H 5O 6H | 8qUQ 7e 5e 3q 1q\\ | 1h_W"],
+/* thrash metal (in the style of Kirk Hammett) */
+["g_thgallop","thrash","1 1 b6 5 1*2","1e-+5 1s-+5 1-+5 1e-+5 1s-+5 1-+5 1e-+5 1s-+5 1-+5 3e 2e | 1e-+5 1s-+5 1-+5 1e-+5 1s-+5 1-+5 1e-+5 1s-+5 1-+5 3e 2e | 1e-+5 1s-+5 1-+5 1e-+5 1s-+5 1-+5 1e-+5 1s-+5 1-+5 1e-+5 1s-+5 1-+5 | 1e-+5 1s-+5 1-+5 1e-+5 1s-+5 1-+5 1e-+5 1s-+5 1-+5 1e-+5 1s-+5 1-+5 | 1h_+5+8",{oct:0, pos:3}],
+["g_thwah","thrash","1 4 1*2","5qU 5eUR 3e 1e 3e 4eB 5e | 8qUV 7e 5e 3e 4eB 1q | 1h_W",{nm:"5qU 5eUR 3e 1e 3e 4eU 5e | 8qUV 7e 5e 3e 4eU 1q | 1h_W"}],
+["g_thtrem","thrash","1 b2 1 b7 1*2","8qZ 5Z 3Z 5Z | 8Z 5Z 3Z 5Z | 8Z 5Z 3Z 5Z | 8Z 5Z 3Z 5Z | 1hZ_"],
+["g_thchrom","thrash","1 1 1*2","1e- 1- 3 1- 5 b5! 4 3 | 1- 1- b2! 1- 3 2 b2! 1 | 1h_+5",{oct:0}],
+["g_thrun","thrash","1 1 1*2","8sU 8 7 5 8U 8 7 5 8U 8 7 5 8U 8 7 5 | 5U 5 4 3 5U 5 4 3 1 3 4 b5! 5 4 3 1 | 1h_W"],
+["g_thbreak","thrash","1 4 5 1*2","8qUK 7e 5e 3q 1q | 5qUK 3e 1e 3q 1q | 5qUKV 4e 3e 1e 7,e 5,q | 1h_W"],
+/* groove metal (in the style of Dimebag Darrell) */
+["g_grsqueal","groove","1 1 1*2","1e- 1- 5Q 1- 3 1- b2! 1 | 1- 1- 5Q 1- 3 1- 7, 1- | 1h_+5",{oct:0}],
+["g_grwide","groove","1 4 1*2","8hUW 5q 3qB | 1q 3e 4e 5qUW 3q | 1h_W"],
+["g_grslide","groove","1 1 1*2","1e- 1- 4 3~ 5 b5!~ 4~ 3 | 1- 1- 8Q 1- 5 b5!~ 4~ 3 | 1h_+5",{oct:0}],
+["g_grblues","groove","1 4 1 5 1*2","1e 3 4 b5! 5qW 3q | 8qUR 7e 5e 3q 1q | 5eU 5U 3 1 3qY 1q | 5qQ 4e 3e 1q 7,q | 1h_W"],
+["g_grchug","groove","1 b7 1*2","1e-+5 re 1e-+5 1s-+5 1-+5 1q+5 8qQ | 1e-+5 re 1e-+5 1s-+5 1-+5 1q+5 8qQ | 1h_+5+8",{oct:0, pos:3}],
+["g_grclimb","groove","1 1 1*2","1e 8Q 1 8Q 3 8Q 5 8Q | 5qUQW 3e 1e 3eB 1e 5,q | 1h_W"],
+/* disco */
+["g_dsscratch","disco","1 4 1*2","3s+5+8 x x x 3+5+8 x x x 3+5+8 x 3+5+8 x x x 3+5+8 x | 3+5+8 x x x 3+5+8 x x x 3+5+8 x 3+5+8 x x x 3+5+8 x | 1h_+3+5"],
+["g_dsoct","disco","1 4 1*2","1s+8 x 1+8 x 3+3' x 1+8 x 5+5' x 3+3' x 6+6' x 5+5' x | 1+8 x 1+8 x 3+3' x 1+8 x 5+5' x 3+3' x 6+6' x 5+5' x | 1h_+8"],
+["g_dsseven","disco","17 47 1*2","3e+5+7 3-^+5+7 x 3^+5+7 3+5+7 3-^+5+7 x 3^+5+7 | 3+5+7 3-^+5+7 x 3^+5+7 3+5+7 3-^+5+7 x 3^+5+7 | 1h_+3+5"],
+["g_dsline","disco","1 4 1*2","1s x 8 x 5 x 8 x 1 x 8 x 6 5 3 2 | 1 x 8 x 5 x 8 x 1 x 8 x 6 5 3 2 | 1h_"],
+["g_dsfloor","disco","1 6 4 5 1*2","3e-+5+8 x 3-^+5+8 x 3-+5+8 x 3-^+5+8 3+5+8 | 3-+5+8 x 3-^+5+8 x 3-+5+8 x 3-^+5+8 3+5+8 | 3-+5+8 x 3-^+5+8 x 3-+5+8 x 3-^+5+8 3+5+8 | 3-+5+8 x 3-^+5+8 x 3-+5+8 x 3-^+5+8 3+5+8 | 1h_+3+5"],
+/* hip-hop and R&B */
+["g_hhstab","hiphop","17 47 1*2","3q+5+7 re 3e+5+7 rq 3e+5+7 3+5+7 | 3q+5+7 re 3e+5+7 rq 3e+5+7 3+5+7 | 1h_+3+5",{sw:0.58}],
+["g_hhslide","hiphop","17 47 1*2","1q 3e 5e 7q/ 5q | 3q/ 2e 1e 7,q 5,q | 1h_V"],
+["g_hhhook","hiphop","1 6 1*2","5e 6 5 3 rq 3e 2e | 3e 5 3 1 rq 1e 7,e | 1h_V"],
+["g_hhlazy","hiphop","17 47 1*2","1e. xs 3e 5e 7e 5e 3e 1e | 1e. xs 3e 5e 7e 5e 3e 1e | 1h_",{sw:0.58}],
+["g_hhdouble","hiphop","1 4 1*2","3q/+5/ 3e+5 2+4 1q+3 rq | 3q/+5/ 3e+5 2+4 1q+3 rq | 1h_+3V"],
+/* drum and bass */
+["g_dnliquid","dnb","17 47 1*2","1s 3 5 7 8 7 5 3 5 7 8 9 8 7 5 3 | 1 3 5 7 8 7 5 3 5 7 8 9 8 7 5 3 | 1h_V"],
+["g_dnswell","dnb","17 67 47 1*2","3q.+5+7 3e+5+7 3h_+5+7 | 7,q.+3+5 7,e+3+5 7,h_+3+5 | 3q.+5+7 3e+5+7 3h_+5+7 | 1h_+3+5"],
+["g_dnrun","dnb","17 47 1*2","1f 2 3 5 7 8 9 8 7 5 3 2 3 5 7 8 7 5 3 2 1 7, 5, 7, | rq 3e 5e 7q 8q | 1h_V"],
+["g_dnstab","dnb","1 6 1*2","3e.+5+8 3e.+5+8 3e+5+8 3h+5+8 | 3e.+5+8 3e.+5+8 3e+5+8 3h+5+8 | 1h_+3+5"],
+["g_dnhalf","dnb","17 47 1*2","5h/V 3q 2q | 3hV 1q 2q | 1h_V"]
 ];
-/* the groups: the first eight (more licks in each) and the new ones after them, as the menu shows them */
+/* the groups: the first eight (more licks in each) and the new ones; aog-solo.js puts them in the menu's order (LICK_GROUP_ORDER) */
 const OLD=["blues","rock","metal","shred","funk","country","jazz","slow"];
-const NEW=["reggae","motown","latin","gospel","punk","pop","neosoul","afro","surf","slide","fills"];
+const NEW=["reggae","motown","latin","gospel","punk","pop","neosoul","afro","surf","slide","fills","arena","hard80","thrash","groove","disco","hiphop","dnb"];
 const GROUPS=OLD.concat(NEW).map(g=>[g, RAW.filter(r=>r[1]===g).map(r=>r[0])]).filter(g=>g[1].length);
 const ORDER=[].concat(...GROUPS.map(g=>g[1]));
 const LICKS={}; RAW.forEach(([id, g, ch, n, x])=>{ LICKS[id]=Object.assign({id, g, ch, n}, x||{}); });
@@ -194,7 +243,48 @@ const W={
   g_fitap:["Tapped triplets","Tresillos con tapping","Tap high, pull off, hammer on: three notes on one string, then on the next string.","Golpea arriba, suelta, liga: tres notas en una cuerda y luego en la cuerda siguiente."],
   g_fiblues:["Blues turnaround fill","Relleno de vuelta de blues","Four chords, two beats each, in triplets, then a half step home.","Cuatro acordes de dos tiempos, en tresillos, y medio tono hasta casa."],
   g_fiend:["The big ending","El gran final","A squealing bend, a run down, the five chord, then one big chord that shakes.","Un estirón que chilla, una carrera hacia abajo, el acorde cinco y un gran acorde que vibra."],
-  g_fichrom:["Half steps into the four","Semitonos hacia el cuatro","Up from the home note in small steps. The last one is a half step into the four chord.","Sube desde la nota casa a pasos pequeños. El último es medio tono hacia el acorde cuatro."]
+  g_fichrom:["Half steps into the four","Semitonos hacia el cuatro","Up from the home note in small steps. The last one is a half step into the four chord.","Sube desde la nota casa a pasos pequeños. El último es medio tono hacia el acorde cuatro."],
+  lg_arena:["Arena rock","Rock de estadio"], lg_hard80:["80s hard rock","Hard rock de los 80"], lg_thrash:["Thrash metal","Thrash metal"], lg_groove:["Groove metal","Groove metal"],
+  lg_disco:["Disco","Disco"], lg_hiphop:["Hip-hop and R&B","Hip-hop y R&B"], lg_dnb:["Drum and bass","Drum and bass"],
+  g_arhook:["Sing-along hook","Gancho para cantar","A big, simple tune a whole crowd could sing. One bend that shakes in the middle.","Una melodía grande y sencilla que todo un estadio podría cantar. Un estirón que vibra en medio."],
+  g_ardstop:["Ringing double-stops","Dos cuerdas que suenan","Two strings at once, a step up and back, then down the chord.","Dos cuerdas a la vez, un paso arriba y de vuelta, y luego bajando por el acorde."],
+  g_arbend:["Big bend and shake","Gran estirón con vibrato","Bend up to the high home note and shake it. On the four chord, bend and let it back down.","Estira hasta la nota casa aguda y hazla vibrar. En el acorde cuatro, estira y deja que vuelva."],
+  g_arriff:["Anthem power chords","Quintas de himno","Root and fifth together, with a gap to breathe. Three chords, then one big ending.","Raíz y quinta juntas, con un hueco para respirar. Tres acordes y un gran final."],
+  g_arpent:["Five-note scale run","Carrera de cinco notas","Eighths up and down the five-note scale, on four chords.","Corcheas que suben y bajan por la escala de cinco notas, en cuatro acordes."],
+  g_arcall:["Shout and answer","Grito y respuesta","Up the chord to a bend: that is the call. A rest, then a short answer down.","Sube por el acorde hasta un estirón: es la pregunta. Un silencio y luego una respuesta corta hacia abajo."],
+  g_hrtap:["Tapped arpeggios","Arpegios con tapping","Tap with a right-hand finger, pull off, hammer on. Three notes on one string, again and again.","Golpea con un dedo de la mano derecha, suelta y liga. Tres notas en una cuerda, una y otra vez."],
+  g_hrlegato:["Hammer and pull run","Carrera ligada","Pick less, slur more. Hammer up the scale and pull off on the way down.","Usa menos la púa y liga más. Liga subiendo por la escala y suelta al bajar."],
+  g_hrdive:["Squeal and dive","Chillido y caída","A bend that squeals, a walk down, and the last note dives away.","Un estirón que chilla, un paseo hacia abajo y la última nota cae en picado."],
+  g_hrblues:["Bluesy hard rock","Hard rock con blues","Two quick bends, then down the scale through one blue note.","Dos estirones rápidos y luego bajando por la escala con una nota blue."],
+  g_hrrun:["Lightning run down","Carrera de rayo","Six fast notes a beat, all the way down the scale.","Seis notas rápidas por tiempo, bajando por toda la escala."],
+  g_hrtrill:["Trill, then dive","Trino y caída","Hammer and pull between two notes very fast. Then a squealing bend and a dive.","Liga y suelta entre dos notas muy rápido. Luego un estirón que chilla y una caída."],
+  g_thgallop:["Galloping riff","Riff al galope","Low, short and muted: one long and two short, like a horse running.","Grave, corto y apagado: una larga y dos cortas, como un caballo al galope."],
+  g_thwah:["Wailing bends","Estirones que gimen","Bend the same note again and again so it cries. Let one come back down.","Estira la misma nota una y otra vez para que llore. Deja que una vuelva a bajar."],
+  g_thtrem:["Dark tremolo line","Línea oscura en trémolo","Pick each note very fast while the chords move a half step. Dark and tense.","Toca cada nota muy rápido mientras los acordes se mueven medio tono. Oscuro y tenso."],
+  g_thchrom:["Half-step riff","Riff de semitonos","A low, muted riff that creeps by half steps back to the home note.","Un riff grave y apagado que se arrastra por semitonos hasta la nota casa."],
+  g_thrun:["Speed bends","Estirones veloces","Sixteenths: a bend, the note above, and down. Then a fast run through a blue note.","Semicorcheas: un estirón, la nota de arriba y abajo. Luego una carrera rápida con una nota blue."],
+  g_thbreak:["Raked solo break","Solo con rasgueo","Drag the pick over muted strings into each bend. Three chords, then home.","Arrastra la púa por cuerdas apagadas hasta cada estirón. Tres acordes y a casa."],
+  g_grsqueal:["Squealing low riff","Riff grave que chilla","Short, heavy notes on the thick strings. Pinch the high note so it squeals.","Notas cortas y pesadas en las cuerdas gruesas. Pellizca la nota aguda para que chille."],
+  g_grwide:["Wide bend, wide shake","Estirón ancho, vibrato ancho","A long bend with a big, slow shake. Then a small bend and a climb.","Un estirón largo con un vibrato grande y lento. Luego un estirón pequeño y una subida."],
+  g_grslide:["Sliding riff","Riff deslizado","A heavy riff. Slide down by half steps, with a squeal in the second bar.","Un riff pesado. Deslízate hacia abajo por semitonos, con un chillido en el segundo compás."],
+  g_grblues:["Blues gone heavy","Blues pesado","Blues moves played hard: a blue note, wide shakes, a curl and a squeal.","Frases de blues tocadas con fuerza: una nota blue, vibratos anchos, un pequeño estirón y un chillido."],
+  g_grchug:["Stop-start chug","Riff que para y arranca","Root and fifth, short and muted, with gaps. A squeal ends each bar.","Raíz y quinta, cortas y apagadas, con huecos. Un chillido cierra cada compás."],
+  g_grclimb:["Octave squeals","Chillidos en octava","A low note, then a squealing high one, climbing up the chord.","Una nota grave y luego una aguda que chilla, subiendo por el acorde."],
+  g_dsscratch:["Chicken scratch","Rasgueo chicken scratch","Muted strums in sixteenths, with a short chord on some of them.","Rasgueos apagados en semicorcheas, con un acorde corto en algunos."],
+  g_dsoct:["Disco octave line","Línea disco en octavas","The same note on two strings, an octave apart, bouncing with muted hits.","La misma nota en dos cuerdas, a una octava, rebotando con golpes apagados."],
+  g_dsseven:["Seventh-chord strum","Rasgueo de séptimas","Down and up strums on seventh chords. Keep the hand moving like a clock.","Rasgueos hacia abajo y hacia arriba en acordes de séptima. Que la mano se mueva como un reloj."],
+  g_dsline:["Disco single-note line","Línea disco de una nota","Low and high home notes with muted hits between, then a short run down.","Notas casa grave y aguda con golpes apagados entre medio y luego una bajada corta."],
+  g_dsfloor:["Dance-floor chords","Acordes para la pista","Short chords on every beat and upstrokes between, on four chords.","Acordes cortos en cada tiempo y rasgueos hacia arriba entre medio, en cuatro acordes."],
+  g_hhstab:["Laid-back chord stabs","Golpes de acorde relajados","Seventh chords, short and lazy, with lots of room around them.","Acordes de séptima, cortos y relajados, con mucho espacio alrededor."],
+  g_hhslide:["Slide to the seventh","Deslízate a la séptima","Up the chord, then slide into the seventh. A smooth walk down on the four chord.","Sube por el acorde y desliza hasta la séptima. Un paseo suave hacia abajo en el acorde cuatro."],
+  g_hhhook:["Short hook","Gancho corto","A short tune, a rest, a short answer. Easy to loop.","Una melodía corta, un silencio y una respuesta corta. Fácil de repetir."],
+  g_hhlazy:["Lazy groove","Groove relajado","Up and down a seventh chord, a little late, with one soft muted note.","Sube y baja por un acorde de séptima, un poco tarde, con una nota apagada suave."],
+  g_hhdouble:["Sliding double-stops","Dos cuerdas deslizadas","Slide into two strings at once, step down the chord, then rest.","Desliza hasta dos cuerdas a la vez, baja por el acorde y descansa."],
+  g_dnliquid:["Liquid line","Línea líquida","Smooth sixteenths up and down a seventh chord. Keep it even and soft.","Semicorcheas suaves que suben y bajan por un acorde de séptima. Parejas y suaves."],
+  g_dnswell:["Floating chords","Acordes que flotan","Seventh chords held long while the drums race underneath.","Acordes de séptima largos mientras la batería corre por debajo."],
+  g_dnrun:["Jazzy run","Carrera con jazz","Six notes a beat up and down the chord, then a few calm notes.","Seis notas por tiempo subiendo y bajando por el acorde, y luego unas pocas notas tranquilas."],
+  g_dnstab:["Off-beat stabs","Golpes a contratiempo","Three quick chords that push ahead of the beat, then one long one.","Tres acordes rápidos que se adelantan al pulso y luego uno largo."],
+  g_dnhalf:["Slow tune over fast drums","Melodía lenta sobre batería rápida","A few long notes. Slide into the first one and let each one shake.","Pocas notas largas. Desliza hasta la primera y deja que cada una vibre."]
 };
 const WORDS={};
 Object.keys(W).forEach(k=>{ const v=W[k];

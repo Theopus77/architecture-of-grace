@@ -6,7 +6,7 @@
        ends on its chord's root; the same shape in every key. Rendered offline (the slap sound, and the finger sound for
        the first lick of each group): no clicks where notes stop or slide, never over full scale, never silent
    on an iPhone, an iPad and an iPad sideways, at once:
-   1 · the lick menu has every group (19), at least six licks in each, in English and in Spanish ("Frases para probar",
+   1 · the lick menu has every group (26, in any order: aog-solo.js sorts them), at least six licks in each, in English and in Spanish ("Frases para probar",
        "Frase", "▶ Tocar esta frase"), a line for each lick in both
    2 · ▶ Play this lick sits right under the neck; pressed from the foot of the page, the neck is in sight as it plays
    3 · every lick plays: every note in range, each lit on the neck in turn, and it ends by itself
@@ -17,8 +17,13 @@ const pw = require(require("child_process").execSync("npm root -g").toString().t
 const path = require("path"), PORT = 9430, srv = require("../srv.js")(PORT);
 const ROOT = process.env.AOG_ROOT || path.resolve(__dirname, "../../../aog-deploy");
 let fails = 0; const ok = (c, m) => { console.log((c ? "PASS " : "FAIL ") + m); if (!c) fails++; };
-const GROUPS_EN = ["Rock", "Blues", "Funk", "Motown and soul", "Reggae and dub", "Jazz", "Latin", "Metal", "Country", "Disco", "Hip-hop and R&B", "Gospel", "Punk", "Pop", "Neo-soul", "Afrobeat", "Drum and bass", "Slap showcase", "Fills and turnarounds"];
-const GROUPS_ES = ["Rock", "Blues", "Funk", "Motown y soul", "Reggae y dub", "Jazz", "Latino", "Metal", "Country", "Disco", "Hip-hop y R&B", "Gospel", "Punk", "Pop", "Neo-soul", "Afrobeat", "Drum and bass", "Lo mejor del slap", "Rellenos y vueltas"];
+const GROUPS_EN = ["Rock", "Blues", "Funk", "Motown and soul", "Reggae and dub", "Jazz", "Latin", "Metal", "Country", "Disco", "Hip-hop and R&B", "Gospel", "Punk", "Pop", "Neo-soul", "Afrobeat", "Drum and bass", "Slap showcase", "Fills and turnarounds",
+  "Arena rock", "80s hard rock", "Thrash metal", "Groove metal", "Shred and tapping", "Slow and singing", "Surf"];
+const GROUPS_ES = ["Rock", "Blues", "Funk", "Motown y soul", "Reggae y dub", "Jazz", "Latino", "Metal", "Country", "Disco", "Hip-hop y R&B", "Gospel", "Punk", "Pop", "Neo-soul", "Afrobeat", "Drum and bass", "Lo mejor del slap", "Rellenos y vueltas",
+  "Rock de estadio", "Hard rock de los 80", "Thrash metal", "Groove metal", "Velocidad y tapping", "Lentas y cantadas", "Surf"];
+const NLICKS = 158, NGROUPS = 26;
+/* the same groups, in any order (the menu's order is aog-solo.js's LICK_GROUP_ORDER) */
+const sameSet = (a, b) => a.length === b.length && JSON.stringify(a.slice().sort()) === JSON.stringify(b.slice().sort());
 /* every timer and frame callback, with where it came from (as silent/rest counts them) */
 const COUNT = () => { window.__calls = []; const si = window.setInterval, st = window.setTimeout, raf = window.requestAnimationFrame;
   const tag = k => { const s = (new Error().stack || "").split("\n").slice(2, 6).join(" "); return () => { if (window.__calls.length < 4000) window.__calls.push(k + " " + s); }; };
@@ -102,7 +107,7 @@ const RENDER = async (ids) => {
 async function numbers(b, errs) {
   const { ctx, f } = await openBass(b, { width: 390, height: 844 }, errs, "numbers");
   const r = await f.evaluate(NUMBERS);
-  ok(r.n === 116 * 24 && r.bad.length === 0, `by numbers: ${r.n / 24} licks in 24 keys each, ${r.notes} notes (MIDI ${r.lo} to ${r.hi}); on beats 1 and 3, ${r.strong} notes all in the chord; ${r.passing} passing notes, each by step ${r.bad.slice(0, 6).join(" | ")}`);
+  ok(r.n === NLICKS * 24 && r.bad.length === 0, `by numbers: ${r.n / 24} licks in 24 keys each, ${r.notes} notes (MIDI ${r.lo} to ${r.hi}); on beats 1 and 3, ${r.strong} notes all in the chord; ${r.passing} passing notes, each by step ${r.bad.slice(0, 6).join(" | ")}`);
   /* the recorded bass in before rendering */
   await f.waitForFunction(() => { const id = recOf(S.sound); return !id || (REAL.sets[id] && /ready|failed/.test(REAL.sets[id].state)); }, null, { timeout: 30000 }).catch(() => {});
   const ids = await f.evaluate(() => AOGBassLicks.ORDER.slice());
@@ -110,12 +115,12 @@ async function numbers(b, errs) {
   const snd = await f.evaluate(() => S.sound + (REAL.sets[recOf(S.sound)] ? " (" + REAL.sets[recOf(S.sound)].state + ")" : ""));
   const t0 = Date.now(), slap = await f.evaluate(RENDER, ids), ms = Date.now() - t0;
   const loud = slap.filter(x => x.pk >= 1 || x.rms < 0.004 || x.none), clicky = slap.filter(x => x.db > 15);
-  ok(slap.length === 116 && !loud.length && !clicky.length, `rendered in A minor on the ${snd} sound, every lick (${(ms / 1000).toFixed(0)} s): peaks ${Math.min(...slap.map(x => x.pk))} to ${Math.max(...slap.map(x => x.pk))}, no clicks (worst ${Math.max(...slap.map(x => x.db))} dB over its neighbours) ${loud.concat(clicky).slice(0, 5).map(x => JSON.stringify(x)).join(" ")}`);
+  ok(slap.length === NLICKS && !loud.length && !clicky.length, `rendered in A minor on the ${snd} sound, every lick (${(ms / 1000).toFixed(0)} s): peaks ${Math.min(...slap.map(x => x.pk))} to ${Math.max(...slap.map(x => x.pk))}, no clicks (worst ${Math.max(...slap.map(x => x.db))} dB over its neighbours) ${loud.concat(clicky).slice(0, 5).map(x => JSON.stringify(x)).join(" ")}`);
   const firsts = await f.evaluate(() => AOGBassLicks.GROUPS.map(g => g[1][0]));
   await f.evaluate(() => { const s = document.getElementById("soundSel"); s.value = "finger"; s.onchange && s.onchange(); });
   await f.waitForFunction(() => { const id = recOf(S.sound); return !id || (REAL.sets[id] && /ready|failed/.test(REAL.sets[id].state)); }, null, { timeout: 30000 }).catch(() => {});
   const fing = await f.evaluate(RENDER, firsts), fl = fing.filter(x => x.pk >= 1 || x.rms < 0.004 || x.db > 15 || x.none);
-  ok(fing.length === 19 && !fl.length, `and on the finger sound, the first lick of each group: no clicks (worst ${Math.max(...fing.map(x => x.db))} dB), peaks under full scale ${fl.slice(0, 4).map(x => JSON.stringify(x)).join(" ")}`);
+  ok(fing.length === NGROUPS && !fl.length, `and on the finger sound, the first lick of each group: no clicks (worst ${Math.max(...fing.map(x => x.db))} dB), peaks under full scale ${fl.slice(0, 4).map(x => JSON.stringify(x)).join(" ")}`);
   await ctx.close();
 }
 
@@ -126,7 +131,7 @@ async function device(b, nm, vw, errs) {
     ids: [...document.querySelectorAll("#soLickSel option")].map(o => o.value), names: [...document.querySelectorAll("#soLickSel option")].map(o => o.textContent),
     h: document.querySelector('.so-licks [data-so="lickH"]').textContent, lab: document.querySelector('.so-licks [data-so="lickLab"]').textContent,
     btn: document.getElementById("soLickBtn").textContent, line: document.getElementById("soLickLine").textContent, sound: S.sound }));
-  ok(JSON.stringify(en.groups.map(g => g[0])) === JSON.stringify(GROUPS_EN) && en.groups.every(g => g[1] >= 6) && en.ids.length === 116 && new Set(en.ids).size === 116 && en.names.every(x => x && !/^lk_/.test(x)),
+  ok(sameSet(en.groups.map(g => g[0]), GROUPS_EN) && en.groups.every(g => g[1] >= 6) && en.ids.length === NLICKS && new Set(en.ids).size === NLICKS && en.names.every(x => x && !/^lk_/.test(x)),
     `${nm}: ${en.ids.length} licks in ${en.groups.length} groups: ${en.groups.map(g => g[0] + " " + g[1]).join(", ")}`);
   ok(en.h === "Licks to try" && en.lab === "Lick" && en.btn === "▶ Play this lick" && en.line.length > 20 && !/^ld_/.test(en.line), `${nm}: "${en.h}", "${en.lab}", "${en.btn}"; "${en.line}" (${en.sound})`);
   /* 2 · right under the neck; the neck in sight as it plays */
@@ -208,7 +213,7 @@ async function device(b, nm, vw, errs) {
     h: document.querySelector('.so-licks [data-so="lickH"]').textContent, lab: document.querySelector('.so-licks [data-so="lickLab"]').textContent, btn: document.getElementById("soLickBtn").textContent,
     line: document.getElementById("soLickLine").textContent, all: AOGBassLicks.ORDER.every(id => { const n = AOGBassLicks.WORDS["lk_" + id], d = AOGBassLicks.WORDS["ld_" + id]; return n && d && n.es && d.es && n.en && d.en && d.es !== d.en; }) }));
   await f.evaluate(() => document.getElementById("langBtn").click());
-  ok(JSON.stringify(es.groups) === JSON.stringify(GROUPS_ES) && es.h === "Frases para probar" && es.lab === "Frase" && es.btn === "▶ Tocar esta frase" && es.all && es.names.length === 116 && es.names.filter((x, i) => x !== en.names[i]).length > 80,
+  ok(sameSet(es.groups, GROUPS_ES) && es.h === "Frases para probar" && es.lab === "Frase" && es.btn === "▶ Tocar esta frase" && es.all && es.names.length === NLICKS && es.names.filter((x, i) => x !== en.names[i]).length > 80,
     `${nm}: Spanish: "${es.h}", "${es.lab}", "${es.btn}"; ${es.groups.join(", ")}; "${es.line}"`);
   /* afterwards it rests: no timer or frame callback from Solo mode */
   const rest = await f.evaluate(async () => { await new Promise(r => setTimeout(r, 2500)); window.__calls = []; await new Promise(r => setTimeout(r, 3000));

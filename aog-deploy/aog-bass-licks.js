@@ -164,9 +164,62 @@ const RAW=[
 ["b_fichrom","fills","1 5*2","1q 1q 1e 3e 4e #4e! | 1h_"],
 ["b_fitrip","fills","1 1*2","1q 1q 1t 2 3 5 6 7 | 8h_"],
 ["b_fiblues","fills","1d7*2 4d7*2 1d7*2 5d7*2 1*2","1e 3 5 6 | 1 3 5 3 | 1 3 4 #4! | 1 5, 7, < | 1h_",{cm:"1m7*2 4m7*2 1m7*2 5d7*2 1*2"}],
-["b_fitop","fills","1 1*2","8e 7 5 3 1 5, 6, 7, | 1h_"]
+["b_fitop","fills","1 1*2","8e 7 5 3 1 5, 6, 7, | 1h_"],
+/* AOG-SOLO-BASSLICKS-ROCK-V1 (2026-10-18) — Jimmy: "DIME BAG DARRELL or Kirk Hammett type of licks … Van Halen, Kiss, etc..
+   Make the bass and guitar pages match." Original lines in the style of those bands' bass players (never a real song's
+   line); no player or band is named on screen. */
+/* arena rock (in the style of Kiss's bassist): driving eighths, walk-ups into the change, octave pumps, big simple hooks */
+["b_ardrive","arena","1 b7 4 1*1","1e 1 1 1 1 1 5, 6, | 1 1 1 1 1 1 2 3 | 1 1 1 1 3 3 5 5 | 1q_"],
+["b_arwalk","arena","1 4 5 1*1","1q 1e 1 1 1 2 3 | 1q 1e 1 1 1 2 3 | 1q 1e 1 1 1 2 3 | 8q_"],
+["b_aroct","arena","1 4 1 5 1*1","1e 8 1 8 1 8 5 3 | 1 8 1 8 1 8 5 3 | 1 8 1 8 1 8 5 3 | 1 8 1 8 1 8 2 < | 8q_"],
+["b_arhook","arena","1 b6 b7 1*1","1q. 1e 5,q 1q | 1q. 1e 5,q 1q | 1q. 1e 5,q 3q | 1q_"],
+["b_arshout","arena","1*2 5*2 6*2 4*2 1*1","1e 1 1 1 | 1 1 1 1 | 1 1 1 1 | 1 1 3 < | 8q_"],
+["b_arrun","arena","1 5 1*1","1e 1 1 1 1 1 1 1 | 1 1 1 1 1s 2 3 4 5 4 3 2 | 8q_"],
+/* 80s hard rock (in the style of Van Halen's bassist): steady eighths, root-fifth-octave, pedal tones, hammer-on fills, a tap */
+["b_h8drive","hard80","1 4 1 5 1*1","1e 1 1 1 1 1 1 1 | 1 1 1 1 1 1 1 1 | 1 1 1 1 1 1 1 1 | 1 1 1 1 1 1 2 < | 8q_"],
+["b_h8158","hard80","1 4 5 1*1","1e 5 8 5 1 5 8 5 | 1 5 8 5 1 5 8 5 | 1 5 8 5 1 5 3 2 | 1q_"],
+["b_h8pedal","hard80","1 b7 1*1","1e 1 3 1 5 1 4 1 | 1, 1, 3, 1, 5, 1, 2, 1, | 1q_"],
+["b_h8ham","hard80","1 4 1*1","1e 1 1 1 1 2H 3H 5 | 1 1 1 1 1 2H 3H 5 | 1q_"],
+["b_h8tap","hard80","1 1 1*1","1s 3 5 8T 5 3 1 3 5 8T 5 3 1 3 5 8T | 8T 5 3 1 3 5 8T 5 3 1 3 5 8T 7 5 < | 8q_"],
+["b_h8chorus","hard80","1 6 4 5 1*1","1e 1 1 1 1 1 5, 6, | 1, 1, 1, 1, 1, 1, 3, 2, | 1 1 1 1 1 1 3 2 | 1 1 1 1 3 3 2 < | 8q_"],
+/* thrash metal (in the style of Metallica's bassists): fast gallops, chromatic runs, melodic minor lines, a classical arpeggio */
+["b_thgal","thrash","1 1 1*1","1e 1s 1 b2e! b2s! b2! 1e 1s 1 1e 1s 1 | 1e 1s 1 1e 1s 1 3e 3s 3 2e 2s 2 | 1q_"],
+["b_thclimb","thrash","1 1 1*1","1s 1 1 1 1 1 b2! 2 3 3 3 3 3 3 4 #4! | 5 5 5 5 5 5 b6! 5 3 3 3 3 2 2 b2! b2! | 1q_"],
+["b_thmel","thrash","1 b6 b7 1*2","1q 3e 5e 8q 7e 5e | 3q 1e 3e 5q. 3e | 5q 3e 2e 1q 5,q | 1h_"],
+["b_tharp","thrash","1 4 5 1*2","1s 3 5 8 5 3 1 3 5 8 5 3 1 3 5 3 | 5, 1 3 5 3 1 5, 1 3 5 3 1 5, 1 3 1 | 5, 1 3 5 3 1 5, 1 3 5 3 1 5, 1 2 < | 8h_",{cm:"1m 4m 5M 1*2"}],
+["b_thrun","thrash","1 1 1*1","8s 8 8 7 b7! 6 b6! 5 5 5 5 5 #4! 4 3 3 | 3 3 3 2 b2! 1 1 1 1 1 1 1 1 1 1 1 | 1q_"],
+["b_thdrive","thrash","1 b7 b6 5M 1*1","1e 1 1 1 8 1 1 1 | 1, 1, 1, 1, 1 1, 1, 1, | 1, 1, 1, 1, 1 1, 1, 1, | 1, 1, 1, 1, 3, 3, 2, < | 1q_"],
+/* groove metal (in the style of Pantera's bassist): low riffs locked to the kick, dead notes, slides, bends, half steps */
+["b_grlock","groove","1 1 1*1","1e 1s 1s re 1e- xg 1e b2e! 1e | 1e 1s 1s re 1e- xg 3e 2e b2e! | 1q_"],
+["b_grslide","groove","1 1 1*1","1q/ 1s- 1s- re 1e- 3e- 4e #4e! | 5q/ 5s- 5s- re 5e- 4e- 3e 2e | 1q_"],
+["b_grbend","groove","1 1 1*1","1e 1 3B 1 1 1 4B 1 | 1 1 3B 1 5 4 3 2 | 1q_"],
+["b_grdead","groove","1 1 1*1","1s xg 1 xg 1 xg b2! 1 rs 1 xg 1 5, 6, b7,! 7, | 1 xg 1 xg 1 xg b2! 1 rs 1 3 2 b2! 1 xg xg | 1q_"],
+["b_grhalf","groove","1*2 b2*2 1*2 b7*2 1*1","1e. 1s re 1e | 1e. 1s re 1e | 1e. 1s re 1e | 1,e. 1,s re <e | 1q_"],
+["b_grswing","groove","1 1 1*1","1e- re 1s 1s b3e! 3e- 1e- 5,e <e | 1e- re 1s 1s b3e! 3e- 1e- 4eB 3e | 1q_"],
+/* shred and tapping: taps, fast hammer-ons and pull-offs, arpeggio runs */
+["b_shtap","shred","1 4 1*1","1s 5 8T 5 1 5 8T 5 3 5 8T 5 1 5 8T 5 | 1 5 8T 5 1 5 8T 5 3 5 8T 5 1 5 8T 5 | 1q_"],
+["b_shleg","shred","1 1 1*1","1s 2H 3H 2O 1 3 5 6H 5O 3 5 8 9H 8O 5 3 | 1 2H 3H 2O 1 3 5 6H 5O 3 2 1 2 3 b2! 1 | 1q_"],
+["b_sharp","shred","1 6 4 5 1*1","1t 3 5 8 5 3 1 3 5 8 5 3 | 1, 3, 5, 1 5, 3, 1, 3, 5, 1 5, 3, | 5, 1 3 5 3 1 5, 1 3 5 3 1 | 5, 1 3 5 3 1 5, 1 3 5 2 < | 8q_"],
+["b_sh2hand","shred","1 1 1*1","1s 5T 8T 5T 1 5T 8T 9T 8 5T 3 5T 8T 7T 5 3 | 1 5T 8T 5T 1 5T 8T 9T 8 7T 5T 3T 2 3 b2! 1 | 1q_"],
+["b_shtrip","shred","1 1 1*1","1t 2H 3H 2O 1 2H 3H 5 3 2 1 2 | 3 5 6H 5O 3 2 1 2 3 2 1 2 | 1q_"],
+["b_shscale","shred","1 5 1*1","1s 2 3 4 3 4 5 6 5 6 7 8 7 8 9 8 | 1 2 3 4 3 4 5 6 5 4 3 2 1 2 3 2 | 8q_"],
+/* slow and singing: long notes, vibrato, gentle slides like a fretless */
+["b_slsing","slow","1 4 5 1*2","8hV 5q 6q | 5hV 3q 2q | 3hV 1h~ | 8h_"],
+["b_slglide","slow","1 6 4 5 1*2","1hV 3q 2q~ | 1hV 3q 2q~ | 1hV 3q 2q~ | 1hV 3q 2q | 1h_"],
+["b_slcry","slow","1 4 1*2","3hV 5q 3q | 1hV 3q 2qB | 1h_"],
+["b_slballad","slow","1*2 5*2 6*2 4*2 1*2","8hV | 3hV | 1qV 3q | 1q 3q | 8h_"],
+["b_slsoft","slow","1 4 1*2","1q 2H 3hV | 1q 2H 3hV | 1h_"],
+["b_slseven","slow","17 47 1*2","8hV 7h | 5hV 3q 2q | 1h_"],
+/* surf: driving eighths, tremolo sixteenths, gallops, slides and half steps */
+["b_sfdrive","surf","1 4 5d7 1*2","1e 1 3 1 5 1 3 1 | 1 1 3 1 5 1 3 1 | 1 1 3 1 5 3 2 < | 8h_",{cm:"1m 4m 5d7 1*2"}],
+["b_sftrem","surf","1 4 1*2","1s 1 1 1 1 1 1 1 3 3 3 3 3 3 3 3 | 1 1 1 1 1 1 1 1 3 3 3 3 2 2 2 2 | 1h_"],
+["b_sfstep","surf","1 4 5 1*2","1e 1 1 1 1 2 b3! 3 | 1 1 1 1 1 2 b3! 3 | 1 1 1 1 3 2 b2! 1 | 1h_"],
+["b_sfgal","surf","1 4 1*2","1e 1s 1 1e 1s 1 5,e 5,s 5, 6,e 6,s 6, | 1e 1s 1 1e 1s 1 5,e 5,s 5, 6,e 6,s 6, | 1h_"],
+["b_sfdown","surf","1 b7 b6 5M 1*2","1e 1 5, 1 1 1 5, 1 | 1 1 5, 1 1 1 5, 1 | 1 1 5, 1 1 1 5, 1 | 1 1 5, 1 3 3 2 < | 8h_"],
+["b_sftwang","surf","1 4 1*2","1q 5,e 6,e 1q\\ 5,q | 1q 5,e 6,e 1q\\ 3q | 1h_"]
 ];
-const GROUPS=[["rock"],["blues"],["funk"],["motown"],["reggae"],["jazz"],["latin"],["metal"],["country"],["disco"],["hiphop"],["gospel"],["punk"],["pop"],["neosoul"],["afro"],["dnb"],["slap"],["fills"]]
+const GROUPS=[["rock"],["blues"],["funk"],["motown"],["reggae"],["jazz"],["latin"],["metal"],["country"],["disco"],["hiphop"],["gospel"],["punk"],["pop"],["neosoul"],["afro"],["dnb"],["slap"],["fills"],
+  ["arena"],["hard80"],["thrash"],["groove"],["shred"],["slow"],["surf"]]
   .map(([g])=>[g, RAW.filter(r=>r[1]===g).map(r=>r[0])]);
 const ORDER=[].concat(...GROUPS.map(g=>g[1]));
 const LICKS={}; RAW.forEach(([id, g, ch, n, x])=>{ LICKS[id]=Object.assign({id, g, ch, n}, x||{}); });
@@ -178,6 +231,8 @@ const W={
   lgb_country:["Country","Country"], lgb_disco:["Disco","Disco"], lgb_hiphop:["Hip-hop and R&B","Hip-hop y R&B"], lgb_gospel:["Gospel","Gospel"],
   lgb_punk:["Punk","Punk"], lgb_pop:["Pop","Pop"], lgb_neosoul:["Neo-soul","Neo-soul"], lgb_afro:["Afrobeat","Afrobeat"],
   lgb_dnb:["Drum and bass","Drum and bass"], lgb_slap:["Slap showcase","Lo mejor del slap"], lgb_fills:["Fills and turnarounds","Rellenos y vueltas"],
+  lgb_arena:["Arena rock","Rock de estadio"], lgb_hard80:["80s hard rock","Hard rock de los 80"], lgb_thrash:["Thrash metal","Thrash metal"],
+  lgb_groove:["Groove metal","Groove metal"], lgb_shred:["Shred and tapping","Velocidad y tapping"], lgb_slow:["Slow and singing","Lentas y cantadas"], lgb_surf:["Surf","Surf"],
   tg_s:["slap","slap"], tg_P:["pop","pop"],
   b_rk8:["Eighth-note drive","Corcheas que empujan","Even eighth notes on the home note, then up to the fifth and the octave.","Corcheas parejas en la nota casa; luego sube a la quinta y a la octava."],
   b_rk15:["Root and fifth","Raíz y quinta","The home note and its fifth, then the same shape on the four chord.","La nota casa y su quinta; luego la misma figura en el acorde cuatro."],
@@ -294,7 +349,49 @@ const W={
   b_fichrom:["Half steps into the five","Semitonos hacia el cinco","Up from the root through the third and fourth, then a half step into the five chord.","Sube desde la raíz por la tercera y la cuarta; luego medio tono hacia el acorde cinco."],
   b_fitrip:["Triplet run up","Carrera de tresillos","Two beats, then threes up the scale to the high home note.","Dos tiempos y luego tresillos que suben por la escala hasta la nota casa aguda."],
   b_fiblues:["Blues turnaround fill","Relleno de vuelta de blues","Four chords, two beats each, ending with the five chord's step back home.","Cuatro acordes de dos tiempos que terminan con el paso del acorde cinco de vuelta a casa."],
-  b_fitop:["Down from the top","Desde arriba","From the high home note, down the chord and the scale to the low one.","Desde la nota casa aguda, baja por el acorde y la escala hasta la grave."]
+  b_fitop:["Down from the top","Desde arriba","From the high home note, down the chord and the scale to the low one.","Desde la nota casa aguda, baja por el acorde y la escala hasta la grave."],
+  b_ardrive:["Stadium eighths","Corcheas de estadio","Steady eighths on each root, with a short climb into each new chord.","Corcheas parejas en cada raíz, con una subida corta hacia cada acorde nuevo."],
+  b_arwalk:["Walk-up into the change","Subida hacia el cambio","A long root, quick eighths, then two steps up into the next chord.","Una raíz larga, corcheas rápidas y luego dos pasos que suben al siguiente acorde."],
+  b_aroct:["Octaves and a hook","Octavas y un gancho","Low and high roots in turn, then the fifth and the third round off each bar.","Raíz grave y aguda por turnos; luego la quinta y la tercera cierran cada compás."],
+  b_arhook:["Big simple hook","Gancho grande y sencillo","Long-short roots and a drop to the low fifth. Easy to sing along.","Raíces largo-corto y una bajada a la quinta grave. Fácil de cantar."],
+  b_arshout:["Sing-along roots","Raíces para cantar","Eighths on four quick chords, then a half step up to the high home note.","Corcheas en cuatro acordes rápidos y luego medio tono hasta la nota casa aguda."],
+  b_arrun:["Run into the chorus","Carrera hacia el estribillo","A bar of eighths, then a fast run up and down on the five chord.","Un compás de corcheas y luego una carrera rápida arriba y abajo en el acorde cinco."],
+  b_h8drive:["Eighth-note engine","Motor de corcheas","Even eighths on the root of four chords. Steady and strong under the guitar.","Corcheas parejas en la raíz de cuatro acordes. Firme y fuerte bajo la guitarra."],
+  b_h8158:["Root, fifth, octave","Raíz, quinta, octava","Up to the octave and back on each chord, then down by step to home.","Sube a la octava y vuelve en cada acorde; luego baja por pasos a casa."],
+  b_h8pedal:["Pedal tone","Nota pedal","The home note between every note of a climbing line, then the same on the flat seven chord.","La nota casa entre cada nota de una línea que sube; luego lo mismo en el acorde de séptima bemol."],
+  b_h8ham:["Hammer-on fill","Relleno con ligados","Steady eighths, then hammer on from the root up to the third.","Corcheas firmes y luego liga desde la raíz hasta la tercera."],
+  b_h8tap:["Tapped octave","Octava con tapping","Fast notes up the chord, with the high octave tapped by the other hand.","Notas rápidas por el acorde, con la octava aguda tocada con tapping de la otra mano."],
+  b_h8chorus:["Chorus drive","Empuje del estribillo","Eighths on four chords. Each bar ends with a short step into the next.","Corcheas en cuatro acordes. Cada compás termina con un paso corto hacia el siguiente."],
+  b_thgal:["Gallop with a dark step","Galope con un paso oscuro","One long, two short, fast, with a half step above the root.","Una larga y dos cortas, rápido, con medio tono encima de la raíz."],
+  b_thclimb:["Chromatic climb","Subida cromática","Fast sixteenths that climb by half steps to the fifth, then come back down.","Semicorcheas rápidas que suben por semitonos hasta la quinta y vuelven a bajar."],
+  b_thmel:["Melodic minor line","Línea melódica en menor","A singing line up and down each chord. It sounds best in minor.","Una línea que canta, arriba y abajo por cada acorde. Suena mejor en menor."],
+  b_tharp:["Classical arpeggios","Arpegios clásicos","Fast broken chords, like old music for strings. Each chord rolls up and down.","Acordes desplegados rápidos, como música antigua para cuerdas. Cada acorde sube y baja."],
+  b_thrun:["Chromatic run down","Bajada cromática","From the high home note down by half steps, then keep driving the low root.","Desde la nota casa aguda baja por semitonos; luego sigue empujando en la raíz grave."],
+  b_thdrive:["Fast roots down four chords","Raíces rápidas por cuatro acordes","Fast eighths walking down four chords, then a half step home.","Corcheas rápidas que bajan por cuatro acordes y luego medio tono a casa."],
+  b_grlock:["Lock with the kick","Pegado al bombo","Short, heavy notes that hit with the kick drum, and a half step above the root.","Notas cortas y pesadas que caen con el bombo, y medio tono encima de la raíz."],
+  b_grslide:["Slide and stab","Deslizar y golpear","Slide into the root, short stabs, then half steps up to the fifth.","Desliza hacia la raíz, golpes cortos y luego semitonos hasta la quinta."],
+  b_grbend:["Bend and grind","Estirar y apretar","A low riff with a small bend on the third and on the fourth.","Un riff grave con un pequeño bend en la tercera y en la cuarta."],
+  b_grdead:["Dead-note chug","Golpes con notas muertas","Sixteenths on the low root, dead notes between, and a half step above.","Semicorcheas en la raíz grave, notas muertas entre medio y medio tono encima."],
+  b_grhalf:["Half-step heavy riff","Riff pesado de semitonos","The root, up a half step and back, then down and up into home.","La raíz, sube medio tono y vuelve; luego baja y sube hasta casa."],
+  b_grswing:["Loose heavy groove","Groove suelto y pesado","A loose, heavy groove that slips up into the third, like the blues.","Un groove suelto y pesado que resbala hacia la tercera, como un blues."],
+  b_shtap:["Tap the octave","Tapping en la octava","Root, fifth and a tapped octave, fast and even.","Raíz, quinta y una octava con tapping, rápido y parejo."],
+  b_shleg:["Fast hammer-ons and pull-offs","Ligados rápidos","Up the scale with hammer-ons, back with pull-offs, string to string.","Sube por la escala con ligados y vuelve soltando, de cuerda en cuerda."],
+  b_sharp:["Triplet arpeggios","Arpegios en tresillos","Up and down each chord in threes, over four chords.","Arriba y abajo por cada acorde de tres en tres, sobre cuatro acordes."],
+  b_sh2hand:["Two-hand tapping","Tapping a dos manos","Both hands on the neck: the root below, tapped notes above it.","Las dos manos en el mástil: la raíz abajo y notas con tapping encima."],
+  b_shtrip:["Triplet legato","Legato en tresillos","Smooth threes with hammer-ons and pull-offs around the root.","Tresillos suaves con ligados arriba y abajo alrededor de la raíz."],
+  b_shscale:["Scale run","Carrera por la escala","Fast sixteenths up the scale in small loops, then down on the five chord.","Semicorcheas rápidas que suben por la escala en pequeños bucles; luego bajan en el acorde cinco."],
+  b_slsing:["Singing high line","Línea aguda que canta","Long, high notes with vibrato, stepping down chord by chord.","Notas largas y agudas con vibrato, bajando de acorde en acorde."],
+  b_slglide:["Fretless glide","Deslizamiento sin trastes","A long root, the third, then a slow slide down a step, like a bass with no frets.","Una raíz larga, la tercera y luego un deslizamiento lento un paso abajo, como un bajo sin trastes."],
+  b_slcry:["Slow cry","Lamento lento","Long notes with a wide shake, and a small bend at the end.","Notas largas con un vibrato ancho y un pequeño bend al final."],
+  b_slballad:["Ballad line","Línea de balada","One long note on each chord, moving gently, then home.","Una nota larga en cada acorde, moviéndose con calma, y luego a casa."],
+  b_slsoft:["Soft hammer-ons","Ligados suaves","The root, a gentle hammer-on up to the third, and a long shake.","La raíz, un ligado suave hasta la tercera y un vibrato largo."],
+  b_slseven:["Gentle sevenths","Séptimas suaves","High notes that rest on the seventh, then walk down home.","Notas agudas que descansan en la séptima y luego bajan a casa."],
+  b_sfdrive:["Surf drive","Empuje surf","Root, third and fifth in fast eighths, riding three chords.","Raíz, tercera y quinta en corcheas rápidas, sobre tres acordes."],
+  b_sftrem:["Tremolo sixteenths","Semicorcheas en trémolo","Very fast, even notes on the root and the third, like a wave.","Notas muy rápidas y parejas en la raíz y la tercera, como una ola."],
+  b_sfstep:["Half-step pickups","Entradas por semitonos","Eighths on each root, then a half step up into the third.","Corcheas en cada raíz y luego medio tono hacia la tercera."],
+  b_sfgal:["Surf gallop","Galope surf","One long, two short, on the root, the fifth and the sixth.","Una larga y dos cortas en la raíz, la quinta y la sexta."],
+  b_sfdown:["Surf walk-down","Bajada surf","Root and low fifth on four chords walking down, then a half step home.","Raíz y quinta grave en cuatro acordes que bajan; luego medio tono a casa."],
+  b_sftwang:["Twang and fall","Twang y caída","A dip to the low fifth, then let the root fall away.","Una bajada a la quinta grave; luego deja caer la raíz."]
 };
 const WORDS={};
 Object.keys(W).forEach(k=>{ const v=W[k];
