@@ -237,7 +237,7 @@ const PADS_FN=async(opt)=>{
       const vc=trigger(bi, 0, v, 0.05, T); if(!vc || !vc.parts || !vc.parts.length) continue;
       const r=__lv.kw(await oc.startRendering(), 0.05, 0.4, 0.6);
       /* which recordings it played: a band player at the hardest plays its soft one at nothing (cos 90°), so only the loud */
-      const parts=v>=0.999 && vc.parts.length>1 ? vc.parts.slice(1) : vc.parts;
+      const parts=vc.parts.length<2 ? vc.parts : v>=0.999 ? vc.parts.slice(1) : v<=0.05 ? vc.parts.slice(0,1) : vc.parts;   /* the softest hit is held to 0.05: its loud recording at 8 %, 22 dB under */
       rows.push({m, v, zm:nearest(zs, m).m, f:parts.map(u=>u.split("/").pop().replace(/\.mp3$/,"")).join("+"), url:parts[0], lufs:r.lufs, peak:r.peak});
     }
     window.padDefs=keep; READY[bi]={};
