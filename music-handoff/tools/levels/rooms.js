@@ -228,7 +228,7 @@ const PADS_FN=async(opt)=>{
     const lo=Math.max(24, zs[0].m-2), hi=Math.min(96, zs[zs.length-1].m+2), rows=[];
     const keep=window.padDefs;
     for(const v of (opt.vels||(INST[id].g==="band" ? [0.01, 0.6, 1] : [0.3, 0.6, 0.9]))) for(let m=lo; m<=hi; m++){
-      window.padDefs=()=>[{kind:"note", notes:[m], name:""}];
+      window.padDefs=()=>Array.from({length:typeof NP==="number"?NP:24}, ()=>({kind:"note", notes:[m], name:""}));   /* every pad this one note, so the page's own drawing finds a pad wherever it looks */
       READY[bi]={sig:sigOf(S.banks[bi]), state:"ready", zones:zs, got:1, total:1};
       const oc=new OfflineAudioContext(2, Math.round(44100*1.2), 44100), g=oc.createGain(), l=oc.createDynamicsCompressor();
       l.threshold.value=-3; l.knee.value=2; l.ratio.value=20; l.attack.value=0.002; l.release.value=0.12;

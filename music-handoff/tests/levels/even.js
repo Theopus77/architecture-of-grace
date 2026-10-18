@@ -93,7 +93,9 @@ function starts(room, ch){
     if(room==="band"){
       const m=await R.band(h, {pages:3});
       ok(!m.errs.length, `band: no page errors ${m.errs.slice(0,3).join(" | ")}`);
-      for(const id of Object.keys(m.res).filter(k=>!k.startsWith("__"))){ const rows=m.res[id]; if(!Array.isArray(rows)){ ok(false, `band ${id}: ${JSON.stringify(rows)}`); continue; }
+      /* the world players (AOG-BAND-WORLD-V1) were evened when they were made and keep their own check, bandt/world.js */
+      const WORLD=["sitar","koto","erhu","panflute","didgeridoo","didgeridoo_rhythm"];
+      for(const id of Object.keys(m.res).filter(k=>!k.startsWith("__") && WORLD.indexOf(k)<0)){ const rows=m.res[id]; if(!Array.isArray(rows)){ ok(false, `band ${id}: ${JSON.stringify(rows)}`); continue; }
         for(const g of [...new Set(rows.map(r=>r.art+" "+r.v))]) even("band", id, rows.filter(r=>r.art+" "+r.v===g), g==="sus 0.6"?"":g.replace("sus 0.05","softest").replace("sus 1","loudest").replace("stac 0.6","short")); }
       starts("band", await R.chords(h, "band", {pages:3}));
     }

@@ -6,6 +6,7 @@
 const fs=require("fs"), path=require("path"), cp=require("child_process");
 const R=require("./rooms.js"), C=require("./curve.js");
 const MANF=path.join(R.ROOT, "audio/band/manifest.json");
+const WORLD=["sitar","koto","erhu","panflute","didgeridoo","didgeridoo_rhythm"];   /* AOG-BAND-WORLD-V1: checked by bandt/world.js */
 const pmean=a=>10*Math.log10(a.reduce((s,x)=>s+Math.pow(10,x/10),0)/a.length);
 function build(){ cp.execSync("python3 _work/music/make_band.py", {cwd:R.ROOT, stdio:"pipe"}); }
 module.exports=async function(PASSES, ONLY, pages){
@@ -19,6 +20,7 @@ module.exports=async function(PASSES, ONLY, pages){
     let moved=0;
     for(const inst of Object.keys(res)){
       if(inst.startsWith("__") || !Array.isArray(res[inst]) || !sets[inst] || !MAN[inst]) continue;
+      if(WORLD.indexOf(inst)>=0) continue;   /* evened when they were made, by their own rule (bandt/world.js) */
       const rows=res[inst], mid=sets[inst].mid, man=MAN[inst], cur=Object.assign({}, man.lvl||{}), curk=Object.assign({}, man.lvk||{}), err={}, errk={};
       const base=rows.filter(r=>r.art==="sus" && r.v===0.6), line=C.robustLine(Object.entries(C.means(base)).map(([m,y])=>[+m,y]));
       const N=x=>Math.max(-3, Math.min(1.5, 0.5*(line(x)-line(mid))));
