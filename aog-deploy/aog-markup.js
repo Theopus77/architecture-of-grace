@@ -70,7 +70,7 @@
     var over = []; Array.prototype.forEach.call(p1.querySelectorAll("mark.aog-hl"), function (x) { var id = x.getAttribute("data-mk"); if (r.intersectsNode(x) && over.indexOf(id) < 0) over.push(id); });
     pending = { p: p1, s: s0, e: s1, t: text, over: over };
     tip.textContent = ""; tip.innerHTML = (over.length ? '<button type="button" data-a="unhl">' + T("Remove highlight", "Quitar resaltado") + "</button>" : "") + '<button type="button" data-a="hl">' + T("Highlight", "Resaltar") + '</button><button type="button" data-a="note">' + T("Add a note", "Agregar nota") + "</button>";
-    tip.hidden = false; /* fixed just above My notes (aog-markup.css) */
+    tip.hidden = false; /* fixed at the bottom right (aog-markup.css) */
   });
   tip.addEventListener("mousedown", function (e) { e.preventDefault(); });
   tip.addEventListener("click", function (e) {
@@ -131,7 +131,9 @@
   });
   var dbtn = D.createElement("button"); dbtn.type = "button"; dbtn.className = "aog-mkbtn no-print"; dbtn.setAttribute("aria-expanded", "false");
   var drawer = D.createElement("aside"); drawer.className = "aog-mkdrawer no-print"; drawer.hidden = true; drawer.setAttribute("aria-label", T("My highlights and notes", "Mis resaltados y notas"));
-  D.body.appendChild(dbtn); D.body.appendChild(drawer);
+  /* AOG-MARKUP-NOBTN-V1 (2026-10-18) — Jimmy: "I don't like the my notes button. Please remove that." The floating button is
+     no longer put on the page; highlights and notes still work, and a tap on a highlight still edits or removes it. */
+  D.body.appendChild(drawer);
   function drawList() {
     var all = marks();
     dbtn.innerHTML = '<img class="aog-sk aog-sk-mark" src="/img/sketch/270e.webp" alt="" width="18" height="18" style="width:1.05em;height:1.05em;vertical-align:-.15em;margin-right:.1em"> ' + T("My notes", "Mis notas") + (all.length ? ' <span class="n">' + all.length + "</span>" : "");

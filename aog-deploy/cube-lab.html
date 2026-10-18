@@ -474,11 +474,11 @@ const T={
   did:["Did {m}","Hecho: {m}"],
   /* AOG-CUBE-CEILING-V1 (2026-10-11) — Jimmy: "DO them all": the next list, all of it. */
   hint2:["Two fingers turn the whole cube.","Dos dedos giran todo el cubo."],
-  levelH:["Help","Ayuda"], lvEvery:["Every move","Cada movimiento"], lvHint:["A hint","Una pista"], lvOwn:["On my own","Yo solo"],
+  levelH:["How much help","Cuánta ayuda"], lvEvery:["Every move","Cada movimiento"], lvHint:["A hint","Una pista"], lvOwn:["On my own","Yo solo"],
   showMove:["Show me the move","Muéstrame el movimiento"], giveHint:["Give me a hint","Dame una pista"],
   ownLine:["You lead. Tap Give me a hint any time.","Tú guías. Toca Dame una pista cuando quieras."],
   hintLine:["Here is the goal. Try the moves, or tap Show me the move.","Esta es la meta. Prueba los movimientos o toca Muéstrame el movimiento."],
-  lessHelp:["Ready for less help? Choose Help: A hint for your next cube.","¿Listo para menos ayuda? Elige Ayuda: Una pista para tu próximo cubo."],
+  lessHelp:["Ready for less help? Under How much help, choose A hint for your next cube.","¿Listo para menos ayuda? En Cuánta ayuda, elige Una pista para tu próximo cubo."],
   drillBtn:["Practice {s}","Practicar {s}"], drillK:["Practice · {s}","Práctica · {s}"],
   drillDone:["Done! {s} is finished.","¡Listo! {s} está terminado."], again:["Again","Otra vez"], wholeAgain:["Back to a whole cube","Volver a un cubo entero"],
   chunkReady:["Getting ready for the {n}.","Preparando los {n}."], chunkNow:["The {n}. You'll use these again and again.","Los {n}. Los usarás una y otra vez."],
@@ -1385,6 +1385,7 @@ let arrowTok=null;
 function panel(){
   const el=$("panel"); arrowTok=null; markIdx=-1; focusSet=null;
   el.innerHTML = S.view==="solve" ? solveHtml() : S.view==="mine" ? mineHtml() : learnHtml();
+  if(S.view==="solve") $("hint").textContent = cube.solved() ? "" : t(S.real?"hintSolveReal":"hintSolve");   /* no arrow and no Turn it until a solve starts */
   el.querySelectorAll("[data-act]").forEach(b => b.onclick=()=>act(b.getAttribute("data-act")));
   el.querySelectorAll("[data-alg]").forEach(b => b.onclick=()=>playAlg(b.getAttribute("data-alg"), b.getAttribute("data-how")));
   const sa=el.querySelector("#startAt"); if(sa) sa.onchange=()=>{ if(sa.value!==""){ S.drill=null; setup(+sa.value); S.real=false; S.mix={t0:null,moves:0}; S.result=null; save(); panel(); } };
@@ -1575,6 +1576,7 @@ function paintAll(){
   stage.classList.toggle("painting", painting);
   stage.classList.toggle("symbols", !!S.symbols); stage.classList.toggle("letters", !!S.letters && !painting);
   $("bench").classList.toggle("solving", S.view==="solve");
+  $("benchSwitch").hidden = S.view!=="learn";   /* the Step menu belongs to Learn; elsewhere it only got in the way */
   document.documentElement.lang=S.lang;
   document.title=t("app")+" — Architecture of Grace";
   $("brand").textContent=t("app"); $("mastK").textContent=t("eyebrow"); $("mastH").textContent=t("app"); $("mastL").textContent=t("tag");
