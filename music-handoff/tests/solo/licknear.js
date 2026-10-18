@@ -1,0 +1,39 @@
+/* AOG-SOLO-LICKNEAR-V2 (2026-10-18) — Jimmy: "Play this lick … needs to be closer to the fret board. One is unable to see the
+   neck of the guitar while the licks are taking place." Inside the Studio, in the Guitar room, Solo:
+   1 · the lick menu and ▶ Play this lick sit right under the neck (the button within 200 px of the neck's foot), on an
+       iPhone upright and an iPad upright and sideways
+   2 · pressed from anywhere on the page, the neck comes into sight as the lick plays
+   3 · out of Solo, the licks are not shown; and there are no page errors. Port 9422. */
+const pw = require(require("child_process").execSync("npm root -g").toString().trim() + "/playwright");
+const path = require("path"), PORT = 9422, srv = require("../srv.js")(PORT);
+const ROOT = process.env.AOG_ROOT || path.resolve(__dirname, "../../../aog-deploy");
+let fails = 0; const ok = (c, m) => { console.log((c ? "PASS " : "FAIL ") + m); if (!c) fails++; };
+(async () => {
+  const b = await pw.chromium.launch({ args: ["--autoplay-policy=no-user-gesture-required"] }); const errs = [];
+  for (const [nm, vw] of [["iPhone", { width: 390, height: 844 }], ["iPad", { width: 820, height: 1180 }], ["iPad sideways", { width: 1180, height: 820 }]]) {
+    const ctx = await b.newContext({ viewport: vw, isMobile: true, hasTouch: true, serviceWorkers: "block" });
+    ctx.on("page", pg => pg.on("pageerror", e => errs.push(nm + ": " + e.message)));
+    await ctx.route(/^https?:\/\/(?!localhost)/, r => r.abort());
+    await ctx.route(/\/the-studio(\?[^#]*)?$/, r => r.fulfill({ path: path.join(ROOT, "the-studio.html"), contentType: "text/html" }));
+    const p = await ctx.newPage(); await p.goto(`http://localhost:${PORT}/the-studio#guitar`);
+    await p.waitForFunction(() => [...document.querySelectorAll("iframe")].some(f => { try { return f.contentDocument && f.contentDocument.getElementById("neckBox") && f.contentDocument.querySelector('[data-so-mode="solo"]'); } catch (e) { return false; } }), null, { timeout: 60000 });
+    const f = p.frames().find(x => /music-guitar/.test(x.url()));
+    const r = await f.evaluate(async () => {
+      const off = !!document.querySelector(".so-licks.so-near") && !document.querySelector(".so-licks.so-near").hidden && document.querySelector(".so-licks.so-near").offsetParent !== null;
+      document.querySelector('[data-so-mode="solo"]').click(); await new Promise(r => setTimeout(r, 400));
+      const nb = document.getElementById("neckBox"), btn = document.getElementById("soLickBtn");
+      const gap = btn.getBoundingClientRect().top - nb.getBoundingClientRect().bottom;
+      scrollTo(0, document.documentElement.scrollHeight); await new Promise(r => setTimeout(r, 100));
+      btn.click(); await new Promise(r => setTimeout(r, 300));
+      const n = nb.getBoundingClientRect(), seen = n.top >= -1 && n.bottom <= innerHeight + 1;
+      const playing = btn.getAttribute("aria-pressed") === "true"; btn.click();
+      return { off, gap: Math.round(gap), seen, playing };
+    });
+    ok(!r.off, `${nm}: out of Solo the licks are not shown`);
+    ok(r.gap >= 0 && r.gap <= 200, `${nm}: ▶ Play this lick sits right under the neck (${r.gap} px below it)`);
+    ok(r.seen && r.playing, `${nm}: pressed from the foot of the page, the lick plays with the neck in sight`);
+    await ctx.close();
+  }
+  ok(errs.length === 0, "no page errors " + errs.join(" | "));
+  console.log(fails ? fails + " FAILED" : "ALL PASS"); await b.close(); srv.close(); process.exit(fails ? 1 : 0);
+})().catch(e => { console.log("CRASH " + e.message); process.exit(1); });
