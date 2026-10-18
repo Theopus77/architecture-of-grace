@@ -89,18 +89,43 @@ function tables(){
       if(!any) break; d++; } return P; };
   const ALL=[...Array(18).keys()];
   T={twistM, flipM, sliceM, cpM, udM, spM,
-    p1a:prune(N1,N3,twistM,sliceM,ALL), p1b:prune(N2,N3,flipM,sliceM,ALL), p2a:prune(N4,N6,cpM,spM,P2), p2b:prune(N5,N6,udM,spM,P2)};
+    p1a:prune(N1,N3,twistM,sliceM,ALL), p1b:prune(N2,N3,flipM,sliceM,ALL), p1c:prune(N1,N2,twistM,flipM,ALL), p2a:prune(N4,N6,cpM,spM,P2), p2b:prune(N5,N6,udM,spM,P2)};
   return T;
 }
 
-/* the short way for a cube from aog-cube.js: a list of turns (U R2 F' …) */
+/* AOG-CUBE-SHORT-V2 (2026-10-17) — Jimmy: "DO the two upgrades." The search now looks at the cube six ways at once,
+   as the best solvers do: held with each of its three axes up and down, and run backwards (the cube's inverse: a
+   short way to mix a solved cube into this one, read in reverse, is a short way to solve it). One shared best length
+   prunes all six, so each finds a little and together they find shorter ways in the same time. */
+function inverse(a){ const b={cp:[], co:[], ep:[], eo:[]};
+  for(let i=0;i<8;i++) b.cp[a.cp[i]]=i; for(let i=0;i<8;i++) b.co[i]=(3-a.co[b.cp[i]])%3;
+  for(let i=0;i<12;i++) b.ep[a.ep[i]]=i; for(let i=0;i<12;i++) b.eo[i]=(2-a.eo[b.ep[i]])%2;
+  return b; }
+const AXES=["", "z", "x"];   /* the up-and-down axis held as it is, then the right-left one, then the front-back one */
+let FACEMAP=null;   /* a turn named after the whole cube is turned, as the same turn named before */
+function facemap(){
+  if(FACEMAP) return FACEMAP; FACEMAP={};
+  const probe=C.scramble ? new C.Cube().run("R U2 F' L D B2 R' U") : new C.Cube();
+  AXES.forEach(r => { const m={}; ORDER.forEach(X => { m[X]=ORDER.find(Y => probe.clone().run(r+" "+X).faceletKey()===probe.clone().run(Y+" "+r).faceletKey()); }); FACEMAP[r]=m; });
+  return FACEMAP;
+}
+/* the short way for a cube from aog-cube.js: a list of turns (U R2 F' …). opts.ms: time to search; opts.enough: stop
+   at this length or shorter; opts.onBetter(moves): told each time a shorter way is found */
 function solve(cube, opts){
-  opts=opts||{}; const t0=Date.now(), limit=opts.ms||2500, enough=opts.enough||20;
-  const T=tables(), start=cubie(facelets(cube));
-  if(start.cp.some(v => v===undefined) || start.ep.some(v => v===undefined)) return null;
-  const tw0=getTwist(start), fl0=getFlip(start), sl0=getSlice(start);
-  let best=null; const path1=[], path2=[];
+  opts=opts||{}; const t0=Date.now(), limit=opts.ms||2500, enough=opts.enough||0;
+  const T=tables(), FM=facemap();
+  const starts=[];
+  for(const r of AXES){ const base=cubie(facelets(r ? cube.clone().run(r) : cube));
+    if(base.cp.some(v => v===undefined) || base.ep.some(v => v===undefined)) return null;
+    starts.push({r, inv:false, c:base}, {r, inv:true, c:inverse(base)}); }
+  starts.forEach(st => { st.tw=getTwist(st.c); st.fl=getFlip(st.c); st.sl=getSlice(st.c); });
+  /* a solution of one of the six, as turns of the cube as it is held */
+  const back=(st, path) => { let toks=path.map(m => NAMES[m]); if(st.inv) toks=C.invertSeq(toks);
+    return toks.map(tk => FM[st.r][tk[0]]+tk.slice(1)); };
+  let best=null, bestLen=99, nodes=0, stop=false;
+  const timeUp=() => { if(stop) return true; if((++nodes & 1023)===0 && Date.now()-t0>limit) stop=true; return stop; };
   const face=m => Math.floor(m/3), skip=(m,last) => last>=0 && (face(m)===face(last) || face(m)===face(last)-3);
+  let st=null; const path1=[], path2=[];
   function phase2(cp, ud, sp, togo, last){
     if(togo===0) return cp===0 && ud===0 && sp===0;
     if(Math.max(T.p2a[cp*24+sp], T.p2b[ud*24+sp])>togo) return false;
@@ -109,31 +134,74 @@ function solve(cube, opts){
     return false;
   }
   function phase1(tw, fl, sl, togo, last){
-    if(Date.now()-t0>limit || (best && best.length<=enough)) return;
+    if(timeUp()) return;
+    const h=Math.max(T.p1a[tw*495+sl], T.p1b[fl*495+sl], T.p1c[tw*2048+fl]);
     if(togo===0){
-      if(tw || fl || sl) return;
+      if(h) return;
       if(path1.length && P2.includes(path1[path1.length-1])) return;   /* found already, one turn shorter */
-      let c=start; path1.forEach(m => { c=mul(c, MOVE[m]); });
+      let c=st.c; for(const m of path1) c=mul(c, MOVE[m]);
       const cp=rank(c.cp), ud=rank(c.ep.slice(0,8)), sp=rank(c.ep.slice(8).map(v => v-8));
-      const room=(best ? best.length-1 : 30)-path1.length;
-      for(let d=0; d<=Math.min(room, 18); d++){ path2.length=0; if(phase2(cp, ud, sp, d, path1.length ? path1[path1.length-1] : -1)){ best=path1.concat(path2); break; } }
+      const room=Math.min(bestLen-1-path1.length, 18), lo=Math.max(T.p2a[cp*24+sp], T.p2b[ud*24+sp]);
+      for(let d=lo; d<=room; d++){ path2.length=0;
+        if(phase2(cp, ud, sp, d, path1.length ? path1[path1.length-1] : -1)){
+          const mv=C.simplify(back(st, path1.concat(path2)));
+          if(mv.length<bestLen){ best=mv; bestLen=mv.length; if(opts.onBetter) opts.onBetter(mv.slice()); if(bestLen<=enough) stop=true; }
+          break; } }
       return;
     }
-    if(Math.max(T.p1a[tw*495+sl], T.p1b[fl*495+sl])>togo) return;
+    if(h>togo || (h===0 && togo<5)) return;   /* already in the middle group with few turns to spare: a shorter path exists */
     for(let m=0;m<18;m++){ if(skip(m,last)) continue; path1.push(m);
-      phase1(T.twistM[tw*18+m], T.flipM[fl*18+m], T.sliceM[sl*18+m], togo-1, m); path1.pop();
-      if(Date.now()-t0>limit || (best && best.length<=enough)) return; }
+      phase1(T.twistM[tw*18+m], T.flipM[fl*18+m], T.sliceM[sl*18+m], togo-1, m); path1.pop(); if(stop) return; }
   }
-  for(let d=0; d<=(opts.depth||12); d++){ phase1(tw0, fl0, sl0, d, -1); if(Date.now()-t0>limit || (best && best.length<=enough)) break; }
-  return best ? best.map(m => NAMES[m]) : null;
+  /* deeper and deeper, all six side by side, so none waits on another */
+  for(let d=0; d<=(opts.depth||14) && !stop; d++) for(const s of starts){ st=s; path1.length=0; phase1(s.tw, s.fl, s.sl, d, -1); if(stop) break; }
+  return best;
+}
+/* AOG-CUBE-PROOF-V1 (2026-10-17) — how few moves this cube could possibly need. Every sequence of turns is tried, one
+   length at a time, cut short wherever a table says the goal is still too far; each length finished with no solution
+   proves the cube needs more. If a solution turns up, it is the shortest there is. opts.onBound(n): "at least n";
+   opts.onFound(moves): the shortest. */
+let CPDIST=null;
+function proveLeast(cube, opts){
+  opts=opts||{}; const t0=Date.now(), limit=opts.ms||30000, T=tables();
+  if(!CPDIST){ CPDIST=new Int8Array(40320).fill(-1); CPDIST[0]=0; let fr=[0], d=0;
+    while(fr.length){ const nx=[]; for(const c of fr) for(let m=0;m<18;m++){ const j=T.cpM[c*18+m]; if(CPDIST[j]<0){ CPDIST[j]=d+1; nx.push(j); } } fr=nx; d++; } }
+  const start=cubie(facelets(cube)); if(start.cp.some(v => v===undefined) || start.ep.some(v => v===undefined)) return null;
+  const isId=c => c.cp.every((v,i) => v===i) && c.co.every(v => !v) && c.ep.every((v,i) => v===i) && c.eo.every(v => !v);
+  if(isId(start)){ if(opts.onFound) opts.onFound([]); return {least:0, moves:[]}; }
+  const face=m => Math.floor(m/3), skip=(m,last) => last>=0 && (face(m)===face(last) || face(m)===face(last)-3);
+  const path=[]; let nodes=0, stop=false, found=null;
+  const timeUp=() => { if(stop) return true; if((++nodes & 4095)===0 && Date.now()-t0>limit) stop=true; return stop; };
+  function dfs(tw, fl, sl, cp, togo, last){
+    if(timeUp()) return false;
+    const h=Math.max(T.p1a[tw*495+sl], T.p1b[fl*495+sl], T.p1c[tw*2048+fl], CPDIST[cp]);
+    if(h>togo) return false;
+    if(togo===0){ let c=start; for(const m of path) c=mul(c, MOVE[m]); return isId(c); }
+    for(let m=0;m<18;m++){ if(skip(m,last)) continue; path.push(m);
+      if(dfs(T.twistM[tw*18+m], T.flipM[fl*18+m], T.sliceM[sl*18+m], T.cpM[cp*18+m], togo-1, m)) return true; path.pop(); if(stop) return false; }
+    return false;
+  }
+  const tw=getTwist(start), fl=getFlip(start), sl=getSlice(start), cp=rank(start.cp);
+  let d=Math.max(1, T.p1a[tw*495+sl], T.p1b[fl*495+sl], T.p1c[tw*2048+fl], CPDIST[cp]);
+  if(opts.onBound) opts.onBound(d);
+  for(; d<=20 && !stop; d++){
+    path.length=0;
+    if(dfs(tw, fl, sl, cp, d, -1)){ found=path.map(m => NAMES[m]); if(opts.onFound) opts.onFound(found.slice()); return {least:d, moves:found}; }
+    if(!stop && opts.onBound) opts.onBound(d+1);   /* no way in d turns: it needs at least d+1 */
+  }
+  return {least:null, atLeast:d};
 }
 
-const api={solve, tables, cubie, facelets};
+const api={solve, tables, cubie, facelets, inverse, proveLeast};
 if(typeof module!=="undefined" && module.exports) module.exports=api;
 else root.AOGShort=api;
 /* in a worker: {cube: json} in, {moves} out, so the page never waits */
 if(typeof importScripts==="function" && typeof window==="undefined" && root.AOGCube){
-  root.onmessage=e => { const c=C.Cube.fromJSON(e.data.cube); const m=c ? solve(c, {ms:e.data.ms||2500}) : null; root.postMessage({id:e.data.id, moves:m}); };
+  root.onmessage=e => { const q=e.data, c=C.Cube.fromJSON(q.cube), id=q.id;
+    if(!c){ root.postMessage({id, done:true, moves:null}); return; }
+    if(q.cmd==="better"){ const m=solve(c, {ms:q.ms||30000, onBetter:mv => root.postMessage({id, better:mv})}); root.postMessage({id, done:true, moves:m}); return; }
+    if(q.cmd==="least"){ const r=proveLeast(c, {ms:q.ms||30000, onBound:n => root.postMessage({id, bound:n}), onFound:mv => root.postMessage({id, least:mv})}); root.postMessage({id, done:true, result:r}); return; }
+    root.postMessage({id, moves:solve(c, {ms:q.ms||2500})}); };
 }
 
 if(typeof module!=="undefined" && require.main===module && process.argv[2]==="test"){

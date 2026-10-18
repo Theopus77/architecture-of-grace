@@ -256,6 +256,8 @@ footer p { margin-top:2rem; font-size:.9rem; color:var(--muted); max-width:70ch;
 .cam .rname { margin:0; font-weight:700; }
 .cam .rgrid { display:grid; grid-template-columns:repeat(3,44px); gap:4px; background:#14161a; padding:5px; border-radius:10px; }
 .cam .rgrid button { width:44px; height:44px; border-radius:7px; border:0; font:800 1.1rem/1 var(--sans); padding:0; }
+.note.fewer { background:var(--steel-soft); border-radius:12px; padding:.6rem .8rem; margin:.4rem 0 .6rem; }
+.note.fewer p { margin:.1rem 0 .3rem; font-weight:600; }
 .calm .hold { display:flex; flex-wrap:wrap; align-items:center; gap:.35rem; margin:.1rem 0 .5rem; font-weight:700; }
 .calm .hold .chip { width:1.15rem; height:1.15rem; border-radius:5px; border:1px solid rgb(0 0 0 / .3); display:inline-block; }
 .calm .after { margin:.2rem 0 .7rem; }
@@ -486,6 +488,13 @@ const T={
   vfyScreen:["On the screen","En la pantalla"], vfyYours:["Your cube","Tu cubo"], vfyAgain:["Check another side","Comprobar otro lado"], vfyDone:["Done","Listo"],
   wayH:["Way","Forma"], wayShort:["The short way","El camino corto"], waySteps:["The steps","Los pasos"], wayFaster:["The faster way","La forma rápida"],
   pPairs:["{n} of 4 pairs in place","{n} de 4 parejas en su lugar"],
+  fewerBtn:["Find fewer moves","Buscar menos movimientos"], fewerStop:["Stop","Parar"],
+  fewerRun:["Looking for fewer moves (up to 30 seconds)… Best so far: {b}.","Buscando menos movimientos (hasta 30 segundos)… Lo mejor hasta ahora: {b}."],
+  fewerRunLB:["Looking for fewer moves (up to 30 seconds)… Best so far: {b}. It can't be fewer than {lb}.","Buscando menos movimientos (hasta 30 segundos)… Lo mejor hasta ahora: {b}. No puede ser menos de {lb}."],
+  fewerProven:["Proven: {n} moves is the least possible for this cube.","Comprobado: {n} movimientos es lo mínimo posible para este cubo."],
+  fewerBest:["Best found: {b} moves. It can't be fewer than {lb}.","Lo mejor encontrado: {b} movimientos. No puede ser menos de {lb}."],
+  fewerBestNoLB:["Best found: {b} moves.","Lo mejor encontrado: {b} movimientos."],
+  fewerUsed:["Found a way in {n} moves. The card now shows it.","Se encontró un camino de {n} movimientos. La tarjeta ya lo muestra."],
   shortBtn:["Show me the short way","Muéstrame el camino corto"], shortFinding:["Finding the fewest moves… a second or two.","Buscando la menor cantidad de movimientos… un segundo o dos."],
   shortK:["The fewest moves","La menor cantidad de movimientos"], shortNone:["The fewest moves could not be found this time, so the steps will guide you instead.","Esta vez no se encontró la menor cantidad de movimientos, así que los pasos te guiarán."],
   shortMade:["{n} moves to solve it. Follow them one by one.","{n} movimientos para resolverlo. Síguelos uno por uno."],
@@ -994,6 +1003,7 @@ function stopQueue(){ queue.length=0; runner=null; }
 /* everything that follows a move */
 function after(job){
   const tok=job.tok;
+  if(fewer && (fewer.running || cube.toJSON()!==fewer.json)) fewerStop(false);
   if(job.src==="undo") S.hist.pop(); else S.hist.push(tok);
   const b=C.parse(tok).base; if("UDLRFB".includes(b)) S.tried[b]=1;
   const nx=guide && guide.flat[guide.i];
@@ -1227,7 +1237,7 @@ function solveHtml(){
     if(shortState!=="finding") setTimeout(findShort, 0);
     return `${ci}<p class="kicker">${esc(t("shortK"))}</p><p class="say">${esc(t("shortFinding"))}</p>${quietRow(lvSel)}`; }
   const dots=way().STAGES.map((k,i)=>`<span class="dot ${i<at?"done":i===si?"now":""}"></span>`).join("");
-  if(key==="short") return `${ci}<p class="kicker">${esc(t("shortK"))}</p>${partCard()}${quietRow(lvSel)}`;
+  if(key==="short") return `${ci}<p class="kicker">${esc(t("shortK"))}</p>${partCard()}${fewerHtml()}${quietRow(lvSel)}`;
   return `${ci}<p class="kicker">${esc(S.drill!=null ? t("drillK",{s:tx(STAGE_NAMES[way().STAGES[S.drill]])}) : t("stepOf",{i:si+1, n:way().STAGES.length, name:tx(STAGE_NAMES[key==="hold"?"cross":key])}))}</p>
     <div class="dots" role="img" aria-label="${esc(t("stepOf",{i:si+1, n:way().STAGES.length, name:tx(STAGE_NAMES[key==="hold"?"cross":key])}))}">${dots}</div>
     ${(()=>{ const pr=stageProgress(key==="hold"?"cross":key); return pr?`<p class="progress">${esc(pr)}</p>`:""; })()}
@@ -1245,6 +1255,47 @@ function quietRow(lvSel){
     <div class="btn-row quiet"><button type="button" class="btn" data-act="fresh">${esc(t("startOver"))}</button><button type="button" class="btn" data-act="mix">${esc(t("newMix"))}</button>
     ${true?"":`<label class="startat"><span>${esc(t("startAtH"))}</span><select id="startAt"><option value="">${esc(t("startAtPick"))}</option>${way().STAGES.map((k,i)=>`<option value="${i}">${i+1}. ${esc(tx(STAGE_NAMES[k]))}</option>`).join("")}</select></label>`}</div>`;
 }
+/* AOG-CUBE-FEWER-V1 (2026-10-17) — Jimmy: "DO the two upgrades." Find fewer moves: two searches side by side, off the
+   page, for up to 30 seconds. One keeps looking for a shorter way; the other works out how few moves this cube could
+   possibly need. When they meet, the least is proven. Turning the cube, leaving, or Stop ends both at once. */
+let fewer=null;
+function fewerHtml(){
+  if(!guide || !guide.short) return "";
+  const left=guide.flat.length-guide.i;
+  if(!fewer) return left>1 ? `<div class="btn-row quiet"><button type="button" class="btn btn-steel" data-act="fewer">${esc(t("fewerBtn"))}</button></div>` : "";
+  const F=fewer, b=F.best ? F.best.length : left;
+  const line = F.proven ? t("fewerProven",{n:b}) : F.running ? (F.lb ? t("fewerRunLB",{b, lb:F.lb}) : t("fewerRun",{b}))
+    : F.lb ? t("fewerBest",{b, lb:Math.min(F.lb, b)}) : t("fewerBestNoLB",{b});
+  return `<div class="note fewer"><p>${esc(line)}</p>${F.running ? `<div class="btn-row"><button type="button" class="btn" data-act="fewerStop">${esc(t("fewerStop"))}</button></div>` : ""}</div>`;
+}
+function fewerStop(keep){ if(!fewer) return; (fewer.workers||[]).forEach(w => { try{ w.terminate(); }catch(e){} }); clearTimeout(fewer.timer); fewer.running=false; fewer.workers=[]; if(!keep) fewer=null; }
+function fewerStart(){
+  if(!guide || !guide.short || fewer && fewer.running) return;
+  const json=cube.toJSON(), left=guide.flat.length-guide.i;
+  fewer={running:true, json, best:null, lb:0, proven:false, workers:[]};
+  const F=fewer, adopt=moves => {   /* a shorter way from the cube as it is now: follow it */
+    if(fewer!==F || cube.toJSON()!==F.json) return;
+    const cur=guide && guide.short ? guide.flat.length-guide.i : 99; if(moves.length>=cur) return;
+    guide={r:{stages:[{key:"short", parts:[{note:"short", vars:{n:moves.length}, moves}]}]}, flat:moves.map((tok,mi) => ({tok, si:0, pi:0, mi})), i:0, key:F.json, short:true};
+    F.best=moves; $("live").textContent=t("fewerUsed",{n:moves.length}); };
+  const finish=() => { if(fewer!==F) return; if(F.best && F.lb>=F.best.length) F.proven=true; if(F.proven || (F.done||0)>=2){ fewerStop(true); } panel(); };
+  const mk=cmd => { let w; try{ w=new Worker("/aog-cube-short.js"); }catch(e){ return null; }
+    w.onmessage=e => { const q=e.data; if(fewer!==F) return;
+      if(q.better && q.better.length<left){ adopt(q.better); }
+      if(q.bound){ F.lb=Math.max(F.lb, q.bound); }
+      if(q.least){ adopt(q.least); F.lb=q.least.length; F.proven=true; }
+      if(q.done) F.done=(F.done||0)+1;
+      finish(); };
+    w.onerror=() => { if(fewer===F){ F.done=(F.done||0)+1; finish(); } };
+    w.postMessage({id:1, cmd, cube:json, ms:30000}); return w; };
+  F.workers=[mk("better"), mk("least")].filter(Boolean);
+  if(!F.workers.length){ fewer=null; return; }
+  F.best=guide.flat.slice(guide.i).map(x => x.tok);   /* the way already found counts as the best so far */
+  F.timer=setTimeout(() => { if(fewer===F){ fewerStop(true); panel(); } }, 33000);
+  panel();
+}
+document.addEventListener("visibilitychange", () => { if(document.hidden && fewer && fewer.running){ fewerStop(true); panel(); } });
+window.addEventListener("aog-hush", e => { if(e.detail && e.detail.on && fewer && fewer.running){ fewerStop(true); panel(); } });
 /* AOG-CUBE-SHORT-V1 — the short way, found off the page (aog-cube-short.js in a worker), then followed like the steps */
 let shortState="", shortWorker=null, shortAsk=0;
 function findShort(){
@@ -1349,7 +1400,7 @@ function act(a){
   if(a==="ready"){ S.done[i]=1; save(); panel(); bar(); }
   else if(a==="prev"){ pick(i-1); }
   else if(a==="nextLesson"){ pick(i+1); }
-  else if(a==="mix"){ shortAsk++; shortState=""; S.drill=null; checkIn=false; stopQueue(); cube=new C.Cube().run(C.scramble()); S.real=false; setTimeout(showBench, 0); S.hist=[]; S.mix={t0:null,moves:0}; S.result=null; S.showHint=false; guide=null; S.practice=S.lesson; save(); render(); panel(); }
+  else if(a==="mix"){ fewerStop(false); shortAsk++; shortState=""; S.drill=null; checkIn=false; stopQueue(); cube=new C.Cube().run(C.scramble()); S.real=false; setTimeout(showBench, 0); S.hist=[]; S.mix={t0:null,moves:0}; S.result=null; S.showHint=false; guide=null; S.practice=S.lesson; save(); render(); panel(); }
   else if(a==="fresh"){ shortAsk++; shortState=""; S.drill=null; checkIn=false; stopQueue(); cube=new C.Cube(); S.hist=[]; S.mix=null; S.result=null; guide=null; save(); render(); panel(); }
   else if(a==="setup"){ setup(L[i].stage); }
   else if(a==="hint"){ S.showHint=true; panel(); }
@@ -1361,6 +1412,8 @@ function act(a){
   else if(a==="checkYes"){ checkIn=false; panel(); }
   else if(a==="camera"){ camOpen(); }
   else if(a==="short"){ findShort(); }
+  else if(a==="fewer"){ fewerStart(); }
+  else if(a==="fewerStop"){ fewerStop(true); panel(); }
   else if(a==="camCheck"){ camOpen("verify"); }
   else if(a==="print"){ printCard(); }
   else if(a==="startAt"){ /* handled by the select */ }
@@ -2090,7 +2143,7 @@ $("themeBtn").onclick=()=>{
 };
 /* the cube and the card in full view (a plain jump, no glide), when the cube's bottom is off the screen */
 function showBench(){ const r=stage.getBoundingClientRect(); if(r.bottom>innerHeight-8 || r.top<60) $("bench").scrollIntoView({block:"start"}); }
-window.addEventListener("hashchange", () => { camClose(); mineMsg=null; doctor=null; flags=[]; peek=false; paintAll(); if(S.view==="solve") showBench(); });
+window.addEventListener("hashchange", () => { fewerStop(false); camClose(); mineMsg=null; doctor=null; flags=[]; peek=false; paintAll(); if(S.view==="solve") showBench(); });
 /* the box's size: fixed when the page opens, set again only when the screen's width changes (turning it) */
 let sizedW=0;
 function setStageMax(){

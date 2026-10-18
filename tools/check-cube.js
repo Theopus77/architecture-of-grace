@@ -164,6 +164,29 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
     ok(!p.errs.length, "no page errors (short way first) " + p.errs.join("; "));
     await p.ctx.close(); }
 
+  /* ── Find fewer moves: a lightly mixed cube comes back proven; a fully mixed one gets its best and how few it could be ── */
+  { const p = await open({ width: 1280, height: 900 }, false, "solve", "instant", "fresh");
+    await p.evaluate(() => { const S = JSON.parse(localStorage.getItem("aog.cube.v1")); delete S.method; delete S.wayV; localStorage.setItem("aog.cube.v1", JSON.stringify(S)); }); await p.reload(); await p.waitForTimeout(600);
+    await p.click('#panel [data-act="mix"]'); await p.waitForTimeout(200);
+    await p.click('#panel [data-act="fresh"]').catch(() => {}); await p.waitForTimeout(200);
+    for (const k of ["r", "u", "F", "l", "D", "b", "r", "U"]) { await p.keyboard.press(k === k.toUpperCase() ? "Shift+" + k.toLowerCase() : k); await p.waitForTimeout(40); }
+    await p.waitForSelector("#panel [data-act='fewer']", { timeout: 30000 }).catch(() => {});
+    await p.click("#panel [data-act='fewer']").catch(() => {});
+    const proven = await p.waitForFunction(() => /Proven: \d+ moves/.test((document.querySelector("#panel .note.fewer") || {}).textContent || ""), null, { timeout: 40000 }).then(() => true).catch(() => false);
+    const left = await p.evaluate(() => { const g = document.querySelector("#panel .note.fewer"); return g ? g.textContent : ""; });
+    ok(proven, "Find fewer moves: a cube 8 turns from solved comes back proven (" + left.trim() + ")");
+    let n = 0; while (n < 20 && await p.$("#panel [data-act='gnext']")) { await p.click("#panel [data-act='gnext']"); n++; }
+    ok(await p.evaluate(() => AOGCubeLab.cube.solved()) && n <= 8, `and the proven way solves it in ${n} moves`);
+    await p.click('#panel [data-act="mix"]'); await p.waitForTimeout(200);
+    await p.waitForSelector("#panel [data-act='fewer']", { timeout: 30000 }).catch(() => {});
+    await p.click("#panel [data-act='fewer']").catch(() => {});
+    const lb = await p.waitForFunction(() => /can't be fewer than \d+/.test((document.querySelector("#panel .note.fewer") || {}).textContent || ""), null, { timeout: 20000 }).then(() => true).catch(() => false);
+    await p.click("#panel [data-act='fewerStop']").catch(() => {}); await p.waitForTimeout(200);
+    const after = await p.evaluate(() => (document.querySelector("#panel .note.fewer") || {}).textContent || "");
+    ok(lb && /Best found: \d+ moves/.test(after) && !(await p.$("#panel [data-act='fewerStop']")), "a fully mixed cube: it shows the best so far and how few it could be, and Stop ends the search (" + after.trim() + ")");
+    ok(!p.errs.length, "no page errors (fewer moves) " + p.errs.join("; "));
+    await p.ctx.close(); }
+
   /* ── a computer ── */
   let p = await open({ width: 1280, height: 900 }, false, "learn");
   await p.click('#pad [data-mv="R"]'); await p.waitForTimeout(700);
