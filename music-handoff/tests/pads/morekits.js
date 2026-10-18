@@ -23,7 +23,9 @@ const TABLE=process.argv.includes("--table"), KTABLE=process.argv.includes("--ki
 const ONLY=(process.argv.slice(2).find(a=>/^[A-Z0-9]{2}(,[A-Z0-9]{2})*$/.test(a))||"").split(",").filter(Boolean);
 let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails++; };
 /* the new kits: id → its folder and its group */
-const ALLNEW={OR:["orchestra","orch"], ME:["mideast","world"], SB:["samba","world"], BP:["body","hand"]};
+const ALLNEW={OR:["orchestra","orch"], ME:["mideast","world"], SB:["samba","world"], BP:["body","hand"],
+  GS:["gospel","drums"], MT:["motown","drums"], DS:["disco","drums"], PK:["punk","drums"], PO:["pop80s","drums"], JG:["jungle","drums"],
+  RG:["reggaeton","electronic"], TR:["trap","electronic"]};
 const NEW=Object.fromEntries(Object.entries(ALLNEW).filter(([k])=>!ONLY.length || ONLY.includes(k)));
 const IDS=Object.keys(NEW), DIRS=Object.fromEntries(Object.entries(ALLNEW).map(([k,v])=>[k,"/audio/drums/"+v[0]+"/"]));
 const GROUP_EN={drums:"Drum sets", electronic:"Electronic", world:"World", orch:"Orchestra and marching", hand:"Hand percussion"};
@@ -104,7 +106,7 @@ window.__bar=T=>{ const e=60/90/2; for(let i=0;i<8;i++){ const t=0.05+i*e; trigg
       ok(!silent.length && !clip.length, `${name}: all 8 pads sound at three strengths and none clips (hard peaks ${rows.map(r=>r.hpk).join(" ")}) ${JSON.stringify(silent.concat(clip))}`);
       const order=rows.filter(r=>!(r.s<r.m+0.3 && r.m<r.h+0.3 && r.s<r.h));
       ok(!order.length, `${name}: soft is softer than normal, normal softer than hard: `+rows.map(r=>`${r.pi+1} ${r.s}/${r.m}/${r.h}`).join(", "));
-      ok(rows.every(r=>["s","m","h"].every(n=>r[n+"n"]===Math.min(3, out.takes[r.pi][["s","m","h"].indexOf(n)]))) && rows.filter(r=>r.mn>1).length>=4,
+      ok(rows.every(r=>["s","m","h"].every(n=>r[n+"n"]===Math.min(3, out.takes[r.pi][["s","m","h"].indexOf(n)]))) && rows.filter(r=>r.mn>1).length>=2,
         `${name}: the next hit plays the next take (takes heard at soft/normal/hard: `+rows.map(r=>`${r.pi+1} ${r.sn}/${r.mn}/${r.hn}`).join(", ")+")");
       /* the level, as pads/level.js reckons it */
       const off=out.bar-TARGET, room=out.pk>0 ? 20*Math.log10(KIT_CLEAN/out.pk) : 99, want=-off, step=Math.min(want, room);

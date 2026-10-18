@@ -610,3 +610,6 @@ FILE_LU = kits_perc.FILE_LU
 import kits_more
 KITS.update(kits_more.MORE)
 FILE_LU = dict(FILE_LU, **kits_more.FILE_LU)
+import kits_more2              # the drum-set styles and the electronic kits
+KITS.update(kits_more2.MORE2)
+FILE_LU = dict(FILE_LU, **kits_more2.FILE_LU2)
