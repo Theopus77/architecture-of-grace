@@ -8,7 +8,8 @@
  * not run on this file. Forget the bump and returning visitors keep the stale
  * page from their cache.
  */
-const CACHE = 'aog-cache-2026.10.18.m7525'   // EVEN NOTE LEVELS IN EVERY ROOM (Guitar, Bass, Piano, Band, Drum Machine) (previous: m7524)
+const CACHE = 'aog-cache-2026.10.18.m7526'   // THE CUBE LAB, LEARN: THE LESSON IN A BAR AT THE BOTTOM, ONE STEP AT A TIME (PHONE, UPRIGHT IPAD); EVERY LEARN STEP REWRITTEN IN SIMPLER WORDS (previous: m7525)
+// const CACHE = 'aog-cache-2026.10.18.m7525'   // EVEN NOTE LEVELS IN EVERY ROOM (Guitar, Bass, Piano, Band, Drum Machine) (previous: m7524)
 // const CACHE = 'aog-cache-2026.10.18.m7524'   // THE CUBE LAB: A SIX-WAY SEARCH (ABOUT 19.8 MOVES); FIND FEWER MOVES (TWO WORKERS ON TAP, UP TO 30 S, PROVES THE LEAST FOR CUBES NEAR SOLVED) (previous: m7523)
 // const CACHE = 'aog-cache-2026.10.17.m7523'   // NO STATIC: THE LIMITER HOLDS, THE ROOM SOUND INSIDE IT (AOG-STRUM-CLEAN-V1); ROOMS REST COMPLETELY (AOG-REST-IDLE-V1) (previous: m7522)
 // const CACHE = 'aog-cache-2026.10.17.m7522'   // THE CUBE LAB: SOLVE WITH ME HAS ONE WAY, THE FEWEST MOVES (NO WAY MENU); LEARN'S FASTER STEPS ARE NOW LEVEL 2 (previous: m7521)
