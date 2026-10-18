@@ -436,13 +436,25 @@ function makeChain(c){
   ch.comp=c.createDynamicsCompressor();
   ch.comp.threshold.value=-16; ch.comp.knee.value=10; ch.comp.ratio.value=2.5; ch.comp.attack.value=0.006; ch.comp.release.value=0.25;
   ch.lim=c.createDynamicsCompressor();
-  ch.lim.threshold.value=-2; ch.lim.knee.value=0; ch.lim.ratio.value=20; ch.lim.attack.value=0.002; ch.lim.release.value=0.1;
+  /* AOG-STRUM-CLEAN-V1 (2026-10-17, as the Guitar's): the limiter's own output went past full scale (the lift a
+     DynamicsCompressor adds by itself, +1.14 dB, and its 2 ms attack), and the Volume's top or the room sound added after
+     it reached the speakers clipped, heard as static. The limiter now acts at once and holds the −2 dB it is set to
+     (LIM_LIFT taken off), a take's own ceiling follows it, and the room sound sits before it */
+  ch.lim.threshold.value=-2; ch.lim.knee.value=0; ch.lim.ratio.value=20; ch.lim.attack.value=0; ch.lim.release.value=0.1;
   ch.master=c.createGain(); ch.makeup=c.createGain(); ch.makeup.gain.value=1.8;
-  ch.pre.connect(ch.lp); ch.lp.connect(ch.comp); ch.comp.connect(ch.makeup); ch.makeup.connect(ch.lim); ch.lim.connect(ch.master); ch.master.connect(c.destination);
+  ch.ceil=ceilingNode(c, 1/LIM_LIFT);
+  ch.pre.connect(ch.lp); ch.lp.connect(ch.comp); ch.comp.connect(ch.makeup); ch.makeup.connect(ch.lim); ch.lim.connect(ch.ceil.input); ch.ceil.output.connect(ch.master); ch.master.connect(c.destination);
   ch.crunch=null;
   setFx(ch, S.sound);
+  ch.dry=ch.rig ? ch.rig.output : ch.bus;   /* the keys, after the pedals: where the Studio's room sound listens */
+  const OFF=window.OfflineAudioContext||window.webkitOfflineAudioContext;
+  if(!(OFF && c instanceof OFF)) try{ if(window.AOGRoom && AOGRoom.live) AOGRoom.live(c, ch.dry, ch.pre); }catch(e){}
   return ch;
 }
+const LIM_LIFT=Math.pow(Math.pow(10, (2-2/20)/20), 0.6);   /* (1 / the limiter's gain at full scale)^0.6, Web Audio's makeup gain */
+const CEIL=(()=>{ const n=4097, d=new Float32Array(n); for(let i=0;i<n;i++){ const x=(i/(n-1)*2-1)*2, a=Math.abs(x); d[i]=Math.sign(x)*(a<=0.9 ? a : 0.9+0.1*Math.tanh((a-0.9)/0.1)); } return d; })();
+function ceilingNode(c, k){ const pre=c.createGain(); pre.gain.value=0.5*(k||1); let ws; try{ ws=new WaveShaperNode(c, {curve:CEIL}); }catch(e){ ws=c.createWaveShaper(); ws.curve=CEIL; }
+  pre.connect(ws); return {input:pre, output:ws}; }
 async function addCrunch(ch){             /* spliced in when ready; until then the chain plays clean */
   /* AOG-ROOM-PEDALS-V1: and the pedals' worklets are in before a recording made offline starts */
   if(ch.rig){ try{ await ch.rig.ready(); }catch(e){} }
@@ -681,6 +693,57 @@ function bakeLoop(b, a, z, x, steady){
 }
 function loopEnd(set, n){ return (set.ends && set.ends[n]) || set.loop[1]; }
 function nearest(set, m){ let best=set.notes[0]; set.notes.forEach(n=>{ if(Math.abs(n-m)<Math.abs(best-m)) best=n; }); return best; }
+/* AOG-LEVEL-EVEN-V1 (2026-10-17) — Jimmy: "I would like all the instruments to be checked for sound levels … some notes and
+   some scales were higher than others". Each recording of a sound has its own trim, so its notes sit on one smooth line
+   from the bottom of the keyboard to the top (the piano's own gentle slope kept, at half its size, never more than 3 dB):
+   the grand's C6 was 3 dB under its neighbours, the upright's soft top octaves up to 12 dB. EVENP[sound][layer] = one letter
+   a recording, in its set's notes order ("O" = 0 dB, each letter 0.2 dB up or down, ±9.4 dB at most); [layer+"k"] = how
+   much it leans as it is played higher or lower than it was recorded (a mallet's ring dies faster sped up: "O" none,
+   each letter 0.02 dB a semitone). Measured through the piano's whole
+   chain and written here by music-handoff/tools/levels/make.js piano (between the two markers); worked out once a sound
+   first plays a note, then one more factor in the gain the note already sets. */
+/* AOG-LEVEL-EVEN-V1 table start */
+const EVENP={"accordion":{"m":"[SQNNOOQQURONLRJKKOMMLKIK","mk":"OOOOOOOOOOOOOOOOOOOOOOOOO"},
+"bells":{"m":"OMNMQPRNMNP","mk":"MOOOOOOOOOO"},
+"brass":{"m":"kcb^XNNHSNNMNMNJKHHHHGHHH","mk":"OOOOOOOOOOOOOOOOOOOOOOOOO"},
+"bright":{"m":"S[Q_ZRLIJRINMNRKOKPM]zXb^pSSSS","mk":"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOO","s":"SHJJILKKKOHQPLQNRLPOX_UWUZSSSS","sk":"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOO","l":"RbSf`VKHIRKMMOUDKCHG`mZgcwRRRR","lk":"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOO"},
+"celesta":{"m":"x]E@CFFGKLLMPOPROPOPQOPRT","mk":"OOOOOOOOOOOOOOOOOOOOOOOOO","l":"~~~~sg^\\XPOOOMKLJIFFFEEFI","lk":"OOOOOOOOOOOOOOOOOOOOOOOOO"},
+"choir":{"m":"WTQUORPVTQPUKLQTPNPVOPX~~","mk":"OOOOOOOOOOOOOOOOOOOOOOOOO"},
+"church":{"m":"XKTTYU]NRPJKKUKLMNMJO","mk":"OOOOOOOOOOOOOOOOOOOO:"},
+"clav":{"m":"XVROKKKLMMNNOOPPPQRRSSUUV","mk":"OOOOOOOOOOOOOOOOOOOOOOOOO","s":"BEFGIKLLMNONOOOOOPPOQRTTU","sk":"OOOOOOOOOOOOOOOOOOOOOOOOO","l":"wtnjf`\\XUSSSPNID>;:89;B@D","lk":"OOOOOOOOOOOOOOOOOOOOOOOOO"},
+"ep80":{"m":"TSOOOOOOOOONOPPPSR","mk":"JFPOQTTQOPUVVST]UO"},
+"epreed":{"m":"eba^cYYNOOPNOOOORSTVVWSST","mk":"OOOOOOOOOOOOOOOOOOOOOOOOO","s":"FGIJJKLLMMMMOOPPQQRSRRPQR","sk":"OOOOOOOOOOOOOOOOOOOOOOOOO","l":"~~~~~~~usSPOGE=<BABDDD?@A","lk":"OOOOOOOOOOOOOOOOOOOOOOOOO"},
+"epwarm":{"m":"\\YUPPR\\PGQM^Y]d","mk":"JKRNOIOOQPWRPJO","s":"cUQZOPVVNXXjsj~","sk":"7FFGNHOOPPWROJO","l":"~~nc\\[NGHECG;<H","lk":";>MERBOOJHNIJQO"},
+"felt":{"m":"OJKHIMGPSTPMLOd^`YVWOOO","mk":"OIXKPKSIUVMbjPbd;VYOOOO","s":"OOOOOOOOOOOOOOOOOOOOOOO","sk":"OOOOOOOOOOOOOOOOOOOOOOO","l":"OOOOOOOOOOOOOOOOOOOOOOO","lk":"OOOOOOOOOOOOOOOOOOOOOOO"},
+"glock":{"m":"OOOOOO","mk":"OOOOOO"},
+"gospel":{"m":"ZS\\[VZV\\M]J]M[H]MWIXM^IYQ","mk":"OOOOOOOOOOOOOOOOOOOOOOOOO"},
+"grand":{"m":"SWNYVPLJKQJONNPMPLQOYlTY\\eSSSS","mk":"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOO","s":"SIKJILLLLPIQPLRNRMQOX_TWUZSSSS","sk":"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOO","l":"Os_xo^Z\\TZ]QKXK@K=EALbSOUaOOOO","lk":"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOO"},
+"harp":{"m":"Y^b`RNVPPUOmYS_XqbcvS","mk":"OUOOOVO@OOcOROOOOj\\OO"},
+"harpsi":{"m":"P^JGJJUQNLMKTOOONNKNOOMOOSQJ","mk":"OOOOOOOOOOOOOOOOOOOOOOOOOOOX"},
+"honky":{"m":"NJIEMKDPSWQJRRgge^]ZNNN","mk":"OXXTUNON[ZW_g\\diLQMOOOO","s":"MLLMLOFQU_TIXPj_~z~oMMM","sk":"OSWOLQPZZLJ_iWX`cYwOOOO","l":"H[TMacN_PUR<NRc^PFGKHHH","lk":"OMLJRMB[J^]c[=aJJGOOOOO"},
+"kalimba":{"m":"peKTVACEHChZMW{j{qw","mk":"hbOOOOOOOOOOOOOajUO"},
+"lead":{"m":"XRJKONNMOOOOOOOOOOOOOOPPQ","mk":"OOOOOOOOOOOOOOOOOOOOOOOOO"},
+"marimba":{"m":"D^JFHJOJPw","mk":"DZQTYX[]Yn"},
+"musicbox":{"m":"ycIFFIHHMMNNQOQRQRZ~YYXUU","mk":"OOOOOOOOOOOOOOOOOOOOOOOOO"},
+"organ":{"m":"[OQQPMGLOUMPOPNLNNMLPMMLQ","mk":"OOOOOOOOOOOOOOOOOOOOOOOOO"},
+"pad":{"m":"glZWQNHTPPJWOONOOMLRPDDBA","mk":"OOOOOOOOOOOOOOOOOOOOOOOOO"},
+"rockorgan":{"m":"UUUSRVTTOQSNY?UAVETBT?UEW","mk":"OOOOOOOOOOOOOOOOOOOOOOOOO"},
+"steel":{"m":"VB:<@CEGKMPRPSLPXQQ`TTWXZ","mk":"OOOOOOOOOOOOOOOOOOOOOOOOO","s":"378=AEFHKMNOQOOQLRQRQQSUT","sk":"OOOOOOOOOOOOOOOOOOOOOOOOO","l":"a]XSNHCADGKPYa?h`doblqv|~","lk":"OOOOOOOOOOOOOOOOOOOOOOOOO"},
+"strings":{"m":"lDACTK<ZaO8PVubR","mk":"7O4OOQOOO9O5O0O5"},
+"strsynth":{"m":"KLGLQMKKMNNPPQORQONPOMLNP","mk":"OOOOOOOOOOOOOOOOOOOOOOOOO"},
+"tapeflute":{"m":"LNTOJ[TKHE","mk":"J[MFSQ9A>O"},
+"tapestr":{"m":"pF>CSM<VdS;QYtaU","mk":"<O5OOBOOO.O7O5O1"},
+"theatre":{"m":"NKOLPJONQMOOOOMSONJQNLIOM","mk":"OOOOOOOOOOOOOOOOOOOOOOOOO"},
+"toy":{"m":"FFGIJKKLMOPSRQMRNhKOJ[~~~","mk":"OOOOOOOOOOOOOOOOOOOOOOOOO"},
+"upright":{"m":"OIIFGKFNSTQMMRebd]YZOOO","mk":"OMWMTQSQWXPbhWaaASUOOOO","s":"NKLNGOLMT\\TKTOi^~w~sNNN","sk":"OOUMNQKPSUL^dUYZQXZOOOO","l":"I^UN`cRk[PG:JE]WLADKIII","lk":"ONJDONEKIYDfZYfU6NWOOOO"},
+"vibes":{"m":"hkIGHIKMMTN","mk":"aODOMOOEOXQ"}};
+/* AOG-LEVEL-EVEN-V1 table end */
+function evenP(snd, set, n, layer, m){
+  let t=snd._ev; if(t===undefined){ t=snd._ev=null; const e=EVENP[Object.keys(SOUNDS).find(k=>SOUNDS[k]===snd)];
+    if(e){ t=snd._ev={}; Object.keys(e).forEach(l=>{ if(l.length!==1 || e[l].length!==set.notes.length) return; const k=e[l+"k"]&&e[l+"k"].length===set.notes.length ? e[l+"k"] : null;
+      set.notes.forEach((nn,i)=>{ t[nn+l]=[(e[l].charCodeAt(i)-79)*0.2, k ? (k.charCodeAt(i)-79)*0.02 : 0]; }); }); } }
+  const x=t && t[n+layer]; return x ? Math.pow(10, (x[0]+x[1]*(m-n))/20) : 1;
+}
 function velAmp(v){ return Math.pow(0.3+0.7*Math.max(0,Math.min(1,v)), 1.5); }
 function damper(m){ return m<40?0.34 : m<60?0.24 : m<88?0.15 : 0.9; }   /* the top notes have no dampers */
 
@@ -707,11 +770,14 @@ function sampleVoice(c, ch, snd, m, v, when){
   /* the felt piano is darker, the bright piano opens sooner (and its high notes are turned up, below), a tape is hazy;
      AOG-PIANO-REAL-V1: an organ pipe sounds the same however hard its key is pressed (pipe: open, and only a little softer) */
   lp.frequency.value=snd.tone==="felt" ? Math.max(360*Math.pow(2, v*2.3), 1.3*mtof(m)) : snd.tone==="bright" ? Math.min(19000, 3200*Math.pow(2, v*2.6))
-    : snd.tone==="tape" ? 2600*Math.pow(2, v) : snd.tone==="pipe" ? 19000 : Math.min(19000, 1500*Math.pow(2, v*3.7));
+    : snd.tone==="tape" ? Math.max(2600*Math.pow(2, v), 2.5*mtof(m)) : snd.tone==="pipe" ? 19000 : Math.min(19000, Math.max(1500*Math.pow(2, v*3.7), 2.5*mtof(m)));
+  /* AOG-LEVEL-EVEN-V1: the tone filter never closes below a note's own first partials (2.5 times its pitch), as the felt
+     piano's never did: played softly, the top two octaves had been filtered away to a whisper (the upright's B7 12 dB under
+     its neighbours an octave down), not softer the way the rest of the keyboard is */
   const va=snd.tone==="pipe" ? 0.8+0.2*clampV(v,0,1) : velAmp(v);
   /* AOG-PIANO-REAL-V4: a post sound's level is set after its effect; drive is how hard it goes into it */
   const lv=snd.post ? snd.drive : snd.gain;
-  const g=c.createGain(); g.gain.value=set.gain[n+layer]*va*lv;
+  const g=c.createGain(); g.gain.value=set.gain[n+layer]*va*lv*evenP(snd, set, n, layer, m);
   /* AOG-PIANO-SOUNDS-V2: the new recorded sounds keep a note's sharpest instant under 0.85 even at full strength (each
      recording's peak is measured as it loads; the bright piano's lift can raise it); the three first pianos are as they were */
   if(snd.tone || set.even){ const pk=(set.peak[n+layer]||0)*set.gain[n+layer]*va*lv*(snd.tone==="bright"?1.6:1); if(pk>0.85) g.gain.value*=0.85/pk; }
@@ -1409,7 +1475,7 @@ function wavBlob(L, R, sr){
 window.AOGRoomClock={ align(at){ if(S.playing) start(at); } };
 /* AOG-SONG-V1 (2026-10-11): this room plays at the song's tempo and in its key (aog-song.js); its own tempo and key change the song */
 if(window.AOGSong) AOGSong.keysRoom({get:()=>({bpm:S.bpm, key:S.key, minor:!!S.minor})});
-const REC=AOGRecorder.attach({context:()=>ctx(), tap:()=>LIVE_CH.lim, lang:()=>S.lang, what:{en:"the piano",es:"el piano"},
+const REC=AOGRecorder.attach({context:()=>ctx(), tap:()=>LIVE_CH.ceil.output, lang:()=>S.lang, what:{en:"the piano",es:"el piano"},
   prefix:{en:"Piano",es:"Piano"}, file:{en:"piano-take",es:"piano-toma"}, shelf:"keysbench", bpm:()=>curBpm(),
   notes:()=>({room:"piano", sound:S.sound, set:{era:S.era}}),   /* AOG-NOTES-V1: the take keeps its notes, its sound and its era */
   ids:{btn:"recBtn", time:"recTime", line:"recLine", list:"takes"}});
@@ -1429,7 +1495,7 @@ window.AOGRoomRender={
     if(window.AOGAmp && AOGAmp.load) await AOGAmp.load(oc);   /* a pedalboard in the chain, when the piano has one */
     const ch=makeChain(oc); await addCrunch(ch);
     setSendLevel(ch, id); ch.lp.frequency.value=eraHz(era); if(ch.crunch) ch.crunch.parameters.get("era").value=era;
-    ch.lim.disconnect(); ch.lim.connect(oc.destination); K.space(oc, ch.lim, oc.destination, p.space);   /* the take is heard before the Volume */
+    ch.ceil.output.disconnect(); ch.ceil.output.connect(oc.destination); K.space(oc, ch.dry, ch.pre, p.space);   /* the take is heard before the Volume; the room before the limiter, as live (AOG-STRUM-CLEAN-V1) */
     evs.forEach(e=>{ const vc=makeVoice(oc, ch, SOUNDS[e.snd] ? e.snd : id, e.m, e.v, e.t); K.play(vc, e); });
     const buf=await oc.startRendering();
     const live=SOUNDS[S.sound]; if(live && live.kind==="sample" && ids.some(k=>SOUNDS[k].kind==="sample" && SOUNDS[k].set!==live.set)) loadSet(live.set, paintLoad);   /* the piano in your hands again */
