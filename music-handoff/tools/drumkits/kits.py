@@ -604,3 +604,9 @@ STEREO_TRIM = {"D": {"bell": -1.7}, "M": {"ch": -0.6}, "N": {"ch": -0.8}, "U": {
 import kits_perc
 KITS.update(kits_perc.PERC)
 FILE_LU = kits_perc.FILE_LU
+
+# AOG-DRUM-MORE-V1 (2026-10-18): more kits (orchestral, samba, Middle Eastern, body percussion, the drum-set styles and
+# the electronic kits) live in kits_more.py
+import kits_more
+KITS.update(kits_more.MORE)
+FILE_LU = dict(FILE_LU, **kits_more.FILE_LU)

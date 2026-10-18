@@ -46,6 +46,9 @@ REPO = {   # GitHub repository and branch, for files not on this machine
     "voice": ("sfzinstruments/legato_vocal_tutorial", "master"),
     "fp": ("freepats/world-percussion", "main"),        # AOG-DRUM-PERC-V1
     "spi": ("sonic-pi-net/sonic-pi", "dev"),            # AOG-DRUM-PERC-V1: only etc/samples/tabla_*.flac
+    "body": ("sfzinstruments/body_percussion", "main"), # AOG-DRUM-MORE-V1: body percussion
+    "muld": ("freepats/muldjordkit", "main"),           # AOG-DRUM-MORE-V1: MuldjordKit (CC BY 4.0)
+    "synp": ("freepats/synthesizer-percussion", "main"),# AOG-DRUM-MORE-V1: FreePats synthesizer percussion
 }
 LOCAL = {   # clones already on this machine (sparse: only some folders)
     "brd": SCR + "/agent-drumkit/src/karoryfer.big-rusty-drums",
@@ -58,6 +61,9 @@ LOCAL = {   # clones already on this machine (sparse: only some folders)
     "voice": SCR + "/sources/legato_vocal_tutorial",
     "fp": SCR + "/sources/world-percussion",
     "spi": SCR + "/sources/sonic-pi",
+    "body": SCR + "/sources/body_percussion",
+    "muld": SCR + "/sources/muldjordkit",
+    "synp": SCR + "/sources/synthesizer-percussion",
 }
 for k in list(LOCAL):
     LOCAL[k] = os.environ.get("AOG_DRUM_SRC_" + k.upper(), LOCAL[k])

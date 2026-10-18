@@ -767,6 +767,11 @@ function chopLen(B){ return B.clen===1 || B.clen===4 ? B.clen : 2; }
 /* ══ the four kinds of bank ══ */
 function KITS(){ return (window.AOGDrumKit ? AOGDrumKit.ids : []).filter(b=>Object.keys(AOGDrumKit.padNames(b)).every(id=>!AOGDrumKit.made(b,id))); }
 function kitName(b){ const l=AOGDrumKit.label(b); return l[S0.lang==="es"?1:0]; }
+/* AOG-DRUM-MORE-V1: the kit menus in groups (Drum sets, Electronic, World, Orchestra and marching, Hand percussion) */
+function kitOpts(cur){ const ks=KITS(), G=AOGDrumKit.groups||[], grp=b=>AOGDrumKit.group ? AOGDrumKit.group(b) : "";
+  const rest=ks.filter(k=>!G.some(g=>g.id===grp(k)));
+  return G.map(g=>{ const in_=ks.filter(k=>grp(k)===g.id); return in_.length ? `<optgroup label="${esc(L(g))}">`+in_.map(k=>opt(k, esc(kitName(k)), cur)).join("")+"</optgroup>" : ""; }).join("")
+    + rest.map(k=>opt(k, esc(kitName(k)), cur)).join(""); }
 function drumWord(b, id){ const own=AOGDrumKit.padWord && AOGDrumKit.padWord(b, id, S0.lang); if(own) return own;   /* AOG-DRUM-PERC-V1: a pad's own words */
   const n=(AOGDrumKit.padNames(b)||{})[id]||"", w=PAD_WORD[n]; return w ? w[S0.lang==="es"?1:0] : (n.charAt(0)+n.slice(1).toLowerCase()); }
 /* ══ AOG-PADS-ALLSCALES-V1 (2026-10-11) — Jimmy: "Can the drum kit have all the scales and chord progressions like the
@@ -879,6 +884,7 @@ Object.assign(LEVEL.inst, {"b:recorder":1.8, "b:recorder_alto":5.4, "b:ukulele":
 Object.assign(LEVEL.inst, {"b:voice_f_aa":5.3, "b:voice_f_uu":3.3, "b:voice_m_aa":5.5, "b:voice_m_uu":2.2});   /* AOG-BAND-VOICES-V1: pads/level.js --table */
 Object.assign(LEVEL.inst, {"b:sitar":9.3, "b:koto":8.7, "b:erhu":5.4, "b:panflute":2.2, "b:didgeridoo":14.8, "b:didgeridoo_rhythm":15.8});   /* AOG-PADS-WORLD-V1: pads/level.js --table */
 Object.assign(LEVEL.kit, {"HP":12.9,"HD":9.4,"HC":10.2,"TB":8.7});   /* AOG-DRUM-PERC-V1: the hand drums and the tabla (pads/level.js --table) */
+Object.assign(LEVEL.kit, {"OR":9.9});   /* AOG-DRUM-MORE-V1: the new kits (pads/morekits.js --table, as pads/level.js) */
 function trimOf(grp, k){ const v=LEVEL[grp] && LEVEL[grp][k]; return v ? Math.pow(10, v/20) : 1; }
 /* where a pad sounds: the speakers, or (AOG-PADS-BOUNCE-V1) an offline render of the loop; each keeps its own ringing
    open hats and chops, so a hi-hat or a new chop cuts them in the render just as it does live */
@@ -1192,10 +1198,10 @@ function bindBounce(){
 function beatFlat(){ const A=window.AOGBeats; if(!A) return [];
   const out=[]; A.classroom.forEach(b=>out.push({g:"first", b:b})); A.styles.forEach(b=>out.push({g:"styles", b:b}));
   Object.keys(A.groups).forEach(g=>A.beats.filter(b=>b.grp===g).forEach(b=>out.push({g:g, b:b})));
-  handBeats().forEach(b=>out.push({g:"hand", b:b})); return out; }   /* AOG-DRUM-PERC-V1 */
+  handBeats().forEach(b=>out.push({g:b.grp||"hand", b:b})); return out; }   /* AOG-DRUM-PERC-V1 · AOG-DRUM-MORE-V1: a new kit's groove sits in its kind's group */
 /* AOG-DRUM-PERC-V1: the hand-drum and tabla grooves (aog-drumkit.js, hand:1), each on its own kit */
 function handBeats(){ return ((window.AOGDrumKit && AOGDrumKit.starters)||[]).filter(b=>b.hand && KITS().indexOf(b.kit)>=0); }
-function grpName(g){ const A=window.AOGBeats; return g==="first" ? t("bgFirst") : g==="styles" ? t("bgStyles") : g==="hand" ? L(AOGDrumKit.words.handGroup) : L(A.groups[g]); }
+function grpName(g){ const A=window.AOGBeats; return g==="first" ? t("bgFirst") : g==="styles" ? t("bgStyles") : g==="hand" ? L(AOGDrumKit.words.handGroup) : (AOGDrumKit.beatGroups && AOGDrumKit.beatGroups[g]) ? L(AOGDrumKit.beatGroups[g]) : L(A.groups[g]); }
 function bankASig(){ return S.ev.filter(e=>e.b===0).map(e=>e.p+":"+e.t+":"+e.v).sort().join(","); }
 function beatById(id){ const A=window.AOGBeats; return A ? [].concat(A.classroom, A.styles, A.beats, handBeats()).find(b=>b.id===id) : null; }
 function startBeat(id){
@@ -1376,7 +1382,7 @@ function instOptions(cur){
 function field(id, lab, html, wide){ return `<label class="pm-f${wide?" wide":""}"><span>${esc(lab)}</span><select class="pm-sel" id="${id}">${html}</select></label>`; }
 function paintSetRow(){
   const B=S.banks[S.bank]; let h="";
-  if(B.type==="drums"){ const ks=KITS(); h=field("fKitA", t("kitA"), ks.map(k=>opt(k, esc(kitName(k)), B.kitA)).join(""))+field("fKitB", t("kitB"), ks.map(k=>opt(k, esc(kitName(k)), B.kitB)).join(""))+field("fKitC", t("kitC"), ks.map(k=>opt(k, esc(kitName(k)), B.kitC)).join("")); }
+  if(B.type==="drums"){ h=field("fKitA", t("kitA"), kitOpts(B.kitA))+field("fKitB", t("kitB"), kitOpts(B.kitB))+field("fKitC", t("kitC"), kitOpts(B.kitC)); }
   else if(B.type==="chops"){
     const R=recInfo(B.rec);
     let o=`<optgroup label="${esc(t("g_crate"))}">`+CRATE.map(c=>opt("c:"+c.file, esc(S0.lang==="es"?(c.title_es||c.title):c.title)+" · "+(c.phrases ? (c.version||"KJV") : c.bpm), B.rec)).join("")+`</optgroup>`;

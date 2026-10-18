@@ -175,6 +175,40 @@
             rim: W2("KE", [2, 2, 2], "Bayan · ke (closed)", "Bayan · ke (cerrado)", { drum: "bayan" }),
             bell: W2("DHA", [2, 2, 2], "Dha (both hands)", "Dha (las dos manos)", { drum: "bayan" }) } };
   IDS.push("HP", "HD", "HC", "TB");
+  /* ══ AOG-DRUM-MORE-V1 (2026-10-18) — Jimmy: "Can we get more drum kits produced?", then "Choose them all!" ════════
+     More recorded kits, each its own sound (music-handoff/tools/drumkits/kits_more.py; credits in CREDITS.txt). With so
+     many kits, the kit menus show them in groups: Drum sets, Electronic, World, Orchestra and marching, Hand percussion.
+     grp: the kit's group (a kit without one is a drum set; the older kits are placed by GROUP_OF). A kit with hand:1 is a
+     kit of its own: its grooves bring it, and the retired classic machine leaves it out. */
+  var GROUPS = [
+    { id: "drums", en: "Drum sets", es: "Baterías" },
+    { id: "electronic", en: "Electronic", es: "Electrónica" },
+    { id: "world", en: "World", es: "Del mundo" },
+    { id: "orch", en: "Orchestra and marching", es: "Orquesta y banda de marcha" },
+    { id: "hand", en: "Hand percussion", es: "Percusión de mano" }
+  ];
+  var GROUP_OF = { H: "world", N: "world", O: "orch", L: "electronic", HP: "hand", HD: "hand", HC: "hand", TB: "hand" };
+  function group(b) { var k = KITS[b]; return !k ? "" : (k.grp || GROUP_OF[b] || "drums"); }
+  /* the grooves of the new kits sit in the beat menus under the same kinds of name */
+  var BEAT_GROUPS = {
+    drums: { en: "More drum set grooves", es: "Más ritmos de batería" },
+    electronic: { en: "Electronic grooves", es: "Ritmos electrónicos" },
+    world: { en: "World rhythms", es: "Ritmos del mundo" },
+    orch: { en: "Orchestra", es: "Orquesta" }
+  };
+  /* the new kits, every pad in plain words (en, es); look: how the Drum Kit draws a pad that is not a drum */
+  function K(grp, dir, en, es, pads) { return { dir: dir, en: en, es: es, hand: 1, grp: grp, pads: pads }; }
+  /* OR · the back row of an orchestra (VCSL, CC0). The two timpani are tuned a fourth apart (F sharp and B) */
+  KITS.OR = K("orch", "orchestra", "Orchestral percussion", "Percusión de orquesta", {
+    kick: W2("BASSDR", [2, 2, 2], "Bass drum", "Bombo"),
+    snare: W2("SNARE", [2, 2, 2], "Snare drum", "Caja"),
+    ch: W2("TRIANG", [1, 2, 2], "Triangle", "Triángulo", { look: "cym" }),
+    oh: W2("SUSCYM", [1, 1, 1], "Suspended cymbal", "Platillo suspendido", { look: "cym" }),
+    clap: W2("CYMBAL", [1, 2, 2], "Crash cymbals", "Platillos de choque", { look: "cym" }),
+    tom: W2("TIMPLO", [1, 2, 2], "Timpani · low", "Timbal · grave"),
+    rim: W2("TIMPHI", [1, 2, 2], "Timpani · high", "Timbal · agudo"),
+    bell: W2("GONG", [1, 1, 1], "Gong", "Gong", { look: "cym" }) });
+  IDS.push("OR");
   var LAYERS = ["s", "m", "h"];
   function made(b, id) { var k = KITS[b], p = k && k.pads[id]; return !!(p && p.made); }
 
@@ -230,6 +264,20 @@
       map: { bell: [2,0,0,0,0,0,1,0,1,0,0,0,0,0,1,0], oh: [0,0,1,0,1,0,0,0,0,0,1,0,1,0,0,0], kick: [0,0,1,0,1,0,0,0,0,0,1,0,1,0,0,0] },
       parts: [{ len: 16, map: { bell: [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0], oh: [0,0,1,0,1,0,0,0,0,0,1,0,1,0,0,0],
         snare: [0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0], kick: [0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0] } }] }
+  );
+  /* AOG-DRUM-MORE-V1: a groove or two for each new kit, in its kind's group of the beat menus (grp); each brings its kit
+     (hand:1) and plays nothing until Play is pressed */
+  STARTERS.push(
+    /* a concert march: bass drum and crash cymbals together on 1 and 3, the snare's march figure, the timpani on the
+       home note (B) and the fifth (F sharp) */
+    { id: "orchmarch", en: "Orchestra march", es: "Marcha de orquesta", kit: "OR", bpm: 112, swing: 0.50, hand: 1, grp: "orch",
+      map: { kick: [2,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0], clap: [2,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0], snare: [1,0,3,3,1,0,1,0,1,0,3,3,1,0,1,3],
+             rim: [0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0], tom: [0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0], ch: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0] } },
+    /* a big finish: the low timpani rolls louder and louder, then everything lands together with the gong */
+    { id: "orchfinale", en: "Big finish with the gong", es: "Gran final con el gong", kit: "OR", bpm: 76, swing: 0.50, hand: 1, grp: "orch",
+      map: { tom: [3,3,3,3,3,3,3,3,1,1,1,1,2,2,2,2], snare: [0,0,0,0,0,0,0,0,3,3,3,3,1,1,1,1], oh: [0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0] },
+      parts: [{ len: 16, map: { kick: [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], clap: [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], bell: [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        rim: [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], ch: [0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0] } }] }
   );
   /* a beat in parts: part 2 goes in the next part of the song, and the track plays them in turn. Put my beat back
      returns that part and the track as they were; a one-part beat picked afterwards stops the track again. */
@@ -516,6 +564,8 @@
     ready: function (b) { return !!DATA[b]; },
     /* AOG-DRUM-PERC-V1: a pad's own words, the drum it belongs to, how the Drum Kit draws it, and the hand-drum kits */
     padWord: padWord, drumOf: drumOf, look: look, hand: function (b) { return !!(has(b) && KITS[b].hand); },
+    /* AOG-DRUM-MORE-V1: the kit menus' groups, in order, and each kit's group; the new grooves' beat-menu groups */
+    groups: GROUPS, group: group, beatGroups: BEAT_GROUPS,
     takes: function (b, id) { var p = has(b) && KITS[b].pads[id]; return p ? p.n.slice() : [0, 0, 0]; },   /* the takes of each strength: soft, normal, hard */
     lineHtml: lineHtml, decorate: decorate, creditHtml: creditHtml, words: WORDS
   };
