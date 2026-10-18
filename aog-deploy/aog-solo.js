@@ -575,6 +575,15 @@ const CSS=`
 #rig .so-h{font:800 .74rem/1.2 var(--sans)!important;letter-spacing:.16em!important;text-transform:uppercase;color:#e3dac9;margin:1.2rem 0 .55rem}
 #rig .so-h.so-first{margin-top:.7rem}
 #rig .so-licks{padding-bottom:.4rem;border-bottom:1px solid rgba(227,218,201,.18);margin-bottom:.2rem}
+/* AOG-SOLO-LICKNEAR-V2: right under the neck, compact: the lick and its button on one line */
+#rig .so-licks.so-near{margin:.45rem 0 .6rem;padding:0 0 .5rem}
+#rig .so-licks.so-near[hidden]{display:none!important}
+#rig .so-licks.so-near .so-h{margin:.2rem 0 .4rem}
+#rig .so-licks.so-near .row{display:flex;flex-wrap:nowrap;gap:.5rem;align-items:flex-end;margin:0}
+#rig .so-licks.so-near .row .field{flex:1 1 auto;min-width:0;margin:0}
+#rig .so-licks.so-near .row .pbtn{flex:0 0 auto;min-height:44px;white-space:nowrap}
+#rig .so-licks.so-near .tempo{margin-top:.45rem!important}
+#rig .so-licks.so-near .line{margin:.35rem 0 0}
 #rig .so-sw{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.75rem}
 #rig .so-sw .pbtn{flex:1 1 9.5rem}
 #rig .pbtn.so-kill{border-color:#c4452a;color:#ffd0c8;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
@@ -658,6 +667,11 @@ function build(){
     <p class="line" id="soBandLoad" aria-live="polite" hidden></p>
     <div class="prog" id="soBandProg" aria-hidden="true"></div>
 `;
+  /* AOG-SOLO-LICKNEAR-V2 (Jimmy, 2026-10-18: "Play this lick … needs to be closer to the fret board. One is unable to see the
+     neck of the guitar while the licks are taking place"): in the Studio the room's controls sit between the neck and the
+     solo panel, so the licks were a long scroll below the neck. They now sit right under the neck itself. */
+  const lk=bot.querySelector(".so-licks"), nb=$q("neckBox");
+  if(lk && nb){ lk.classList.add("so-near"); nb.after(lk); }
   wire();
   SO.built=true;
   return true;
@@ -673,7 +687,7 @@ function paintWords(){
   SO.lang=S.lang;
   const mode=$q("soloMode"); mode.setAttribute("aria-label", w("modeGroup"));
   mode.querySelectorAll("[data-so-mode]").forEach(b=>{ b.textContent=w(b.getAttribute("data-so-mode")); });
-  document.querySelectorAll("#soloTop [data-so], #soloBottom [data-so]").forEach(el=>{ el.textContent=w(el.getAttribute("data-so")); });
+  document.querySelectorAll("#soloTop [data-so], #soloBottom [data-so], .so-licks [data-so]").forEach(el=>{ el.textContent=w(el.getAttribute("data-so")); });
   $q("soSw").setAttribute("aria-label", w("techGroup")); paintKeysChoice();
   $q("soTap").textContent=w("tap"); $q("soVib").textContent=w("vib"); $q("soKill").textContent=w("kill");
   if($q("soPinch")) $q("soPinch").textContent=w("pinch");
@@ -691,7 +705,7 @@ function paintMode(){
   const rig=$q("rig"); if(rig) rig.classList.toggle("aog-solo-on", SO.on);
   document.body.classList.toggle("aog-solo-on", SO.on);   /* AOG-SOLO-PV-V1: the sideways play view's neck sits outside #rig */
   if(typeof window.pvHintPaint==="function") window.pvHintPaint();
-  $q("soloTop").hidden=!SO.on; $q("soloBottom").hidden=!SO.on;
+  $q("soloTop").hidden=!SO.on; $q("soloBottom").hidden=!SO.on; const lk=document.querySelector(".so-licks.so-near"), nb=$q("neckBox"); if(lk){ lk.hidden=!SO.on; if(SO.on && nb && nb.nextElementSibling!==lk) nb.after(lk); }   /* AOG-SOLO-LICKNEAR-V2: right under the neck, even after the Studio lays out the room's controls */
   $q("soloMode").querySelectorAll("[data-so-mode]").forEach(b=>b.setAttribute("aria-pressed", String((b.getAttribute("data-so-mode")==="solo")===SO.on)));
 }
 function paintScaleSel(){
@@ -759,7 +773,7 @@ function wire(){
   $q("soBpm").addEventListener("input",()=>{ const v=+$q("soBpm").value, pb=$q("bpm"); if(pb && !pb.disabled){ pb.value=String(v); if(typeof pb.oninput==="function") pb.oninput(); } else S.bpm=v; paintTempo(); paintBandLine(); });
   if($q("soLickSel")){
     $q("soLickSel").addEventListener("change",(e)=>{ if(LICKS[e.target.value]){ P.lick=e.target.value; keep(); if(!LICK.on) $q("soLickLine").textContent=lickDesc(); } });
-    $q("soLickBtn").addEventListener("click",()=>{ LICK.on?lickStop():playLick(P.lick); });
+    $q("soLickBtn").addEventListener("click",()=>{ if(!LICK.on){ const nb=$q("neckBox"); if(nb){ const r=nb.getBoundingClientRect(); if(r.top<0 || r.bottom>innerHeight) nb.scrollIntoView({block:"start", behavior:"instant"}); } } LICK.on?lickStop():playLick(P.lick); });   /* AOG-SOLO-LICKNEAR-V2: the neck in sight as the lick plays */
     $q("soLickSpd").addEventListener("input",(e)=>{ const v=Math.round(clamp(+e.target.value,25,100)/5)*5; if(v===P.lspd) return; P.lspd=v; paintLickSpd(); clearTimeout(wire.st); wire.st=setTimeout(keep,250);
       const ln=$q("soLickLine"); if(ln && !LICK.on) ln.textContent=lickDesc(); });
   }

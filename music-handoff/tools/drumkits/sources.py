@@ -22,6 +22,17 @@ AOG-DRUM-PERC-V1 (2026-10-13): two more CC0 libraries, for the hand percussion, 
          dio_333 and given to the public domain on Freesound (CC0 1.0); Sonic Pi's etc/samples/README.md lists each
          one and its licence. Only the tabla_*.flac files are used.
 
+AOG-DRUM-MORE-V1 (2026-10-18): three more libraries, for kits_more.py and kits_more2.py (the LICENSE file of each read):
+  body   body_percussion (github.com/sfzinstruments/body_percussion, CC0 1.0): stomps, claps, snaps, pats
+  muld   MuldjordKit, FreePats version (github.com/freepats/muldjordkit): Lars Muldjord's DrumGizmo kit, assembled by
+         Roberto (zenvoid.org). NOT CC0: Creative Commons Attribution 4.0 (CC BY 4.0), credited in CREDITS.txt
+  synp   FreePats synthesizer percussion (github.com/freepats/synthesizer-percussion, CC0 1.0): made with synthesizers
+         by Roberto; only its synth toms are used, and their pad says so
+  Sonic Pi's other drum samples (spi: bd_*, sn_*, hat_*, perc_snap*, elec_wood) are CC0 as its README says.
+  Not used, and why: Wilkinson Naked Drums, DRSKit and Unruly Drums have no samples in their repositories; Sam's
+  Sonor is CC BY-SA; Colombo ADK is GPL; RetroDrums1 and tidal-drum-machines name no licence; Freesound could not be
+  reached from here.
+
 AOG-DRUM-909-V1 (2026-10-05): one more kind of source, not CC0 but CC BY 4.0 (credit given):
   fs     a sound on Freesound, "fs:<user>/<sound id>_<user id>": Freesound's high-quality MP3 copy of it (the original
          WAV needs a login), from cdn.freesound.org. Used for kit L: "TR-909 JGB pack" (pack 1643), sampled by Janne
@@ -46,6 +57,9 @@ REPO = {   # GitHub repository and branch, for files not on this machine
     "voice": ("sfzinstruments/legato_vocal_tutorial", "master"),
     "fp": ("freepats/world-percussion", "main"),        # AOG-DRUM-PERC-V1
     "spi": ("sonic-pi-net/sonic-pi", "dev"),            # AOG-DRUM-PERC-V1: only etc/samples/tabla_*.flac
+    "body": ("sfzinstruments/body_percussion", "main"), # AOG-DRUM-MORE-V1: body percussion
+    "muld": ("freepats/muldjordkit", "main"),           # AOG-DRUM-MORE-V1: MuldjordKit (CC BY 4.0)
+    "synp": ("freepats/synthesizer-percussion", "main"),# AOG-DRUM-MORE-V1: FreePats synthesizer percussion
 }
 LOCAL = {   # clones already on this machine (sparse: only some folders)
     "brd": SCR + "/agent-drumkit/src/karoryfer.big-rusty-drums",
@@ -58,6 +72,9 @@ LOCAL = {   # clones already on this machine (sparse: only some folders)
     "voice": SCR + "/sources/legato_vocal_tutorial",
     "fp": SCR + "/sources/world-percussion",
     "spi": SCR + "/sources/sonic-pi",
+    "body": SCR + "/sources/body_percussion",
+    "muld": SCR + "/sources/muldjordkit",
+    "synp": SCR + "/sources/synthesizer-percussion",
 }
 for k in list(LOCAL):
     LOCAL[k] = os.environ.get("AOG_DRUM_SRC_" + k.upper(), LOCAL[k])

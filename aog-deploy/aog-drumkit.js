@@ -175,6 +175,118 @@
             rim: W2("KE", [2, 2, 2], "Bayan · ke (closed)", "Bayan · ke (cerrado)", { drum: "bayan" }),
             bell: W2("DHA", [2, 2, 2], "Dha (both hands)", "Dha (las dos manos)", { drum: "bayan" }) } };
   IDS.push("HP", "HD", "HC", "TB");
+  /* ══ AOG-DRUM-MORE-V1 (2026-10-18) — Jimmy: "Can we get more drum kits produced?", then "Choose them all!" ════════
+     More recorded kits, each its own sound (music-handoff/tools/drumkits/kits_more.py; credits in CREDITS.txt). With so
+     many kits, the kit menus show them in groups: Drum sets, Electronic, World, Orchestra and marching, Hand percussion.
+     grp: the kit's group (a kit without one is a drum set; the older kits are placed by GROUP_OF). A kit with hand:1 is a
+     kit of its own: its grooves bring it, and the retired classic machine leaves it out. */
+  var GROUPS = [
+    { id: "drums", en: "Drum sets", es: "Baterías" },
+    { id: "electronic", en: "Electronic", es: "Electrónica" },
+    { id: "world", en: "World", es: "Del mundo" },
+    { id: "orch", en: "Orchestra and marching", es: "Orquesta y banda de marcha" },
+    { id: "hand", en: "Hand percussion", es: "Percusión de mano" }
+  ];
+  var GROUP_OF = { H: "world", N: "world", O: "orch", L: "electronic", HP: "hand", HD: "hand", HC: "hand", TB: "hand" };
+  function group(b) { var k = KITS[b]; return !k ? "" : (k.grp || GROUP_OF[b] || "drums"); }
+  /* the grooves of the new kits sit in the beat menus under the same kinds of name */
+  var BEAT_GROUPS = {
+    drums: { en: "More drum set grooves", es: "Más ritmos de batería" },
+    electronic: { en: "Electronic grooves", es: "Ritmos electrónicos" },
+    world: { en: "World rhythms", es: "Ritmos del mundo" },
+    orch: { en: "Orchestra", es: "Orquesta" }
+  };
+  /* the new kits, every pad in plain words (en, es); look: how the Drum Kit draws a pad that is not a drum */
+  function K(grp, dir, en, es, pads) { return { dir: dir, en: en, es: es, hand: 1, grp: grp, pads: pads }; }
+  /* OR · the back row of an orchestra (VCSL, CC0). The two timpani are tuned a fourth apart (F sharp and B) */
+  KITS.OR = K("orch", "orchestra", "Orchestral percussion", "Percusión de orquesta", {
+    kick: W2("BASSDR", [2, 2, 2], "Bass drum", "Bombo"),
+    snare: W2("SNARE", [2, 2, 2], "Snare drum", "Caja"),
+    ch: W2("TRIANG", [1, 2, 2], "Triangle", "Triángulo", { look: "cym" }),
+    oh: W2("SUSCYM", [1, 1, 1], "Suspended cymbal", "Platillo suspendido", { look: "cym" }),
+    clap: W2("CYMBAL", [1, 2, 2], "Crash cymbals", "Platillos de choque", { look: "cym" }),
+    tom: W2("TIMPLO", [1, 2, 2], "Timpani · low", "Timbal · grave"),
+    rim: W2("TIMPHI", [1, 2, 2], "Timpani · high", "Timbal · agudo"),
+    bell: W2("GONG", [1, 1, 1], "Gong", "Gong", { look: "cym" }) });
+  /* ME · Middle Eastern: the darbuka (FreePats), a tambourine's jingles (the riq is a tambourine), frame drums and
+     finger cymbals (VCSL). One darbuka, one ring: a new doum, tek or slap stops the last one's ring */
+  KITS.ME = K("world", "mideast", "Middle Eastern · darbuka", "Medio Oriente · darbuka", {
+    kick: W2("DOUM", [2, 3, 2], "Darbuka · doum (low)", "Darbuka · dum (grave)", { drum: "darb" }),
+    snare: W2("TEK", [2, 3, 2], "Darbuka · tek (high)", "Darbuka · tek (agudo)", { drum: "darb" }),
+    ch: W2("KA", [2, 2, 2], "Darbuka · ka (other hand)", "Darbuka · ka (la otra mano)"),
+    oh: W2("JINGLE", [2, 3, 2], "Tambourine · jingles", "Pandereta · sonajas", { look: "small" }),
+    clap: W2("PA", [2, 3, 2], "Darbuka · slap", "Darbuka · golpe seco", { drum: "darb" }),
+    tom: W2("FRAMLO", [2, 2, 2], "Frame drum · low", "Tambor de marco · grave"),
+    rim: W2("FRAMHI", [2, 2, 2], "Frame drum · high", "Tambor de marco · agudo"),
+    bell: W2("ZILLS", [1, 1, 1], "Finger cymbals", "Platillos de dedo", { look: "cym" }) });
+  /* SB · samba / batucada (VCSL). The caixa is a snare drum, the ganzá a shaker, then an agogô bell and a whistle. No free
+     recording of a surdo, repinique or tamborim was found: the nearest real drums play their parts, and the pads say so */
+  KITS.SB = K("world", "samba", "Samba · batucada", "Samba · batucada", {
+    kick: W2("SURDO", [2, 2, 2], "Bass drum · surdo part", "Bombo · parte del surdo"),
+    snare: W2("CAIXA", [2, 2, 2], "Snare drum · caixa", "Caja · caixa"),
+    ch: W2("GANZA", [2, 2, 2], "Shaker · ganzá", "Sonajero · ganzá", { look: "small" }),
+    oh: W2("TAMBOR", [2, 2, 2], "Small drum · tamborim part", "Tambor pequeño · parte del tamborim", { look: "small" }),
+    clap: W2("REPIQ", [2, 2, 2], "High drum · repinique part", "Tambor agudo · parte del repinique"),
+    tom: W2("SURDO2", [2, 2, 2], "Low drum · second surdo", "Tambor grave · segundo surdo"),
+    rim: W2("AGOGO", [1, 1, 1], "Agogô bell", "Agogó", { look: "small" }),
+    bell: W2("APITO", [1, 1, 1], "Whistle · apito", "Silbato · apito", { look: "small" }) });
+  /* BP · body percussion (body_percussion, sfzinstruments, CC0): everything a body can play, for a class with no drums */
+  KITS.BP = K("hand", "body", "Body percussion", "Percusión corporal", {
+    kick: W2("STOMP", [2, 3, 2], "Stomp", "Pisotón"),
+    snare: W2("CLAP", [2, 3, 2], "Hand clap", "Palmada", { look: "small" }),
+    ch: W2("SNAP", [2, 3, 2], "Finger snap", "Chasquido", { look: "small" }),
+    oh: W2("FCLAP", [2, 3, 2], "Quiet clap (two fingers)", "Palmada suave (dos dedos)", { look: "small" }),
+    clap: W2("CHEST", [2, 2, 2], "Chest pat", "Palmada en el pecho"),
+    tom: W2("BELLY", [2, 2, 2], "Tummy pat", "Palmada en la barriga"),
+    rim: W2("HEEL", [2, 3, 2], "Heel tap", "Golpe de talón", { look: "small" }),
+    bell: W2("CHEEK", [2, 2, 2], "Cheek pop", "Golpe en la mejilla", { look: "small" }) });
+  /* The drum-set styles (kits_more2.py): every pad recorded; rooms, gates and the crunch are made here. GS and PK and PO
+     use MuldjordKit (Lars Muldjord, CC BY 4.0); MT, JG Virtuosity Drums; DS Big Rusty Drums; claps, tambourines, a
+     cowbell and hats from VCSL; the stomp from body_percussion; PO's synth tom from FreePats (made by a synthesizer) */
+  function DK(o) { var p = {}; for (var id in o) p[id] = W2(o[id][0], o[id][1], o[id][2], o[id][3], o[id][4]); return p; }
+  KITS.GS = K("drums", "gospel", "Gospel and church", "Góspel e iglesia", DK({
+    kick: ["KICK", [2, 3, 2], "Kick", "Bombo"], snare: ["SNARE", [2, 3, 2], "Snare", "Caja"],
+    ch: ["HAT", [2, 3, 2], "Hi-hat", "Charles"], oh: ["OPEN", [2, 2, 2], "Open hi-hat", "Charles abierto"],
+    clap: ["CLAPS", [2, 3, 2], "Church claps", "Palmas de la iglesia", { look: "small" }], tom: ["TOM", [2, 2, 2], "Tom", "Tom"],
+    rim: ["TAMB", [2, 2, 2], "Tambourine", "Pandereta", { look: "small" }], bell: ["CRASH", [1, 2, 2], "Crash", "Crash"] }));
+  KITS.MT = K("drums", "motown", "Motown and 60s soul", "Motown y soul de los 60", DK({
+    kick: ["KICK", [1, 2, 2], "Kick", "Bombo"], snare: ["SNTAMB", [1, 2, 2], "Snare and tambourine", "Caja y pandereta"],
+    ch: ["HAT", [1, 2, 2], "Hi-hat", "Charles"], oh: ["OPEN", [1, 2, 2], "Open hi-hat", "Charles abierto"],
+    clap: ["CLAPS", [2, 2, 2], "Hand claps", "Palmas", { look: "small" }], tom: ["TOM", [1, 2, 2], "Tom", "Tom"],
+    rim: ["STOMP", [2, 3, 2], "Foot stomp on a board", "Pisotón en una tabla"], bell: ["TAMB", [1, 2, 2], "Tambourine shake", "Pandereta · sacudida", { look: "small" }] }));
+  KITS.DS = K("drums", "disco", "Disco", "Disco", DK({
+    kick: ["KICK", [1, 2, 2], "Kick", "Bombo"], snare: ["SNARE", [1, 2, 2], "Snare", "Caja"],
+    ch: ["HAT", [1, 2, 1], "Hi-hat", "Charles"], oh: ["OPEN", [1, 1, 2], "Half-open hi-hat", "Charles medio abierto"],
+    clap: ["CLAP", [2, 3, 2], "Hand claps", "Palmas", { look: "small" }], tom: ["TOM", [1, 1, 1], "Deep tom", "Tom grave"],
+    rim: ["COWBEL", [1, 1, 1], "Cowbell", "Cencerro", { look: "small" }], bell: ["CRASH", [1, 1, 1], "Crash", "Crash"] }));
+  KITS.PK = K("drums", "punk", "Punk and garage", "Punk y garaje", DK({
+    kick: ["KICK", [2, 2, 2], "Kick", "Bombo"], snare: ["SNARE", [2, 2, 2], "Snare", "Caja"],
+    ch: ["HAT", [2, 2, 2], "Hi-hat", "Charles"], oh: ["OPEN", [1, 2, 2], "Open hi-hat", "Charles abierto"],
+    clap: ["CHINA", [1, 2, 2], "China cymbal", "Platillo china"], tom: ["FLOOR", [2, 2, 2], "Floor tom", "Tom de piso"],
+    rim: ["RIDE", [2, 2, 2], "Ride", "Ride"], bell: ["CRASH", [1, 2, 2], "Crash", "Crash"] }));
+  KITS.PO = K("drums", "pop80s", "1980s pop", "Pop de los 80", DK({
+    kick: ["KICK", [2, 2, 2], "Kick", "Bombo"], snare: ["GATED", [2, 2, 2], "Big 80s snare", "Caja grande de los 80"],
+    ch: ["HAT", [2, 2, 2], "Hi-hat", "Charles"], oh: ["OPEN", [1, 2, 2], "Open hi-hat", "Charles abierto"],
+    clap: ["CLAP", [2, 2, 2], "Big claps", "Palmas grandes", { look: "small" }], tom: ["TOM", [2, 2, 2], "Big tom", "Tom grande"],
+    rim: ["SYNTOM", [1, 2, 2], "Synth tom (synthesizer)", "Tom de sintetizador"], bell: ["CRASH", [1, 2, 2], "Crash", "Crash"] }));
+  KITS.JG = K("drums", "jungle", "Drum and bass · jungle", "Drum and bass · jungle", DK({
+    kick: ["KICK", [1, 2, 2], "Kick", "Bombo"], snare: ["SNARE", [1, 2, 2], "Snare", "Caja"],
+    ch: ["HAT", [1, 2, 2], "Hi-hat", "Charles"], oh: ["OPEN", [1, 2, 2], "Open hi-hat", "Charles abierto"],
+    clap: ["GHOST", [1, 2, 2], "Ghost snare (soft)", "Caja fantasma (suave)"], tom: ["TOM", [1, 2, 2], "Tom", "Tom"],
+    rim: ["RIDE", [1, 2, 2], "Ride", "Ride"], bell: ["CRASH", [1, 2, 2], "Crash", "Crash"] }));
+  /* RG and TR · electronic: Sonic Pi's drum-machine samples (CC0, from Freesound), with VCSL claps and, for reggaeton, a
+     Virtuosity timbale and cross-stick. One recording a sound, so a strength is that recording played softer or louder */
+  KITS.RG = K("electronic", "reggaeton", "Reggaeton", "Reguetón", DK({
+    kick: ["KICK", [1, 1, 1], "Kick", "Bombo"], snare: ["SNARE", [1, 1, 1], "Snare", "Caja"],
+    ch: ["HAT", [1, 1, 1], "Hi-hat", "Charles"], oh: ["OPEN", [1, 1, 1], "Open hi-hat", "Charles abierto"],
+    clap: ["CLAP", [2, 2, 2], "Hand claps", "Palmas", { look: "small" }], tom: ["TIMBAL", [1, 2, 1], "Timbale", "Timbal"],
+    rim: ["XSTICK", [1, 2, 1], "Cross-stick", "Aro cruzado"], bell: ["BOOM", [1, 1, 1], "808 boom", "Bum 808"] }));
+  KITS.TR = K("electronic", "trap", "Trap", "Trap", DK({
+    kick: ["KICK", [1, 1, 1], "808 kick", "Bombo 808"], snare: ["SNARE", [1, 1, 1], "Snare", "Caja"],
+    ch: ["HAT", [1, 1, 1], "Hi-hat", "Charles"], oh: ["OPEN", [1, 1, 1], "Open hi-hat", "Charles abierto"],
+    clap: ["CLAP", [2, 2, 2], "Hand claps", "Palmas", { look: "small" }], tom: ["SNAP", [2, 2, 2], "Finger snap", "Chasquido", { look: "small" }],
+    rim: ["CLICK", [1, 1, 1], "Click", "Clic", { look: "small" }], bell: ["BOOM", [1, 1, 1], "808 boom (long)", "Bum 808 (largo)"] }));
+  IDS.push("OR", "ME", "SB", "BP", "GS", "MT", "DS", "PK", "PO", "JG", "RG", "TR");
   var LAYERS = ["s", "m", "h"];
   function made(b, id) { var k = KITS[b], p = k && k.pads[id]; return !!(p && p.made); }
 
@@ -231,6 +343,107 @@
       parts: [{ len: 16, map: { bell: [1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0], oh: [0,0,1,0,1,0,0,0,0,0,1,0,1,0,0,0],
         snare: [0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0], kick: [0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0] } }] }
   );
+  /* AOG-DRUM-MORE-V1: a groove or two for each new kit, in its kind's group of the beat menus (grp); each brings its kit
+     (hand:1) and plays nothing until Play is pressed */
+  STARTERS.push(
+    /* a concert march: bass drum and crash cymbals together on 1 and 3, the snare's march figure, the timpani on the
+       home note (B) and the fifth (F sharp) */
+    { id: "orchmarch", en: "Orchestra march", es: "Marcha de orquesta", kit: "OR", bpm: 112, swing: 0.50, hand: 1, grp: "orch",
+      map: { kick: [2,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0], clap: [2,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0], snare: [1,0,3,3,1,0,1,0,1,0,3,3,1,0,1,3],
+             rim: [0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0], tom: [0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0], ch: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0] } },
+    /* a big finish: the low timpani rolls louder and louder, then everything lands together with the gong */
+    { id: "orchfinale", en: "Big finish with the gong", es: "Gran final con el gong", kit: "OR", bpm: 76, swing: 0.50, hand: 1, grp: "orch",
+      map: { tom: [3,3,3,3,3,3,3,3,1,1,1,1,2,2,2,2], snare: [0,0,0,0,0,0,0,0,3,3,3,3,1,1,1,1], oh: [0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0] },
+      parts: [{ len: 16, map: { kick: [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], clap: [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], bell: [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        rim: [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], ch: [0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0] } }] },
+    /* maqsum, the most played rhythm of Arabic music: doum tek - tek doum - tek -, the ka filling in between */
+    { id: "maqsum", en: "Darbuka · maqsum", es: "Darbuka · maqsum", kit: "ME", bpm: 100, swing: 0.50, hand: 1, grp: "world",
+      map: { kick: [2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0], snare: [0,0,1,0,0,0,1,0,0,0,0,0,1,0,0,0], ch: [0,0,0,0,3,0,0,3,0,0,3,0,0,0,3,3],
+             oh: [3,0,3,0,3,0,3,0,3,0,3,0,3,0,3,0], bell: [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
+    /* baladi, "of the country": doum doum - tek doum - tek -, the frame drum underneath */
+    { id: "baladi", en: "Darbuka · baladi", es: "Darbuka · baladi", kit: "ME", bpm: 92, swing: 0.50, hand: 1, grp: "world",
+      map: { kick: [2,0,1,0,0,0,0,0,2,0,0,0,0,0,0,0], snare: [0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0], ch: [0,0,0,0,3,3,0,0,0,0,3,3,0,0,3,0],
+             tom: [3,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0], oh: [0,0,0,0,3,0,0,0,0,0,0,0,3,0,0,0] } },
+    /* a samba school's batucada: the second surdo on 1 and 3 answered by the first on 2 and 4, the caixa's sixteenths,
+       the tamborim's teleco-teco, the ganzá and the agogô; the whistle calls the start of the second part */
+    { id: "batucada", en: "Samba batucada", es: "Batucada de samba", kit: "SB", bpm: 104, swing: 0.54, hand: 1, grp: "world",
+      map: { tom: [1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0], kick: [0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0], snare: [2,3,3,1,2,3,3,1,2,3,3,1,2,3,1,1],
+             oh: [1,0,1,1,0,1,0,1,1,0,1,1,0,1,0,1], ch: [2,3,3,3,2,3,3,3,2,3,3,3,2,3,3,3], rim: [1,0,1,0,0,1,0,1,0,1,0,1,0,0,1,0] },
+      parts: [{ len: 16, map: { bell: [2,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0], tom: [1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0], kick: [0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0],
+        clap: [0,0,0,0,0,0,0,0,2,0,1,1,0,1,0,1], snare: [2,3,3,1,2,3,3,1,2,3,3,1,2,3,1,1], ch: [2,3,3,3,2,3,3,3,2,3,3,3,2,3,3,3] } }] },
+    /* samba-reggae, slower and heavier, as the bloco drummers of Salvador play it */
+    { id: "sambareggae", en: "Samba-reggae", es: "Samba-reggae", kit: "SB", bpm: 92, swing: 0.50, hand: 1, grp: "world",
+      map: { kick: [2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0], tom: [0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,1], clap: [0,0,1,0,0,1,0,0,0,0,1,0,0,1,0,0],
+             snare: [1,0,0,3,1,0,0,3,1,0,0,3,1,0,3,3], ch: [1,3,1,3,1,3,1,3,1,3,1,3,1,3,1,3] } },
+    /* body percussion: stomp, stomp, clap, the stadium beat everyone knows how to join */
+    { id: "bodystomp", en: "Stomp, stomp, clap", es: "Pisotón, pisotón, palmada", kit: "BP", bpm: 80, swing: 0.50, hand: 1, grp: "hand",
+      map: { kick: [2,0,1,0,0,0,0,0,2,0,1,0,0,0,0,0], snare: [0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0] } },
+    /* a body percussion circle: snaps keep time, the chest and tummy answer, a clap on 2 and 4 */
+    { id: "bodycircle", en: "Body percussion circle", es: "Círculo de percusión corporal", kit: "BP", bpm: 96, swing: 0.50, hand: 1, grp: "hand",
+      map: { kick: [1,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0], snare: [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0], ch: [0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0],
+             clap: [0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0], tom: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1], bell: [0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0] } },
+    /* gospel: a fast praise break (sixteenth hats, the tambourine, claps with the backbeat) and a slow Sunday shuffle */
+    { id: "praisebreak", en: "Gospel praise break", es: "Góspel · praise break", kit: "GS", bpm: 136, swing: 0.50, hand: 1, grp: "drums",
+      map: { kick: [2,0,0,1,0,0,1,0,2,0,0,1,0,0,1,0], snare: [0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,3], ch: [1,3,1,3,1,3,1,3,1,3,1,3,1,3,1,3],
+             clap: [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0], rim: [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0] } },
+    { id: "sundayshuffle", en: "Sunday shuffle", es: "Shuffle del domingo", kit: "GS", bpm: 76, swing: 0.67, hand: 1, grp: "drums",
+      map: { kick: [2,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0], snare: [0,0,0,0,2,0,0,3,0,0,0,0,2,0,0,3], ch: [1,0,3,0,1,0,3,0,1,0,3,0,1,0,3,0],
+             clap: [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0], rim: [0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0] } },
+    /* Motown: the snare and tambourine on every beat, and a beat for the foot on the stomp board */
+    { id: "motownsnare", en: "Motown · snare on every beat", es: "Motown · caja en cada tiempo", kit: "MT", bpm: 120, swing: 0.50, hand: 1, grp: "drums",
+      map: { snare: [2,0,0,0,2,0,0,0,2,0,0,0,2,0,0,0], kick: [2,0,0,0,0,0,1,0,2,0,0,0,0,0,1,0], ch: [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0],
+             bell: [0,0,3,0,0,0,3,0,0,0,3,0,0,0,3,0] } },
+    { id: "stompboard", en: "Stomp board soul", es: "Soul con pisotones", kit: "MT", bpm: 116, swing: 0.50, hand: 1, grp: "drums",
+      map: { rim: [2,0,0,0,1,0,0,0,2,0,0,0,1,0,0,0], snare: [0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0], clap: [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],
+             kick: [1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0], ch: [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0] } },
+    /* disco: four on the floor, the half-open hat on every "and", claps with the backbeat; then a tom fill */
+    { id: "discofloor", en: "Disco, four on the floor", es: "Disco, cuatro en el piso", kit: "DS", bpm: 120, swing: 0.50, hand: 1, grp: "drums",
+      map: { kick: [2,0,0,0,2,0,0,0,2,0,0,0,2,0,0,0], snare: [0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0], clap: [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],
+             oh: [0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0], ch: [1,3,0,3,1,3,0,3,1,3,0,3,1,3,0,3] } },
+    { id: "discofill", en: "Disco with a tom fill", es: "Disco con redoble de toms", kit: "DS", bpm: 118, swing: 0.50, hand: 1, grp: "drums",
+      map: { kick: [2,0,0,0,2,0,0,0,2,0,0,0,2,0,0,0], snare: [0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0], oh: [0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0],
+             rim: [1,0,0,1,0,0,1,0,1,0,0,1,0,0,1,0], bell: [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] },
+      parts: [{ len: 16, map: { kick: [2,0,0,0,2,0,0,0,2,0,0,0,2,0,0,0], snare: [0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0], oh: [0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0],
+        tom: [0,0,0,0,0,0,0,0,2,0,1,0,2,1,1,2], clap: [0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0] } }] },
+    /* punk: the fast "and" snare over a kick on the beat; and a garage beat with the hats open and washing */
+    { id: "punkfast", en: "Fast punk", es: "Punk rápido", kit: "PK", bpm: 190, swing: 0.50, hand: 1, grp: "drums",
+      map: { kick: [2,0,0,0,1,0,0,0,2,0,0,0,1,0,0,0], snare: [0,0,2,0,0,0,2,0,0,0,2,0,0,0,2,0], ch: [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0],
+             bell: [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
+    { id: "garagerock", en: "Garage rock", es: "Rock de garaje", kit: "PK", bpm: 140, swing: 0.50, hand: 1, grp: "drums",
+      map: { kick: [2,0,0,0,0,0,1,0,2,0,1,0,0,0,0,0], snare: [0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0], oh: [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0],
+             clap: [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
+    /* the 1980s: the big gated snare and claps; then a fill round the big toms and the synth tom */
+    { id: "gated80s", en: "1980s pop backbeat", es: "Pop de los 80", kit: "PO", bpm: 112, swing: 0.50, hand: 1, grp: "drums",
+      map: { kick: [2,0,0,0,0,0,0,1,2,0,1,0,0,0,0,0], snare: [0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0], clap: [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],
+             ch: [1,3,1,3,1,3,1,3,1,3,1,3,1,3,1,3] } },
+    { id: "toms80s", en: "1980s pop with a big tom fill", es: "Pop de los 80 con redoble grande", kit: "PO", bpm: 108, swing: 0.50, hand: 1, grp: "drums",
+      map: { kick: [2,0,0,0,0,0,0,1,2,0,1,0,0,0,0,0], snare: [0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0], ch: [1,3,1,3,1,3,1,3,1,3,1,3,1,3,1,3], bell: [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] },
+      parts: [{ len: 16, map: { kick: [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], snare: [0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0], ch: [1,3,1,3,1,3,1,3,0,0,0,0,0,0,0,0],
+        tom: [0,0,0,0,0,0,0,0,2,0,1,0,2,0,1,0], rim: [0,0,0,0,0,0,0,0,0,1,0,1,0,1,0,1] } }] },
+    /* drum and bass: a jungle break in two bars (ghost notes between), and a two-step roller */
+    { id: "junglebreak", en: "Jungle break", es: "Break de jungle", kit: "JG", bpm: 168, swing: 0.50, hand: 1, grp: "drums",
+      map: { kick: [2,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0], snare: [0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0], clap: [0,0,0,0,0,0,0,3,0,3,0,0,0,0,0,3],
+             ch: [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0] },
+      parts: [{ len: 16, map: { kick: [2,0,1,0,0,0,0,0,0,0,1,1,0,0,0,0], snare: [0,0,0,0,2,0,0,0,0,0,0,0,0,0,2,0], clap: [0,0,0,0,0,0,0,3,0,3,0,0,3,0,0,0],
+        ch: [1,0,1,0,1,0,1,0,1,0,1,0,1,0,0,0], oh: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0] } }] },
+    { id: "dnbroller", en: "Drum and bass roller", es: "Drum and bass que rueda", kit: "JG", bpm: 174, swing: 0.50, hand: 1, grp: "drums",
+      map: { kick: [2,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0], snare: [0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0], ch: [1,3,1,3,1,3,1,3,1,3,1,3,1,3,1,3],
+             rim: [1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0], clap: [0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,3] } },
+    /* reggaeton: the dembow (boom, ch-boom, chick), then the same with timbales */
+    { id: "dembowrg", en: "Reggaeton dembow", es: "Dembow de reguetón", kit: "RG", bpm: 92, swing: 0.50, hand: 1, grp: "electronic",
+      map: { kick: [2,0,0,0,2,0,0,0,2,0,0,0,2,0,0,0], snare: [0,0,0,1,0,0,1,0,0,0,0,1,0,0,1,0], ch: [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0],
+             bell: [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
+    { id: "perreo", en: "Dembow with timbales", es: "Dembow con timbales", kit: "RG", bpm: 96, swing: 0.50, hand: 1, grp: "electronic",
+      map: { kick: [2,0,0,0,2,0,0,0,2,0,0,0,2,0,0,0], rim: [0,0,0,1,0,0,1,0,0,0,0,1,0,0,1,0], clap: [0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0],
+             tom: [0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1], ch: [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0] } },
+    /* trap: half-time, the 808 under the kick, hats that roll; then a bounce with snaps */
+    { id: "trap808", en: "Trap with hat rolls", es: "Trap con redobles de charles", kit: "TR", bpm: 140, swing: 0.50, hand: 1, grp: "electronic",
+      map: { kick: [2,0,0,0,0,0,0,1,0,0,2,0,0,0,0,0], bell: [2,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0], snare: [0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0],
+             clap: [0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0], ch: [1,0,1,0,1,0,1,1,1,0,1,0,1,1,1,1] } },
+    { id: "trapbounce", en: "Trap bounce with snaps", es: "Trap con chasquidos", kit: "TR", bpm: 150, swing: 0.50, hand: 1, grp: "electronic",
+      map: { kick: [2,0,0,2,0,0,0,0,0,0,2,0,0,0,0,0], bell: [2,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0], snare: [0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0],
+             tom: [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0], ch: [1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,1], oh: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } }
+  );
   /* a beat in parts: part 2 goes in the next part of the song, and the track plays them in turn. Put my beat back
      returns that part and the track as they were; a one-part beat picked afterwards stops the track again. */
   function clone(o) { return JSON.parse(JSON.stringify(o)); }
@@ -263,8 +476,8 @@
     loading: { en: "Getting the recorded drums ready…", es: "Preparando la batería grabada…" },
     failed:  { en: "The recorded drums did not load. Check the internet, then pick the kit again.",
                es: "La batería grabada no se cargó. Revisa el internet y vuelve a elegir el kit." },
-    credit:  { en: "The recorded kits are real drums and percussion, free for everyone (CC0), from Karoryfer Samples, Versilian Studios and Jeff Learman. Kit L is a real 909 drum machine, recorded by Janne G:son Berg (CC BY 4.0). Kits A and B play a real 1978 drum machine (CC0). The hand percussion, hand drums and tabla are real too (CC0): Versilian Studios, Karoryfer Samples, FreePats and dio_333. A few strokes are shaped here from the same drum.",
-               es: "Los kits grabados son batería y percusión de verdad, libres para todos (CC0), de Karoryfer Samples, Versilian Studios y Jeff Learman. El kit L es una caja de ritmos 909 de verdad, grabada por Janne G:son Berg (CC BY 4.0). Los kits A y B tocan una caja de ritmos de verdad de 1978 (CC0). La percusión de mano, los tambores de mano y la tabla también son de verdad (CC0): Versilian Studios, Karoryfer Samples, FreePats y dio_333. Algunos golpes se hacen aquí a partir del mismo tambor." },
+    credit:  { en: "The recorded kits are real drums and percussion, free for everyone (CC0), from Karoryfer Samples, Versilian Studios and Jeff Learman. Kit L is a real 909 drum machine, recorded by Janne G:son Berg (CC BY 4.0). Kits A and B play a real 1978 drum machine (CC0). The hand percussion, hand drums and tabla are real too (CC0): Versilian Studios, Karoryfer Samples, FreePats and dio_333. A few strokes are shaped here from the same drum. The gospel, punk and 1980s pop kits use MuldjordKit by Lars Muldjord (CC BY 4.0); the body percussion is from sfzinstruments (CC0); reggaeton and trap use Sonic Pi's samples (CC0).",
+               es: "Los kits grabados son batería y percusión de verdad, libres para todos (CC0), de Karoryfer Samples, Versilian Studios y Jeff Learman. El kit L es una caja de ritmos 909 de verdad, grabada por Janne G:son Berg (CC BY 4.0). Los kits A y B tocan una caja de ritmos de verdad de 1978 (CC0). La percusión de mano, los tambores de mano y la tabla también son de verdad (CC0): Versilian Studios, Karoryfer Samples, FreePats y dio_333. Algunos golpes se hacen aquí a partir del mismo tambor. Los kits de góspel, punk y pop de los 80 usan MuldjordKit de Lars Muldjord (CC BY 4.0); la percusión corporal es de sfzinstruments (CC0); el reguetón y el trap usan las muestras de Sonic Pi (CC0)." },
     handGroup: { en: "Hand drums and percussion", es: "Tambores de mano y percusión" },
     credits: { en: "Full credits", es: "Créditos completos" }
   };
@@ -516,6 +729,8 @@
     ready: function (b) { return !!DATA[b]; },
     /* AOG-DRUM-PERC-V1: a pad's own words, the drum it belongs to, how the Drum Kit draws it, and the hand-drum kits */
     padWord: padWord, drumOf: drumOf, look: look, hand: function (b) { return !!(has(b) && KITS[b].hand); },
+    /* AOG-DRUM-MORE-V1: the kit menus' groups, in order, and each kit's group; the new grooves' beat-menu groups */
+    groups: GROUPS, group: group, beatGroups: BEAT_GROUPS,
     takes: function (b, id) { var p = has(b) && KITS[b].pads[id]; return p ? p.n.slice() : [0, 0, 0]; },   /* the takes of each strength: soft, normal, hard */
     lineHtml: lineHtml, decorate: decorate, creditHtml: creditHtml, words: WORDS
   };

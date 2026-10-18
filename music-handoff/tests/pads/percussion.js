@@ -128,7 +128,8 @@ const IPHONE={viewport:{width:390,height:844}, isMobile:true, hasTouch:true, dev
     ok(g.groups.some(x=>x[0]==="hand" && x[1]==="Hand drums and percussion"), "the beats menu has a group for them: Hand drums and percussion");
     await p.selectOption("#grpSel","hand"); await p.waitForTimeout(300);
     const items=await p.evaluate(()=>[...document.querySelectorAll("#startSel option")].map(o=>o.value));
-    ok(JSON.stringify(items)===JSON.stringify(["schoolband","djembe","cajon","tumbao","teental"]), "five grooves: "+items.join(", "));
+    /* AOG-DRUM-MORE-V1: the body percussion kit's two grooves sit here too, after these five */
+    ok(JSON.stringify(items.slice(0,5))===JSON.stringify(["schoolband","djembe","cajon","tumbao","teental"]), "five grooves (then the body percussion's): "+items.join(", "));
     await p.selectOption("#startSel","teental"); await p.waitForTimeout(500);
     const tt=await p.evaluate(()=>{ const ev=S.ev.filter(e=>e.b===0), at=(pi)=>ev.filter(e=>e.p===pi).map(e=>e.t/24).sort((a,b)=>a-b);
       return {kit:S.banks[0].kitA, bars:S.bars, bpm:S.bpm, on:SEQ.on, dha:at(7), ta:at(1), tin:at(3), ghe:at(0), line:document.getElementById("beatNow").textContent}; });

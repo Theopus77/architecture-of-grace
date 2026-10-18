@@ -245,7 +245,7 @@ const STR={
   turnTablet:{en:"Press ⤢ Play on the whole screen for a bigger kit. Close brings this page back.",es:"Pulsa ⤢ Tocar en toda la pantalla para una batería más grande. Cerrar vuelve a esta página."},
   big:{en:"⤢ Play on the whole screen",es:"⤢ Tocar en toda la pantalla"},
   light:{en:"Light",es:"Claro"}, dark:{en:"Dark",es:"Oscuro"},
-  credit:{en:"Every drum here is a real recording.",es:"Cada tambor aquí es una grabación de verdad."}, credits:{en:"Who made them",es:"Quién las hizo"},
+  credit:{en:"Every drum here is a real recording. The synth tom of the 1980s pop kit is made by a synthesizer.",es:"Cada tambor aquí es una grabación de verdad. El tom de sintetizador del kit de pop de los 80 lo hace un sintetizador."}, credits:{en:"Who made them",es:"Quién las hizo"},
   machine:{en:"The drum machine has its own kits and a beat to build.",es:"La caja de ritmos tiene sus propias baterías y un ritmo para construir."}, machineGo:{en:"Open the drum machine",es:"Abrir la caja de ritmos"},
   menu:{en:"☰ Menu",es:"☰ Menú"}, close:{en:"✕ Close",es:"✕ Cerrar"}, hint:{en:"Play the kit with your fingers. Use both hands.",es:"Toca la batería con los dedos. Usa las dos manos."},
   stop:{en:"■ Stop",es:"■ Parar"},
@@ -295,6 +295,7 @@ const KIT_LOOK={
 const KIT_OF={A:"ekit",B:"ekit",C:"ekit",D:"ekit",F:"ekit",L:"ekit",E:"maple",G:"burst",H:"maple",I:"wine",J:"blue",K:"pearl",M:"green",N:"maple",O:"pearl",
   P:"maple",Q:"black",R:"pearl",S:"blue",T:"black",U:"burst",V:"pearl",W:"green",X:"burst",Y:"maple"};
 Object.assign(KIT_OF, {HP:"maple", HD:"burst", HC:"green", TB:"maple"});   /* AOG-DRUM-PERC-V1: the hand drums and the tabla */
+Object.assign(KIT_OF, {OR:"wine", ME:"burst", SB:"green", BP:"maple", GS:"wine", MT:"burst", DS:"pearl", PK:"black", PO:"blue", JG:"green", RG:"ekit", TR:"ekit"});   /* AOG-DRUM-MORE-V1: the new kits */
 const DARK_CYM={K:1,R:1,U:1,V:1};   /* the jazz kits: dark, dry cymbals */
 function kitLook(b){ const L=KIT_LOOK[KIT_OF[b]||"wine"]; return Object.assign({dark:!!DARK_CYM[b]}, L); }
 function drawKit(o){   /* the drum machine's drawing (music-drums.html, AOG-KIT-REAL-V1), with each kit's own instruments */
@@ -444,10 +445,21 @@ function choke(at){   /* stops the open hats that have started by then (a beat's
 }
 function light(id, ms){ document.querySelectorAll(`[data-pad="${id}"]`).forEach(el=>{ el.classList.add("hit"); setTimeout(()=>el.classList.remove("hit"), ms||90); }); }
 const RING={};   /* AOG-DRUM-PERC-V1: the last stroke of each hand drum */
+/* AOG-KIT-LEVEL-V1 (2026-10-18) — every kit as loud as the others. Each kit plays through its own trim (dB), measured as
+   a bar of plain beat through this page's own sound (kick, snare on 2 and 4, eighth-note hats, at 90; K-weighted, the
+   loudest 400 ms) and brought to the kits' middle level: node music-handoff/tests/pads/morekits.js --kittable */
+const KIT_LEVEL={"D":2,"E":0.7,"G":1.9,"H":-0.2,"I":0.5,"J":-0.8,"K":2,"N":1,"O":-0.8,"Q":0.7,"R":-1.2,"S":-0.3,"T":-0.8,"U":0.3,"V":2,"W":-0.7,"X":0.1,"Y":0.4,"HP":3.1,"HD":-3.2,"HC":-2.1,"TB":-3.9,"OR":-0.8,"ME":-2.6,"SB":-0.6,"BP":1.2,"GS":0.5,"MT":-0.4,"DS":1.6,"PK":-0.5,"PO":0.9,"JG":0.4,"RG":0.2,"TR":2.7};
+const TRIMS=typeof WeakMap!=="undefined" ? new WeakMap() : null;
+function trimTo(c, dest, b){   /* one small gain per kit and per sound engine, made the first time the kit plays */
+  const db=KIT_LEVEL[b]||0; if(!db || !TRIMS || !c || !dest) return dest;
+  let m=TRIMS.get(dest); if(!m){ m={}; TRIMS.set(dest, m); }
+  if(!m[b]){ const g=c.createGain(); g.gain.value=Math.pow(10, db/20); g.connect(dest); m[b]=g; }
+  return m[b];
+}
 function sound(b, id, when, accent, level){
   const n=padName(b, id);
   if(n==="HAT" || n==="PEDAL") choke(when);
-  const o=AOGDrumKit.playDirect(ac, bus, b, id, when, accent, level);
+  const o=AOGDrumKit.playDirect(ac, trimTo(ac, bus, b), b, id, when, accent, level);
   if(o){ o.at=when; if(n==="OPEN") OPEN.push(o); }
   /* AOG-DRUM-PERC-V1: one drum, one ring: a new stroke on a hand drum, a muted triangle or the bayan's ke stops the last
      stroke of that drum still ringing, as the hand on the skin does */
@@ -472,7 +484,10 @@ function beatsAll(){
   const nm=x=>x[es?"es":"en"]||x.en;
   out.push({label:t("gStyles"), items:(B.styles||[]).map(x=>({key:"s:"+x.id, name:nm(x), b:x}))});
   Object.keys(B.groups||{}).forEach(g=>{ const items=(B.beats||[]).filter(x=>x.grp===g).map(x=>({key:"b:"+x.id, name:nm(x), b:x})); if(items.length) out.push({label:nm(B.groups[g]), items:items}); });
-  const ks=(window.AOGDrumKit && AOGDrumKit.starters)||[]; if(ks.length) out.push({label:t("gKit"), items:ks.map(x=>({key:"k:"+x.id, name:nm(x), b:x}))});
+  const ks=(window.AOGDrumKit && AOGDrumKit.starters)||[], BG=(window.AOGDrumKit && AOGDrumKit.beatGroups)||{}, mine=x=>x.grp && BG[x.grp];
+  if(ks.length) out.push({label:t("gKit"), items:ks.filter(x=>!mine(x)).map(x=>({key:"k:"+x.id, name:nm(x), b:x}))});
+  /* AOG-DRUM-MORE-V1: the new kits' grooves, under their kind (World rhythms, Electronic grooves …) */
+  Object.keys(BG).forEach(g=>{ const items=ks.filter(x=>x.grp===g).map(x=>({key:"k:"+x.id, name:nm(x), b:x})); if(items.length) out.push({label:nm(BG[g]), items:items}); });
   out.push({label:t("gClass"), items:(B.classroom||[]).map(x=>({key:"c:"+x.id, name:nm(x), b:x}))});
   return out;
 }
@@ -678,7 +693,11 @@ function navHtml(){
   const es=S.lang==="es", tools=[["pads","music-pads.html","Drum machine","Caja de ritmos"],["kit","music-kit.html","Drum kit","Batería"],["piano","music-piano.html","Piano","Piano"],["guitar","music-guitar.html","Guitar","Guitarra"],["bass","music-bass.html","Bass","Bajo"],["band","music-band.html","Band","Banda"],["decks","music-decks.html","Turntables","Tocadiscos"],["studio","music-studio.html","Mixing desk","Mesa de mezclas"]];
   return `<span class="sisters"><span id="navTools" class="aogdd-src" data-aog-dropdown="Music tools|Instrumentos">`+tools.map(x=>`<a href="${x[1]}"${x[0]==="kit"?' class="on"':""}>${es?x[3]:x[2]}</a>`).join("")+`</span></span>`;
 }
-function kitOptions(){ return KITS().map(b=>`<option value="${b}"${b===S.bank?" selected":""}>${kitName(b)}</option>`).join(""); }
+/* AOG-DRUM-MORE-V1: the kits in groups (Drum sets, Electronic, World, Orchestra and marching, Hand percussion) */
+function kitOptions(){ const ks=KITS(), G=AOGDrumKit.groups||[], grp=b=>AOGDrumKit.group ? AOGDrumKit.group(b) : "", es=S.lang==="es";
+  const one=b=>`<option value="${b}"${b===S.bank?" selected":""}>${kitName(b)}</option>`;
+  return G.map(g=>{ const in_=ks.filter(b=>grp(b)===g.id); return in_.length ? `<optgroup label="${es?g.es:g.en}">`+in_.map(one).join("")+"</optgroup>" : ""; }).join("")
+    + ks.filter(b=>!G.some(g=>g.id===grp(b))).map(one).join(""); }
 function wide(){ const box=$("dkKitBox"); return box && box.clientHeight ? box.clientWidth/box.clientHeight : 1.8; }
 function paintKit(){
   const tall=innerWidth<700 && innerHeight>innerWidth;
