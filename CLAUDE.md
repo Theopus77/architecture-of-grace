@@ -338,6 +338,11 @@ LIGHT SPEED!!" Every feature, now and later:
 - FACS lessons and room pages link into both (`_work/fcs/practice3d.py`, `add_3d.py`, `add_3d_rooms.py`); after a
   change run `node tools/check-facs-3d.js`. The ids are fixed in `_work/engine3d/CONTRACT.md`.
 
+## No floating My notes button (Jimmy, 2026-10-18: "I don't like the my notes button. Please remove that")
+
+`aog-markup.js` no longer puts the floating My notes button on any page. Highlights and notes still work, and a tap on
+a highlight still edits or removes it. Don't add the button back unless Jimmy asks.
+
 ## Housekeeping
 
 - Bump `const CACHE` in `aog-deploy/sw.js` whenever a page changes, so browsers
