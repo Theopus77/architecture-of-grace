@@ -6,7 +6,8 @@
    3 · out of Solo, the licks are not shown; and there are no page errors. Port 9422.
    4 · AOG-SOLO-LICKS-PV-V1 (Jimmy, 2026-10-18: "the licks drop down menu is not visible by the neck"): on the whole screen
        (an iPad, a computer, a phone on its side), Guitar and Bass, the licks are a row right under the neck, a lick plays from
-       it, and leaving the whole screen puts them back under the neck. */
+       it, and leaving the whole screen puts them back under the neck; and when the screen changes size (an iPad turned)
+       and the Studio fits the room again, the licks stay right under the neck, before the room's controls. */
 const pw = require(require("child_process").execSync("npm root -g").toString().trim() + "/playwright");
 const path = require("path"), PORT = 9422, srv = require("../srv.js")(PORT);
 const ROOT = process.env.AOG_ROOT || path.resolve(__dirname, "../../../aog-deploy");
@@ -61,6 +62,20 @@ let fails = 0; const ok = (c, m) => { console.log((c ? "PASS " : "FAIL ") + m); 
     ok(r.shown && r.gap >= -1 && r.gap <= 60, `${room}, ${nm}, whole screen: the lick menu and ▶ Play this lick are in sight right under the neck (${r.gap} px)`);
     ok(r.playing, `${room}, ${nm}, whole screen: a lick plays from there`);
     ok(r.back, `${room}, ${nm}: leaving the whole screen puts the licks back under the neck`);
+    await ctx.close();
+  }
+  for (const room of ["guitar", "bass"]) {
+    const ctx = await b.newContext({ viewport: { width: 1280, height: 900 }, serviceWorkers: "block" });
+    await ctx.route(/^https?:\/\/(?!localhost)/, r => r.abort());
+    await ctx.route(/\/the-studio(\?[^#]*)?$/, r => r.fulfill({ path: path.join(ROOT, "the-studio.html"), contentType: "text/html" }));
+    const p = await ctx.newPage(); await p.goto(`http://localhost:${PORT}/the-studio#${room}`);
+    await p.waitForFunction(() => [...document.querySelectorAll("iframe")].some(f => { try { return f.contentDocument && f.contentDocument.querySelector('[data-so-mode="solo"]'); } catch (e) { return false; } }), null, { timeout: 60000 });
+    const f = p.frames().find(x => new RegExp("music-" + room).test(x.url()));
+    await f.evaluate(async () => { document.querySelector('[data-so-mode="solo"]').click(); await new Promise(r => setTimeout(r, 800)); });
+    await p.setViewportSize({ width: 900, height: 1300 }); await p.waitForTimeout(1500);
+    const r = await f.evaluate(() => { const lk = document.querySelector(".so-licks"), nb = document.getElementById("neckBox"), ctl = document.querySelector(".aog-ctl");
+      return { gap: Math.round(lk.getBoundingClientRect().top - nb.getBoundingClientRect().bottom), before: !ctl || !!(lk.compareDocumentPosition(ctl) & Node.DOCUMENT_POSITION_FOLLOWING) }; });
+    ok(r.gap >= 0 && r.gap <= 200 && r.before, `${room}: the screen resized, the licks stay right under the neck, before the room's controls (${r.gap} px)`);
     await ctx.close();
   }
   ok(errs.length === 0, "no page errors " + errs.join(" | "));

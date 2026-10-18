@@ -279,8 +279,11 @@
          keys, they lead the row of controls as in the other rooms */
       var spAfter = sp0 && at && at !== sp0 && !!(at.compareDocumentPosition(sp0) & Node.DOCUMENT_POSITION_FOLLOWING);
       var ctl = [[id === "band" && !spAfter ? null : sp0, keyRow, $("pedalsNear")], [recRow, sendRow]];
+      /* AOG-SOLO-LICKS-PV-V1: Solo's licks sit right under the neck (aog-solo.js); a room fitted again (the iPad turned, the
+         screen resized) keeps them there and puts its controls after them */
+      var lk = strings && q(".so-licks.so-near", rig), after = lk && lk.previousElementSibling === at ? lk : at;
       return {
-        host: pblk, after: at, ctl: ctl, lines: [$("loadLine"), $("sendLine"), $("padsLine")],
+        host: pblk, after: after, ctl: ctl, lines: [$("loadLine"), $("sendLine"), $("padsLine")],
         dup: strings ? [q(".row.nk-key", pblk), q(".row.nk-pat", pblk), $("prog2")] : [],
         any: $("anyRoots") && $("anyRoots").closest(".any"), krow: q(".aog-krow-top", pblk), toKrow: strings ? [$("soloMode")] : [],
         bar: pblk,
