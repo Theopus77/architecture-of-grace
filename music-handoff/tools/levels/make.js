@@ -2,7 +2,10 @@
    where each room's engine reads them. Jimmy: "I was trying to jam out on the bass and I was playing some notes and some
    scales were higher than others".
      node music-handoff/tools/levels/make.js bass [--passes 3] [--only finger,pick]
-     node music-handoff/tools/levels/make.js guitar
+     node music-handoff/tools/levels/make.js guitar --nomute   (the muted notes too without --nomute: slower)
+     node music-handoff/tools/levels/make.js piano | band | pads   (make_piano.js, make_band.js, make_pads.js)
+   then node music-handoff/tools/levels/start.js <room>  (each sound's starting level put back on the grand's), then
+   python3 tools/build-fast.py, and node music-handoff/tests/levels/even.js <room> to check.
    The Guitar and the Bass: every sound, every string at every fret, every take, each strength layer and the muted notes,
    through the sound's own amp and room (rooms.js). Each recording's notes are brought to the level the sound has where
    the room's level is set (the C chord, amp/b1: the guitar's open C shape, the bass's low C), flat across the neck in
