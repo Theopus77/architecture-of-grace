@@ -38,7 +38,7 @@ function starts(room, ch){
   ok(!off.length && !ch.errs.length, `${room}: every sound's C chord within ${LIM.start} dB of the grand piano's (${ch.grand.toFixed(2)} dB)${off.length?" — off: "+off.join(", "):""}${ch.errs.length?" errors: "+ch.errs.slice(0,3).join(" | "):""}`);
 }
 (async()=>{
-  const h=await R.open(9338), t0=Date.now();
+  const h=await R.open(+(process.env.AOG_LEVELS_PORT||9338)), t0=Date.now();   /* 9339 for a second half run beside it */
   for(const room of ROOMS){
     const t1=Date.now(); console.log(`== ${room}`);
     if(room==="bass" || room==="guitar"){
