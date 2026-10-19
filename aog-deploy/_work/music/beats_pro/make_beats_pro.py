@@ -15,16 +15,22 @@ for f in files:
         beats.append(b)
 data = json.dumps({"groups": groups, "beats": beats}, ensure_ascii=False, separators=(",", ":"))
 js = """/* AOG-BEATS-ELITE-V1 (Jimmy, 2026-10-19: "Produce some of the dopest and BEST hitting drum beat out there … we are no
-   where near the ceiling"): the Elite beats, MADE BY aog-deploy/_work/music/beats_pro/make_beats_pro.py from the family files
+   where near the ceiling"): the newer beats, MADE BY aog-deploy/_work/music/beats_pro/make_beats_pro.py from the family files
    there (never edit this file by hand). A beat may have res steps a beat (3 eighth-note triplets, 4 sixteenths, 6 sixteenth
-   triplets, 8 thirty-second notes) and up to four bars (map, then parts). Loaded with defer after aog-beats.js: its groups go
-   first in window.AOGBeats, and "aog-beats-more" tells the page to draw its beat menu again. */
+   triplets, 8 thirty-second notes) and up to four bars (map, then parts). Loaded with defer after aog-beats.js: they join the
+   main groups in window.AOGBeats, and "aog-beats-more" tells the page to draw its beat menu again. */
 (function(root){ "use strict";
   var P = %s;
   root.AOGBeatsPro = P;
   var A = root.AOGBeats; if (!A || A._pro) return;
-  var g = {}; Object.keys(P.groups).forEach(function(k){ g[k] = P.groups[k]; }); Object.keys(A.groups).forEach(function(k){ g[k] = A.groups[k]; });
-  A.groups = g; A.beats = P.beats.concat(A.beats); A._pro = 1;
+  /* AOG-BEATS-GROUPS-V1 (Jimmy, 2026-10-19: "group the drum kits accordingly. They can be mixed together"): these beats join
+     the main groups, mixed in, each group slow to fast */
+  Object.keys(P.groups || {}).forEach(function(k){ if (!A.groups[k]) A.groups[k] = P.groups[k]; });
+  var gi = {}; Object.keys(A.groups).forEach(function(k, i){ gi[k] = i; });
+  var all = A.beats.concat(P.beats).map(function(b, i){ return [b, i]; });
+  all.sort(function(x, y){ var a = x[0], b = y[0], ga = gi[a.grp] != null ? gi[a.grp] : 99, gb = gi[b.grp] != null ? gi[b.grp] : 99;
+    return ga - gb || (a.bpm || 0) - (b.bpm || 0) || x[1] - y[1]; });
+  A.beats = all.map(function(x){ return x[0]; }); A._pro = 1;
   try { root.dispatchEvent(new Event("aog-beats-more")); } catch (e) {}
 })(typeof window !== "undefined" ? window : this);
 """ % data

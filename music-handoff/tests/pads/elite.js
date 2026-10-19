@@ -1,10 +1,12 @@
 /* AOG-BEATS-ELITE-V1 (2026-10-19) — Jimmy: "Produce some of the dopest and BEST hitting drum beat out there … we are no
-   where near the ceiling." The Elite beats (aog-beats-pro.js, made by aog-deploy/_work/music/beats_pro/make_beats_pro.py):
+   where near the ceiling." The 64 newer beats (aog-beats-pro.js, made by aog-deploy/_work/music/beats_pro/make_beats_pro.py),
+   mixed into the main groups since AOG-BEATS-GROUPS-V1 (Jimmy: "I don't like the word ELITE … group the drum kits accordingly"):
    · the made file matches the family files, and their own check (check_beats.js) passes;
-   · Drum Machine: the Elite groups come before the older groups in the beat menu, in English and Spanish; every Elite beat
+   · Drum Machine: the 13 main groups in the beat menu, each newer beat in its group with the older ones, slow to fast, and
+     the word Elite nowhere, in English and Spanish; every newer beat
      loads from the menu with every hit on its pad and on its exact tick (a step is 96/res ticks: triplets and 32nd notes),
      every bar of it (1, 2 or 4), its tempo, its kit, straight time on a triplet or 32nd grid; one beat of each grid plays;
-   · Drum Kit: the same groups first; every Elite beat brings its kit and its tempo, and its bars are 4 × res steps long;
+   · Drum Kit: the same groups; every newer beat brings its kit and its tempo, and its bars are 4 × res steps long;
      one beat of each grid plays (the steps move on, the drums light);
    · an iPhone: nothing scrolls sideways; no page errors. Ports 9403 (the Drum Machine), 9404 (the Drum Kit). */
 const pw=require(require("child_process").execSync("npm root -g").toString().trim()+"/playwright");
@@ -33,13 +35,17 @@ const PADS=["kick","snare","ch","oh","clap","tom","rim","bell"];
     await p.goto(`http://localhost:${port}/${page}`); await p.waitForTimeout(1200);
     return {c, p, errs};
   };
-  const groupsEn=Object.values(P.groups).map(g=>g.en), groupsEs=Object.values(P.groups).map(g=>g.es);
+  const BASE=JSON.parse(fs.readFileSync(path.join(ROOT,"_work/music/beats_core/_base.json"),"utf8")).groups;
+  const groupsEn=Object.values(BASE).map(g=>g.en), groupsEs=Object.values(BASE).map(g=>g.es);
 
   /* ══ the Drum Machine ══ */
   { const {c, p, errs}=await open(9403, "music-pads.html", {viewport:{width:1280,height:900}});
     const menu=await p.evaluate(()=>[...document.querySelectorAll("#grpSel option")].map(o=>o.textContent));
-    const isEl=t=>groupsEn.includes(t), first=menu.findIndex(isEl), lastEl=menu.map(isEl).lastIndexOf(true), rock=menu.indexOf("Rock");
-    ok(groupsEn.every(g=>menu.includes(g)) && first>=0 && lastEl<rock, "Drum Machine: the Elite groups come before the older groups: "+menu.slice(0, 14).join(" | "));
+    const mixed=await p.evaluate(()=>{ const F=beatFlat(), G=[...new Set(F.map(x=>x.g))]; const bad=[];
+      F.filter(x=>x.b.pro).forEach(x=>{ if(!F.some(y=>y.g===x.g && !y.b.pro)) bad.push(x.b.id+" alone in "+x.g); });
+      G.forEach(g=>{ const bp=F.filter(x=>x.g===g && AOGBeats.groups[g]).map(x=>x.b.bpm||0); if(bp.some((v,i)=>i && v<bp[i-1])) bad.push(g+" not slow to fast"); });
+      return bad; });
+    ok(groupsEn.every(g=>menu.includes(g)) && !menu.some(t=>/elite/i.test(t)) && mixed.length===0, "Drum Machine: the 13 groups, each newer beat mixed in with the older ones, slow to fast, no Elite: "+menu.slice(0, 16).join(" | ")+" "+mixed.slice(0,3).join(" | "));
     const bad=[];
     for(const x of P.beats){
       await p.selectOption("#grpSel", x.grp).catch(()=>{}); await p.waitForTimeout(60);
@@ -59,7 +65,7 @@ const PADS=["kick","snare","ch","oh","clap","tom","rim","bell"];
       if(res!==4 && st.swing!==50) why.push("swing "+st.swing);
       if(why.length) bad.push(x.id+": "+why.join(", "));
     }
-    ok(bad.length===0, `Drum Machine: all ${P.beats.length} Elite beats load from the menu: every hit on its pad and tick, every bar, tempo, kit `+bad.slice(0,4).join(" | "));
+    ok(bad.length===0, `Drum Machine: all ${P.beats.length} newer beats load from the menu: every hit on its pad and tick, every bar, tempo, kit `+bad.slice(0,4).join(" | "));
     for(const [res, id] of Object.entries(RES)){
       const x=P.beats.find(q=>q.id===id);
       await p.selectOption("#grpSel", x.grp); await p.waitForTimeout(60); await p.selectOption("#startSel", id); await p.waitForTimeout(100);
@@ -71,7 +77,7 @@ const PADS=["kick","snare","ch","oh","clap","tom","rim","bell"];
   }
   { const {c, p, errs}=await open(9403, "music-pads.html", {viewport:{width:390,height:844}, isMobile:true, hasTouch:true}, "es");
     const menu=await p.evaluate(()=>[...document.querySelectorAll("#grpSel option")].map(o=>o.textContent));
-    ok(groupsEs.every(g=>menu.includes(g)), "Drum Machine en español: "+groupsEs.join(", "));
+    ok(groupsEs.every(g=>menu.includes(g)) && !menu.some(t=>/[ée]lite/i.test(t)), "Drum Machine en español, sin Élite: "+groupsEs.join(", "));
     ok(await p.evaluate("document.documentElement.scrollWidth")<=390, "Drum Machine on an iPhone: nothing scrolls sideways");
     ok(errs.length===0, "Drum Machine on an iPhone: no page errors "+errs.join(" | "));
     await c.close();
@@ -80,8 +86,7 @@ const PADS=["kick","snare","ch","oh","clap","tom","rim","bell"];
   /* ══ the Drum Kit ══ */
   { const {c, p, errs}=await open(9404, "music-kit.html", {viewport:{width:1280,height:900}});
     const og=await p.evaluate(()=>[...document.querySelectorAll("#beatSel optgroup")].map(g=>g.label));
-    const iEl=og.map(t=>groupsEn.includes(t)).lastIndexOf(true);
-    ok(groupsEn.every(g=>og.includes(g)) && iEl>=0 && iEl<og.indexOf("Rock"), "Drum Kit: the Elite groups come before the older groups: "+og.slice(0, 12).join(" | "));
+    ok(groupsEn.every(g=>og.includes(g)) && !og.some(t=>/elite/i.test(t)), "Drum Kit: the 13 groups, no Elite: "+og.slice(0, 16).join(" | "));
     const bad=[];
     for(const x of P.beats){
       await p.selectOption("#beatSel", "b:"+x.id).catch(()=>{}); await p.waitForTimeout(60);
@@ -93,7 +98,7 @@ const PADS=["kick","snare","ch","oh","clap","tom","rim","bell"];
       if(!st.lens.every(n=>n===4*res) || st.lens.length!==1+(x.parts||[]).length) why.push("bars "+st.lens.join(","));
       if(why.length) bad.push(x.id+": "+why.join(", "));
     }
-    ok(bad.length===0, `Drum Kit: all ${P.beats.length} Elite beats bring their kit and tempo, each bar 4 × res steps `+bad.slice(0,4).join(" | "));
+    ok(bad.length===0, `Drum Kit: all ${P.beats.length} newer beats bring their kit and tempo, each bar 4 × res steps `+bad.slice(0,4).join(" | "));
     for(const [res, id] of Object.entries(RES)){
       await p.selectOption("#beatSel", "b:"+id); await p.waitForTimeout(100);
       const r=await p.evaluate(async()=>{ beatStart(); await new Promise(q=>setTimeout(q, 1200)); const s={on:BT.on, moved:BT.step+BT.part*100}; beatStop(); return s; });
@@ -104,7 +109,7 @@ const PADS=["kick","snare","ch","oh","clap","tom","rim","bell"];
   }
   { const {c, p, errs}=await open(9404, "music-kit.html", {viewport:{width:390,height:844}, isMobile:true, hasTouch:true}, "es");
     const og=await p.evaluate(()=>[...document.querySelectorAll("#beatSel optgroup")].map(g=>g.label));
-    ok(groupsEs.every(g=>og.includes(g)), "Drum Kit en español: "+groupsEs.join(", "));
+    ok(groupsEs.every(g=>og.includes(g)) && !og.some(t=>/[ée]lite/i.test(t)), "Drum Kit en español, sin Élite: "+groupsEs.join(", "));
     ok(await p.evaluate("document.documentElement.scrollWidth")<=390, "Drum Kit on an iPhone: nothing scrolls sideways");
     ok(errs.length===0, "Drum Kit on an iPhone: no page errors "+errs.join(" | "));
     await c.close();

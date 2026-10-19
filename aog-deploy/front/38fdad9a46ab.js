@@ -25,7 +25,7 @@ const STR={
   beatPrev:{en:"Previous beat",es:"Ritmo anterior"}, beatNext:{en:"Next beat",es:"Ritmo siguiente"}, ownBeat:{en:"Your own beat",es:"Tu propio ritmo"},
   nowBeat:{en:"Now: {name} · {bpm} beats a minute · {kit}",es:"Ahora: {name} · {bpm} pulsos por minuto · {kit}"},
   nowChanged:{en:"Now: {name}, changed by you",es:"Ahora: {name}, cambiado por ti"}, nowOwn:{en:"Now: your own beat. Pick a style to start from one.",es:"Ahora: tu propio ritmo. Elige un estilo para empezar con uno."},
-  guide:{en:"New here? How to make a killer song, step by step →",es:"¿Eres nuevo? Cómo hacer una canción increíble, paso a paso →"},   /* AOG-BEATLAB-GUIDE-V1 */
+  guide:{en:"New here? Make a hit, step by step →",es:"¿Eres nuevo? Haz un éxito, paso a paso →"},   /* AOG-BEATLAB-GUIDE-V1 */
   bgFirst:{en:"First beats",es:"Primeros ritmos"}, bgStyles:{en:"Famous styles",es:"Estilos famosos"},
   stepsH:{en:"Steps for pad {n}: {name}. Tap a step to add or take away a hit.",es:"Pasos del pad {n}: {name}. Toca un paso para poner o quitar un golpe."},
   /* AOG-PADS-16BARS-V1 */
@@ -1016,10 +1016,13 @@ function bindBounce(){
 function beatFlat(){ const A=window.AOGBeats; if(!A) return [];
   const out=[]; A.classroom.forEach(b=>out.push({g:"first", b:b})); A.styles.forEach(b=>out.push({g:"styles", b:b}));
   Object.keys(A.groups).forEach(g=>A.beats.filter(b=>b.grp===g).forEach(b=>out.push({g:g, b:b})));
-  handBeats().forEach(b=>out.push({g:b.grp||"hand", b:b})); return out; }   /* AOG-DRUM-PERC-V1 · AOG-DRUM-MORE-V1: a new kit's groove sits in its kind's group */
+  handBeats().forEach(b=>out.push({g:b.grp||"hand", b:b}));
+  /* AOG-BEATS-GROUPS-V1: a kit's groove joins its group too; every main group runs slow to fast */
+  const gi={}; out.forEach(x=>{ if(gi[x.g]==null) gi[x.g]=Object.keys(gi).length; });
+  return out.map((x,i)=>[x,i]).sort((a,b)=>gi[a[0].g]-gi[b[0].g] || (A.groups[a[0].g] ? (a[0].b.bpm||0)-(b[0].b.bpm||0) : 0) || a[1]-b[1]).map(x=>x[0]); }   /* AOG-DRUM-PERC-V1 · AOG-DRUM-MORE-V1: a new kit's groove sits in its kind's group */
 /* AOG-DRUM-PERC-V1: the hand-drum and tabla grooves (aog-drumkit.js, hand:1), each on its own kit */
 function handBeats(){ return ((window.AOGDrumKit && AOGDrumKit.starters)||[]).filter(b=>b.hand && KITS().indexOf(b.kit)>=0); }
-function grpName(g){ const A=window.AOGBeats; return g==="first" ? t("bgFirst") : g==="styles" ? t("bgStyles") : g==="hand" ? L(AOGDrumKit.words.handGroup) : (AOGDrumKit.beatGroups && AOGDrumKit.beatGroups[g]) ? L(AOGDrumKit.beatGroups[g]) : L(A.groups[g]); }
+function grpName(g){ const A=window.AOGBeats; return g==="first" ? t("bgFirst") : g==="styles" ? t("bgStyles") : g==="hand" ? L(AOGDrumKit.words.handGroup) : A.groups[g] ? L(A.groups[g]) : L(AOGDrumKit.beatGroups[g]); }   /* AOG-BEATS-GROUPS-V1: a main group keeps its own name when a kit's groove joins it */
 function bankASig(){ return S.ev.filter(e=>e.b===0).map(e=>e.p+":"+e.t+":"+e.v).sort().join(","); }
 function beatById(id){ const A=window.AOGBeats; return A ? [].concat(A.classroom, A.styles, A.beats, handBeats()).find(b=>b.id===id) : null; }
 function startBeat(id){
@@ -1390,10 +1393,10 @@ function paintControls(){
    don't like how it stays on 'Pick a beat'; it should show the person what they are using"): two short menus, a style (12)
    and its beats (8 to 11), and ◀ ▶ that step through every beat, one tap each (the loop keeps playing, so each is heard
    at once). The menus show the beat in use, and the line under them says its name, tempo and kit, or that you changed it. */
-window.addEventListener("aog-beats-more", ()=>{ if($("beatNow")) paintBeatPick(); });   /* AOG-BEATS-ELITE-V1: the Elite beats arrived */
+window.addEventListener("aog-beats-more", ()=>{ if($("beatNow")) paintBeatPick(); });   /* AOG-BEATS-ELITE-V1: the newer beats arrived */
 function paintBeatPick(){
   const F=beatFlat(); if(!F.length) return;
-  const cur=S.beat && beatById(S.beat.id), g=(S.beat && S.beat.g) || "first";
+  const cur=S.beat && beatById(S.beat.id), g=(cur && (F.find(x=>x.b.id===cur.id)||{}).g) || (S.beat && S.beat.g) || "first";   /* AOG-BEATS-GROUPS-V1: a saved beat finds the group it is in now */
   const groups=[...new Set(F.map(x=>x.g))];
   $("startLab").textContent=t("start"); $("grpLab").textContent=t("grpLab"); $("beatLab").textContent=t("beatLab");
   $("grpSel").setAttribute("aria-label", t("grpLab")); $("startSel").setAttribute("aria-label", t("beatLab"));

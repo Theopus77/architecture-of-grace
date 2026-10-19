@@ -144,7 +144,7 @@ body.aog-play #kitView{display:flex;flex-direction:column;position:fixed;inset:0
 <script src="/aog-amp.js"></script><!-- AOG-ROOM-PEDALS-V1: the pedalboard, the same panel as the guitar has -->
 <script src="aog-drumkit.js"></script>
 <script src="aog-beats.js"></script>
-<script src="aog-beats-pro.js" defer></script><!-- AOG-BEATS-ELITE-V1: the Elite beats, after the page is read -->
+<script src="aog-beats-pro.js" defer></script><!-- AOG-BEATS-ELITE-V1: the newer beats, after the page is read -->
 <script src="/aog-lessons.js"></script>
 <script src="/aog-lessons-kit.js"></script>
 </head>
@@ -484,11 +484,14 @@ function beatsAll(){
   const B=window.AOGBeats||{groups:{}, styles:[], beats:[], classroom:[]}, es=S.lang==="es", out=[];
   const nm=x=>x[es?"es":"en"]||x.en;
   out.push({label:t("gStyles"), items:(B.styles||[]).map(x=>({key:"s:"+x.id, name:nm(x), b:x}))});
-  Object.keys(B.groups||{}).forEach(g=>{ const items=(B.beats||[]).filter(x=>x.grp===g).map(x=>({key:"b:"+x.id, name:nm(x), b:x})); if(items.length) out.push({label:nm(B.groups[g]), items:items}); });
   const ks=(window.AOGDrumKit && AOGDrumKit.starters)||[], BG=(window.AOGDrumKit && AOGDrumKit.beatGroups)||{}, mine=x=>x.grp && BG[x.grp];
+  /* AOG-BEATS-GROUPS-V1: a kit's groove whose kind is a main group (World, Electronic …) joins it; every group slow to fast */
+  Object.keys(B.groups||{}).forEach(g=>{ const items=(B.beats||[]).filter(x=>x.grp===g).map(x=>({key:"b:"+x.id, name:nm(x), b:x}))
+      .concat(ks.filter(x=>x.grp===g).map(x=>({key:"k:"+x.id, name:nm(x), b:x}))).sort((a,b)=>(a.b.bpm||0)-(b.b.bpm||0));
+    if(items.length) out.push({label:nm(B.groups[g]), items:items}); });
   if(ks.length) out.push({label:t("gKit"), items:ks.filter(x=>!mine(x)).map(x=>({key:"k:"+x.id, name:nm(x), b:x}))});
-  /* AOG-DRUM-MORE-V1: the new kits' grooves, under their kind (World rhythms, Electronic grooves …) */
-  Object.keys(BG).forEach(g=>{ const items=ks.filter(x=>x.grp===g).map(x=>({key:"k:"+x.id, name:nm(x), b:x})); if(items.length) out.push({label:nm(BG[g]), items:items}); });
+  /* AOG-DRUM-MORE-V1: the new kits' grooves, under their kind (World rhythms, Electronic grooves …), unless a main group took them */
+  Object.keys(BG).forEach(g=>{ if((B.groups||{})[g]) return; const items=ks.filter(x=>x.grp===g).map(x=>({key:"k:"+x.id, name:nm(x), b:x})); if(items.length) out.push({label:nm(BG[g]), items:items}); });
   out.push({label:t("gClass"), items:(B.classroom||[]).map(x=>({key:"c:"+x.id, name:nm(x), b:x}))});
   return out;
 }
@@ -535,7 +538,7 @@ function beatPaint(){
   $("swingR").value=Math.round(S.swing*100); $("swingOut").textContent=Math.round(S.swing*100)+"% · "+swingWord();
   $("beatVol").value=Math.round(S.bvol*100); $("volOut").textContent=Math.round(S.bvol*100)+"%";
 }
-window.addEventListener("aog-beats-more", ()=>{ if($("beatSel")) beatText(); });   /* AOG-BEATS-ELITE-V1: the Elite beats arrived */
+window.addEventListener("aog-beats-more", ()=>{ if($("beatSel")) beatText(); });   /* AOG-BEATS-ELITE-V1: the newer beats arrived */
 function beatText(){
   $("beatH").textContent=t("beatH"); $("beatIntro").textContent=t("beatIntro"); $("beatLab").textContent=t("beatLab");
   $("tempoLab").textContent=t("tempo"); $("swingLab").textContent=t("swing"); $("volLab").textContent=t("vol"); $("beatReset").textContent=t("reset");
@@ -545,7 +548,7 @@ function beatText(){
   beatPaint();
 }
 function pickBeat(key){ if(!beatAt(key)) return; S.beat=key; beatOwn(beatAt(key)); save(); $("beatSel").value=key; $("dkBeatSel").value=key;
-  { const hb=beatAt(key); if((hb.hand || hb.pro) && hb.kit && hb.kit!==S.bank && KITS().indexOf(hb.kit)>=0) pickKit(hb.kit); }   /* AOG-DRUM-PERC-V1: a hand-drum groove brings its kit; AOG-BEATS-ELITE-V1: an Elite beat too */
+  { const hb=beatAt(key); if((hb.hand || hb.pro) && hb.kit && hb.kit!==S.bank && KITS().indexOf(hb.kit)>=0) pickKit(hb.kit); }   /* AOG-DRUM-PERC-V1: a hand-drum groove brings its kit; AOG-BEATS-ELITE-V1: a newer beat too */
   if(BT.on){ BT.step=0; BT.part=0; } beatPaint(); LES.mark("beat1"); lessonSong(); }
 function setTempo(n){ S.bpm=Math.max(40, Math.min(220, Math.round(n))); save(); beatPaint();
   LES.mark("tempo1"); if(S.bpm>=140) LES.mark("tfast"); if(S.bpm<=70) LES.mark("tslow"); }
