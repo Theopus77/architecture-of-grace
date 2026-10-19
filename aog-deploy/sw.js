@@ -8,7 +8,8 @@
  * not run on this file. Forget the bump and returning visitors keep the stale
  * page from their cache.
  */
-const CACHE = 'aog-cache-2026.10.18.m7532'   // HARD ROCK AND METAL LICKS, GUITAR AND BASS MENUS MATCH (aog-guitar-licks.js, aog-bass-licks.js, aog-solo.js) (previous: m7531)
+const CACHE = 'aog-cache-2026.10.19.m7533'   // LICKS UNDER THE NECK WHEN THE ROOM OPENS WITH SOLO ON (aog-labdoors.js) (previous: m7532)
+// const CACHE = 'aog-cache-2026.10.18.m7532'   // HARD ROCK AND METAL LICKS, GUITAR AND BASS MENUS MATCH (aog-guitar-licks.js, aog-bass-licks.js, aog-solo.js) (previous: m7531)
 // const CACHE = 'aog-cache-2026.10.18.m7531'   // LICKS ON THE WHOLE SCREEN AND AFTER A RESIZE (aog-solo.js, aog-labdoors.js) (previous: m7530)
 // const CACHE = 'aog-cache-2026.10.18.m7530'   // CUBE LAB: plainer on-screen instructions; the floating My notes button removed from every page (previous: m7529)
 // const CACHE = 'aog-cache-2026.10.18.m7529'   // 122 GUITAR LICKS (aog-guitar-licks.js) (previous: m7528)
