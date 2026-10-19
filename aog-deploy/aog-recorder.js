@@ -504,6 +504,26 @@
       if (btn) btn.disabled = true;
       setTimeout(function () { arm(false); setTimeout(function () { R.closing = false; var b = el("btn"); if (b) b.disabled = false; finish(); }, 160); }, 500);
     };
+    /* AOG-LICKS-SONG-V1 (Jimmy, 2026-10-19: licks "to use them within my own creations / songs"): a take the room made
+       itself (a lick rendered at the song's tempo, key and chords) joins this room's takes as if it had been played: it is
+       numbered, kept on the device, seeds a new song's tempo and key, and has every take's buttons, so + Add to My Track
+       and Send to the drum machine take it as they take any other. blob: a .wav; o: {sec, bpm, notes, place} (notes as
+       AOG-NOTES-V1 keeps them; place {bar, bpm} puts it on a bar of My Track). Returns the take. */
+    R.addTake = function (blob, o2) {
+      o2 = o2 || {};
+      if (!(blob instanceof Blob) || blob.size <= 44) return null;
+      var sec = +o2.sec > 0 ? +o2.sec : (blob.size - 44) / 4 / (R.sr || 44100);
+      var take = { n: ++R.n, sec: sec, blob: blob, url: URL.createObjectURL(blob), at: Date.now(), bpm: +o2.bpm > 0 ? +o2.bpm : 0,
+        added: false, hid: "", place: o2.place || null };
+      if (o2.notes) take.notes = o2.notes;
+      R.takes.unshift(take);
+      R.studioLine = false;
+      while (R.takes.length > 3) { var old = R.takes.pop(); URL.revokeObjectURL(old.url); unstore(old); }
+      R.kept = false; store(take);
+      try { if (window.AOGSong) AOGSong.seedFromRoom(); } catch (e) {}
+      R.msg = "recKeep"; R.paint();
+      return take;
+    };
     R.send = async function (n) {
       var k = R.takes.find(function (x) { return x.n === n; }); if (!k) return;
       var name = o.prefix[L()] + " · " + w("mine") + " · " + w("take") + " " + k.n + " · " + clock(k.sec), line = el("line");
