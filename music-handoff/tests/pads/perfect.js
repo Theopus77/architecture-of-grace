@@ -36,23 +36,28 @@ const PADS=["kick","snare","ch","oh","clap","tom","rim","bell"];
 
   /* ══ the Drum Machine ══ */
   { const {c, p, errs}=await open(9405, "music-pads.html", {viewport:{width:1280,height:900}});
-    const bad=[];
+    const bad=[], why0=[];
     for(const x of P.beats){
       await p.selectOption("#grpSel", grpOf(x)).catch(()=>{}); await p.waitForTimeout(60);
       await p.selectOption("#startSel", x.id).catch(()=>{}); await p.waitForTimeout(80);
       const st=await p.evaluate(()=>({id:S.beat&&S.beat.id, kit:S.banks[0].kitA, bpm:S.bpm, swing:S.swing, bars:S.bars, kits:KITS(),
         ev:S.ev.filter(e=>e.b===0).map(e=>e.p+":"+Math.round(e.t)+":"+e.v).sort()}));
       const res=x.res||4, tk=96/res, V={1:0.8,2:1,3:0.45}, bars=[x.map].concat((x.parts||[]).map(q=>q.map)), want=[];
-      for(let bar=0; bar<st.bars; bar++) PADS.forEach((pid, pi)=>{ const row=bars[bar%bars.length][pid]; if(!row) return; row.forEach((v,i)=>{ if(v) want.push(pi+":"+Math.round(bar*384+i*tk)+":"+V[v]); }); });
+      const sw8=res===4 && x.swing8 && x.swing>0.5 ? Math.min(23, Math.round((x.swing-0.5)*96)) : 0, late=i=>sw8 && i%4>=2 ? sw8 : 0;
+      const lens=[x.len||0].concat((x.parts||[]).map(q=>q.len||x.len||0)), L0=lens[0], short=res===4 && L0>0 && L0<16 && lens.every(q=>q===L0);
+      const nb=short ? [1,2,3,4,8,12,16].find(k=>(k*16)%(bars.length*L0)===0) : 0;
+      if(nb){ if(st.bars!==nb) why0.push("a loop of "+st.bars+" bars, want "+nb+" (bars of "+L0/4+" back to back)");
+        for(let q=0; q<nb*16; q++){ const k=Math.floor(q/L0), i=q%L0; PADS.forEach((pid, pi)=>{ const row=bars[k%bars.length][pid]; if(row && row[i]) want.push(pi+":"+(q*24+late(i))+":"+V[row[i]]); }); } }
+      else for(let bar=0; bar<st.bars; bar++) PADS.forEach((pid, pi)=>{ const row=bars[bar%bars.length][pid]; if(!row) return; row.forEach((v,i)=>{ if(v) want.push(pi+":"+Math.round(bar*384+i*tk+(res===4 ? late(i) : 0))+":"+V[v]); }); });
       want.sort();
-      const why=[];
+      const why=why0.splice(0);
       if(st.id!==x.id) why.push("not loaded");
-      if(st.bars<bars.length) why.push("bars "+st.bars);
+      if(!nb && st.bars<bars.length) why.push("bars "+st.bars);
       if(JSON.stringify(st.ev)!==JSON.stringify(want)) why.push(`hits ${st.ev.length} of ${want.length}`);
       if(st.bpm!==x.bpm) why.push("tempo "+st.bpm);
       if(st.kits.includes(x.kit) && st.kit!==x.kit) why.push("kit "+st.kit);
       if(!st.kits.includes(x.kit)) why.push("kit "+x.kit+" is not on the Drum Machine");
-      if(res!==4 && st.swing!==50) why.push("swing "+st.swing);
+      if((res!==4 || sw8) && st.swing!==50) why.push("swing "+st.swing+" (written into the hits)");
       if(why.length) bad.push(x.id+": "+why.join(", "));
     }
     ok(bad.length===0, `Drum Machine: all ${P.beats.length} beats load from the menu: every hit on its pad and tick, every bar, tempo, kit `+bad.slice(0,4).join(" | "));
@@ -81,7 +86,8 @@ const PADS=["kick","snare","ch","oh","clap","tom","rim","bell"];
       if(st.key!==(x.grp==="styles"?"s:":"b:")+x.id) why.push("not picked");
       
       if(st.bpm!==Math.max(40, Math.min(220, x.bpm))) why.push("tempo "+st.bpm);
-      if(!st.lens.every(n=>n===4*res) || st.lens.length!==1+(x.parts||[]).length) why.push("bars "+st.lens.join(","));
+      const wantLens=[x.len||4*res].concat((x.parts||[]).map(q=>q.len||x.len||4*res));
+      if(JSON.stringify(st.lens)!==JSON.stringify(wantLens)) why.push("bars "+st.lens.join(","));
       if(why.length) bad.push(x.id+": "+why.join(", "));
     }
     ok(bad.length===0, `Drum Kit: all ${P.beats.length} beats bring their tempo, each bar 4 × res steps `+bad.slice(0,4).join(" | "));

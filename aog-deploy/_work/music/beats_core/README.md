@@ -25,7 +25,7 @@ them against `_original.json` (never edit `_original.json` or `_base.json`; the 
 - **Phrasing:** 2 or 4 bars (`parts`, up to 3) where the style moves over a phrase; bar 4 a fill or change that lifts
   back into bar 1; a crash on the 1 after a fill where the kit has one. A beat that is perfect as one bar may stay one bar.
 - **Grid** (`res`): 4 sixteenths; 3 eighth-note triplets (shuffles, 12/8); 6 sixteenth triplets (trap and drill rolls);
-  8 thirty-second notes (rolls, blasts). Every row has 4 × res steps. Swing (0.5–0.75) only on res 4. `len` (a short bar,
+  8 thirty-second notes (rolls, blasts). Every row has 4 × res steps. Swing (0.5–0.75) only on res 4: it delays the in-between sixteenths; add `"swing8": true` to swing the eighth notes instead (a jazz ride, a shuffle). `len` (a short bar,
   e.g. 12 for a bar of 3) only on res 4, no hits past it.
 - **Words:** a better one-sentence `about` in English and Spanish when the beat changed: plain everyday words, what it is
   and what to listen for. No artist, drummer, band or song names. Original patterns in the style, never a famous record's

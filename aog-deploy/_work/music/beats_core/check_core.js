@@ -29,6 +29,7 @@ for(const [f,gs] of Object.entries(FAM)){
     if(SIXTEEN(b) && res!==4) bad(f,id,"this beat's lesson counts on sixteenths: keep res 4");
     if(b.swing!=null && (b.swing<0.5||b.swing>0.75)) bad(f,id,"swing 0.5..0.75");
     if(b.swing>0.5 && res!==4) bad(f,id,"swing only with res 4");
+    if(b.swing8!=null && (b.swing8!==true || !(b.swing>0.5))) bad(f,id,"swing8 is true, with a swing over 0.5");
     if(b.len && res!==4) bad(f,id,"len (a short bar) only with res 4");
     if((b.parts||[]).length>3) bad(f,id,"at most 3 parts (4 bars)");
     const bars=[{len:b.len, map:b.map}].concat((b.parts||[]).map(p=>({len:p&&p.len||b.len, map:p&&p.map})));

@@ -24,7 +24,7 @@ let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails+
       sel:document.getElementById("beatSel").value, bpm:S.bpm, out:document.getElementById("tempoOut").textContent, play:document.getElementById("beatPlay").textContent,
       about:document.getElementById("beatAbout").textContent, on:BT.on, heard:__h.length, sw:document.documentElement.scrollWidth}));
     ok(st.n>=110 && st.groups.length>=12, `${st.n} beats in ${st.groups.length} groups: `+st.groups.join(", "));
-    ok(st.sel==="b:rockbasic" && st.bpm===112 && st.out==="112 beats a minute" && /Kick on 1 and 3/.test(st.about), "it starts on the basic rock beat at its own speed, with one line about it");
+    ok(st.sel==="b:rockbasic" && st.bpm===112 && st.out==="112 beats a minute" && /kick on 1 and 3/i.test(st.about), "it starts on the basic rock beat at its own speed, with one line about it");
     await p.waitForTimeout(600);
     ok(!st.on && (await p.evaluate("__h.length"))===0 && st.play==="▶ Play the beat", "nothing plays until Play is pressed");
     ok(st.sw<=1280, "nothing scrolls sideways");

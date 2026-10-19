@@ -120,7 +120,8 @@ async function ctxOf(b, opts) {
     out.canonPads = patPads(PATS.find(x => x.id === "canon")).map(x => x + 1).join(",");
     S.bars = 16; S.ev = []; startBeat("boombap");
     const A = S.ev.filter(e => e.b === 0), sig = bar => A.filter(e => Math.floor(e.t / 384) === bar).map(e => e.p + ":" + (e.t % 384)).sort().join();
-    out.beat = { bars: S.bars, every: [...Array(16).keys()].every(k => sig(k) && sig(k) === sig(0)) };
+    const nb = 1 + ((beatById("boombap") || {}).parts || []).length;   /* AOG-BEATS-PERFECT-V1: a beat may be a phrase of 2 or 4 bars */
+    out.beat = { bars: S.bars, every: [...Array(16).keys()].every(k => sig(k) && sig(k) === sig(k % nb)) };
     const P = beatFlat().map(x => x.b).find(x => x.parts && x.parts.length);
     if (P) { S.bars = 16; startBeat(P.id); const A2 = S.ev.filter(e => e.b === 0), s2 = bar => A2.filter(e => Math.floor(e.t / 384) === bar).map(e => e.p + ":" + (e.t % 384)).sort().join(), n = P.parts.length + 1;
       out.parts = { id: P.id, n, bars: S.bars, rep: [...Array(16).keys()].every(k => s2(k) === s2(k % n)), differ: s2(0) !== s2(1) }; }
@@ -133,7 +134,7 @@ async function ctxOf(b, opts) {
   ok(r4.blues16.bars === 12 && r4.blues16.n === 12 && r4.blues16.at === "0,1,2,3,4,5,6,7,8,9,10,11", `the 12-bar blues in a long loop is 12 bars, one chord a bar (${r4.blues16.bars} bars: ${r4.blues16.pads})`);
   ok(r4.wheel8.bars === 8 && r4.wheel8.n === 6 && r4.wheel8.len === "1,1,1,1,1,3", `6 chords over 8 bars: a bar each, home holds the last 3 (${r4.wheel8.len}; "${r4.wheel8.each}")`);
   ok(r4.pop4.bars === 4 && r4.pop4.n === 4, "a short loop is as before: Pop over 4 bars");
-  ok(r4.beat.bars === 16 && r4.beat.every, "a beat fills all 16 bars, the same in each");
+  ok(r4.beat.bars === 16 && r4.beat.every, "a beat fills all 16 bars, its phrase repeating");
   ok(!!r4.parts && r4.parts.rep && r4.parts.differ && r4.parts.bars === 16, "a beat in parts plays its parts bar after bar, round and round over 16 bars: " + JSON.stringify(r4.parts));
 
   /* 5 · a longer loop repeats; copy and clear bars */
