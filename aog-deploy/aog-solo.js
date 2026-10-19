@@ -1730,7 +1730,7 @@ function lickPlan(id, o){
       if(C){ ns=C.notes; ov=C.chords.slice(0, bars).map(x=>x.band); if(r===0){ w0=C.w; if(!old) B0=Object.assign({}, own, {notes:C.notes, chords:C.chords}); } }
       else fit=false;
     }
-    ns.forEach(n=>{ const m=Object.assign({}, n, {t:+(n.t+r*beats).toFixed(4)}); if(n.tb!=null) m.tb=n.tb+r*beats; if(r>0) m.rep=r; out.push(m); });
+    ns.forEach(n=>{ const m=Object.assign({}, n, {t:r ? +(n.t+r*beats).toFixed(6) : n.t}); if(n.tb!=null) m.tb=n.tb+r*beats; if(r>0) m.rep=r; out.push(m); });
     ov.forEach(x=>over.push(x));
   }
   out.sort((a,b)=>a.t-b.t || a.s-b.s);
@@ -1875,7 +1875,7 @@ async function recordLick(){
     LREC.last={n:k.n, sec:T.sec, bpm:T.bpm, bars:T.plan.total/4, fit:T.plan.fit, id};
     if(ln) ln.textContent=w("recMade",{n:k.n});
   }catch(e){ if(ln) ln.textContent=w("recFail"); LREC.last=null; }
-  LREC.busy=false; if(btn) btn.disabled=false; paintLickSel();
+  LREC.busy=false; if(btn) btn.disabled=!lickSet()[P.lick];
 }
 function paintSong(){
   const f=$q("soFit"); if(!f) return;

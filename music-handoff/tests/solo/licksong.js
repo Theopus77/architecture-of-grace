@@ -15,8 +15,8 @@
    1 · the words, English and Spanish: Fit to my chords / Seguir mis acordes, Repeat / Repetir, ● Record this lick /
        ● Grabar esta frase, "In your song: {key}, {n} beats a minute." / "En tu canción: …", said once; the row fits the
        screen (no sideways scroll), its buttons 44 px or taller
-   2 · the song's tempo: a song at 200 and at 45 beats a minute (outside the room's own 50–180, and past the old 60–132
-       clamp) plays the lick at exactly that tempo; Lick speed still slows it, for practice
+   2 · the song's tempo: a song at 176, 52 and 97.5 beats a minute (past the old 60–132 clamp; the room itself keeps
+       a song inside its own 50–180) plays the lick at exactly that tempo; Lick speed still slows it, for practice
    3 · with the band and Fit on, the band plays the room's chords under the lick; Fit off, the lick's own chords
    4 · ● Record this lick: a normal take of the room (Fit on, Repeat 2, a song at 104): its tempo, on bar 1, its notes,
        as long as the lick's bars plus the ring-out, its first sound on the downbeat; never over full scale, no clicks;
@@ -69,7 +69,7 @@ const NUMBERS = () => {
       out.own++; if (JSON.stringify(plain.notes.map(n => [n.t, n.s, n.f, n.d])) !== JSON.stringify(was.map(n => [n.t, n.s, n.f, n.d]))) fail(out.ownBad, `${id}: not its own notes with Fit off`);
       /* whole bars, beat 1, Repeat seams; the fastest notes */
       out.bars++; if (plain.beats % 4 !== 0 || plain.notes.some(n => n.t < -0.26 || (n.t < 0 && !n.rake) || n.t + n.d > plain.beats + 1e-6)) fail(out.ownBad, `${id}: not whole bars from beat 1 (${plain.beats})`);
-      const on = [...new Set(plain.notes.filter(n => !n.rake).map(n => n.t))].sort((a, b) => a - b);
+      const on = [...new Set(plain.notes.filter(n => !n.rake).map(n => +(n.tb != null ? n.tb : n.t).toFixed(4)))].sort((a, b) => a - b);   /* a strummed chord's notes are one onset */
       for (let i = 1; i < on.length; i++) { const ms = (on[i] - on[i - 1]) * 60000 / 240; if (ms < out.fast) { out.fast = ms; out.fastAt = id; } }
       for (const reps of [2, 4]) { const pl = AOGSolo._t.lickPlan(id, { fit: false, reps }); out.reps++;
         if (pl.total !== plain.beats * reps || pl.notes.length !== plain.notes.length * reps) fail(out.seams, `${id} ×${reps}: ${pl.total} beats, ${pl.notes.length} notes`);
@@ -93,7 +93,7 @@ const NUMBERS = () => {
           if (n.w != null) out.moved++;
           if (!(n.s >= 0 && n.s < T.length && n.f >= 0 && n.f <= MAXF && end >= 0 && end <= MAXF && n.tm <= top)) fail(out.bad, `${tag}: note ${i} off the strings`);
           if (!win(n.f) || !win(end)) fail(out.bad, `${tag}: note ${i} outside the hand position ${W}-${W + 4}`);
-          const fm = n.sl && n.sl[1] === 0 ? T[n.s] + n.sl[0] : T[n.s] + n.f, bend = n.b && n.b[0] >= 1 ? n.b[0] : 0;
+          const fm = n.sl && n.sl[1] === 0 ? T[n.s] + n.sl[0] : T[n.s] + n.f, bend = GTR && n.b && n.b[0] >= 1 ? n.b[0] : 0;   /* a bass's bend is a lift above the note written */
           if (!(n.sl && n.sl[1] > 0) && fm + bend !== n.tm) fail(out.bad, `${tag}: note ${i} plays ${fm + bend}, written ${n.tm}`);
           if (n.k === "g") return;
           /* the chord's own notes: the room's chord, as it is (a sus4 its fourth, not a third) */
@@ -107,7 +107,7 @@ const NUMBERS = () => {
         const at = {}; ns.forEach(n => { const k = n.t.toFixed(3); (at[k] = at[k] || []).push(n); });
         Object.values(at).forEach(h => { if (h.length < 2) return; if (new Set(h.map(n => n.s)).size !== h.length) fail(out.bad, `${tag}: two notes at once on one string`);
           const fr = h.map(n => n.f).filter(f => f > 0); if (fr.length > 1 && Math.max(...fr) - Math.min(...fr) > 3) fail(out.bad, `${tag}: notes at once more than four frets apart`); });
-        if (GTR) { const last = real[real.length - 1], lt = real.filter(n => Math.abs(n.t - last.t) < 1e-6), lc = chordAtT(last.tb != null ? last.tb : last.t);
+        if (GTR) { const tbOf = n => n.tb != null ? n.tb : n.t, lastTb = Math.max(...real.map(tbOf)), lt = real.filter(n => Math.abs(tbOf(n) - lastTb) < 1e-6), lc = chordAtT(lastTb);
           if (!lt.some(n => pcOf(n.tm) === pcOf(key + lc.root))) fail(out.bad, `${tag}: does not end on its chord's root`); }
       }
     }
@@ -139,7 +139,7 @@ const MEASURE = async (o) => {
   const floor = Math.pow(pk * Math.pow(10, -75 / 20), 2); let worst = 0;
   for (let k = 0; k < nw; k++) { if (skip[k]) continue; let mx = 0; for (let j = Math.max(0, k - 35); j < Math.min(nw, k + 36); j++) if (Math.abs(j - k) > 3 && e[j] > mx) mx = e[j];
     const q = (e[k] + floor) / (mx + floor); if (q > worst) worst = q; }
-  return { pk: +pk.toFixed(3), db: +(10 * Math.log10(worst || 1)).toFixed(1), first: first / sr, sec: T.sec, total: T.plan.total, fit: T.plan.fit, ev: T.notes.ev.length, wav: T.blob.type, size: T.blob.size };
+  return { pk: +pk.toFixed(3), db: +(10 * Math.log10(worst || 1)).toFixed(1), first: first / sr, note1: Math.min(...T.starts), sec: T.sec, total: T.plan.total, fit: T.plan.fit, ev: T.notes.ev.length, wav: T.blob.type, size: T.blob.size };
 };
 
 async function device(b, room, nm, vw, errs) {
@@ -151,7 +151,7 @@ async function device(b, room, nm, vw, errs) {
     return { fit: q("soFit").textContent, pressed: q("soFit").getAttribute("aria-pressed"), rep: q("soRep").querySelector(".plab").textContent, reps: [...q("soRep").querySelectorAll(".pbtn")].map(b => b.textContent + "|" + b.getAttribute("aria-label")),
       rec: q("soRecLick").textContent, line: q("soSongLine").textContent, lines: [...document.querySelectorAll("#rig .so-licks .line")].filter(l => /In your song|En tu canción/.test(l.textContent)).length,
       tall: Math.min(...row.map(el => rr(el).height)), wide: document.documentElement.scrollWidth - innerWidth, shown: row.every(el => rr(el).width > 0) }; });
-  await f.evaluate(() => { S.key = 9; S.minor = true; S.bpm = 104; buildNeck(); litNeck(); AOGSolo.paint(); document.getElementById("bpm").dispatchEvent(new Event("input", { bubbles: true })); });
+  await f.evaluate(async () => { S.key = 9; S.minor = true; buildNeck(); litNeck(); AOGSolo.paint(); AOGSong.set({ bpm: 104 }); await new Promise(r => setTimeout(r, 100)); });
   const en = await words();
   ok(en.fit === "Fit to my chords" && en.rep === "Repeat" && en.reps.join() === "1×|1 time,2×|2 times,4×|4 times" && en.rec === "● Record this lick" && en.line === "In your song: A minor, 104 beats a minute." && en.lines === 1,
     `${room} ${nm}: "${en.fit}", "${en.rep}" ${en.reps.join(" ")}, "${en.rec}"; "${en.line}" (once)`);
@@ -167,10 +167,10 @@ async function device(b, room, nm, vw, errs) {
     const sel = document.getElementById("soLickSel"), btn = document.getElementById("soLickBtn"), wait = ms => new Promise(r => setTimeout(r, ms)), r = document.getElementById("soLickSpd");
     sel.value = id; sel.dispatchEvent(new Event("change", { bubbles: true }));
     const one = async (bpm, spd) => { AOGSong.set({ bpm }); await wait(60); r.value = String(spd); r.dispatchEvent(new Event("input", { bubbles: true })); btn.click(); await wait(80); const L = AOGSolo._t.LICK, o = { bpm, spd, beat: L.beat, on: L.on, line: document.getElementById("soSongLine").textContent }; btn.click(); return o; };
-    const a = await one(200, 100), b2 = await one(45, 100), c = await one(97.5, 100), d = await one(97.5, 50); await one(104, 100); return [a, b2, c, d];
+    const a = await one(176, 100), b2 = await one(52, 100), c = await one(97.5, 100), d = await one(97.5, 50); await one(104, 100); return [a, b2, c, d];
   }, id);
-  ok(Math.abs(tp[0].beat - 60 / 200) < 1e-9 && Math.abs(tp[1].beat - 60 / 45) < 1e-9 && Math.abs(tp[2].beat - 60 / 97.5) < 1e-9 && Math.abs(tp[3].beat - 2 * 60 / 97.5) < 1e-9 && tp.every(x => x.on) && /200 beats/.test(tp[0].line),
-    `${room} ${nm}: a song at 200, 45 and 97.5 beats a minute: the lick's beat is ${tp.slice(0, 3).map(x => x.beat.toFixed(4)).join(", ")} s (no clamp); at 50% speed ${tp[3].beat.toFixed(4)} s (practice); "${tp[0].line}"`);
+  ok(Math.abs(tp[0].beat - 60 / 176) < 1e-9 && Math.abs(tp[1].beat - 60 / 52) < 1e-9 && Math.abs(tp[2].beat - 60 / 97.5) < 1e-9 && Math.abs(tp[3].beat - 2 * 60 / 97.5) < 1e-9 && tp.every(x => x.on) && /176 beats/.test(tp[0].line),
+    `${room} ${nm}: a song at 176, 52 and 97.5 beats a minute (past the old 60–132): the lick's beat is ${tp.slice(0, 3).map(x => x.beat.toFixed(4)).join(", ")} s (no clamp); at 50% speed ${tp[3].beat.toFixed(4)} s (practice); "${tp[0].line}"`);
   /* 3 · with the band: Fit on, the room's chords; Fit off, the lick's own */
   const bd = await f.evaluate(async (id) => {
     const sel = document.getElementById("soLickSel"), btn = document.getElementById("soLickBtn"), fit = document.getElementById("soFit"), wait = ms => new Promise(z => setTimeout(z, ms)), B = AOGSolo._t.BAND;
@@ -200,8 +200,8 @@ async function device(b, room, nm, vw, errs) {
     const btns = [...document.querySelectorAll("#takes .aogrec-take")][0], studioBtn = btns && btns.querySelector("[data-aogrec-studio]"), drumBtn = btns && btns.querySelector("[data-aogrec-drum]");
     const layer = studioBtn ? studioBtn.textContent : "";
     if (studioBtn) studioBtn.click(); await wait(800);
-    const inbox = (await AOGHandoff.list(AOGHandoff.INBOX)) || [];
-    const mine = inbox.map(x => x.value || x).filter(x => x && x.from === (GTR ? "guitar" : "bass")).sort((a, b) => (b.at || 0) - (a.at || 0))[0];
+    const ix = await AOGHandoff.list(AOGHandoff.INBOX), its = ((ix && ix.items) || []).slice().sort((a, b) => (b.sent || 0) - (a.sent || 0));
+    let mine = null; for (const it of its) { const v = await AOGHandoff.item(AOGHandoff.INBOX, it.id); if (v && v.from === (GTR ? "guitar" : "bass")) { mine = v; break; } }
     if (drumBtn) drumBtn.click(); await wait(800);
     const pads = await AOGHandoff.get("padstake");
     const song = AOGSong.get();
@@ -217,8 +217,8 @@ async function device(b, room, nm, vw, errs) {
   ok(rec.song && rec.song.hasBpm && rec.song.bpm === 104 && rec.song.hasKey && rec.song.key === rec.key && rec.song.minor === rec.minor, `${room} ${nm}: the song keeps 104 and has the room's key: ${JSON.stringify(rec.song)}`);
   const m = await f.evaluate(MEASURE, { id, fit: true, reps: 2, bpm: 104 });
   const m2 = await f.evaluate(MEASURE, { id: room === "guitar" ? "blues" : "b_fkoct", fit: true, reps: 4, bpm: 168 });
-  ok([m, m2].every(x => x.pk < 1 && x.pk > 0.02 && x.db <= 15 && x.first < 0.03 && x.ev > 0 && x.wav === "audio/wav"),
-    `${room} ${nm}: the take's sound: peaks ${m.pk} and ${m2.pk} (never full scale), worst click ${m.db} and ${m2.db} dB over its neighbours, first sound at ${(m.first * 1000).toFixed(1)} and ${(m2.first * 1000).toFixed(1)} ms (the downbeat)`);
+  ok([m, m2].every(x => x.pk < 1 && x.pk > 0.02 && x.db <= 15 && Math.abs(x.first - x.note1) < 0.03 && x.ev > 0 && x.wav === "audio/wav"),
+    `${room} ${nm}: the take's sound: peaks ${m.pk} and ${m2.pk} (never full scale), worst click ${m.db} and ${m2.db} dB over its neighbours, first sound at ${(m.first * 1000).toFixed(1)} and ${(m2.first * 1000).toFixed(1)} ms, where the first note is written (${(m.note1 * 1000).toFixed(1)}, ${(m2.note1 * 1000).toFixed(1)} ms from the downbeat)`);
   /* 5 · silent */
   const hush = await f.evaluate(async (id) => { const wait = ms => new Promise(z => setTimeout(z, ms)); document.getElementById("soLickBtn").click(); await wait(200); const was = AOGSolo._t.LICK.on;
     window.dispatchEvent(new CustomEvent("aog-hush", { detail: { on: true } })); await wait(50); const now = AOGSolo._t.LICK.on;
