@@ -2697,7 +2697,8 @@ function lkFrame(){
     LK.i++;
   }
   if(now>LK.end+0.05){ lickStop(true); return; }
-  const act=LK.lights.filter(x=>now>=x.t0 && now<x.t1);
+  /* a very short note is lit for at least one frame, even if a slow frame came after it ended */
+  const act=LK.lights.filter(x=>now>=x.t0 && (now<x.t1 || !x.shown)); act.forEach(x=>{ x.shown=true; });
   if(act.length) lkView(act[0].m, act[0].i);
   const k=act.map(x=>x.m).join(",")+"|"+KBN;
   if(k!==LK.key){ LK.key=k; const on=new Set(act.map(x=>x.m));
@@ -2773,6 +2774,7 @@ function lkBind(){
   /* the song line and the menu follow the room's key, mood, tempo, pattern and sound (and the song's, which moves them) */
   ["change","input","click"].forEach(ev=>document.addEventListener(ev, e=>{ if($("lkBody").hidden || (e.target && e.target.closest && e.target.closest("#kbd"))) return; lkPaint(); }));
   lkPaint();
+  if(location.hash==="#licks") lkOpen();   /* a link to the licks opens them (/the-studio#band … ?at=music-band.html#licks) */
 }
 window.AOGBandLick={_t:{LK, playLick, lickStop, lickRecord, lkRender, lkCompile, lkPlayers, lkLoad, lkTwoShift, lkNoteVoices}};
 

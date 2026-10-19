@@ -2182,32 +2182,42 @@ async function lickRecord(){
   lickStop(); LK.rec=true; LK.msg=t("lickMaking"); lkPaint();
   try{
     if(!REC.addTake) throw new Error("no addTake");
-    const C=lkCompile(LK.P.lick, 0); if(!C) throw new Error("no lick");
-    C.two=lkTwoShift(C);
-    const bpm=curBpm(), beat=60/bpm, sr=44100, sec=C.beats*beat, id=S.sound;
-    RUSH++; try{ await loadSound(id); } finally { RUSH--; }
-    const K=AOGRecorder.notes, oc=K.context(sec+1.5, sr);
-    if(window.AOGAmp && AOGAmp.load) await AOGAmp.load(oc);
-    const ch=makeChain(oc); await addCrunch(ch);
-    setSendLevel(ch, id); ch.lp.frequency.value=eraHz(S.era); if(ch.crunch) ch.crunch.parameters.get("era").value=S.era;
-    ch.ceil.output.disconnect(); ch.ceil.output.connect(oc.destination);
-    let space=0; try{ space=window.AOGRoom ? AOGRoom.get() : 0; }catch(e){}
-    K.space(oc, ch.dry, ch.pre, space);
-    const ev=[];
-    C.notes.forEach((n, i)=>{ const at=n.t*beat; lkNoteVoices(oc, ch, C, n, i, at, beat, false).forEach(x=>{ const e={t:+at.toFixed(4), m:x.m, v:+x.v.toFixed(3), d:+x.d.toFixed(4), p:x.inst}; if(x.a!=="sus") e.a=x.a; ev.push(e); }); });
-    const buf=await oc.startRendering(), o=K.out(buf), blob=wavBlob(o.L, o.R, o.sr);
-    const notes={v:1, room:"band", sound:id, set:{era:S.era}, space, sr, lag:0, ev, ped:[]};
-    const k=REC.addTake(blob, {sec:o.L.length/o.sr, bpm, notes, place:{bar:1, bpm}});
+    const R=await lkRender(LK.P.lick); if(!R) throw new Error("no lick");
+    const blob=wavBlob(R.o.L, R.o.R, R.o.sr);
+    const notes={v:1, room:"band", sound:R.sound, set:{era:S.era}, space:R.space, sr:R.o.sr, lag:0, ev:R.ev, ped:[]};
+    const k=REC.addTake(blob, {sec:R.o.L.length/R.o.sr, bpm:R.bpm, notes, place:{bar:1, bpm:R.bpm}});
     if(!k) throw new Error("not kept");
-    LK.last={n:k.n, sec:o.L.length/o.sr, bpm, notes:ev.length, peak:0};
-    LK.msg=t("lickMade",{n:k.n}); lessonRec("u:"+id);
+    LK.last={n:k.n, sec:R.o.L.length/R.o.sr, bpm:R.bpm, notes:R.ev.length, beats:R.C.beats};
+    LK.msg=t("lickMade",{n:k.n}); lessonRec("u:"+R.sound);
   }catch(e){ LK.msg=t("lickFail"); LK.err=String(e && e.message || e); }
   LK.rec=false; lkPaint();
+}
+/* the lick, made offline at full speed and the song's tempo, through the band's own chain (o.bpm: another tempo, for the tests) */
+async function lkRender(id, o){
+  o=o||{};
+  const C=lkCompile(id, 0); if(!C) return null;
+  C.two=lkTwoShift(C);
+  const bpm=o.bpm||curBpm(), beat=60/bpm, sr=44100, sec=C.beats*beat, snd=S.sound;
+  RUSH++; try{ await loadSound(snd); } finally { RUSH--; }
+  const K=AOGRecorder.notes, oc=K.context(sec+1.5, sr);
+  if(window.AOGAmp && AOGAmp.load) await AOGAmp.load(oc);
+  const ch=makeChain(oc); await addCrunch(ch);
+  setSendLevel(ch, snd); ch.lp.frequency.value=eraHz(S.era); if(ch.crunch) ch.crunch.parameters.get("era").value=S.era;
+  ch.ceil.output.disconnect(); ch.ceil.output.connect(oc.destination);
+  let space=0; try{ space=window.AOGRoom ? AOGRoom.get() : 0; }catch(e){}
+  K.space(oc, ch.dry, ch.pre, space);
+  const ev=[], starts=[];
+  C.notes.forEach((n, i)=>{ const at=n.t*beat; starts.push(at); lkNoteVoices(oc, ch, C, n, i, at, beat, false).forEach(x=>{ const e={t:+at.toFixed(4), m:x.m, v:+x.v.toFixed(3), d:+x.d.toFixed(4), p:x.inst}; if(x.a!=="sus") e.a=x.a; ev.push(e); }); });
+  const buf=await oc.startRendering();
+  return {o:K.out(buf), ev, bpm, beat, C, sound:snd, space, starts};
 }
 function lkBind(){
   $("lkOpen").onclick=lkOpen;
   $("lkSel").onchange=()=>{ const L=lkLib(), v=$("lkSel").value; if(!L || !L.LICKS[v]) return; LK.P.lick=v; LK.msg=""; lkKeep(); if(LK.on) playLick(v); else lkPaint(); };
-  $("lkPlay").onclick=()=>{ if(LK.on) lickStop(); else playLick(LK.P.lick); };
+  $("lkPlay").onclick=()=>{ if(LK.on){ lickStop(); return; }
+    /* the keys in sight as it plays */
+    if(!BP.on){ const kb=$("kbd"), r=kb.getBoundingClientRect(); if(r.top<0 || r.bottom>innerHeight) kb.scrollIntoView({block:"start", behavior:"instant"}); }
+    playLick(LK.P.lick); };
   $("lkFit").onclick=()=>{ LK.P.fit=!LK.P.fit; LK.msg=""; lkKeep(); lkPaint(); };
   document.querySelectorAll("#bandLicks [data-rep]").forEach(b=>b.onclick=()=>{ LK.P.rep=+b.getAttribute("data-rep"); LK.msg=""; lkKeep(); lkPaint(); });
   $("lkRec").onclick=lickRecord;
@@ -2222,8 +2232,9 @@ function lkBind(){
   /* the song line and the menu follow the room's key, mood, tempo, pattern and sound (and the song's, which moves them) */
   ["change","input","click"].forEach(ev=>document.addEventListener(ev, e=>{ if($("lkBody").hidden || (e.target && e.target.closest && e.target.closest("#kbd"))) return; lkPaint(); }));
   lkPaint();
+  if(location.hash==="#licks") lkOpen();   /* a link to the licks opens them (/the-studio#band … ?at=music-band.html#licks) */
 }
-window.AOGBandLick={_t:{LK, playLick, lickStop, lickRecord, lkCompile, lkPlayers, lkLoad, lkTwoShift, lkNoteVoices}};
+window.AOGBandLick={_t:{LK, playLick, lickStop, lickRecord, lkRender, lkCompile, lkPlayers, lkLoad, lkTwoShift, lkNoteVoices}};
 
 /* ══ AOG-LESSONS-V1 (2026-10-05) — the Band's lessons: each step ticks itself as it happens (the words:
    _work/music/lessons_band.py; the card: aog-lessons.js). Jimmy: "make sure all music labs have lessons galore".

@@ -338,6 +338,13 @@ LIGHT SPEED!!" Every feature, now and later:
 - FACS lessons and room pages link into both (`_work/fcs/practice3d.py`, `add_3d.py`, `add_3d_rooms.py`); after a
   change run `node tools/check-facs-3d.js`. The ids are fixed in `_work/engine3d/CONTRACT.md`.
 
+## The Band's licks (Jimmy, 2026-10-19: "piano and band licks … the same style of the guitar and bass licks")
+
+`aog-band-licks.js` (154 licks in 22 groups), loaded the first time "Licks to try" under the Band's keys is opened. Written
+against chords like the guitar's and bass's; `reach()` there says where each player plays them. Fit to my chords, Repeat
+1/2/4 and ● Record this lick (a normal take, `REC.addTake`) as in the other rooms (AOG-LICKS-SONG-V1). The block's source is
+`_work/music/band_head.html` and `band_script.js`; build, then run `node music-handoff/tests/solo/bandlicks.js`.
+
 ## No floating My notes button (Jimmy, 2026-10-18: "I don't like the my notes button. Please remove that")
 
 `aog-markup.js` no longer puts the floating My notes button on any page. Highlights and notes still work, and a tap on

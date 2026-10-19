@@ -314,8 +314,26 @@ async function device(b, nm, vw, errs) {
   await ctx.close();
 }
 
+/* an iPhone on its side: the keys fill the screen, and the open licks come with them as one row */
+async function sideways(b, errs) {
+  const { ctx, f } = await openBand(b, { width: 844, height: 390 }, errs, "iPhone sideways");
+  const r = await f.evaluate(async () => {
+    const $ = id => document.getElementById(id), wait = ms => new Promise(z => setTimeout(z, ms)), L = AOGBandLick._t.LK;
+    for (let i = 0; i < 30 && !BP.on; i++) await wait(100);
+    const seen = e => { const q = e.getBoundingClientRect(); return q.width > 0 && q.top >= 0 && q.bottom <= innerHeight && q.left >= 0 && q.right <= innerWidth; };
+    const inPv = $("bandLicks").parentNode === $("playView"), shown = seen($("lkSel")) && seen($("lkPlay")), hidden = !$("lkFit").offsetParent && !$("lkRec").offsetParent;
+    $("lkPlay").click(); let lit = 0; for (let i = 0; i < 20; i++) { await wait(100); lit = Math.max(lit, document.querySelectorAll("#bpMain .lk").length); }
+    const on = L.on; $("lkPlay").click();
+    return { bp: BP.on, inPv, shown, hidden, on, lit };
+  });
+  ok(r.bp && r.inPv && r.shown && r.hidden && r.on && r.lit > 0, `iPhone sideways: the keys fill the screen and the licks come along as one row (the menu and Play), and a lick plays lit there ${JSON.stringify(r)}`);
+  await ctx.close();
+}
+
 (async () => {
   const b = await pw.chromium.launch({ args: ["--autoplay-policy=no-user-gesture-required"] }); const errs = [];
+  if (process.env.BANDLICKS_SIDEWAYS) { await sideways(b, errs); ok(errs.length === 0, "no page errors " + errs.slice(0, 5).join(" | ")); console.log(fails ? fails + " FAILED" : "ALL PASS"); await b.close(); srv.close(); process.exit(fails ? 1 : 0); }
+  if (!process.env.BANDLICKS_NUMBERS) await sideways(b, errs);
   if (!process.env.BANDLICKS_DEVICES) await numbers(b, errs);
   if (!process.env.BANDLICKS_NUMBERS) await Promise.all([["iPhone", { width: 390, height: 844 }], ["iPad", { width: 820, height: 1180 }], ["iPad sideways", { width: 1180, height: 820 }]].map(([nm, vw]) => device(b, nm, vw, errs)));
   ok(errs.length === 0, "no page errors " + errs.slice(0, 5).join(" | "));
