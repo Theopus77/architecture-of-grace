@@ -505,7 +505,7 @@ function beatTick(){
   const parts=beatParts(b);
   while(BT.next < ac.currentTime+0.12){
     const res=beatRes(b), p=parts[BT.part%parts.length], step=BT.step, six=60/S.bpm/res;
-    const late=res===4 && (step%4===2 || step%4===3), when=BT.next+(late ? (S.swing-0.5)*six*4 : 0);
+    const late=res===4 && (step%4===2 || step%4===3), when=BT.next+(late ? (S.swing-0.5)*six*4 : 0);   /* swing: the second eighth note waits (a beat's swing8 means this too) */
     const ids=Object.keys(p.map).sort((x,y)=>(padName(S.bank,x)==="OPEN")-(padName(S.bank,y)==="OPEN"));   /* a closed hat before an open one on the same step */
     ids.forEach(id=>{ const v=(p.map[id]||[])[step]; if(!v) return;
       const o=sound(S.bank, id, when, ACC[v]||0, 0.5*S.bvol); if(o) BT.live.push(o);

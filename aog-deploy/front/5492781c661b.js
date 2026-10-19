@@ -1029,9 +1029,21 @@ function startBeat(id){
   const V={1:0.8, 2:1, 3:0.45};
   /* AOG-DRUM-PERC-V1: a beat in parts (the tabla's teental) plays its parts bar after bar, so the loop holds them all */
   const PARTS=[B.map].concat((B.parts||[]).map(q=>q.map)); if(PARTS.length>1 && S.bars<PARTS.length) S.bars=PARTS.length<=2 ? 2 : 4;
-  for(let bar=0;bar<S.bars;bar++) DRUM_IDS.forEach((pid, pi)=>{ const row=PARTS[bar%PARTS.length][pid]; if(!row) return;
-    for(let i=0;i<16;i++) if(row[i]) S.ev.push({b:0, p:pi, t:bar*384+i*24, v:V[row[i]]||0.8, len:24}); });
-  if(B.swing){ const sw=B.swing*100; S.swing=[50,54,58,62,66].reduce((a,b)=>Math.abs(b-sw)<Math.abs(a-sw)?b:a, 50); }
+  /* AOG-BEATS-ELITE-V1: res steps a beat (4 sixteenths; 3 and 6 triplets; 8 thirty-second notes): a step is 96/res ticks */
+  const RES=[3,4,6,8].indexOf(B.res)>=0 ? B.res : 4, TK=96/RES, N=4*RES;
+  /* AOG-BEATS-PERFECT-V1: swing8 swings the eighth notes (the "&" late, as a jazz ride or a shuffle), written into the hits
+     as the Drum Kit plays it; plain swing stays this machine's swing of the in-between sixteenths */
+  const SW8=RES===4 && B.swing8 && B.swing>0.5 ? Math.min(23, Math.round((B.swing-0.5)*96)) : 0, late=i=>SW8 && i%4>=2 ? SW8 : 0;
+  /* AOG-BEATS-PERFECT-V1: bars of 3 (len 12) follow each other with no silent beat: four of them fill a loop of 3 bars of 4 */
+  const LENS=[B.len||0].concat((B.parts||[]).map(q=>q.len||B.len||0)), L0=LENS[0], SHORT=RES===4 && L0>0 && L0<16 && LENS.every(x=>x===L0);
+  const NB=SHORT ? BAR_LENS.find(k=>(k*16)%(PARTS.length*L0)===0) : 0;
+  if(NB){ S.bars=NB;
+    for(let s=0;s<NB*16;s++){ const k=Math.floor(s/L0), i=s%L0, part=PARTS[k%PARTS.length];
+      DRUM_IDS.forEach((pid, pi)=>{ const row=part[pid]; if(row && row[i]) S.ev.push({b:0, p:pi, t:s*24+late(i), v:V[row[i]]||0.8, len:24}); }); } }
+  else for(let bar=0;bar<S.bars;bar++) DRUM_IDS.forEach((pid, pi)=>{ const row=PARTS[bar%PARTS.length][pid]; if(!row) return;
+    for(let i=0;i<N;i++) if(row[i]) S.ev.push({b:0, p:pi, t:bar*384+i*TK+(RES===4 ? late(i) : 0), v:V[row[i]]||0.8, len:TK}); });
+  if(RES!==4 || SW8) S.swing=50;   /* a triplet or 32nd grid carries its own feel; a swing8 beat has its swing written in */
+  if(B.swing && RES===4 && !SW8){ const sw=B.swing*100; S.swing=[50,54,58,62,66].reduce((a,b)=>Math.abs(b-sw)<Math.abs(a-sw)?b:a, 50); }
   if(B.bpm) retime(B.bpm);
   LES.mark("beat1"); const song={boombap:"sbb", lofi:"slofi", house:"shouse", trap:"strap"}[B.id]; if(song) LES.mark(song);
   const A0=S.banks[0];
@@ -1378,6 +1390,7 @@ function paintControls(){
    don't like how it stays on 'Pick a beat'; it should show the person what they are using"): two short menus, a style (12)
    and its beats (8 to 11), and ◀ ▶ that step through every beat, one tap each (the loop keeps playing, so each is heard
    at once). The menus show the beat in use, and the line under them says its name, tempo and kit, or that you changed it. */
+window.addEventListener("aog-beats-more", ()=>{ if($("beatNow")) paintBeatPick(); });   /* AOG-BEATS-ELITE-V1: the Elite beats arrived */
 function paintBeatPick(){
   const F=beatFlat(); if(!F.length) return;
   const cur=S.beat && beatById(S.beat.id), g=(S.beat && S.beat.g) || "first";

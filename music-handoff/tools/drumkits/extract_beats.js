@@ -1,3 +1,5 @@
+/* RETIRED (2026-10-19, AOG-BEATS-PERFECT-V1): aog-beats.js is now made by aog-deploy/_work/music/beats_core/make_beats_core.py.
+   Running this again would bring back the old one-bar beats from the retired music-drums.html. Don't. */
 // pulls the drum machine's beat lists (BEAT_GROUPS, STARTERS, BEATS, PRESETS) out of music-drums.html into aog-beats.js
 const fs=require("fs"), path=require("path");
 const root=process.argv[2], src=fs.readFileSync(path.join(root,"music-drums.html"),"utf8");

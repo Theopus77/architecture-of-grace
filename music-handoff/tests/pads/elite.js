@@ -38,7 +38,7 @@ const PADS=["kick","snare","ch","oh","clap","tom","rim","bell"];
   /* ══ the Drum Machine ══ */
   { const {c, p, errs}=await open(9403, "music-pads.html", {viewport:{width:1280,height:900}});
     const menu=await p.evaluate(()=>[...document.querySelectorAll("#grpSel option")].map(o=>o.textContent));
-    const first=menu.findIndex(t=>/^Elite/.test(t)), lastEl=menu.map(t=>/^Elite/.test(t)).lastIndexOf(true), rock=menu.indexOf("Rock");
+    const isEl=t=>groupsEn.includes(t), first=menu.findIndex(isEl), lastEl=menu.map(isEl).lastIndexOf(true), rock=menu.indexOf("Rock");
     ok(groupsEn.every(g=>menu.includes(g)) && first>=0 && lastEl<rock, "Drum Machine: the Elite groups come before the older groups: "+menu.slice(0, 14).join(" | "));
     const bad=[];
     for(const x of P.beats){
@@ -80,7 +80,7 @@ const PADS=["kick","snare","ch","oh","clap","tom","rim","bell"];
   /* ══ the Drum Kit ══ */
   { const {c, p, errs}=await open(9404, "music-kit.html", {viewport:{width:1280,height:900}});
     const og=await p.evaluate(()=>[...document.querySelectorAll("#beatSel optgroup")].map(g=>g.label));
-    const iEl=og.map(t=>/^Elite/.test(t)).lastIndexOf(true);
+    const iEl=og.map(t=>groupsEn.includes(t)).lastIndexOf(true);
     ok(groupsEn.every(g=>og.includes(g)) && iEl>=0 && iEl<og.indexOf("Rock"), "Drum Kit: the Elite groups come before the older groups: "+og.slice(0, 12).join(" | "));
     const bad=[];
     for(const x of P.beats){
