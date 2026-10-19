@@ -214,6 +214,7 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
 <script src="/aog-amp.js"></script><!-- AOG-ROOM-PEDALS-V1: the pedalboard, the same panel as the guitar has -->
 <script src="aog-drumkit.js"></script>
 <script src="aog-beats.js"></script>
+<script src="aog-beats-pro.js" defer></script><!-- AOG-BEATS-ELITE-V1: the Elite beats, after the page is read -->
 <script src="/aog-lessons.js"></script>
 <script src="/aog-lessons-pads.js"></script>
 <script src="/aog-midi.js"></script><!-- AOG-MIDI-V1: a MIDI keyboard, the same in every music room -->
@@ -1377,9 +1378,12 @@ function startBeat(id){
   const V={1:0.8, 2:1, 3:0.45};
   /* AOG-DRUM-PERC-V1: a beat in parts (the tabla's teental) plays its parts bar after bar, so the loop holds them all */
   const PARTS=[B.map].concat((B.parts||[]).map(q=>q.map)); if(PARTS.length>1 && S.bars<PARTS.length) S.bars=PARTS.length<=2 ? 2 : 4;
+  /* AOG-BEATS-ELITE-V1: res steps a beat (4 sixteenths; 3 and 6 triplets; 8 thirty-second notes): a step is 96/res ticks */
+  const RES=[3,4,6,8].indexOf(B.res)>=0 ? B.res : 4, TK=96/RES, N=4*RES;
   for(let bar=0;bar<S.bars;bar++) DRUM_IDS.forEach((pid, pi)=>{ const row=PARTS[bar%PARTS.length][pid]; if(!row) return;
-    for(let i=0;i<16;i++) if(row[i]) S.ev.push({b:0, p:pi, t:bar*384+i*24, v:V[row[i]]||0.8, len:24}); });
-  if(B.swing){ const sw=B.swing*100; S.swing=[50,54,58,62,66].reduce((a,b)=>Math.abs(b-sw)<Math.abs(a-sw)?b:a, 50); }
+    for(let i=0;i<N;i++) if(row[i]) S.ev.push({b:0, p:pi, t:bar*384+i*TK, v:V[row[i]]||0.8, len:TK}); });
+  if(RES!==4) S.swing=50;   /* a triplet or 32nd grid carries its own feel */
+  if(B.swing && RES===4){ const sw=B.swing*100; S.swing=[50,54,58,62,66].reduce((a,b)=>Math.abs(b-sw)<Math.abs(a-sw)?b:a, 50); }
   if(B.bpm) retime(B.bpm);
   LES.mark("beat1"); const song={boombap:"sbb", lofi:"slofi", house:"shouse", trap:"strap"}[B.id]; if(song) LES.mark(song);
   const A0=S.banks[0];
@@ -1726,6 +1730,7 @@ function paintControls(){
    don't like how it stays on 'Pick a beat'; it should show the person what they are using"): two short menus, a style (12)
    and its beats (8 to 11), and ◀ ▶ that step through every beat, one tap each (the loop keeps playing, so each is heard
    at once). The menus show the beat in use, and the line under them says its name, tempo and kit, or that you changed it. */
+window.addEventListener("aog-beats-more", ()=>{ if($("beatNow")) paintBeatPick(); });   /* AOG-BEATS-ELITE-V1: the Elite beats arrived */
 function paintBeatPick(){
   const F=beatFlat(); if(!F.length) return;
   const cur=S.beat && beatById(S.beat.id), g=(S.beat && S.beat.g) || "first";
