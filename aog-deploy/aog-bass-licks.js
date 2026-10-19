@@ -527,10 +527,14 @@ function songChords(prog, minor, bars, from){
   const SC=minor?MIN:MAJ, out=[];
   for(let j=0;j<bars;j++){
     const p=prog[(((from||0)+j)%prog.length+prog.length)%prog.length], rt=pcm(p.off), idx=SC.indexOf(rt);
+    /* the chord's own notes as it is: its third (or a sus chord's 2nd or 4th; a power chord takes the key's third), its
+       fifth (♭5, ♯5 too) and its seventh */
     const iv=new Set((p.iv||[0,4,7]).map(pcm)), dia3=idx>=0 ? pcm(SC[(idx+2)%7]-SC[idx]) : 4;
-    const third=iv.has(4) ? 4 : iv.has(3) ? 3 : dia3, flat5=third===3 && iv.has(6) && !iv.has(7), sev=iv.has(10) ? 10 : iv.has(11) ? 11 : (flat5 && iv.has(9)) ? 10 : -1;
-    const q=flat5 ? (sev>=0 ? "m7b5" : "dim") : third===4 ? (sev===10 ? "dom7" : sev===11 ? "maj7" : "maj") : (sev===10 ? "m7" : "min");
-    out.push({t0:j*4, t1:j*4+4, root:rt, q, idx, tones:QT[q], band:{off:p.off, q:p.q||q}});
+    const third=iv.has(4) ? 4 : iv.has(3) ? 3 : iv.has(5) ? 5 : iv.has(2) ? 2 : dia3;
+    const fifth=iv.has(7) ? 7 : iv.has(6) ? 6 : iv.has(8) ? 8 : 7, sev=iv.has(10) ? 10 : iv.has(11) ? 11 : (third===3 && fifth===6 && iv.has(9)) ? 9 : -1;
+    const tones=[0, third, fifth].concat(sev>=0 ? [sev] : []), key=tones.join(",");
+    const q=({"0,4,7":"maj","0,3,7":"min","0,3,6":"dim","0,4,7,10":"dom7","0,4,7,11":"maj7","0,3,7,10":"m7","0,3,6,10":"m7b5"})[key] || (third===2||third===5 ? "sus" : fifth===8 ? "aug" : "other");
+    out.push({t0:j*4, t1:j*4+4, root:rt, q, idx, tones, band:{off:p.off, q:p.q||q}});
   }
   return out;
 }

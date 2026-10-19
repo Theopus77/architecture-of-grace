@@ -277,7 +277,16 @@ const WD={
   spdHelp:{en:"Slow it down to learn it. Then speed it up.",es:"Bájale la velocidad para aprenderla. Luego súbela."},
   tg_b:{en:"bend",es:"estira"}, tg_h:{en:"hammer",es:"ligado"}, tg_o:{en:"pull",es:"suelta"}, tg_t:{en:"tap",es:"tapping"},
   tg_q:{en:"squeal",es:"chillido"}, tg_sl:{en:"slide",es:"desliza"}, tg_g:{en:"ghost",es:"fantasma"}, tg_v:{en:"vibrato",es:"vibrato"},
-  playing:{en:"Playing: {name}.",es:"Sonando: {name}."}
+  playing:{en:"Playing: {name}.",es:"Sonando: {name}."},
+  /* AOG-LICKS-SONG-V1 (Jimmy, 2026-10-19: licks "to use them within my own creations / songs") */
+  fit:{en:"Fit to my chords",es:"Seguir mis acordes"},
+  repLab:{en:"Repeat",es:"Repetir"},
+  repN:{en:"{n} times",es:"{n} veces"}, rep1:{en:"1 time",es:"1 vez"},
+  recLick:{en:"● Record this lick",es:"● Grabar esta frase"},
+  songLine:{en:"In your song: {key}, {n} beats a minute.",es:"En tu canción: {key}, {n} pulsos por minuto."},
+  recMaking:{en:"Making the take…",es:"Preparando la toma…"},
+  recMade:{en:"Take {n} is ready. Add it to My Track from your takes.",es:"La toma {n} está lista. Añádela a mi pista desde tus tomas."},
+  recFail:{en:"That did not work. Try again.",es:"No funcionó. Inténtalo otra vez."}
 };
 function w(k, vars){ const e=WD[k]; let s=e?(e[S.lang]||e.en):k; if(vars) Object.keys(vars).forEach(v=>{ s=s.split("{"+v+"}").join(vars[v]); }); return s; }
 
@@ -558,6 +567,8 @@ try{ const r=JSON.parse(localStorage.getItem(PKEY)||"null");
     P.tap=!!r.tap; P.pinch=!!r.pinch; P.wah=!!r.wah; P.vib=!!r.vib; if(GTR ? (LICKS[r.lick] || /^g_[a-z0-9]+$/.test(String(r.lick||""))) : /^b_[a-z0-9]+$/.test(String(r.lick||""))) P.lick=r.lick;   /* AOG-SOLO-BASSLICKS-V1, AOG-SOLO-GTRLICKS-V1: the bass's licks and the guitar's newer ones come in with their own files */ if(r.lspd>=25 && r.lspd<=100) P.lspd=Math.round(r.lspd/5)*5;
     if(typeof r.prev==="string" && SOUNDS[r.prev]) P.prev=r.prev; if(r.keys==="scale") P.keys="scale"; if(typeof r.auto==="string") P.auto=r.auto; if(r.beat===false) P.beat=false;
   } }catch(e){}
+/* AOG-LICKS-SONG-V1: Fit to my chords and Repeat are kept too */
+P.fit=false; P.reps=1; try{ const r=JSON.parse(localStorage.getItem(PKEY)||"null"); if(r && r.fit===true) P.fit=true; if(r && [1,2,4].indexOf(r.reps)>=0) P.reps=r.reps; }catch(e){}
 P.dfeel="auto"; try{ const r=JSON.parse(localStorage.getItem(PKEY)||"null"); if(r && typeof r.dfeel==="string" && /^[a-z0-9]+$/.test(r.dfeel)) P.dfeel=r.dfeel; }catch(e){}   /* AOG-SOLO-DRUMFEELS-V1 */
 function keep(){ try{ localStorage.setItem(PKEY, JSON.stringify(P)); }catch(e){} }
 
@@ -599,6 +610,15 @@ const CSS=`
 #playView .so-pv .tempo input{flex:1 1 auto;min-width:4rem}
 #playView .so-pv .tempo b{font:700 14px/1.1 var(--sans);color:#f1e9d6;white-space:nowrap}
 @media (max-width:720px){ #playView .so-pv .tempo{display:none!important} }
+/* AOG-LICKS-SONG-V1: Fit to my chords, Repeat and Record this lick, one row under the lick (two on a phone) */
+#rig .so-licks .so-song{display:flex;flex-wrap:wrap;gap:.5rem;align-items:flex-end;margin:.5rem 0 0}
+#rig .so-licks .so-song .pbtn{min-height:44px}
+#rig .so-licks .so-song .so-rep{display:flex;flex-direction:column;gap:.25rem}
+#rig .so-licks .so-song .so-rep .plab{margin:0}
+#rig .so-licks .so-song .so-rep .seg .pbtn{min-width:3rem}
+#rig .so-licks .so-song #soRecLick{flex:1 1 11rem}
+#rig .so-licks .so-song #soFit{flex:1 1 10rem}
+#playView .so-pv .so-song{display:none!important}
 #rig .so-sw{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.75rem}
 #rig .so-sw .pbtn{flex:1 1 9.5rem}
 #rig .pbtn.so-kill{border-color:#c4452a;color:#ffd0c8;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
@@ -657,7 +677,13 @@ function build(){
       <button type="button" class="pbtn" id="soLickBtn"></button>
     </div>
     <div class="tempo" style="margin-top:.6rem"><span class="plab" style="margin:0" data-so="lickSpeed"></span><input type="range" id="soLickSpd" min="25" max="100" step="5"><b id="soLickSpdOut"></b></div>
-    <p class="line" id="soLickLine" aria-live="polite"></p></div>
+    <p class="line" id="soLickLine" aria-live="polite"></p>
+    <div class="so-song" id="soSong">
+      <button type="button" class="pbtn" id="soFit" aria-pressed="false"></button>
+      <div class="so-rep" role="group" id="soRep"><span class="plab" data-so="repLab"></span><span class="seg"><button type="button" class="pbtn" data-so-rep="1"></button><button type="button" class="pbtn" data-so-rep="2"></button><button type="button" class="pbtn" data-so-rep="4"></button></span></div>
+      <button type="button" class="pbtn" id="soRecLick"></button>
+    </div>
+    <p class="line" id="soSongLine"></p></div>
     <div class="so-sw" id="soSw" role="group">
       <button type="button" class="pbtn" id="soTap" aria-pressed="false"></button>
       ${GTR?`<button type="button" class="pbtn" id="soPinch" aria-pressed="false"></button><button type="button" class="pbtn" id="soWah" aria-pressed="false"></button>`:""}
@@ -712,7 +738,7 @@ function paintWords(){
   if($q("soPinch")) $q("soPinch").textContent=w("pinch");
   if($q("soWah")) $q("soWah").textContent=w("wah");
   $q("soBpm").setAttribute("aria-label", w("tempo"));
-  paintScaleSel(); paintSoundSel(); paintLickSel(); paintLickSpd(); paintSwitches(); paintMode(); paintLegend(); paintBand(); paintLickBtn();
+  paintScaleSel(); paintSoundSel(); paintLickSel(); paintLickSpd(); paintSwitches(); paintMode(); paintLegend(); paintBand(); paintLickBtn(); paintSong();
   SO.say=""; sayIt();
 }
 function paintKeysChoice(){
@@ -762,6 +788,7 @@ function paintLickSel(){
   if(GTR && gtrLib() && !lickSet()[P.lick]) P.lick="blues";   /* AOG-SOLO-GTRLICKS-V1: a kept lick that is no longer there */
   sel.innerHTML=G.map(([g,ids])=>`<optgroup label="${esc(w((GTR?"lg_":"lgb_")+g))}">`+ids.map(id=>`<option value="${id}"${id===P.lick?" selected":""}>${esc(w("lk_"+id))}</option>`).join("")+`</optgroup>`).join("");
   const b=$q("soLickBtn"); if(b) b.disabled=!G.length || !lickSet()[P.lick];
+  const rb=$q("soRecLick"); if(rb) rb.disabled=!G.length || !lickSet()[P.lick] || !!LREC.busy;
   const ln=$q("soLickLine"); if(ln && !LICK.on) ln.textContent=lickDesc();
 }
 /* AOG-SOLO-BASSLICKS-V1: the bass's licks live in their own file (aog-bass-licks.js), fetched the first time Solo opens on
@@ -848,6 +875,10 @@ function wire(){
   if($q("soLickSel")){
     $q("soLickSel").addEventListener("change",(e)=>{ if(lickSet()[e.target.value]){ P.lick=e.target.value; keep(); if(!LICK.on) $q("soLickLine").textContent=lickDesc(); } });
     $q("soLickBtn").addEventListener("click",()=>{ if(!LICK.on){ const nb=$q("neckBox"); if(nb){ const r=nb.getBoundingClientRect(); if(r.top<0 || r.bottom>innerHeight) nb.scrollIntoView({block:"start", behavior:"instant"}); } } LICK.on?lickStop():playLick(P.lick); });   /* AOG-SOLO-LICKNEAR-V2: the neck in sight as the lick plays */
+    /* AOG-LICKS-SONG-V1 */
+    $q("soFit").addEventListener("click",()=>{ P.fit=!P.fit; keep(); paintSong(); if(LICK.on) playLick(LICK.id); });
+    $q("soRep").querySelectorAll("[data-so-rep]").forEach(b=>b.addEventListener("click",()=>{ const n=+b.getAttribute("data-so-rep"); if([1,2,4].indexOf(n)<0) return; P.reps=n; keep(); paintSong(); if(LICK.on) playLick(LICK.id); }));
+    $q("soRecLick").addEventListener("click",()=>{ recordLick(); });
     $q("soLickSpd").addEventListener("input",(e)=>{ const v=Math.round(clamp(+e.target.value,25,100)/5)*5; if(v===P.lspd) return; P.lspd=v; paintLickSpd(); clearTimeout(wire.st); wire.st=setTimeout(keep,250);
       const ln=$q("soLickLine"); if(ln && !LICK.on) ln.textContent=lickDesc(); });
   }
@@ -1591,6 +1622,7 @@ function paintBandLine(){
   const bpm=locked?Math.round(DRUM.take.bpm):S.bpm;
   const f=dfeel(P.dfeel);   /* AOG-SOLO-DRUMFEELS-V1 */
   el.textContent=w("bandLine",{prog:pr.name, key:keyWord(), n:bpm})+" "+(locked?w("drumsUser"):f?w("drumsFeel",{feel:S.lang==="es"?f.es:f.en}):w("drumsOwn"))+(GTR?"":" "+w("bassBand"));
+  paintSongLine();
 }
 function paintBandProg(){
   const box=$q("soBandProg"); if(!box) return; const pr=bandProg(), k=BAND.on && BAND.cur>=0 ? BAND.cur%pr.chords.length : -1;
@@ -1643,19 +1675,66 @@ function lickFn(list, beat){
     return m+bend+vib;
   };
 }
+/* AOG-LICKS-SONG-V1 (Jimmy, 2026-10-19: "I want them … so I could use them in making a song without much modification of my
+   own"): every lick, the first 57 too, plays at the song's tempo (no clamp; Lick speed is only for practice), in its key,
+   in whole bars, 1, 2 or 4 times with no gap at the seam, on its own chords or, with Fit to my chords, on the room's chords
+   (the band's), each note keeping its part on the chord; ● Record this lick makes it a take. */
 function playLick(id){
   lickStop();
-  if(!GTR){ playBassLick(id); return; }   /* AOG-SOLO-BASSLICKS-V1 */
-  if(!LICKS[id]){ playBassLick(id); return; }   /* AOG-SOLO-GTRLICKS-V1: the newer guitar licks are written against chords too */
-  const ev=LICKS[id]; if(!ev) return;
-  const c=ctx(), r=boxRoot(), want=Math.max(1, r);
-  if(S.fret0!==want){ S.fret0=want; buildNeck(); if(typeof save==="function") save(); }
-  const spd=clamp(P.lspd||100, 25, 100)/100, bpm=clamp(BAND.on?BAND.bpm:curBpm(), 60, 132), beat=60/bpm/spd;
-  let T0=c.currentTime+0.12;
-  if(BAND.on && spd>=1){ const k=Math.ceil((T0-BAND.t0)/BAND.barSec-1e-6); T0=BAND.t0+k*BAND.barSec; }
-  const notes=lickNotes(id), {voices, lights}=lickVoices(c, notes, T0, beat, null, null);
+  const c=ctx(), spd=clamp(P.lspd||100, 25, 100)/100, bpm=lickBpm(), beat=60/bpm/spd;
+  let T0=c.currentTime+0.12, k=-1;
+  /* with the band: the lick starts on the first bar the band has not planned yet, and the band plays its chords */
+  if(BAND.on && spd>=1){ k=Math.max(BAND.bar, Math.ceil((T0-BAND.t0)/BAND.barSec-1e-6)); T0=BAND.t0+k*BAND.barSec; }
+  const prog=bandProg().chords, plan=lickPlan(id, {fit:P.fit, reps:P.reps, from:k>=0 ? k%prog.length : 0}); if(!plan) return;
+  /* the hand position the lick is placed in (five frets; the first licks' box six) */
+  if(S.fret0!==plan.w){ S.fret0=plan.w; buildNeck(); if(typeof save==="function") save(); }
+  if(k>=0 && Math.abs(bpm-BAND.bpm)<1e-6){ BAND.over={}; plan.over.forEach((ch,j)=>{ BAND.over[k+j]=ch; }); }
+  const {voices, lights}=lickVoices(c, plan.notes, T0, beat, null, GTR?null:plan.B);   /* the guitar's notes are the guitar's own (bends, pinch, taps) */
   lickGo(id, voices, lights, T0, beat, spd);
-  LICK.log=notes.map(n=>({t:+(T0+n.t*beat).toFixed(4), s:n.s, f:n.f, m:TUNING[n.s]+n.f, k:n.k||"p", q:!!n.q}));
+  LICK.B=plan.B; LICK.plan=plan;
+  LICK.log=plan.notes.map(n=>({t:+(T0+n.t*beat).toFixed(4), s:n.s, f:n.f, m:TUNING[n.s]+n.f, tm:n.tm!=null?n.tm:TUNING[n.s]+n.f+(n.b&&n.b[0]>=1?n.b[0]:0), fm:n.fm, tb:n.tb, k:n.k||"p", q:!!n.q, end:n.sl?n.sl[0]:n.f}));
+}
+/* the song's tempo (aog-song.js, set at the Studio's ♩ Song or by any room), exact and not clamped; the drum machine's
+   beat's while it plays; else the room's own */
+function lickBpm(){
+  if(BAND.on) return BAND.bpm;
+  try{ if(typeof drumsLive==="function" && drumsLive()) return curBpm(); }catch(e){}
+  try{ const g=window.AOGSong && AOGSong.get(); if(g && g.hasBpm && g.bpm>0) return g.bpm; }catch(e){}
+  return curBpm();
+}
+function songLib(){ return GTR ? gtrLib() : bassLib(); }
+/* the room's chords, with their notes (the page's chord library), for Fit to my chords */
+function myChords(){ return bandProg().chords.map(ch=>({off:ch.off, q:ch.q, iv:(typeof Q!=="undefined" && Q[ch.q]) ? Q[ch.q].slice() : (ch.q==="min"?[0,3,7]:[0,4,7])})); }
+/* a lick ready for a song: {notes (beats from its start, every repeat), beats (one time through, whole bars), bars, total,
+   reps, w (its hand position), over (the band's chord, a bar each), fit (true when it is on the room's chords), B} */
+const PLANS={};
+function lickPlan(id, o){
+  o=o||{}; const reps=[1,2,4].indexOf(o.reps)>=0 ? o.reps : 1, Lb=songLib(), old=GTR && !!LICKS[id];
+  const opt={key:S.key, minor:S.minor, tuning:TUNING, maxf:MAXF};
+  let own=null, notes0, beats, w, overOwn;
+  if(old){ notes0=lickNotes(id); beats=Math.max(4, Math.ceil(Math.max(...notes0.map(n=>n.t+n.d))/4-1e-6)*4); w=Math.max(1, boxRoot());
+    overOwn=[]; for(let j=0;j*4<beats;j++) overOwn.push({off:0, q:S.minor?"min":"maj"}); }
+  else { own=chordLickNow(id); if(!own) return null; notes0=own.notes; beats=Math.max(4, Math.ceil(own.beats/4-1e-6)*4); w=own.w;
+    overOwn=[]; for(let j=0;j*4<beats;j++){ let ch=own.chords[0]; own.chords.forEach(x=>{ if(x.t0<=4*j+1e-6) ch=x; }); overOwn.push(ch.band); } }
+  const bars=beats/4, prog=o.fit && Lb && Lb.songChords ? myChords() : null, out=[], over=[];
+  let fit=!!prog, B0=own, w0=w;
+  for(let r=0;r<reps;r++){
+    let ns=notes0, ov=overOwn;
+    if(prog){
+      const from=((o.from||0)+r*bars)%prog.length, ck=[id, S.key, S.minor?1:0, from, bars, JSON.stringify(prog)].join("|");
+      let C=PLANS[ck];
+      if(C===undefined){ const chords=Lb.songChords(prog, S.minor, bars, from);
+        try{ C=old ? Lb.compile(Lb.fromNotes(notes0, opt), Object.assign({chords}, opt)) : Lb.compile(Lb.LICKS[id], Object.assign({chords}, opt)); }catch(e){ C=null; }
+        if(Object.keys(PLANS).length>400) Object.keys(PLANS).forEach(x=>{ delete PLANS[x]; });
+        PLANS[ck]=C; }
+      if(C){ ns=C.notes; ov=C.chords.slice(0, bars).map(x=>x.band); if(r===0){ w0=C.w; if(!old) B0=Object.assign({}, own, {notes:C.notes, chords:C.chords}); } }
+      else fit=false;
+    }
+    ns.forEach(n=>{ const m=Object.assign({}, n, {t:+(n.t+r*beats).toFixed(4)}); if(n.tb!=null) m.tb=n.tb+r*beats; if(r>0) m.rep=r; out.push(m); });
+    ov.forEach(x=>over.push(x));
+  }
+  out.sort((a,b)=>a.t-b.t || a.s-b.s);
+  return {id, notes:out, beats, bars, total:beats*reps, reps, w:w0, over, fit, B:B0, old};
 }
 /* the voices and the lights of a lick: a note on a ringing string played legato (hammer, pull, tap) keeps that string's
    voice and moves its pitch; any other note starts a new voice and cuts the one before on that string. X: an offline
@@ -1669,10 +1748,10 @@ function lickVoices(c, notes, T0, beat, X, B){
     if(legato){ v.list.push({at, m, n}); v.end=Math.max(v.end, end); }
     else {
       if(v) v.cut=at;
-      let lv;
-      if(B){ const bo=bassVoice(k, B.slap); lv=makeLead(n.s, m, bo.v, at, bo.o, X); }
-      else { const sq=(P.pinch||!!n.q) && k!=="g"; lv=makeLead(n.s, m, k==="g"?0.32:(sq?0.62:0.74), at, {soft:k==="t", pinch:sq}, X); }
-      v=cur[n.s]={lv, list:[{at, m, n}], end:k==="g"?at+(B?0.06:0.035):end, cut:null, ghost:k==="g"};
+      let lv, vel, vo;
+      if(B){ const bo=bassVoice(k, B.slap); vel=bo.v; vo=bo.o; lv=makeLead(n.s, m, bo.v, at, bo.o, X); }
+      else { const sq=(P.pinch||!!n.q) && k!=="g"; vel=k==="g"?0.32:(sq?0.62:0.74); vo={soft:k==="t", pinch:sq}; lv=makeLead(n.s, m, vel, at, vo, X); }
+      v=cur[n.s]={lv, list:[{at, m, n}], end:k==="g"?at+(B?0.06:0.035):end, cut:null, ghost:k==="g", vel, vo};
       if(lv) voices.push(v);
     }
     lights.push({t0:at, t1:k==="g"?at+0.09:end, s:n.s, n, beat, at});
@@ -1681,8 +1760,20 @@ function lickVoices(c, notes, T0, beat, X, B){
   lights.forEach(L=>{ const nx=lights.find(M=>M!==L && M.s===L.s && M.t0>L.t0+1e-6); if(nx) L.t1=Math.min(L.t1, nx.t0); });
   voices.forEach(v=>{ const lv=v.lv, stopAt=v.cut!=null?Math.min(v.cut, v.end):v.end; v.stopAt=stopAt;
     lv.fn=lickFn(v.list, beat); lv.planAll=true; lv.planEnd=stopAt; lv.until=lv.born-STEP; lv.lastT=NaN; lv.plan(X?0:c.currentTime);
-    if(!X) DYN.add(lv); lv.stop(stopAt, v.ghost?0.012:(v.cut!=null?0.02:((SOUNDS[S.sound]&&SOUNDS[S.sound].damp)||0.04)*1.5)); });
+    if(!X) DYN.add(lv); lv.stop(stopAt, v.ghost?0.012:(v.cut!=null?0.02:((SOUNDS[S.sound]&&SOUNDS[S.sound].damp)||0.04)*1.5));
+    if(X && X.ev) X.ev.push(takeNote(v, lv, T0)); });
   return {voices, lights};
+}
+/* AOG-LICKS-SONG-V1: one voice of a lick as a take keeps its notes (AOG-NOTES-V1: t, m, v, d, s, how it was played, and
+   its bends and slides as glides), so the Mixing Desk can play it again, change its sound or tighten it */
+function takeNote(v, lv, T0){
+  const at=v.list[0].at, o=v.vo||{}, e={t:+(at-T0).toFixed(4), m:v.list[0].m, v:+(v.vel||0.7).toFixed(3), d:+Math.max(0.02, v.stopAt-at).toFixed(4), s:v.list[0].n.s};
+  const oo=GTR ? (o.soft?{soft:true}:o.snap?{pop:true}:null) : Object.assign({}, o.soft?{soft:true}:null, o.snap?{pop:true}:null, o.mute?{art:"mute"}:null, o.plain?{plain:true}:null);
+  if(oo && Object.keys(oo).length) e.o=oo;
+  const g=[]; let last=e.m;
+  for(let t=at+0.02; t<v.stopAt && g.length<400; t+=0.02){ const m=lv.fn ? lv.fn(t) : e.m; if(Math.abs(m-last)>0.04){ g.push([+(t-at).toFixed(3), +m.toFixed(2)]); last=m; } }
+  if(g.length) e.g=g;
+  return e;
 }
 /* AOG-SOLO-GTRLICKS-V1: the neck follows the lick. A phone shows four frets of the guitar's neck, and a lick's hand
    position is five (the first licks' box six); when a note comes that is not in view, the frets in view move just enough
@@ -1734,27 +1825,14 @@ function bassVoice(k, slap){
 function bassLickNow(id){ const L=bassLib(), ev=L && L.LICKS[id]; return ev ? L.compile(ev, {key:S.key, minor:S.minor, tuning:TUNING, maxf:MAXF}) : null; }
 function gtrLickNow(id){ const L=gtrLib(), ev=L && L.LICKS[id]; return ev ? L.compile(ev, {key:S.key, minor:S.minor, tuning:TUNING, maxf:MAXF}) : null; }
 function chordLickNow(id){ return GTR ? gtrLickNow(id) : bassLickNow(id); }
-/* a lick written against chords (all the bass's; the guitar's newer ones): placed in the key, with the band on its chords */
-function playBassLick(id){
-  const B=chordLickNow(id); if(!B) return;
-  const c=ctx();
-  /* the hand position the lick is placed in (five frets; the open strings too near the nut) */
-  if(S.fret0!==B.w){ S.fret0=B.w; buildNeck(); if(typeof save==="function") save(); }
-  const spd=clamp(P.lspd||100, 25, 100)/100, bpm=clamp(BAND.on?BAND.bpm:curBpm(), 60, 132), beat=60/bpm/spd;
-  let T0=c.currentTime+0.12;
-  /* with the band: the lick starts on the first bar the band has not planned yet, and the band plays the lick's chords */
-  if(BAND.on && spd>=1){ const k=Math.max(BAND.bar, Math.ceil((T0-BAND.t0)/BAND.barSec-1e-6)); T0=BAND.t0+k*BAND.barSec;
-    if(Math.abs(bpm-BAND.bpm)<1e-6){ BAND.over={}; for(let j=0; j*4<B.beats-1e-6; j++){ const at=4*j; let ch=B.chords[0]; B.chords.forEach(x=>{ if(x.t0<=at+1e-6) ch=x; }); BAND.over[k+j]=ch.band; } } }
-  const {voices, lights}=lickVoices(c, B.notes, T0, beat, null, GTR?null:B);   /* the guitar's notes are the guitar's own (bends, pinch, taps) */
-  lickGo(id, voices, lights, T0, beat, spd);
-  LICK.B=B;
-  LICK.log=B.notes.map(n=>({t:+(T0+n.t*beat).toFixed(4), s:n.s, f:n.f, m:TUNING[n.s]+n.f, tm:n.tm, fm:n.fm, tb:n.tb, k:n.k||"p", end:n.sl?n.sl[0]:n.f}));
-}
+/* a lick written against chords (all the bass's; the guitar's newer ones): played the one way every lick plays now */
+function playBassLick(id){ playLick(id); }
 /* an offline render of a bass lick, for the tests: its sound, and where its notes stop */
 async function renderLick(id, o){
   o=o||{};
-  /* AOG-SOLO-GTRLICKS-V1: a first guitar lick from its box; any other from its chords */
-  const B=GTR && LICKS[id] ? (()=>{ const notes=lickNotes(id); return {notes, beats:Math.max(...notes.map(n=>n.t+n.d))}; })() : chordLickNow(id); if(!B) return null;
+  /* AOG-SOLO-GTRLICKS-V1: a first guitar lick from its box; any other from its chords. AOG-LICKS-SONG-V1: o.fit, o.reps */
+  const B=(o.fit || o.reps>1) ? (()=>{ const pl=lickPlan(id, {fit:!!o.fit, reps:o.reps||1}); return pl && Object.assign({}, pl.B||{}, {notes:pl.notes, beats:pl.total, plan:pl}); })()
+    : GTR && LICKS[id] ? (()=>{ const notes=lickNotes(id); return {notes, beats:Math.max(...notes.map(n=>n.t+n.d))}; })() : chordLickNow(id); if(!B) return null;
   const sr=44100, beat=60/(o.bpm||100), T0=0.1, dur=T0+B.beats*beat+1.4;
   const oc=new OfflineAudioContext(2, Math.ceil(dur*sr), sr); await AOGAmp.load(oc);
   const ch=makeChain(oc); setSound(ch, S.sound); ch.master.gain.value=volGain(S.vol); setEra(ch, 0, 0);
@@ -1762,6 +1840,53 @@ async function renderLick(id, o){
   const buf=await oc.startRendering();
   return {buf, sr, B, beat, T0, starts:B.notes.map(n=>T0+n.t*beat), stops:r.voices.map(v=>v.stopAt), voices:r.voices.length};
 }
+/* AOG-LICKS-SONG-V1: ● Record this lick. The lick at the song's tempo (always full speed), in its key, on its chords or
+   yours, as many times as Repeat says, rendered through this room's own chain (the sound, its amp and pedals as set, the
+   era, the room), from the downbeat of its first bar (nothing before it), its last note left to ring. It becomes a take
+   like any other (aog-recorder.js, REC.addTake): kept on the device, with its tempo, its notes, and its place on bar 1. */
+const LREC={busy:false};
+async function lickTake(id, o){
+  o=o||{};
+  const plan=lickPlan(id, {fit:o.fit!=null ? !!o.fit : P.fit, reps:o.reps||P.reps, from:0}); if(!plan) return null;
+  const bpm=o.bpm>0 ? o.bpm : lickBpm(), beat=60/bpm, sr=44100, tail=1.6;
+  const notes=plan.notes.filter(n=>n.t>=0);   /* a rake just before beat 1 is left out: the take starts on the bar line */
+  if(typeof loadSound==="function"){ try{ await loadSound(S.sound); }catch(e){} }
+  const OC=window.OfflineAudioContext||window.webkitOfflineAudioContext, oc=new OC(2, Math.ceil((plan.total*beat+tail)*sr), sr);
+  await AOGAmp.load(oc); const ch=makeChain(oc); if(typeof addCrunch==="function"){ try{ await addCrunch(ch); }catch(e){} }
+  setSound(ch, S.sound); try{ setEra(ch, S.era, 0); }catch(e){}
+  if(GTR && P.wah){ try{ const st=rigFor(S.sound); if(st.fx && st.fx.wah){ Object.assign(st.fx.wah, {on:true, mode:"touch", sens:6.5, q:6, pos:3}); ch.rig.set(st); } }catch(e){} }
+  try{ ch.ceil.output.disconnect(); }catch(e){} ch.ceil.output.connect(oc.destination);   /* as a take hears it: before the Volume */
+  try{ AOGRecorder.notes.space(oc, ch.bus, ch.pre, window.AOGRoom && AOGRoom.get ? AOGRoom.get() : 0); }catch(e){}
+  const ev=[], r=lickVoices(oc, notes, 0, beat, {c:oc, ch, ev}, GTR?null:plan.B);
+  const buf=await oc.startRendering();
+  const K=AOGRecorder.notes.out(buf), blob=wavBlob(K.L, K.R, sr);
+  ev.sort((a,b)=>a.t-b.t || a.m-b.m);
+  return {blob, sec:buf.duration, bpm, buf, plan, starts:notes.map(n=>n.t*beat), stops:r.voices.map(v=>v.stopAt),
+    notes:{v:1, room:INST, sound:S.sound, set:{era:S.era, rig:rigFor(S.sound), rigOf:S.sound}, space:(window.AOGRoom && AOGRoom.get ? AOGRoom.get() : 0), sr, lag:0, ev, ped:[]}};
+}
+async function recordLick(){
+  if(LREC.busy || typeof REC==="undefined" || !REC || typeof REC.addTake!=="function") return;
+  const id=P.lick, btn=$q("soRecLick"), ln=$q("soSongMsg")||$q("soLickLine");
+  if(!lickSet()[id]) return;
+  LREC.busy=true; if(btn) btn.disabled=true; if(ln) ln.textContent=w("recMaking");
+  try{
+    const T=await lickTake(id); if(!T) throw new Error("none");
+    const k=REC.addTake(T.blob, {sec:T.sec, bpm:T.bpm, notes:T.notes, place:{bar:1, bpm:T.bpm, note:1}}); if(!k) throw new Error("no take");
+    LREC.last={n:k.n, sec:T.sec, bpm:T.bpm, bars:T.plan.total/4, fit:T.plan.fit, id};
+    if(ln) ln.textContent=w("recMade",{n:k.n});
+  }catch(e){ if(ln) ln.textContent=w("recFail"); LREC.last=null; }
+  LREC.busy=false; if(btn) btn.disabled=false; paintLickSel();
+}
+function paintSong(){
+  const f=$q("soFit"); if(!f) return;
+  f.textContent=w("fit"); f.setAttribute("aria-pressed", P.fit?"true":"false");
+  const g=$q("soRep"); g.setAttribute("aria-label", w("repLab"));
+  g.querySelectorAll("[data-so-rep]").forEach(b=>{ const n=+b.getAttribute("data-so-rep"); b.textContent=n+"×"; b.setAttribute("aria-label", n===1?w("rep1"):w("repN",{n})); b.setAttribute("aria-pressed", String(P.reps===n)); });
+  const rb=$q("soRecLick"); if(rb) rb.textContent=w("recLick");
+  paintSongLine();
+}
+/* one line: where the lick will land (said once) */
+function paintSongLine(){ const el=$q("soSongLine"); if(!el) return; const txt=w("songLine",{key:keyWord(), n:Math.round(lickBpm())}); if(el.textContent!==txt) el.textContent=txt; }
 function lickState(L, now){
   const v=LICK.voices.find(x=>x.list.some(e=>e.n===L.n)); const fn=v&&v.lv&&v.lv.fn;
   let m=TUNING[L.s]+L.n.f, bend=0;
@@ -1837,6 +1962,7 @@ function init(){
   if(SO.on){ setMode("solo", true); }
   document.addEventListener("visibilitychange",()=>{ if(document.hidden){ bandStop(); lickStop(); releaseAll(); } });
   window.addEventListener("pagehide",()=>{ bandStop(); lickStop(); });
+  window.addEventListener("aog-hush",(e)=>{ if(e && e.detail && e.detail.on){ bandStop(); lickStop(); } });   /* AOG-SILENT-V1: the Studio's hush */
   window.addEventListener("blur",()=>{ if(SO.on) releaseAll(); });
   window.addEventListener("focus",()=>{ if(SO.on) paintBand(); });
   try{ AOGHandoff.listen(function(k){ if(k==="drumbench") setTimeout(()=>{ if(SO.built) paintBand(); }, 300); }); }catch(e){}
@@ -1847,7 +1973,8 @@ window.AOGSolo={
   setMode:setMode, isOn:()=>SO.on,
   _t:{DRUM_FEELS, P, SO, BAND, LICK, LICKS, FING, KEYF, SOUNDING, WH, Lead, bendFrom, boxRoot, keyCells, lickNotes, renderBand, scalePcs, bluePc,
       leadsNow, whamTo, killSet, playLick, lickStop, bandStart, bandStop, strumNotes, hotAmp, landChord, bandPlan, BAND_SET, BAND_RT, get LAST(){ return LAST; },
-      bassLickNow, renderLick, bassLoad, BLK, lickSet, lickGroups, gtrLickNow, gtrLoad, GLK, viewPlan, LICK_GROUPS}
+      bassLickNow, renderLick, bassLoad, BLK, lickSet, lickGroups, gtrLickNow, gtrLoad, GLK, viewPlan, LICK_GROUPS,
+      lickPlan, lickTake, recordLick, lickBpm, myChords, LREC}
 };
 init();
 })();
