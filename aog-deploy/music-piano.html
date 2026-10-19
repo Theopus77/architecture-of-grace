@@ -358,6 +358,12 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
 .kbd .bk:not(.lit):not(.down):not(.now){background-color:#121214;background-image:linear-gradient(90deg,#0d0d0f 0%,#2a2a2e 22%,#1a1a1d 55%,#0b0b0d 100%),linear-gradient(#232327,#0c0c0e)}
 .kbd .bk.down{transform:translateY(2px);box-shadow:inset 0 -3px 0 #050506,0 2px 3px rgba(0,0,0,.6)}
 @media (prefers-reduced-motion:reduce),(hover:none){ .kbd .wk,.kbd .bk{transition:none} }
+/* AOG-PIANO-LICKS-V1: Licks to try, one closed line under the keys */
+.pk-licks{margin:.7rem 0 .2rem;border:1px solid #2f3339;border-radius:12px;background:transparent;color:inherit}
+.pk-licks>summary{min-height:44px;display:flex;align-items:center;gap:.5rem;padding:0 14px;cursor:pointer;font:700 1rem/1.2 var(--sans);list-style:none}
+.pk-licks>summary::-webkit-details-marker{display:none}
+.pk-licks>summary::before{content:"\25B8";font-size:.85em}.pk-licks[open]>summary::before{content:"\25BE"}
+#pkLicksIn{padding:0 12px 12px}
 </style>
 <link rel="stylesheet" href="/aog-bench.css">
 <script src="/aog-vu.js"></script><!-- AOG-ROOM-VU-V1: before any sound, so the small VU meters hear it -->
@@ -480,6 +486,9 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
           <button type="button" class="pbtn pv-big" id="bpBig"></button><!-- AOG-PLAY-TABLET-V1 -->
         </div>
         <div class="kbd" id="kbd" role="group"></div>
+        <!-- AOG-PIANO-LICKS-V1 (Jimmy, 2026-10-19: piano licks "that follow the same style of the guitar and bass licks"):
+             Licks to try, right under the keys, closed; opening it loads aog-piano-licks.js, which fills it -->
+        <details class="pk-licks aog-licks-near no-print" id="pkLicks"><summary data-t="lickH"></summary><div id="pkLicksIn"><p class="line" data-t="lickWait"></p></div></details>
         <div id="pedalsNear" hidden></div><!-- AOG-ROOM-PEDALS-V1: the pedals that are on, with their knobs, and the menu of the rest, right under the keys (aog-amp.js) -->
         <p class="line lit-line" id="litLine" data-t="litLine" hidden></p>
         <!-- AOG-PIANO-SCALES-V1 (2026-10-05) — Jimmy: more scales, modes and chords on every instrument. A scale shows on
@@ -643,6 +652,7 @@ const STR={
   drumNone:{en:"Make a beat on the drum machine and press Send to the turntables. It shows up here too.",es:"Haz un ritmo en la caja de ritmos y pulsa Enviar a los platos. También aparece aquí."},
   drumGo:{en:"Open the drum machine",es:"Abrir la caja de ritmos"},
   keysH:{en:"Keys",es:"Teclas"},
+  lickH:{en:"Licks to try",es:"Frases para probar"}, lickWait:{en:"Getting the licks ready…",es:"Preparando las frases…"},   /* AOG-PIANO-LICKS-V1 */
   /* AOG-ROOM-PEDALS-V1 */
   ampH:{en:"Pedals and amp",es:"Pedales y amplificador"},
   ampLine:{en:"Every sound starts clean. Add a pedal from the menu under the keys, or here.",es:"Cada sonido empieza limpio. Añade un pedal desde el menú bajo las teclas, o aquí."},
@@ -2334,26 +2344,28 @@ let KB={whites:8, lo:60, hi:72};
 function octaves(){ const w=$("kbd").clientWidth||330; if(BP.on) return w>=1000?3 : 2;   /* AOG-PLAY-V1: sideways, two octaves on a phone, three on an iPad */
   return w>=880?3 : w>=600?2 : 1; }
 function buildKeys(){
-  const kb=$("kbd"), oc=octaves();
-  if(S.oct==null) S.oct = oc===1?4:3;
-  S.oct=Math.max(1, Math.min(7-oc, S.oct));
-  const lo=12*(S.oct+1), hi=lo+12*oc;
+  /* AOG-PIANO-LICKS-V1: while a lick plays (aog-piano-licks.js) the keys in view are the ones it plays: AOG_PKV = {oc, lo},
+     lo a white key; Lower and Higher and the letters keep the room's own place */
+  const kb=$("kbd"), own=octaves(), V=window.AOG_PKV||null, oc=V?V.oc:own;
+  if(S.oct==null) S.oct = own===1?4:3;
+  S.oct=Math.max(1, Math.min(7-own, S.oct));
+  const lo=V?V.lo:12*(S.oct+1), hi=lo+12*oc;
   KB={whites:7*oc+1, lo:lo, hi:hi};
   let html="", wi=0; const w=100/KB.whites;
   for(let m=lo; m<=hi; m++){
     const pc=m%12; if(WHITE.indexOf(pc)<0) continue;
-    const cap=CAP[m-lo]!=null?`<span class="kc">${CAP[m-lo]}</span>`:"";
+    const cap=!V && CAP[m-lo]!=null?`<span class="kc">${CAP[m-lo]}</span>`:"";
     html+=`<div class="wk" data-m="${m}" aria-label="${noteLabel(m)}"><i class="sd" aria-hidden="true"></i>${cap}<span class="nm">${pcName(m)}${pc===0?`<small>${Math.floor(m/12)-1}</small>`:""}</span></div>`;
     if(BLACK_AFTER[pc]!=null && m+1<=hi){
-      const bm=m+1, bcap=CAP[bm-lo]!=null?`<span class="kc">${CAP[bm-lo]}</span>`:"";
+      const bm=m+1, bcap=!V && CAP[bm-lo]!=null?`<span class="kc">${CAP[bm-lo]}</span>`:"";
       html+=`<div class="bk" data-m="${bm}" aria-label="${noteLabel(bm)}" style="left:calc(${(wi+1)*w}% - ${w*0.31}%);width:${w*0.62}%"><i class="sd" aria-hidden="true"></i>${bcap}</div>`;
     }
     wi++;
   }
   kb.innerHTML=html;
   $("rangeOut").textContent=t("rangeOut",{a:noteLabel(lo), b:noteLabel(hi)});
-  $("downBtn").disabled=S.oct<=1; $("upBtn").disabled=S.oct>=7-oc;
-  if($("bpRange")){ $("bpRange").textContent=$("rangeOut").textContent; $("bpDown").disabled=S.oct<=1; $("bpUp").disabled=S.oct>=7-oc; }
+  $("downBtn").disabled=S.oct<=1; $("upBtn").disabled=S.oct>=7-own;
+  if($("bpRange")){ $("bpRange").textContent=$("rangeOut").textContent; $("bpDown").disabled=S.oct<=1; $("bpUp").disabled=S.oct>=7-own; }
   litKeys();  paintScale();   /* AOG-PIANO-SCALES-V1 */
 }
 /* AOG-CHORDSTRIP-V1 (2026-10-04) — Jimmy: "How can we make it so it is extremely easy to go back and forth from chords to
@@ -3273,6 +3285,15 @@ window.addEventListener("hashchange", paintView);
   d.addEventListener("toggle", ()=>{ if(d.open && !f.getAttribute("src")) f.setAttribute("src", f.getAttribute("data-src")); });
   f.addEventListener("load", ()=>{ fit(); setTimeout(fit,250); setTimeout(fit,1200); });
   let tm; window.addEventListener("resize", ()=>{ clearTimeout(tm); tm=setTimeout(fit,150); });
+})();
+/* AOG-PIANO-LICKS-V1 — Licks to try: aog-piano-licks.js is fetched the first time the block is opened (kept open, it opens
+   so next time, and then it is fetched as the room opens) */
+(function(){
+  const d=document.getElementById("pkLicks"); if(!d) return; let st="";
+  const load=()=>{ if(st) return; st="loading"; const sc=document.createElement("script"); sc.src="/aog-piano-licks.js"; sc.async=true;
+    sc.onload=()=>{ st="ready"; }; sc.onerror=()=>{ st=""; sc.remove(); }; document.head.appendChild(sc); };
+  d.addEventListener("toggle",()=>{ if(d.open) load(); try{ localStorage.setItem("aog.piano.licks.open", d.open?"1":"0"); }catch(e){} });
+  try{ if(localStorage.getItem("aog.piano.licks.open")==="1") d.open=true; }catch(e){}
 })();
 
 loadState();
