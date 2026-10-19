@@ -2213,7 +2213,10 @@ async function lkRender(id, o){
 function lkBind(){
   $("lkOpen").onclick=lkOpen;
   $("lkSel").onchange=()=>{ const L=lkLib(), v=$("lkSel").value; if(!L || !L.LICKS[v]) return; LK.P.lick=v; LK.msg=""; lkKeep(); if(LK.on) playLick(v); else lkPaint(); };
-  $("lkPlay").onclick=()=>{ if(LK.on) lickStop(); else playLick(LK.P.lick); };
+  $("lkPlay").onclick=()=>{ if(LK.on){ lickStop(); return; }
+    /* the keys in sight as it plays */
+    if(!BP.on){ const kb=$("kbd"), r=kb.getBoundingClientRect(); if(r.top<0 || r.bottom>innerHeight) kb.scrollIntoView({block:"start", behavior:"instant"}); }
+    playLick(LK.P.lick); };
   $("lkFit").onclick=()=>{ LK.P.fit=!LK.P.fit; LK.msg=""; lkKeep(); lkPaint(); };
   document.querySelectorAll("#bandLicks [data-rep]").forEach(b=>b.onclick=()=>{ LK.P.rep=+b.getAttribute("data-rep"); LK.msg=""; lkKeep(); lkPaint(); });
   $("lkRec").onclick=lickRecord;
