@@ -144,6 +144,7 @@ body.aog-play #kitView{display:flex;flex-direction:column;position:fixed;inset:0
 <script src="/aog-amp.js"></script><!-- AOG-ROOM-PEDALS-V1: the pedalboard, the same panel as the guitar has -->
 <script src="aog-drumkit.js"></script>
 <script src="aog-beats.js"></script>
+<script src="aog-beats-pro.js" defer></script><!-- AOG-BEATS-ELITE-V1: the Elite beats, after the page is read -->
 <script src="/aog-lessons.js"></script>
 <script src="/aog-lessons-kit.js"></script>
 </head>
@@ -494,15 +495,17 @@ function beatsAll(){
 function beatAt(key){ for(const g of beatsAll()) for(const it of g.items) if(it.key===key) return it.b; return null; }
 function beatNow(){ return beatAt(S.beat) || beatAt("b:rockbasic"); }
 function beatOptions(){ return beatsAll().map(g=>`<optgroup label="${g.label}">`+g.items.map(it=>`<option value="${it.key}"${it.key===S.beat?" selected":""}>${it.name}</option>`).join("")+`</optgroup>`).join(""); }
-function beatParts(b){ return [{len:b.len||16, map:b.map||{}}].concat((b.parts||[]).map(p=>({len:p.len||16, map:p.map||{}}))); }
+/* AOG-BEATS-ELITE-V1: res steps a beat (4 sixteenths; 3 and 6 triplets; 8 thirty-second notes) */
+function beatRes(b){ return b && [3,4,6,8].indexOf(b.res)>=0 ? b.res : 4; }
+function beatParts(b){ const n=4*beatRes(b); return [{len:b.len||n, map:b.map||{}}].concat((b.parts||[]).map(p=>({len:p.len||n, map:p.map||{}}))); }
 function beatOwn(b){ S.bpm=Math.max(40, Math.min(220, Math.round(b.bpm||100))); S.swing=Math.max(0.5, Math.min(0.75, b.swing||0.5)); }
 function beatTick(){
   if(!BT.on || !ac) return;
   const b=beatNow(); if(!b){ beatStop(); return; }
   const parts=beatParts(b);
   while(BT.next < ac.currentTime+0.12){
-    const p=parts[BT.part%parts.length], step=BT.step, six=60/S.bpm/4;
-    const late=(step%4===2 || step%4===3), when=BT.next+(late ? (S.swing-0.5)*six*4 : 0);
+    const res=beatRes(b), p=parts[BT.part%parts.length], step=BT.step, six=60/S.bpm/res;
+    const late=res===4 && (step%4===2 || step%4===3), when=BT.next+(late ? (S.swing-0.5)*six*4 : 0);
     const ids=Object.keys(p.map).sort((x,y)=>(padName(S.bank,x)==="OPEN")-(padName(S.bank,y)==="OPEN"));   /* a closed hat before an open one on the same step */
     ids.forEach(id=>{ const v=(p.map[id]||[])[step]; if(!v) return;
       const o=sound(S.bank, id, when, ACC[v]||0, 0.5*S.bvol); if(o) BT.live.push(o);
@@ -532,6 +535,7 @@ function beatPaint(){
   $("swingR").value=Math.round(S.swing*100); $("swingOut").textContent=Math.round(S.swing*100)+"% · "+swingWord();
   $("beatVol").value=Math.round(S.bvol*100); $("volOut").textContent=Math.round(S.bvol*100)+"%";
 }
+window.addEventListener("aog-beats-more", ()=>{ if($("beatSel")) beatText(); });   /* AOG-BEATS-ELITE-V1: the Elite beats arrived */
 function beatText(){
   $("beatH").textContent=t("beatH"); $("beatIntro").textContent=t("beatIntro"); $("beatLab").textContent=t("beatLab");
   $("tempoLab").textContent=t("tempo"); $("swingLab").textContent=t("swing"); $("volLab").textContent=t("vol"); $("beatReset").textContent=t("reset");
@@ -541,7 +545,7 @@ function beatText(){
   beatPaint();
 }
 function pickBeat(key){ if(!beatAt(key)) return; S.beat=key; beatOwn(beatAt(key)); save(); $("beatSel").value=key; $("dkBeatSel").value=key;
-  { const hb=beatAt(key); if(hb.hand && hb.kit && hb.kit!==S.bank && KITS().indexOf(hb.kit)>=0) pickKit(hb.kit); }   /* AOG-DRUM-PERC-V1: a hand-drum groove brings its kit */
+  { const hb=beatAt(key); if((hb.hand || hb.pro) && hb.kit && hb.kit!==S.bank && KITS().indexOf(hb.kit)>=0) pickKit(hb.kit); }   /* AOG-DRUM-PERC-V1: a hand-drum groove brings its kit; AOG-BEATS-ELITE-V1: an Elite beat too */
   if(BT.on){ BT.step=0; BT.part=0; } beatPaint(); LES.mark("beat1"); lessonSong(); }
 function setTempo(n){ S.bpm=Math.max(40, Math.min(220, Math.round(n))); save(); beatPaint();
   LES.mark("tempo1"); if(S.bpm>=140) LES.mark("tfast"); if(S.bpm<=70) LES.mark("tslow"); }
@@ -633,7 +637,7 @@ function lessonSong(){ const s=songNow(); if(s) LES.mark({rock:"srock", funk:"sf
 function beatPos(){
   if(!BT.on || !ac) return null;
   const b=beatNow(); if(!b) return null;
-  const parts=beatParts(b), p=parts[BT.part%parts.length], len=p.len||16, six=60/S.bpm/4;
+  const parts=beatParts(b), p=parts[BT.part%parts.length], len=p.len||16, six=60/S.bpm/beatRes(b);
   let pos=BT.step-(BT.next-ac.currentTime)/six; while(pos<0) pos+=len;
   return {pos:pos%len, len:len};
 }
