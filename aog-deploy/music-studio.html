@@ -1126,6 +1126,7 @@ const STR={
   recsNone:{en:"No recordings yet. On any instrument, press ● Record, then Send to the Mixing Desk.",es:"Aún no hay grabaciones. En cualquier instrumento, pulsa ● Grabar y luego Enviar a la mesa de mezclas."},
   putOn:{en:"Put it on track {n}",es:"Ponla en la pista {n}"},
   putting:{en:"Putting it on…",es:"Poniéndola…"},
+  arrived:{en:"{name} is on track {n}.",es:"{name} está en la pista {n}."},   /* AOG-DESK-ARRIVE-V1 */
   putFail:{en:"That recording could not be read. Try sending it again.",es:"No se pudo leer esa grabación. Intenta enviarla otra vez."},
   aTake:{en:"a take",es:"una toma"},
   barsN:{en:"{n} bars",es:"{n} compases"}, bar1:{en:"1 bar",es:"1 compás"},
@@ -2677,25 +2678,47 @@ async function backing(){
    the voice). A layer with no free track used to be left out without a word; now LISTEN_LEFT names them, and the Recording
    Studio says which are not playing and how to hear one. */
 let LISTEN_LEFT=[];
-async function listenFill(){
+/* AOG-DESK-ARRIVE-V1 (2026-10-19) — Jimmy: "I am unable to send the drums beats when I just record them, over on to the
+   mixing DECK". "+ Add to My Track" said Added, but the desk put the take on a track only after ▶ Listen: opened straight
+   away, its eight tracks were empty and the take waited in a list. Now the desk does it as it opens or comes back into view
+   (arrive; never out of sight, so a room being played is not slowed). With since, only the takes sent after it (so a track taken off stays off), and a room's
+   new take goes on an empty track when the student filled that room's track by hand (that one is theirs, it stays). */
+async function listenFill(since){
   try{ await refreshInbox(); await refreshShelves(); }catch(e){}
   LISTEN_LEFT=[];
-  const best={};
-  sources().forEach(o=>{ const k=layerOfSrc(o); if(!k) return; const at=o.kind==="take" ? (o.x.at||o.x.sent||0) : (o.v.rec.at||0);
+  const best={}, fresh=since!=null;
+  sources().forEach(o=>{ const k=layerOfSrc(o); if(!k) return; if(fresh && !(o.kind==="take" && (o.x.sent||0)>since)) return;
+    const at=o.kind==="take" ? (o.x.at||o.x.sent||0) : (o.v.rec.at||0);
     if(!best[k] || at>best[k].at) best[k]={o:o, at:at}; });
-  let n=0;
+  let n=0, missed=0; const placed=[];
   for(const k of Object.keys(best).sort((a,b)=>LAYER_FROM.indexOf(a.split(":")[0])-LAYER_FROM.indexOf(b.split(":")[0]) || a.length-b.length)){
     const o=best[k].o; if(srcOnTrack(o)) continue;
-    const mine=SONG.tracks.findIndex((x,i)=>i!==VOICE_T && x.clip && layerOfClip(x.clip)===k);
+    const of=(x,i)=>i!==VOICE_T && x.clip && layerOfClip(x.clip)===k;
+    const auto=SONG.tracks.findIndex((x,i)=>of(x,i) && x.clip.auto), mine=SONG.tracks.findIndex(of);
     let ti=-1;
-    if(mine>=0){ if(!SONG.tracks[mine].clip.auto) continue; ti=mine; }
+    if(auto>=0) ti=auto;
+    else if(mine>=0 && !fresh) continue;
     else ti=SONG.tracks.findIndex((x,i)=>i!==VOICE_T && !x.clip);
     if(ti<0){ LISTEN_LEFT.push(k); continue; }
     await putOn(o.id, ti);
-    const c=SONG.tracks[ti].clip; if(c && srcOnTrack(o)){ c.auto=true; n++; }
+    const c=SONG.tracks[ti].clip; if(c && srcOnTrack(o)){ c.auto=true; n++; placed.push(t("arrived",{name:c.name||"", n:ti+1})); } else missed++;
   }
   if(n) songChanged();
-  return n;
+  if(fresh && placed.length) $("recLine").textContent=placed.join(" ");
+  return fresh ? {n:n, missed:missed} : n;
+}
+const ARRIVE_KEY="aog.studio.arrived.v1";
+let ARRIVE=null;
+function arrive(){
+  if(!document.documentElement.classList.contains("in-studio")) return Promise.resolve();   /* My Track is the Studio's */
+  if(ARRIVE) return ARRIVE.then(arrive);
+  ARRIVE=(async()=>{
+    let since=0; try{ since=+localStorage.getItem(ARRIVE_KEY)||0; }catch(e){}
+    const r=await listenFill(since);
+    const top=INBOX.items.reduce((m,x)=>Math.max(m, x.sent||0), since);
+    if(!r.missed) try{ localStorage.setItem(ARRIVE_KEY, String(top)); }catch(e){}
+  })().catch(()=>{}).finally(()=>{ ARRIVE=null; });
+  return ARRIVE;
 }
 /* out of the list: asked once first; a copy on a track stays */
 async function removeTake(id){
@@ -4977,9 +5000,10 @@ window.addEventListener("pagehide", ()=>{ stop(); });
   try{ const m=await sget("mix"); if(m && m.wav) setMix({wav:m.wav, sec:m.sec, bars:m.bars, bpm:m.bpm, body:m.body, at:m.at}); }catch(e){}
   await refreshShelves();
   await refreshInbox();
+  await arrive();   /* AOG-DESK-ARRIVE-V1 */
 })();
 try{ AOGHandoff.listen(function(key){ if(SHELF_KEYS.indexOf(key)>=0) refreshShelves(); else if(key===INBOX_KEY) refreshInbox(); }); }catch(e){}
-window.addEventListener("focus", ()=>{ refreshShelves(); refreshInbox(); });
+window.addEventListener("focus", ()=>{ refreshShelves(); refreshInbox().then(arrive); });
 /* AOG-SONG-V1: the song's tempo changed (here, in a room, or in the Studio): the bars follow at once */
 if(window.AOGSong) AOGSong.on(s=>{ try{
   /* a tempo set elsewhere (the Song panel, a room) is the song's now: the desk's first track no longer leads it */
