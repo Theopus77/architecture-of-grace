@@ -1,9 +1,11 @@
 /* AOG-DESK-ARRIVE-V1 (2026-10-19) — Jimmy: "I am unable to send the drums beats when I just record them, over on to the
    mixing DECK". In the Studio, a beat played on the Drum Machine, ● Record, ■ Stop, + Add to My Track ("Added to My Track."),
-   then the Mixing Desk door: the take is on track 1 at once, not only in the list of takes. With the desk kept open out of
-   sight: a second take replaces the first on track 1; the loop made into a file and sent comes in the same way; a track taken
-   off stays off when the desk is opened again; a drum track filled by hand stays, and a new drum take goes on an empty
-   track. The desk opened on its own (not in the Studio) puts nothing on a track by itself. Spanish. No page errors. Port 9412. */
+   then the Mixing Desk door: the take is on track 1 at once, not only in the list of takes. Then "like a real recording
+   studio": with the desk kept open out of sight, a second take goes on track 1 as another take (the first stays as a take
+   lane); the loop made into a file and sent comes in the same way; a track cleared stays clear when the desk is opened again;
+   a drum take put on track 3 by hand keeps the drums there, and the next one joins it as another take; a piano take goes on
+   track 3, the piano's channel (01 Drum Machine … 07 Turntables). The desk opened on its own (not in the Studio) puts nothing
+   on a track by itself. Spanish. No page errors. Port 9412. */
 const pw = require(require("child_process").execSync("npm root -g").toString().trim() + "/playwright");
 const path = require("path");
 const PORT = 9412, U = "http://localhost:" + PORT + "/";
@@ -30,7 +32,7 @@ async function tracks(p) {
   const d = await room(p);
   await d.waitForFunction(() => !__aogStudio.S.busy, null, { timeout: 20000 }); await p.waitForTimeout(400);
   await d.waitForFunction(() => !__aogStudio.S.busy, null, { timeout: 20000 });
-  return d.evaluate(() => __aogStudio.SONG.tracks.slice(0, 7).map((x, i) => (i + 1) + ":" + (x.clip ? x.clip.name : "-")));
+  return d.evaluate(() => __aogStudio.SONG.tracks.slice(0, 7).map((x, i) => (i + 1) + ":" + (x.clip ? x.clip.name : "-") + ((x.takes || []).length ? " [" + x.takes.map(c => c.name).join(", ") + "]" : "")));
 }
 /* on the Drum Machine: a beat playing, ● Record for about two seconds, ■ Stop, + Add to My Track */
 async function drumTake(p) {
@@ -60,12 +62,14 @@ async function drumTake(p) {
   const line = await (await room(p)).evaluate(() => document.getElementById("recLine").textContent);
   ok(line === "Drum machine take 1 is on track 1.", "the desk says where it went: " + line);
 
-  /* 2 · the desk stays open out of sight; a second take takes the first one's place */
+  /* 2 · the desk stays open out of sight; a second take goes on track 1 as another take, the first kept as a take lane */
   await door(p, "pads", "music-pads.html");
   t = await drumTake(p);
   await door(p, "studio", "music-studio.html");
   tr = await tracks(p);
-  ok(tr[0] === "1:Drum machine take 2" && tr[1] === "2:-", "the newer take replaces the first on track 1: " + tr.slice(0, 3).join(" | "));
+  let ln = await (await room(p)).evaluate(() => document.getElementById("recLine").textContent);
+  ok(tr[0] === "1:Drum machine take 2 [Drum machine take 1]" && tr[1] === "2:-", "the second take plays on track 1, the first is kept as a take: " + tr.slice(0, 3).join(" | "));
+  ok(ln === "Drum machine take 2 is on track 1. The take that was there is kept as an earlier take.", "and the desk says so: " + ln);
 
   /* 3 · the loop made into a file, sent to the Mixing Desk */
   await door(p, "pads", "music-pads.html");
@@ -75,17 +79,16 @@ async function drumTake(p) {
   await door(p, "studio", "music-studio.html");
   tr = await tracks(p);
   const loop = await (await room(p)).evaluate(() => { const x = __aogStudio.SONG.tracks[0].clip; return x ? { take: x.take, head: x.head, bars: x.bars } : null; });
-  ok(/^1:Drum machine loop · 2 bars · \d+ BPM$/.test(tr[0]) && loop && loop.take === false && loop.head === 0 && loop.bars === 2, "the loop file arrives on track 1, a whole loop: " + tr[0] + " " + JSON.stringify(loop));
+  ok(/^1:Drum machine loop · 2 bars · \d+ BPM \[Drum machine take 1, Drum machine take 2\]$/.test(tr[0]) && loop && loop.take === false && loop.head === 0 && loop.bars === 2,
+    "the loop file plays on track 1, a whole loop, both takes kept: " + tr[0] + " " + JSON.stringify(loop));
 
-  /* 4 · a track taken off stays off when the desk is opened again */
-  await (await room(p)).evaluate(() => __aogStudio.takeOff ? __aogStudio.takeOff(0) : null);
-  const hasOff = await (await room(p)).evaluate(() => typeof __aogStudio.takeOff === "function");
-  if (!hasOff) await (await room(p)).evaluate(() => { __aogStudio.SONG.tracks[0].clip = null; __aogStudio.songChanged(); });
+  /* 4 · a track cleared stays clear when the desk is opened again */
+  await (await room(p)).evaluate(() => { const x = __aogStudio.SONG.tracks[0]; x.clip = null; delete x.takes; delete x.comp; __aogStudio.songChanged(); });
   await door(p, "pads", "music-pads.html"); await door(p, "studio", "music-studio.html");
   tr = await tracks(p);
-  ok(tr[0] === "1:-", "a track taken off stays empty when the desk opens again: " + tr[0]);
+  ok(tr[0] === "1:-", "a track cleared stays empty when the desk opens again: " + tr[0]);
 
-  /* 5 · a drum track filled by hand stays; the new drum take goes on an empty track */
+  /* 5 · a drum take put on track 3 by hand: the drums live there now, and the next drum take joins it */
   const d = await room(p);
   await d.evaluate(async () => { const s = __aogStudio, o = s.sources().find(x => x.kind === "take" && x.x.from === "pads"); await s.putOn(o.id, 2); });
   await d.waitForFunction(() => !__aogStudio.S.busy && __aogStudio.SONG.tracks[2].clip, null, { timeout: 20000 });
@@ -94,7 +97,7 @@ async function drumTake(p) {
   t = await drumTake(p);
   await door(p, "studio", "music-studio.html");
   tr = await tracks(p);
-  ok(tr[2] === "3:" + hand && tr[0] === "1:Drum machine take " + t.n, "the drum track filled by hand stays, the new take goes on an empty track: " + tr.slice(0, 4).join(" | "));
+  ok(tr[2] === "3:Drum machine take " + t.n + " [" + hand + "]" && tr[0] === "1:-", "the next drum take joins the hand-placed drums on track 3, which is kept: " + tr.slice(0, 4).join(" | "));
 
   /* 6 · Spanish */
   const c2 = await ctxOf(b), p2 = await c2.newPage();
@@ -106,10 +109,16 @@ async function drumTake(p) {
   await p2.click("#tpRec"); await p2.waitForTimeout(2200); await p2.click("#tpRec");
   await f.waitForFunction(() => REC.n === 1 && !REC.closing, null, { timeout: 10000 });
   await f.click("#playBtn"); await p2.click("#tpAdd"); await p2.waitForTimeout(1500);
+  /* a piano take too: it goes on the piano's channel, track 3 */
+  await f.evaluate(() => { const sr = 44100, n = sr, ab = new ArrayBuffer(44 + n * 4), v = new DataView(ab), w = (o, s) => { for (let i = 0; i < s.length; i++) v.setUint8(o + i, s.charCodeAt(i)); };
+    w(0, "RIFF"); v.setUint32(4, 36 + n * 4, true); w(8, "WAVE"); w(12, "fmt "); v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 2, true); v.setUint32(24, sr, true); v.setUint32(28, sr * 4, true); v.setUint16(32, 4, true); v.setUint16(34, 16, true); w(36, "data"); v.setUint32(40, n * 4, true);
+    for (let i = 0; i < 20000; i++) { const x = Math.round(9000 * Math.sin(2 * Math.PI * 262 * i / sr) * Math.exp(-i / 8000)); v.setInt16(44 + i * 4, x, true); v.setInt16(46 + i * 4, x, true); }
+    return AOGHandoff.add(AOGHandoff.INBOX, { from: "piano", n: 1, name: { en: "Piano take 1", es: "Toma de piano 1" }, sec: 1, bpm: 90, at: Date.now(), take: true, wav: new Blob([ab], { type: "audio/wav" }) }, { key: "arrive|piano" }); });
   await door(p2, "studio", "music-studio.html");
   tr = await tracks(p2);
+  ok(tr[1] === "2:-" && /^3:/.test(tr[2]) && tr[2] !== "3:-", "the piano take goes on track 3, the piano's channel: " + tr.slice(0, 4).join(" | "));
   const es = await (await room(p2)).evaluate(() => document.getElementById("recLine").textContent);
-  ok(/^1:/.test(tr[0]) && tr[0] !== "1:-" && /está en la pista 1\.$/.test(es), "Spanish: on track 1, and said so: " + tr[0] + " / " + es);
+  ok(/^1:/.test(tr[0]) && tr[0] !== "1:-" && /está en la pista 1\. .* está en la pista 3\.$/.test(es), "Spanish: on tracks 1 and 3, and said so: " + tr[0] + " / " + es);
   await c2.close();
 
   /* 7 · the desk on its own, outside the Studio: nothing goes on a track by itself */
