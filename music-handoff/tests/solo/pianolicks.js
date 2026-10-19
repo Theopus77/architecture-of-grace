@@ -15,7 +15,7 @@
    3 · every lick plays: each key lit as it sounds (on an iPad every key; on a phone every right-hand key), and it ends
        by itself, the keys back as they were
    4 · Stop stops it at once; it follows a key change while it plays, and major and minor; Lick speed changes its length;
-       the song's tempo (unclamped, 73.5 and 200), "In your song: …"; Fit to my chords follows the room's chord pattern;
+       the song's tempo (73.5 and 170, past the old 132 limit), "In your song: …"; Fit to my chords follows the room's chord pattern;
        Repeat makes it 2 and 4 times as long; ● Record this lick makes a take at the song's tempo that + Add to My Track
        puts on bar 1 with its tempo and key, and Send to the drum machine takes; the take starts on the downbeat, is not
        clipped; a hidden tab and the Studio's hush stop it; afterwards no timer or frame callback from it; no page errors.
@@ -90,7 +90,7 @@ const NUMBERS = () => {
     for (let key = 0; key < 12; key++) for (const minor of [false, true]) {
       const C = L.compile(L.LICKS[id], { key, minor }); out.n++;
       judge(C, key, minor, m => { if (out.bad.length < 30) out.bad.push(`${id} in ${key}${minor ? "m" : ""}: ${m}`); });
-      if (C) { const shape = C.notes.map(n => ((n.m - key) % 12 + 12) % 12).join(","), k = minor ? "min" : "maj"; if (ref[k] == null) ref[k] = shape; else if (ref[k] !== shape) out.bad.push(`${id}: not the same shape in ${key}`); }
+      if (C) { const shape = C.notes.map(n => n.t.toFixed(4) + n.h + ((n.m - key) % 12 + 12) % 12).sort().join(","), k = minor ? "min" : "maj"; if (ref[k] == null) ref[k] = shape; else if (ref[k] !== shape) out.bad.push(`${id}: not the same shape in ${key}`); }
     }
     /* Fit to my chords: five progressions, in four keys, from bar 1 and from bar 2 */
     PROGS.forEach((prog, pi) => [0, 5, 7, 10].forEach(key => [false, true].forEach(minor => [0, 1].forEach(bar0 => {
@@ -230,12 +230,12 @@ async function device(b, nm, vw, errs) {
   const sg = await f.evaluate(async () => {
     const sel = document.getElementById("pkLickSel"), btn = document.getElementById("pkLickBtn"), wait = ms => new Promise(z => setTimeout(z, ms)), out = {};
     sel.value = "p_slsing"; sel.dispatchEvent(new Event("change", { bubbles: true }));
-    for (const bpm of [73.5, 200]) { AOGSong.set({ bpm }); await wait(80); btn.click(); await wait(60); const L = AOGPianoLicks._t.L; out[bpm] = { beat: L.beat, line: document.getElementById("pkSong").textContent }; btn.click(); }
+    for (const bpm of [73.5, 170]) { AOGSong.set({ bpm }); await wait(80); btn.click(); await wait(60); const L = AOGPianoLicks._t.L; out[bpm] = { beat: L.beat, line: document.getElementById("pkSong").textContent }; btn.click(); }
     out.count = [...document.querySelectorAll("#pkLicksIn p")].filter(p => /In your song/.test(p.textContent)).length;
     return out;
   });
-  ok(Math.abs(sg[73.5].beat - 60 / 73.5) < 1e-6 && Math.abs(sg[200].beat - 0.3) < 1e-6 && /In your song: A minor, 73\.5 beats a minute\./.test(sg[73.5].line) && /200 beats a minute/.test(sg[200].line) && sg.count === 1,
-    `${nm}: at the song's tempo: 73.5 (a beat ${sg[73.5].beat.toFixed(3)} s), 200 (${sg[200].beat.toFixed(3)} s); "${sg[73.5].line}"`);
+  ok(Math.abs(sg[73.5].beat - 60 / 73.5) < 1e-6 && Math.abs(sg[170].beat - 60 / 170) < 1e-6 && /In your song: A minor, 73\.5 beats a minute\./.test(sg[73.5].line) && /170 beats a minute/.test(sg[170].line) && sg.count === 1,
+    `${nm}: at the song's tempo: 73.5 (a beat ${sg[73.5].beat.toFixed(3)} s), 170 (${sg[170].beat.toFixed(3)} s); "${sg[73.5].line}"`);
   await f.evaluate(() => AOGSong.set({ bpm: 120 }));
   /* Fit to my chords: the room's own chord pattern; Repeat */
   const ft = await f.evaluate(async () => {
@@ -277,7 +277,7 @@ async function device(b, nm, vw, errs) {
       inbox: it && { from: it.from, bpm: it.bpm, place: it.place, key: it.notes && it.notes.key, ev: it.notes && it.notes.ev.length }, pads: !!(pt && pt.from === "piano") };
   });
   const wantSec = rc.beats * 60 / 96;
-  ok(rc.made && rc.bpm === 96 && rc.beats === 24 && rc.sec >= wantSec && rc.sec <= wantSec + 3 && rc.pk < 1 && rc.pk > 0.05 && rc.first < 0.02 && rc.shown >= 1 && rc.line === "Done. It is with your takes.",
+  ok(rc.made && rc.bpm === 96 && rc.beats === 32 && rc.sec >= wantSec && rc.sec <= wantSec + 3 && rc.pk < 1 && rc.pk > 0.05 && rc.first < 0.02 && rc.shown >= 1 && rc.line === "Done. It is with your takes.",
     `${nm}: ● Record this lick: take ${rc.n}, ${rc.sec} s for ${rc.beats} beats at ${rc.bpm} (a repeat of 2), first sound at ${(rc.first * 1000).toFixed(1)} ms, peak ${rc.pk}; "${rc.line}"`);
   ok(rc.inbox && rc.inbox.from === "piano" && rc.inbox.bpm === 96 && rc.inbox.place && rc.inbox.place.bar === 1 && rc.inbox.key && rc.inbox.key.key === 9 && rc.inbox.key.minor === true && rc.inbox.ev > 0 && rc.pads,
     `${nm}: + Add to My Track puts it on bar 1 at 96 with its key (A minor) and its notes; Send to the drum machine takes it ${JSON.stringify(rc.inbox)} pads ${rc.pads}`);

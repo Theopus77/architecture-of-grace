@@ -534,7 +534,14 @@ function resolve(def, minor, fit, way){
   const own=parseChords(minor && def.cm ? def.cm : def.ch, minor), rawBeats=own[own.length-1].t1, bars=Math.ceil(rawBeats/4-1e-6);
   const chs=fit && fit.prog && fit.prog.length ? parseChords(fitChords(fit.prog, bars, fit.bar0||0, minor), minor) : own;
   chs[chs.length-1].t1=4*bars;   /* AOG-LICKS-SONG-V1: whole bars */
-  if(chs!==own) chs.forEach(c=>{ const o=way===1 ? chordAt(own, c.t0).root : way===2 ? 2.5 : way===3 ? 5.5 : -0.5; c.base=[c.root-12, c.root, c.root+12].reduce((a,b)=>Math.abs(b-o)<Math.abs(a-o)?b:a); });   /* a song's chords: each one where the lick's own chord was, so the hands stay where the lick puts them */
+  /* a song's chords: each one placed near the home note, near the lick's own chord, or all of them as close together as
+     they go (the widest gap between their roots left out); compile() takes the first way that keeps the hands together */
+  if(chs!==own){
+    if(way>=4){ const rs=[...new Set(chs.map(c=>c.root))].sort((a,b)=>a-b); let gap=-1, start=rs[0];
+      rs.forEach((r,i)=>{ const nx=i+1<rs.length ? rs[i+1] : rs[0]+12, g=nx-r; if(g>gap){ gap=g; start=i+1<rs.length ? rs[i+1] : rs[0]; } });
+      chs.forEach(c=>{ c.base=(c.root>=start ? c.root : c.root+12)-(way===5 ? 12 : 0); }); }
+    else chs.forEach(c=>{ const o=way===1 ? chordAt(own, c.t0).root : way===2 ? 2.5 : way===3 ? 5.5 : -0.5; c.base=[c.root-12, c.root, c.root+12].reduce((a,b)=>Math.abs(b-o)<Math.abs(a-o)?b:a); });
+  }
   const R=line(minor && def.nm ? def.nm : def.n, chs, minor);
   const lhs=minor && def.nl ? def.nl : def.lh, Lh=lhs ? line(lhs, chs, minor) : null;
   return {chs, chordBeats:rawBeats, bars, R, Lh};
@@ -565,7 +572,13 @@ function place(rh, lh, key, def, want){
 function repair(notes, chs, key, minor){
   const SC=minor?MIN:MAJ, pcOf=m=>((m-key)%12+12)%12;
   const fits=(m, c, strong)=>{ const pc=pcOf(m), t=c.tones.map(x=>(c.root+x)%12); return t.indexOf(pc)>=0 || (!strong && SC.indexOf(pc)>=0); };
-  const near=(m, c, strong)=>{ for(let d=0; d<=6; d++){ if(fits(m-d, c, strong)) return m-d; if(fits(m+d, c, strong)) return m+d; } return m; };
+  const all=notes.map(n=>n.m).sort((a,b)=>a-b), mid=all[all.length>>1];
+  /* the nearer of the two, inside the keys the lick already uses, and on a tie the one toward its middle */
+  const lo=all[0], hi=all[all.length-1], inside=x=>x>=lo && x<=hi;
+  const near=(m, c, strong)=>{ const up=m<mid;
+    for(const keepIn of [true, false]) for(let d=0; d<=6; d++){ const a=up?m+d:m-d, b=up?m-d:m+d;
+      if((!keepIn || inside(a)) && fits(a, c, strong)) return a; if((!keepIn || inside(b)) && fits(b, c, strong)) return b; }
+    return m; };
   const hands={r:[], l:[]}; notes.forEach(n=>{ if(hands[n.h]) hands[n.h].push(n); });
   Object.keys(hands).forEach(h=>{
     const L=hands[h];
@@ -588,7 +601,7 @@ function repair(notes, chs, key, minor){
 function compile(def, o){
   o=o||{}; const fit=!!(o.fit && o.fit.prog && o.fit.prog.length);
   if(!fit) return compile1(def, o, 0);
-  let first=null; for(const way of [0,1,2,3]){ const C=compile1(def, o, way); if(C && C.c3) return C; first=first||C; } return first;
+  let first=null; for(const way of [0,1,2,3,4,5]){ const C=compile1(def, o, way); if(C && C.c3) return C; first=first||C; } return first;
 }
 function compile1(def, o, way){
   const key=((o.key||0)%12+12)%12, minor=!!o.minor;
@@ -602,9 +615,10 @@ function compile1(def, o, way){
   ["r","l"].forEach(h=>{ const L=notes.filter(n=>n.h===h && !n.orn); if(!L.length) return; const tb=Math.max(...L.map(n=>n.tb));
     notes.forEach(n=>{ if(n.h===h && n.tb===tb && !n.trem) n.d=Math.max(n.d, +(P-n.t).toFixed(6)); }); });
   if(o.fit && o.fit.prog && o.fit.prog.length) notes=repair(notes, chs, key, minor);
+  const ms=notes.map(n=>n.m), c3=Math.max(...ms)-whiteAt(Math.min(...ms))<=36;   /* after the repairs, the keys it really needs */
   notes.sort((x,y)=>x.t-y.t || x.m-y.m);
   return {id:def.id, notes, chords:chs.map(c=>({t0:c.t0, t1:c.t1, root:c.root, q:c.q, tones:c.tones.slice()})), beats:P, bars:Z.bars,
-    rawBeats:Z.R.beats, lhBeats:Z.Lh?Z.Lh.beats:null, chordBeats:Z.chordBeats, key, minor, rR:best.rR, rL:best.rL, c3:best.c3, own:!!Z.Lh, fit:!!(o.fit && o.fit.prog && o.fit.prog.length)};
+    rawBeats:Z.R.beats, lhBeats:Z.Lh?Z.Lh.beats:null, chordBeats:Z.chordBeats, key, minor, rR:best.rR, rL:best.rL, c3, own:!!Z.Lh, fit:!!(o.fit && o.fit.prog && o.fit.prog.length)};
 }
 
 /* ══ the numbers: what a lick must be in every key ═══════════════════════════════════════════════════════════════ */
