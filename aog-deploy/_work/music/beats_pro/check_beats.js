@@ -2,6 +2,7 @@
 const fs=require("fs"), path=require("path"), DIR=__dirname, ROOT=path.resolve(DIR,"../../..");
 global.window={}; require(path.join(ROOT,"aog-beats.js")); require(path.join(ROOT,"aog-drumkit.js"));
 const OLD=window.AOGBeats, DK=window.AOGDrumKit;
+const CORE=JSON.parse(fs.readFileSync(path.join(ROOT,"_work/music/beats_core/_base.json"),"utf8")).groups;   /* AOG-BEATS-GROUPS-V1: the newer beats join the main groups */
 const KITS=new Set(DK.ids.filter(b=>Object.keys(DK.padNames(b)).every(id=>!DK.made(b,id))));   // every pad recorded: the kits the Drum Machine can bring (not L, M)
 if(process.argv.includes("--kits")){ [...KITS].forEach(k=>console.log(k.padEnd(3), DK.label(k,"en")[0])); process.exit(0); }
 const DRUMS=["kick","snare","ch","oh","clap","tom","rim","bell"], RES=[3,4,6,8];
@@ -17,7 +18,7 @@ for(const f of files){
   for(const b of J.beats||[]){ n++; const id=b.id||"?";
     if(!/^el_[a-z0-9]+_[a-z0-9]+$/.test(id)) bad(f,id,"id must be el_<family>_<word>");
     if(seen.has(id)||oldIds.has(id)) bad(f,id,"id used twice"); seen.add(id);
-    if(!G[b.grp]) bad(f,id,"grp not in this file's groups");
+    if(!G[b.grp] && !CORE[b.grp]) bad(f,id,"grp must be one of the groups: "+Object.keys(CORE).join(", "));
     if(!words(b)) bad(f,id,"needs en and es names"); else { if(names.has(b.en)) bad(f,id,"name used twice: "+b.en); names.add(b.en); }
     if(!b.about || !words(b.about)) bad(f,id,"needs about.en and about.es");
     const txt=[b.en,b.es,b.about&&b.about.en,b.about&&b.about.es].join(" "); if(NAMES.test(txt)) bad(f,id,"a person's or song's name on screen: "+txt.match(NAMES)[0]);
