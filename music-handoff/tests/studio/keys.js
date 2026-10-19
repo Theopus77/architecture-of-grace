@@ -83,10 +83,10 @@ async function tapDoor(p, id) { await p.click(`.sh-doors a[data-room="${id}"]`);
       v.setUint16(32, 2, true); v.setUint16(34, 16, true); w(36, "data"); v.setUint32(40, n * 2, true); for (let i = 0; i < n; i++) v.setInt16(44 + i * 2, Math.round(Math.sin(2 * Math.PI * hz * i / sr) * 9000), true); return new Blob([b], { type: "audio/wav" }); };
     for (const [from, hz] of [["pads", 110], ["piano", 262], ["guitar", 330]]) { const at = Date.now(); await AOGHandoff.add(AOGHandoff.INBOX, { from, n: 1, name: from, sec: 2, bpm: 120, at, take: true, wav: mk(hz) }, { key: from + "|" + at }); }
     await __aogStudio.listenFill(); });
-  await f.waitForFunction(() => __aogStudio.SONG.tracks[2].clip && !__aogStudio.S.busy, null, { timeout: 20000 });
+  await f.waitForFunction(() => __aogStudio.SONG.tracks[3].clip && !__aogStudio.S.busy, null, { timeout: 20000 });
   await p.click('.sh-doors a[data-room="studio"]').catch(() => {}); await p.waitForTimeout(300);
   await p.keyboard.press("Digit3"); await p.waitForTimeout(200);
-  ok(await f.evaluate(() => __aogStudio.SONG.sel === 2 && document.querySelector("#chStrip .st-chn").textContent === "Guitar"), "desk: 3 picks track 3, the Guitar");
+  ok(await f.evaluate(() => __aogStudio.SONG.sel === 2 && document.querySelector("#chStrip .st-chn").textContent === "Piano"), "desk: 3 picks track 3, the Piano (its own channel, AOG-DESK-ARRIVE-V1)");
   await p.keyboard.press("KeyM"); await p.waitForTimeout(150);
   ok(await f.evaluate(() => __aogStudio.SONG.tracks[2].mute), "desk: M mutes it");
   await p.keyboard.press("KeyM"); await p.keyboard.press("KeyS"); await p.waitForTimeout(150);
