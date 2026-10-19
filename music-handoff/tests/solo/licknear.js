@@ -7,7 +7,9 @@
    4 · AOG-SOLO-LICKS-PV-V1 (Jimmy, 2026-10-18: "the licks drop down menu is not visible by the neck"): on the whole screen
        (an iPad, a computer, a phone on its side), Guitar and Bass, the licks are a row right under the neck, a lick plays from
        it, and leaving the whole screen puts them back under the neck; and when the screen changes size (an iPad turned)
-       and the Studio fits the room again, the licks stay right under the neck, before the room's controls. */
+       and the Studio fits the room again, the licks stay right under the neck, before the room's controls.
+   5 · (Jimmy, 2026-10-19, an iPad screenshot: the licks under the pedals) the room opened again with Solo already on
+       (a reload, a return visit): the sound picker's row and the Studio's controls go after the licks, not between. */
 const pw = require(require("child_process").execSync("npm root -g").toString().trim() + "/playwright");
 const path = require("path"), PORT = 9422, srv = require("../srv.js")(PORT);
 const ROOT = process.env.AOG_ROOT || path.resolve(__dirname, "../../../aog-deploy");
@@ -76,6 +78,25 @@ let fails = 0; const ok = (c, m) => { console.log((c ? "PASS " : "FAIL ") + m); 
     const r = await f.evaluate(() => { const lk = document.querySelector(".so-licks"), nb = document.getElementById("neckBox"), ctl = document.querySelector(".aog-ctl");
       return { gap: Math.round(lk.getBoundingClientRect().top - nb.getBoundingClientRect().bottom), before: !ctl || !!(lk.compareDocumentPosition(ctl) & Node.DOCUMENT_POSITION_FOLLOWING) }; });
     ok(r.gap >= 0 && r.gap <= 200 && r.before, `${room}: the screen resized, the licks stay right under the neck, before the room's controls (${r.gap} px)`);
+    await ctx.close();
+  }
+  for (const room of ["guitar", "bass"]) for (const [nm, o] of [["iPad sideways", { viewport: { width: 1180, height: 820 }, isMobile: true, hasTouch: true }], ["iPhone", { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true }]]) {
+    const ctx = await b.newContext({ ...o, serviceWorkers: "block" });
+    await ctx.route(/^https?:\/\/(?!localhost)/, r => r.abort());
+    await ctx.route(/\/the-studio(\?[^#]*)?$/, r => r.fulfill({ path: path.join(ROOT, "the-studio.html"), contentType: "text/html" }));
+    const p = await ctx.newPage(); const ready = () => p.waitForFunction(() => [...document.querySelectorAll("iframe")].some(f => { try { return f.contentDocument && f.contentDocument.querySelector('[data-so-mode="solo"]'); } catch (e) { return false; } }), null, { timeout: 60000 });
+    await p.goto(`http://localhost:${PORT}/the-studio#${room}`); await ready();
+    let f = p.frames().find(x => new RegExp("music-" + room).test(x.url()));
+    await f.evaluate(async () => { const $ = id => document.getElementById(id), W = ms => new Promise(r => setTimeout(r, ms));
+      if (document.body.classList.contains("aog-play")) { $("pvMore").click(); await W(200); $("pvSolo").click(); await W(800); $("pvClose").click(); await W(400); }
+      else { document.querySelector('[data-so-mode="solo"]').click(); await W(800); } });
+    await p.reload(); await ready(); await p.waitForTimeout(2500);
+    f = p.frames().find(x => new RegExp("music-" + room).test(x.url()));
+    const r = await f.evaluate(async () => { const $ = id => document.getElementById(id), W = ms => new Promise(r => setTimeout(r, ms));
+      if (document.body.classList.contains("aog-play")) { $("pvMore").click(); await W(200); $("pvClose").click(); await W(800); }
+      const lk = document.querySelector(".so-licks"), nb = $("neckBox");
+      return { solo: document.body.classList.contains("aog-solo-on"), gap: Math.round(lk.getBoundingClientRect().top - nb.getBoundingClientRect().bottom) }; });
+    ok(r.solo && r.gap >= 0 && r.gap <= 60, `${room}, ${nm}: opened again with Solo on, the licks are right under the neck (${r.gap} px)`);
     await ctx.close();
   }
   ok(errs.length === 0, "no page errors " + errs.join(" | "));
