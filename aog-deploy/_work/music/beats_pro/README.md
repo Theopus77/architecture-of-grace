@@ -26,7 +26,7 @@ Each family writes one file here, `<family>.json`; `make_beats_pro.py` joins the
 - **swing** (0.5 straight … 0.75 hard): only with res 4; it delays every second sixteenth.
 - **parts:** up to 3 more bars after `map` (so a beat is 1, 2 or 4 bars; 3 parts = 4 bars). Bar 4 is where the
   fill goes. Same res for every bar.
-- **bpm** 50 … 200 (drum and bass at 170 is fine). Half-time feels are written at the real tempo.
+- **bpm** 60 … 180, the Drum Machine's range (drum and bass at 170 is fine). Half-time feels are written at the real tempo.
 - **kit:** one of the kit letters listed by `node check_beats.js --kits` (every pad a recording, so the Drum Machine can bring it; not L 909 or M reggae: for 808 and house sounds use TR trap, DS disco, RG reggaeton or JG jungle). Pick the one that fits.
 - **Words:** name and one-sentence `about` in English and Spanish, plain everyday words (CLAUDE.md "Plain words").
   No artist, producer, drummer or song names anywhere a person reads. Everything original: never copy a famous

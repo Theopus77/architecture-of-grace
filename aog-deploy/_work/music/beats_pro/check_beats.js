@@ -22,7 +22,7 @@ for(const f of files){
     if(!b.about || !words(b.about)) bad(f,id,"needs about.en and about.es");
     const txt=[b.en,b.es,b.about&&b.about.en,b.about&&b.about.es].join(" "); if(NAMES.test(txt)) bad(f,id,"a person's or song's name on screen: "+txt.match(NAMES)[0]);
     if(!KITS.has(b.kit)) bad(f,id,"unknown kit "+b.kit);
-    if(!(b.bpm>=50 && b.bpm<=200)) bad(f,id,"bpm 50..200");
+    if(!(b.bpm>=60 && b.bpm<=180)) bad(f,id,"bpm 60..180 (the Drum Machine's range)");
     const res=b.res||4; if(!RES.includes(res)) bad(f,id,"res must be 3, 4, 6 or 8");
     if(b.swing!=null && (b.swing<0.5||b.swing>0.75)) bad(f,id,"swing 0.5..0.75");
     if(b.swing && b.swing>0.5 && res!==4) bad(f,id,"swing only with res 4 (write triplets with res 3 or 6)");
