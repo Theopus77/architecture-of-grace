@@ -1679,8 +1679,11 @@ function lickFn(list, beat){
    own"): every lick, the first 57 too, plays at the song's tempo (no clamp; Lick speed is only for practice), in its key,
    in whole bars, 1, 2 or 4 times with no gap at the seam, on its own chords or, with Fit to my chords, on the room's chords
    (the band's), each note keeping its part on the chord; ● Record this lick makes it a take. */
-function playLick(id){
-  lickStop();
+async function playLick(id){
+  lickStop(); const req=LICK.req;
+  if(P.fit){ const pr=bandProg().chords.length||1, k1=BAND.on ? Math.max(BAND.bar, Math.ceil((ctx().currentTime+0.12-BAND.t0)/BAND.barSec-1e-6)) : 0;
+    await planReady(id, {fit:true, reps:P.reps}, BAND.on ? [k1%pr, (k1+1)%pr] : [0]);
+    if(req!==LICK.req) return; }   /* Stop, or another lick, while it was being fitted */
   const c=ctx(), spd=clamp(P.lspd||100, 25, 100)/100, bpm=lickBpm(), beat=60/bpm/spd;
   let T0=c.currentTime+0.12, k=-1;
   /* with the band: the lick starts on the first bar the band has not planned yet, and the band plays its chords */
@@ -1723,7 +1726,8 @@ function lickPlan(id, o){
     if(prog){
       const from=((o.from||0)+r*bars)%prog.length, ck=[id, S.key, S.minor?1:0, from, bars, JSON.stringify(prog)].join("|");
       let C=PLANS[ck];
-      if(C===undefined){ const chords=Lb.songChords(prog, S.minor, bars, from);
+      if(C===undefined && o.jobs){ o.jobs.push({ck, id, old, notes:old?notes0:null, opt, prog, bars, from}); C=null; }   /* planReady() works it out in a worker */
+      else if(C===undefined){ const chords=Lb.songChords(prog, S.minor, bars, from);
         try{ C=old ? Lb.compile(Lb.fromNotes(notes0, opt), Object.assign({chords}, opt)) : Lb.compile(Lb.LICKS[id], Object.assign({chords}, opt)); }catch(e){ C=null; }
         if(Object.keys(PLANS).length>400) Object.keys(PLANS).forEach(x=>{ delete PLANS[x]; });
         PLANS[ck]=C; }
@@ -1735,6 +1739,31 @@ function lickPlan(id, o){
   }
   out.sort((a,b)=>a.t-b.t || a.s-b.s);
   return {id, notes:out, beats, bars, total:beats*reps, reps, w:w0, over, fit, B:B0, old};
+}
+/* AOG-SILENT-V1 (heavy work off the main thread): fitting a lick to new chords can take a phone a moment, so it is worked
+   out in a worker made for the job (the lick file loaded into it) and let go when it answers; if a worker cannot be made,
+   the page does it itself */
+function fitInWorker(jobs){
+  return new Promise(res=>{
+    let wk=null, bu="", to=0;
+    const done=out=>{ clearTimeout(to); try{ if(wk) wk.terminate(); }catch(e){} try{ if(bu) URL.revokeObjectURL(bu); }catch(e){} wk=null; res(out); };
+    try{
+      const url=new URL(GTR ? "/aog-guitar-licks.js" : "/aog-bass-licks.js", location.href).href;
+      const src="var L=null;self.onmessage=function(e){var d=e.data,out=[];try{if(!L){importScripts(d.url);L=self.AOGGuitarLicks||self.AOGBassLicks;}}catch(x){}"
+        +"d.jobs.forEach(function(j){var C=null;try{var o=Object.assign({chords:L.songChords(j.prog,j.opt.minor,j.bars,j.from)},j.opt);C=j.old?L.compile(L.fromNotes(j.notes,j.opt),o):L.compile(L.LICKS[j.id],o);}catch(x){C=undefined;}out.push({ck:j.ck,C:C});});self.postMessage(out);};";
+      bu=URL.createObjectURL(new Blob([src], {type:"text/javascript"}));
+      wk=new Worker(bu); wk.onmessage=e=>done(e.data); wk.onerror=()=>done(null);
+      to=setTimeout(()=>done(null), 8000);
+      wk.postMessage({url, jobs});
+    }catch(e){ done(null); }
+  });
+}
+async function planReady(id, o, froms){
+  if(!o.fit) return;
+  const jobs=[]; (froms||[o.from||0]).forEach(f=>lickPlan(id, Object.assign({}, o, {from:f, jobs})));
+  const seen={}, list=jobs.filter(j=>!seen[j.ck] && (seen[j.ck]=1)); if(!list.length) return;
+  const out=await fitInWorker(list);
+  if(out) out.forEach(x=>{ if(x && x.C!==undefined) PLANS[x.ck]=x.C; });   /* what the worker could not do, the page does */
 }
 /* the voices and the lights of a lick: a note on a ringing string played legato (hammer, pull, tap) keeps that string's
    voice and moves its pitch; any other note starts a new voice and cuts the one before on that string. X: an offline
@@ -1847,7 +1876,8 @@ async function renderLick(id, o){
 const LREC={busy:false};
 async function lickTake(id, o){
   o=o||{};
-  const plan=lickPlan(id, {fit:o.fit!=null ? !!o.fit : P.fit, reps:o.reps||P.reps, from:0}); if(!plan) return null;
+  const po={fit:o.fit!=null ? !!o.fit : P.fit, reps:o.reps||P.reps, from:0}; await planReady(id, po);
+  const plan=lickPlan(id, po); if(!plan) return null;
   const bpm=o.bpm>0 ? o.bpm : lickBpm(), beat=60/bpm, sr=44100, tail=1.6;
   const notes=plan.notes.filter(n=>n.t>=0);   /* a rake just before beat 1 is left out: the take starts on the bar line */
   if(typeof loadSound==="function"){ try{ await loadSound(S.sound); }catch(e){} }
@@ -1925,6 +1955,7 @@ function drawLickNow(act){
   for(let s=0;s<TUNING.length;s++) if(!bentNow.has(s) && !(SOUNDING[s] && SOUNDING[s].bend>0.02)) clearBend(s);
 }
 function lickStop(natural){
+  LICK.req=(LICK.req||0)+1;   /* AOG-LICKS-SONG-V1: a lick still being fitted does not start after this */
   if(!LICK.on) return;
   LICK.on=false; if(LICK.raf) cancelAnimationFrame(LICK.raf); LICK.raf=0;
   if(!natural && ac){ const now=ac.currentTime; LICK.voices.forEach(v=>{ if(v.lv){ try{ v.lv.vc.kill(now); v.lv.parts.forEach(p=>p.kill(now)); }catch(e){} DYN.delete(v.lv); v.lv.letGo(); } }); }
@@ -1974,7 +2005,7 @@ window.AOGSolo={
   _t:{DRUM_FEELS, P, SO, BAND, LICK, LICKS, FING, KEYF, SOUNDING, WH, Lead, bendFrom, boxRoot, keyCells, lickNotes, renderBand, scalePcs, bluePc,
       leadsNow, whamTo, killSet, playLick, lickStop, bandStart, bandStop, strumNotes, hotAmp, landChord, bandPlan, BAND_SET, BAND_RT, get LAST(){ return LAST; },
       bassLickNow, renderLick, bassLoad, BLK, lickSet, lickGroups, gtrLickNow, gtrLoad, GLK, viewPlan, LICK_GROUPS,
-      lickPlan, lickTake, recordLick, lickBpm, myChords, LREC}
+      lickPlan, lickTake, recordLick, lickBpm, myChords, LREC, planReady, PLANS}
 };
 init();
 })();

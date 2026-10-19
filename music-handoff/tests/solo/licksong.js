@@ -32,7 +32,8 @@ const COUNT = () => { window.__calls = []; const si = window.setInterval, st = w
   const tag = k => { const s = (new Error().stack || "").split("\n").slice(2, 6).join(" "); return () => { if (window.__calls.length < 4000) window.__calls.push(k + " " + s); }; };
   window.setInterval = (f, ...a) => { const t = tag("interval"); return si(() => { t(); typeof f === "function" && f(); }, ...a); };
   window.setTimeout = (f, ...a) => { const t = tag("timeout"); return st(() => { t(); typeof f === "function" && f(); }, ...a); };
-  window.requestAnimationFrame = f => { const t = tag("frame"); return raf(x => { t(); f(x); }); }; };
+  window.requestAnimationFrame = f => { const t = tag("frame"); return raf(x => { t(); f(x); }); };
+  const W = window.Worker; window.__wk = 0; if (W) { window.Worker = function (...a) { window.__wk++; return new W(...a); }; window.Worker.prototype = W.prototype; } };
 
 async function openRoom(b, room, vw, errs) {
   const ctx = await b.newContext({ viewport: vw, isMobile: true, hasTouch: true, serviceWorkers: "block" });
@@ -177,14 +178,16 @@ async function device(b, room, nm, vw, errs) {
     S.prog = [{ off: 0, q: "min" }, { off: 5, q: "m7" }, { off: 10, q: "dom7" }, { off: 3, q: "maj7" }]; S.preset = ""; litNeck();
     sel.value = id; sel.dispatchEvent(new Event("change", { bubbles: true }));
     document.getElementById("soBand").click(); await wait(400);
-    const run = async (on) => { if ((fit.getAttribute("aria-pressed") === "true") !== on) fit.click(); btn.click(); const L = AOGSolo._t.LICK, k0 = Math.round((L.t0 - B.t0) / B.barSec), over = JSON.parse(JSON.stringify(B.over || {}));
+    const run = async (on) => { if ((fit.getAttribute("aria-pressed") === "true") !== on) fit.click(); btn.click(); const L = AOGSolo._t.LICK;
+      const lim = performance.now() + 5000; while (!L.on && performance.now() < lim) await wait(20);   /* a fitted lick is worked out in a worker first */
+      const k0 = Math.round((L.t0 - B.t0) / B.barSec), over = JSON.parse(JSON.stringify(B.over || {}));
       const prog = S.prog, n = L.plan.bars, want = []; for (let j = 0; j < n; j++) want.push(prog[(k0 + j) % prog.length]);
       const lick = L.plan.fit; btn.click(); return { on, k0, fitted: lick, over: Array.from({ length: n }, (x, j) => over[k0 + j]), want, own: AOGSolo._t.lickPlan(id, { fit: false }).over }; };
-    const a = await run(true), c = await run(false);
+    const w0 = window.__wk, a = await run(true); a.workers = window.__wk - w0; const c = await run(false);
     document.getElementById("soBand").click(); await wait(100); S.prog = []; return { a, c };
   }, id);
   const same = (x, y) => x.length === y.length && x.every((c, i) => c && y[i] && c.off === y[i].off && c.q === y[i].q);
-  ok(bd.a.fitted && same(bd.a.over, bd.a.want) && same(bd.c.over, bd.c.own), `${room} ${nm}: with the band, Fit on: the band plays the room's chords under the lick (${bd.a.over.map(c => c.off + c.q).join(" ")}); Fit off: the lick's own (${bd.c.over.map(c => c.off + c.q).join(" ")})`);
+  ok(bd.a.fitted && same(bd.a.over, bd.a.want) && same(bd.c.over, bd.c.own) && bd.a.workers === 1, `${room} ${nm}: with the band, Fit on: the band plays the room's chords under the lick (${bd.a.over.map(c => c.off + c.q).join(" ")}), fitted in a worker (${bd.a.workers}); Fit off: the lick's own (${bd.c.over.map(c => c.off + c.q).join(" ")})`);
   /* 4 · ● Record this lick: a take */
   const rec = await f.evaluate(async (id) => {
     const q = x => document.getElementById(x), wait = ms => new Promise(z => setTimeout(z, ms)), sel = q("soLickSel");
@@ -220,7 +223,8 @@ async function device(b, room, nm, vw, errs) {
   ok([m, m2].every(x => x.pk < 1 && x.pk > 0.02 && x.db <= 15 && Math.abs(x.first - x.note1) < 0.03 && x.ev > 0 && x.wav === "audio/wav"),
     `${room} ${nm}: the take's sound: peaks ${m.pk} and ${m2.pk} (never full scale), worst click ${m.db} and ${m2.db} dB over its neighbours, first sound at ${(m.first * 1000).toFixed(1)} and ${(m2.first * 1000).toFixed(1)} ms, where the first note is written (${(m.note1 * 1000).toFixed(1)}, ${(m2.note1 * 1000).toFixed(1)} ms from the downbeat)`);
   /* 5 · silent */
-  const hush = await f.evaluate(async (id) => { const wait = ms => new Promise(z => setTimeout(z, ms)); document.getElementById("soLickBtn").click(); await wait(200); const was = AOGSolo._t.LICK.on;
+  const hush = await f.evaluate(async (id) => { const wait = ms => new Promise(z => setTimeout(z, ms)); document.getElementById("soLickBtn").click();
+    const lim = performance.now() + 5000; while (!AOGSolo._t.LICK.on && performance.now() < lim) await wait(20); await wait(100); const was = AOGSolo._t.LICK.on;
     window.dispatchEvent(new CustomEvent("aog-hush", { detail: { on: true } })); await wait(50); const now = AOGSolo._t.LICK.on;
     window.dispatchEvent(new CustomEvent("aog-hush", { detail: { on: false } })); return { was, now }; }, id);
   ok(hush.was && !hush.now, `${room} ${nm}: the Studio's hush stops a lick that plays`);
