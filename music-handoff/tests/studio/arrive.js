@@ -3,7 +3,8 @@
    then the Mixing Desk door: the take is on track 1 at once, not only in the list of takes. Then "like a real recording
    studio": with the desk kept open out of sight, a second take goes on track 1 as another take (the first stays as a take
    lane); the loop made into a file and sent comes in the same way; a track cleared stays clear when the desk is opened again;
-   a drum take put on track 3 by hand keeps the drums there, and the next one joins it as another take; a piano take goes on
+   a drum take put on track 3 by hand keeps playing there, and the next one waits beside it as another take (Listen does
+   not add it twice); a piano take goes on
    track 3, the piano's channel (01 Drum Machine … 07 Turntables). The desk opened on its own (not in the Studio) puts nothing
    on a track by itself. Spanish. No page errors. Port 9412. */
 const pw = require(require("child_process").execSync("npm root -g").toString().trim() + "/playwright");
@@ -97,7 +98,12 @@ async function drumTake(p) {
   t = await drumTake(p);
   await door(p, "studio", "music-studio.html");
   tr = await tracks(p);
-  ok(tr[2] === "3:Drum machine take " + t.n + " [" + hand + "]" && tr[0] === "1:-", "the next drum take joins the hand-placed drums on track 3, which is kept: " + tr.slice(0, 4).join(" | "));
+  ln = await (await room(p)).evaluate(() => document.getElementById("recLine").textContent);
+  ok(tr[2] === "3:" + hand + " [Drum machine take " + t.n + "]" && tr[0] === "1:-", "the next drum take joins the hand-placed drums on track 3 as another take; theirs still plays: " + tr.slice(0, 4).join(" | "));
+  ok(ln === "Drum machine take " + t.n + " is on track 3 as another take. The take you chose still plays.", "and the desk says so: " + ln);
+  /* ▶ Listen does not add it a second time */
+  await (await room(p)).evaluate(() => __aogStudio.listenFill()); tr = await tracks(p);
+  ok(tr[2] === "3:" + hand + " [Drum machine take " + t.n + "]", "Listen leaves it as it is, nothing added twice: " + tr[2]);
 
   /* 6 · Spanish */
   const c2 = await ctxOf(b), p2 = await c2.newPage();

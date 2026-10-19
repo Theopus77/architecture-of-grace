@@ -95,6 +95,7 @@ const STR={
   putting:{en:"Putting it on…",es:"Poniéndola…"},
   arrived:{en:"{name} is on track {n}.",es:"{name} está en la pista {n}."},   /* AOG-DESK-ARRIVE-V1 */
   arrivedTake:{en:"{name} is on track {n}. The take that was there is kept as an earlier take.",es:"{name} está en la pista {n}. La toma que había se guarda como una toma anterior."},
+  arrivedBeside:{en:"{name} is on track {n} as another take. The take you chose still plays.",es:"{name} está en la pista {n} como otra toma. La toma que elegiste sigue sonando."},
   putFail:{en:"That recording could not be read. Try sending it again.",es:"No se pudo leer esa grabación. Intenta enviarla otra vez."},
   aTake:{en:"a take",es:"una toma"},
   barsN:{en:"{n} bars",es:"{n} compases"}, bar1:{en:"1 bar",es:"1 compás"},
@@ -1652,10 +1653,22 @@ let LISTEN_LEFT=[];
    Now the desk does it as it opens or comes back into view (arrive; never out of sight, so a room being played is not
    slowed). Like a console (§10): each room has its own channel, 01 Drum Machine, 02 Drum Kit, 03 Piano, 04 Guitar, 05 Bass,
    06 Band, 07 Turntables (LAYER_FROM's order; 08 is the voice). The desk first looks at what is already there: when that
-   room already has a recording on a track, the new one goes on that track as another take (dmAddTake: the one before stays
-   as a take lane, nothing is lost, Undo works); else on the room's channel when it is empty, else on the first empty track.
-   With since (arrive), only the takes sent after it, so a track taken off stays off. Without (Listen), as before: a track
-   the student filled by hand is theirs and Listen leaves it. One fill at a time (FILLQ): Listen and arrive never race. */
+   room already has a recording on a track, the new one goes on that track as another take, and nothing is lost. When the
+   desk put the one there, the new take plays and the one before is kept as a take lane (dmAddTake, Undo works); when the
+   student put it there or changed it by hand, theirs keeps playing and the new one waits beside it as a take to choose
+   (dmBeside). Else on the room's channel when it is empty, else on the first empty track. A take already on the desk, on a
+   track or as a take lane, is not added again. With since (arrive), only the takes sent after it, so a track cleared stays
+   clear. One fill at a time (FILLQ): Listen and arrive never race. */
+/* a take already on the desk: on a track, or kept there as a take lane */
+function onDesk(o){ return SONG.tracks.some(x=>[x.clip].concat(x.takes||[]).some(c=>c && (o.kind==="take" ? (c.src===INBOX_KEY && c.tid===o.x.id) : (c.src===o.s.key && c.at===(o.v.rec.at||0))))); }
+/* the new take beside the one the student chose: a take lane on that track; theirs keeps playing */
+async function dmBeside(srcId, ti){
+  const x=SONG.tracks[ti], mine=x.clip; if(!mine) return;
+  await dmAddTake(srcId, ti);
+  if(x.clip===mine || !x.clip) return;
+  const nw=x.clip; x.clip=mine; x.takes=(x.takes||[]).filter(c=>c.id!==mine.id).concat([nw]); dmTakesTidy(x); delete x.tkHide;
+  songChanged();
+}
 let FILLQ=Promise.resolve();
 function listenFill(since){ const r=FILLQ.then(()=>fillNow(since)); FILLQ=r.catch(()=>{}); return r; }
 async function fillNow(since){
@@ -1667,19 +1680,18 @@ async function fillNow(since){
     if(!best[k] || at>best[k].at) best[k]={o:o, at:at}; });
   let n=0, missed=0; const placed=[];
   for(const k of Object.keys(best).sort((a,b)=>LAYER_FROM.indexOf(a.split(":")[0])-LAYER_FROM.indexOf(b.split(":")[0]) || a.length-b.length)){
-    const o=best[k].o; if(srcOnTrack(o)) continue;
+    const o=best[k].o; if(srcOnTrack(o) || onDesk(o)) continue;
     const ch=k.indexOf(":")<0 ? LAYER_FROM.indexOf(k) : -1;   /* the room's own channel; a live or over-the-song take finds its own */
     const of=(x,i)=>i!==VOICE_T && x.clip && layerOfClip(x.clip)===k;
-    let hold=ch>=0 && of(SONG.tracks[ch], ch) ? ch : SONG.tracks.findIndex((x,i)=>of(x,i) && x.clip.auto);
-    if(hold<0 && fresh) hold=SONG.tracks.findIndex(of);
-    if(hold>=0 && !fresh && !SONG.tracks[hold].clip.auto) continue;
-    let ti=hold;
+    let ti=ch>=0 && of(SONG.tracks[ch], ch) ? ch : SONG.tracks.findIndex((x,i)=>of(x,i) && x.clip.auto);
+    if(ti<0) ti=SONG.tracks.findIndex(of);
     if(ti<0) ti=ch>=0 && ch!==VOICE_T && !SONG.tracks[ch].clip ? ch : SONG.tracks.findIndex((x,i)=>i!==VOICE_T && !x.clip);
     if(ti<0){ LISTEN_LEFT.push(k); continue; }
-    const had=!!SONG.tracks[ti].clip && typeof dmAddTake==="function";
-    if(had) await dmAddTake(o.id, ti); else await putOn(o.id, ti);
-    const c=SONG.tracks[ti].clip;
-    if(c && srcOnTrack(o)){ c.auto=true; n++; placed.push(t(had ? "arrivedTake" : "arrived",{name:c.name||"", n:ti+1})); } else missed++;
+    const x=SONG.tracks[ti], had=!!x.clip && typeof dmAddTake==="function", mine=had && !x.clip.auto;
+    if(mine) await dmBeside(o.id, ti); else if(had) await dmAddTake(o.id, ti); else await putOn(o.id, ti);
+    const c=x.clip;
+    if(mine && onDesk(o)){ n++; placed.push(t("arrivedBeside",{name:o.kind==="take" ? takeLabel(o.x) : shelfWhat(o), n:ti+1})); }
+    else if(!mine && c && srcOnTrack(o)){ c.auto=true; n++; placed.push(t(had ? "arrivedTake" : "arrived",{name:c.name||"", n:ti+1})); } else missed++;
   }
   if(n) songChanged();
   if(fresh && placed.length) $("recLine").textContent=placed.join(" ");
