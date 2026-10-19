@@ -489,7 +489,8 @@
        side by side, the pads as big as the screen's height allows */
     "@media (min-width:700px){html.in-studio.aog-compact .pm-bigrow{float:right;margin:0 0 6px .7rem}html.in-studio.aog-compact .pm-cols #pads{clear:both}}" +
     /* a phone held upright: six pads across, each a finger wide, never over each other */
-    "@media (max-width:699px){html.in-studio.aog-compact .pm-cols .pad{min-height:0;padding:2px}html.in-studio.aog-compact .pm-cols .pad .pn{font-size:11px;overflow-wrap:normal;max-width:100%;overflow:hidden}html.in-studio.aog-compact .pm-cols .pad .pn.long{font-size:10px;overflow-wrap:anywhere}}" +
+    /* AOG-PAD-NAME-CLEAR-V1 (2026-10-19): on a phone a two-line pad name (Open hat, Cross-stick) sat over the pad number; the top padding keeps it under */
+    "@media (max-width:699px){html.in-studio.aog-compact .pm-cols .pad{min-height:0;padding:13px 2px 2px}html.in-studio.aog-compact .pm-cols .pad .pn{font-size:11px;overflow-wrap:normal;max-width:100%;overflow:hidden}html.in-studio.aog-compact .pm-cols .pad .pn.long{font-size:10px;overflow-wrap:anywhere}}" +
     "@media (orientation:landscape) and (max-height:500px){html.in-studio.aog-compact .pm-cols{grid-template-columns:min(58%,calc((100vh - 112px) * 1.5)) minmax(0,1fr);align-items:start}" +
     "html.in-studio.aog-compact .pm-cols #pads{max-width:none;margin:0}html.in-studio.aog-compact .pm-cols .pad{min-height:0}html.in-studio.aog-compact .pm-cols .pad .pn{font-size:13px}html.in-studio.aog-compact .pm-cols .pad .pn.long{font-size:11px}" +
     "html.in-studio.aog-compact .pm-cols>div:first-child{display:flex;flex-direction:column}html.in-studio.aog-compact .pm-cols>div:first-child>*{order:3}" +
