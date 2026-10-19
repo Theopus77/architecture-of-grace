@@ -13,7 +13,9 @@ for f in ["rockpop", "funkhiphop", "jazzworld", "latincarib", "electronic"]:
     J = json.load(open(os.path.join(HERE, f + ".json"), encoding="utf-8"))
     for b in J["beats"]: byid[b["id"]] = b
     if "styles" in J: styles = J["styles"]
-beats = [byid[b["id"]] for b in orig["beats"]]          # the menu keeps its order
+# AOG-BEATS-GROUPS-V1 (Jimmy, 2026-10-19: "group the drum kits accordingly. They can be mixed together"): each group slow to fast
+gi = {g: i for i, g in enumerate(base["groups"])}
+beats = sorted((byid[b["id"]] for b in orig["beats"]), key=lambda b: (gi.get(b["grp"], 99), b.get("bpm", 0)))
 data = json.dumps({"groups": base["groups"], "styles": styles, "beats": beats, "classroom": base["classroom"]}, ensure_ascii=False, separators=(",", ":"))
 js = """/* AOG-KIT-BEATS-V1, AOG-BEATS-PERFECT-V1 — the drum machine's beats, for the Drum Machine and the Drum Kit.
    MADE BY aog-deploy/_work/music/beats_core/make_beats_core.py from the family files there (Jimmy, 2026-10-19: "just the drum

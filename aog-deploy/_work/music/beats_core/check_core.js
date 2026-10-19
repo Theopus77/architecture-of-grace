@@ -4,7 +4,7 @@ const fs=require("fs"), path=require("path"), DIR=__dirname, ROOT=path.resolve(D
 global.window={}; require(path.join(ROOT,"aog-drumkit.js")); const DK=window.AOGDrumKit;
 const KITS=DK.ids.filter(b=>Object.keys(DK.padNames(b)).every(id=>!DK.made(b,id)));
 if(process.argv.includes("--pads")){ KITS.forEach(k=>console.log(k.padEnd(3), DK.label(k,"en")[0].padEnd(36), JSON.stringify(DK.padNames(k)))); process.exit(0); }
-const ORIG=JSON.parse(fs.readFileSync(path.join(DIR,"_original.json"),"utf8")), O={}; ORIG.beats.concat(ORIG.styles).forEach(b=>O[b.id]=b);
+const ORIG=JSON.parse(fs.readFileSync(path.join(DIR,"_original.json"),"utf8")), O={}, MOVED=JSON.parse(fs.readFileSync(path.join(DIR,"_moved.json"),"utf8"));   /* AOG-BEATS-GROUPS-V1: beats moved to a new group */ ORIG.beats.concat(ORIG.styles).forEach(b=>O[b.id]=b);
 const FAM={rockpop:["rock","pop","metal"], funkhiphop:["funk","hiphop"], jazzworld:["jazz","world"], latincarib:["latin","carib"], electronic:["electronic"]};
 /* the Drum Kit's play-along lessons time you against these on 16 sixteenths (music-kit.html beatKind, onStep) */
 const SIXTEEN=b=>["rock","funk","jazz","latin"].includes(b.grp) || ["funk","latin"].includes(b.id) && !b.grp || b.id==="militarymarch";
@@ -19,7 +19,7 @@ for(const [f,gs] of Object.entries(FAM)){
   const have=list.map(x=>x.b.id); if(JSON.stringify(have.slice().sort())!==JSON.stringify(want.slice().sort())) bad(f,"-","the beats must be the same ones (same ids): missing "+want.filter(i=>!have.includes(i)).join(",")+" extra "+have.filter(i=>!want.includes(i)).join(","));
   for(const {b, style} of list){ n++; const id=b.id, o=O[id]; if(!o) continue;
     if(b.en!==o.en || b.es!==o.es) bad(f,id,"keep the name (en and es) as it was");
-    if((b.grp||"")!==(o.grp||"")) bad(f,id,"keep the group");
+    if((b.grp||"")!==(MOVED[id]||o.grp||"")) bad(f,id,"keep the group (or the one _moved.json gives it)");
     if(!style && (!b.about || !words(b.about))) bad(f,id,"needs about.en and about.es");
     if(style && b.about && !words(b.about)) bad(f,id,"about needs en and es");
     const txt=[b.about&&b.about.en,b.about&&b.about.es].join(" "); if(NAMES.test(txt)) bad(f,id,"a person's, band's or song's name on screen: "+txt.match(NAMES)[0]);

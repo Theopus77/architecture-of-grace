@@ -1,15 +1,20 @@
-# Elite beats (AOG-BEATS-ELITE-V1)
+# The newer beats (AOG-BEATS-ELITE-V1, AOG-BEATS-GROUPS-V1)
 
 Jimmy, 2026-10-19: "Produce some of the dopest and BEST hitting drum beat out there … we are no where near the ceiling."
 
 Each family writes one file here, `<family>.json`; `make_beats_pro.py` joins them into `aog-deploy/aog-beats-pro.js`
 (window.AOGBeatsPro), which the Drum Machine (music-pads.html) and the Drum Kit (music-kit.html) add to their beat menus.
+
+**Groups (Jimmy, 2026-10-19: "I don't like the word ELITE … It implies arrogance", "They can be mixed together"):** these beats
+join the main groups (`grp` is one of the ids in `../beats_core/_base.json`: rock, metal, pop, funk, hiphop, trap, jazz,
+latin, carib, afro, electronic, breaks, world), mixed in with the others, each group slow to fast. Never put the word
+Elite on screen. The ids keep their `el_` start (saved songs find beats by id).
 `node check_beats.js` checks every file. Run it until it says ALL PASS.
 
 ## A family file
 
-    { "groups": { "eltrap": { "en": "Elite · Trap, drill and phonk", "es": "Élite · Trap, drill y phonk" } },
-      "beats": [ { "id": "el_trap_ice", "grp": "eltrap",
+    { "groups": {},
+      "beats": [ { "id": "el_trap_ice", "grp": "trap",
                    "en": "Ice-cold trap", "es": "Trap helado",
                    "kit": "TR", "bpm": 140, "res": 8,
                    "about": { "en": "One plain sentence: what it is and what to listen for.", "es": "…" },
