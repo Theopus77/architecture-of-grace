@@ -8,7 +8,8 @@
  * not run on this file. Forget the bump and returning visitors keep the stale
  * page from their cache.
  */
-const CACHE = 'aog-cache-2026.10.20.m7540'   // LICKS FOR YOUR SONG IN THE PIANO, THE BAND, THE GUITAR AND THE BASS (aog-piano-licks.js, aog-band-licks.js, aog-solo.js, aog-recorder.js), WITH THE DRUM MACHINE'S ONE-TAP LOOP TO MY TRACK (previous: m7539, twice)
+const CACHE = 'aog-cache-2026.10.20.m7541'   // EACH ROOM'S SOUND ENGINE IS READIED, THEN RESTS PAUSED UNTIL THE FIRST TAP; THE METERS STAY STILL WHILE IT IS BUILT; THE SILENT CHECK OPENS THE STUDIO AND ITS EIGHT ROOMS (aog-labdoors.js, aog-vu.js, AOG-WARM-QUIET-V1) (previous: m7540)
+// const CACHE = 'aog-cache-2026.10.20.m7540'   // LICKS FOR YOUR SONG IN THE PIANO, THE BAND, THE GUITAR AND THE BASS (aog-piano-licks.js, aog-band-licks.js, aog-solo.js, aog-recorder.js), WITH THE DRUM MACHINE'S ONE-TAP LOOP TO MY TRACK (previous: m7539, twice)
 // const CACHE = 'aog-cache-2026.10.20.m7539'   // ONE TAP ADDS THE DRUM MACHINE'S LOOP TO MY TRACK; ITS OWN RECORD STEPS ASIDE IN THE STUDIO; SAVE AND TURNTABLES UNDER MORE (music-pads.html, aog-labdoors.js, the guide and lessons, AOG-PADS-LOOP-ADD-V1)
 // const CACHE = 'aog-cache-2026.10.20.m7539'   // LICKS FOR YOUR SONG IN EVERY STRINGED AND KEYED ROOM: PIANO LICKS (aog-piano-licks.js), BAND LICKS (aog-band-licks.js), GUITAR AND BASS LICKS AT THE SONG'S TEMPO, FIT TO MY CHORDS, REPEAT, RECORD THIS LICK (aog-solo.js, aog-recorder.js) (previous: m7538)
 // const CACHE = 'aog-cache-2026.10.19.m7538'   // A TAKE ADDED TO MY TRACK IS ON ITS OWN CHANNEL AS SOON AS THE MIXING DESK OPENS, EARLIER TAKES KEPT (music-studio.html, AOG-DESK-ARRIVE-V1)

@@ -576,7 +576,18 @@
   (function () {
     var id = here(); if (!/^(pads|kit|piano|guitar|bass|band)$/.test(id)) return;
     var done = false;
-    function go() { if (done || D.hidden) return; done = true; try { if (typeof window.ctx === "function") window.ctx(); } catch (e) {} }
+    /* AOG-WARM-QUIET-V1 (2026-10-20): the engine is built, then paused, so it rests like a page nobody touches (a phone pauses
+       an engine made before any tap; the Studio, after a tap, did not). The first tap wakes it, as every tap and note does
+       (each room's ctx() and its touch listener resume it). Only an engine made here is paused, never one already playing. */
+    function go() {
+      if (done || D.hidden) return; done = true;
+      if (typeof window.ctx !== "function") return;
+      var made = [], K = ["AudioContext", "webkitAudioContext"], was = K.map(function (k) { return window[k]; });
+      K.forEach(function (k, i) { var A = was[i]; if (!A) return; var W = function (o) { var c = o === undefined ? new A() : new A(o); made.push(c); return c; }; W.prototype = A.prototype; window[k] = W; });
+      try { var V = window.AOGVU; if (V && V.quietly) V.quietly(window.ctx); else window.ctx(); } catch (e) {}
+      K.forEach(function (k, i) { if (was[i]) window[k] = was[i]; });
+      made.forEach(function (c) { try { if (c.state === "running") c.suspend(); } catch (e) {} });
+    }
     function soon() { if (window.requestIdleCallback) window.requestIdleCallback(go, { timeout: 2500 }); else setTimeout(go, 900); }
     if (D.readyState === "complete") setTimeout(soon, 300); else window.addEventListener("load", function () { setTimeout(soon, 300); });
     D.addEventListener("visibilitychange", function () { if (!D.hidden && !done) soon(); });

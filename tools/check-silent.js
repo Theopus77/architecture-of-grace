@@ -3,7 +3,9 @@
    Jimmy: "this has to be silent when not being used … lighting fast connectivity" and "make sure these follow the
    silent treatment". Every page this opens must, before anyone touches it:
      · ask for no animation frames once it has settled (nothing moves, nothing redraws on its own);
-     · make no sound (no AudioContext started, no media playing);
+     · make no sound (no sound engine running, no media playing). AOG-WARM-QUIET-V1 (Jimmy, 2026-10-20: "the test needs to
+       learn"): a room may build its engine before the first tap (AOG-AUDIO-WARM-V1, so the first note is quick), as long
+       as it stays paused (suspended) the whole time nobody touches the page; a running engine fails, even a silent one;
    and a page that is NOT itself a 3D room must also:
      · start no WebGL and download no 3D code or star catalogue (three.js, aog-*3d.js, aog-figure3d.js, data/sky …).
    The 3D rooms (the Dojo, the Kitchen, the Sewing Room) may build their scene as they open, but then must be still.
@@ -24,7 +26,10 @@ const PAGES = [
   ["science-microscope.html", false], ["telescope.html", false], ["telescope.html#lab", false],
   ["fcs-shop.html", false], ["fc2-knife-skills.html", false], ["fc4-hand-sewing.html", false], ["fcs-u10.html", false], ["facs-course.html", false],
   ["mar-u1.html", false], ["mar-u15.html", false], ["martial-arts-hub.html", false], ["martial-arts-course.html", false],
-  ["dojo.html", true], ["dojo.html#front-kick", true], ["kitchen.html", true], ["kitchen.html#pancakes", true], ["sewing.html", true], ["sewing.html#backstitch", true]
+  ["dojo.html", true], ["dojo.html#front-kick", true], ["kitchen.html", true], ["kitchen.html#pancakes", true], ["sewing.html", true], ["sewing.html#backstitch", true],
+  // AOG-WARM-QUIET-V1: the Studio and its eight rooms, in song order (each room's engine may be ready, but paused)
+  ["the-studio.html", false], ["music-pads.html", false], ["music-kit.html", false], ["music-piano.html", false], ["music-guitar.html", false],
+  ["music-bass.html", false], ["music-band.html", false], ["music-decks.html", false], ["music-studio.html", false]
 ];
 const HEAVY = /three\.module|\/vendor\/three|aog-[a-z-]*3d\.js|aog-figure3d|aog-3dkit|\/data\/sky\/|\/vendor\/onnxruntime|\/models\/stems\/|aog-stems-ai\.js/;   // AOG-STEMS-AI-V1: the separation model too
 let fails = 0, warns = 0;
@@ -42,27 +47,28 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
       const ctx = await b.newContext({ viewport: { width: vp.width, height: vp.height }, isMobile: !!vp.isMobile, hasTouch: !!vp.hasTouch, deviceScaleFactor: vp.deviceScaleFactor || 1 });
       await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, r => r.abort());
       await ctx.addInitScript(() => {
-        const S = window.__silent = { raf: 0, gl: 0, audio: 0, media: 0 };
+        const S = window.__silent = { raf: 0, gl: 0, audio: 0, media: 0, running: 0, ctxs: [] };
         const raf = window.requestAnimationFrame.bind(window);
         window.requestAnimationFrame = f => { S.raf++; return raf(f); };
         const gc = HTMLCanvasElement.prototype.getContext;
         HTMLCanvasElement.prototype.getContext = function (k, o) { if (/webgl/.test(String(k))) S.gl++; return gc.call(this, k, o); };
-        ["AudioContext", "webkitAudioContext"].forEach(k => { const A = window[k]; if (!A) return; window[k] = function (...a) { S.audio++; return new A(...a); }; window[k].prototype = A.prototype; });
+        ["AudioContext", "webkitAudioContext"].forEach(k => { const A = window[k]; if (!A) return; window[k] = function (...a) { S.audio++; const c = new A(...a); S.ctxs.push(c); return c; }; window[k].prototype = A.prototype; });
         const play = HTMLMediaElement.prototype.play; HTMLMediaElement.prototype.play = function () { S.media++; return play.call(this); };
       });
       const p = await ctx.newPage(); const errs = []; p.on("pageerror", e => errs.push(e.message));
       await p.goto(base + page, { waitUntil: "load" });
       // let it settle: a 3D room builds its scene; any page finishes its first paint
       await wait(is3D ? 6000 : 2500);
-      const before = await p.evaluate(() => Object.assign({}, window.__silent));
+      const snap = () => p.evaluate(() => { const S = window.__silent; return Object.assign({}, S, { ctxs: undefined, running: S.ctxs.filter(c => c.state === "running").length }); });
+      const before = await snap();
       await wait(3000);   // three seconds with nobody touching anything
-      const after = await p.evaluate(() => Object.assign({}, window.__silent));
+      const after = await snap();
       const files = await p.evaluate(() => performance.getEntriesByType("resource").map(e => e.name));
       const heavy = files.filter(u => HEAVY.test(u)).map(u => u.replace(base, "/"));
       const idleFrames = after.raf - before.raf;
       const label = `${page} (${name})`;
       ok(idleFrames === 0, `${label}: still while idle (${idleFrames} animation frames asked in 3 s)`);
-      ok(after.audio === 0 && after.media === 0, `${label}: no sound`);
+      ok(before.running === 0 && after.running === 0 && after.media === 0, `${label}: no sound` + (after.audio ? ` (${after.audio} sound engine${after.audio > 1 ? "s" : ""} ready, ${after.running ? after.running + " running" : "paused"})` : ""));
       if (!is3D) ok(after.gl === 0 && !heavy.length, `${label}: no 3D until tapped` + (after.gl || heavy.length ? ` (WebGL ${after.gl}, files: ${heavy.join(", ")})` : ""));
       if (errs.length) { console.log(`  ! ${label}: page error: ${errs[0]}`); }
       await ctx.close();

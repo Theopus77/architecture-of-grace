@@ -77,6 +77,12 @@
     try { var T = window.top; return T !== window && !!(T.AOGVU && T.AOGVU.still && !T.AOGVU.still(ms)); } catch (e) { return false; }
   }
   function quietFor(ms) { return Date.now() - STIR >= ms && !elsewhere(ms); }
+  /* AOG-WARM-QUIET-V1 (2026-10-20) — Jimmy: "the test needs to learn" (the silent check and the warm-up, AOG-AUDIO-WARM-V1).
+     AOGVU.quietly(fn) runs fn (a room building its sound engine before anyone plays) without waking the meters: the
+     sources an engine starts while it is built are not a sound being played. It still counts as something happening
+     (stir), so work that waits for still hands (the Studio fetching the next room) waits as it did. */
+  var HOLD = 0;
+  function quietly(fn) { HOLD++; try { return fn(); } finally { HOLD--; } }
   function wake() {
     STIR = Date.now(); armAll();
     for (var i = 0; i < WAKE.length; i++) try { WAKE[i](); } catch (e) {}
@@ -88,7 +94,7 @@
       var P = window[k] && window[k].prototype;
       if (!P || !Object.prototype.hasOwnProperty.call(P, "start")) return;
       var o = P.start;
-      P.start = function () { if (!(OWN && OWN.has(this))) wake(); return o.apply(this, arguments); };
+      P.start = function () { if (!(OWN && OWN.has(this))) { if (HOLD) stir(); else wake(); } return o.apply(this, arguments); };
     });
     /* AOG-REST-IDLE-V1: a microphone or a cable has no start; once one is open the slow check keeps listening */
     var AC = window.AudioContext || window.webkitAudioContext, CP = AC && AC.prototype, oms = CP && CP.createMediaStreamSource;
@@ -239,7 +245,7 @@
   }
   /* AOG-REST-IDLE-V1: a page that sleeps when nothing happens asks to be woken by any sound starting or any touch (onWake) */
   function onWake(f) { if (typeof f === "function" && WAKE.indexOf(f) < 0) WAKE.push(f); }
-  window.AOGVU = { levels: levels, mount: mount, draw: draw, wake: wake, hush: hush, own: ownCtx, still: quietFor, elsewhere: elsewhere, stir: stir, onWake: onWake };
+  window.AOGVU = { quietly: quietly, levels: levels, mount: mount, draw: draw, wake: wake, hush: hush, own: ownCtx, still: quietFor, elsewhere: elsewhere, stir: stir, onWake: onWake };
 
   /* ══ AOG-STUDIO-ROOM-SOUND-V1 (Jimmy, 2026-10-09: "1, 3, 2, 4" — 3: make it sound like a real room). One knob, shared by
      every instrument room: Dry, Small room, Studio, Hall. The room is a reverb made here (a stereo tail that dies away and
