@@ -203,6 +203,17 @@ select{width:100%;min-height:48px;font-size:17px;padding:8px 12px;border:1.5px s
 
   <div class="grid" id="list"></div>
 
+  <!-- AOG-EF-START-SET-V1 (2026-10-20) — Jimmy: "Does the website have task initiation slips? If not I would like some."
+       The six getting-started lists (AOG_EF_START) are cards above; this gathers them, says which to reach for, and
+       prints them as one set. -->
+  <section class="card rules" id="start" aria-labelledby="h-start">
+    <span class="area"><span data-en="Task initiation" data-es="Iniciar tareas">Task initiation</span></span>
+    <h2 id="h-start"><span data-en="The getting-started set" data-es="El juego para empezar">The getting-started set</span></h2>
+    <p><span data-en="A start can stall for different reasons. Pick the list that fits the reason." data-es="Empezar puede costar por distintas razones. Elige la lista que va con la razón.">A start can stall for different reasons. Pick the list that fits the reason.</span></p>
+    <ul class="jhwhy" id="startWhy"></ul>
+    <div class="acts" style="margin-top:14px"><button type="button" class="btn main" id="printStart"><span data-en="Print the set (one per page)" data-es="Imprimir el juego (una por página)">Print the set (one per page)</span></button></div>
+  </section>
+
   <!-- AOG-EF-RULES-V1 (2026-10-15) — Jimmy: "Arbitrary rules cause rebellion. Make executive functioning material related
        to helping stop this." The adults' side; the three student lists (efrule, eftalk, efmyrule) are cards above. The
        words come from AOG_EF_RULES in /aog-ef-slips.js, so the page and the paper copy never differ. -->
@@ -305,6 +316,8 @@ function paintList(){
     return '<div class="rt"><b>'+esc(tx(r[1]))+'</b><span class="acts"><a class="btn" href="'+esc(linkFor(r[0]))+'">'+t("Open","Abrir")+'</a>'
       +'<button type="button" class="btn" data-share="'+r[0]+'">'+(sh?t("Share link","Compartir enlace"):t("Copy link","Copiar enlace"))+'</button></span>'
       +'<p class="said" data-said="'+r[0]+'" aria-live="polite"></p></div>'; }).join("");
+  D.getElementById("startWhy").innerHTML=(window.AOG_EF_START||[]).map(byId).filter(Boolean).map(function(e){
+    return '<li>'+esc(tx(e.see))+' → <a href="#ef-'+e.id+'" data-jump="'+e.id+'" style="color:inherit;font-weight:700">'+esc(tx(e.skill))+'</a></li>'; }).join("");
   var R=window.AOG_EF_RULES;
   if(R){
     D.getElementById("rtest").innerHTML=R.test.map(function(x){ return '<li>'+esc(tx(x))+'</li>'; }).join("");
@@ -319,6 +332,7 @@ function paintList(){
   }
   var sel=D.getElementById("seeing"), keep=sel.value;
   sel.innerHTML='<option value="">'+t("Choose what you notice…","Elige lo que notas…")+'</option>'+EF.map(function(e){ return '<option value="'+e.id+'">'+esc(tx(e.see))+' → '+esc(tx(e.skill))+'</option>'; }).join("")
+    +'<option value="start">'+t("Trouble getting started → The getting-started set","Le cuesta empezar → El juego para empezar")+'</option>'
     +(window.AOG_EF_RULES?'<option value="rules">'+t("Rules keep starting fights → Rules that make sense (for adults)","Las reglas causan peleas → Reglas que tienen sentido (para adultos)")+'</option>'
       +'<option value="jh">'+t("Pushback in grades 6–8 → Rules in junior high (for adults)","Resistencia en los grados 6–8 → Las reglas en la secundaria (para adultos)")+'</option>':"")
     +(STRONG.length?'<option value="strong">'+t("Character for boys and young men → Strength and character","Carácter para muchachos y jóvenes → Fuerza y carácter")+'</option>':"");
@@ -391,12 +405,13 @@ D.addEventListener("click",function(ev){
 D.getElementById("printAll").addEventListener("click",function(){ printThese(EF); });
 D.getElementById("printRules").addEventListener("click",function(){ printThese(["rules"]); });
 D.getElementById("printRulesAll").addEventListener("click",function(){ printThese(["rules","jh"].concat(RULES.concat(JH).map(byId).filter(Boolean))); });
+D.getElementById("printStart").addEventListener("click",function(){ printThese((window.AOG_EF_START||[]).map(byId).filter(Boolean)); });
 D.getElementById("printStrong").addEventListener("click",function(){ printThese(STRONG); });
 D.getElementById("printJh").addEventListener("click",function(){ printThese(["jh"]); });
 function jumpTo(c){ if(!c) return; var lit=D.querySelectorAll(".lit"); for(var i=0;i<lit.length;i++) lit[i].classList.remove("lit");
   c.classList.add("lit"); c.scrollIntoView({block:"start"}); var a=c.querySelector("[data-open],button"); if(a) a.focus({preventScroll:true}); }
 D.addEventListener("click",function(ev){ var a=ev.target.closest&&ev.target.closest("a[data-jump]"); if(!a) return; ev.preventDefault(); jumpTo(D.getElementById("ef-"+a.getAttribute("data-jump"))); });
-D.getElementById("seeing").addEventListener("change",function(){ jumpTo(/^(rules|jh|strong)$/.test(this.value)?D.getElementById(this.value):D.getElementById("ef-"+this.value)); });
+D.getElementById("seeing").addEventListener("change",function(){ jumpTo(/^(start|rules|jh|strong)$/.test(this.value)?D.getElementById(this.value):D.getElementById("ef-"+this.value)); });
 
 paintList();
 /* the bar's EN | ES sets <html lang>; this page draws its list again in the new language */

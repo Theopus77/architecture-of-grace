@@ -32,6 +32,60 @@
            CK("go", "Go", "Arrancar", [["Pick the very first small step", "Elegir el primer paso pequeño"], ["Start it within two minutes", "Empezarlo en menos de dos minutos"], ["Do the first part, even if it is not perfect", "Hacer la primera parte, aunque no quede perfecta"], ["If I am still stuck, ask for a start", "Si sigo trabado, pedir ayuda para arrancar"]]),
            NOTE("first", "My first small step was… (optional)", "Mi primer paso pequeño fue… (opcional)")] },
 
+    /* ── AOG-EF-START-SET-V1 (2026-10-20) — Jimmy: "Does the website have task initiation slips? If not I would like
+       some." Five more ways in, each for a different reason a start stalls: the job looks too big (eftiny), the job is
+       unwanted (effive), worry about getting it wrong (efworry), young learners (effirst, K-2) and the blank page
+       (efwrite). With efstart they are the Getting started set: /ef#start, one group on /slip. ── */
+    { id: "eftiny", art: "school", skill: ["Making the first step tiny", "Hacer pequeño el primer paso"], area: ["Task initiation", "Iniciar tareas"],
+      why: ["When a job looks too big to start, shrink the first step until it feels easy.", "Cuando un trabajo parece demasiado grande, achica el primer paso hasta que se sienta fácil."],
+      see: ["Says the job is too big", "Dice que el trabajo es demasiado grande"],
+      when: ["When a task looks huge, or a student says \"I can't do all that.\"", "Cuando una tarea parece enorme, o un estudiante dice \"no puedo hacer todo eso\"."],
+      k: ["Thinking skills · Tiny first step", "Habilidades para pensar · Primer paso pequeño"], h: ["Make the first step tiny", "Haz pequeño el primer paso"],
+      lead: TAP,
+      qs: [CK("shrink", "Shrink it", "Achicarlo", [["Look at only the first part, and cover the rest", "Mirar solo la primera parte y tapar el resto"], ["Make the first step so small it feels easy", "Hacer el primer paso tan pequeño que se sienta fácil"], ["Say it: \"All I have to do now is ___\"", "Decirlo: \"Lo único que tengo que hacer ahora es ___\""]]),
+           CK("do", "Do it", "Hacerlo", [["Do that one tiny step", "Hacer ese paso pequeñito"], ["Pick the next tiny step", "Elegir el siguiente paso pequeñito"], ["Notice: I started!", "Notar: ¡empecé!"]]),
+           NOTE("tiny", "My tiny first step (optional)", "Mi primer paso pequeñito (opcional)")] },
+
+    { id: "effive", art: "school", skill: ["Just five minutes", "Solo cinco minutos"], area: ["Task initiation", "Iniciar tareas"],
+      why: ["Starting is the hardest part. Five minutes on a timer gets the work moving, and stopping after is allowed.", "Empezar es lo más difícil. Cinco minutos con un temporizador ponen el trabajo en marcha, y se vale parar después."],
+      see: ["Puts off work they don't want to do", "Deja para después el trabajo que no quiere hacer"],
+      when: ["When a student keeps putting a task off.", "Cuando un estudiante sigue dejando una tarea para después."],
+      k: ["Thinking skills · Five minutes", "Habilidades para pensar · Cinco minutos"], h: ["Just five minutes", "Solo cinco minutos"],
+      lead: TAP,
+      qs: [CK("set", "Set it up", "Prepararlo", [["Pick the one task I will start", "Elegir la tarea que voy a empezar"], ["Set a timer for five minutes", "Poner un temporizador de cinco minutos"], ["Tell myself: I can stop when it rings", "Decirme: puedo parar cuando suene"]]),
+           CK("go", "Go", "Arrancar", [["Work until the timer rings", "Trabajar hasta que suene"], ["Then choose: five more minutes, or a short break", "Luego elegir: cinco minutos más o un descanso corto"]]),
+           { id: "after", kind: "one", q: ["When the timer rang, I…", "Cuando sonó el temporizador, yo…"], o: [["Kept going", "Seguí"], ["Did five more minutes", "Hice cinco minutos más"], ["Took a break, and I'll come back", "Tomé un descanso y voy a volver"]] }] },
+
+    { id: "efworry", art: "house", skill: ["When starting feels scary", "Cuando empezar da miedo"], area: ["Task initiation and worry", "Iniciar tareas y la preocupación"],
+      why: ["Worry about getting it wrong can freeze the start. A first try is allowed to be messy.", "La preocupación por equivocarse puede congelar el comienzo. Un primer intento puede quedar desordenado."],
+      see: ["Waits because it has to be perfect", "Espera porque tiene que quedar perfecto"],
+      when: ["When a student worries about mistakes, erases a lot, or will not begin.", "Cuando un estudiante se preocupa por los errores, borra mucho o no quiere empezar."],
+      k: ["Thinking skills · Brave start", "Habilidades para pensar · Empezar con valor"], h: ["When starting feels scary", "Cuando empezar da miedo"],
+      lead: ["No one is in trouble. Go one step at a time, and tap each step you try.", "Nadie está en problemas. Ve paso a paso y toca cada paso que intentes."],
+      qs: [CK("name", "Name it", "Nombrarlo", [["Notice the worry, and name it", "Notar la preocupación y ponerle nombre"], ["Remind myself: a first try can be messy", "Recordarme: un primer intento puede quedar desordenado"], ["One slow breath", "Una respiración lenta"]]),
+           CK("start", "Start small", "Empezar poco a poco", [["Do a practice try, in pencil or on scrap paper", "Hacer un intento de práctica, en lápiz o en papel borrador"], ["Start with the part I feel surest about", "Empezar con la parte de la que estoy más seguro"], ["Ask an adult to look at my first line", "Pedir a un adulto que mire mi primera línea"]]),
+           { id: "ready", kind: "scale", q: ["How ready do I feel now?", "¿Qué tan listo me siento ahora?"], o: [["Not yet", "Todavía no"], ["A little", "Un poco"], ["Getting there", "Casi"], ["Mostly", "Bastante"], ["Ready", "Listo"]] }] },
+
+    { id: "effirst", art: "house", skill: ["First, then", "Primero, luego"], area: ["Task initiation (grades K–2)", "Iniciar tareas (grados K–2)"],
+      why: ["Pairs the work with what comes after, so the start has an end in sight. Very short steps for young learners.", "Une el trabajo con lo que viene después, para que el comienzo tenga un final a la vista. Pasos muy cortos para los más pequeños."],
+      see: ["A young child won't begin", "Un niño pequeño no quiere empezar"],
+      when: ["Grades K–2, or any learner who does well with very short steps.", "Grados K–2, o cualquier estudiante a quien le ayudan los pasos muy cortos."],
+      k: ["Thinking skills · First, then", "Habilidades para pensar · Primero, luego"], h: ["First, then", "Primero, luego"],
+      lead: ["Tap each step when you do it. A grown-up can read it with you.", "Toca cada paso cuando lo hagas. Un adulto puede leerlo contigo."],
+      qs: [{ id: "then", kind: "one", q: ["When I finish, I get to…", "Cuando termine, puedo…"], o: [["Play", "Jugar"], ["Read a book", "Leer un libro"], ["Draw", "Dibujar"], ["Move my body", "Mover mi cuerpo"], ["Pick something", "Elegir algo"]] },
+           CK("first", "First", "Primero", [["Look at my work", "Mirar mi trabajo"], ["Do the first one", "Hacer el primero"], ["Keep going to the end", "Seguir hasta el final"]]),
+           CK("done", "Then", "Luego", [["Show a grown-up", "Mostrárselo a un adulto"], ["Put my work away", "Guardar mi trabajo"]])] },
+
+    { id: "efwrite", art: "school", skill: ["Starting to write", "Empezar a escribir"], area: ["Task initiation in writing", "Iniciar tareas al escribir"],
+      why: ["Gets words onto a blank page: talk first, then one rough sentence.", "Pone palabras en una página en blanco: primero hablar, luego una oración en borrador."],
+      see: ["Stares at a blank page", "Se queda mirando la página en blanco"],
+      when: ["Before a paragraph, essay, journal entry or short answer.", "Antes de un párrafo, un ensayo, un diario o una respuesta corta."],
+      k: ["Thinking skills · Starting to write", "Habilidades para pensar · Empezar a escribir"], h: ["Starting to write", "Empezar a escribir"],
+      lead: TAP,
+      qs: [CK("talk", "Talk it out", "Decirlo primero", [["Say my idea out loud, or to a partner", "Decir mi idea en voz alta, o a un compañero"], ["Write three words about my topic", "Escribir tres palabras sobre mi tema"]]),
+           CK("write", "Write", "Escribir", [["Write one sentence, even a rough one", "Escribir una oración, aunque sea un borrador"], ["Use a sentence starter if I need one", "Usar un inicio de oración si lo necesito"], ["Write the next sentence; fix it later", "Escribir la siguiente oración; arreglarla después"]]),
+           NOTE("line", "My first sentence (optional)", "Mi primera oración (opcional)")] },
+
     { id: "efplan", art: "school", skill: ["Planning a big assignment", "Planear un trabajo grande"], area: ["Planning and priorities", "Planear y priorizar"],
       why: ["Breaks a project into steps with dates, so it does not pile up at the end.", "Divide un proyecto en pasos con fechas, para que no se acumule al final."],
       see: ["Big projects pile up at the end", "Los proyectos grandes se juntan al final"],
@@ -351,5 +405,6 @@
   };
 
   window.AOG_EF = EF;
+  window.AOG_EF_START = ["efstart", "eftiny", "effive", "efworry", "effirst", "efwrite"];   /* AOG-EF-START-SET-V1: the Getting started set */
   window.AOG_EF_SELF = SK;   /* the skills on the weekly self-check, for the dashboard's charts */
 })();

@@ -372,12 +372,13 @@ function shareLink(sid,said){ var url=linkFor(sid), ttl=nameOf(sid);
 /* ── the list of every slip: Make your own first, then My slips, then each group folded with its count. Find opens what matches. ── */
 if(!S){
   document.title=t("Slips","Registros")+" — Architecture of Grace";
-  var EFI=(window.AOG_EF||[]).map(function(e){ return e.id; }), STI=(window.AOG_EF_STRONG||[]).map(function(e){ return e.id; });
+  var STA=window.AOG_EF_START||[], EFI=(window.AOG_EF||[]).map(function(e){ return e.id; }).filter(function(x){ return STA.indexOf(x)<0; }), STI=(window.AOG_EF_STRONG||[]).map(function(e){ return e.id; });
   var MY=mine(), MINEIDS=Object.keys(SLIPS).filter(function(x){ return SLIPS[x].custom; }).concat(Object.keys(MY).filter(function(x){ return SLIPS[x]&&!SLIPS[x].custom; }));
   var GROUPS=[[["In class","En clase"],["endclass","test","posttest","unit","goal","team","repair"]],
     [["Each week","Cada semana"],["mon","mid","fri"]],
     [["Checklists and point sheets","Listas y hojas de puntos"],["school","homecheck","bedtime","points","homepoints"]],
     [["From home, for parents","Desde casa, para padres"],["home","morning","homework"]],
+    [["Getting started (task initiation)","Para empezar (iniciar tareas)"],STA],   /* AOG-EF-START-SET-V1 */
     [["Thinking skills","Habilidades para pensar"],EFI],
     [["Strength and character","Fuerza y carácter"],STI]];
   var listed={}; GROUPS.forEach(function(g){ g[1].forEach(function(x){ listed[x]=1; }); });
