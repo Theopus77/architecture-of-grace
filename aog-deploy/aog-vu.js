@@ -79,7 +79,8 @@
   function quietFor(ms) { return Date.now() - STIR >= ms && !elsewhere(ms); }
   /* AOG-WARM-QUIET-V1 (2026-10-20) — Jimmy: "the test needs to learn" (the silent check and the warm-up, AOG-AUDIO-WARM-V1).
      AOGVU.quietly(fn) runs fn (a room building its sound engine before anyone plays) without waking the meters: the
-     sources an engine starts while it is built are not a sound being played. */
+     sources an engine starts while it is built are not a sound being played. It still counts as something happening
+     (stir), so work that waits for still hands (the Studio fetching the next room) waits as it did. */
   var HOLD = 0;
   function quietly(fn) { HOLD++; try { return fn(); } finally { HOLD--; } }
   function wake() {
@@ -93,7 +94,7 @@
       var P = window[k] && window[k].prototype;
       if (!P || !Object.prototype.hasOwnProperty.call(P, "start")) return;
       var o = P.start;
-      P.start = function () { if (!HOLD && !(OWN && OWN.has(this))) wake(); return o.apply(this, arguments); };
+      P.start = function () { if (!(OWN && OWN.has(this))) { if (HOLD) stir(); else wake(); } return o.apply(this, arguments); };
     });
     /* AOG-REST-IDLE-V1: a microphone or a cable has no start; once one is open the slow check keeps listening */
     var AC = window.AudioContext || window.webkitAudioContext, CP = AC && AC.prototype, oms = CP && CP.createMediaStreamSource;
