@@ -298,6 +298,12 @@ chip. After any change to a page with animation, 3D or sound, run
 
 and add new pages and rooms to its PAGES list. Do not push while it fails.
 
+A room may build its sound engine before the first tap, so the first note is quick (AOG-AUDIO-WARM-V1, `aog-labdoors.js`),
+but it builds it inside `AOGVU.quietly()` (so the meters stay asleep) and then pauses it: the engine rests until a tap or a
+note wakes it (every room's `ctx()` resumes it). The check passes an engine that stays paused and fails one left running,
+even a silent one (Jimmy, 2026-10-20: "the test needs to learn"; AOG-WARM-QUIET-V1). The Studio and its eight rooms are in
+its PAGES list.
+
 ## The silent treatment: light speed (standing order from Jimmy, 2026-10-12)
 
 "Make sure everything that has been built and will continue to be built has the silent treatment as I want this website
