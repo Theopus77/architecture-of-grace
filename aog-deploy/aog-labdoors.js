@@ -246,7 +246,7 @@
     scale: ["Scales", "Escalas"], wheel: ["Chord wheel", "Rueda de acordes"], amp: ["Amp and pedals", "Amplificador y pedales"],
     live: ["Plug in and tune", "Conecta y afina"], dials: ["Sound and volume", "Sonido y volumen"], learn: ["Learn a song", "Aprende una canción"],
     lessons: ["Lessons", "Lecciones"], timing: ["Timing and repeat", "Tiempo y repetición"], beat: ["Play along with a beat", "Toca con un ritmo"],
-    fx: ["Effects", "Efectos"], records: ["Records", "Discos"], bars: ["Bars to rap", "Rimas para rapear"]
+    fx: ["Effects", "Efectos"], loopfile: ["The loop as a file", "El bucle como archivo"], records: ["Records", "Discos"], bars: ["Bars to rap", "Rimas para rapear"]
   };
   var MORE_KEY = "aog.studio.more.v1", ANY_KEY = "aog.studio.any.v1";
   function kept(k) { try { var o = JSON.parse(localStorage.getItem(k) || "{}"); return o && typeof o === "object" ? o : {}; } catch (e) { return {}; } }
@@ -311,6 +311,7 @@
         secs: [
           { k: "timing", el: [row($("qSel")), row($("rptBtn"))] },
           { k: "fx", el: [$("ampBlk")], head: function () { return $("fxH"); } },
+          { k: "loopfile", el: [$("loopFile")] },   /* AOG-PADS-LOOP-ADD-V1: Save as .wav and Send to the turntables */
           { k: "lessons", el: [$("lessons"), $("aogLearn")] }
         ]
       };
