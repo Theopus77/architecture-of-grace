@@ -444,13 +444,21 @@ function scaleBelow(rel, minor, dir){
   const SC=minor?MIN:MAJ; for(let i=1;i<=2;i++){ const r=rel+dir*i; if(SC.indexOf(((r%12)+12)%12)>=0) return r; } return rel+dir;
 }
 /* the lick in the key: each note's pitch above the key's home note (rel), its chord, its kind */
-function resolve(def, minor){
-  const chs=parseChords(minor && def.cm ? def.cm : def.ch, minor), P=parseNotes(def.n), L=P.list;
-  const chordBeats=chs[chs.length-1].t1;
+/* AOG-LICKS-SONG-V1: ov.chs = other chords to play the lick over (the song's, a bar each); each note keeps its part on the
+   new chord, and the chord's root moves the shortest way from where the lick's own chord had it. ov.pad: whole bars. */
+function resolve(def, minor, ov){
+  ov=ov||{};
+  const own=parseChords(minor && def.cm ? def.cm : def.ch, minor), P=parseNotes(def.n), L=P.list;
+  const chs=ov.chs ? ov.chs.map(c=>Object.assign({}, c, {tones:c.tones.slice()})) : own;
+  let chordBeats=chs[chs.length-1].t1;
+  if(ov.pad){ const B=bars4(P.beats); P.beats=B; if(!ov.chs) chordBeats=B; }
   if(chs[chs.length-1].t1<P.beats) chs[chs.length-1].t1=P.beats;
   let prev=null;
   L.forEach(e=>{
-    const c=chordAt(chs, e.t); e.chord=c;
+    const c=chordAt(chs, e.t), oc=chordAt(own, e.t); e.chord=c; e.ocI=own.indexOf(oc);
+    const near0=oc.root+((c.root-oc.root+18)%12)-6;   /* the new root, the shortest way from the lick's own */
+    if(ov.chs && c._base==null) c._base=near0;   /* by chord: one place for the whole of a new chord */
+    const base=ov.chs ? (ov.mode==="own" ? near0 : c._base) : c.root;
     const g=e.mods.indexOf("g")>=0 || e.p==="x";
     e.k=g?"g":e.mods.indexOf("H")>=0?"h":e.mods.indexOf("O")>=0?"o":e.mods.indexOf("~")>=0?"h":e.mods.indexOf("T")>=0?"t":e.mods.indexOf("P")>=0?"P":e.mods.indexOf("S")>=0?"s":"p";
     e.slide=e.mods.indexOf("~")>=0?"from":e.mods.indexOf("/")>=0?"in":e.mods.indexOf("\\")>=0?"fall":"";
@@ -468,17 +476,67 @@ function resolve(def, minor){
       else if(n===7) iv=c.tones[3]!=null ? c.tones[3] : step(c, 6, minor);
       else if(n===9) iv=step(c, 1, minor)+12;
       else iv=step(c, n-1, minor);
-      e.rel=c.root+iv+12*e.oct;
+      e.rel=base+iv+12*e.oct;
     }
     prev=e;
   });
+  if(ov.fit) fitFix(L, chs, minor, false);
   /* the leaning notes, from the note after them */
   for(let i=L.length-1;i>=0;i--){ const e=L[i]; if(!e.appr) continue;
     const nx=L[i+1]; if(!nx || nx.rel==null) throw new Error("approach at the end");
     e.rel = e.appr==="<" ? nx.rel-1 : e.appr===">" ? nx.rel+1 : scaleBelow(nx.rel, minor, e.appr==="[" ? -1 : 1);
     e.rel+=12*e.oct; }
   L.forEach((e,i)=>{ if(e.p==="x" && e.rel==null) e.rel=L[i-1].rel; });
+  if(ov.fit) fitFix(L, chs, minor, true);
   return {chs, L, beats:P.beats, chordBeats};
+}
+
+/* ══ AOG-LICKS-SONG-V1 (Jimmy, 2026-10-19: licks "to use them within my own creations / songs"): a lick on your chords ══ */
+const pcm=x=>((x%12)+12)%12;
+function bars4(beats){ return Math.max(4, Math.ceil(beats/4-1e-6)*4); }
+function strongAt(t){ return Math.abs(t/2-Math.round(t/2))<1e-6; }
+/* the numbers check() asks for, kept on the new chords: beats 1 and 3 on the chord's notes; the rest in the key or the
+   chord, or passing by step on purpose; the end on its chord's root. A note that would break one moves to the nearest
+   note that keeps it; a dead note stays where the note before it is. */
+function fitFix(L, chs, minor, after){
+  const SC=minor?MIN:MAJ, inKey=r=>SC.indexOf(pcm(r))>=0, tone=(c,r)=>c.tones.some(x=>pcm(c.root+x)===pcm(r));
+  /* the nearest note that keeps the numbers, a step toward the middle of the lick first (so it does not grow wider) */
+  const rs=L.filter(e=>e.rel!=null).map(e=>e.rel), mid=(Math.min(...rs)+Math.max(...rs))/2;
+  const lo=Math.min(...rs), hi=Math.max(...rs);
+  const near=(r, f)=>{ const g=r<mid?1:-1, edge=r<=lo+1||r>=hi-1;   /* at the lick's edge: inward only, as far as it takes */
+    const ds=edge ? [0,g,2*g,3*g,4*g,5*g,6*g,-g,-2*g,-3*g] : [0,g,-g,2*g,-2*g,3*g,-3*g,4*g,-4*g,5*g,-5*g,6];
+    for(const d of ds) if(f(r+d)) return r+d; return r; };
+  const real=L.filter(e=>e.p!=="x");
+  if(!after){
+    real.forEach((e,i)=>{ if(e.appr) return;
+      /* a moved note does not land on the note beside it (the line keeps moving where it moved) */
+      const pv=real[i-1], nx=real[i+1], apart=r=>!(pv && pv.rel===r && pv.rel!==e.rel) && !(nx && nx.rel===r && nx.rel!==e.rel);
+      const go=f=>{ const a=near(e.rel, r=>f(r) && apart(r)); e.rel=f(a) ? a : near(e.rel, f); };
+      if(strongAt(e.t)){ if(!tone(e.chord, e.rel)) go(r=>tone(e.chord, r)); }
+      else if(!inKey(e.rel) && !tone(e.chord, e.rel) && !e.pass) go(r=>inKey(r)||tone(e.chord, r)); });
+    const last=real[real.length-1];
+    if(last && !last.appr && pcm(last.rel)!==pcm(last.chord.root)) last.rel=near(last.rel, r=>pcm(r)===pcm(last.chord.root));
+  } else {
+    real.forEach((e,i)=>{ if(inKey(e.rel) || tone(e.chord, e.rel)) return; const nx=real[i+1];
+      if(!(e.pass||e.appr) || !nx || Math.abs(nx.rel-e.rel)>2 || strongAt(e.t)){ e.rel=near(e.rel, r=>inKey(r)||tone(e.chord, r)); e.pass=false; e.appr=null; } });
+  }
+  L.forEach((e,i)=>{ if(e.p==="x" && i>0) e.rel=L[i-1].rel; });
+}
+/* the room's chords ({off, q, iv}) as a lick's chords, a bar each, from bar `from`, for `bars` bars (as aog-guitar-licks.js) */
+function songChords(prog, minor, bars, from){
+  const SC=minor?MIN:MAJ, out=[];
+  for(let j=0;j<bars;j++){
+    const p=prog[(((from||0)+j)%prog.length+prog.length)%prog.length], rt=pcm(p.off), idx=SC.indexOf(rt);
+    /* the chord's own notes as it is: its third (or a sus chord's 2nd or 4th; a power chord takes the key's third), its
+       fifth (♭5, ♯5 too) and its seventh */
+    const iv=new Set((p.iv||[0,4,7]).map(pcm)), dia3=idx>=0 ? pcm(SC[(idx+2)%7]-SC[idx]) : 4;
+    const third=iv.has(4) ? 4 : iv.has(3) ? 3 : iv.has(5) ? 5 : iv.has(2) ? 2 : dia3;
+    const fifth=iv.has(7) ? 7 : iv.has(6) ? 6 : iv.has(8) ? 8 : 7, sev=iv.has(10) ? 10 : iv.has(11) ? 11 : (third===3 && fifth===6 && iv.has(9)) ? 9 : -1;
+    const tones=[0, third, fifth].concat(sev>=0 ? [sev] : []), key=tones.join(",");
+    const q=({"0,4,7":"maj","0,3,7":"min","0,3,6":"dim","0,4,7,10":"dom7","0,4,7,11":"maj7","0,3,7,10":"m7","0,3,6,10":"m7b5"})[key] || (third===2||third===5 ? "sus" : fifth===8 ? "aug" : "other");
+    out.push({t0:j*4, t1:j*4+4, root:rt, q, idx, tones, band:{off:p.off, q:p.q||q}});
+  }
+  return out;
 }
 
 /* ══ where the hand goes: one position (five frets, and the open strings near the nut), each note on a string ═══ */
@@ -528,23 +586,65 @@ function place(L, w, rootM, oct, tuning, maxf){
 }
 
 /* the whole lick, ready to play: the guitar licks' own note format (t, s, f, d in beats; k; sl; b; v) */
+/* AOG-LICKS-SONG-V1: o.chords (songChords) puts it on other chords (whole bars, check()'s numbers kept); o.pad: whole bars */
 function compile(def, o){
-  o=o||{}; const key=((o.key||0)%12+12)%12, minor=!!o.minor, T=o.tuning||TUNE, MF=o.maxf||MAXF;
-  const R=resolve(def, minor), L=R.L, rootM=T[0]+((key-(T[0]%12))%12+12)%12;
-  let best=null;
+  o=o||{};
+  /* on other chords: each new chord in one place; else each of the lick's own chords moved on its own */
+  if(o.chords && !o.mode) return compile(def, Object.assign({}, o, {mode:"chord"})) || compile(def, Object.assign({}, o, {mode:"own"})); const key=((o.key||0)%12+12)%12, minor=!!o.minor, T=o.tuning||TUNE, MF=o.maxf||MAXF;
+  const R=resolve(def, minor, {chs:o.chords, mode:o.mode, pad:o.pad||!!o.chords, fit:!!o.chords}), L=R.L, rootM=T[0]+((key-(T[0]%12))%12+12)%12;
   const pref=def.oct||0;
-  for(const oct of [pref, pref-1, pref+1, pref+2, pref-2]){
-    const lo=Math.min(...L.map(e=>rootM+e.rel+12*oct)), hi=Math.max(...L.map(e=>rootM+e.rel+12*oct));
-    if(lo<T[0] || hi>T[T.length-1]+MF) continue;
-    for(let w=1; w<=MF-SPAN; w++){
-      const pl=place(L, w, rootM, oct, T, MF); if(!pl) continue;
-      const score=pl.cost+w*0.3+Math.abs(oct-pref)*8;
-      if(!best || score<best.score) best={score, w, oct, path:pl.path};
+  const inRange=(list, oct)=>{ const lo=Math.min(...list.map(e=>rootM+e.rel+12*oct)), hi=Math.max(...list.map(e=>rootM+e.rel+12*oct)); return lo>=T[0] && hi<=T[T.length-1]+MF; };
+  const search=()=>{ let best=null;
+    for(const oct of [pref, pref-1, pref+1, pref+2, pref-2]){
+      if(!inRange(L, oct)) continue;
+      for(let w=1; w<=MF-SPAN; w++){
+        const pl=place(L, w, rootM, oct, T, MF); if(!pl) continue;
+        const score=pl.cost+w*0.3+Math.abs(oct-pref)*8;
+        if(!best || score<best.score) best={score, w, oct, path:pl.path};
+      }
+      if(best) break;
     }
-    if(best) break;
-  }
+    if(best) place(L, best.w, rootM, best.oct, T, MF);
+    return best; };
+  /* (a bar, or the part of a bar under one of the lick's own chords, is one stretch) */
+  /* on other chords, when no one hand position holds it all: a position a bar, as near the one before as it can be
+     (free: each bar may also sit an octave from the one before) */
+  const bySeg=(free, unit)=>{ unit=unit||4;   /* unit: beats a stretch at most (a long run may move the hand twice a bar) */
+    const key0=L.map(e=>Math.floor(e.t/unit+1e-9)*100+e.ocI); for(let i=L.length-2;i>=0;i--) if(L[i].appr) key0[i]=key0[i+1];   /* a leaning note goes with the note it leans on */
+    const segOf=e=>key0[L.indexOf(e)], ks=[...new Set(L.map(segOf))].sort((a,b)=>a-b), segs=ks.map(k=>L.filter(e=>segOf(e)===k));
+    segs.forEach((sg,i)=>{ if(!i) return; const e=sg[0]; if(e.k==="h"||e.k==="o") e.k="p"; if(e.slide==="from") e.slide=""; });
+    for(const oct0 of [pref, pref-1, pref+1, pref+2, pref-2]){
+      if(!free && !inRange(L, oct0)) continue;
+      let prevW=null, prevO=oct0; const out=[];
+      for(const sg of segs){
+        let b=null;
+        for(const oct of free ? [prevO, prevO-1, prevO+1, prevO-2, prevO+2] : [oct0]){ if(!inRange(sg, oct)) continue;
+          for(let w=1; w<=MF-SPAN; w++){ const pl=place(sg, w, rootM, oct, T, MF); if(!pl) continue;
+            const sc=pl.cost+(prevW==null ? w*0.3 : Math.abs(w-prevW)*0.5)+Math.abs(oct-prevO)*8; if(!b || sc<b.sc) b={sc, w, oct, path:pl.path}; } }
+        if(!b){ out.length=0; break; }
+        out.push({sg, w:b.w, oct:b.oct, path:b.path}); prevW=b.w; prevO=b.oct;
+      }
+      if(out.length===segs.length){ out.forEach(g=>place(g.sg, g.w, rootM, g.oct, T, MF));
+        const path=[], wOf=[]; out.forEach(g=>{ g.path.forEach(x=>path.push(x)); g.sg.forEach(()=>wOf.push(g.w)); });
+        return {w:out[0].w, oct:oct0, path, wOf}; }
+      if(free) break;
+    }
+    return null; };
+  let best=search();
+  if(!best && o.chords) best=bySeg(false)||bySeg(false, 2)||bySeg(false, 1);
+  if(!best && o.chords){ L.forEach(e=>{ if(e.k==="h"||e.k==="o") e.k="p"; if(e.slide==="from") e.slide=""; }); best=search()||bySeg(false)||bySeg(false, 2)||bySeg(false, 1); }
+  if(!best && o.chords) best=bySeg(true)||bySeg(true, 2)||bySeg(true, 1);
+  /* and last: a note that leaps more than the hand reaches comes an octave nearer (into 17 half steps); a leaning note
+     still leans on the note after it */
+  if(!best && o.chords){
+    const rs=L.map(e=>e.rel); let lo0=Math.min(...rs), bestLo=lo0, moved=1e9;
+    for(let lo=Math.min(...rs); lo<=Math.max(...rs); lo++){ const mv=rs.filter(r=>r<lo || r>lo+16).length; if(mv<moved){ moved=mv; bestLo=lo; } }
+    L.forEach(e=>{ while(e.rel<bestLo) e.rel+=12; while(e.rel>bestLo+16) e.rel-=12; });
+    for(let i=L.length-1;i>=0;i--){ const e=L[i], nx=L[i+1]; if(!e.appr || !nx) continue;
+      e.rel = e.appr==="<" ? nx.rel-1 : e.appr===">" ? nx.rel+1 : scaleBelow(nx.rel, minor, e.appr==="[" ? -1 : 1); }
+    L.forEach((e,i)=>{ if(e.p==="x" && i>0) e.rel=L[i-1].rel; });
+    best=search()||bySeg(false)||bySeg(false, 2)||bySeg(false, 1)||bySeg(true); }
   if(!best) return null;
-  place(L, best.w, rootM, best.oct, T, MF);
   const sw=def.sw||0, warp=x=>{ if(!sw) return x; const b=Math.floor(x+1e-9), fr=x-b; return b+(fr<=0.5 ? fr/0.5*sw : sw+(fr-0.5)/0.5*(1-sw)); };
   const notes=L.map((e,i)=>{
     const {s, f}=best.path[i], nx=L[i+1], legNext=nx && (nx.k==="h"||nx.k==="o"||nx.slide==="from");
@@ -559,6 +659,7 @@ function compile(def, o){
     if(/[vV]/.test(e.mods)){ n.v=Math.min(0.35, e.slot*0.4); if(e.mods.indexOf("V")>=0) n.vw=1.8; }
     if(e.pass) n.pass=1; if(e.appr) n.appr=e.appr;
     n.chord=R.chs.indexOf(e.chord);
+    if(best.wOf) n.w=best.wOf[i];   /* AOG-LICKS-SONG-V1: the hand position of the note's bar */
     return n;
   });
   return {id:def.id, notes, chords:R.chs.map(c=>({t0:c.t0, t1:c.t1, root:c.root, q:c.q, tones:c.tones.slice(), band:c.band})), beats:R.beats, w:best.w, oct:best.oct,
@@ -570,10 +671,10 @@ function check(C, o){
   o=o||{}; const T=o.tuning||TUNE, MF=o.maxf||MAXF, bad=[];
   if(!C){ return ["does not fit on the neck"]; }
   if(Math.abs(C.chordBeats-C.beats)>1e-6) bad.push(`the notes last ${C.beats} beats, the chords ${C.chordBeats}`);
-  const SC=C.minor?MIN:MAJ, inPos=f=>(f>=C.w && f<=C.w+SPAN) || (f===0 && C.w<=2);
+  const SC=C.minor?MIN:MAJ; let W=C.w; const inPos=f=>(f>=W && f<=W+SPAN) || (f===0 && W<=2);
   C.notes.forEach((n,i)=>{
-    const end=n.sl?n.sl[0]:n.f;
-    [n.f, end].forEach(f=>{ if(!inPos(f)) bad.push(`note ${i} fret ${f} outside frets ${C.w}-${C.w+SPAN}`); });
+    const end=n.sl?n.sl[0]:n.f; W=n.w!=null?n.w:C.w;   /* AOG-LICKS-SONG-V1: on other chords a note may say its own (its bar's) */
+    [n.f, end].forEach(f=>{ if(!inPos(f)) bad.push(`note ${i} fret ${f} outside frets ${W}-${W+SPAN}`); });
     const tm=n.sl && n.sl[1]===0 ? T[n.s]+n.sl[0] : T[n.s]+n.f;
     if(tm!==n.tm && !(n.sl && n.sl[1]>0)) bad.push(`note ${i} plays ${tm}, wrote ${n.tm}`);
     if(n.tm<T[0] || n.tm>T[T.length-1]+MF) bad.push(`note ${i} out of range (${n.tm})`);
@@ -592,6 +693,6 @@ function check(C, o){
   return bad;
 }
 
-const API={GROUPS, ORDER, LICKS, WORDS, compile, check, parseChords, _resolve:resolve};
+const API={GROUPS, ORDER, LICKS, WORDS, compile, check, parseChords, songChords, bars4, _resolve:resolve};
 if(typeof module!=="undefined" && module.exports) module.exports=API; else root.AOGBassLicks=API;
 })(typeof window!=="undefined"?window:this);
