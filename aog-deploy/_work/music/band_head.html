@@ -168,6 +168,28 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
 .wk.down{background:linear-gradient(#ffe39a,#efb94e)} .bk.down{background:linear-gradient(#c99632,#865f19)}
 .wk.now{background:linear-gradient(#ffc890,#ef9a4a);box-shadow:inset 0 -7px 0 #b4581a} .bk.now{background:linear-gradient(#e7954b,#a35a1c);box-shadow:inset 0 -5px 0 #5e2f0b}
 .bk.now .kc{color:#1f1206}
+/* AOG-BAND-LICKS-V1: the note a lick is playing now: blue, so it stands apart from the band's orange and your gold */
+.wk.lk{background:linear-gradient(#d4ecff,#8cc4ef);box-shadow:inset 0 -7px 0 #1f5f96;color:#0d2236} .wk.lk .nm small{color:#0d2236}
+.bk.lk{background:linear-gradient(#5d9bd0,#1f5f96);box-shadow:inset 0 -5px 0 #0d2a45} .bk.lk .kc{color:#fff}
+.lk-box{margin:.7rem 0 .2rem}
+.lk-open::after{content:" \25BE"} .lk-open[aria-expanded="true"]::after{content:" \25B4"}
+.lk-body{margin:.6rem 0 0}
+.lk-body[hidden]{display:none}
+.lk-row{flex-wrap:nowrap}
+.lk-row .field{flex:1 1 auto;min-width:0}
+.lk-row .pbtn{flex:0 0 auto;min-width:0;white-space:nowrap}
+.lk-song{margin-top:.6rem;align-items:center}
+.lk-rep{display:inline-flex;align-items:center;gap:.5rem}
+.lk-rep .plab{margin:0}
+.lk-rep .pbtn{min-width:48px}
+.lk-spd{margin-top:.6rem}
+#playView .lk-box{flex:0 0 auto;margin:0 0 4px}
+#playView .lk-box .lk-open,#playView .lk-body>:not(.lk-row){display:none}
+#playView .lk-body{margin:0}
+#playView .lk-row .plab{display:none}
+#playView .lk-row .pbtn,#playView .lk-row select{min-height:40px}
+#playView .pv-harp .hs.lk::before{background:#8cc4ef;box-shadow:0 0 0 3px #8cc4ef}
+#playView .pv-bars .wk.lk,#playView .pv-bars .bk.lk{background:linear-gradient(#d4ecff,#8cc4ef);color:#0d2236}
 /* a key the instrument cannot reach: grey, and silent */
 .wk.out{background:linear-gradient(#cfcac0,#b9b3a8);color:#3b4048} .wk.out .nm small{color:#3b4048}
 .bk.out{background:linear-gradient(#55585e,#3a3c40)}
@@ -299,12 +321,12 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
     linear-gradient(#9a2a2f,#6e1a1e 55%,#4a1013);box-shadow:0 2px 3px rgba(0,0,0,.6)}
 #kbd .wk{border:0;margin:0 1px;border-radius:0 0 5px 5px;transition:transform .06s ease-out,box-shadow .06s ease-out;
   box-shadow:inset 0 -6px 0 #d8cfbb,inset 0 -7px 0 #bfb59f,inset 1px 0 0 rgba(255,255,255,.7),inset -1px 0 0 rgba(0,0,0,.12),0 2px 2px rgba(0,0,0,.5)}
-#kbd .wk:not(.lit):not(.down):not(.now):not(.out){background-color:#f6f0e2;background-image:linear-gradient(180deg,#e9e2d1 0%,#fbf7ee 7%,#f7f2e6 70%,#ede6d6 100%)}
+#kbd .wk:not(.lit):not(.down):not(.now):not(.out):not(.lk){background-color:#f6f0e2;background-image:linear-gradient(180deg,#e9e2d1 0%,#fbf7ee 7%,#f7f2e6 70%,#ede6d6 100%)}
 #kbd .wk.out{box-shadow:inset 0 -6px 0 #a39d92,inset 1px 0 0 rgba(255,255,255,.35),0 2px 2px rgba(0,0,0,.5)}
 #kbd .wk.down{transform:translateY(2px);box-shadow:inset 0 -3px 0 #c9a24a,inset 0 4px 6px rgba(0,0,0,.18),0 1px 1px rgba(0,0,0,.5)}
 #kbd .bk{border:0;border-radius:0 0 4px 4px;transition:transform .06s ease-out,box-shadow .06s ease-out;
   box-shadow:inset 0 -7px 0 #050506,inset 0 -8px 0 #2c2c30,inset 1px 0 0 rgba(255,255,255,.08),inset -1px 0 0 rgba(0,0,0,.6),0 4px 5px rgba(0,0,0,.6)}
-#kbd .bk:not(.lit):not(.down):not(.now):not(.out){background-color:#121214;background-image:linear-gradient(90deg,#0d0d0f 0%,#2a2a2e 22%,#1a1a1d 55%,#0b0b0d 100%),linear-gradient(#232327,#0c0c0e)}
+#kbd .bk:not(.lit):not(.down):not(.now):not(.out):not(.lk){background-color:#121214;background-image:linear-gradient(90deg,#0d0d0f 0%,#2a2a2e 22%,#1a1a1d 55%,#0b0b0d 100%),linear-gradient(#232327,#0c0c0e)}
 #kbd .bk.down{transform:translateY(2px);box-shadow:inset 0 -3px 0 #050506,0 2px 3px rgba(0,0,0,.6)}
 @media (prefers-reduced-motion:reduce),(hover:none){ #kbd .wk,#kbd .bk{transition:none} }
 </style>
@@ -434,6 +456,25 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
         </div>
         <p class="line" id="midiLine" aria-live="polite"></p><!-- AOG-MIDI-V1: the MIDI keyboard's one-line answer -->
         <div class="kbd" id="kbd" role="group"></div>
+        <!-- AOG-BAND-LICKS-V1, AOG-LICKS-SONG-V1: licks to try, right under the keys so the lit notes are in sight; the licks
+             load the first time this opens (aog-band-licks.js) -->
+        <div class="lk-box no-print" id="bandLicks">
+          <button type="button" class="pbtn lk-open" id="lkOpen" aria-expanded="false" aria-controls="lkBody"></button>
+          <div class="lk-body" id="lkBody" hidden>
+            <div class="row lk-row">
+              <label class="field"><span class="plab" data-t="lickLab"></span><select id="lkSel"></select></label>
+              <button type="button" class="pbtn play" id="lkPlay"></button>
+            </div>
+            <div class="row lk-song">
+              <button type="button" class="pbtn" id="lkFit" aria-pressed="false"></button>
+              <span class="lk-rep"><span class="plab" id="lkRepLab" data-t="lickRep"></span><span class="seg" role="group" aria-labelledby="lkRepLab"><button type="button" class="pbtn" data-rep="1" aria-pressed="true">1</button><button type="button" class="pbtn" data-rep="2" aria-pressed="false">2</button><button type="button" class="pbtn" data-rep="4" aria-pressed="false">4</button></span></span>
+              <button type="button" class="pbtn send" id="lkRec"></button>
+            </div>
+            <div class="tempo lk-spd"><span class="plab" style="margin:0" data-t="lickSpeed"></span><input type="range" id="lkSpd" min="25" max="100" step="5"><b id="lkSpdOut"></b></div>
+            <p class="line" id="lkSong"></p>
+            <p class="line" id="lkLine" aria-live="polite"></p>
+          </div>
+        </div>
         <div id="pedalsNear" hidden></div><!-- AOG-ROOM-PEDALS-V1: the pedals that are on, with their knobs, and the menu of the rest, right under the keys (aog-amp.js) -->
         <p class="line" id="litLine" data-t="litLine" hidden></p>
         <p class="line touch-line" data-t="touchLine"></p>

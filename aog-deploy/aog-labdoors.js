@@ -284,7 +284,7 @@
       var ctl = [[id === "band" && !spAfter ? null : sp0, keyRow, $("pedalsNear")], [recRow, sendRow]];
       /* AOG-SOLO-LICKS-PV-V1: Solo's licks sit right under the neck (aog-solo.js); a room fitted again (the iPad turned, the
          screen resized) keeps them there and puts its controls after them */
-      var lk = (strings && q(".so-licks.so-near", rig)) || q(".aog-licks-near", rig), after = at;   /* AOG-PIANO-LICKS-V1: the piano's too */
+      var lk = (strings && q(".so-licks.so-near", rig)) || (id === "band" ? $("bandLicks") : null) || q(".aog-licks-near", rig), after = at;   /* AOG-PIANO-LICKS-V1, AOG-BAND-LICKS-V1: the piano's and the Band's too */
       /* the sound picker's row can land between them as the room opens with Solo already on: the licks go back first */
       if (lk && lk.parentNode === at.parentNode) { if (lk.previousSibling !== at) at.parentNode.insertBefore(lk, at.nextSibling); after = lk; }
       return {

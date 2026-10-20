@@ -30,6 +30,8 @@ const VIEWS = ["telescope.html#sky","telescope.html#lab","music-drums.html#lesso
   "adult-workbook.html?s=2","adult-workbook.html?s=3","adult-workbook.html?s=4","adult-workbook.html?s=5","adult-workbook.html?s=6","adult-workbook.html?s=7",
   /* the Cube Lab's other two views (AOG-CUBE-LAB-V1, 2026-10-10) */
   "cube-lab.html#solve","cube-lab.html#mine",
+  /* the Band's Licks to try, opened (AOG-BAND-LICKS-V1, 2026-10-19) */
+  "music-band.html#licks",
   /* the thinking-skills checklists (AOG-EF-SLIPS-V1, 2026-10-14): slip.html draws each from /aog-ef-slips.js */
   "slip.html?s=efstart","slip.html?s=efplan","slip.html?s=eforg","slip.html?s=eftime","slip.html?s=effocus","slip.html?s=efstuck","slip.html?s=efcheck","slip.html?s=efcalm","slip.html?s=efremember","slip.html?s=efswitch","slip.html?s=efstudy","slip.html?s=efmorning","slip.html?s=efrule","slip.html?s=eftalk","slip.html?s=efmyrule","slip.html?s=efpublic","slip.html?s=efpitch","slip.html?s=efself","ef.html#rules","ef.html#jh","ef.html#strong","slip.html?s=efcontrol","slip.html?s=efown","slip.html?s=efcourage","slip.html?s=effeel","slip.html?s=efserve","slip.html?s=efgrow",
   /* the slip list is slip.html itself; a slip and the editor behind "Change this slip" (AOG-SLIP-OVERHAUL-V1, 2026-10-17) */
