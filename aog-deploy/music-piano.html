@@ -3287,13 +3287,14 @@ window.addEventListener("hashchange", paintView);
   let tm; window.addEventListener("resize", ()=>{ clearTimeout(tm); tm=setTimeout(fit,150); });
 })();
 /* AOG-PIANO-LICKS-V1 — Licks to try: aog-piano-licks.js is fetched the first time the block is opened (kept open, it opens
-   so next time, and then it is fetched as the room opens) */
+   so next time, and then it is fetched as the room opens; #licks opens it too) */
 (function(){
   const d=document.getElementById("pkLicks"); if(!d) return; let st="";
   const load=()=>{ if(st) return; st="loading"; const sc=document.createElement("script"); sc.src="/aog-piano-licks.js"; sc.async=true;
     sc.onload=()=>{ st="ready"; }; sc.onerror=()=>{ st=""; sc.remove(); }; document.head.appendChild(sc); };
   d.addEventListener("toggle",()=>{ if(d.open) load(); try{ localStorage.setItem("aog.piano.licks.open", d.open?"1":"0"); }catch(e){} });
   try{ if(localStorage.getItem("aog.piano.licks.open")==="1") d.open=true; }catch(e){}
+  if(location.hash==="#licks") d.open=true;   /* /piano#licks opens it (and the site's checks look inside) */
 })();
 
 loadState();

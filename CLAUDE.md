@@ -338,6 +338,19 @@ LIGHT SPEED!!" Every feature, now and later:
 - FACS lessons and room pages link into both (`_work/fcs/practice3d.py`, `add_3d.py`, `add_3d_rooms.py`); after a
   change run `node tools/check-facs-3d.js`. The ids are fixed in `_work/engine3d/CONTRACT.md`.
 
+## Piano licks, ready for a song (Jimmy, 2026-10-19: piano licks "that follow the same style of the guitar and bass licks"; "I could use them for in making a song")
+
+- Licks to try sits right under the Piano's keys, closed (`#pkLicks`, class `aog-licks-near`; `aog-labdoors.js` keeps it
+  there in the Studio). Opening it loads `aog-piano-licks.js`: 154 licks in 22 groups, written against chords like the
+  Guitar's and the Bass's (the format is in its header). A new lick joins `RAW` and `W` there.
+- Each lick is whole bars from beat 1, plays at the song's tempo (`AOGSong`) in the room's key, lights each key as it
+  sounds (blue right hand, purple left) and widens the keys in view while it plays (`AOG_PKV` in `buildKeys`).
+  Fit to my chords puts it on the room's chord pattern; Repeat 1, 2, 4; ● Record this lick makes a take through
+  `REC.addTake` (`aog-recorder.js`), so + Add to My Track and Send to the drum machine take it. Keep these words the
+  same in every room that has licks.
+- After any change, run `node music-handoff/tests/solo/pianolicks.js` (the numbers in all 24 keys and fitted to other
+  chords, a render with no clicks, iPhone and iPad). Do not push while it fails.
+
 ## No floating My notes button (Jimmy, 2026-10-18: "I don't like the my notes button. Please remove that")
 
 `aog-markup.js` no longer puts the floating My notes button on any page. Highlights and notes still work, and a tap on

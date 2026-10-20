@@ -8,7 +8,8 @@
  * not run on this file. Forget the bump and returning visitors keep the stale
  * page from their cache.
  */
-const CACHE = 'aog-cache-2026.10.19.m7535'   // THE 95 BEATS PERFECTED, NO 'ELITE' LABEL, SWING AND BARS OF 3 FIXED ON THE DRUM MACHINE (aog-beats.js, aog-beats-pro.js, music-pads.html) (previous: m7534)
+const CACHE = 'aog-cache-2026.10.19.m7536'   // 154 PIANO LICKS UNDER THE KEYS, READY FOR YOUR SONG: SONG TEMPO, FIT TO MY CHORDS, REPEAT, RECORD THIS LICK (aog-piano-licks.js, music-piano.html, aog-labdoors.js, aog-recorder.js) (previous: m7535)
+// const CACHE = 'aog-cache-2026.10.19.m7535'   // THE 95 BEATS PERFECTED, NO 'ELITE' LABEL, SWING AND BARS OF 3 FIXED ON THE DRUM MACHINE (aog-beats.js, aog-beats-pro.js, music-pads.html) (previous: m7534)
 // const CACHE = 'aog-cache-2026.10.19.m7534'   // 64 ELITE BEATS, TRIPLET AND 32ND-NOTE GRIDS (aog-beats-pro.js, music-pads.html, music-kit.html) (previous: m7533)
 // const CACHE = 'aog-cache-2026.10.19.m7533'   // LICKS UNDER THE NECK WHEN THE ROOM OPENS WITH SOLO ON (aog-labdoors.js) (previous: m7532)
 // const CACHE = 'aog-cache-2026.10.18.m7532'   // HARD ROCK AND METAL LICKS, GUITAR AND BASS MENUS MATCH (aog-guitar-licks.js, aog-bass-licks.js, aog-solo.js) (previous: m7531)
