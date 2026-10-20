@@ -168,6 +168,28 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
 .wk.down{background:linear-gradient(#ffe39a,#efb94e)} .bk.down{background:linear-gradient(#c99632,#865f19)}
 .wk.now{background:linear-gradient(#ffc890,#ef9a4a);box-shadow:inset 0 -7px 0 #b4581a} .bk.now{background:linear-gradient(#e7954b,#a35a1c);box-shadow:inset 0 -5px 0 #5e2f0b}
 .bk.now .kc{color:#1f1206}
+/* AOG-BAND-LICKS-V1: the note a lick is playing now: blue, so it stands apart from the band's orange and your gold */
+.wk.lk{background:linear-gradient(#d4ecff,#8cc4ef);box-shadow:inset 0 -7px 0 #1f5f96;color:#0d2236} .wk.lk .nm small{color:#0d2236}
+.bk.lk{background:linear-gradient(#5d9bd0,#1f5f96);box-shadow:inset 0 -5px 0 #0d2a45} .bk.lk .kc{color:#fff}
+.lk-box{margin:.7rem 0 .2rem}
+.lk-open::after{content:" \25BE"} .lk-open[aria-expanded="true"]::after{content:" \25B4"}
+.lk-body{margin:.6rem 0 0}
+.lk-body[hidden]{display:none}
+.lk-row{flex-wrap:nowrap}
+.lk-row .field{flex:1 1 auto;min-width:0}
+.lk-row .pbtn{flex:0 0 auto;min-width:0;white-space:nowrap}
+.lk-song{margin-top:.6rem;align-items:center}
+.lk-rep{display:inline-flex;align-items:center;gap:.5rem}
+.lk-rep .plab{margin:0}
+.lk-rep .pbtn{min-width:48px}
+.lk-spd{margin-top:.6rem}
+#playView .lk-box{flex:0 0 auto;margin:0 0 4px}
+#playView .lk-box .lk-open,#playView .lk-body>:not(.lk-row){display:none}
+#playView .lk-body{margin:0}
+#playView .lk-row .plab{display:none}
+#playView .lk-row .pbtn,#playView .lk-row select{min-height:40px}
+#playView .pv-harp .hs.lk::before{background:#8cc4ef;box-shadow:0 0 0 3px #8cc4ef}
+#playView .pv-bars .wk.lk,#playView .pv-bars .bk.lk{background:linear-gradient(#d4ecff,#8cc4ef);color:#0d2236}
 /* a key the instrument cannot reach: grey, and silent */
 .wk.out{background:linear-gradient(#cfcac0,#b9b3a8);color:#3b4048} .wk.out .nm small{color:#3b4048}
 .bk.out{background:linear-gradient(#55585e,#3a3c40)}
@@ -299,12 +321,12 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
     linear-gradient(#9a2a2f,#6e1a1e 55%,#4a1013);box-shadow:0 2px 3px rgba(0,0,0,.6)}
 #kbd .wk{border:0;margin:0 1px;border-radius:0 0 5px 5px;transition:transform .06s ease-out,box-shadow .06s ease-out;
   box-shadow:inset 0 -6px 0 #d8cfbb,inset 0 -7px 0 #bfb59f,inset 1px 0 0 rgba(255,255,255,.7),inset -1px 0 0 rgba(0,0,0,.12),0 2px 2px rgba(0,0,0,.5)}
-#kbd .wk:not(.lit):not(.down):not(.now):not(.out){background-color:#f6f0e2;background-image:linear-gradient(180deg,#e9e2d1 0%,#fbf7ee 7%,#f7f2e6 70%,#ede6d6 100%)}
+#kbd .wk:not(.lit):not(.down):not(.now):not(.out):not(.lk){background-color:#f6f0e2;background-image:linear-gradient(180deg,#e9e2d1 0%,#fbf7ee 7%,#f7f2e6 70%,#ede6d6 100%)}
 #kbd .wk.out{box-shadow:inset 0 -6px 0 #a39d92,inset 1px 0 0 rgba(255,255,255,.35),0 2px 2px rgba(0,0,0,.5)}
 #kbd .wk.down{transform:translateY(2px);box-shadow:inset 0 -3px 0 #c9a24a,inset 0 4px 6px rgba(0,0,0,.18),0 1px 1px rgba(0,0,0,.5)}
 #kbd .bk{border:0;border-radius:0 0 4px 4px;transition:transform .06s ease-out,box-shadow .06s ease-out;
   box-shadow:inset 0 -7px 0 #050506,inset 0 -8px 0 #2c2c30,inset 1px 0 0 rgba(255,255,255,.08),inset -1px 0 0 rgba(0,0,0,.6),0 4px 5px rgba(0,0,0,.6)}
-#kbd .bk:not(.lit):not(.down):not(.now):not(.out){background-color:#121214;background-image:linear-gradient(90deg,#0d0d0f 0%,#2a2a2e 22%,#1a1a1d 55%,#0b0b0d 100%),linear-gradient(#232327,#0c0c0e)}
+#kbd .bk:not(.lit):not(.down):not(.now):not(.out):not(.lk){background-color:#121214;background-image:linear-gradient(90deg,#0d0d0f 0%,#2a2a2e 22%,#1a1a1d 55%,#0b0b0d 100%),linear-gradient(#232327,#0c0c0e)}
 #kbd .bk.down{transform:translateY(2px);box-shadow:inset 0 -3px 0 #050506,0 2px 3px rgba(0,0,0,.6)}
 @media (prefers-reduced-motion:reduce),(hover:none){ #kbd .wk,#kbd .bk{transition:none} }
 </style>
@@ -434,6 +456,25 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
         </div>
         <p class="line" id="midiLine" aria-live="polite"></p><!-- AOG-MIDI-V1: the MIDI keyboard's one-line answer -->
         <div class="kbd" id="kbd" role="group"></div>
+        <!-- AOG-BAND-LICKS-V1, AOG-LICKS-SONG-V1: licks to try, right under the keys so the lit notes are in sight; the licks
+             load the first time this opens (aog-band-licks.js) -->
+        <div class="lk-box no-print" id="bandLicks">
+          <button type="button" class="pbtn lk-open" id="lkOpen" aria-expanded="false" aria-controls="lkBody"></button>
+          <div class="lk-body" id="lkBody" hidden>
+            <div class="row lk-row">
+              <label class="field"><span class="plab" data-t="lickLab"></span><select id="lkSel"></select></label>
+              <button type="button" class="pbtn play" id="lkPlay"></button>
+            </div>
+            <div class="row lk-song">
+              <button type="button" class="pbtn" id="lkFit" aria-pressed="false"></button>
+              <span class="lk-rep"><span class="plab" id="lkRepLab" data-t="lickRep"></span><span class="seg" role="group" aria-labelledby="lkRepLab"><button type="button" class="pbtn" data-rep="1" aria-pressed="true">1</button><button type="button" class="pbtn" data-rep="2" aria-pressed="false">2</button><button type="button" class="pbtn" data-rep="4" aria-pressed="false">4</button></span></span>
+              <button type="button" class="pbtn send" id="lkRec"></button>
+            </div>
+            <div class="tempo lk-spd"><span class="plab" style="margin:0" data-t="lickSpeed"></span><input type="range" id="lkSpd" min="25" max="100" step="5"><b id="lkSpdOut"></b></div>
+            <p class="line" id="lkSong"></p>
+            <p class="line" id="lkLine" aria-live="polite"></p>
+          </div>
+        </div>
         <div id="pedalsNear" hidden></div><!-- AOG-ROOM-PEDALS-V1: the pedals that are on, with their knobs, and the menu of the rest, right under the keys (aog-amp.js) -->
         <p class="line" id="litLine" data-t="litLine" hidden></p>
         <p class="line touch-line" data-t="touchLine"></p>
@@ -1602,7 +1643,7 @@ const KIT_BEATS={
    Seeded by the bar and the hit, so no two bars are the same and a test can still play the same bar twice. */
 function feel(k, i){ if(window.AOG_FEEL_OFF) return ()=>0; const r=seeded((k+1)*7919+(i+1)*104729); r(); return r; }   /* the pattern tests check the grid itself with AOG_FEEL_OFF */
 function scheduleBar(c, ch, k, t0, barSec, swing, prevRef){
-  const chord=S.prog[k%S.prog.length]; if(!chord) return [];
+  const chord=(c===ac && PLAY.over && PLAY.over[k]) || S.prog[k%S.prog.length]; if(!chord) return [];   /* AOG-BAND-LICKS-V1: under a lick, its chords */
   const vo=voicing(chord, prevRef.v); prevRef.v=vo;
   /* in a way of playing with a beat, the players named in hold (the orchestra's violins and violas) hold the chord softly
      under the others, the whole bar */
@@ -1828,6 +1869,7 @@ function paintText(){
   paintSounds(); paintKeySel(); paintProgSel(); paintRhythm(); paintMood(); paintPads(); paintProg(); paintPlay(); paintTempo();
   paintDial(); paintLoad(); paintDrums(); paintScaleUI(); paintAny(); buildKeys(); bpText(); LES.paint();
   paintFx();   /* AOG-ROOM-PEDALS-V1 */
+  if(typeof lkPaint==="function" && $("lkBody")) lkPaint();   /* AOG-BAND-LICKS-V1 */
 }
 /* AOG-ROOM-PEDALS-V1: the pedal panel. aog-amp.js draws it (the guitar's own panel); the page keeps what is changed, with the
    sound it was changed on. The strip right under the keys shows the pedals that are on and a menu of the rest. */
@@ -1932,7 +1974,8 @@ function handChordKey(){
   for(const r of pcs){ if(pcs.has((r+4)%12) && pcs.has((r+7)%12)) return "o"+wheelPos(r); if(pcs.has((r+3)%12) && pcs.has((r+7)%12)) return "i"+wheelPos((r+3)%12); }
   return "";
 }
-function curChord(){ return (S.playing && PLAY.cur>=0 && S.prog.length) ? S.prog[PLAY.cur%S.prog.length] : null; }
+function curChord(){ if(typeof LK!=="undefined" && LK.on && LK.ch) return LK.ch;   /* AOG-BAND-LICKS-V1: the chord under the lick */
+  return (S.playing && PLAY.cur>=0 && S.prog.length) ? S.prog[PLAY.cur%S.prog.length] : null; }
 function paintWheelState(){
   const svg=$("wheel"); if(!svg) return;
   const k=curChord(), now=k ? wheelKeyOf(k) : "";
@@ -2112,7 +2155,7 @@ function scalesReady(){ paintScaleUI(); paintAny(); markScale(); if(bpMode()==="
 const WHITE=[0,2,4,5,7,9,11], BLACK_AFTER={0:1,2:3,5:6,7:8,9:10};
 const KEYMAP={KeyA:0,KeyW:1,KeyS:2,KeyE:3,KeyD:4,KeyF:5,KeyT:6,KeyG:7,KeyY:8,KeyH:9,KeyU:10,KeyJ:11,KeyK:12,KeyO:13,KeyL:14,KeyP:15,Semicolon:16,Quote:17};
 const CAP={0:"A",1:"W",2:"S",3:"E",4:"D",5:"F",6:"T",7:"G",8:"Y",9:"H",10:"U",11:"J",12:"K",13:"O",14:"L",15:"P",16:";",17:"'"};
-let KB={whites:8, lo:60, hi:72};
+let KB={whites:8, lo:60, hi:72}, KBN=0;   /* KBN: how many times the keys were drawn (a lick's lit keys are drawn again after) */
 function octaves(){ const w=$("kbd").clientWidth||330; if(BP.on) return w>=1000?3 : 2;   /* AOG-PLAY-V1: sideways, two octaves on a phone, three on an iPad */
   return w>=880?3 : w>=600?2 : 1; }
 /* the octaves the keys may start on, for this sound: the lowest whose keys reach its range, up to the highest */
@@ -2136,7 +2179,7 @@ function buildKeys(){
     }
     wi++;
   }
-  kb.innerHTML=html;
+  kb.innerHTML=html; KBN++;
   markScale();
   $("rangeOut").textContent=t("rangeOut",{a:noteLabel(lo), b:noteLabel(hi)});
   $("downBtn").disabled=S.oct<=oa; $("upBtn").disabled=S.oct>=ob;
@@ -2368,6 +2411,7 @@ function bpSync(){
     BP.on=false; bpDrawer(false); document.body.classList.remove("aog-play"); playZoomLock(false);
     if(BP.back && BP.back.parentNode) BP.back.parentNode.replaceChild(kb, BP.back); BP.back=null;
   }
+  lkPlace();   /* AOG-BAND-LICKS-V1 */
   buildKeys(); bpText(); if(!w) window.scrollTo(0, BP.y);
 }
 const GUARD={down:new Set(), last:0};
@@ -2473,6 +2517,267 @@ function bind(){
   let rt=0; window.addEventListener("resize",()=>{ clearTimeout(rt); rt=setTimeout(()=>{ const before=KB.whites; if(7*octaves()+1!==before) buildKeys(); },150); });
 }
 
+/* ══ AOG-BAND-LICKS-V1 (2026-10-19) — Jimmy: "start some agents on the piano and band licks as well that follow the same
+   style of the guitar and bass licks." Licks to try, right under the keys: a grouped menu, ▶ Play this lick, each note lit
+   on the keys as it sounds, Lick speed. AOG-LICKS-SONG-V1 (Jimmy: "I could use them … in making a song without much
+   modification of my own"): the song's tempo and key (this room follows the song, aog-song.js), Fit to my chords (the chord
+   pattern above), Repeat 1, 2 or 4 times, and ● Record this lick (a take of this room, made offline at full speed, so
+   + Add to My Track and the Drum Machine take it). The licks (aog-band-licks.js) load the first time the block opens. While
+   a lick plays, one frame loop plays its notes a moment ahead and lights them; when it ends, nothing runs. A section plays
+   the line on its lead and one more player (in unison or an octave away); a stab (*) gets the chord under it. ══ */
+const LKEY_LICK="aog.band.licks.v1";
+const LK={st:"", on:false, id:"", P:{lick:"", spd:100, fit:false, rep:1}, raf:0, notes:[], i:0, lights:[], voices:[], end:0, t0:0, beat:0.5, mk:"", ch:null, seen:[], key:"", log:[], rec:false};
+try{ const r=JSON.parse(localStorage.getItem(LKEY_LICK)||"null"); if(r){ if(typeof r.lick==="string") LK.P.lick=r.lick; if(r.spd>=25 && r.spd<=100) LK.P.spd=Math.round(r.spd/5)*5;
+  LK.P.fit=!!r.fit; if([1,2,4].indexOf(r.rep)>=0) LK.P.rep=r.rep; } }catch(e){}
+function lkKeep(){ try{ localStorage.setItem(LKEY_LICK, JSON.stringify(LK.P)); }catch(e){} }
+function lkLib(){ return window.AOGBandLicks && window.AOGBandLicks.LICKS ? window.AOGBandLicks : null; }
+Object.assign(STR, {
+  lickH:{en:"Licks to try",es:"Frases para probar"}, lickLab:{en:"Lick",es:"Frase"},
+  lickPlay:{en:"▶ Play this lick",es:"▶ Tocar esta frase"}, lickStop:{en:"■ Stop",es:"■ Parar"},
+  lickNow:{en:"Watch the lit notes, then copy them.",es:"Mira las notas iluminadas y luego cópialas."},
+  lickPlaying:{en:"Playing: {name}.",es:"Sonando: {name}."},
+  lickSpeed:{en:"Lick speed",es:"Velocidad de la frase"}, spdFull:{en:"Full speed",es:"Velocidad completa"}, spdPart:{en:"{n}% speed",es:"{n} % de velocidad"},
+  spdHelp:{en:"Slow it down to learn it. Then speed it up.",es:"Bájale la velocidad para aprenderla. Luego súbela."},
+  lickFit:{en:"Fit to my chords",es:"Seguir mis acordes"}, lickRep:{en:"Repeat",es:"Repetir"},
+  lickRepN:{en:"Play it {n} times",es:"Tocarla {n} veces"},
+  lickRec:{en:"● Record this lick",es:"● Grabar esta frase"},
+  lickSong:{en:"In your song: {key}, {n} beats a minute.",es:"En tu canción: {key}, {n} pulsos por minuto."},
+  lickNoChords:{en:"Pick a chord pattern above. Then the lick follows your chords.",es:"Elige un patrón de acordes arriba. Luego la frase sigue tus acordes."},
+  lickNone:{en:"This instrument holds one note. Pick another one to play licks.",es:"Este instrumento mantiene una nota. Elige otro para tocar frases."},
+  lickLoading:{en:"Getting the licks ready…",es:"Preparando las frases…"},
+  lickLoadFail:{en:"The licks did not load. Check the internet, then try again.",es:"No cargaron las frases. Revisa el internet y vuelve a intentarlo."},
+  lickMaking:{en:"Making the take…",es:"Haciendo la toma…"},
+  lickMade:{en:"Done. Your lick is take {n}, with the takes below.",es:"Listo. Tu frase es la toma {n}, con las tomas de abajo."},
+  lickFail:{en:"That did not work. Try again.",es:"No funcionó. Inténtalo otra vez."}
+});
+/* who plays the line: one player, or a section's lead and one more (unison or an octave away) */
+const LICK_LEAD={brass:["trumpet","trombone"], brass_mute:["trumpet_harmon","trombone"], bebop:["trumpet","sax"], cooljazz:["trumpet_harmon","sax"],
+  bigband:["trumpet","tenor"], marching:["trumpet","trombone"], mariachi:["trumpet_vib","violins"], winds:["flute","clarinet"], winds_choir:["flute_vib","clarinet"],
+  strings:["violins","cellos"], strings_pizz:["violins_pizz","cellos_pizz"], percussion:["marimba","xylophone"], orchestra:["violins","flute"]};
+function lkReach(inst){ const L=lkLib(); return L && MAN[inst] ? L.reach(inst, MAN[inst].sus) : null; }
+function lkPlayers(){
+  const want=LICK_LEAD[S.sound] || [lineup(S.sound).slice().reverse().find(p=>lkReach(p)) || lineup(S.sound)[0]];
+  const lead=want.find(p=>lkReach(p)); if(!lead) return null;
+  return {lead, two:want.find(p=>p!==lead && MAN[p] && MAN[p].sus && MAN[p].sus.length) || null, range:lkReach(lead)};
+}
+function lkFitChords(){ return LK.P.fit && S.prog.length ? S.prog.map(c=>({off:c.off, q:c.q})) : null; }
+/* the lick, ready to play here: in the room's key and mood, on its player, fitted (from bar bar0 of the pattern), repeated */
+function lkCompile(id, bar0){
+  const L=lkLib(), def=L && L.LICKS[id], pl=lkPlayers(); if(!def || !pl) return null;
+  const C=L.compile(def, {key:S.key, minor:S.minor, range:pl.range, fit:lkFitChords(), bar0:bar0||0, times:LK.P.rep});
+  if(C) C.pl=pl; return C;
+}
+/* the second player's octave: the same line in its own reach (unison first) */
+function lkTwoShift(C){
+  const p=C.pl.two; if(!p) return null; const m=MAN[p], lo=m.sus[0]-2, hi=m.sus[m.sus.length-1]+2;
+  const a=Math.min(...C.notes.map(n=>n.m)), z=Math.max(...C.notes.map(n=>n.m));
+  for(const s of [0,-12,12,-24]) if(a+s>=lo && z+s<=hi) return s;
+  return null;
+}
+/* how a note is shaped on the voice the room just made: its pitch (a scoop, a fall, a doit, a shake, a trill, a smear,
+   vibrato), on each recording's own playback rate (or a stand-in's detune) */
+function lkShape(c, vc, n, at, dur, prevM, inst){
+  if(!vc || !vc.nodes) return;
+  const snd=SOUNDS[S.sound]||{}, glides=!!(snd.bend || SLIDE[inst]);
+  vc.nodes.slice().forEach(node=>{
+    const rate=!!node.playbackRate, P=rate ? node.playbackRate : (node.detune && node.frequency ? node.detune : null); if(!P) return;
+    const base=P.value, at2=v=>rate ? base*Math.pow(2, v/12) : base+v*100;
+    const ramp=(v, t)=>{ if(rate) P.exponentialRampToValueAtTime(at2(v), t); else P.linearRampToValueAtTime(at2(v), t); };
+    try{
+      if(n.fx==="scoop" && !glides){ P.setValueAtTime(at2(-1.6), at); ramp(0, at+Math.min(0.12, dur*0.4)); }
+      else if(n.fx==="smear" && !glides && prevM!=null && prevM!==n.m){ P.setValueAtTime(at2(prevM-n.m), at); ramp(0, at+Math.min(0.16, dur*0.5)); }
+      else if(n.fx==="fall" || n.fx==="doit"){ const t1=at+dur*0.45; P.setValueAtTime(base, t1); ramp(n.fx==="fall" ? -7 : 5, at+dur); }
+      else if((n.fx==="shake" || n.fx==="trill") && n.up){
+        /* back and forth between the note and the one above it: each change a quick glide, never a jump (no click) */
+        const hz=n.fx==="shake" ? 7 : 8, half=1/(2*hz), end=at+dur*0.92; let t=at+Math.min(0.08, dur*0.2), up=true;
+        P.setValueAtTime(base, t);
+        while(t+half<end){ P.setValueAtTime(at2(up ? 0 : n.up), t+half*0.7); P.linearRampToValueAtTime(at2(up ? n.up : 0), t+half); t+=half; up=!up; }
+        if(!up){ P.setValueAtTime(at2(n.up), t); P.linearRampToValueAtTime(base, t+half*0.3); }
+      }
+      if(n.vib && rate && dur>0.35){ const o=c.createOscillator(), g=gainAt(c, 0); o.frequency.value=5.5;
+        g.gain.setValueAtTime(0, at+0.18); g.gain.linearRampToValueAtTime(base*(Math.pow(2, 16/1200)-1), at+Math.min(dur, 0.6));
+        o.connect(g); g.connect(P); o.start(at); vc.nodes.push(o); node.addEventListener("ended", ()=>{ try{ o.disconnect(); g.disconnect(); }catch(e){} }); }
+    }catch(e){}
+  });
+  if(n.fx==="fall" || n.fx==="doit"){ try{ vc.rel.gain.setTargetAtTime(0, at+dur*0.6, dur*0.18); }catch(e){} }
+}
+/* every voice of a lick's note: the lead, the second player, a stab's chord */
+function lkNoteVoices(c, ch, C, n, i, at, beat, live){
+  const dur=Math.max(0.04, n.d*beat), v=n.ghost ? 0.34 : n.acc ? 0.96 : 0.8, art=n.short ? "stac" : "sus", out=[], prev=C.notes[i-1];
+  const play=(inst, m, vv, lead)=>{ const vc=makeVoice(c, ch, inst, m, vv, at, art); if(!vc) return;
+    lkShape(c, vc, n, at, dur, prev ? prev.m+(m-n.m) : null, inst); vc.stop(at+dur, n.short ? 0.03 : Math.min(vc.tau, 0.08));
+    vc.m=m; vc.inst=inst; vc.on=at; vc.off=at+dur; vc.lead=lead; if(live) track(vc, at); out.push({vc, inst, m, v:vv, d:dur, a:art}); };
+  play(C.pl.lead, n.m, v, true);
+  if(C.two!=null) play(C.pl.two, n.m+C.two, v*0.8, false);
+  if(n.stab && C.pl.two){ const c0=C.chords[n.chord], pcs=c0.tones.map(x=>(S.key+c0.root+x)%12), mm=MAN[C.pl.two], lo=mm.sus[0]-2;
+    const under=[]; for(let m=n.m-1; m>n.m-12 && under.length<2; m--) if(pcs.indexOf(((m%12)+12)%12)>=0 && m+(C.two||0)>=lo) under.push(m);
+    under.forEach(m=>play(C.pl.two, m+(C.two!=null?C.two:0), v*0.7, false)); }
+  return out;
+}
+function lkSpdWord(){ return LK.P.spd>=100 ? t("spdFull") : t("spdPart",{n:LK.P.spd}); }
+function lkName(id){ const L=lkLib(), w=L && L.WORDS["lk_"+id]; return w ? w[S.lang] : id; }
+function lkDesc(){ const L=lkLib(), w=L && L.WORDS["ld_"+LK.P.lick]; return w ? w[S.lang]+(LK.P.spd<100 ? " "+t("spdHelp") : "") : ""; }
+function lkKeyName(){ return KEY_NAMES[S.lang][S.key]+" "+t(S.minor ? "wheelMinor" : "wheelMajor"); }
+function lkPaint(){
+  const open=!$("lkBody").hidden, L=lkLib(), pl=L ? lkPlayers() : null;
+  $("lkOpen").textContent=t("lickH"); $("lkOpen").setAttribute("aria-expanded", open ? "true" : "false");
+  $("lkPlay").textContent=t(LK.on && !LK.rec ? "lickStop" : "lickPlay"); $("lkPlay").setAttribute("aria-pressed", LK.on && !LK.rec ? "true" : "false");
+  $("lkFit").textContent=t("lickFit"); $("lkFit").setAttribute("aria-pressed", LK.P.fit ? "true" : "false");
+  $("lkRec").textContent=t("lickRec");
+  document.querySelectorAll("#bandLicks [data-rep]").forEach(b=>{ const n=+b.getAttribute("data-rep"); b.setAttribute("aria-pressed", n===LK.P.rep ? "true" : "false"); b.setAttribute("aria-label", t("lickRepN",{n})); });
+  const r=$("lkSpd"); r.value=String(LK.P.spd); r.setAttribute("aria-label", t("lickSpeed")); r.setAttribute("aria-valuetext", lkSpdWord()); $("lkSpdOut").textContent=lkSpdWord();
+  $("lkSong").textContent=t("lickSong",{key:lkKeyName(), n:Math.round(curBpm())});
+  const sel=$("lkSel");
+  if(L){
+    if(!L.LICKS[LK.P.lick]) LK.P.lick=L.ORDER[0];
+    const sig=S.lang+"|"+LK.P.lick;
+    if(sel.getAttribute("data-sig")!==sig){ sel.setAttribute("data-sig", sig);
+      sel.innerHTML=L.GROUPS.map(([g, ids])=>`<optgroup label="${esc(L.WORDS["lgw_"+g][S.lang])}">`+ids.map(id=>`<option value="${id}"${id===LK.P.lick?" selected":""}>${esc(L.WORDS["lk_"+id][S.lang])}</option>`).join("")+`</optgroup>`).join(""); }
+  }
+  const ok=!!(L && pl);
+  [$("lkPlay"), $("lkRec"), $("lkFit"), sel].forEach(el=>{ el.disabled=!ok || (LK.rec && el!==sel); });
+  const ln=$("lkLine");
+  if(LK.msg) ln.textContent=LK.msg;
+  else if(!L) ln.textContent=LK.st==="failed" ? t("lickLoadFail") : t("lickLoading");
+  else if(!pl) ln.textContent=t("lickNone");
+  else if(LK.on && !LK.rec) ln.textContent=t("lickPlaying",{name:lkName(LK.id)})+" "+t("lickNow");
+  else ln.textContent=(LK.P.fit && !S.prog.length ? t("lickNoChords")+" " : "")+lkDesc();
+}
+function lkLoad(){
+  if(lkLib()){ LK.st="ready"; lkPaint(); return; }
+  if(LK.st==="loading") return;
+  LK.st="loading"; lkPaint();
+  const sc=document.createElement("script"); sc.src="/aog-band-licks.js"; sc.async=true;
+  sc.onload=()=>{ LK.st=lkLib() ? "ready" : "failed"; lkPaint(); };
+  sc.onerror=()=>{ LK.st="failed"; sc.remove(); lkPaint(); };
+  document.head.appendChild(sc);
+}
+function lkOpen(){ const b=$("lkBody"); b.hidden=!b.hidden; if(!b.hidden) lkLoad(); else lickStop(); lkPaint(); lkPlace(); }
+/* on a phone turned sideways the keys fill the screen: an open lick block goes with them, as one row (the menu and Play) */
+function lkPlace(){
+  const box=$("bandLicks"), pv=$("playView"), main=$("bpMain"); if(!box || !pv || !main) return;
+  if(BP.on && !$("lkBody").hidden){ if(box.parentNode!==pv){ LK.home=document.createComment("bandLicks"); box.parentNode.insertBefore(LK.home, box); pv.insertBefore(box, main); } }
+  else if(LK.home && LK.home.parentNode){ LK.home.parentNode.replaceChild(box, LK.home); LK.home=null; }
+}
+/* the keys in view follow the lick: when a note comes that is not on screen, the keys move by octaves to show it and as
+   many of the next notes as they can (worked out as it comes; on an iPad or a computer the whole lick is usually in view) */
+function lkView(m, i){
+  if(m>=KB.lo && m<=KB.hi) return;
+  const oc=octaves(), [oa,ob]=octSpan(oc), next=LK.lead.slice(i, i+12).map(x=>x.m);
+  let best=null, bn=-1;
+  for(let o=oa;o<=ob;o++){ const lo=12*(o+1), hi=lo+12*oc; if(m<lo || m>hi) continue; const k=next.filter(x=>x>=lo && x<=hi).length; if(k>bn){ bn=k; best=o; } }
+  if(best!=null && best!==S.oct){ S.oct=best; buildKeys(); LK.key=""; }
+}
+function playLick(id){
+  lickStop(); LK.msg="";
+  const L=lkLib(); if(!L || !L.LICKS[id]) return;
+  const c=ctx(), spd=Math.max(25, Math.min(100, LK.P.spd))/100, bpm=curBpm(), beat=60/bpm/spd;
+  let T0=c.currentTime+0.12, bar0=0, sync=false;
+  /* with the chord pattern playing at full speed: from the next bar line it has not played yet, on its chords (fitted) or
+     with the band playing the lick's own chords for those bars */
+  if(S.playing && spd>=1 && beatsPerBar()===4){ const k=Math.max(PLAY.bar, Math.ceil((T0-PLAY.t0)/PLAY.barSec-1e-6)); T0=PLAY.t0+k*PLAY.barSec; bar0=k; sync=true; }
+  const C=lkCompile(id, bar0); if(!C) return;
+  C.two=lkTwoShift(C);
+  if(sync && !lkFitChords()){ PLAY.over={}; for(let j=0; j*4<C.beats-1e-6; j++){ let ch=C.chords[0]; C.chords.forEach(x=>{ if(x.t0<=4*j+1e-6) ch=x; }); PLAY.over[bar0+j]=ch.band; } }
+  Object.assign(LK, {on:true, id, C, notes:C.notes, i:0, lights:[], voices:[], t0:T0, beat, spd, mk:S.key+(S.minor?"m":"")+"|"+S.sound+"|"+LK.P.fit+"|"+LK.P.rep, ch:null, seen:[], key:"", log:[], prevChord:-1});
+  LK.lead=C.notes; LK.end=T0+Math.max(...C.notes.map(n=>n.t+n.d))*beat;
+  lkPaint(); lkFrame();
+}
+function lkFrame(){
+  LK.raf=0;
+  if(!LK.on || !ac) return;
+  const now=ac.currentTime;
+  /* the key, the mood, the sound, Fit or Repeat changed while it plays: it starts again so */
+  if(LK.mk!==S.key+(S.minor?"m":"")+"|"+S.sound+"|"+LK.P.fit+"|"+LK.P.rep){ if(LK.mk.split("|")[1]!==S.sound) lickStop(); else playLick(LK.id); return; }
+  while(LK.i<LK.notes.length && LK.t0+LK.notes[LK.i].t*LK.beat<now+0.25){
+    const n=LK.notes[LK.i], at=Math.max(now, LK.t0+n.t*LK.beat), vs=lkNoteVoices(ac, LIVE_CH, LK.C, n, LK.i, at, LK.beat, true);
+    vs.forEach(x=>LK.voices.push(x.vc));
+    LK.lights.push({t0:at, t1:at+n.d*LK.beat, m:n.m, i:LK.i});
+    LK.log.push({t:+at.toFixed(4), m:n.m, tb:n.tb, d:n.d, fx:n.fx||"", made:vs.length});
+    LK.i++;
+  }
+  if(now>LK.end+0.05){ lickStop(true); return; }
+  /* a very short note is lit for at least one frame, even if a slow frame came after it ended */
+  const act=LK.lights.filter(x=>now>=x.t0 && (now<x.t1 || !x.shown)); act.forEach(x=>{ x.shown=true; });
+  if(act.length) lkView(act[0].m, act[0].i);
+  const k=act.map(x=>x.m).join(",")+"|"+KBN;
+  if(k!==LK.key){ LK.key=k; const on=new Set(act.map(x=>x.m));
+    document.querySelectorAll("#kbd [data-m]").forEach(el=>{ const m=+el.getAttribute("data-m"), y=on.has(m); el.classList.toggle("lk", y); if(y) LK.seen.push(m); }); }
+  /* the chord under the lick: its keys pale, as the pattern's are */
+  const tb=(now-LK.t0)/LK.beat, ci=LK.C.chords.findIndex(x=>tb>=x.t0-1e-6 && tb<x.t1-1e-6);
+  if(ci>=0 && ci!==LK.prevChord){ LK.prevChord=ci; LK.ch=LK.C.chords[ci].band; litKeys(); }
+  LK.raf=requestAnimationFrame(lkFrame);
+}
+function lickStop(natural){
+  if(!LK.on) return;
+  LK.on=false; if(LK.raf) cancelAnimationFrame(LK.raf); LK.raf=0;
+  if(!natural && ac){ const now=ac.currentTime; LK.voices.forEach(vc=>{ try{ vc.kill(now); }catch(e){} }); }
+  LK.voices=[]; LK.lights=[]; LK.ch=null; LK.key=""; if(PLAY.over) PLAY.over=null;
+  document.querySelectorAll("#kbd .lk").forEach(el=>el.classList.remove("lk"));
+  litKeys(); lkPaint();
+}
+/* ● Record this lick: the lick at full speed and the song's tempo, made offline through the band's own chain (as the
+   Mixing Desk's re-render is), from its first note on the downbeat, with a second and a half to ring out; then a take of
+   this room (REC.addTake), carrying its notes, on bar 1 of the song */
+async function lickRecord(){
+  const L=lkLib(); if(!L || LK.rec) return;
+  lickStop(); LK.rec=true; LK.msg=t("lickMaking"); lkPaint();
+  try{
+    if(!REC.addTake) throw new Error("no addTake");
+    const R=await lkRender(LK.P.lick); if(!R) throw new Error("no lick");
+    const blob=wavBlob(R.o.L, R.o.R, R.o.sr);
+    const notes={v:1, room:"band", sound:R.sound, set:{era:S.era}, space:R.space, sr:R.o.sr, lag:0, ev:R.ev, ped:[]};
+    const k=REC.addTake(blob, {sec:R.o.L.length/R.o.sr, bpm:R.bpm, notes, place:{bar:1, bpm:R.bpm}});
+    if(!k) throw new Error("not kept");
+    LK.last={n:k.n, sec:R.o.L.length/R.o.sr, bpm:R.bpm, notes:R.ev.length, beats:R.C.beats};
+    LK.msg=t("lickMade",{n:k.n}); lessonRec("u:"+R.sound);
+  }catch(e){ LK.msg=t("lickFail"); LK.err=String(e && e.message || e); }
+  LK.rec=false; lkPaint();
+}
+/* the lick, made offline at full speed and the song's tempo, through the band's own chain (o.bpm: another tempo, for the tests) */
+async function lkRender(id, o){
+  o=o||{};
+  const C=lkCompile(id, 0); if(!C) return null;
+  C.two=lkTwoShift(C);
+  const bpm=o.bpm||curBpm(), beat=60/bpm, sr=44100, sec=C.beats*beat, snd=S.sound;
+  RUSH++; try{ await loadSound(snd); } finally { RUSH--; }
+  const K=AOGRecorder.notes, oc=K.context(sec+1.5, sr);
+  if(window.AOGAmp && AOGAmp.load) await AOGAmp.load(oc);
+  const ch=makeChain(oc); await addCrunch(ch);
+  setSendLevel(ch, snd); ch.lp.frequency.value=eraHz(S.era); if(ch.crunch) ch.crunch.parameters.get("era").value=S.era;
+  ch.ceil.output.disconnect(); ch.ceil.output.connect(oc.destination);
+  let space=0; try{ space=window.AOGRoom ? AOGRoom.get() : 0; }catch(e){}
+  K.space(oc, ch.dry, ch.pre, space);
+  const ev=[], starts=[];
+  C.notes.forEach((n, i)=>{ const at=n.t*beat; starts.push(at); lkNoteVoices(oc, ch, C, n, i, at, beat, false).forEach(x=>{ const e={t:+at.toFixed(4), m:x.m, v:+x.v.toFixed(3), d:+x.d.toFixed(4), p:x.inst}; if(x.a!=="sus") e.a=x.a; ev.push(e); }); });
+  const buf=await oc.startRendering();
+  return {o:K.out(buf), ev, bpm, beat, C, sound:snd, space, starts};
+}
+function lkBind(){
+  $("lkOpen").onclick=lkOpen;
+  $("lkSel").onchange=()=>{ const L=lkLib(), v=$("lkSel").value; if(!L || !L.LICKS[v]) return; LK.P.lick=v; LK.msg=""; lkKeep(); if(LK.on) playLick(v); else lkPaint(); };
+  $("lkPlay").onclick=()=>{ if(LK.on){ lickStop(); return; }
+    /* the keys in sight as it plays */
+    if(!BP.on){ const kb=$("kbd"), r=kb.getBoundingClientRect(); if(r.top<0 || r.bottom>innerHeight) kb.scrollIntoView({block:"start", behavior:"instant"}); }
+    playLick(LK.P.lick); };
+  $("lkFit").onclick=()=>{ LK.P.fit=!LK.P.fit; LK.msg=""; lkKeep(); lkPaint(); };
+  document.querySelectorAll("#bandLicks [data-rep]").forEach(b=>b.onclick=()=>{ LK.P.rep=+b.getAttribute("data-rep"); LK.msg=""; lkKeep(); lkPaint(); });
+  $("lkRec").onclick=lickRecord;
+  $("lkSpd").oninput=()=>{ const v=Math.round(Math.max(25, Math.min(100, +$("lkSpd").value))/5)*5; if(v===LK.P.spd) return; LK.P.spd=v; LK.msg=""; lkPaint(); };
+  $("lkSpd").onchange=lkKeep;
+  $("lkSel").addEventListener("pointerdown",()=>{ $("lkSel")._ptr=true; });
+  $("lkSel").addEventListener("change",()=>{ if($("lkSel")._ptr){ $("lkSel")._ptr=false; setTimeout(()=>$("lkSel").blur(),0); } });
+  /* out of sight, silent: the Studio's hush, a hidden tab, leaving */
+  window.addEventListener("aog-hush", e=>{ if(e && e.detail && e.detail.on) lickStop(); });
+  document.addEventListener("visibilitychange", ()=>{ if(document.hidden) lickStop(); });
+  window.addEventListener("pagehide", ()=>lickStop());
+  /* the song line and the menu follow the room's key, mood, tempo, pattern and sound (and the song's, which moves them) */
+  ["change","input","click"].forEach(ev=>document.addEventListener(ev, e=>{ if($("lkBody").hidden || (e.target && e.target.closest && e.target.closest("#kbd"))) return; lkPaint(); }));
+  lkPaint();
+  if(location.hash==="#licks") lkOpen();   /* a link to the licks opens them (/the-studio#band … ?at=music-band.html#licks) */
+}
+window.AOGBandLick={_t:{LK, playLick, lickStop, lickRecord, lkRender, lkCompile, lkPlayers, lkLoad, lkTwoShift, lkNoteVoices}};
+
 /* ══ AOG-LESSONS-V1 (2026-10-05) — the Band's lessons: each step ticks itself as it happens (the words:
    _work/music/lessons_band.py; the card: aog-lessons.js). Jimmy: "make sure all music labs have lessons galore".
    A step ticks only on the real thing: a key or pad played with that instrument, a pattern playing in that way,
@@ -2541,6 +2846,7 @@ function lessonTakes(){
 loadState();
 bind();
 lessonTakes();
+lkBind();   /* AOG-BAND-LICKS-V1 */
 paintText();
 bpInit();
 if(libsIn()) scalesReady(); else document.addEventListener("DOMContentLoaded", scalesReady);

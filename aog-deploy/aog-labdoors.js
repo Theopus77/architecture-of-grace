@@ -168,6 +168,9 @@
       /* AOG-AMP-NEAR-V1: the guitar's and bass's "Pedals on" strip stays right under the neck */
       var pn = D.getElementById("pedalsNear");
       if (pn && pn.parentNode === pblk) { var at = lead.indexOf(inst); if (at >= 0) lead.splice(at + 1, 0, pn); }
+      /* AOG-PIANO-LICKS-V1: a room's Licks to try (class aog-licks-near) sits right under its keys, so they are in sight as it plays */
+      var lkn = pblk.querySelector(".aog-licks-near");
+      if (lkn && lkn.parentNode === pblk) { var li = lead.indexOf(inst); if (li >= 0) lead.splice(li + 1, 0, lkn); }
       var seq = lead.concat(slips, [recRow]).filter(function (e) { return e && (e === recRow || e.parentNode === pblk); });
       var h2 = kid("h2")[0], mark = D.createComment("first");
       pblk.insertBefore(mark, h2 ? h2.nextSibling : pblk.firstChild);
@@ -281,7 +284,7 @@
       var ctl = [[id === "band" && !spAfter ? null : sp0, keyRow, $("pedalsNear")], [recRow, sendRow]];
       /* AOG-SOLO-LICKS-PV-V1: Solo's licks sit right under the neck (aog-solo.js); a room fitted again (the iPad turned, the
          screen resized) keeps them there and puts its controls after them */
-      var lk = strings && q(".so-licks.so-near", rig), after = at;
+      var lk = (strings && q(".so-licks.so-near", rig)) || (id === "band" ? $("bandLicks") : null) || q(".aog-licks-near", rig), after = at;   /* AOG-PIANO-LICKS-V1, AOG-BAND-LICKS-V1: the piano's and the Band's too */
       /* the sound picker's row can land between them as the room opens with Solo already on: the licks go back first */
       if (lk && lk.parentNode === at.parentNode) { if (lk.previousSibling !== at) at.parentNode.insertBefore(lk, at.nextSibling); after = lk; }
       return {

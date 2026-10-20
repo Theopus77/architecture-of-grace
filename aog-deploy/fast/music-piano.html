@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- AOG-FAST-BUILD-V1 source:d4eb428946fbdb4e · MADE BY tools/build-fast.py from music-piano.html: edit music-piano.html, then run it. -->
+<!-- AOG-FAST-BUILD-V1 source:0c7ffa271c9f57ae · MADE BY tools/build-fast.py from music-piano.html: edit music-piano.html, then run it. -->
 <html lang="en">
 <head>
 <script>/* AOG-STUDIO-ONLY-V1 (Jimmy, 2026-10-10: "one location for all the instruments … and that is the studio"): opened on its own address, this room opens inside the Studio instead, at this exact address (its lesson, take or link). Inside the Studio's frame, and for the site's own checks, it stays. */(function(){try{if(window.top!==window||navigator.webdriver)return;var M={"music-pads":"pads","drum-machine":"pads","beat-lab":"pads","music-kit":"kit","drum-kit":"kit","music-piano":"piano","piano":"piano","keys":"piano","music-guitar":"guitar","guitar":"guitar","music-bass":"bass","bass":"bass","music-band":"band","band":"band","music-decks":"decks","decks":"decks","turntables":"decks","music-studio":"studio","studio":"studio","mixing-desk":"studio"},f=(location.pathname.split("/").pop()||"").replace(/\.html$/,""),r=M[f];if(!r)return;var F={pads:"music-pads",kit:"music-kit",piano:"music-piano",guitar:"music-guitar",bass:"music-bass",band:"music-band",decks:"music-decks",studio:"music-studio"};location.replace("/the-studio.html?at="+encodeURIComponent("/"+F[r]+".html"+location.search+location.hash)+"#"+r);}catch(e){}})();</script>
@@ -359,6 +359,12 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
 .kbd .bk:not(.lit):not(.down):not(.now){background-color:#121214;background-image:linear-gradient(90deg,#0d0d0f 0%,#2a2a2e 22%,#1a1a1d 55%,#0b0b0d 100%),linear-gradient(#232327,#0c0c0e)}
 .kbd .bk.down{transform:translateY(2px);box-shadow:inset 0 -3px 0 #050506,0 2px 3px rgba(0,0,0,.6)}
 @media (prefers-reduced-motion:reduce),(hover:none){ .kbd .wk,.kbd .bk{transition:none} }
+/* AOG-PIANO-LICKS-V1: Licks to try, one closed line under the keys */
+.pk-licks{margin:.7rem 0 .2rem;border:1px solid #2f3339;border-radius:12px;background:transparent;color:inherit}
+.pk-licks>summary{min-height:44px;display:flex;align-items:center;gap:.5rem;padding:0 14px;cursor:pointer;font:700 1rem/1.2 var(--sans);list-style:none}
+.pk-licks>summary::-webkit-details-marker{display:none}
+.pk-licks>summary::before{content:"\25B8";font-size:.85em}.pk-licks[open]>summary::before{content:"\25BE"}
+#pkLicksIn{padding:0 12px 12px}
 </style>
 <link rel="stylesheet" href="/aog-bench.css">
 <script src="/aog-vu.js"></script><!-- AOG-ROOM-VU-V1: before any sound, so the small VU meters hear it -->
@@ -481,6 +487,9 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
           <button type="button" class="pbtn pv-big" id="bpBig"></button><!-- AOG-PLAY-TABLET-V1 -->
         </div>
         <div class="kbd" id="kbd" role="group"></div>
+        <!-- AOG-PIANO-LICKS-V1 (Jimmy, 2026-10-19: piano licks "that follow the same style of the guitar and bass licks"):
+             Licks to try, right under the keys, closed; opening it loads aog-piano-licks.js, which fills it -->
+        <details class="pk-licks aog-licks-near no-print" id="pkLicks"><summary data-t="lickH"></summary><div id="pkLicksIn"><p class="line" data-t="lickWait"></p></div></details>
         <div id="pedalsNear" hidden></div><!-- AOG-ROOM-PEDALS-V1: the pedals that are on, with their knobs, and the menu of the rest, right under the keys (aog-amp.js) -->
         <p class="line lit-line" id="litLine" data-t="litLine" hidden></p>
         <!-- AOG-PIANO-SCALES-V1 (2026-10-05) — Jimmy: more scales, modes and chords on every instrument. A scale shows on
@@ -564,6 +573,6 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
   <div class="bp-main" id="bpMain"></div>
 </div>
 
-<script src="/front/b5723df5db7f.js"></script>
+<script src="/front/3fc9161ccf03.js"></script>
 </body>
 </html>

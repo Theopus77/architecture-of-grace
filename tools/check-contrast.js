@@ -24,12 +24,14 @@ const ROOMS = ["family/hard-day","family/what-can-i-say","family/conversation","
 /* The music tools also show other places behind #addresses (their Go to menu): Lessons, Meet, Name it, Print.
    Each is checked on its own too (AOG-PIANO-LESSONS-V1, 2026-10-03). */
 const VIEWS = ["telescope.html#sky","telescope.html#lab","music-drums.html#lessons","music-drums.html#meet","music-drums.html#words","music-drums.html#print",
-  "music-piano.html#lessons","music-piano.html#meet","music-piano.html#words","music-piano.html#print",
+  "music-piano.html#lessons","music-piano.html#meet","music-piano.html#words","music-piano.html#print","music-piano.html#licks",
   /* the Adult Edition workbook's pages behind its Session menu (AOG-ADULT-WORKBOOK-V1, 2026-10-09); ?s=7 is the
      facilitator's-word card that stands in front of Sessions 7-12 */
   "adult-workbook.html?s=2","adult-workbook.html?s=3","adult-workbook.html?s=4","adult-workbook.html?s=5","adult-workbook.html?s=6","adult-workbook.html?s=7",
   /* the Cube Lab's other two views (AOG-CUBE-LAB-V1, 2026-10-10) */
   "cube-lab.html#solve","cube-lab.html#mine",
+  /* the Band's Licks to try, opened (AOG-BAND-LICKS-V1, 2026-10-19) */
+  "music-band.html#licks",
   /* the thinking-skills checklists (AOG-EF-SLIPS-V1, 2026-10-14): slip.html draws each from /aog-ef-slips.js */
   "slip.html?s=efstart","slip.html?s=efplan","slip.html?s=eforg","slip.html?s=eftime","slip.html?s=effocus","slip.html?s=efstuck","slip.html?s=efcheck","slip.html?s=efcalm","slip.html?s=efremember","slip.html?s=efswitch","slip.html?s=efstudy","slip.html?s=efmorning","slip.html?s=efrule","slip.html?s=eftalk","slip.html?s=efmyrule","slip.html?s=efpublic","slip.html?s=efpitch","slip.html?s=efself","ef.html#rules","ef.html#jh","ef.html#strong","slip.html?s=efcontrol","slip.html?s=efown","slip.html?s=efcourage","slip.html?s=effeel","slip.html?s=efserve","slip.html?s=efgrow",
   /* the slip list is slip.html itself; a slip and the editor behind "Change this slip" (AOG-SLIP-OVERHAUL-V1, 2026-10-17) */
