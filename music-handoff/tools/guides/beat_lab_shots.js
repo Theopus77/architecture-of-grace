@@ -39,8 +39,9 @@ const W=ms=>new Promise(r=>setTimeout(r,ms));
     await shot("steps", [".stepsec"]);
     await shot("padset", ["#padSet"]);
     /* the file of the loop */
-    await f.evaluate(async()=>{ document.getElementById("bounceBtn").click(); for(let i=0;i<120 && document.getElementById("bounceAct").hidden;i++) await new Promise(r=>setTimeout(r,250)); });
-    await shot("file", ["#bounceBtn", "#bounceLine", "#bounceAct"]);
+    /* AOG-PADS-LOOP-ADD-V1: in the Studio one tap, + Add the loop to My Track */
+    await f.evaluate(async()=>{ document.getElementById("bounceBtn").click(); for(let i=0;i<120 && !document.querySelector("#bounceLine a");i++) await new Promise(r=>setTimeout(r,250)); });
+    await shot("file", ["#bounceBtn", "#bounceLine"]);
     /* More → Timing and repeat: line up, swing, Repeat, click */
     await f.evaluate(()=>{ const s=document.getElementById("aogMoreSel"); s.value="timing"; s.dispatchEvent(new Event("change")); }); await W(600);
     await shot("repeat", ["label:has(#qSel)", "label:has(#swSel)", "#rptBtn", "label:has(#rateSel)", "#clickBtn", "#fullBtn"]);
