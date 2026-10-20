@@ -8,7 +8,8 @@
  * not run on this file. Forget the bump and returning visitors keep the stale
  * page from their cache.
  */
-const CACHE = 'aog-cache-2026.10.19.m7537'   // THE BEATS IN 13 GROUPS, MIXED, SLOW TO FAST; NO 'ELITE' (aog-beats.js, aog-beats-pro.js, music-pads.html, music-kit.html) (previous: m7536)
+const CACHE = 'aog-cache-2026.10.19.m7538'   // A TAKE ADDED TO MY TRACK IS ON ITS OWN CHANNEL AS SOON AS THE MIXING DESK OPENS, EARLIER TAKES KEPT (music-studio.html, AOG-DESK-ARRIVE-V1)
+// const CACHE = 'aog-cache-2026.10.19.m7537'   // THE BEATS IN 13 GROUPS, MIXED, SLOW TO FAST; NO 'ELITE' (aog-beats.js, aog-beats-pro.js, music-pads.html, music-kit.html) (previous: m7536)
 // const CACHE = 'aog-cache-2026.10.19.m7536'   // MAKE A HIT ON THE DRUM MACHINE (the guide renamed and redone, new pictures), THE DRUM MACHINE'S LESSONS UPDATED, PAD NAMES CLEAR OF THEIR NUMBERS (previous: m7535)
 // const CACHE = 'aog-cache-2026.10.19.m7535'   // THE 95 BEATS PERFECTED, NO 'ELITE' LABEL, SWING AND BARS OF 3 FIXED ON THE DRUM MACHINE (aog-beats.js, aog-beats-pro.js, music-pads.html) (previous: m7534)
 // const CACHE = 'aog-cache-2026.10.19.m7534'   // 64 ELITE BEATS, TRIPLET AND 32ND-NOTE GRIDS (aog-beats-pro.js, music-pads.html, music-kit.html) (previous: m7533)

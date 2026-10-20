@@ -1,5 +1,6 @@
 /* AOG-DESK-FACE-V1 — Jimmy's drawing of the Mixing Desk: "May the recording studio look something this amazing?"
-   With four takes on the desk: the lanes are named for their instrument (Drums, Piano, Guitar, Bass; Empty; Voice on 8)
+   With four takes on the desk: the lanes are named for their instrument, each on its own channel (Drums 1, Piano 3, Guitar 4,
+   Bass 5, AOG-DESK-ARRIVE-V1; Empty; Voice on 8)
    and each wave is drawn in its lane; a round ▶ starts and stops the song, and the playhead steps across the lanes and
    rests where the song starts when it stops; the open channel names the chosen track in gold, with its wave; its Mute and
    Solo, its volume and Shape the sound (pan) change that track exactly as the mixer below does, and the mixer shows it;
@@ -31,7 +32,7 @@ const addTake = (p, from, hz, sec) => p.evaluate(async ([from, hz, sec]) => {
 }, [from, hz, sec]);
 async function fourTakes(p) {
   await addTake(p, "pads", 110, 8); await addTake(p, "piano", 262, 6); await addTake(p, "guitar", 330, 4); await addTake(p, "bass", 82, 8);
-  await p.evaluate(() => __aogStudio.listenFill()); await p.waitForFunction(() => !__aogStudio.S.busy && __aogStudio.SONG.tracks[3].clip, null, { timeout: 20000 });
+  await p.evaluate(() => __aogStudio.listenFill()); await p.waitForFunction(() => !__aogStudio.S.busy && __aogStudio.SONG.tracks[4].clip, null, { timeout: 20000 });
   await p.waitForTimeout(500);
 }
 const face = p => p.evaluate(() => ({
@@ -50,7 +51,7 @@ const setRange = (p, sel, v) => p.evaluate(([sel, v]) => { const r = document.qu
   const p = await c.newPage(); await p.goto(U + "music-studio.html"); await p.waitForTimeout(1500);
   await fourTakes(p);
   let f = await face(p);
-  ok(f.lanes === "Drums,Piano,Guitar,Bass,Empty,Empty,Empty,Voice" && f.waves === "11110000", "the lanes are named for their instrument, each take drawn as its wave: " + f.lanes + " / " + f.waves);
+  ok(f.lanes === "Drums,Empty,Piano,Guitar,Bass,Empty,Empty,Voice" && f.waves === "10111000", "the lanes are named for their instrument, each take drawn as its wave: " + f.lanes + " / " + f.waves);
   ok(f.ch === "Drums" && f.chWave && f.sel === "0", "the open channel is Drums, gold, with its wave; fader 1 is gold");
   /* ▶ and the playhead */
   const ph0 = f.ph;
@@ -60,33 +61,33 @@ const setRange = (p, sel, v) => p.evaluate(([sel, v]) => { const r = document.qu
   await p.click("#playBtn"); await p.waitForTimeout(400);
   ok(!(await p.evaluate(() => __aogStudio.PLAY.on)) && (await face(p)).ph === ph0, "■ stops it, and the playhead goes back to where the song starts");
   /* the open channel: Mute, Solo, volume, Shape the sound — the same as the mixer below */
-  await p.click('.st-f1[data-tr="2"] .st-fn'); await p.waitForTimeout(300);
+  await p.click('.st-f1[data-tr="3"] .st-fn'); await p.waitForTimeout(300);
   f = await face(p);
-  ok(f.ch === "Guitar" && f.sel === "2" && await p.evaluate(() => __aogStudio.SONG.sel === 2), "fader 3's number picks the Guitar: the open channel follows and fader 3 is gold");
+  ok(f.ch === "Guitar" && f.sel === "3" && await p.evaluate(() => __aogStudio.SONG.sel === 3), "fader 4's number picks the Guitar: the open channel follows and fader 4 is gold");
   await p.click('#chStrip [data-cms="mute"]'); await p.waitForTimeout(200);
-  ok(await p.evaluate(() => __aogStudio.SONG.tracks[2].mute && document.querySelector('#mixer .st-strip[data-tr="2"] [data-ms="mute"]').getAttribute("aria-pressed") === "true" && document.querySelector('#chStrip [data-cms="mute"]').getAttribute("aria-pressed") === "true"),
+  ok(await p.evaluate(() => __aogStudio.SONG.tracks[3].mute && document.querySelector('#mixer .st-strip[data-tr="3"] [data-ms="mute"]').getAttribute("aria-pressed") === "true" && document.querySelector('#chStrip [data-cms="mute"]').getAttribute("aria-pressed") === "true"),
     "Mute in the open channel mutes the guitar, and the mixer below shows it");
   await p.click('#chStrip [data-cms="mute"]'); await p.click('#chStrip [data-cms="solo"]'); await p.waitForTimeout(200);
-  ok(await p.evaluate(() => !__aogStudio.SONG.tracks[2].mute && __aogStudio.SONG.tracks[2].solo && document.querySelectorAll("#chFaders .st-f1.off").length === 7), "Solo plays only the guitar: the other seven faders dim");
+  ok(await p.evaluate(() => !__aogStudio.SONG.tracks[3].mute && __aogStudio.SONG.tracks[3].solo && document.querySelectorAll("#chFaders .st-f1.off").length === 7), "Solo plays only the guitar: the other seven faders dim");
   await p.click('#chStrip [data-cms="solo"]');
   await setRange(p, "#cv-vol", 35); await p.waitForTimeout(200);
-  ok(await p.evaluate(() => __aogStudio.SONG.tracks[2].vol === 35 && +document.getElementById("t2-vol").value === 35 && +document.getElementById("fv2").value === 35 && document.getElementById("cv-vol-o").textContent === "−14 dB"),
-    "the open channel's fader sets the guitar to 35 (−14 dB): the mixer's slider and fader 3 move with it");
-  await setRange(p, "#fv1", 60); await p.waitForTimeout(200);
-  ok(await p.evaluate(() => __aogStudio.SONG.tracks[1].vol === 60 && +document.getElementById("t1-vol").value === 60), "fader 2 sets the piano to 60");
+  ok(await p.evaluate(() => __aogStudio.SONG.tracks[3].vol === 35 && +document.getElementById("t3-vol").value === 35 && +document.getElementById("fv3").value === 35 && document.getElementById("cv-vol-o").textContent === "−14 dB"),
+    "the open channel's fader sets the guitar to 35 (−14 dB): the mixer's slider and fader 4 move with it");
+  await setRange(p, "#fv2", 60); await p.waitForTimeout(200);
+  ok(await p.evaluate(() => __aogStudio.SONG.tracks[2].vol === 60 && +document.getElementById("t2-vol").value === 60), "fader 3 sets the piano to 60");
   await p.click("#chShape > summary"); await setRange(p, "#cs-pan", -40); await p.waitForTimeout(200);
-  ok(await p.evaluate(() => __aogStudio.SONG.tracks[2].pan === -40 && +document.getElementById("t2-pan").value === -40), "Shape the sound opens; its pan moves the guitar left, as the mixer's does");
-  await setRange(p, "#t2-vol", 70); await p.waitForTimeout(200);
-  ok(await p.evaluate(() => +document.getElementById("fv2").value === 70 && +document.getElementById("cv-vol").value === 70), "a slider moved on the mixer itself shows on the console too");
+  ok(await p.evaluate(() => __aogStudio.SONG.tracks[3].pan === -40 && +document.getElementById("t3-pan").value === -40), "Shape the sound opens; its pan moves the guitar left, as the mixer's does");
+  await setRange(p, "#t3-vol", 70); await p.waitForTimeout(200);
+  ok(await p.evaluate(() => +document.getElementById("fv3").value === 70 && +document.getElementById("cv-vol").value === 70), "a slider moved on the mixer itself shows on the console too");
   /* a reload keeps it all */
   await p.reload(); await p.waitForTimeout(2000); await p.waitForFunction(() => !__aogStudio.S.decoding, null, { timeout: 20000 });
-  ok(await p.evaluate(() => __aogStudio.SONG.tracks[2].vol === 70 && __aogStudio.SONG.tracks[2].pan === -40 && +document.getElementById("fv1").value === 60 && document.querySelector("#chStrip .st-chn").textContent === "Guitar"), "a reload keeps the volumes, the pan and the open channel");
+  ok(await p.evaluate(() => __aogStudio.SONG.tracks[3].vol === 70 && __aogStudio.SONG.tracks[3].pan === -40 && +document.getElementById("fv2").value === 60 && document.querySelector("#chStrip .st-chn").textContent === "Guitar"), "a reload keeps the volumes, the pan and the open channel");
   /* the paper slip */
   f = await face(p);
   ok(/^Lesson \d+ · .+All lessons ›$/.test(f.slip), "the lesson is on a paper slip: " + f.slip);
   await p.evaluate(() => { const b = [...document.querySelectorAll("button, a")].find(x => x.textContent.trim() === "ES"); if (b) b.click(); }); await p.waitForTimeout(800);
   f = await face(p);
-  ok(f.lanes === "Ritmos,Piano,Guitarra,Bajo,Vacía,Vacía,Vacía,Voz" && f.ch === "Guitarra" && /^Lección \d+ · .+Todas las lecciones ›$/.test(f.slip) && await p.textContent("#chShape > summary") === "Dale forma al sonido",
+  ok(f.lanes === "Ritmos,Vacía,Piano,Guitarra,Bajo,Vacía,Vacía,Voz" && f.ch === "Guitarra" && /^Lección \d+ · .+Todas las lecciones ›$/.test(f.slip) && await p.textContent("#chShape > summary") === "Dale forma al sonido",
     "in Spanish: " + f.lanes + " · " + f.ch + " · " + f.slip.slice(0, 40));
   ok(errs.length === 0, "no page errors " + errs.join(" | "));
   await c.close();

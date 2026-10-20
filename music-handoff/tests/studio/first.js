@@ -3,9 +3,10 @@
        iPhone and an iPad, and nothing that teaches (the course box, the guide, the lesson menu) sits above it. Those wait
        in one closed "Lessons and more" below the instrument, and still work there (the piano's lesson menu). The same
        room on its own address is untouched. Spanish. Light and dark: readable and calm, nothing sideways.
-   2 · ▶ Listen plays My Track: takes added from two rooms go on the desk's empty tracks by themselves and play; at the
+   2 · ▶ Listen plays My Track: takes added from two rooms go on their own channels on the desk by themselves and play
+       (AOG-DESK-ARRIVE-V1: 01 Drum Machine … 07 Turntables); at the
        desk ‹ <room> takes the place of Mix › and goes back; a newer take from a room replaces the one Listen placed, on the
-       same track; a track filled or changed by hand is never changed; with nothing in My Track, one plain line says what to do.
+       same track (the one before kept as a take lane); a track filled or changed by hand is never changed; with nothing in My Track, one plain line says what to do.
    No page errors. Port 9255. */
 const pw = require(require("child_process").execSync("npm root -g").toString().trim() + "/playwright");
 const fs = require("fs"), path = require("path");
@@ -112,7 +113,7 @@ const lay = f => f.evaluate(() => __aogStudio.SONG.tracks.map(x => x.clip ? x.cl
   await p.waitForFunction(() => location.hash === "#studio", null, { timeout: 8000 }); await arrived(p, "studio");
   let f = inner(p);
   await f.waitForFunction(() => __aogStudio.PLAY.on, null, { timeout: 20000 });
-  ok(await lay(f) === "guitar* bass* - - - - - -", "Listen puts the guitar and the bass takes on the first empty tracks and plays them: " + await lay(f));
+  ok(await lay(f) === "- - - guitar* bass* - - -", "Listen puts the guitar and the bass takes on their own channels (4 and 5) and plays them: " + await lay(f));
   const bk = await p.evaluate(() => ({ back: document.getElementById("tpBack").hidden ? "" : document.getElementById("tpBack").textContent, mix: !document.getElementById("tpMix").hidden, listen: document.getElementById("tpListen").textContent }));
   ok(bk.back === "‹ Guitar" && !bk.mix && bk.listen === "■ Stop listening", "at the desk: ‹ Guitar in place of Mix ›, and ■ Stop listening: " + JSON.stringify(bk));
   await p.click("#tpListen"); await p.waitForTimeout(300);
@@ -123,7 +124,7 @@ const lay = f => f.evaluate(() => __aogStudio.SONG.tracks.map(x => x.clip ? x.cl
   const g2 = await addTake(p, "guitar", 440);
   await p.click("#tpListen"); await p.waitForFunction(() => location.hash === "#studio", null, { timeout: 8000 }); await arrived(p, "studio");
   f = inner(p); await f.waitForFunction(() => __aogStudio.PLAY.on, null, { timeout: 20000 });
-  ok(await lay(f) === "guitar* bass* - - - - - -" && await f.evaluate(id => __aogStudio.SONG.tracks[0].clip.tid === id, g2), "a newer guitar take replaces the old one on the same track: " + await lay(f));
+  ok(await lay(f) === "- - - guitar* bass* - - -" && await f.evaluate(id => __aogStudio.SONG.tracks[3].clip.tid === id, g2), "a newer guitar take replaces the old one on the same track: " + await lay(f));
   await p.click("#tpListen"); await p.waitForTimeout(300);
   /* by hand: the piano take on track 3 */
   const pi = await addTake(p, "piano", 262);
@@ -131,19 +132,19 @@ const lay = f => f.evaluate(() => __aogStudio.SONG.tracks.map(x => x.clip ? x.cl
   await f.evaluate(async id => { await __aogStudio.putOn("take:" + id, 2); }, pi);
   const pi2 = await addTake(p, "piano", 294);
   await p.click("#tpListen"); await f.waitForFunction(() => __aogStudio.PLAY.on, null, { timeout: 20000 });
-  ok(await lay(f) === "guitar* bass* piano - - - - -" && await f.evaluate(id => __aogStudio.SONG.tracks[2].clip.tid === id, pi), "a track filled by hand keeps its take, even with a newer one from that room: " + await lay(f));
+  ok(await lay(f) === "- - piano guitar* bass* - - -" && await f.evaluate(id => __aogStudio.SONG.tracks[2].clip.tid === id, pi), "a track filled by hand keeps its take, even with a newer one from that room: " + await lay(f));
   await p.click("#tpListen"); await p.waitForTimeout(300);
   /* a take Listen placed and then changed by hand (cut a beat off its start) is the student's too */
-  const bass1 = await f.evaluate(() => __aogStudio.SONG.tracks[1].clip.tid);
-  await f.evaluate(() => { __aogStudio.SONG.sel = 1; __aogStudio.clipAct("in+beat"); });
+  const bass1 = await f.evaluate(() => __aogStudio.SONG.tracks[4].clip.tid);
+  await f.evaluate(() => { __aogStudio.SONG.sel = 4; __aogStudio.clipAct("in+beat"); });
   await addTake(p, "bass", 98);
   await p.click("#tpListen"); await f.waitForFunction(() => __aogStudio.PLAY.on, null, { timeout: 20000 });
-  ok(await lay(f) === "guitar* bass piano - - - - -" && await f.evaluate(id => __aogStudio.SONG.tracks[1].clip.tid === id, bass1), "a placed take you changed stays, even with a newer one: " + await lay(f));
+  ok(await lay(f) === "- - piano guitar* bass - - -" && await f.evaluate(id => __aogStudio.SONG.tracks[4].clip.tid === id, bass1), "a placed take you changed stays, even with a newer one: " + await lay(f));
   await p.click("#tpListen"); await p.waitForTimeout(300);
   /* a reload keeps what Listen placed */
   await p.reload(); await arrived(p, "studio"); f = inner(p);
   await f.waitForFunction(() => !__aogStudio.S.decoding, null, { timeout: 20000 });
-  ok(await lay(f) === "guitar* bass piano - - - - -", "a reload keeps the tracks and which ones Listen placed: " + await lay(f));
+  ok(await lay(f) === "- - piano guitar* bass - - -", "a reload keeps the tracks and which ones Listen placed: " + await lay(f));
   /* Spanish */
   await p.evaluate(() => { const b = [...document.querySelectorAll("button, a")].find(x => x.textContent.trim() === "ES"); if (b) b.click(); }); await p.waitForTimeout(800);
   await p.click('.sh-doors a[data-room="bass"]'); await arrived(p, "bass");

@@ -93,6 +93,9 @@ const STR={
   recsNone:{en:"No recordings yet. On any instrument, press ● Record, then Send to the Mixing Desk.",es:"Aún no hay grabaciones. En cualquier instrumento, pulsa ● Grabar y luego Enviar a la mesa de mezclas."},
   putOn:{en:"Put it on track {n}",es:"Ponla en la pista {n}"},
   putting:{en:"Putting it on…",es:"Poniéndola…"},
+  arrived:{en:"{name} is on track {n}.",es:"{name} está en la pista {n}."},   /* AOG-DESK-ARRIVE-V1 */
+  arrivedTake:{en:"{name} is on track {n}. The take that was there is kept as an earlier take.",es:"{name} está en la pista {n}. La toma que había se guarda como una toma anterior."},
+  arrivedBeside:{en:"{name} is on track {n} as another take. The take you chose still plays.",es:"{name} está en la pista {n} como otra toma. La toma que elegiste sigue sonando."},
   putFail:{en:"That recording could not be read. Try sending it again.",es:"No se pudo leer esa grabación. Intenta enviarla otra vez."},
   aTake:{en:"a take",es:"una toma"},
   barsN:{en:"{n} bars",es:"{n} compases"}, bar1:{en:"1 bar",es:"1 compás"},
@@ -1644,25 +1647,68 @@ async function backing(){
    the voice). A layer with no free track used to be left out without a word; now LISTEN_LEFT names them, and the Recording
    Studio says which are not playing and how to hear one. */
 let LISTEN_LEFT=[];
-async function listenFill(){
+/* AOG-DESK-ARRIVE-V1 (2026-10-19) — Jimmy: "I am unable to send the drums beats when I just record them, over on to the
+   mixing DECK", then "I want this to be like a real recording studio!!!!" "+ Add to My Track" said Added, but the desk put
+   the take on a track only after ▶ Listen: opened straight away, its eight tracks were empty and the take waited in a list.
+   Now the desk does it as it opens or comes back into view (arrive; never out of sight, so a room being played is not
+   slowed). Like a console (§10): each room has its own channel, 01 Drum Machine, 02 Drum Kit, 03 Piano, 04 Guitar, 05 Bass,
+   06 Band, 07 Turntables (LAYER_FROM's order; 08 is the voice). The desk first looks at what is already there: when that
+   room already has a recording on a track, the new one goes on that track as another take, and nothing is lost. When the
+   desk put the one there, the new take plays and the one before is kept as a take lane (dmAddTake, Undo works); when the
+   student put it there or changed it by hand, theirs keeps playing and the new one waits beside it as a take to choose
+   (dmBeside). Else on the room's channel when it is empty, else on the first empty track. A take already on the desk, on a
+   track or as a take lane, is not added again. With since (arrive), only the takes sent after it, so a track cleared stays
+   clear. One fill at a time (FILLQ): Listen and arrive never race. */
+/* a take already on the desk: on a track, or kept there as a take lane */
+function onDesk(o){ return SONG.tracks.some(x=>[x.clip].concat(x.takes||[]).some(c=>c && (o.kind==="take" ? (c.src===INBOX_KEY && c.tid===o.x.id) : (c.src===o.s.key && c.at===(o.v.rec.at||0))))); }
+/* the new take beside the one the student chose: a take lane on that track; theirs keeps playing */
+async function dmBeside(srcId, ti){
+  const x=SONG.tracks[ti], mine=x.clip; if(!mine) return;
+  await dmAddTake(srcId, ti);
+  if(x.clip===mine || !x.clip) return;
+  const nw=x.clip; x.clip=mine; x.takes=(x.takes||[]).filter(c=>c.id!==mine.id).concat([nw]); dmTakesTidy(x); delete x.tkHide;
+  songChanged();
+}
+let FILLQ=Promise.resolve();
+function listenFill(since){ const r=FILLQ.then(()=>fillNow(since)); FILLQ=r.catch(()=>{}); return r; }
+async function fillNow(since){
   try{ await refreshInbox(); await refreshShelves(); }catch(e){}
   LISTEN_LEFT=[];
-  const best={};
-  sources().forEach(o=>{ const k=layerOfSrc(o); if(!k) return; const at=o.kind==="take" ? (o.x.at||o.x.sent||0) : (o.v.rec.at||0);
+  const best={}, fresh=since!=null;
+  sources().forEach(o=>{ const k=layerOfSrc(o); if(!k) return; if(fresh && !(o.kind==="take" && (o.x.sent||0)>since)) return;
+    const at=o.kind==="take" ? (o.x.at||o.x.sent||0) : (o.v.rec.at||0);
     if(!best[k] || at>best[k].at) best[k]={o:o, at:at}; });
-  let n=0;
+  let n=0, missed=0; const placed=[];
   for(const k of Object.keys(best).sort((a,b)=>LAYER_FROM.indexOf(a.split(":")[0])-LAYER_FROM.indexOf(b.split(":")[0]) || a.length-b.length)){
-    const o=best[k].o; if(srcOnTrack(o)) continue;
-    const mine=SONG.tracks.findIndex((x,i)=>i!==VOICE_T && x.clip && layerOfClip(x.clip)===k);
-    let ti=-1;
-    if(mine>=0){ if(!SONG.tracks[mine].clip.auto) continue; ti=mine; }
-    else ti=SONG.tracks.findIndex((x,i)=>i!==VOICE_T && !x.clip);
+    const o=best[k].o; if(srcOnTrack(o) || onDesk(o)) continue;
+    const ch=k.indexOf(":")<0 ? LAYER_FROM.indexOf(k) : -1;   /* the room's own channel; a live or over-the-song take finds its own */
+    const of=(x,i)=>i!==VOICE_T && x.clip && layerOfClip(x.clip)===k;
+    let ti=ch>=0 && of(SONG.tracks[ch], ch) ? ch : SONG.tracks.findIndex((x,i)=>of(x,i) && x.clip.auto);
+    if(ti<0) ti=SONG.tracks.findIndex(of);
+    if(ti<0) ti=ch>=0 && ch!==VOICE_T && !SONG.tracks[ch].clip ? ch : SONG.tracks.findIndex((x,i)=>i!==VOICE_T && !x.clip);
     if(ti<0){ LISTEN_LEFT.push(k); continue; }
-    await putOn(o.id, ti);
-    const c=SONG.tracks[ti].clip; if(c && srcOnTrack(o)){ c.auto=true; n++; }
+    const x=SONG.tracks[ti], had=!!x.clip && typeof dmAddTake==="function", mine=had && !x.clip.auto;
+    if(mine) await dmBeside(o.id, ti); else if(had) await dmAddTake(o.id, ti); else await putOn(o.id, ti);
+    const c=x.clip;
+    if(mine && onDesk(o)){ n++; placed.push(t("arrivedBeside",{name:o.kind==="take" ? takeLabel(o.x) : shelfWhat(o), n:ti+1})); }
+    else if(!mine && c && srcOnTrack(o)){ c.auto=true; n++; placed.push(t(had ? "arrivedTake" : "arrived",{name:c.name||"", n:ti+1})); } else missed++;
   }
   if(n) songChanged();
-  return n;
+  if(fresh && placed.length) $("recLine").textContent=placed.join(" ");
+  return fresh ? {n:n, missed:missed} : n;
+}
+const ARRIVE_KEY="aog.studio.arrived.v1";
+let ARRIVE=null;
+function arrive(){
+  if(!document.documentElement.classList.contains("in-studio")) return Promise.resolve();   /* My Track is the Studio's */
+  if(ARRIVE) return ARRIVE.then(arrive);
+  ARRIVE=(async()=>{
+    let since=0; try{ since=+localStorage.getItem(ARRIVE_KEY)||0; }catch(e){}
+    const r=await listenFill(since);
+    const top=INBOX.items.reduce((m,x)=>Math.max(m, x.sent||0), since);
+    if(!r.missed) try{ localStorage.setItem(ARRIVE_KEY, String(top)); }catch(e){}
+  })().catch(()=>{}).finally(()=>{ ARRIVE=null; });
+  return ARRIVE;
 }
 /* out of the list: asked once first; a copy on a track stays */
 async function removeTake(id){
@@ -3944,9 +3990,10 @@ window.addEventListener("pagehide", ()=>{ stop(); });
   try{ const m=await sget("mix"); if(m && m.wav) setMix({wav:m.wav, sec:m.sec, bars:m.bars, bpm:m.bpm, body:m.body, at:m.at}); }catch(e){}
   await refreshShelves();
   await refreshInbox();
+  await arrive();   /* AOG-DESK-ARRIVE-V1 */
 })();
 try{ AOGHandoff.listen(function(key){ if(SHELF_KEYS.indexOf(key)>=0) refreshShelves(); else if(key===INBOX_KEY) refreshInbox(); }); }catch(e){}
-window.addEventListener("focus", ()=>{ refreshShelves(); refreshInbox(); });
+window.addEventListener("focus", ()=>{ refreshShelves(); refreshInbox().then(arrive); });
 /* AOG-SONG-V1: the song's tempo changed (here, in a room, or in the Studio): the bars follow at once */
 if(window.AOGSong) AOGSong.on(s=>{ try{
   /* a tempo set elsewhere (the Song panel, a room) is the song's now: the desk's first track no longer leads it */
