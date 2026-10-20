@@ -2,7 +2,8 @@
    mixing DECK". In the Studio, a beat played on the Drum Machine, ● Record, ■ Stop, + Add to My Track ("Added to My Track."),
    then the Mixing Desk door: the take is on track 1 at once, not only in the list of takes. Then "like a real recording
    studio": with the desk kept open out of sight, a second take goes on track 1 as another take (the first stays as a take
-   lane); the loop made into a file and sent comes in the same way; a track cleared stays clear when the desk is opened again;
+   lane); the loop goes on My Track in one tap ("+ Add the loop to My Track"; the room's own Record steps aside,
+   Save and Send to the turntables wait under More) and comes in the same way; a track cleared stays clear when the desk is opened again;
    a drum take put on track 3 by hand keeps playing there, and the next one waits beside it as another take (Listen does
    not add it twice); a piano take goes on
    track 3, the piano's channel (01 Drum Machine … 07 Turntables). The desk opened on its own (not in the Studio) puts nothing
@@ -75,8 +76,21 @@ async function drumTake(p) {
   /* 3 · the loop made into a file, sent to the Mixing Desk */
   await door(p, "pads", "music-pads.html");
   let f = await room(p);
-  await f.click("#bounceBtn"); await f.waitForFunction(() => !document.getElementById("bounceAct").hidden, null, { timeout: 30000 });
-  await f.click("#bStudio"); await f.waitForFunction(() => /^Sent\./.test(document.getElementById("bounceLine").textContent), null, { timeout: 10000 });
+  /* AOG-PADS-LOOP-ADD-V1: one tap, "+ Add the loop to My Track"; the room's own Record steps aside for the bar's ● Record */
+  const foot = await f.evaluate(() => { const vis = id => { const e = document.getElementById(id); return !!(e && e.getClientRects().length); };
+    return { add: document.getElementById("bounceBtn").textContent, addVis: vis("bounceBtn"), rec: vis("takeBtn"), act: vis("bounceAct"), lf: vis("loopFile"),
+      more: [...document.querySelectorAll("#aogMoreSel option")].map(o => o.textContent) }; });
+  ok(foot.add === "+ Add the loop to My Track" && foot.addVis && !foot.rec && !foot.act && !foot.lf && foot.more.includes("The loop as a file"),
+    "in the Studio: one button adds the loop, no second Record, Save and Send to the turntables under More: " + JSON.stringify(foot));
+  await f.click("#bounceBtn"); await f.waitForFunction(() => /^The loop is on My Track\./.test(document.getElementById("bounceLine").textContent), null, { timeout: 30000 });
+  ok((await f.textContent("#bounceLine")).trim() === "The loop is on My Track. On the Mixing Desk it starts right on the bar. Open the Mixing Desk", "one tap: " + (await f.textContent("#bounceLine")).trim());
+  /* More → The loop as a file → Send the loop to the turntables */
+  await f.selectOption("#aogMoreSel", "loopfile"); await p.waitForTimeout(200);
+  ok(await f.evaluate(() => !!document.getElementById("lfDecks").getClientRects().length && document.getElementById("lfSave").textContent === "Save the loop as .wav"), "More shows Save the loop as .wav and Send the loop to the turntables");
+  await f.click("#lfDecks"); await f.waitForFunction(() => /^Sent\. Open the turntables/.test(document.getElementById("bounceLine").textContent), null, { timeout: 30000 }).catch(() => {});
+  const deck = await f.evaluate(async () => { const r = await AOGHandoff.get("padbench"); return r && r.wav ? r.wav.size : 0; });
+  ok(deck > 44, "the loop is on the turntables' shelf: " + deck + " bytes; " + (await f.textContent("#bounceLine")).trim());
+  await f.selectOption("#aogMoreSel", ""); await p.waitForTimeout(100);
   await door(p, "studio", "music-studio.html");
   tr = await tracks(p);
   const loop = await (await room(p)).evaluate(() => { const x = __aogStudio.SONG.tracks[0].clip; return x ? { take: x.take, head: x.head, bars: x.bars } : null; });

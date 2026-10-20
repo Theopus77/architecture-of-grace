@@ -79,7 +79,11 @@ const STR={
   credit:{en:"Every sound here is a real recording.",es:"Cada sonido aquí es una grabación de verdad."},
   cDrums:{en:"Drums",es:"Batería"}, cKeys:{en:"Keys",es:"Teclados"}, cGuitar:{en:"Guitar",es:"Guitarra"}, cBass:{en:"Bass",es:"Bajo"}, cBand:{en:"Band",es:"Banda"}, cWord:{en:"Scripture",es:"Escrituras"},
   /* AOG-PADS-BOUNCE-V1 */
-  bounce:{en:"Make the loop into a file",es:"Convertir el bucle en un archivo"}, bMaking:{en:"Making the loop…",es:"Haciendo el bucle…"},
+  bounce:{en:"Make the loop into a file",es:"Convertir el bucle en un archivo"},
+  /* AOG-PADS-LOOP-ADD-V1 */
+  bAdd:{en:"+ Add the loop to My Track",es:"+ Añadir el bucle a mi pista"},
+  bAdded:{en:"The loop is on My Track. On the Mixing Desk it starts right on the bar.",es:"El bucle está en mi pista. En la mesa de mezclas empieza justo en el compás."},
+  lfSave:{en:"Save the loop as .wav",es:"Guardar el bucle como .wav"}, lfDecks:{en:"Send the loop to the turntables",es:"Enviar el bucle a los tocadiscos"}, bMaking:{en:"Making the loop…",es:"Haciendo el bucle…"},
   bNone:{en:"The loop is empty. Turn on Record the loop and tap some pads first.",es:"El bucle está vacío. Activa Grabar el bucle y toca algunos pads primero."},
   bReady:{en:"Your loop is ready: {bars}, {sec} seconds, at {bpm} beats a minute. It repeats with no gap.",es:"Tu bucle está listo: {bars}, {sec} segundos, a {bpm} pulsos por minuto. Se repite sin pausa."},
   bSave:{en:"Save as .wav",es:"Guardar como .wav"}, bStudio:{en:"Send to the Mixing Desk",es:"Enviar a la mesa de mezclas"}, bDecks:{en:"Send to the turntables",es:"Enviar a los tocadiscos"},
@@ -973,12 +977,13 @@ async function renderLoop(){
   return {blob:await wavBlob(Lc, Rc, sr), sec:n/sr, bpm:bpm, bars:bars, at:Date.now()};
 }
 function paintBounce(){
-  $("bounceBtn").textContent=BOUNCE.busy ? t("bMaking") : t("bounce"); $("bounceBtn").disabled=BOUNCE.busy;
+  $("bounceBtn").textContent=BOUNCE.busy ? t("bMaking") : t(inStudio() ? "bAdd" : "bounce"); $("bounceBtn").disabled=BOUNCE.busy;
+  $("lfSave").textContent=t("lfSave"); $("lfDecks").textContent=t("lfDecks"); $("lfSave").disabled=$("lfDecks").disabled=BOUNCE.busy;
   $("bSave").textContent=t("bSave"); $("bStudio").textContent=t("bStudio"); $("bDecks").textContent=t("bDecks");
   $("bounceAct").hidden=!BOUNCE.out || BOUNCE.busy;
   const o=BOUNCE.out, l=$("bounceLine");
   if(BOUNCE.msg==="ready" && o) l.textContent=t("bReady",{bars:barsWord(o.bars), sec:o.sec.toFixed(2), bpm:o.bpm});
-  else if(BOUNCE.msg==="studio") l.innerHTML=esc(t("bStudioSent"))+' <a href="/studio">'+esc(t("bStudioGo"))+"</a>";
+  else if(BOUNCE.msg==="studio") l.innerHTML=esc(t(inStudio() ? "bAdded" : "bStudioSent"))+' <a href="/studio">'+esc(t("bStudioGo"))+"</a>";
   else if(BOUNCE.msg==="decks") l.innerHTML=esc(t("bDecksSent"))+' <a href="music-decks.html">'+esc(t("bDecksGo"))+"</a>";
   else l.textContent=BOUNCE.msg ? t(BOUNCE.msg) : "";
 }
@@ -991,8 +996,15 @@ async function makeBounce(){
 }
 function bounceName(o){ return {en:STR.bName.en.replace("{bars}", o.bars===1?STR.bar1.en:STR.barsN.en.replace("{n}",o.bars)).replace("{bpm}",o.bpm),
   es:STR.bName.es.replace("{bars}", o.bars===1?STR.bar1.es:STR.barsN.es.replace("{n}",o.bars)).replace("{bpm}",o.bpm)}; }
+/* inside the Studio's frame: asked the way aog-labdoors.js asks, which runs later (defer) than this page's first paint */
+function inStudio(){ try{ return window.parent!==window && !!window.parent.AOGStudioShell; }catch(e){ return false; } }
+/* AOG-PADS-LOOP-ADD-V1 (Jimmy, 2026-10-20: "I am still having difficulty with pressing the record the loop and then getting it to
+   the mixer"). In the Studio one tap makes the loop and puts it on My Track (the Mixing Desk places it on track 1 as it opens,
+   AOG-DESK-ARRIVE-V1); the file's other uses wait under More, each making the loop first when it has changed. */
+async function loopThen(id){ if(BOUNCE.busy) return; if(!BOUNCE.out) await makeBounce(); if(BOUNCE.out) await $(id).onclick(); }
 function bindBounce(){
-  $("bounceBtn").onclick=makeBounce;
+  $("bounceBtn").onclick=()=>inStudio() ? loopThen("bStudio") : makeBounce();
+  $("lfSave").onclick=()=>loopThen("bSave"); $("lfDecks").onclick=()=>loopThen("bDecks");
   $("bSave").onclick=()=>{ const o=BOUNCE.out; if(!o) return; LES.mark("bsave"); const a=document.createElement("a"), u=URL.createObjectURL(o.blob);
     a.href=u; a.download=(S0.lang==="es"?"bucle-caja-de-ritmos-":"drum-machine-loop-")+o.bpm+"bpm-"+o.bars+(S0.lang==="es"?"compases":"bars")+".wav";
     document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(u), 4000); };
