@@ -92,7 +92,22 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
     for (const [x, y, dx, dy] of [[.06, .06, 1, 1], [.94, .06, -1, 1], [.06, .7, 1, -1], [.5, .04, 0, 1]]) {
       await p.tp("touchStart", [[box.x + box.w * x, box.y + box.h * y]]); for (let k = 1; k <= 20; k++) { await p.tp("touchMove", [[box.x + box.w * x + dx * k * 9, box.y + box.h * y + dy * k * 9]]); await p.waitForTimeout(10); } await p.tp("touchEnd", []); }
     await p.waitForTimeout(300);
-    ok(await view() === home && await hist(p) === 0, `${name}: dragging the space around the cube moves nothing`);
+    /* AOG-CUBE-LOOK-V1: the space around the cube turns the view (never a move), and Front brings it home */
+    ok(await view() !== home && await hist(p) === 0, `${name}: dragging the space around the cube turns the view, and makes no move`);
+    await p.tap('#lookRow [data-look="front"]'); await p.waitForTimeout(500);
+    ok(await view() === home, `${name}: after looking around, Front brings the cube home`);
+    /* AOG-CUBE-WHEEL-V3: a straight drag from a middle square turns that row (a middle slice), never the whole side */
+    for (const [dir, dx, dy, want] of [[[0, 0, 1], 1, 0, ["E", "E'"]], [[0, 0, 1], 0, -1, ["M", "M'"]], [[0, 1, 0], 1, .5, ["S", "S'", "M", "M'"]]]) {
+      await p.evaluate(() => scrollTo(0, 0));
+      const g = await centreOf(p, dir), before = await screenCube(p);
+      await p.tp("touchStart", [[g.x, g.y]]); for (let k = 1; k <= 12; k++) { await p.tp("touchMove", [[g.x + dx * k * g.w * .16, g.y + dy * k * g.w * .16]]); await p.waitForTimeout(16); }
+      await p.tp("touchEnd", []); await p.waitForTimeout(600);
+      const now = await screenCube(p);
+      const made = await p.evaluate(() => { const h = JSON.parse(localStorage.getItem("aog.cube.v1")).hist; return h[h.length - 1]; });
+      const tok = made;
+      ok(now !== before && want.includes(String(tok).replace(/2$/, "")), `${name}: a straight drag from a middle square turns that row, not the side (${tok})`);
+      await p.tap("#stUndo"); await p.waitForTimeout(600);
+    }
     await p.tap('#lookRow [data-look="back"]'); await p.waitForTimeout(500); const back1 = await view();
     await p.tap('#lookRow [data-look="back"]'); await p.waitForTimeout(500);
     ok(back1 !== home && await view() === back1, `${name}: Back shows the back, the very same view every time`);
