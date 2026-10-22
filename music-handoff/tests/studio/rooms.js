@@ -150,7 +150,7 @@ const takeDb = f => f.evaluate(async () => { const k = (typeof REC !== "undefine
       return { iw: innerWidth, ih: innerHeight, sw: document.scrollingElement.scrollWidth, sh: document.scrollingElement.scrollHeight, min: Math.min(...bt.map(x => Math.round(r(x).height))), right: Math.max(...bt.map(x => Math.round(r(x).right))),
         frame: Math.round(r(document.getElementById("room")).height), labels: bt.map(x => x.textContent).join(" | ") }; });
     const pc = await m.evaluate(`(${PROBE})()`), pk = await m.evaluate(`(${CALM})()`);
-    const esOk = !(theme === "dark" && dev === "iPad (gen 7)") || fit.labels === "● Grabar | ▶ Escuchar | Mezclar › | Compártela | Mi pista";   /* AOG-STUDIO-SUPREME-V1: on an upright iPad the Song button and My Track wait on the My Track key's sheet */
+    const esOk = !(theme === "dark" && dev === "iPad (gen 7)") || fit.labels === "● Grabar | ▶ Escuchar | ♫ Toca encima | Mezclar › | Compártela | Mi pista";   /* AOG-STUDIO-SUPREME-V1: on an upright iPad the Song button and My Track wait on the My Track key's sheet */
     ok(fit.sw <= fit.iw && fit.sh <= fit.ih + 1 && fit.min >= 44 && fit.right <= fit.iw && fit.frame >= 380 && !pc.length && !pk.length && esOk,
       `${dev}, ${theme}: the transport fits (${JSON.stringify(fit)}), reads (${pc.length} ${JSON.stringify(pc.slice(0, 2))}) and is calm (${pk.join("; ") || "ok"})`);
     await m.screenshot({ path: path.join(process.env.AOG_SHOTS || require("os").tmpdir(), `rooms-${dev.split(" ")[0].toLowerCase()}-${theme}.png`) });
