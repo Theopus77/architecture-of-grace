@@ -352,10 +352,15 @@
     }
   }
   TCSS += "\n.aog-slot-sketch{ display:block; width:100%; height:150px; object-fit:cover; object-position:75% 42%; border-radius:10px; border:1px solid rgba(42,38,34,.35); }";
+  /* AOG-SKETCH-NOWAIT-V1 (2026-10-22) — the room map (aog-room-map.js) only comes to the practice rooms (aog-grace.js) and
+     the c/v/w worksheet rooms (below). Every other page used to look for it every 300 ms for 6 s after load; now a page
+     that will never get it does not look at all ("silent until used"). */
+  function mapMayCome(pg) { return !!(window.AOG_ROOM_MAP || D.querySelector('script[src*="aog-room-map.js"]') || D.documentElement.classList.contains("aog-practice-room") || /^[cvw]\d+-/.test(pg)); }
   function mastBoot() { tabsHome(); hubCards(); xwCards(); sketchSlots();
     var pg = (location.pathname.split("/").pop() || "").replace(/\.html$/, "");
     if (/^(slip)$/.test(pg)) return;   /* instruments and tools keep their own faces */
     if (PAGE[pg]) { mast(PAGE[pg]); return; }
+    if (!mapMayCome(pg)) return;   /* AOG-SKETCH-NOWAIT-V1: no room map on this page, so nothing to wait for */
     var tries = 0;
     (function wait() {
       var m = window.AOG_ROOM_MAP, it = m && m[pg];
@@ -503,6 +508,8 @@
     if (!window.AOG_ROOM_MAP && /^[cvw]\d+-/.test(pg) && !D.querySelector('script[src="/aog-room-map.js"]')) {
       var ms = D.createElement("script"); ms.src = "/aog-room-map.js"; ms.async = true; (D.head || D.documentElement).appendChild(ms);
     }
+    var mapMayCome = function (pg) { return !!(window.AOG_ROOM_MAP || D.querySelector('script[src*="aog-room-map.js"]') || D.documentElement.classList.contains("aog-practice-room") || /^[cvw]\d+-/.test(pg)); };
+    if (!mapMayCome(pg)) return;   /* AOG-SKETCH-NOWAIT-V1, as above */
     (function wait(){
       var m = window.AOG_ROOM_MAP, it = m && m[pg];
       if (it && it.drawing && /^[a-z0-9]{2,8}-u\d+$/.test(it.drawing)) { put(it.drawing); return; }

@@ -276,7 +276,22 @@
     var v = currentLang(), en = $("aogLangEn"), es = $("aogLangEs");
     if (en) en.classList.toggle("on", v !== "es");
     if (es) es.classList.toggle("on", v === "es");
+    barLang(v);
   }
+  /* AOG-BAR-LANG-V1 (2026-10-22) — the bar's own words follow the page's language, however it changed (the page's own
+     switch, the bar's EN | ES, a reload): Quiet Space, Explore, Back and the menus no longer stay English in Spanish. */
+  function barLang(v) {
+    var bar = $("aogTopbar"); if (!bar) return;
+    var n = bar.querySelectorAll("[data-en]");
+    for (var i = 0; i < n.length; i++) {
+      var el = n[i], t = el.getAttribute(v === "es" ? "data-es" : "data-en");
+      if (t == null) continue;
+      if (t.indexOf("<") > -1) { if (el.innerHTML !== t) el.innerHTML = t; } else if (el.textContent !== t) el.textContent = t;
+    }
+    var b = bar.querySelector(".aogtop-back");
+    if (b) { var w = v === "es" ? "Atr\u00e1s" : "Back", l = b.querySelector(".lbl"); b.setAttribute("aria-label", w); if (l && l.textContent !== w) l.textContent = w; }
+  }
+  try { new MutationObserver(function () { paintLangPills(); }).observe(H, { attributes: true, attributeFilter: ["lang"] }); } catch (e) {}
 
   /* ── 7 ── accessibility (the home page's own two settings and keys) ────── */
   var DYS_400 = "/fonts/opendyslexic-400.woff2", DYS_700 = "/fonts/opendyslexic-700.woff2";
