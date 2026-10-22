@@ -139,10 +139,20 @@ main.sh-main { grid-area:room; min-width:0; margin:0; }
 .tp-out { color:#f3d48e; }
 .tp-back { color:var(--st-ink); }
 /* a message from the transport: a small paper slip just above the desk, not another line */
-.tp-line { position:absolute; left:max(12px, env(safe-area-inset-left)); bottom:100%; margin:0 0 8px; max-width:min(38rem, calc(100% - 24px)); padding:.5rem .85rem;
+.tp-say { position:absolute; left:max(12px, env(safe-area-inset-left)); right:max(12px, env(safe-area-inset-right)); bottom:100%; margin:0 0 8px;
+  display:flex; flex-wrap:wrap; align-items:center; gap:6px 8px; pointer-events:none; }
+.tp-say > * { pointer-events:auto; }
+.tp-line { max-width:min(38rem, 100%); padding:.5rem .85rem;
   border-radius:3px; background:var(--st-paper); color:var(--st-paper-ink); font:italic 500 1rem/1.3 "Fraunces", var(--serif, Georgia, serif);
   box-shadow:0 6px 16px rgba(0,0,0,.45), 0 1px 1px rgba(0,0,0,.2); }
 .tp-line:empty { display:none; }
+/* AOG-LISTENBACK-V1: ▶ Listen back, on My Track's sheet (in the bar on a wide screen), and as a link beside "Added to My Track." */
+.tp-lb { color:#f3d48e; }
+.tp-lbgo { min-height:44px; padding:0 .9rem; border-radius:3px; border:1px solid #b98f3e; background:var(--st-paper); color:var(--st-paper-ink); font:800 .95rem/1.1 Inter, var(--sans);
+  cursor:pointer; touch-action:manipulation; box-shadow:0 6px 16px rgba(0,0,0,.45), 0 1px 1px rgba(0,0,0,.2); }
+.tp-lbgo[hidden] { display:none; }
+.tp-lbgo:focus-visible { outline:3px solid var(--st-gold); outline-offset:2px; }
+@media (min-width:1100px) and (max-width:1279px) { .mtrow .tp-lb { padding:0 .7rem; } #mtAdd { flex-shrink:0; } }   /* an iPad on its side: + Add a layer keeps its words */
 .mtrow { display:flex; align-items:center; gap:8px; flex:1 1 36rem; min-width:0; }
 /* an ID, so the site's serif heading rule (aog-grace.css) leaves this small label alone */
 #mtH { margin:0; flex:0 0 auto; font:800 .72rem/1.15 Inter, var(--sans) !important; letter-spacing:.14em !important; text-transform:uppercase; color:var(--st-dim) !important; }
@@ -201,6 +211,7 @@ main.sh-main { grid-area:room; min-width:0; margin:0; }
     background:linear-gradient(#2c261f, #1d1915); box-shadow:inset 0 1px 0 rgba(255,236,200,.09), 0 14px 36px rgba(0,0,0,.6); }
   .mt.mt-open .mtrow { display:flex; }
   #mtH { flex:1 1 100%; font-size:.8rem !important; }
+  .mtrow .tp-lb { flex:1 1 100%; }   /* AOG-LISTENBACK-V1 */
   #mtAdd { flex:1 1 12rem; max-width:none; }
   .mt ul { flex:1 1 100%; grid-auto-flow:row; grid-template-rows:none; grid-template-columns:repeat(auto-fill, minmax(7.4rem, 1fr)); grid-auto-columns:auto; gap:6px; overflow:visible; }
   .mt ul.more { -webkit-mask-image:none; mask-image:none; }
@@ -520,7 +531,8 @@ JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></scrip
     fromAria: ["Where My Track starts when you record", "Dónde empieza mi pista al grabar"],
     /* AOG-ADD-LAYER-TAKE-V1 */
     layered: ["Your {room} take is on My Track.", "Tu toma de {room} está en mi pista."],
-    fail: ["That did not work. Try again.", "No funcionó. Inténtalo otra vez."]
+    fail: ["That did not work. Try again.", "No funcionó. Inténtalo otra vez."],
+    lb: ["▶ Listen back", "▶ Escúchala"]   /* AOG-LISTENBACK-V1 */
   };
   function tw(k) { var x = TPW[k][es() ? 1 : 0]; for (var f in TP.fill) x = x.split("{" + f + "}").join(TP.fill[f]); return x; }
   /* the name of a layer as My Track says it, from the desk's name for it ("drums" is the Drum Kit, "bass:live" the live bass) */
@@ -553,6 +565,9 @@ JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></scrip
     if (br) { var bn = es() ? br.short[1] : br.short[0], bt = "‹ " + bn; if (bk.textContent !== bt) bk.textContent = bt;
       att(bk, "aria-label", (es() ? "Volver a: " : "Back to the ") + bn); }
     if (TP.line === "tap" && w && w.__aogStudio.AC && w.__aogStudio.AC.state === "running") TP.line = "";
+    /* AOG-LISTENBACK-V1: its words, and the link beside "Added to My Track." */
+    var lbt = tw("lb"), lm = D.getElementById("mtLb"), lg = D.getElementById("tpLbGo"), lgs = TP.line === "added" || TP.line === "layered";
+    if (lm.textContent !== lbt) lm.textContent = lbt; if (lg.textContent !== lbt) lg.textContent = lbt; if (lg.hidden !== !lgs) lg.hidden = !lgs;
     var ln = TP.line ? tw(TP.line) : ""; var el = D.getElementById("tpLine"); if (el.textContent !== ln) el.textContent = ln;
   }
   /* an action that needs the Mixing Desk: go there, then do it once the desk has its song back */
@@ -641,6 +656,36 @@ JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></scrip
     });
   });
   D.getElementById("tpBack").addEventListener("click", function () { var b = TP.back; if (room(b)) go(b, true); });
+  /* AOG-LISTENBACK-V1 (2026-10-22) — the payoff: ▶ Listen back plays My Track on the whole screen, with the song's title and
+     the artist's name, like a real release, and Share it sends it to friends. The view lives in aog-listenback.js, fetched the
+     first time it is opened. It plays My Track as the desk bounces it out of sight (backing(), as ♫ Play along does) on the
+     Studio's own sound, made here inside the tap (an iPhone wants that) and registered with AOGVU.own; the room you are in
+     stays where it is, quiet until you come back to it. Nothing on My Track: the line says what to do first. */
+  var LBK = { ac: null, js: 0 };
+  function savedClips() { try { var sg = JSON.parse(localStorage.getItem("aog.studio.v1") || "null"); return !!(sg && sg.tracks && sg.tracks.some(function (x) { return x && x.clip; })); } catch (e) { return false; } }
+  function listenBack() {
+    mtOpen(false);
+    if (!LAYERS.some(function (l) { return HAVE[l.id]; }) && !savedClips() && !LIVE.studio) { say("empty"); return; }
+    TP.line = ""; alongStop();
+    var w0 = deskOf(); if (w0 && w0.__aogStudio.PLAY.on) w0.__aogStudio.stop();
+    var R = recOf(); try { if (R && R.on()) R.toggle(); } catch (e) {}   /* a take being recorded ends first (it is kept) */
+    try { if (!LBK.ac) { var AC = window.AudioContext || window.webkitAudioContext; LBK.ac = new AC(); if (window.AOGVU && AOGVU.own) AOGVU.own(LBK.ac); }
+      if (LBK.ac.state !== "running") LBK.ac.resume(); } catch (e) {}
+    var api = { es: es, backing: backing, ac: function () { return LBK.ac; },
+      desk: function () { try { var f = LIVE.studio, dw = f && f.contentWindow; return dw && dw.__aogStudio ? dw : null; } catch (e) { return null; } },
+      room: function (on) { if (fr.getAttribute("src")) hush(fr, on); },
+      song: function () { return window.AOGSong ? AOGSong.get() : null; }, notes: function () { return window.AOGSong ? AOGSong.NOTES : null; },
+      opener: function () { var k = D.getElementById("mtOpen"), m = D.getElementById("mtLb"); return k.offsetParent ? k : m.offsetParent ? m : D.getElementById("tpListen"); },
+      done: function () { paintTp(); } };
+    if (window.AOGListenBack) { AOGListenBack.open(api); return; }
+    if (LBK.js) return; LBK.js = 1;
+    var s = D.createElement("script"); s.src = "/aog-listenback.js";
+    s.onload = function () { if (window.AOGListenBack) AOGListenBack.open(api); };
+    s.onerror = function () { LBK.js = 0; say("fail"); };
+    D.body.appendChild(s);
+  }
+  D.getElementById("mtLb").addEventListener("click", listenBack);
+  D.getElementById("tpLbGo").addEventListener("click", listenBack);
   /* AOG-OVERDUB-V1 (2026-10-11) — Jimmy's "1": "Record over your song. In any room, press Record and hear My Track playing
      while you play. The new take lands on the right bar." ♫ With My Track (on unless turned off, remembered on this device)
      and From (the bar My Track starts at) sit beside Record. The room's recorder (aog-recorder.js) asks backing(): the
@@ -819,6 +864,7 @@ JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></scrip
     backing: backing, over: overGet,   /* AOG-OVERDUB-V1 */
     along: function () { return { on: PA.on, busy: PA.busy, ac: PA.ac && PA.ac.state, loop: !!(PA.src && PA.src.loop), line: TP.line }; },   /* AOG-PLAY-ALONG-V1, read only */
     alongToggle: function () { alongToggle(); },   /* AOG-PLAY-ALONG-V1: a room's own button (its whole-screen menu) */
+    listenBack: function () { listenBack(); },   /* AOG-LISTENBACK-V1 */
     renderNotes: renderNotes, roomSounds: roomSounds,   /* AOG-NOTES-V1 */
     withRoom: withRoom, wake: alongWake, line: function (en, es) { TPW.qs = [en, es]; say("qs"); },   /* AOG-QUICKSTART-V1 */
     arrived: function (id, w) { if (w && fr.contentWindow !== w) return;   /* AOG-STUDIO-KEEP-V1: a room out of sight never takes the screen */
@@ -949,8 +995,9 @@ def build():
             '<a class="tp-b tp-mix" id="tpMix" href="#studio" data-room="studio"></a><button type="button" class="tp-b tp-back" id="tpBack" hidden></button>'
             '<button type="button" class="tp-b tp-out" id="tpOut"></button>'
             '<button type="button" class="tp-b tp-mt" id="mtOpen" aria-expanded="false" aria-controls="mtRow"><span class="t"></span><span class="n"></span></button>'   # AOG-STUDIO-SUPREME-V1
-            '<span class="tp-line" id="tpLine" aria-live="polite"></span></div>'
+            '<span class="tp-say"><span class="tp-line" id="tpLine" aria-live="polite"></span><button type="button" class="tp-lbgo" id="tpLbGo" hidden></button></span></div>'   # AOG-LISTENBACK-V1
             '<div class="mtrow" id="mtRow"><h2 id="mtH">%s</h2>'
+            '<button type="button" class="tp-b tp-lb" id="mtLb"></button>'   # AOG-LISTENBACK-V1
             '<button type="button" class="tp-b tp-song" id="tpSong" aria-expanded="false" aria-controls="songBox"></button>'   # AOG-SONG-V1: the song's tempo and key, beside My Track
             '<select id="mtAdd"></select><ul id="mtList"></ul></div></section>' % sp(("My Track", "Mi pista")),
             "</div>"]
