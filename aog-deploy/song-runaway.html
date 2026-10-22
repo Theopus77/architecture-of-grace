@@ -18,7 +18,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <meta name="theme-color" content="#0A1E33">
 <meta name="robots" content="noindex">
-<!-- AOG-SONG-RUNAWAY-V1 (2026-10-22) — Jimmy: "I would love to teach LUKE how to play RUNAWAY FROM KAYNE WEST in our
+<!-- AOG-SONG-RUNAWAY-V1 (2026-10-22) — Jimmy: "I would love to teach [my son] how to play RUNAWAY FROM KAYNE WEST in our
      recording studio … Make a lesson out of it." Then: "recreate the song in an instrumental version! Taught in the
      simplest manner!", and "Please copy this song … It is a music lesson … for my son".
      Six takes, one room each, recorded on top of each other (♫ Play My Track while I record, AOG-OVERDUB-V1), so every
@@ -29,7 +29,11 @@
      (1 1 5 5 6 6 4 4, Hold), drums and bass from bar 17, strings from bar 33. The drum grid is measured from three more clips of the record (87.0 BPM,
      16ths swung ~58 %): snare 5 13, hats on the eighths, kick 1 3 11 (the faintest, least sure part). The bass under them
      walks E, D#, …, A, two bars each. No lyrics. The page makes no sound; the Studio plays it. Ticks stay on this
-     device (aog.song.runaway.v1). -->
+     device (aog.song.runaway.v1).
+     AOG-SONG-RUNAWAY-ME-V1 (Jimmy: "make sure [his] name is front in center. His favorite number is 29 … favorite
+     color is red"): a Make it yours box (name, favorite number, favorite color) and a cover that prints first, the name
+     big and centered. No name lives in this file: it comes from the box or the link (?for=Name&no=7&color=blue), is
+     cleaned, and stays on the device. -->
 <style>
 :root{
   --ground:#F5F1E8; --field:#FFFFFF; --field-2:#EFEAE0;
@@ -145,6 +149,35 @@ ul.ticks input{width:24px; height:24px; flex:0 0 auto; margin:2px 0 0;}
 ul.ticks label{flex:1;}
 .take{display:inline-block; font-size:.85rem; font-weight:700; color:var(--ink-soft); margin-left:.2em;}
 .done-line{font-weight:700; color:var(--ok);}
+/* AOG-SONG-RUNAWAY-ME-V1: the learner's cover, in their color */
+:root{--me:#1B3A5F; --me-on:#FFFFFF; --me-ink:#1B3A5F;}
+:root[data-theme="dark"]{--me:#9CC2E8; --me-on:#12161C; --me-ink:#9CC2E8;}
+/* outlines, not fills: aog-grace.js turns dark fills white before printing, and outlines keep the color on paper */
+.part .num{background:transparent; color:var(--me-ink); box-shadow:inset 0 0 0 2px var(--me);}
+table.plan td.on{background:var(--field); border:2px solid var(--me); color:var(--me-ink);}
+.cover{text-align:center; background:var(--field); border:4px solid var(--me); border-radius:18px; padding:26px 16px 22px; margin:20px 0;}
+.cover .cv-k{font-weight:700; font-size:.85rem; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-soft);}
+.cover .cv-who{font:700 3.4rem/1.05 "Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; color:var(--me-ink); margin:.15em 0 .1em; overflow-wrap:anywhere;}
+.cover .cv-t{font-size:1.2rem; font-weight:600; color:var(--ink);}
+.cover .cv-no{display:inline-block; margin-top:12px; background:transparent; color:var(--me-ink); border:3px solid var(--me); border-radius:999px; padding:4px 18px; font-weight:800; font-size:1.1rem;}
+.cover .cv-no:empty{display:none;}
+.mefields{display:grid; grid-template-columns:repeat(3,1fr); gap:10px;}
+.mefields label{display:flex; flex-direction:column; gap:4px; font-weight:700; font-size:.95rem;}
+.mefields input,.mefields select{font:inherit; font-size:16px; min-height:44px; padding:8px 10px; border-radius:8px; border:1px solid var(--rule); background:var(--ground); color:var(--ink);}
+@media (max-width:520px){ .mefields{grid-template-columns:1fr;} .cover .cv-who{font-size:2.6rem;} }
+:root{--me-p:#1B3A5F; --me-p-on:#FFFFFF;}
+@media print{
+  /* on paper the learner's name gets a page of its own, in the middle; paper is always the light colors */
+  body.has-me header.cmast{display:none;}
+  body.has-me .cover{min-height:9in; display:flex; flex-direction:column; justify-content:center; align-items:center;
+    margin:0; padding:40px 16px; border:6px solid var(--me-p) !important; background:#FFFFFF !important; break-after:page; page-break-after:always;}
+  .cover .cv-k{color:#57626F !important; font-size:1rem;}
+  .cover .cv-who{font-size:6.5rem; color:var(--me-p) !important;}
+  .cover .cv-t{font-size:1.6rem; color:#1D2733 !important;}
+  .cover .cv-no{font-size:1.6rem; padding:6px 26px; margin-top:22px;}
+  .cover .cv-no,.part .num,table.plan td.on{color:var(--me-p) !important; border-color:var(--me-p) !important; -webkit-print-color-adjust:exact; print-color-adjust:exact;}
+  .part .num{box-shadow:inset 0 0 0 2px var(--me-p) !important;}
+}
 .no-screen{display:none;}
 @media print{
   @page{size:Letter; margin:14mm;}
@@ -167,6 +200,25 @@ ul.ticks label{flex:1;}
   <p class="cdeck"><span data-en="The song with no voice, made by you. Five parts, one at a time. Tick each box as you go." data-es="La canción sin voz, hecha por ti. Cinco partes, una a la vez. Marca cada casilla al avanzar.">The song with no voice, made by you. Five parts, one at a time. Tick each box as you go.</span></p>
   <p class="hubline no-print"><a href="/the-studio"><span data-en="← The Recording Studio" data-es="← El estudio de grabación">← The Recording Studio</span></a></p>
 </header>
+
+<section class="cover" id="cover" hidden aria-label="Cover">
+  <div class="cv-k"><span data-en="A song made by" data-es="Una canción hecha por">A song made by</span></div>
+  <div class="cv-who" id="cvWho"></div>
+  <div class="cv-t"><span data-en="Runaway · the instrumental" data-es="Runaway · la versión instrumental">Runaway · the instrumental</span></div>
+  <div class="cv-no" id="cvNo"></div>
+</section>
+
+<section class="part no-print" id="me">
+  <h2><span data-en="Make it yours" data-es="Hazla tuya">Make it yours</span></h2>
+  <div class="mefields">
+    <label><span data-en="Your name" data-es="Tu nombre">Your name</span><input id="meName" type="text" maxlength="24" autocomplete="off"></label>
+    <label><span data-en="Your favorite number" data-es="Tu número favorito">Your favorite number</span><input id="meNo" type="number" inputmode="numeric" min="1" max="999"></label>
+    <label><span data-en="Your favorite color" data-es="Tu color favorito">Your favorite color</span><select id="meColor">
+      <option value=""><span data-en="Pick one" data-es="Elige uno">Pick one</span></option><option value="red"><span data-en="Red" data-es="Rojo">Red</span></option><option value="blue"><span data-en="Blue" data-es="Azul">Blue</span></option><option value="green"><span data-en="Green" data-es="Verde">Green</span></option>
+      <option value="purple"><span data-en="Purple" data-es="Morado">Purple</span></option><option value="orange"><span data-en="Orange" data-es="Naranja">Orange</span></option><option value="gold"><span data-en="Gold" data-es="Dorado">Gold</span></option></select></label>
+  </div>
+  <p class="small"><span data-en="Your name goes big on the front when you print. It stays on this device." data-es="Tu nombre va en grande al frente cuando imprimes. Se queda en este dispositivo.">Your name goes big on the front when you print. It stays on this device.</span></p>
+</section>
 
 <section class="part" id="plan">
   <h2><span class="num">0</span><span data-en="The plan: 5 rounds" data-es="El plan: 5 vueltas">The plan: 5 rounds</span></h2>
@@ -419,6 +471,45 @@ ul.ticks label{flex:1;}
   var KEY = "aog.song.runaway.v1", saved = {};
   try { saved = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { saved = {}; }
   function keep(){ try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch (e) {} }
+
+  /* AOG-SONG-RUNAWAY-ME-V1 — the learner's name, number and color: from the link or the box, cleaned, kept on the device */
+  var COLORS = { red: ["#B3261E", "#FFFFFF", "#FF8A80", "#12161C"], blue: ["#1F4E99", "#FFFFFF", "#8AB4F8", "#12161C"],
+    green: ["#1E6B3A", "#FFFFFF", "#7ED69B", "#12161C"], purple: ["#6A2C91", "#FFFFFF", "#C9A0F0", "#12161C"],
+    orange: ["#A84B00", "#FFFFFF", "#FFB066", "#12161C"], gold: ["#7A5C1F", "#FFFFFF", "#E0B85A", "#12161C"] };
+  function cleanName(s){ return String(s || "").replace(/[^\p{L}\p{M} '\-]/gu, "").replace(/\s+/g, " ").trim().slice(0, 24); }
+  function cleanNo(s){ var n = parseInt(s, 10); return n >= 1 && n <= 999 ? n : ""; }
+  function cleanColor(s){ s = String(s || "").toLowerCase(); return COLORS[s] ? s : ""; }
+  var me = saved.me || {};
+  try {
+    var q = new URLSearchParams(location.search);
+    if (q.has("for")) me.name = cleanName(q.get("for"));
+    if (q.has("no")) me.no = cleanNo(q.get("no"));
+    if (q.has("color")) me.color = cleanColor(q.get("color"));
+  } catch (e) {}
+  me = { name: cleanName(me.name), no: cleanNo(me.no), color: cleanColor(me.color) };
+  saved.me = me; keep();
+  var nameIn = document.getElementById("meName"), noIn = document.getElementById("meNo"), colIn = document.getElementById("meColor");
+  nameIn.value = me.name; noIn.value = me.no; colIn.value = me.color;
+  function dark(){ return document.documentElement.getAttribute("data-theme") === "dark"; }
+  function paintMe(){
+    var root = document.documentElement.style, c = COLORS[me.color];
+    if (c) { var d = dark(); root.setProperty("--me", d ? c[2] : c[0]); root.setProperty("--me-on", d ? c[3] : c[1]); root.setProperty("--me-ink", d ? c[2] : c[0]);
+             root.setProperty("--me-p", c[0]); root.setProperty("--me-p-on", c[1]); }
+    else { ["--me", "--me-on", "--me-ink", "--me-p", "--me-p-on"].forEach(function(k){ root.removeProperty(k); }); }
+    document.body.classList.toggle("has-me", !!me.name);
+    var cover = document.getElementById("cover");
+    cover.hidden = !me.name;
+    document.getElementById("cvWho").textContent = me.name;
+    document.getElementById("cvNo").textContent = me.no ? (es() ? "Pista " : "Track ") + me.no : "";
+  }
+  function meChanged(){
+    me = { name: cleanName(nameIn.value), no: cleanNo(noIn.value), color: cleanColor(colIn.value) };
+    saved.me = me; keep(); paintMe();
+  }
+  nameIn.addEventListener("input", meChanged); noIn.addEventListener("input", meChanged); colIn.addEventListener("change", meChanged);
+  nameIn.addEventListener("blur", function(){ nameIn.value = me.name; });
+  try { new MutationObserver(paintMe).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme", "lang"] }); } catch (e) {}
+  paintMe();
   var boxes = [].slice.call(document.querySelectorAll(".ticks input"));
   function done(){
     var all = boxes.every(function(b){ return b.checked; });
@@ -430,7 +521,7 @@ ul.ticks label{flex:1;}
     b.addEventListener("change", function(){ save(b); });
   });
   document.getElementById("resetBtn").addEventListener("click", function(){
-    boxes.forEach(function(b){ b.checked = false; }); saved = {}; keep(); done();
+    boxes.forEach(function(b){ b.checked = false; }); saved = { me: me }; keep(); done();
   });
   done();
 })();
