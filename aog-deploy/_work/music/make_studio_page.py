@@ -250,7 +250,6 @@ main.sh-main { grid-area:room; min-width:0; margin:0; }
   .sh-lang button { min-width:38px; padding:0 .45rem; }
   .sh-qs { padding:0 .45rem; font-size:.8rem; }
 }
-@media (max-width:349px) { .sh-top h1::after, html[lang^="es"] .sh-top h1::after { content:none; } }   /* the narrowest phones: the key keeps its words on two lines */
 /* an upright iPad: the doors in one row of eight, each with its drawing above its name; the desk in one row */
 @media (min-width:700px) {
   .sh-doors ul { grid-template-columns:repeat(8,minmax(0,1fr)); }
@@ -298,8 +297,13 @@ main.sh-main { grid-area:room; min-width:0; margin:0; }
 .sh-mic .ic { font-size:1.1rem; line-height:1; }
 @media (max-width:699px) {
   .sh-top h1 { font-size:1rem !important; }
-  .sh-mic { padding:0 .6rem 0 .5rem; gap:.25rem; font-size:.82rem; line-height:1.05; white-space:normal; text-align:left; max-width:6.4rem; }
+  /* two keys and a title will not share a phone's width: Back · Studio · EN ES on top, then ✦ Start a song and 🎤 Sing or rap, side by side */
+  .sh-top { flex-wrap:wrap; row-gap:6px; padding-bottom:6px; }
+  .sh-top h1 { flex:1 1 auto; }
+  .sh-qs, .sh-mic { order:2; flex:1 1 45%; max-width:none; min-width:0; padding:0 .6rem; font-size:.95rem; line-height:1.1; white-space:normal; text-align:center; }
+  .sh-mic { gap:.35rem; }
 }
+@media (max-width:349px) { .sh-qs, .sh-mic { font-size:.86rem; padding:0 .4rem; } }
 @media print { .sh-doors, .mt, .sh-room, .sh-bridge, .sh-lang, .sh-back { display:none; } }
 """
 JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></script>
