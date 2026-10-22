@@ -25,7 +25,7 @@ let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails+
 /* the new kits: id → its folder and its group */
 const ALLNEW={OR:["orchestra","orch"], ME:["mideast","world"], SB:["samba","world"], BP:["body","hand"],
   GS:["gospel","drums"], MT:["motown","drums"], DS:["disco","drums"], PK:["punk","drums"], PO:["pop80s","drums"], JG:["jungle","drums"],
-  RG:["reggaeton","electronic"], TR:["trap","electronic"], TH:["thrash","drums"], BM:["crunch","electronic"]};
+  RG:["reggaeton","electronic"], TR:["trap","electronic"], TH:["thrash","drums"], BM:["crunch","electronic"], BR:["brit60","drums"], GR:["giant70","drums"]};
 const NEW=Object.fromEntries(Object.entries(ALLNEW).filter(([k])=>!ONLY.length || ONLY.includes(k)));
 const IDS=Object.keys(NEW), DIRS=Object.fromEntries(Object.entries(ALLNEW).map(([k,v])=>[k,"/audio/drums/"+v[0]+"/"]));
 const GROUP_EN={drums:"Drum sets", electronic:"Electronic", world:"World", orch:"Orchestra and marching", hand:"Hand percussion"};
