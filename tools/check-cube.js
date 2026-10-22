@@ -123,6 +123,16 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
     ok(dimMid > 20 && await dimNow() === 0, `${name}: while a row turns the rest steps back (${dimMid} stickers), and comes back after`);
     ok(await hist(p) === 1 && await view() === home, `${name}: dragging a row turns it, and the view stays put`);
     await p.tap("#stUndo"); await p.waitForTimeout(700); ok(await hist(p) === 0, `${name}: Undo on the cube takes it back`);
+    /* AOG-CUBE-SETTLE-V1: a quick short flick finishes the turn; the same short distance, slow and held, does not */
+    for (const [gap, hold, want] of [[0, 0, 1], [140, 220, 0]]) {
+      await p.evaluate(() => scrollTo(0, 0));
+      const s2 = await p.evaluate(() => { const C = AOGCube, c = AOGCubeLab.cube, i = c.P.findIndex(q => C.eqV(c.pos(q), [1, 0, 1])); const r = document.querySelector(`.face[data-i="${i}"][data-f="F"] i`).getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.y + r.height / 2, w: r.width }; });
+      const h0 = await hist(p), at = (gap ? [.06, .18, .34] : [.1, .34]).map(f => f * s2.w);   /* about 10° in all: short of the 12° a slow drag needs */
+      await p.tp("touchStart", [[s2.x, s2.y]]); for (const d of at) { await p.tp("touchMove", [[s2.x, s2.y - d]]); if (gap) await p.waitForTimeout(gap); }
+      if (hold) await p.waitForTimeout(hold); await p.tp("touchEnd", []); await p.waitForTimeout(700);
+      ok(await hist(p) - h0 === want, `${name}: a short ${want ? "quick flick finishes the turn" : "slow drag, held, goes back"} (${await hist(p) - h0} move)`);
+      if (want) { await p.tap("#stUndo"); await p.waitForTimeout(700); }
+    }
     /* the steering wheel: a finger on a middle square, circling it */
     let wheels = 0;
     for (const [dir, face] of [[[0, 0, 1], "F"], [[0, 1, 0], "U"], [[1, 0, 0], "R"]]) for (const sg of [1, -1]) {
@@ -144,6 +154,21 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
       await p.tp("touchEnd", []); await p.waitForTimeout(600);
       ok(await screenCube(p) === want, `${name}: two fingers swiped ${dx ? "left" : "up"} turn the whole cube (${mv})`);
     }
+    /* AOG-CUBE-GOALPIC-V1: each step shows what the cube looks like when it is done (colored stickers on its two sides) */
+    const pics = await p.evaluate(() => { const out = []; for (const i of [2, 3, 4, 5, 6, 7, 8, 11, 12, 13]) {
+      document.querySelector(`#lessonRow [data-lesson="${i}"]`).click();
+      const g = [...document.querySelectorAll("#panel .goalpic .gp")].map(x => [...x.children].filter(s => s.style.background && !/154, 161, 170/.test(s.style.background)).length); out.push(g.join("+")); }
+      document.querySelector('#lessonRow [data-lesson="0"]').click(); return out.join(" "); });
+    ok(pics === "5+2 9+4 9+6 5+6 9+6 9+8 9+9 9+6 9+6 9+9", `${name}: each step shows its goal, the finished pieces in color (${pics})`);
+    /* AOG-CUBE-CALM-V1: Meet the cube's hands-on list ticked each way the hands just moved it */
+    const G = await p.evaluate(() => JSON.parse(localStorage.getItem("aog.cube.v1")).gest || {});
+    ok(G.row && G.look && G.wheel && G.two, `${name}: Meet the cube ticks each way the hands moved it (${Object.keys(G).join(", ")})`);
+    if (vp.width < 900) {
+      const cl = await p.evaluate(() => ({ open: document.getElementById("tools").open, dots: document.querySelectorAll("#panel .path span:not(.gap)").length }));
+      ok(!cl.open && cl.dots === 14, `${name}: the turn buttons and settings wait in a closed drawer; the path shows all ${cl.dots} steps`);
+      await p.evaluate(() => document.querySelector('#lessonRow [data-lesson="1"]').click()); await p.waitForTimeout(250);
+      ok(await p.evaluate(() => document.getElementById("tools").open), `${name}: the drawer opens by itself on the step that asks for the turn buttons`);
+    }
     /* Learn: the lesson in the bar at the bottom, one step at a time, the cube in view above (Jimmy: "the instructions
        are far too down on the screen") */
     if (vp.width < 900) {
@@ -156,6 +181,8 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
       const two = await p.evaluate(() => (document.querySelector("#actBar .ab-move") || {}).textContent || "");
       const first = await p.evaluate(() => (document.querySelector("#panel .steps li") || {}).textContent || "");
       ok(one.shown && one.inView && one.text === first && two !== one.text && two.length > 3, `${name}: Learn shows its steps one at a time in the bar at the bottom, and Next moves on ("${one.text}" → "${two}")`);
+      ok(await p.evaluate(() => getComputedStyle(document.querySelector("#panel ol.steps")).display === "none" && !!document.querySelector("#panel .allsteps summary").offsetHeight),
+        `${name}: the card does not say the steps again; See all the steps is one tap away`);
       await p.evaluate(() => { document.getElementById("stage").scrollIntoView({ block: "start" }); });
       const fits = await p.evaluate(() => { const st = document.getElementById("stage").getBoundingClientRect(), br = document.getElementById("actBar").getBoundingClientRect(); return st.top >= 0 && st.bottom <= br.top + 2; });
       ok(fits, `${name}: the whole cube and the lesson bar fit on the screen together`);
