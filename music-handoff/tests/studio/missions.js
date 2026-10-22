@@ -90,7 +90,7 @@ async function sheetMT(p) { if (await p.evaluate(() => !!document.getElementById
     let s = await ST(p), v = await slipView(p);
     ok(s && s.done.join() === "started" && asked.length === 1 && v && /Misión cumplida: empezaste una canción\./.test(v.text) && /Siguiente: Activa ♫ Toca encima/.test(v.text),
       `iPhone: a vibe picked ticks "I can start a song", and one warm line says so and what is next: "${v && v.text}"`);
-    ok(v && v.tick && v.anim === "none" && /^0s/.test(v.trans) && v.host === "tp-say" && v.r[0] >= 0 && v.r[2] <= v.iw && v.min >= 44 && v.sw <= v.iw,
+    ok(v && v.tick && v.anim === "none" && /^0s/.test(v.trans) && v.host === "sh-main" && v.r[0] >= 0 && v.r[2] <= v.iw && v.min >= 44 && v.sw <= v.iw,
       `iPhone: the line is calm (a tick, no animation), sits just above the desk, fits, its keys 44 px: ${JSON.stringify(v)}`);
     let pc = await p.evaluate(`(${PROBE})()`), pk = await p.evaluate(`(${CALM})()`);
     ok(!pc.length && !pk.length, `iPhone, dark: the line reads (${pc.length} ${JSON.stringify(pc.slice(0, 2))}) and the page is calm (${pk.join("; ") || "ok"})`);
@@ -98,7 +98,7 @@ async function sheetMT(p) { if (await p.evaluate(() => !!document.getElementById
     ok(v2 && JSON.stringify(v2.r) === JSON.stringify(v.r), `iPhone: three seconds later it is still there, and has not moved`);
     /* 3 · a tap in the room while ♫ Play along plays */
     const along = await p.evaluate(() => AOGStudioShell.along().on);
-    const fr = await p.evaluate(() => { const r = document.getElementById("room").getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height * 0.35 }; });
+    const fr = await p.evaluate(() => { const r = document.getElementById("room").getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height * 0.7 }; });
     await p.mouse.click(fr.x, fr.y); await W(900);
     s = await ST(p); v = await slipView(p);
     ok(along && s.done.indexOf("playedalong") >= 0 && v && /tocaste encima de tu ritmo/.test(v.text), `iPhone: a tap in the Piano while ♫ Play along plays ticks "I can play over my beat" (a tap in the room leaves the line): "${v && v.text}"`);
@@ -137,7 +137,7 @@ async function sheetMT(p) { if (await p.evaluate(() => !!document.getElementById
     ok((await done(p)).indexOf("shared") >= 0, `iPhone: Share it ticks "I can send my song to a friend"`);
     await p.click("#lbBack"); await W(500);
     v = await slipView(p);
-    ok(v && /Misión cumplida: enviaste tu canción a un amigo\./.test(v.text) && v.host === "tp-say", `iPhone: back in the Studio, the line says the mission done in Listen back: "${v && v.text}"`);
+    ok(v && /Misión cumplida: enviaste tu canción a un amigo\./.test(v.text) && v.host === "sh-main", `iPhone: back in the Studio, the line says the mission done in Listen back: "${v && v.text}"`);
     /* 6 · the event: from the Studio's window, from a room's, a bad name; a lick from the room's recorder */
     await p.evaluate(() => window.dispatchEvent(new CustomEvent("aog-studio-did", { detail: { what: "nonsense" } })));
     await p.evaluate(() => window.dispatchEvent(new CustomEvent("aog-studio-did", { detail: { what: "remixopened" } }))); await W(300);

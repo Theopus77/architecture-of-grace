@@ -8,9 +8,10 @@
      passes it on. The ids are the "what"s: started, playedalong, recorded, added, listenedback, sang, lick, songchanged, ownbeat,
      mixed, shared, remixopened. Another build may fire any of them, e.g.
        window.dispatchEvent(new CustomEvent("aog-studio-did", { detail: { what: "shared" } }));
-   · A mission done shows one warm line on a paper slip just above the desk (inside the vocal booth when it is open; as the last line
-     of ▶ Listen back when that is open): a small tick, "Mission done: …", and what to try next. No confetti, no sound, nothing moves;
-     it stays until it is tapped away or the next Studio key is pressed.
+   · A mission done shows one warm line on a paper slip at the top of the room's window (inside the vocal booth when it is open; as
+     the last line of ▶ Listen back when that is open and has room, else back in the Studio when it closes): a small tick, "Mission
+     done: …", and what to try next. No confetti, no sound, nothing moves; it stays until it is tapped away or the next Studio key is
+     pressed (playing in the room leaves it).
    · Six remix challenges, ticked by hand ("I did it ✓"; honest, nothing checks).
    · Every mission and challenge has one "Why it works" line: a producer's tip in plain words.
    · The sheet (Missions and challenges) opens from My Track's sheet, the ✦ Start a song sheet and the slip. Its last key, Start the
@@ -137,6 +138,9 @@
     "#msDone .ms-k{flex:0 0 auto;min-height:44px;min-width:44px;padding:0 .8rem;border-radius:9px;border:1px solid #b9a988;background:#fffaf0;color:#1f1a12;",
     "  font:800 .92rem/1.1 Inter,system-ui,sans-serif;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}",
     "#msDone .ms-k:focus-visible,#msSheet button:focus-visible{outline:3px solid #b9822a;outline-offset:2px}",
+    /* in the Studio: a slip laid at the top of the room's window (the keys you play are lower down) */
+    "main.sh-main{position:relative}",
+    "main.sh-main>#msDone{position:absolute;z-index:6;top:10px;left:50%;transform:translateX(-50%);width:max-content;max-width:calc(100% - 24px)}",
     ".mb-in #msDone{grid-column:1/-1;max-width:none}",
     /* the line at the end of ▶ Listen back (dark, like the view) */
     "#msLb{margin:2px 0 0;padding-top:10px;border-top:1px solid rgba(255,236,200,.14);font:500 .98rem/1.35 Inter,system-ui,sans-serif;color:#efe2c6;text-align:inherit}",
@@ -238,7 +242,7 @@
     }
     if (!m) return;   /* "Next mission" is said only in Listen back; elsewhere the slip says a mission is done */
     var s = slipBuild(), c = counts();
-    var host = h === "booth" ? D.querySelector("#aogMicBooth .mb-in") : D.querySelector("#mt .tp-say");
+    var host = h === "booth" ? D.querySelector("#aogMicBooth .mb-in") : D.querySelector("main.sh-main");   /* the top of the room: the keys you play are lower down */
     if (!host) host = D.body;
     if (s.parentNode !== host) host.appendChild(s);
     s.innerHTML = '<span class="ms-tk" aria-hidden="true">✓</span><p id="msDoneT"><b>' + esc(w("doneP")) + "</b> " + esc(L(m.did)) +
