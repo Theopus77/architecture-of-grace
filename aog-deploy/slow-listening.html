@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><style id="aog-first-paint">/* AOG-ONE-PAINT-V1 */html{background:#F7F2E6}html[data-theme="dark"]{background:#0A1E33}html:not(.aog-ready) body{visibility:hidden;animation:aogOnePaint 0s linear 1.1s forwards}@keyframes aogOnePaint{to{visibility:visible}}@media print{html:not(.aog-ready) body{visibility:visible;animation:none}}</style><script>/* AOG-LIGHT-START-V1 */(function(){var h=document.documentElement;if(!h.getAttribute("data-theme"))h.setAttribute("data-theme","light");})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="aog-sync-config.js"></script><!-- same-origin and optional; a 404 changes nothing -->
+<script>(function(){var t="light";try{if(localStorage.getItem("aog.theme.lightstart.v1")==="1"&&localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);if(t==="dark")document.documentElement.classList.add("dark");})();</script>
+<title>Slow Listening — Architecture of Grace</title>
+<meta name="description" content="Learn any song by ear: open your own recording, loop one phrase, slow it down without changing the pitch, split it into parts, and see the notes sounding now.">
+<link rel="canonical" href="https://architectureofgrace.com/slow-listening">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Architecture of Grace">
+<meta property="og:title" content="Slow Listening — Architecture of Grace">
+<meta property="og:description" content="Loop a phrase, slow it down, hear each part, and find the notes by ear.">
+<meta property="og:url" content="https://architectureofgrace.com/slow-listening">
+<meta property="og:image" content="https://architectureofgrace.com/og-science.png?v=1">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#0A1E33">
+<meta name="robots" content="noindex">
+<!-- AOG-SLOW-LISTEN-V1 (2026-10-22) — Jimmy: "DO number 1 and make it a supreme top of this world product." The tool
+     musicians use to learn a song by ear, for the song lessons (/runaway, /bad-moon-rising, /shoes-cars-and-soft-drinks,
+     /day-one) and any song a learner owns.
+     · Open your own recording. It is read on this device, never sent anywhere, and kept in IndexedDB "aog-slow" so it
+       opens again next time. Decoded with an OfflineAudioContext (no sound engine runs to read it).
+     · A waveform: drag across it to pick a loop, tap to jump. Start/End at the playhead, nudge by a tenth of a second.
+     · Speed 25–100 % with the pitch kept (an <audio> element, preservesPitch), a pause between repeats to hum it back.
+     · Split into parts (aog-stems.js, loaded on that first press, the site's own on-device splitter): drums, bass, voice
+       and the rest, each with its own level; "Hear the tune" and "No drums" set them in one tap. The mix is made in
+       slices (AOGStems.mixInto) and played the same slow way.
+     · Notes sounding now: the strongest notes at the playhead (a 4096-point FFT folded into twelve notes), lit on a
+       keyboard. The learner still decides which one is the tune: this is an aid to the ear, not a transcription.
+     · Saved loops, by name, per song (localStorage aog.slow.loops.v1).
+     · Silent until used: no media until Play; animation frames only while playing; pauses on aog-hush and a hidden tab. -->
+<style>
+:root{
+  --ground:#F5F1E8; --field:#FFFFFF; --field-2:#EFEAE0;
+  --ink:#1D2733; --ink-soft:#57626F;
+  --navy:#1B3A5F; --rule:rgba(29,39,51,.16); --rule-soft:rgba(29,39,51,.08);
+  --a:#8A4A1E; --a-wash:rgba(138,74,30,.10);
+  --wave:#7F8B97; --wave-in:#1B3A5F; --loop:rgba(184,137,58,.22); --loop-edge:#8A6420; --head:#B3261E;
+  --ok:#2E6B4F; --lit:#F2C46B;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#12161C; --field:#1A2029; --field-2:#222A34;
+    --ink:#E9EEF4; --ink-soft:#A3AFBC;
+    --navy:#9CC2E8; --rule:rgba(233,238,244,.18); --rule-soft:rgba(233,238,244,.09);
+    --a:#E8A86A; --a-wash:rgba(232,168,106,.12);
+    --wave:#6B7785; --wave-in:#9CC2E8; --loop:rgba(214,168,82,.22); --loop-edge:#D6A852; --head:#FF8A80;
+    --ok:#79C79E; --lit:#D6A852;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#12161C; --field:#1A2029; --field-2:#222A34;
+  --ink:#E9EEF4; --ink-soft:#A3AFBC;
+  --navy:#9CC2E8; --rule:rgba(233,238,244,.18); --rule-soft:rgba(233,238,244,.09);
+  --a:#E8A86A; --a-wash:rgba(232,168,106,.12);
+  --wave:#6B7785; --wave-in:#9CC2E8; --loop:rgba(214,168,82,.22); --loop-edge:#D6A852; --head:#FF8A80;
+  --ok:#79C79E; --lit:#D6A852;
+}
+*{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{margin:0; background:var(--ground); color:var(--ink); font:400 1.04rem/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+.wrap{max-width:56rem; margin:0 auto; padding:0 16px 48px;}
+h1,h2,h3{margin:0; font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-weight:600; text-wrap:balance;}
+.cmast{padding-top:22px;}
+.cmast .k{font-weight:700; font-size:.78rem; letter-spacing:.12em; text-transform:uppercase;}
+.cmast h1{font-size:2.1rem; line-height:1.15; margin:.1em 0 .3em;}
+.cdeck{max-width:62ch; margin:.4em 0;}
+.hubline{margin:.4em 0 0; font-size:.95rem;} .hubline a{color:inherit;}
+.card{background:var(--field); border:1px solid var(--rule); border-radius:14px; padding:16px; margin:16px 0;}
+.card h2{font-size:1.3rem; margin-bottom:.4em;}
+.small{font-size:.92rem; color:var(--ink-soft);}
+.row{display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:.5em 0;}
+.btn{min-height:44px; padding:9px 14px; border-radius:10px; border:1px solid var(--navy); background:transparent; color:var(--navy);
+  font:700 1rem/1.3 inherit; cursor:pointer;}
+.btn.main{background:var(--navy); color:var(--ground);}
+.btn[aria-pressed="true"]{background:var(--navy); color:var(--ground);}
+.btn:disabled{opacity:.45; cursor:default;}
+.btn.big{min-width:120px; font-size:1.1rem;}
+.lbl{font-weight:700; font-size:.95rem; margin-right:4px;}
+.song{font-weight:700;}
+.time{font:700 1.05rem/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; color:var(--ink);}
+.wavebox{position:relative; margin:10px 0 6px; border:1px solid var(--rule); border-radius:10px; background:var(--field-2); overflow:hidden; touch-action:none;}
+#wave{display:block; width:100%; height:140px; cursor:crosshair;}
+.wavehint{font-size:.9rem; color:var(--ink-soft); margin:.2em 0 0;}
+input[type=range]{width:min(320px,100%); accent-color:var(--navy); min-height:32px;}
+input[type=text],select{font:inherit; font-size:16px; min-height:44px; padding:8px 10px; border-radius:8px; border:1px solid var(--rule); background:var(--ground); color:var(--ink);}
+.speeds{display:flex; flex-wrap:wrap; gap:6px;}
+.speeds .btn{min-width:60px; padding:9px 10px;}
+.parts{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; margin:.6em 0;}
+.part{border:1px solid var(--rule); border-radius:10px; padding:10px; background:var(--field-2);}
+.part b{display:block; margin-bottom:4px;}
+.part input{width:100%;}
+.status{font-weight:700; color:var(--ok); min-height:1.5em; margin:.3em 0;}
+.keys{display:block; width:100%; max-width:460px; height:auto; margin:.4em 0;}
+.keys .w{fill:#FFFFFF; stroke:#1D2733; stroke-width:1.2;} .keys .b{fill:#1D2733;}
+.keys .on{fill:var(--lit);} .keys text{font:700 12px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; fill:#1D2733;}
+.keys .b + text, .keys text.bt{fill:#FFFFFF;}
+.notes{font:700 1.4rem/1.3 "Iowan Old Style",Palatino,Georgia,serif; min-height:1.4em;}
+ul.loops{list-style:none; padding:0; margin:.4em 0;}
+ul.loops li{display:flex; flex-wrap:wrap; gap:8px; align-items:center; padding:8px 0; border-top:1px solid var(--rule-soft);}
+ul.loops li:first-child{border-top:0;}
+ul.loops .nm{flex:1; min-width:8em; font-weight:700;}
+.hide{display:none !important;}
+details.help summary{cursor:pointer; font-weight:700; min-height:44px; display:flex; align-items:center;}
+details.help ol{margin:.3em 0; padding-left:1.3em;}
+@media (max-width:620px){ .parts{grid-template-columns:repeat(2,minmax(0,1fr));} .cmast h1{font-size:1.75rem;} #wave{height:120px;} }
+</style>
+</head>
+<body>
+<script src="/aog-topbar.js"></script>
+<script src="/aog-grace.js" defer></script>
+
+<div class="wrap">
+<header class="cmast">
+  <div class="k"><span data-en="The Recording Studio · Learn by ear" data-es="El estudio de grabación · Aprende de oído">The Recording Studio · Learn by ear</span></div>
+  <h1><span data-en="Slow listening" data-es="Escucha lenta">Slow listening</span></h1>
+  <p class="cdeck"><span data-en="Open a song you own. Loop one phrase, slow it down, and find the notes by ear. The song stays on this device." data-es="Abre una canción que tengas. Repite una frase, hazla más lenta y encuentra las notas de oído. La canción se queda en este dispositivo.">Open a song you own. Loop one phrase, slow it down, and find the notes by ear. The song stays on this device.</span></p>
+  <p class="hubline"><a href="/the-studio"><span data-en="← The Recording Studio" data-es="← El estudio de grabación">← The Recording Studio</span></a></p>
+</header>
+
+<section class="card" id="openCard">
+  <h2><span data-en="1 · Open your song" data-es="1 · Abre tu canción">1 · Open your song</span></h2>
+  <div class="row">
+    <label class="btn main" for="file" id="fileBtn"><span data-en="Open my song" data-es="Abrir mi canción">Open my song</span></label>
+    <input type="file" id="file" accept="audio/*,.mp3,.m4a,.wav,.aac,.ogg,.flac" class="hide">
+    <button type="button" class="btn hide" id="reopen"></button>
+  </div>
+  <p class="status" id="openSt" role="status" aria-live="polite"></p>
+  <p class="small"><span data-en="MP3, M4A or WAV. A recording of your own record works: a phone voice memo is fine." data-es="MP3, M4A o WAV. Sirve una grabación de tu propio disco: una nota de voz del teléfono está bien.">MP3, M4A or WAV. A recording of your own record works: a phone voice memo is fine.</span></p>
+</section>
+
+<section class="card hide" id="playCard">
+  <h2><span data-en="2 · Pick a phrase and loop it" data-es="2 · Elige una frase y repítela">2 · Pick a phrase and loop it</span></h2>
+  <div class="row"><span class="song" id="songName"></span></div>
+  <div class="wavebox"><canvas id="wave" aria-label="The song as a picture of its sound. Drag across it to pick a loop; tap to jump there."></canvas></div>
+  <p class="wavehint"><span data-en="Drag across the picture to pick a loop. Tap to jump to a spot." data-es="Arrastra sobre el dibujo para elegir un bucle. Toca para saltar a un punto.">Drag across the picture to pick a loop. Tap to jump to a spot.</span></p>
+  <div class="row">
+    <button type="button" class="btn main big" id="play"></button>
+    <button type="button" class="btn" id="toA"><span data-en="⟲ Loop start" data-es="⟲ Inicio del bucle">⟲ Loop start</span></button>
+    <button type="button" class="btn" id="loopBtn" aria-pressed="true"><span data-en="Loop" data-es="Repetir">Loop</span></button>
+    <span class="time" id="time">0:00.0</span>
+  </div>
+  <div class="row">
+    <span class="lbl"><span data-en="Loop:" data-es="Bucle:">Loop:</span></span>
+    <button type="button" class="btn" id="setA"><span data-en="[ Start here" data-es="[ Empieza aquí">[ Start here</span></button>
+    <button type="button" class="btn" id="aDn" aria-label="Start a little earlier">−</button>
+    <button type="button" class="btn" id="aUp" aria-label="Start a little later">+</button>
+    <button type="button" class="btn" id="setB"><span data-en="End here ]" data-es="Termina aquí ]">End here ]</span></button>
+    <button type="button" class="btn" id="bDn" aria-label="End a little earlier">−</button>
+    <button type="button" class="btn" id="bUp" aria-label="End a little later">+</button>
+    <span class="time" id="loopTime"></span>
+  </div>
+  <div class="row">
+    <span class="lbl"><span data-en="Pause between repeats:" data-es="Pausa entre repeticiones:">Pause between repeats:</span></span>
+    <select id="gap"><option value="0">0 s</option><option value="1">1 s</option><option value="2">2 s</option><option value="3">3 s</option></select>
+    <span class="small"><span data-en="Time to hum it back." data-es="Tiempo para tararearla.">Time to hum it back.</span></span>
+  </div>
+</section>
+
+<section class="card hide" id="speedCard">
+  <h2><span data-en="3 · Slow it down" data-es="3 · Hazla más lenta">3 · Slow it down</span></h2>
+  <p class="small"><span data-en="Slower, but the notes stay the same: what you find is still right at full speed." data-es="Más lenta, pero las notas no cambian: lo que encuentres sigue bien a velocidad normal.">Slower, but the notes stay the same: what you find is still right at full speed.</span></p>
+  <div class="speeds" id="speeds" role="group" aria-label="Speed"></div>
+  <div class="row"><input type="range" id="speed" min="25" max="100" step="1" value="100" aria-label="Speed"><span class="time" id="speedV">100 %</span></div>
+</section>
+
+<section class="card hide" id="partsCard">
+  <h2><span data-en="4 · Hear one part" data-es="4 · Oye una parte">4 · Hear one part</span></h2>
+  <p class="small"><span data-en="Split the song into drums, bass, voice and the rest (guitars, keys and more), right on this device. It takes a minute." data-es="Separa la canción en batería, bajo, voz y el resto (guitarras, teclados y más), aquí en este dispositivo. Tarda un minuto.">Split the song into drums, bass, voice and the rest (guitars, keys and more), right on this device. It takes a minute.</span></p>
+  <div class="row">
+    <button type="button" class="btn main" id="split"><span data-en="Split into parts" data-es="Separar en partes">Split into parts</span></button>
+    <button type="button" class="btn hide" id="splitStop"><span data-en="Stop" data-es="Parar">Stop</span></button>
+  </div>
+  <p class="status" id="splitSt" role="status" aria-live="polite"></p>
+  <div id="mixer" class="hide">
+    <div class="row">
+      <button type="button" class="btn" id="pTune"><span data-en="Hear the tune" data-es="Oír la melodía">Hear the tune</span></button>
+      <button type="button" class="btn" id="pNoDrums"><span data-en="No drums" data-es="Sin batería">No drums</span></button>
+      <button type="button" class="btn" id="pBass"><span data-en="Just the bass" data-es="Solo el bajo">Just the bass</span></button>
+      <button type="button" class="btn" id="pAll"><span data-en="The whole song" data-es="Toda la canción">The whole song</span></button>
+    </div>
+    <div class="parts" id="parts"></div>
+  </div>
+</section>
+
+<section class="card hide" id="notesCard">
+  <h2><span data-en="5 · Notes sounding now" data-es="5 · Notas que suenan ahora">5 · Notes sounding now</span></h2>
+  <p class="small"><span data-en="Pause on a note, then press the button. The strongest notes light up. Hum along: the one that matches your voice is the tune." data-es="Pausa en una nota y pulsa el botón. Se iluminan las notas más fuertes. Tararea: la que coincide con tu voz es la melodía.">Pause on a note, then press the button. The strongest notes light up. Hum along: the one that matches your voice is the tune.</span></p>
+  <div class="row"><button type="button" class="btn main" id="whatNotes"><span data-en="What notes are these?" data-es="¿Qué notas son?">What notes are these?</span></button></div>
+  <div class="notes" id="notesOut" aria-live="polite"></div>
+  <svg class="keys" id="kb" viewBox="0 0 350 120" role="img" aria-label="One octave of piano keys; the notes sounding now light up"></svg>
+</section>
+
+<section class="card hide" id="loopsCard">
+  <h2><span data-en="6 · My loops" data-es="6 · Mis bucles">6 · My loops</span></h2>
+  <div class="row">
+    <input type="text" id="loopName" maxlength="40" autocomplete="off" aria-label="Loop name">
+    <button type="button" class="btn" id="saveLoop"><span data-en="Save this loop" data-es="Guardar este bucle">Save this loop</span></button>
+  </div>
+  <ul class="loops" id="loops"></ul>
+  <p class="small"><span data-en="Name each phrase (Verse 1, the riff …). They stay on this device, with this song." data-es="Ponle nombre a cada frase (Estrofa 1, el riff …). Se quedan en este dispositivo, con esta canción.">Name each phrase (Verse 1, the riff …). They stay on this device, with this song.</span></p>
+</section>
+
+<section class="card">
+  <details class="help">
+    <summary><span data-en="How musicians learn a tune by ear" data-es="Cómo aprenden los músicos una melodía de oído">How musicians learn a tune by ear</span></summary>
+    <ol>
+      <li><span data-en="Loop one short phrase: two or three seconds." data-es="Repite una frase corta: dos o tres segundos.">Loop one short phrase: two or three seconds.</span></li>
+      <li><span data-en="Slow it to 60 or 70 %. Hum along until you can hum it alone." data-es="Ponla al 60 o 70 %. Tararea con ella hasta que puedas tararearla solo.">Slow it to 60 or 70 %. Hum along until you can hum it alone.</span></li>
+      <li><span data-en="Pause on the first note. Press What notes are these? and find the one your voice matches." data-es="Pausa en la primera nota. Pulsa ¿Qué notas son? y busca la que coincide con tu voz.">Pause on the first note. Press What notes are these? and find the one your voice matches.</span></li>
+      <li><span data-en="Play it in the Studio. Then the next note: up or down, a step or a jump?" data-es="Tócala en el estudio. Luego la siguiente nota: ¿sube o baja, un paso o un salto?">Play it in the Studio. Then the next note: up or down, a step or a jump?</span></li>
+      <li><span data-en="When the phrase is right, speed back up to 100 % and play along." data-es="Cuando la frase esté bien, vuelve al 100 % y toca junto con ella.">When the phrase is right, speed back up to 100 % and play along.</span></li>
+    </ol>
+    <p class="small"><span data-en="Keys on a computer: Space plays and pauses, [ and ] set the loop, L turns the loop on and off, ← and → jump a second." data-es="Teclas en una computadora: Espacio toca y pausa, [ y ] ponen el bucle, L activa y quita el bucle, ← y → saltan un segundo.">Keys on a computer: Space plays and pauses, [ and ] set the loop, L turns the loop on and off, ← and → jump a second.</span></p>
+  </details>
+</section>
+</div>
+
+<script>
+/* AOG-SLOW-LISTEN-V1 — see the note in <head>. */
+(function(){
+  "use strict";
+  var $ = function(id){ return document.getElementById(id); };
+  function es(){ return (document.documentElement.lang || "").slice(0,2) === "es"; }
+  function W(en, sp){ return es() ? sp : en; }
+  var NOTE_EN = ["C","C♯","D","E♭","E","F","F♯","G","A♭","A","B♭","B"], NOTE_ES = ["Do","Do♯","Re","Mi♭","Mi","Fa","Fa♯","Sol","La♭","La","Si♭","Si"];
+  var PART_NAMES = { drums:["Drums","Batería"], bass:["Bass","Bajo"], voice:["Voice","Voz"], other:["The rest","El resto"] };
+
+  var S = { name:"", key:"", buf:null, srcBuf:null, audio:null, url:"", a:0, b:0, loop:true, gap:0, speed:1, playing:false,
+            raf:0, gapT:0, parts:null, gains:{drums:1,bass:1,voice:1,other:1}, mixing:0, splitCtl:null, peaks:null, drag:null };
+
+  /* ── storage (every read and write may fail: private mode, no space) ── */
+  var LKEY = "aog.slow.loops.v1", PKEY = "aog.slow.prefs.v1";
+  function lsGet(k, d){ try { var v = JSON.parse(localStorage.getItem(k) || "null"); return v == null ? d : v; } catch(e){ return d; } }
+  function lsSet(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} }
+  function idb(){ return new Promise(function(ok){ var r; try { r = indexedDB.open("aog-slow", 1); } catch(e){ ok(null); return; }
+    r.onupgradeneeded = function(){ try { r.result.createObjectStore("songs"); } catch(e){} };
+    r.onsuccess = function(){ ok(r.result); }; r.onerror = function(){ ok(null); }; }); }
+  function idbPut(v){ return idb().then(function(db){ if(!db) return; return new Promise(function(ok){ try { var t = db.transaction("songs","readwrite"); t.objectStore("songs").put(v, "last"); t.oncomplete = ok; t.onerror = ok; } catch(e){ ok(); } }); }); }
+  function idbGet(){ return idb().then(function(db){ if(!db) return null; return new Promise(function(ok){ try { var q = db.transaction("songs").objectStore("songs").get("last"); q.onsuccess = function(){ ok(q.result || null); }; q.onerror = function(){ ok(null); }; } catch(e){ ok(null); } }); }); }
+
+  var prefs = lsGet(PKEY, {}); if (prefs.gap >= 0 && prefs.gap <= 3) S.gap = prefs.gap; if (prefs.speed >= 0.25 && prefs.speed <= 1) S.speed = prefs.speed;
+  $("gap").value = String(S.gap);
+
+  function fmt(t){ t = Math.max(0, t || 0); var m = Math.floor(t / 60), s = t - m * 60; return m + ":" + (s < 10 ? "0" : "") + s.toFixed(1); }
+  function say(id, txt){ $(id).textContent = txt || ""; }
+
+  /* ── open a song ── */
+  $("file").addEventListener("change", function(){ var f = this.files && this.files[0]; if (f) openBlob(f, f.name, true); this.value = ""; });
+  idbGet().then(function(v){ if (v && v.blob) { var b = $("reopen"); b.classList.remove("hide"); b.textContent = W("Open again: ", "Abrir otra vez: ") + v.name;
+    b.onclick = function(){ openBlob(v.blob, v.name, false); }; } });
+
+  function openBlob(blob, name, keep){
+    stop(); say("openSt", W("Opening the song…", "Abriendo la canción…"));
+    blob.arrayBuffer().then(function(ab){
+      var Off = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+      var oc = new Off(2, 44100, 44100);
+      return new Promise(function(ok, no){ var p = oc.decodeAudioData(ab, ok, no); if (p && p.then) p.then(ok, no); });
+    }).then(function(buf){
+      S.buf = buf; S.srcBuf = buf; S.name = name; S.key = name + "|" + Math.round(buf.duration * 10);
+      S.parts = null; S.gains = {drums:1,bass:1,voice:1,other:1};
+      S.a = 0; S.b = buf.duration; S.loop = false;
+      setSource(blob);
+      $("songName").textContent = "♪ " + name + " · " + fmt(buf.duration);
+      ["playCard","speedCard","partsCard","notesCard","loopsCard"].forEach(function(id){ $(id).classList.remove("hide"); });
+      $("mixer").classList.add("hide"); say("splitSt", ""); $("split").disabled = false;
+      peaksFrom(buf); draw(); paintLoop(); paintLoops(); paintPlay();
+      say("openSt", W("Ready. Drag across the picture to pick a phrase.", "Lista. Arrastra sobre el dibujo para elegir una frase."));
+      if (keep) idbPut({ name: name, blob: blob });
+    }).catch(function(){ say("openSt", W("This file did not open. Try an MP3, M4A or WAV.", "Este archivo no se abrió. Prueba un MP3, M4A o WAV.")); });
+  }
+
+  function setSource(blob){
+    var keepT = S.audio ? S.audio.currentTime : S.a, was = S.playing;
+    if (S.audio) { try { S.audio.pause(); } catch(e){} S.audio.removeAttribute("src"); try { S.audio.load(); } catch(e){} }
+    if (S.url) { try { URL.revokeObjectURL(S.url); } catch(e){} }
+    S.url = URL.createObjectURL(blob);
+    var au = S.audio || document.createElement("audio");
+    au.preload = "auto"; au.preservesPitch = true; au.mozPreservesPitch = true; au.webkitPreservesPitch = true;
+    au.src = S.url; au.playbackRate = S.speed;
+    au.onended = function(){ S.playing = false; paintPlay(); stopRaf(); };
+    au.addEventListener("loadedmetadata", function once(){ au.removeEventListener("loadedmetadata", once); try { au.currentTime = Math.min(keepT, au.duration || keepT); } catch(e){} au.playbackRate = S.speed; if (was) play(); });
+    S.audio = au; S.playing = false;
+  }
+
+  /* ── the picture of the song ── */
+  var cv = $("wave");
+  function peaksFrom(buf){
+    var n = 1600, ch0 = buf.getChannelData(0), ch1 = buf.numberOfChannels > 1 ? buf.getChannelData(1) : ch0, per = Math.max(1, Math.floor(buf.length / n));
+    var pk = new Float32Array(n), mx = 1e-6;
+    for (var i = 0; i < n; i++) { var m = 0, s = i * per, e = Math.min(buf.length, s + per);
+      for (var j = s; j < e; j += 4) { var v = Math.abs(ch0[j] + ch1[j]) * 0.5; if (v > m) m = v; } pk[i] = m; if (m > mx) mx = m; }
+    for (var k = 0; k < n; k++) pk[k] /= mx;
+    S.peaks = pk;
+  }
+  function css(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim() || "#888"; }
+  function draw(){
+    if (!S.peaks || !S.buf) return;
+    var dpr = window.devicePixelRatio || 1, w = cv.clientWidth, h = cv.clientHeight;
+    if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(h * dpr)) { cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); }
+    var g = cv.getContext("2d"); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, w, h);
+    var D = S.buf.duration, xa = S.a / D * w, xb = S.b / D * w, mid = h / 2;
+    if (S.loop || S.drag) { g.fillStyle = css("--loop"); g.fillRect(xa, 0, Math.max(1, xb - xa), h); }
+    var n = S.peaks.length, cw = css("--wave"), ci = css("--wave-in");
+    for (var x = 0; x < w; x++) { var p = S.peaks[Math.min(n - 1, Math.floor(x / w * n))], t = x / w * D;
+      g.fillStyle = (t >= S.a && t <= S.b && (S.loop || S.drag)) ? ci : cw; var hh = Math.max(1, p * (h * 0.46)); g.fillRect(x, mid - hh, 1, hh * 2); }
+    if (S.loop || S.drag) { g.fillStyle = css("--loop-edge"); g.fillRect(xa - 1, 0, 2, h); g.fillRect(xb - 1, 0, 2, h); }
+    var t0 = S.audio ? S.audio.currentTime : 0; g.fillStyle = css("--head"); g.fillRect(t0 / D * w - 1, 0, 2, h);
+  }
+  function xToT(clientX){ var r = cv.getBoundingClientRect(); return Math.max(0, Math.min(1, (clientX - r.left) / r.width)) * S.buf.duration; }
+  cv.addEventListener("pointerdown", function(e){ if (!S.buf) return; cv.setPointerCapture(e.pointerId); S.drag = { t0: xToT(e.clientX), x0: e.clientX, moved: false }; e.preventDefault(); });
+  cv.addEventListener("pointermove", function(e){ if (!S.drag) return; if (Math.abs(e.clientX - S.drag.x0) > 6) S.drag.moved = true;
+    if (S.drag.moved) { var t = xToT(e.clientX); S.a = Math.min(S.drag.t0, t); S.b = Math.max(S.drag.t0, t); draw(); paintLoop(); } });
+  function endDrag(e){ if (!S.drag) return; var d = S.drag; S.drag = null;
+    if (d.moved && S.b - S.a > 0.15) { S.loop = true; seek(S.a); }
+    else if (!d.moved) { seek(d.t0); }
+    draw(); paintLoop(); }
+  cv.addEventListener("pointerup", endDrag); cv.addEventListener("pointercancel", function(){ S.drag = null; draw(); });
+  window.addEventListener("resize", function(){ draw(); });
+  try { new MutationObserver(function(){ draw(); paintPlay(); paintLoop(); paintParts(); paintLoops(); paintSpeeds(); })
+    .observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme", "lang"] }); } catch(e){}
+
+  /* ── play, pause, loop ── */
+  function paintPlay(){ $("play").textContent = S.playing ? W("❚❚ Pause", "❚❚ Pausa") : W("▶ Play", "▶ Tocar"); }
+  function paintLoop(){ $("loopBtn").setAttribute("aria-pressed", S.loop ? "true" : "false");
+    $("loopTime").textContent = S.buf ? fmt(S.a) + " – " + fmt(S.b) + " (" + (S.b - S.a).toFixed(1) + " s)" : ""; }
+  function seek(t){ if (!S.audio) return; try { S.audio.currentTime = Math.max(0, Math.min(t, (S.buf ? S.buf.duration : t) - 0.01)); } catch(e){} tick(true); }
+  function play(){ if (!S.audio) return; clearTimeout(S.gapT);
+    if (S.loop && (S.audio.currentTime < S.a - 0.05 || S.audio.currentTime >= S.b - 0.02)) { try { S.audio.currentTime = S.a; } catch(e){} }
+    S.audio.playbackRate = S.speed;
+    var p = S.audio.play(); S.playing = true; paintPlay(); startRaf();
+    if (p && p.catch) p.catch(function(){ S.playing = false; paintPlay(); stopRaf(); }); }
+  function pause(){ clearTimeout(S.gapT); if (S.audio) try { S.audio.pause(); } catch(e){} S.playing = false; paintPlay(); stopRaf(); tick(true); }
+  function stop(){ pause(); }
+  function startRaf(){ if (!S.raf) S.raf = requestAnimationFrame(tick); }
+  function stopRaf(){ if (S.raf) cancelAnimationFrame(S.raf); S.raf = 0; }
+  function tick(once){
+    S.raf = 0; if (!S.audio) return;
+    var t = S.audio.currentTime;
+    if (S.playing && S.loop && t >= S.b) {
+      if (S.gap > 0) { try { S.audio.pause(); } catch(e){} try { S.audio.currentTime = S.a; } catch(e){}
+        S.gapT = setTimeout(function(){ if (S.playing) { var p = S.audio.play(); if (p && p.catch) p.catch(function(){}); startRaf(); } }, S.gap * 1000);
+        $("time").textContent = fmt(S.a); draw(); return; }
+      try { S.audio.currentTime = S.a; } catch(e){} t = S.a;
+    }
+    $("time").textContent = fmt(t); draw();
+    if (S.playing && once !== true) S.raf = requestAnimationFrame(tick);
+  }
+  $("play").addEventListener("click", function(){ S.playing ? pause() : play(); });
+  $("toA").addEventListener("click", function(){ seek(S.loop ? S.a : 0); });
+  $("loopBtn").addEventListener("click", function(){ S.loop = !S.loop; paintLoop(); draw(); });
+  function setA(t){ S.a = Math.max(0, Math.min(t, S.b - 0.1)); S.loop = true; paintLoop(); draw(); }
+  function setB(t){ S.b = Math.min(S.buf.duration, Math.max(t, S.a + 0.1)); S.loop = true; paintLoop(); draw(); }
+  $("setA").addEventListener("click", function(){ if (S.audio) setA(S.audio.currentTime); });
+  $("setB").addEventListener("click", function(){ if (S.audio) setB(S.audio.currentTime); });
+  $("aDn").addEventListener("click", function(){ setA(S.a - 0.1); }); $("aUp").addEventListener("click", function(){ setA(S.a + 0.1); });
+  $("bDn").addEventListener("click", function(){ setB(S.b - 0.1); }); $("bUp").addEventListener("click", function(){ setB(S.b + 0.1); });
+  $("gap").addEventListener("change", function(){ S.gap = +this.value || 0; prefs.gap = S.gap; lsSet(PKEY, prefs); });
+
+  /* ── speed, the notes kept ── */
+  var SPEEDS = [50, 60, 70, 75, 80, 90, 100];
+  function paintSpeeds(){ var box = $("speeds"); box.innerHTML = "";
+    SPEEDS.forEach(function(v){ var b = document.createElement("button"); b.type = "button"; b.className = "btn"; b.textContent = v + " %";
+      b.setAttribute("aria-pressed", Math.round(S.speed * 100) === v ? "true" : "false"); b.onclick = function(){ setSpeed(v / 100); }; box.appendChild(b); });
+    $("speed").value = Math.round(S.speed * 100); $("speedV").textContent = Math.round(S.speed * 100) + " %"; }
+  function setSpeed(v){ S.speed = Math.max(0.25, Math.min(1, v)); if (S.audio) S.audio.playbackRate = S.speed; prefs.speed = S.speed; lsSet(PKEY, prefs); paintSpeeds(); }
+  $("speed").addEventListener("input", function(){ setSpeed(+this.value / 100); });
+  paintSpeeds();
+
+  /* ── parts: the site's own splitter, loaded on the first press ── */
+  var stemsP = null;
+  function loadStems(){ if (window.AOGStems) return Promise.resolve(); if (stemsP) return stemsP;
+    stemsP = new Promise(function(ok, no){ var s = document.createElement("script"); s.src = "/aog-stems.js"; s.async = true; s.onload = ok; s.onerror = function(){ stemsP = null; no(); }; document.head.appendChild(s); });
+    return stemsP; }
+  $("split").addEventListener("click", function(){
+    if (!S.buf) return; var ctl = window.AbortController ? new AbortController() : null; S.splitCtl = ctl;
+    $("split").disabled = true; $("splitStop").classList.remove("hide"); pause();
+    say("splitSt", W("Getting ready…", "Preparando…"));
+    loadStems().then(function(){
+      return AOGStems.split(S.srcBuf, { signal: ctl ? ctl.signal : null, onProgress: function(p, key){
+        say("splitSt", (AOGStems.word ? AOGStems.word(key, es() ? "es" : "en") : "") + " " + Math.round(p * 100) + " %"); } });
+    }).then(function(parts){
+      S.parts = parts; $("splitStop").classList.add("hide"); $("mixer").classList.remove("hide");
+      say("splitSt", W("The song is in four parts. Pick what to hear.", "La canción está en cuatro partes. Elige qué oír."));
+      paintParts();
+    }).catch(function(e){
+      $("splitStop").classList.add("hide"); $("split").disabled = false;
+      say("splitSt", e && e.name === "AbortError" ? W("Stopped. The song is as it was.", "Detenido. La canción quedó como estaba.")
+        : e && e.memory ? W("This song is too long to split on this device.", "Esta canción es muy larga para separarla en este dispositivo.")
+        : W("The song did not split. Close other apps and try again.", "La canción no se separó. Cierra otras apps e inténtalo otra vez."));
+    });
+  });
+  $("splitStop").addEventListener("click", function(){ if (S.splitCtl) S.splitCtl.abort(); });
+  function paintParts(){ var box = $("parts"); if (!S.parts) return; box.innerHTML = "";
+    ["voice","other","bass","drums"].forEach(function(k){
+      var d = document.createElement("div"); d.className = "part";
+      var id = "g_" + k, lab = document.createElement("label"); lab.setAttribute("for", id);
+      lab.innerHTML = "<b></b>"; lab.firstChild.textContent = PART_NAMES[k][es() ? 1 : 0] + " · " + Math.round(S.gains[k] * 100) + " %";
+      var r = document.createElement("input"); r.type = "range"; r.id = id; r.min = "0"; r.max = "100"; r.step = "5"; r.value = String(Math.round(S.gains[k] * 100));
+      r.addEventListener("input", function(){ lab.firstChild.textContent = PART_NAMES[k][es() ? 1 : 0] + " · " + this.value + " %"; });
+      r.addEventListener("change", function(){ S.gains[k] = +this.value / 100; remix(); });
+      d.appendChild(lab); d.appendChild(r); box.appendChild(d); }); paintPresets(); }
+  var PRESETS = { pTune:{drums:0, bass:0.2, voice:1, other:1}, pNoDrums:{drums:0, bass:1, voice:1, other:1}, pBass:{drums:0.3, bass:1, voice:0, other:0}, pAll:{drums:1, bass:1, voice:1, other:1} };
+  function paintPresets(){ Object.keys(PRESETS).forEach(function(id){ var g = PRESETS[id], on = ["drums","bass","voice","other"].every(function(k){ return Math.abs(S.gains[k] - g[k]) < 0.01; });
+    $(id).setAttribute("aria-pressed", on ? "true" : "false"); }); }
+  function preset(g){ S.gains = { drums:g.drums, bass:g.bass, voice:g.voice, other:g.other }; paintParts(); remix(); }
+  Object.keys(PRESETS).forEach(function(id){ $(id).addEventListener("click", function(){ preset(PRESETS[id]); }); });
+  function remix(){
+    if (!S.parts) return; var my = ++S.mixing, P = S.parts, n = P.length, ch = 2, out = [new Float32Array(n), new Float32Array(n)];
+    say("splitSt", W("Mixing…", "Mezclando…"));
+    AOGStems.mixInto(P, S.gains, out).then(function(){
+      if (my !== S.mixing) return;
+      var sr = P.sr || P.sampleRate || 44100;
+      var mixed = { duration: n / sr, length: n, numberOfChannels: ch, sampleRate: sr, getChannelData: function(c){ return out[c]; } };
+      S.buf = mixed; setSource(wavBlob(out, sr));
+      say("splitSt", W("Now playing your mix.", "Ahora suena tu mezcla."));
+    }).catch(function(){ say("splitSt", W("The mix did not work. Try again.", "La mezcla no funcionó. Inténtalo otra vez.")); });
+  }
+  function wavBlob(chs, sr){
+    var n = chs[0].length, C = chs.length, ab = new ArrayBuffer(44 + n * C * 2), v = new DataView(ab), o = 44;
+    function str(p, s){ for (var i = 0; i < s.length; i++) v.setUint8(p + i, s.charCodeAt(i)); }
+    str(0, "RIFF"); v.setUint32(4, 36 + n * C * 2, true); str(8, "WAVE"); str(12, "fmt "); v.setUint32(16, 16, true); v.setUint16(20, 1, true);
+    v.setUint16(22, C, true); v.setUint32(24, sr, true); v.setUint32(28, sr * C * 2, true); v.setUint16(32, C * 2, true); v.setUint16(34, 16, true);
+    str(36, "data"); v.setUint32(40, n * C * 2, true);
+    for (var i = 0; i < n; i++) for (var c = 0; c < C; c++) { var s = Math.max(-1, Math.min(1, chs[c][i])); v.setInt16(o, s < 0 ? s * 32768 : s * 32767, true); o += 2; }
+    return new Blob([ab], { type: "audio/wav" });
+  }
+
+  /* ── the notes sounding now: a 4096-point FFT at the playhead, folded into twelve notes ── */
+  function fft(re, im){ var n = re.length, i, j = 0, k, len, t;
+    for (i = 1; i < n; i++) { var bit = n >> 1; for (; j & bit; bit >>= 1) j ^= bit; j ^= bit; if (i < j) { t = re[i]; re[i] = re[j]; re[j] = t; t = im[i]; im[i] = im[j]; im[j] = t; } }
+    for (len = 2; len <= n; len <<= 1) { var ang = -2 * Math.PI / len, wr = Math.cos(ang), wi = Math.sin(ang);
+      for (i = 0; i < n; i += len) { var cr = 1, ci = 0;
+        for (k = 0; k < len / 2; k++) { var a = i + k, b = a + len / 2, xr = re[b] * cr - im[b] * ci, xi = re[b] * ci + im[b] * cr;
+          re[b] = re[a] - xr; im[b] = im[a] - xi; re[a] += xr; im[a] += xi; var nr = cr * wr - ci * wi; ci = cr * wi + ci * wr; cr = nr; } } } }
+  function notesAt(t){
+    var B = S.buf, sr = B.sampleRate, N = 8192, chroma = new Float64Array(12), hits = 0;
+    for (var w = 0; w < 3; w++) {
+      var s0 = Math.max(0, Math.floor((t + w * 0.06) * sr) - N / 2); if (s0 + N > B.length) s0 = Math.max(0, B.length - N);
+      var re = new Float64Array(N), im = new Float64Array(N), c0 = B.getChannelData(0), c1 = B.numberOfChannels > 1 ? B.getChannelData(1) : c0;
+      for (var i = 0; i < N; i++) { var hann = 0.5 - 0.5 * Math.cos(2 * Math.PI * i / (N - 1)); re[i] = ((c0[s0 + i] || 0) + (c1[s0 + i] || 0)) * 0.5 * hann; }
+      fft(re, im);
+      for (var k = 2; k < N / 2; k++) { var f = k * sr / N; if (f < 70 || f > 2100) continue;
+        var mag = Math.sqrt(re[k] * re[k] + im[k] * im[k]), midi = 69 + 12 * Math.log2(f / 440), pc = ((Math.round(midi) % 12) + 12) % 12;
+        var off = Math.abs(midi - Math.round(midi)); chroma[pc] += mag * Math.max(0, 1 - off * 2); }
+      hits++;
+    }
+    var mx = 0; for (var q = 0; q < 12; q++) if (chroma[q] > mx) mx = chroma[q];
+    var order = []; for (var r = 0; r < 12; r++) order.push(r); order.sort(function(x, y){ return chroma[y] - chroma[x]; });
+    return order.filter(function(pc, i){ return i < 3 && mx > 0 && chroma[pc] >= mx * 0.45; });
+  }
+  var WHITE = [0,2,4,5,7,9,11], BLACK = [[1,1],[3,2],[6,4],[8,5],[10,6]];
+  function paintKb(on){
+    var svg = $("kb"), h = "", NM = es() ? NOTE_ES : NOTE_EN;
+    WHITE.forEach(function(pc, i){ h += '<rect class="w' + (on.indexOf(pc) >= 0 ? ' on' : '') + '" x="' + (i * 50) + '" y="0" width="50" height="118"/>' +
+      '<text x="' + (i * 50 + 25) + '" y="108" text-anchor="middle">' + NM[pc] + '</text>'; });
+    BLACK.forEach(function(p){ var x = p[1] * 50 - 16; h += '<rect class="b' + (on.indexOf(p[0]) >= 0 ? ' on' : '') + '" x="' + x + '" y="0" width="32" height="72"/>'; });
+    svg.innerHTML = h;
+  }
+  paintKb([]);
+  $("whatNotes").addEventListener("click", function(){
+    if (!S.buf || !S.audio) return; if (S.playing) pause();
+    var on = notesAt(S.audio.currentTime), NM = es() ? NOTE_ES : NOTE_EN;
+    $("notesOut").textContent = on.length ? on.map(function(pc){ return NM[pc]; }).join("  ·  ") : W("No clear note here. Try a spot a little later.", "Aquí no hay una nota clara. Prueba un poco más adelante.");
+    paintKb(on);
+  });
+
+  /* ── saved loops, per song ── */
+  function loopsAll(){ var v = lsGet(LKEY, {}); return (v && typeof v === "object") ? v : {}; }
+  function paintLoops(){ var ul = $("loops"); ul.innerHTML = ""; if (!S.key) return;
+    $("loopName").placeholder = W("Name this loop", "Nombre de este bucle");
+    (loopsAll()[S.key] || []).forEach(function(L, i){
+      var li = document.createElement("li"), nm = document.createElement("span"); nm.className = "nm"; nm.textContent = L.n + " · " + fmt(L.a) + "–" + fmt(L.b);
+      var go = document.createElement("button"); go.type = "button"; go.className = "btn"; go.textContent = W("▶ Play", "▶ Tocar");
+      go.onclick = function(){ S.a = L.a; S.b = L.b; S.loop = true; paintLoop(); draw(); seek(S.a); play(); };
+      var del = document.createElement("button"); del.type = "button"; del.className = "btn"; del.textContent = W("Delete", "Borrar");
+      del.onclick = function(){ var all = loopsAll(); (all[S.key] || []).splice(i, 1); lsSet(LKEY, all); paintLoops(); };
+      li.appendChild(nm); li.appendChild(go); li.appendChild(del); ul.appendChild(li); }); }
+  $("saveLoop").addEventListener("click", function(){
+    if (!S.key || !S.loop) { $("loopName").focus(); return; }
+    var all = loopsAll(), list = all[S.key] || [], n = ($("loopName").value || "").replace(/[<>]/g, "").trim().slice(0, 40) || (W("Loop ", "Bucle ") + (list.length + 1));
+    list.push({ n: n, a: +S.a.toFixed(2), b: +S.b.toFixed(2) }); all[S.key] = list.slice(-40); lsSet(LKEY, all); $("loopName").value = ""; paintLoops(); });
+
+  /* ── keys on a computer ── */
+  document.addEventListener("keydown", function(e){
+    if (!S.audio || /INPUT|SELECT|TEXTAREA/.test((e.target && e.target.tagName) || "")) return;
+    if (e.key === " ") { e.preventDefault(); S.playing ? pause() : play(); }
+    else if (e.key === "[") setA(S.audio.currentTime); else if (e.key === "]") setB(S.audio.currentTime);
+    else if (e.key === "l" || e.key === "L") { S.loop = !S.loop; paintLoop(); draw(); }
+    else if (e.key === "ArrowLeft") { e.preventDefault(); seek(S.audio.currentTime - 1); } else if (e.key === "ArrowRight") { e.preventDefault(); seek(S.audio.currentTime + 1); }
+  });
+
+  /* ── silent out of sight (AOG-SILENT-V1) ── */
+  document.addEventListener("visibilitychange", function(){ if (document.hidden && S.playing) pause(); });
+  window.addEventListener("aog-hush", function(e){ if (e && e.detail && e.detail.on && S.playing) pause(); });
+  window.addEventListener("pagehide", function(){ if (S.playing) pause(); });
+  paintPlay();
+})();
+</script>
+</body>
+</html>
