@@ -1920,6 +1920,46 @@ window.AOGPadsSetup={
     BOUNCE.out=null; await makeBounce(); if(!BOUNCE.out) throw new Error(BOUNCE.msg||"no loop");
     await $("bStudio").onclick(); if(BOUNCE.msg!=="studio") throw new Error(BOUNCE.msg||"not sent");
     return {bpm:S.bpm, bars:S.bars, at:BOUNCE.out.at};
+  },
+  /* AOG-SHARE-V1 (2026-10-22) — Send to a friend › Send the beat (aog-share.js, in the Studio). recipe(): what a beat link
+     carries: banks A to C (the drums' kits; the chords' and the bass's instrument, key, scale, range and pattern), their hits
+     and pad settings, bars, tempo, swing. Never bank D (it plays recordings) and nothing personal. */
+  recipe(){
+    const L=loopLen(), A=S.banks[0], B=S.banks[1], C=S.banks[2], pads={};
+    Object.keys(S.pads||{}).forEach(k=>{ if(/^[012]:\d+$/.test(k)) pads[k]=padSet(+k.split(":")[0], +k.split(":")[1]); });
+    return {bpm:S.bpm, swing:S.swing, bars:S.bars, kits:[A.kitA, A.kitB, A.kitC],
+      chords:{inst:B.inst, key:B.key, scale:B.scale, oct:B.oct, pat:B.pat||""}, bass:{inst:C.inst, key:C.key, scale:C.scale, oct:C.oct},
+      beat:S.beat && S.beat.sig===bankASig() ? S.beat.id : "",
+      ev:S.ev.filter(e=>e.b>=0 && e.b<3 && e.t<L).map(e=>({b:e.b, p:e.p, t:e.t, v:e.v, len:e.len||0})), pads:pads};
+  },
+  /* load(r): a beat a friend sent, already cleaned by aog-share.js; every name is checked again here against what this machine
+     has (kits, instruments, scales, patterns), anything unknown keeps this machine's own. It stops anything playing, never
+     starts it; then makes the loop and puts it on My Track (as song() does), so 🎤 Sing or rap has it to rap over. The beat
+     that was here is kept on this device (aog.pads.v1.before). */
+  async load(r){
+    if(!r || !Array.isArray(r.ev)) throw new Error("no beat");
+    if(SEQ.on) stop();
+    try{ const was=localStorage.getItem("aog.pads.v1"); if(was) localStorage.setItem("aog.pads.v1.before", was); }catch(e){}
+    const kits=KITS(), A=S.banks[0];
+    ["kitA","kitB","kitC"].forEach((k,i)=>{ const v=r.kits && r.kits[i]; if(kits.indexOf(v)>=0) A[k]=v; });
+    const scaleOk=id=>!!(SCALES[id] || (LIB.SCALES[id] && LIB.SCALES[id].iv));
+    [[1, r.chords], [2, r.bass]].forEach(([bi, x])=>{ if(!x) return; const B=S.banks[bi];
+      if(INST[x.inst]) B.inst=x.inst; if(x.key>=0 && x.key<=11) B.key=x.key|0; if(scaleOk(x.scale)) B.scale=x.scale;
+      if(x.oct>=1 && x.oct<=5) B.oct=x.oct|0; if(bi===1) B.pat=x.pat && PATS.some(P=>P.id===x.pat) ? x.pat : ""; });
+    S.bars=BAR_LENS.indexOf(r.bars)>=0 ? r.bars : 4;
+    S.swing=[50,54,58,62,66].indexOf(r.swing)>=0 ? r.swing : 50;
+    retime(r.bpm);
+    const L=loopLen();
+    S.ev=r.ev.filter(e=>e.b>=0 && e.b<3 && e.p>=0 && e.p<NP && e.t>=0 && e.t<L).slice(0, MAXEV)
+      .map(e=>({b:e.b|0, p:e.p|0, t:e.t|0, v:clamp(+e.v||0.8, 0.05, 1), len:clamp(e.len|0, 0, L)}));
+    Object.keys(S.pads).forEach(k=>{ if(/^[012]:/.test(k)) delete S.pads[k]; });
+    Object.keys(r.pads||{}).forEach(k=>{ const m=/^([012]):(\d+)$/.exec(k), x=r.pads[k]; if(!m || +m[2]>=NP || !x) return;
+      S.pads[k]={vol:clamp(Math.round((+x.vol||0)/5)*5, 0, 150), tune:clamp(x.tune|0, -12, 12), pan:clamp(Math.round((x.pan|0)/10)*10, -100, 100)}; });
+    S.beat=null; if(r.beat && beatById(r.beat)) S.beat={id:r.beat, sig:bankASig(), g:(beatFlat().find(x=>x.b.id===r.beat)||{}).g||""};
+    S.bank=0; S.sel=0; SEQ.undo=[]; changed(); paintAll(); prep(0); prep(1); prep(2);
+    BOUNCE.out=null; await makeBounce(); if(!BOUNCE.out) throw new Error(BOUNCE.msg||"no loop");
+    await $("bStudio").onclick(); if(BOUNCE.msg!=="studio") throw new Error(BOUNCE.msg||"not sent");
+    return {bpm:S.bpm, bars:S.bars, n:S.ev.length, sec:BOUNCE.out.sec};
   }
 };
 function isMinorScale(id){ const iv=scaleIv(id); return iv.indexOf(3)>=0 && iv.indexOf(4)<0; }   /* a minor third and no major third */

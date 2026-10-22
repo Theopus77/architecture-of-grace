@@ -50,7 +50,8 @@
     msgNo: ["{t} — made in the Recording Studio at architectureofgrace.com", "{t} — hecha en el estudio de grabación de architectureofgrace.com"],
     where: ["Where the song is", "Dónde va la canción"], of: ["{a} of {b}", "{a} de {b}"],
     tempo: ["{n} beats a minute", "{n} pulsos por minuto"], major: ["major", "mayor"], minor: ["minor", "menor"],
-    cover: ["Cover of {t}", "Portada de {t}"], dlg: ["Listen back", "Escúchala"]
+    cover: ["Cover of {t}", "Portada de {t}"], dlg: ["Listen back", "Escúchala"],
+    send: ["✉ Send to a friend", "✉ Enviar a un amigo"]   /* AOG-SHARE-V1 */
   };
   var A = null, S = { open: false, tok: 0, bk: null, ready: false, buf: null, src: null, g: null, on: false, pos: 0, t0: 0, dur: 0, raf: 0,
     shown: -1, drag: false, want: false, ask: false, busy: false, file: null, fileOf: null, line: "", fill: {}, name: "", restT: 0, mo: null };
@@ -118,6 +119,7 @@
     ".lb-b:disabled{opacity:.7;cursor:default}",
     ".lb-go{background:linear-gradient(#f6e2a8,#e6c06a 50%,#d2a548);color:#231704;border-color:#5e4512}",
     ".lb-share{color:#f3d48e}",
+    ".lb-send{flex:0 0 auto;width:100%;color:#f3d48e}",   /* AOG-SHARE-V1 */
     ".lb-back{flex:0 0 auto;width:100%}",
     ".lb-link{min-height:44px;padding:0 .85rem;border:1px solid rgba(243,212,142,.45);border-radius:999px;background:transparent;color:#f3d48e;font:700 .95rem/1 Inter,system-ui,sans-serif;cursor:pointer;touch-action:manipulation}",
     ".lb-line{margin:0;min-height:1.3em;font:italic 500 1rem/1.35 Fraunces,Georgia,serif;color:#efe2c6}",
@@ -150,10 +152,11 @@
       '<p class="lb-small" id="lbSmall"></p>' +
       '<div class="lb-time" id="lbTime"><input type="range" id="lbPos" min="0" max="1000" step="1" value="0"><span id="lbClock" aria-hidden="true">0:00 / 0:00</span></div>' +
       '<div class="lb-btns" id="lbBtns"><button type="button" class="lb-b lb-go" id="lbPlay"></button><button type="button" class="lb-b lb-share" id="lbShare"></button></div>' +
+      '<button type="button" class="lb-b lb-send" id="lbSend"></button>' +   /* AOG-SHARE-V1 */
       '<p class="lb-line" id="lbLine" aria-live="polite"></p></div>' +
       '<button type="button" class="lb-b lb-back" id="lbBack"></button></div></div>';
     D.body.appendChild(d);
-    ["Cover", "Ask", "AskH", "AskSay", "ArtistL", "Artist", "NameL", "Name", "Done", "Show", "Title", "By", "Edit", "Small", "Time", "Pos", "Clock", "Btns", "Play", "Share", "Line", "Back"]
+    ["Cover", "Ask", "AskH", "AskSay", "ArtistL", "Artist", "NameL", "Name", "Done", "Show", "Title", "By", "Edit", "Small", "Time", "Pos", "Clock", "Btns", "Play", "Share", "Send", "Line", "Back"]
       .forEach(function (k) { el[k] = D.getElementById("lb" + k); });
     el.dlg = d;
     /* the Studio passes every key on to the room; inside this view the keys stay here */
@@ -162,6 +165,7 @@
     el.Back.addEventListener("click", close);
     el.Play.addEventListener("click", function () { if (S.on) pause(); else { S.want = true; play(); } });
     el.Share.addEventListener("click", share);
+    el.Send.addEventListener("click", sendOpen);   /* AOG-SHARE-V1 */
     el.Edit.addEventListener("click", function () { askOpen(true); });
     el.Ask.addEventListener("submit", function (e) { e.preventDefault(); askDone(); });
     el.Artist.addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); el.Name.focus(); } });
@@ -196,6 +200,7 @@
     txt(el.Play, !S.ready ? w("getting") : S.on ? w("pause") : w("play"));
     el.Play.disabled = !has; att(el.Play, "aria-pressed", S.on ? "true" : "false");
     txt(el.Share, S.busy ? w("making") : w("share")); el.Share.disabled = !has || S.busy;
+    txt(el.Send, w("send")); el.Send.hidden = empty; el.Send.disabled = !has;   /* AOG-SHARE-V1 */
     att(el.Pos, "aria-label", w("where"));
     txt(el.Back, w("back"));
     txt(el.AskH, w("askH")); txt(el.AskSay, w("askSay")); txt(el.ArtistL, w("artistL")); txt(el.NameL, w("titleL")); txt(el.Done, w("done"));
@@ -289,6 +294,19 @@
       else if (e && e.name === "NotAllowedError" && fresh) say("again");   /* making the file took the tap's moment: one more tap sends it */
       else download(f);
     }
+  }
+
+  /* AOG-SHARE-V1 (2026-10-22): ✉ Send to a friend: the song as a small sound file, or the beat as a link a friend opens to add a
+     part (aog-share.js, fetched on the first press) */
+  function sendOpen() {
+    if (!S.bk) return;
+    var api = { es: es, title: title, named: function () { return S.name; }, artist: function () { return artist() || ""; }, bk: S.bk, desk: desk, opener: el.Send };
+    if (window.AOGShare) { AOGShare.open(api); return; }
+    if (S.shJs) return; S.shJs = 1;
+    var s = D.createElement("script"); s.src = "/aog-share.js";
+    s.onload = function () { S.shJs = 0; if (window.AOGShare && S.open) AOGShare.open(api); };
+    s.onerror = function () { S.shJs = 0; say("fail"); };
+    D.head.appendChild(s);
   }
 
   /* ── the artist name (and the song's title), asked the first time ── */
