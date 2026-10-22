@@ -388,6 +388,9 @@ function cleanClip(c){
   if(XFADES.indexOf(c.xf)>0) o.xf=c.xf;   /* AOG-DESK-XFADE-V1: only when it is on, so a song without crossfades reads as before */
   if(c.warp===true && o.bpm>0) o.warp=true;   /* AOG-DESK-WARP-V1: it follows the song's tempo */
   if(c.lp===true) o.lp=true;   /* AOG-DESK-CLIPLOOP-V1: its end was dragged to repeat it */
+  /* AOG-MICBOOTH-V1: a take from the Sing or rap booth keeps its dry recording beside it, and the sound chosen, so it can be made again */
+  if(o.voice && typeof c.dry==="string" && /^c[a-z0-9]{4,41}$/.test(c.dry)) o.dry=c.dry;
+  if(o.voice && /^(clean|echo|tuned|phone)$/.test(c.snd)) o.snd=c.snd;
   /* AOG-PIANOROLL-V1: a take from the Piano, Guitar, Bass or Band keeps the notes it was played with (checked by aog-pianoroll.js) */
   if(c.notes){ const n=window.AOGPianoRoll ? AOGPianoRoll.clean(c.notes) : (Array.isArray(c.notes.ev) ? c.notes : null); if(n) o.notes=n; }
   /* AOG-STUDIO-INBOX-V1: a take from the list remembers its tool, its number and which take in the list it was */
@@ -1851,7 +1854,8 @@ async function restore(){
   if(list.length) S.decoding--;
   if(lost){ save(); $("recLine").textContent=t("gone"); }
   /* tidy: copies no track uses any more (AOG-DESK-MORE-V1: the takes', and those a saved version needs, stay) */
-  try{ const keep=new Set(clips().map(x=>x.c.id)); keep.add("mix"); dmKeepIds(keep); (await skeys()).forEach(k=>{ if(!keep.has(k)) sdel(k); }); }catch(e){}
+  try{ const keep=new Set(clips().map(x=>x.c.id)); keep.add("mix"); dmKeepIds(keep); dmAllClips().forEach(c=>{ if(c.dry) keep.add(c.dry); });   /* AOG-MICBOOTH-V1: a booth take's dry copy */
+    (await skeys()).forEach(k=>{ if(!keep.has(k)) sdel(k); }); }catch(e){}
   liveApply(applyAll);
   paintTransport(); paintTimeline(); paintTrack(); paintMixer(); paintFinish();
   stretchAll();                    /* AOG-STUDIO-EDIT-V1: a track slowed or sped up, keeping its pitch, is made again */
@@ -2485,6 +2489,62 @@ window.AOGStudioRec={
   toggle:()=>{ if(VOICE.rec){ voiceStop(); return; } if(SONG.sel!==VOICE_T) selectTrack(VOICE_T); voiceStart(); },
   last:()=>null, sent:()=>true, add:()=>Promise.resolve()
 };
+/* ══ AOG-MICBOOTH-V1 (2026-10-22) — the Recording Studio's 🎤 Sing or rap booth (aog-micbooth.js) records your voice over My
+   Track in the Studio itself, on the Studio's own sound, and hands the take here, the way ● Record your voice would have made it:
+   - voiceBacking(): My Track without track 8 (the voice the new take will take the place of is not heard under it), its
+     tempo, where its music ends, and whether it can go round under a long take (loop: every track that plays is one
+     recording from bar 1 to the song's end, so going round is the same as each of them repeating);
+   - voicePut(): the take on track 8 at its bar, called Voice 1, Voice 2 … (Voz 1 …); the take that was there stays as a take
+     lane, as Record your voice keeps it (Undo of a delete: Bring it back, as always); when the song went round under the
+     take, those tracks repeat on the desk to fit it, so the desk plays what the booth played; the dry take is kept beside it
+     (dry, in this browser) with the sound chosen (snd), so it can be made again. ══ */
+let VB={sig:"", data:null, job:null};
+function vbOthers(){ return SONG.tracks.map((x,i)=>i).filter(i=>i!==VOICE_T && SONG.tracks[i].clip && audible(i)); }
+function vbEnd(){ let e=0; vbOthers().forEach(i=>{ e=Math.max(e, clipEnd(SONG.tracks[i].clip, false)); }); return e; }
+function vbLoopable(){
+  const o=vbOthers(), e=vbEnd(); if(!o.length || !(e>0.5)) return false;
+  return o.every(i=>{ const x=SONG.tracks[i], c=x.clip, P=pcs(c); if(P.length!==1 || x.comp) return false;
+    return Math.abs(P[0].at)<1e-6 && Math.abs(clipEnd(c, false)-e)<0.02; });
+}
+async function voiceBacking(){
+  try{ await listenFill(); }catch(e){}
+  const o=vbOthers(); if(!o.length) return null;
+  const sig=JSON.stringify(SONG.tracks.filter((x,i)=>i!==VOICE_T))+"|"+JSON.stringify(SONG.master||null)+"|"+songBpm()+"|"+o.join(",");
+  if(VB.sig===sig && VB.data) return VB.data;
+  if(VB.job && VB.job.sig===sig) return VB.job.p;
+  const p=(async()=>{ const {Lc, Rc}=await renderSong(o);
+    const d={L:Float32Array.from(Lc), R:Float32Array.from(Rc), sr:MIX_SR, bpm:songBpm(), barSec:barSec(), sec:vbEnd(), loop:vbLoopable()};
+    VB={sig:sig, data:d, job:null}; return d; })();
+  VB.job={sig:sig, p:p};
+  try{ return await p; }catch(e){ VB.job=null; throw e; }
+}
+/* o: {L, R, dry (Float32Arrays at sr), sr, head (seconds before the bar line), body (seconds of the take from it), startBar, snd, loop} */
+async function voicePut(o){
+  const sr=o.sr, n=o.L.length, sec=n/sr; if(!(sec>0.3)) throw new Error("short");
+  const x=SONG.tracks[VOICE_T], old=x.clip;
+  const vn=1+Math.max(0, ...dmAllClips().map(y=>y.voice ? y.vn||0 : 0), VOICE.gone ? VOICE.gone.clip.vn||0 : 0);
+  const t0=Date.now(), id="c"+t0.toString(36)+Math.random().toString(36).slice(2,7);
+  const blob=wavBlob(o.L, o.R||o.L, sr), buf=await decodeWav(blob, sr);
+  await sput(id, {wav:blob}); BUF.set(id, buf);
+  let did=""; if(o.dry && o.dry.length){ did=id+"d"; await sput(did, {wav:wavBlob(o.dry, o.dry, sr)}); }
+  const head=Math.max(0, Math.min(10, o.head)), body=Math.max(0.3, Math.min(o.body>0 ? o.body : sec, sec-head));
+  const cl=cleanClip({id:id, src:"", name:(S.lang==="es" ? "Voz " : "Voice ")+vn, at:t0, voice:true, vn:vn, take:true, sec:sec, bpm:0, bars:0,
+    head:head, body:body, tail:Math.max(0, sec-head-body), bpb:4, startBar:o.startBar, trimIn:0, trimOut:0, loops:1, peakDb:peakDbOf(buf), dry:did, snd:o.snd});
+  if(!cl) throw new Error("clip");
+  x.clip=cl; VOICE.state="done";
+  if(old){ if(old.voice) dmKeepAsTake(x, old); else dropClip(old.id); }
+  /* the song went round under the take: the tracks repeat to fit it (each is one recording from bar 1 to the end) */
+  let fit=0;
+  if(o.loop && vbLoopable()){
+    const e=vbEnd(), vEnd=(cl.startBar-1)*barSec()+body;
+    if(vEnd>e+0.05){ const k=Math.ceil((vEnd-e)/e-1e-6);
+      vbOthers().forEach(i=>{ const c=SONG.tracks[i].clip;
+        if(c.pieces && c.pieces.length===1){ const p=c.pieces[0], m=Math.min(16, p.n*(1+k)); if(m>p.n){ p.n=m; fit=k; } }
+        else { const m=Math.min(16, c.loops*(1+k)); if(m>c.loops){ c.loops=m; fit=k; } } }); }
+  }
+  songChanged(); paintVoice();
+  return {vn:vn, name:cl.name, track:VOICE_T+1, startBar:cl.startBar, fit:fit};
+}
 function paintVoice(){
   const box=$("voiceBox"), on=SONG.sel===VOICE_T, c=SONG.tracks[VOICE_T].clip;
   $("recsH").hidden=on; $("recs").hidden=on;
@@ -4011,6 +4071,7 @@ Object.assign(window.__aogStudio, { DESK_ROOMS:DESK_ROOMS, roomBuf:roomBuf, appl
 Object.assign(window.__aogStudio, { kCoef:kCoef, loudOf:loudOf, truePeak:truePeak, lufsTap:lufsTap, lufsStart:lufsStart, lufsStep:lufsStep, LU:LU, outLevel:outLevel,
   wavBuf:wavBuf, bits:()=>BITS, chopsLook:chopsLook, chopCuts:chopCuts, sendChops:sendChops });
 Object.assign(window.__aogStudio, { splitIn:splitIn, SPL:SPL });   /* AOG-STEMS-V1: for stems/split.js */
+Object.assign(window.__aogStudio, { voiceBacking:voiceBacking, voicePut:voicePut, vbLoopable:vbLoopable, dmTune:dmTune });   /* AOG-MICBOOTH-V1: the Studio's Sing or rap booth (aog-micbooth.js) */
 Object.assign(window.__aogStudio, { openNotes:openNotes, keepNotes:keepNotes, cleanClip:cleanClip, beatOf:beatOf });   /* AOG-PIANOROLL-V1 */
 /* AOG-DESK-AUTO-V1: for the tests (music-handoff/tests/studio/auto.js) */
 Object.assign(window.__aogStudio, { AUTO:AUTO, AUI:AUI, drawnAt:drawnAt, autoCorners:autoCorners, lineOf:lineOf, filtHz:filtHz, cleanLines:cleanLines,

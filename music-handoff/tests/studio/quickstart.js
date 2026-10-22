@@ -35,7 +35,10 @@ const ONLY = process.env.QS_ONLY ? process.env.QS_ONLY.split(",") : null;   /* Q
     /* 1 · the key, and the sheet */
     const key = await p.evaluate(() => { const k = document.getElementById("qsOpen"), r = k.getBoundingClientRect(), R = s => document.querySelector(s).getBoundingClientRect();
       const mid = x => x.top + x.height / 2, ys = [R("#shBack"), R(".sh-top h1"), R(".sh-lang"), r].map(mid);
-      return { t: (k.querySelector("img[alt='✦']") ? "✦ " : "") + k.textContent.trim(), h: Math.round(r.height), w: Math.round(r.width), inView: r.left >= 0 && r.right <= innerWidth && r.bottom <= innerHeight, oneLine: Math.max(...ys) - Math.min(...ys) < 6,
+      return { t: (k.querySelector("img[alt='✦']") ? "✦ " : "") + k.textContent.trim(), h: Math.round(r.height), w: Math.round(r.width), inView: r.left >= 0 && r.right <= innerWidth && r.bottom <= innerHeight, oneLine: innerWidth < 700
+          /* a phone: the top line takes two rows (Back · Studio · EN | ES, then ✦ Start a song beside 🎤 Sing or rap) */
+          ? Math.max(...ys.slice(0, 3)) - Math.min(...ys.slice(0, 3)) < 6 && Math.abs(mid(r) - mid(R("#shMic"))) < 6 && r.top >= R("#shBack").bottom - 1
+          : Math.max(...ys) - Math.min(...ys) < 6,
         sw: document.scrollingElement.scrollWidth, iw: innerWidth, loaded: !!window.AOGQuickstart, room: location.hash }; });
     ok(key.inView && key.oneLine && key.h >= 44 && key.sw <= key.iw && !key.loaded && !asked.length && /^✦\s*/.test(key.t) && key.t.replace(/^✦\s*/, "") === (lang === "es" ? "Empieza una canción" : "Start a song"),
       `${nm}: ✦ Start a song is on the first screen, on the top line, 44 px or more; nothing of it loaded yet: ` + JSON.stringify(key));
