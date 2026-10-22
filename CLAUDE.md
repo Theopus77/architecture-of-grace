@@ -208,8 +208,10 @@ writes its page). Visitors get the made versions, the same pages with their larg
 
     python3 tools/build-fast.py
 
-Run it after every change to `index.html` or a room. `_redirects` serves the made pages at the same addresses
-(`front.html` at `/`; `fast/music-*.html` at `/music-*.html` and the rooms' short names). The contrast and calm
+Run it after every change to `index.html`, a room or `daily-drops.html`. `_redirects` serves the made pages at the same
+addresses (`front.html` at `/`; `fast/music-*.html` at `/music-*.html` and the rooms' short names; `fast/daily-drops.html`
+at `/daily-drops.html` and `/drops`, Jimmy 2026-10-22: its 2.7 MB of banks is a file a phone keeps). "Save the whole site
+for offline" keeps each made page's front/ files too (AOG-SAVE-FRONT-V1 in sw.js). The contrast and calm
 checks stop while a made page is older than its source. Never edit `front.html`, `fast/` or `front/` by hand.
 
 The retired classic dashboard (`#screen-admin` in index.html) waits in `<template id="aog-classic-dash">`
@@ -390,7 +392,9 @@ a highlight still edits or removes it. Don't add the button back unless Jimmy as
 ## Housekeeping
 
 - Bump `const CACHE` in `aog-deploy/sw.js` whenever a page changes, so browsers
-  pick up the new version.
+  pick up the new version. Replace the line; never keep the old one as a comment.
+  Phones download sw.js again on every update check, and 469 old lines had made it
+  886 KB (2026-10-22). The history is in git log and `tools/sw-cache-history.txt`.
 - Never erase the saved Sheet connection (`aog.sync.url`, `aog.sync.key`,
   `aog.sync.writekey`) outside Disconnect and Delete everything.
 - Never erase the Studio's locker (`aog.studio.locker.v1`: its web address and

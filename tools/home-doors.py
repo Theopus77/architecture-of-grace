@@ -154,7 +154,7 @@ def apply(doors):
         n = int(m.group(1)) + 1
         new = ("const CACHE = 'aog-cache-%s.m%d'   // THE FRONT PAGE'S DOORS: JIMMY'S PENCIL DRAWINGS"
                " (%s) (previous: m%s)" % (time.strftime("%Y.%m.%d"), n, ", ".join(doors).upper(), m.group(1)))
-        s = s[:m.start()] + new + "\n// " + s[m.start():]
+        s = s[:m.start()] + new + s[m.end():]
         open(sw, "w", encoding="utf-8").write(s)
         print("  sw.js CACHE m%d" % n)
 
