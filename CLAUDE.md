@@ -254,6 +254,14 @@ Each step shows its goal first (AOG-CUBE-GOALPIC-V1: the side it builds and the 
 grey). A released row eases into place with a small settle, and a quick flick (over 0.25 px/ms in the finger's last 80 ms)
 finishes a turn short of 12°; a slow drag never does (AOG-CUBE-SETTLE-V1).
 
+The easiest way (Jimmy, 2026-10-22: "I would like the easiest instructions on how to solve it … I am 42 and would love to be
+able to solve it without help"; AOG-CUBE-EASY-V1). The beginner's way leans on one 4-move trick, R U R' U' (called "the
+trick" everywhere): white corners, the yellow cross (F, the trick, F'), and twisting the last corners (cube upside down,
+the corner at the front-right bottom, the trick until yellow faces down, only the bottom turning between corners). The
+other sets are short: the middle layer's right and left moves, the yellow edges (R U R' U R U2 R' U, matched edges at
+the back and right) and the corners into their spots (U R U' L' U R' U' L). No headlights or edge cycle in the beginner's
+way. The stages are cross, corners, middle, ycross, yedges, yplace, done (aog-cube.js); keep its own test passing.
+
 ## Skateboarding (Jimmy, 2026-10-11: "a history of skateboarding curriculum … k12 and adult … how to do tricks, grinds … from a science perspective")
 
 - The course is `_work/skt` (id `skt`, 18 units in six bands: K–2 … 11–12 and **Adult**, the first course with an
