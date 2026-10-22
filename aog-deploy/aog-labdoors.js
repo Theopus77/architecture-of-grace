@@ -592,4 +592,33 @@
     if (D.readyState === "complete") setTimeout(soon, 300); else window.addEventListener("load", function () { setTimeout(soon, 300); });
     D.addEventListener("visibilitychange", function () { if (!D.hidden && !done) soon(); });
   })();
+
+  /* ══ AOG-PLAY-ALONG-V1 (2026-10-22) — Jimmy: the drum loop playing "so I / or the person can use the keyboard to make the
+     rest of the tracks or the guitar and bass rooms". A phone on its side gives a room the whole screen and hides the
+     Studio's bar, where ♫ Play along is; so the room's own whole-screen menu has it too (the Piano's and the Band's, the
+     Guitar's and the Bass's, the Drum Machine's big pads). It is the Studio's Play along (AOGStudioShell.alongToggle):
+     the same loop, the same Stop. Words drawn when the menu opens and after a press; nothing runs while idle. ══ */
+  (function () {
+    var P = null; try { P = window.parent !== window && window.parent.AOGStudioShell; } catch (e) { P = null; }
+    if (!P || !P.alongToggle || !P.along) return;
+    var HOSTS = [["#bpDrawer .bp-row", "bp-b"], ["#pvDrawer .pv-row", "pv-b"], ["#padView .pv-bar", "pm-b"]];
+    var es = function () { return (D.documentElement.getAttribute("lang") || "").slice(0, 2) === "es"; };
+    function paint(b) { var st = {}; try { st = P.along() || {}; } catch (e) {}
+      var t = st.on ? (es() ? "■ Parar" : "■ Stop") : (es() ? "♫ Toca encima" : "♫ Play along"); if (b.textContent !== t) b.textContent = t;
+      b.setAttribute("aria-pressed", st.on ? "true" : "false"); b.disabled = !!st.busy;
+      b.setAttribute("aria-label", es() ? "Toca encima de mi pista" : "Play along with My Track"); }
+    function place() {
+      HOSTS.forEach(function (h) {
+        var row = D.querySelector(h[0]); if (!row || row.querySelector(".aog-along")) return;
+        var b = D.createElement("button"); b.type = "button"; b.className = h[1] + " aog-along"; paint(b);
+        b.addEventListener("click", function () { try { P.alongToggle(); } catch (e) {} paint(b); setTimeout(function () { paint(b); }, 400);
+          var n = 0, k = setInterval(function () { paint(b); var st = {}; try { st = P.along() || {}; } catch (e) {} if (!st.busy || ++n > 60) clearInterval(k); }, 300); });
+        row.appendChild(b);
+        var box = row.closest("#bpDrawer, #pvDrawer, #padView") || row;
+        try { new MutationObserver(function () { paint(b); }).observe(box, { attributes: true, attributeFilter: ["hidden", "class", "style"] }); } catch (e) {}
+      });
+    }
+    if (D.readyState === "loading") D.addEventListener("DOMContentLoaded", place); else place();
+    try { new MutationObserver(function () { D.querySelectorAll(".aog-along").forEach(paint); }).observe(D.documentElement, { attributes: true, attributeFilter: ["lang"] }); } catch (e) {}
+  })();
 })();
