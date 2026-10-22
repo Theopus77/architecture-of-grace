@@ -337,6 +337,10 @@ LIGHT SPEED!!" Every feature, now and later:
 - Rests when idle: no timer, loop or rAF while nothing plays, listens or is dragged. A paused player suspends its engine.
 - Does heavy work in a Worker, or in slices of 12 ms or less.
 - Never slows the note path: tap-to-sound stays 10–25 ms on a phone.
+- Never makes the page re-check itself on every change (Jimmy, 2026-10-22: the front page froze ~2 s as it loaded).
+  No `:has()` that searches the whole page (`body:has(...)`, `html:has(...)`) in a shared stylesheet or the front page:
+  scope it (`#aog-main:has(> …)`) or set a class. Observers look only at the part that changed, and a loop that sets
+  words (`data-en`/`data-es`) writes only when they differ.
 - Rooms and the front page are built with `python3 tools/build-fast.py`. Big new code goes in its own file, loaded when used.
 
 ## The Dojo and Practice the Moves (Jimmy, 2026-10-12: "instructions on how to learn moves with this engine showing the person the moves")

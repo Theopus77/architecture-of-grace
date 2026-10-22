@@ -2202,8 +2202,8 @@ window.addEventListener("resize", function(){ var b = document.querySelector('#a
  var sec=document.getElementById('one-framework'); if(!sec) return;
  function L(){return (document.documentElement.getAttribute('lang')||'en').slice(0,2)==='es'?'es':'en';}
  function apply(){var l=L();
-  [].forEach.call(sec.querySelectorAll('[data-en]'),function(el){var v=el.getAttribute('data-'+l);if(v!=null)el.textContent=v;});
-  [].forEach.call(sec.querySelectorAll('[data-en-html]'),function(el){var v=el.getAttribute('data-'+l+'-html');if(v!=null)el.innerHTML=v;});
+  [].forEach.call(sec.querySelectorAll('[data-en]'),function(el){var v=el.getAttribute('data-'+l);if(v!=null&&el.textContent!==v)el.textContent=v;});
+  [].forEach.call(sec.querySelectorAll('[data-en-html]'),function(el){var v=el.getAttribute('data-'+l+'-html');if(v!=null&&el.innerHTML!==v)el.innerHTML=v;});
  }
  try{new MutationObserver(apply).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});}catch(e){}
  apply();
@@ -2214,7 +2214,7 @@ window.addEventListener("resize", function(){ var b = document.querySelector('#a
 (function(){
  function apply(){
   var l=(document.documentElement.getAttribute('lang')||'en').slice(0,2)==='es'?'es':'en';
-  [].forEach.call(document.querySelectorAll('[data-en]'),function(el){var v=el.getAttribute('data-'+l);if(v!=null)el.innerHTML=v;});
+  [].forEach.call(document.querySelectorAll('[data-en]'),function(el){var v=el.getAttribute('data-'+l);if(v!=null&&el.innerHTML!==v)el.innerHTML=v;});
  }
  try{new MutationObserver(apply).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});}catch(e){}
  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',apply); else apply();
@@ -2391,7 +2391,10 @@ window.addEventListener('load',function(){
        everywhere, and hide the global slim footer on the welcome splash (which has
        its own pinned copy inside the 100vh layout). */
     footer.hyb-foot{ display:none !important; }
-    body:has(#screen-welcome.active) #aogGlobalFoot{ display:none; }
+    /* AOG-FOOT-CHEAP-V1 (2026-10-22): asks only #aog-main's own children, not every element on the page (the old
+       body:has(#screen-welcome.active) was re-asked after every change while the front page loaded). The footer
+       sits after #aog-main inside .stage. */
+    #aog-main:has(> #screen-welcome.active) ~ #aogGlobalFoot{ display:none; }
     /* Word of Grace retired from the homepage hero — it now lives, front and center,
        on the Calm & Regulation Tools page. Keeps the splash focused: the classic hero. */
     #screen-welcome #one-framework #aogGraceWordHero{ display:none !important; }
@@ -2437,7 +2440,7 @@ function aogLaterWords_(sec) {
       });
     });
     var dl = (document.documentElement.getAttribute("lang") || "en").slice(0, 2) === "es" ? "es" : "en";
-    [].forEach.call(sec.querySelectorAll("[data-en]"), function (el) { var v = el.getAttribute("data-" + dl); if (v != null) el.innerHTML = v; });
+    [].forEach.call(sec.querySelectorAll("[data-en]"), function (el) { var v = el.getAttribute("data-" + dl); if (v != null && el.innerHTML !== v) el.innerHTML = v; });
   } catch (e) {}
 }
 window.aogBuildLater = function (id) {
@@ -2645,8 +2648,8 @@ window.aogBuildLater = function (id) {
  var sec=document.getElementById('fw-orbit-home'); if(!sec) return;
  function L(){return (document.documentElement.getAttribute('lang')||'en').slice(0,2)==='es'?'es':'en';}
  function apply(){var l=L();
-  [].forEach.call(sec.querySelectorAll('[data-en]'),function(el){var v=el.getAttribute('data-'+l);if(v!=null)el.textContent=v;});
-  [].forEach.call(sec.querySelectorAll('[data-en-html]'),function(el){var v=el.getAttribute('data-'+l+'-html');if(v!=null)el.innerHTML=v;});
+  [].forEach.call(sec.querySelectorAll('[data-en]'),function(el){var v=el.getAttribute('data-'+l);if(v!=null&&el.textContent!==v)el.textContent=v;});
+  [].forEach.call(sec.querySelectorAll('[data-en-html]'),function(el){var v=el.getAttribute('data-'+l+'-html');if(v!=null&&el.innerHTML!==v)el.innerHTML=v;});
  }
  try{new MutationObserver(apply).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});}catch(e){}
  apply();
@@ -4382,7 +4385,7 @@ window.aogBuildLater = function (id) {
       ["grief","heavy","grace"].forEach(function(k){ var b=document.getElementById("woe-f-"+k); if(b)b.setAttribute("aria-pressed", k===f?"true":"false"); });
       reorder(); renderMsg(true);
     };
-    function applyStatic(){ var l=curLang(); SEC.querySelectorAll('[data-en]').forEach(function(n){ var v=n.getAttribute('data-'+l); if(v!==null) n.innerHTML=v; }); }
+    function applyStatic(){ var l=curLang(); SEC.querySelectorAll('[data-en]').forEach(function(n){ var v=n.getAttribute('data-'+l); if(v!==null && n.innerHTML!==v) n.innerHTML=v; }); }
     function applyPics(){ SEC.classList.toggle('woe-pics', lg("aog.a11y.pictures","0")==="1"); }
     function render(){ if(curAud()!==aud){ reorder(); } applyStatic(); applyPics();
       ["grief","heavy","grace"].forEach(function(k){ var b=document.getElementById("woe-f-"+k); if(b)b.setAttribute("aria-pressed", k===focus?"true":"false"); });
@@ -10890,7 +10893,7 @@ html[data-sr-results] #printReport .gc-home-q{font-size:14px!important}
 <script id="aog-ev-script">
 (function(){var ids=['aog-evidence','aog-pilot-look'];
  function L(){return (document.documentElement.getAttribute('lang')||'en').slice(0,2)==='es'?'es':'en';}
- function apply(){var l=L();ids.forEach(function(id){var sec=document.getElementById(id);if(!sec)return;[].forEach.call(sec.querySelectorAll('[data-en]'),function(e){var v=e.getAttribute('data-'+l);if(v!=null)e.innerHTML=v;});});}
+ function apply(){var l=L();ids.forEach(function(id){var sec=document.getElementById(id);if(!sec)return;[].forEach.call(sec.querySelectorAll('[data-en]'),function(e){var v=e.getAttribute('data-'+l);if(v!=null&&e.innerHTML!==v)e.innerHTML=v;});});}
  try{new MutationObserver(apply).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});}catch(e){}
  apply();})();
 </script>
@@ -10919,7 +10922,7 @@ html[data-sr-results] #printReport .gc-home-q{font-size:14px!important}
 <script id="aog-faq-script">
 (function(){var sec=document.getElementById('aog-faq');if(!sec)return;
  function L(){return (document.documentElement.getAttribute('lang')||'en').slice(0,2)==='es'?'es':'en';}
- function apply(){var l=L();[].forEach.call(sec.querySelectorAll('[data-en]'),function(e){var v=e.getAttribute('data-'+l);if(v!=null)e.innerHTML=v;});}
+ function apply(){var l=L();[].forEach.call(sec.querySelectorAll('[data-en]'),function(e){var v=e.getAttribute('data-'+l);if(v!=null&&e.innerHTML!==v)e.innerHTML=v;});}
  try{new MutationObserver(apply).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});}catch(e){}
  apply();})();
 </script>
@@ -11025,7 +11028,7 @@ window.aogSharePilot=function(){
  var f=document.getElementById('aogPilotForm'); if(!f) return;
  function L(){return (document.documentElement.getAttribute('lang')||'en').slice(0,2)==='es'?'es':'en';}
  function applyLang(){var l=L();var sec=document.getElementById('aog-pilot-form');if(!sec)return;
-  [].forEach.call(sec.querySelectorAll('[data-en]'),function(e){var v=e.getAttribute('data-'+l);if(v!=null)e.innerHTML=v;});
+  [].forEach.call(sec.querySelectorAll('[data-en]'),function(e){var v=e.getAttribute('data-'+l);if(v!=null&&e.innerHTML!==v)e.innerHTML=v;});
   [].forEach.call(sec.querySelectorAll('[data-ph-en]'),function(e){var v=e.getAttribute('data-ph-'+l);if(v!=null)e.setAttribute('placeholder',v);});
  }
  try{new MutationObserver(function(){applyLang();}).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});}catch(e){}

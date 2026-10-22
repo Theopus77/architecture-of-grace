@@ -11,7 +11,7 @@
  * Bump by REPLACING the CACHE line. Don't keep the old one as a comment: every byte here is
  * downloaded again on each update check. Old lines live in tools/sw-cache-history.txt and git log.
  */
-const CACHE = 'aog-cache-2026.10.22.m7559'   // SHOWSTOPPER PASS: SW.JS 886 KB TO 34 KB; THE FRONT PAGE'S FIRST DOORS DRAW AT ONCE; DAILY PRACTICE MADE BY BUILD-FAST (fast/daily-drops.html); WEB-SIZE PHOTOS; ONE STEADY MORE PER MASTHEAD (aog-grace.js) (previous: m7558)
+const CACHE = 'aog-cache-2026.10.22.m7560'   // THE FRONT PAGE NO LONGER FREEZES AS IT LOADS: NO :has() OVER THE WHOLE PAGE ON A PHONE (aog-calm.css, index.html), WORDS REWRITTEN ONLY WHEN THEY CHANGE, LEGIBLE AND CHAPEL LOOK ONLY AT WHAT CHANGED, SKETCH READS IN SLICES, PRINT MARKS WAIT FOR IDLE (previous: m7559)
 
 // Same-origin essentials — reliable to precache at install.
 /* AOG-SW-LIGHT-V1 (2026-10-01) — Jimmy: "Why is it taking so long for the website to load on my phone now?"

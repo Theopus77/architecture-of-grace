@@ -180,7 +180,30 @@
       t.__sk = t.textContent;
     }
   }
-  function sweep() { inline(D); tone(); try { svgMarks(); } catch (e) {} var n = D.querySelectorAll(PICS); for (var i = 0; i < n.length; i++) swap(n[i]); }
+  /* AOG-SKETCH-SLICE-V1 (2026-10-22, Jimmy: the front page froze as it finished loading): the first look reads every word
+     on the page, about a third of a second on a phone for the front page, all at once. It now reads in slices of 10 ms, so
+     a tap is answered between them. A page that reads in one slice is drawn exactly as before. */
+  function inlineSliced(done) {
+    if (!INLINE) { done(); return; }
+    var hosts = D.querySelectorAll(INLINE), hi = 0, w = null, todo = [];
+    (function step() {
+      var end = performance.now() + 10, n = 0, t;
+      for (;;) {
+        if (w && !w.currentNode.isConnected) w = hosts[hi - 1].isConnected ? D.createTreeWalker(hosts[hi - 1], NodeFilter.SHOW_TEXT, null) : null;   /* changed meanwhile: read that part again */
+        if (!w) { if (hi >= hosts.length) break; w = D.createTreeWalker(hosts[hi++], NodeFilter.SHOW_TEXT, null); }
+        t = w.nextNode();
+        if (!t) { w = null; continue; }
+        if (wants(t)) todo.push(t);
+        if (++n % 200 === 0 && performance.now() > end) { setTimeout(step, 0); return; }
+      }
+      swapText(todo);
+      done();
+    })();
+  }
+  function sweep() {
+    try { svgMarks(); } catch (e) {} var n = D.querySelectorAll(PICS); for (var i = 0; i < n.length; i++) swap(n[i]);
+    inlineSliced(function () { tone(); });
+  }
   CSS += "\n.aog-sk{ display:inline-block; width:1.35em; height:1.35em; object-fit:contain; vertical-align:middle; }"
     + "\n#cardHost .aogc-card .em .aog-sk{ width:96px; height:96px; }"
     + "\n[data-sk=\"1\"]{ filter:none !important; }";
