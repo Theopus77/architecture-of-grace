@@ -439,6 +439,27 @@ main.sh-main { grid-area:room; min-width:0; margin:0; }
   .sh-doors a { padding:1px 5px; line-height:1.1; }
   .mt { margin-top:3px; padding-top:3px; padding-bottom:max(3px, env(safe-area-inset-bottom)); }
 }
+/* AOG-MISSIONS-V1 (2026-10-22): Missions · 3 of 12 (its sheet, the slip and the words: aog-missions.js). On a phone and an upright
+   iPad it is the last key on My Track's sheet; on an iPad on its side and a computer My Track is in the bar, which is full, so the
+   key sits on the top line instead, beside ✦ Start a song. One key on any screen. */
+.tp-ms { color:#f3d48e; }
+.sh-ms { display:none; }
+@media (max-width:1099px) { .mtrow .tp-ms { flex:1 1 100%; } }
+@media (min-width:1100px) {
+  .mtrow .tp-ms { display:none !important; }
+  .sh-ms { flex:0 0 auto; min-height:44px; display:inline-flex; align-items:center; justify-content:center; padding:0 1rem; border-radius:9px; cursor:pointer;
+    border:1px solid var(--st-edge); background:linear-gradient(#36302a, var(--st-key) 45%, var(--st-key2)); color:#f3d48e; font:var(--st-key-font); white-space:nowrap;
+    touch-action:manipulation; -webkit-tap-highlight-color:transparent; box-shadow:inset 0 1px 0 rgba(255,240,215,.13), 0 2px 0 var(--st-edge), 0 3px 6px rgba(0,0,0,.35); }
+  .sh-ms:active { transform:translateY(1px); }
+  .sh-ms:focus-visible { outline:3px solid var(--st-gold); outline-offset:2px; }
+}
+/* an iPad on its side: the key takes two short lines, and in Spanish the name is the short one (as on a phone), so the line holds */
+@media (min-width:1100px) and (max-width:1279px) {
+  .sh-ms { flex-direction:column; padding:0 .7rem; line-height:1.1; text-align:center; }
+  .sh-ms .d { display:none; }
+  html[lang^="es"] .sh-full { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+  html[lang^="es"] .sh-top h1::after { content:"Estudio"; content:"Estudio" / ""; }
+}
 @media print { .sh-doors, .mt, .sh-room, .sh-bridge, .sh-lang, .sh-back { display:none; } }
 </style>
 <link rel="manifest" href="/studio.webmanifest">
@@ -455,6 +476,7 @@ main.sh-main { grid-area:room; min-width:0; margin:0; }
   <button type="button" class="sh-back" id="shBack"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg><span data-en="Back" data-es="Atrás">Back</span></button>
   <h1><span class="sh-full"><span data-en="The Recording Studio" data-es="El estudio de grabación">The Recording Studio</span></span></h1>
   <button type="button" class="sh-qs" id="qsOpen" aria-haspopup="dialog"><span data-en="✦ Start a song" data-es="✦ Empieza una canción">✦ Start a song</span></button>
+  <button type="button" class="sh-ms" id="msTop" aria-haspopup="dialog" aria-expanded="false"></button>
   <p class="sh-tag"><span data-en="Play · Record · Listen · Mix · Send it out" data-es="Toca · Graba · Escucha · Mezcla · Compártela">Play · Record · Listen · Mix · Send it out</span></p>
   <div class="sh-bridge"><span class="tp-vu" id="tpVu"></span></div>
   <button type="button" class="sh-mic" id="shMic" aria-haspopup="dialog"><span class="ic" aria-hidden="true">🎤</span><span data-en="Sing or rap" data-es="Canta o rapea">Sing or rap</span></button>
@@ -471,7 +493,7 @@ main.sh-main { grid-area:room; min-width:0; margin:0; }
   <li><a href="#studio" data-room="studio"><span class="pic" aria-hidden="true"><picture><source type="image/webp" srcset="/img/banners/music-mixdesk-pencil-900.webp"><img src="/img/banners/music-mixdesk-pencil-900.jpg" alt="" width="900" height="315" decoding="async"></picture></span><span data-en="Mixing Desk" data-es="Mesa de mezclas">Mixing Desk</span></a></li>
 </ul></nav>
 <main class="sh-main"><iframe class="sh-room" id="room" title="The Drum Machine" allow="autoplay; fullscreen; clipboard-write; microphone"></iframe></main>
-<section class="mt" id="mt" aria-label="The studio"><div class="song-box" id="songBox" hidden role="group" aria-labelledby="songH"><h2 id="songH"></h2><p id="songSay"></p><div class="song-row"><label for="songBpm" id="songBpmL"></label><button type="button" class="song-b" id="songDn" aria-label="−1">−</button><input id="songBpm" type="number" inputmode="numeric" min="40" max="240" step="1"><button type="button" class="song-b" id="songUp" aria-label="+1">+</button></div><div class="song-row"><label for="songKey" id="songKeyL"></label><select id="songKey"></select><button type="button" class="song-b" id="songMaj" aria-pressed="false"></button><button type="button" class="song-b" id="songMin" aria-pressed="false"></button><button type="button" class="song-b" id="songDone"></button></div><div class="song-row song-lat"><h3 id="overH"></h3><button type="button" class="song-b tp-over" id="tpOver" aria-pressed="true"></button><label class="song-from"><span id="fromL"></span> <select class="tp-from" id="tpFrom"></select></label></div><div class="song-row song-lat"><h3 id="latH"></h3><p id="latSay"></p><button type="button" class="song-b" id="latGo"></button><p id="latLine" aria-live="polite"></p></div></div><div class="tp" role="group" aria-label="Transport"><button type="button" class="tp-b tp-rec" id="tpRec" aria-pressed="false"></button><button type="button" class="tp-b tp-add" id="tpAdd" hidden></button><button type="button" class="tp-b" id="tpListen"></button><button type="button" class="tp-b tp-along" id="tpAlong" aria-pressed="false"></button><a class="tp-b tp-mix" id="tpMix" href="#studio" data-room="studio"></a><button type="button" class="tp-b tp-back" id="tpBack" hidden></button><button type="button" class="tp-b tp-out" id="tpOut"></button><button type="button" class="tp-b tp-mt" id="mtOpen" aria-expanded="false" aria-controls="mtRow"><span class="t"></span><span class="n"></span></button><span class="tp-say"><span class="tp-line" id="tpLine" aria-live="polite"></span><button type="button" class="tp-lbgo" id="tpLbGo" hidden></button></span></div><div class="mtrow" id="mtRow"><h2 id="mtH"><span data-en="My Track" data-es="Mi pista">My Track</span></h2><button type="button" class="tp-b tp-lb" id="mtLb"></button><button type="button" class="tp-b tp-song" id="tpSong" aria-expanded="false" aria-controls="songBox"></button><select id="mtAdd"></select><ul id="mtList"></ul></div></section>
+<section class="mt" id="mt" aria-label="The studio"><div class="song-box" id="songBox" hidden role="group" aria-labelledby="songH"><h2 id="songH"></h2><p id="songSay"></p><div class="song-row"><label for="songBpm" id="songBpmL"></label><button type="button" class="song-b" id="songDn" aria-label="−1">−</button><input id="songBpm" type="number" inputmode="numeric" min="40" max="240" step="1"><button type="button" class="song-b" id="songUp" aria-label="+1">+</button></div><div class="song-row"><label for="songKey" id="songKeyL"></label><select id="songKey"></select><button type="button" class="song-b" id="songMaj" aria-pressed="false"></button><button type="button" class="song-b" id="songMin" aria-pressed="false"></button><button type="button" class="song-b" id="songDone"></button></div><div class="song-row song-lat"><h3 id="overH"></h3><button type="button" class="song-b tp-over" id="tpOver" aria-pressed="true"></button><label class="song-from"><span id="fromL"></span> <select class="tp-from" id="tpFrom"></select></label></div><div class="song-row song-lat"><h3 id="latH"></h3><p id="latSay"></p><button type="button" class="song-b" id="latGo"></button><p id="latLine" aria-live="polite"></p></div></div><div class="tp" role="group" aria-label="Transport"><button type="button" class="tp-b tp-rec" id="tpRec" aria-pressed="false"></button><button type="button" class="tp-b tp-add" id="tpAdd" hidden></button><button type="button" class="tp-b" id="tpListen"></button><button type="button" class="tp-b tp-along" id="tpAlong" aria-pressed="false"></button><a class="tp-b tp-mix" id="tpMix" href="#studio" data-room="studio"></a><button type="button" class="tp-b tp-back" id="tpBack" hidden></button><button type="button" class="tp-b tp-out" id="tpOut"></button><button type="button" class="tp-b tp-mt" id="mtOpen" aria-expanded="false" aria-controls="mtRow"><span class="t"></span><span class="n"></span></button><span class="tp-say"><span class="tp-line" id="tpLine" aria-live="polite"></span><button type="button" class="tp-lbgo" id="tpLbGo" hidden></button></span></div><div class="mtrow" id="mtRow"><h2 id="mtH"><span data-en="My Track" data-es="Mi pista">My Track</span></h2><button type="button" class="tp-b tp-lb" id="mtLb"></button><button type="button" class="tp-b tp-song" id="tpSong" aria-expanded="false" aria-controls="songBox"></button><select id="mtAdd"></select><ul id="mtList"></ul><button type="button" class="tp-b tp-ms" id="msOpen" aria-haspopup="dialog" aria-expanded="false"></button></div></section>
 </div>
 <script src="/aog-song.js"></script>
 <script src="/aog-latency.js"></script>
@@ -658,6 +680,7 @@ main.sh-main { grid-area:room; min-width:0; margin:0; }
     var k = D.getElementById("mtOpen"), have = LAYERS.filter(function (l) { return HAVE[l.id]; }).length, kt = e ? "Mi pista" : "My Track", kn = have ? String(have) : "";
     if (k.firstChild.textContent !== kt) k.firstChild.textContent = kt; if (k.lastChild.textContent !== kn) k.lastChild.textContent = kn;
     att(k, "aria-label", kt + (have ? (e ? ": " + have + (have === 1 ? " capa" : " capas") : ": " + have + (have === 1 ? " layer" : " layers")) : ""));
+    msPaint();   /* AOG-MISSIONS-V1 */
   }
   /* the My Track sheet opens above the desk; a tap outside it, Escape, or picking a room puts it away */
   function mtOpen(on) { var m = D.getElementById("mt"), k = D.getElementById("mtOpen"); if (m.classList.contains("mt-open") === !!on) return;
@@ -826,7 +849,7 @@ main.sh-main { grid-area:room; min-width:0; margin:0; }
   D.getElementById("tpRec").addEventListener("click", function () { var R = recOf(); if (!R) { say("noRec"); return; } TP.line = ""; if (PA.on && !R.on()) alongStop(); R.toggle(); setTimeout(paintTp, 60); });   /* AOG-PLAY-ALONG-V1: Record plays My Track itself */
   D.getElementById("tpAdd").addEventListener("click", function () {
     var R = recOf(), b = this; if (!R) return; b.disabled = true;
-    Promise.resolve(R.add()).then(function () { b.disabled = false; say(R.sent() ? "added" : "fail"); refresh(); }, function () { b.disabled = false; say("fail"); });
+    Promise.resolve(R.add()).then(function () { b.disabled = false; say(R.sent() ? "added" : "fail"); if (R.sent()) did("added"); refresh(); }, function () { b.disabled = false; say("fail"); });   /* AOG-MISSIONS-V1 */
   });
   /* AOG-STUDIO-LISTEN-V1 (STUDIO-HANDOFF §12b): ▶ Listen plays My Track. The takes in My Track that are on no track yet
      go on the desk's empty tracks by themselves (listenFill), so make something, press Listen, hear it; ‹ takes you back. */
@@ -841,7 +864,7 @@ main.sh-main { grid-area:room; min-width:0; margin:0; }
       if (st.PLAY.on) return;
       try { if (st.listenFill) await st.listenFill(); } catch (e) {}
       if (!st.SONG.tracks.some(function (x) { return x.clip; })) { say("empty"); return; }
-      st.play(); paintTp();
+      st.play(); paintTp(); did("listenedback");   /* AOG-MISSIONS-V1 */
       var left = (st.listenLeft || []).map(layerName);
       if (left.length) { TP.fill = { names: left.join(", ") }; say("full"); }
       /* a desk opened by Listen may not have its sound yet (iPhone): one tap on it brings it */
@@ -870,10 +893,12 @@ main.sh-main { grid-area:room; min-width:0; margin:0; }
       song: function () { return window.AOGSong ? AOGSong.get() : null; }, notes: function () { return window.AOGSong ? AOGSong.NOTES : null; },
       opener: function () { var k = D.getElementById("mtOpen"), m = D.getElementById("mtLb"); return k.offsetParent ? k : m.offsetParent ? m : D.getElementById("tpListen"); },
       done: function () { paintTp(); } };
-    if (window.AOGListenBack) { AOGListenBack.open(api); return; }
+    /* AOG-MISSIONS-V1: once it is open, the mission is ticked, and its last line says the next mission */
+    var lbOpen = function () { AOGListenBack.open(api); did("listenedback"); msLoad(function (M) { M.lb(); }); };
+    if (window.AOGListenBack) { lbOpen(); return; }
     if (LBK.js) return; LBK.js = 1;
     var s = D.createElement("script"); s.src = "/aog-listenback.js";
-    s.onload = function () { if (window.AOGListenBack) AOGListenBack.open(api); };
+    s.onload = function () { if (window.AOGListenBack) lbOpen(); };
     s.onerror = function () { LBK.js = 0; say("fail"); };
     D.body.appendChild(s);
   }
@@ -983,7 +1008,12 @@ main.sh-main { grid-area:room; min-width:0; margin:0; }
     AOGLatency.measure().then(function () { LAT.msg = ""; }, function (e) { LAT.msg = e && e.code === "nomic" ? "latNoMic" : "latUnclear"; })
       .then(function () { LAT.busy = false; latWords(); });
   });
-  function songSet(p) { if (window.AOGSong) AOGSong.set(p); songWords(); }
+  function songSet(p) {
+    var a = window.AOGSong && AOGSong.get();
+    if (window.AOGSong) AOGSong.set(p); songWords();
+    var b = window.AOGSong && AOGSong.get();   /* AOG-MISSIONS-V1: the tempo or the key really changed */
+    if (b && (!a || a.bpm !== b.bpm || a.key !== b.key || !!a.minor !== !!b.minor || a.hasKey !== b.hasKey || a.hasBpm !== b.hasBpm)) did("songchanged");
+  }
   function songOpen(on) { var bx = D.getElementById("songBox"); bx.hidden = !on; D.getElementById("tpSong").setAttribute("aria-expanded", on ? "true" : "false"); songWords(); size();
     if (on) D.getElementById("songBpm").focus(); }
   D.getElementById("tpSong").addEventListener("click", function () { songOpen(D.getElementById("songBox").hidden); });
@@ -1130,6 +1160,64 @@ main.sh-main { grid-area:room; min-width:0; margin:0; }
     if (window.AOGQuickstart) { AOGQuickstart.press(); return; }
     var s = D.createElement("script"); s.src = "/aog-quickstart.js"; s.onload = function () { if (window.AOGQuickstart) AOGQuickstart.press(); }; D.head.appendChild(s);
   });
+  /* AOG-MISSIONS-V1 (2026-10-22) — Jimmy wants the Studio to make his 13-year-old fall in love with making music: a reason to
+     come back. Twelve missions tick themselves as the teen does things (aog-missions.js has the words, the sheet and the calm
+     line that says a mission is done; it is fetched the first time it is needed, and nothing of it loads before). Here: the
+     ticks, kept on the device the moment they happen (aog.studio.missions.v1; only the sheet's "Start the missions again"
+     clears them), and the listening. Everything that counts arrives as one window event, aog-studio-did {detail: {what}}:
+     the Studio fires it itself (did()), the rooms fire it on their own window (aog-recorder.js: a take, a lick, + Add to My
+     Track; aog-song.js: the tempo or key changed in a room) and it is passed on here, and another build may fire it too
+     ("shared", "remixopened"). The Studio also listens in each room, cheaply: a tap or a key in the room while ♫ Play along
+     plays (playedalong), a step tapped on the Drum Machine (ownbeat), a fader or mute at the Mixing Desk (mixed). */
+  var MS = { K: "aog.studio.missions.v1", IDS: ["started", "playedalong", "recorded", "added", "listenedback", "sang", "lick", "songchanged", "ownbeat", "mixed", "shared", "remixopened"], st: null, q: [], js: 0 };
+  function msGet() {
+    if (MS.st) return MS.st;
+    var o = null; try { o = JSON.parse(localStorage.getItem(MS.K) || "null"); } catch (e) {}
+    if (!o || typeof o !== "object") o = {}; if (!o.done || typeof o.done !== "object") o.done = {}; if (!o.ch || typeof o.ch !== "object") o.ch = {};
+    return (MS.st = o);
+  }
+  function msPut(o) { MS.st = o; try { localStorage.setItem(MS.K, JSON.stringify(o)); } catch (e) {} msPaint(); }
+  function msCount() { var o = msGet(); return { n: MS.IDS.filter(function (k) { return o.done[k]; }).length, t: MS.IDS.length }; }
+  function msPaint() {
+    if (!MS) return; var c = msCount(), a = es() ? "Misiones" : "Missions", n = (es() ? c.n + " de " : c.n + " of ") + c.t, t = a + " · " + n;
+    var o = D.getElementById("msOpen"); if (o && o.textContent !== t) o.textContent = t;
+    var k = D.getElementById("msTop");   /* two short lines on an iPad on its side: the words, then the count */
+    if (k && k.textContent !== t) k.innerHTML = '<span class="a">' + a + '</span><span class="d"> · </span><span class="b">' + n + "</span>";
+  }
+  function msLoad(fn) {
+    if (window.AOGMissions) { try { fn(AOGMissions); } catch (e) {} return; }
+    MS.q.push(fn); if (MS.js) return; MS.js = 1;
+    var s = D.createElement("script"); s.src = "/aog-missions.js";
+    s.onload = function () { var q = MS.q; MS.q = []; if (!window.AOGMissions) return; AOGMissions.init({ get: msGet, put: msPut, es: es });
+      q.forEach(function (f) { try { f(AOGMissions); } catch (e) {} }); };
+    s.onerror = function () { MS.js = 0; MS.q = []; };
+    D.head.appendChild(s);
+  }
+  function msDid(what) {
+    if (MS.IDS.indexOf(what) < 0) return;
+    var o = msGet(); if (o.done[what]) return;
+    o.done[what] = Date.now(); msPut(o);
+    msLoad(function (M) { M.celebrate(what); });
+  }
+  function did(what) { try { window.dispatchEvent(new CustomEvent("aog-studio-did", { detail: { what: what } })); } catch (e) { msDid(what); } }
+  window.addEventListener("aog-studio-did", function (e) { var x = e && e.detail && e.detail.what; if (typeof x === "string") msDid(x); });
+  function msSoon(what) { if (msGet().done[what]) return; setTimeout(function () { did(what); }, 0); }   /* after the room has its tap: never in the way of a note */
+  function msHook(f) {
+    var w; try { w = f.contentWindow; if (!w || w.__aogMs || !w.document) return; w.__aogMs = 1; } catch (e) { return; }
+    var d = w.document, at = function () { try { return w.location.pathname; } catch (e) { return ""; } };
+    w.addEventListener("aog-studio-did", function (e) { var x = e && e.detail && e.detail.what; if (typeof x === "string") did(x); });
+    var played = function (e) { if (PA.on && f === fr && !(e && e.repeat) && at() !== "/music-studio.html") msSoon("playedalong"); };
+    d.addEventListener("pointerdown", played, true); d.addEventListener("keydown", played, true);
+    d.addEventListener("click", function (e) { var t = e.target; if (!t || !t.closest) return;
+      if (t.closest("#steps .st") && at() === "/music-pads.html") msSoon("ownbeat");
+      else if (t.closest("#mixer [data-ms]") && at() === "/music-studio.html") msSoon("mixed"); }, true);
+    d.addEventListener("input", function (e) { var t = e.target; if (t && t.matches && t.matches("#mixer input[type=range]") && at() === "/music-studio.html") msSoon("mixed"); }, true);
+  }
+  D.addEventListener("load", function (e) { var t = e.target; if (t && t.tagName === "IFRAME" && t.classList && t.classList.contains("sh-room")) msHook(t); }, true);
+  window.addEventListener("storage", function (e) { if (e.key === MS.K || e.key === null) { MS.st = null; msPaint(); } });
+  ["msOpen", "msTop"].forEach(function (id) { D.getElementById(id).addEventListener("click", function () { var b = this; mtOpen(false); msLoad(function (M) { M.press(b); }); }); });
+  window.AOGStudioShell.did = did;
+  window.AOGStudioShell.missions = { count: msCount, open: function (tab) { msLoad(function (M) { M.open(tab || "m"); }); } };
   window.addEventListener("popstate", function () { var h = (location.hash || "").slice(1); if (room(h)) go(h, false); });
   window.addEventListener("hashchange", function () { var h = (location.hash || "").slice(1); if (room(h)) go(h, false); });
   /* the language or the light changes here: the room inside follows (it reads both when it opens) */

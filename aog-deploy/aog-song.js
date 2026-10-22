@@ -88,12 +88,18 @@
     applying = false;
   }
   /* a change made in the room changes the song */
-  function fromRoom(what) {
+  function fromRoom(what, byHand) {
     if (applying || !room) return;
+    var b0 = read();
     try {
       if (what === "bpm" && room.bpm) { var s0 = read(), v = +room.bpm.get(); if (!s0 || !s0.hasBpm || Math.round(s0.bpm) !== Math.round(v)) set({ bpm: v }); }   /* a room's whole number is not a change to a song at 97.3 */
       if (what === "key" && room.key) { var k = room.key.get(); if (k) set({ key: k.key, minor: k.minor }); }
     } catch (e) {}
+    /* AOG-MISSIONS-V1 (2026-10-22): a change made by hand tells the Recording Studio's missions (the-studio.html passes it on) */
+    var b1 = read();
+    if (byHand && b1 && (!b0 || b0.bpm !== b1.bpm || b0.key !== b1.key || !!b0.minor !== !!b1.minor)) {
+      try { window.dispatchEvent(new CustomEvent("aog-studio-did", { detail: { what: "songchanged" } })); } catch (e) {}
+    }
   }
   /* the room's own controls: listened for on the whole page, so a control the room draws again is still heard */
   var WATCH = {};
@@ -102,7 +108,8 @@
     document.addEventListener(type, function (e) {
       var el = e.target && e.target.closest ? e.target.closest("[id]") : null, what = el && WATCH[el.id];
       if (!what || (type === "input" && !(el.tagName === "INPUT" && el.type === "range"))) return;
-      setTimeout(function () { fromRoom(what); }, 0);   /* after the room has handled it */
+      var byHand = !!e.isTrusted;
+      setTimeout(function () { fromRoom(what, byHand); }, 0);   /* after the room has handled it */
     });
   });
   function join(o) {
