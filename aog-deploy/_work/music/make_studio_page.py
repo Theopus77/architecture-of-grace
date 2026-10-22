@@ -562,7 +562,8 @@ JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></scrip
       var rc = w.AOGVU.ctxs().filter(function (c) { return c.state === "running"; })[0]; if (!rc) return;
       w.AOGRoomClock.align(rc.currentTime + (at - PA.ac.currentTime), barSec); } catch (e) {}
   }
-  D.getElementById("tpAlong").addEventListener("click", function () {
+  D.getElementById("tpAlong").addEventListener("click", function () { alongToggle(); });
+  function alongToggle() {   /* the bar's button, and a room's own (its whole-screen menu, aog-labdoors.js) */
     if (PA.on) { alongStop(); return; }
     if (PA.busy) return;
     var R = recOf(); if (R && R.on()) return;
@@ -585,7 +586,7 @@ JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></scrip
       PA.src = src; PA.g = g; PA.on = true; say("alongOn");
       alongAlign(at, bk.barSec);
     }, function () { PA.busy = false; say("fail"); });
-  });
+  }
   document.addEventListener("visibilitychange", function () { if (document.hidden) alongStop(); });
   window.addEventListener("pagehide", alongStop);
   D.getElementById("tpRec").addEventListener("click", function () { var R = recOf(); if (!R) { say("noRec"); return; } TP.line = ""; if (PA.on && !R.on()) alongStop(); R.toggle(); setTimeout(paintTp, 60); });   /* AOG-PLAY-ALONG-V1: Record plays My Track itself */
@@ -790,7 +791,8 @@ JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></scrip
   window.AOGStudioShell = {
     go: function (id) { go(id, true); },
     backing: backing, over: overGet,   /* AOG-OVERDUB-V1 */
-    along: function () { return { on: PA.on, busy: PA.busy, ac: PA.ac && PA.ac.state, loop: !!(PA.src && PA.src.loop) }; },   /* AOG-PLAY-ALONG-V1, read only */
+    along: function () { return { on: PA.on, busy: PA.busy, ac: PA.ac && PA.ac.state, loop: !!(PA.src && PA.src.loop), line: TP.line }; },   /* AOG-PLAY-ALONG-V1, read only */
+    alongToggle: function () { alongToggle(); },   /* AOG-PLAY-ALONG-V1: a room's own button (its whole-screen menu) */
     renderNotes: renderNotes, roomSounds: roomSounds,   /* AOG-NOTES-V1 */
     arrived: function (id, w) { if (w && fr.contentWindow !== w) return;   /* AOG-STUDIO-KEEP-V1: a room out of sight never takes the screen */
       if (room(id) && id !== cur) {
