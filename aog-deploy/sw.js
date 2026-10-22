@@ -8,7 +8,8 @@
  * not run on this file. Forget the bump and returning visitors keep the stale
  * page from their cache.
  */
-const CACHE = 'aog-cache-2026.10.22.m7550'   // LEARN A SONG: SHOES, CARS AND SOFT DRINKS, A HIP-HOP BEAT IN LAYERS (song-shoes-cars-and-soft-drinks.html, AOG-SONG-SHOES-V1) (previous: m7549)
+const CACHE = 'aog-cache-2026.10.22.m7551'   // LEARN A SONG: DAY ONE, POST-ROCK IN LAYERS (song-day-one.html, /day-one, AOG-SONG-DAYONE-V1) (previous: m7550)
+// const CACHE = 'aog-cache-2026.10.22.m7550'   // LEARN A SONG: SHOES, CARS AND SOFT DRINKS, A HIP-HOP BEAT IN LAYERS (song-shoes-cars-and-soft-drinks.html, AOG-SONG-SHOES-V1) (previous: m7549)
 // const CACHE = 'aog-cache-2026.10.22.m7549'   // LEARN A SONG: BAD MOON RISING, BUILT IN THE STUDIO (song-bad-moon-rising.html, /bad-moon-rising, AOG-SONG-BADMOON-V1) (previous: m7548)
 // const CACHE = 'aog-cache-2026.10.22.m7548'   // START A SONG IN ONE TAP (aog-quickstart.js) AND LISTEN BACK WITH YOUR ARTIST NAME (aog-listenback.js) (previous: m7547)
 // const CACHE = 'aog-cache-2026.10.22.m7547'   // LEARN A SONG: RUNAWAY, BUILT IN THE STUDIO PART BY PART, MEASURED FROM THE RECORD, WITH THE LEARNER'S OWN PRINTED COVER (song-runaway.html, /runaway, AOG-SONG-RUNAWAY-V1, AOG-SONG-RUNAWAY-ME-V1) (previous: m7546)
