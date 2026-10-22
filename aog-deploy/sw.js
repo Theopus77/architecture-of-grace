@@ -8,7 +8,8 @@
  * not run on this file. Forget the bump and returning visitors keep the stale
  * page from their cache.
  */
-const CACHE = 'aog-cache-2026.10.22.m7547'   // LEARN A SONG: RUNAWAY, BUILT IN THE STUDIO PART BY PART, MEASURED FROM THE RECORD, WITH THE LEARNER'S OWN PRINTED COVER (song-runaway.html, /runaway, AOG-SONG-RUNAWAY-V1, AOG-SONG-RUNAWAY-ME-V1) (previous: m7546)
+const CACHE = 'aog-cache-2026.10.22.m7548'   // START A SONG IN ONE TAP (aog-quickstart.js) AND LISTEN BACK WITH YOUR ARTIST NAME (aog-listenback.js) (previous: m7547)
+// const CACHE = 'aog-cache-2026.10.22.m7547'   // LEARN A SONG: RUNAWAY, BUILT IN THE STUDIO PART BY PART, MEASURED FROM THE RECORD, WITH THE LEARNER'S OWN PRINTED COVER (song-runaway.html, /runaway, AOG-SONG-RUNAWAY-V1, AOG-SONG-RUNAWAY-ME-V1) (previous: m7546)
 // const CACHE = 'aog-cache-2026.10.22.m7546'   // THE CUBE LAB: EACH STEP SHOWS ITS GOAL FIRST; TURNS SETTLE INTO PLACE AND A QUICK FLICK FINISHES THE TURN (AOG-CUBE-GOALPIC-V1, AOG-CUBE-SETTLE-V1) (previous: m7545)
 // const CACHE = 'aog-cache-2026.10.22.m7544'   // PLAY ALONG IN EACH ROOM'S WHOLE-SCREEN VIEW; THE PIANO'S AND BAND'S MENU ABOVE THE KEYS (aog-labdoors.js, the-studio.html, music-piano.html, music-band.html) (previous: m7543)
 // const CACHE = 'aog-cache-2026.10.22.m7545'   // THE CUBE LAB: EACH STEP SHOWS ITS GOAL FIRST; TURNS SETTLE INTO PLACE AND A QUICK FLICK FINISHES THE TURN (AOG-CUBE-GOALPIC-V1, AOG-CUBE-SETTLE-V1) (previous: m7544)
