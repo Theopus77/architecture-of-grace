@@ -142,10 +142,17 @@ const GOALS = {
   middle:   c => GOALS.corners(c) && c.P.filter(p => isMidEdge(c,p)).every(p => c.pieceOk(p)),
   ycross:   c => GOALS.middle(c) && yellowUpCount(c, isYellowEdge)===4,
   yface:    c => GOALS.ycross(c) && yellowUpCount(c, isYellowCorner)===4,
-  ycorners: c => GOALS.yface(c) && topCornersRelative(c),
+  /* AOG-CUBE-EASY-V1 (2026-10-22) — Jimmy: "I would like the easiest instructions on how to solve it … the instructions have
+     always been a hinderance." The last layer now goes the way with the fewest, shortest moves to remember: the edges
+     (one short set), the corners into place (one set, no back turns), then the corners twisted with the same 4-move trick
+     as the white corners. The old yellow top, headlights and edge cycle are gone from the beginner's way. */
+  yedges:   c => GOALS.ycross(c) && c.P.filter(p => isYellowEdge(c,p)).every(p => c.pieceOk(p)),
+  yplace:   c => GOALS.yedges(c) && c.P.filter(p => isYellowCorner(c,p)).every(p => cornerHome(c,p)),
   done:     c => c.solved()
 };
-const STAGES = ["cross","corners","middle","ycross","yface","ycorners","done"];
+/* a corner in its own spot, however it is twisted: its colours are the colours of the three sides it touches */
+function cornerHome(c, p){ const pos=c.pos(p), want=FACE_NAMES.filter(f => dot(pos, FACES[f])===1).map(f => c.center(f)).sort().join(""); return Object.values(p.cols).sort().join("")===want; }
+const STAGES = ["cross","corners","middle","ycross","yedges","yplace","done"];
 function stageOf(c){ for(let i=0;i<STAGES.length;i++){ if(!GOALS[STAGES[i]](c)) return i; } return STAGES.length; }
 
 /* ── the teacher ── */
@@ -155,6 +162,8 @@ const ALG = {
   midLeft: "U' L' U L U F U' F'",
   ycross: "F R U R' U' F'",
   sune: "R U R' U R U2 R'",
+  yedge: "R U R' U R U2 R' U",
+  yplace: "U R U' L' U R' U' L",
   aperm: "R' F R' B2 R F' R' B2 R2",
   uperm: "R2 U R U R' U' R' U' R' U R'"
 };
@@ -292,46 +301,54 @@ function plan(start){
     }
   }
 
-  /* 5 · the whole top yellow */
-  if(!GOALS.yface(c)){
-    begin("yface");
-    for(let i=0;i<6 && !GOALS.yface(c);i++){
+  /* 5 · the yellow edges: turn the top until two match; next to each other, hold them at the back and right; across, do it once */
+  if(!GOALS.yedges(c)){
+    begin("yedges");
+    const matched = t => t.P.filter(p => isYellowEdge(t,p) && t.pieceOk(p));
+    for(let i=0;i<6 && !GOALS.yedges(c);i++){
       guard();
-      const n=yellowUpCount(c, isYellowCorner);
-      const at = (t,pos,dir) => t.colorAt(pos,dir)===Y;
-      const FL=[-1,1,1];
-      const rule = n===1 ? (t => at(t,FL,[0,1,0]))
-                 : n===0 ? (t => at(t,FL,[-1,0,0]))
-                 :         (t => at(t,FL,[0,0,1]));
-      const uk=U_TURNS.find(ut => rule(c.clone().run(ut)));
-      if(uk===undefined) throw new Error("sune rule");
-      part("sune"+(n===1?"1":n===0?"0":"2"), {}, uk+" "+ALG.sune);
+      const k4=U_TURNS.find(ut => matched(c.clone().run(ut)).length===4);
+      if(k4!==undefined){ part("yedgeTurn", {}, k4); break; }
+      /* two side by side: the whole cube turned so they are at the back and the right, the top turned so they match */
+      let done=false;
+      for(const yt of Y_TURNS){ for(const ut of U_TURNS){
+        const t=c.clone().run(yt+" "+ut), m=matched(t).map(p => t.pos(p).join());
+        if(m.length===2 && m.includes("0,1,-1") && m.includes("1,1,0")){ part("yedgeAdj", {}, yt+" "+ut+" "+ALG.yedge); done=true; break; } }
+        if(done) break; }
+      if(!done) part("yedgeOpp", {}, ALG.yedge);
     }
   }
 
-  /* 6 · the yellow corners in their places */
-  if(!GOALS.ycorners(c)){
-    begin("ycorners");
-    for(let i=0;i<4 && !GOALS.ycorners(c);i++){
+  /* 6 · the yellow corners into their spots, twisted or not: one that is home goes front-right, then the moves, once or twice */
+  if(!GOALS.yplace(c)){
+    begin("yplace");
+    for(let i=0;i<4 && !GOALS.yplace(c);i++){
       guard();
-      /* headlights: two corners on one side that show the same colour there */
-      const lights = t => t.colorAt([-1,1,-1],[0,0,-1])===t.colorAt([1,1,-1],[0,0,-1]);
-      const uk=U_TURNS.find(ut => lights(c.clone().run(ut)));
-      part(uk===undefined ? "aperm0" : "aperm", {}, (uk||"")+" "+ALG.aperm);
+      const home=c.P.filter(p => isYellowCorner(c,p) && cornerHome(c,p));
+      if(home.length){
+        const yk=Y_TURNS.find(yt => { const t=c.clone().run(yt); return t.P.some(p => isYellowCorner(t,p) && cornerHome(t,p) && eqV(t.pos(p),[1,1,1])); });
+        part("yplace", {}, yk+" "+ALG.yplace);
+      } else part("yplace0", {}, ALG.yplace);
     }
   }
 
-  /* 7 · the yellow edges, and the cube is done */
+  /* 7 · twist the last corners: the cube upside down, each corner at the front-right bottom, the trick until yellow faces
+     down; only the bottom layer turns between corners. Halfway the rest looks mixed; it comes back at the end. */
   if(!c.solved()){
     begin("done");
-    const uk=U_TURNS.find(ut => { const t=c.clone().run(ut); return t.P.filter(p => isYellowCorner(t,p)).every(p => t.pieceOk(p)); });
-    if(uk) part("lineUp", {}, uk);
-    for(let i=0;i<4 && !c.solved();i++){
+    part("turnOver", {}, "z2");
+    for(let i=0;i<5;i++){
       guard();
-      const bar = t => [-1,0,1].every(x => t.colorAt([x,1,-1],[0,0,-1])===t.center("B"));
-      const yk=Y_TURNS.find(yt => bar(c.clone().run(yt)));
-      part(yk===undefined ? "uperm0" : "uperm", {}, (yk||"")+" "+ALG.uperm);
+      const yf=yellowFace(c), bad=c.P.filter(p => isYellowCorner(c,p) && c.stickers(p)[yf]!==Y);
+      if(!bad.length) break;
+      const dk=["","D","D2","D'"].find(dt => { const t=c.clone().run(dt); return t.P.some(p => isYellowCorner(t,p) && eqV(t.pos(p),[1,-1,1]) && t.stickers(p)[yf]!==Y); });
+      if(dk) part("nextCorner", {}, dk);
+      const piece=c.P.find(p => isYellowCorner(c,p) && eqV(c.pos(p),[1,-1,1]));
+      let reps=0; const t=c.clone(); while(t.stickers(t.P[c.P.indexOf(piece)])[yf]!==Y && reps<6){ t.run(ALG.sexy); reps++; }
+      part("twist", {n:reps}, Array(reps).fill(ALG.sexy).join(" "));
     }
+    const lk=["","D","D2","D'"].find(dt => c.clone().run(dt).solved());
+    if(lk) part("lastTurn", {}, lk);
   }
   return {stages, solved:c.solved(), end:c};
 }
@@ -449,7 +466,7 @@ function diagnose(colors){
   return {fixes, fixed:cols, ok:!fixes.length};
 }
 
-const api = {FACES, HOME_COLOR, FACE_NAMES, Cube, parse, invert, invertSeq, simplify, split, rot, rotQ, mulV, mulM, ID,
+const api = {cornerHome, FACES, HOME_COLOR, FACE_NAMES, Cube, parse, invert, invertSeq, simplify, split, rot, rotQ, mulV, mulM, ID,
              MOVES, ALG, GOALS, STAGES, stageOf, plan, scramble, facelets, fromFacelets, diagnose, faceOf, eqV, dot};
 if(typeof module!=="undefined" && module.exports) module.exports=api;
 else root.AOGCube=api;
