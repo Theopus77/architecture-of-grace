@@ -1530,6 +1530,45 @@ const REC=AOGRecorder.attach({context:()=>ctx(), tap:()=>clip, lang:()=>S0.lang,
    the song. */
 /* AOG-OVERDUB-V1: recording over My Track, a loop that is playing starts again on the bar line My Track starts on */
 window.AOGRoomClock={ align(t0){ if(!SEQ.on) return; SEQ.t0=t0; SEQ.abs=0; SEQ.map=null; } };
+/* AOG-QUICKSTART-V1 (2026-10-22) — ✦ Start a song (aog-quickstart.js, in the Studio): one tap makes a whole loop here and puts it
+   on My Track. song(o) loads beat o.beat on bank A at o.bpm, the chord pattern o.pat on bank B (o.chords, in o.key, major or
+   minor), and a bass line on bank C (o.bass) that plays each chord's root in the vibe's way (o.style): "kick" follows the
+   kick drum (a trap 808), "eighths" (rock), "pulse" (pop: 1, the "and" of 2, 3, the "and" of 4), "octave" (house: the
+   off-beats, every other one an octave up); o.mix {chords, bass} sets those two banks' pad volumes. Four bars; then Make the
+   loop and + Add to My Track, as the buttons do. */
+window.AOGPadsSetup={
+  ready(){ return !!(window.AOGBeats && KITS().length && $("grpSel") && $("grpSel").options.length>3); },
+  async song(o){
+    if(!beatById(o.beat)) throw new Error("no beat");
+    if(SEQ.on) stop();
+    S.bars=4; startBeat(o.beat); S.bars=4; retime(o.bpm);
+    const B=S.banks[1], C=S.banks[2], sc=o.minor ? "minor" : "major";
+    if(INST[o.chords]) B.inst=o.chords; B.key=o.key; B.scale=sc; B.oct=3; B.pat=o.pat;
+    if(INST[o.bass]) C.inst=o.bass; C.key=o.key; C.scale=sc; C.oct=o.key>=4 ? 1 : 2;
+    patToLoop(B); S.bars=4;
+    const L=loopLen(), dB=padDefs(1), dC=padDefs(2), ch=S.ev.filter(e=>e.b===1).sort((a,b)=>a.t-b.t);
+    const rootAt=t=>{ let c=ch[0]; ch.forEach(e=>{ if(e.t<=t) c=e; }); return c ? dB[c.p].notes[0]%12 : o.key; };
+    const pad=(pc, up)=>{ let i=dC.findIndex(d=>d.notes[0]%12===pc); if(i<0) i=0; return up && dC[i+7] ? i+7 : i; };
+    let hits=[];   /* [tick, length, strength, octave up] */
+    if(o.style==="kick"){
+      const ks=[...new Set(S.ev.filter(e=>e.b===0 && e.p===0).map(e=>e.t))];
+      ch.forEach(c=>{ if(!ks.some(k=>Math.abs(k-c.t)<=12)) ks.push(c.t); });
+      ks.sort((a,b)=>a-b).forEach((t,i)=>{ const nx=i+1<ks.length ? ks[i+1] : L; hits.push([t, Math.max(24, Math.min(288, nx-t-8)), 0.9, false]); });
+    } else for(let bar=0;bar<S.bars;bar++){
+      const at=bar*384;
+      if(o.style==="eighths") for(let i=0;i<8;i++) hits.push([at+i*48, 42, i%2 ? 0.72 : 0.9, false]);
+      else if(o.style==="octave") for(let i=0;i<4;i++) hits.push([at+i*96+48, 40, 0.85, i%2===1]);
+      else [[0,140],[144,44],[192,140],[336,44]].forEach(x=>hits.push([at+x[0], x[1], x[0]%96 ? 0.75 : 0.9, false]));
+    }
+    S.ev=S.ev.filter(e=>e.b!==2).concat(hits.filter(h=>h[0]<L).map(h=>({b:2, p:pad(rootAt(h[0]), h[3]), t:h[0], v:h[2], len:h[1]})));
+    /* the mix: every pad of the chords and the bass at the vibe's level (the pad's own volume, 100 = as levelled), so the drums lead */
+    const mx=o.mix||{}; [[1, mx.chords], [2, mx.bass]].forEach(([bi, vol])=>{ for(let i=0;i<NP;i++){ const k=bi+":"+i; if(vol>=0 && vol<=150) S.pads[k]={vol:Math.round(vol/5)*5}; else delete S.pads[k]; } });
+    S.bank=0; prep(1); prep(2); changed(); paintAll();
+    BOUNCE.out=null; await makeBounce(); if(!BOUNCE.out) throw new Error(BOUNCE.msg||"no loop");
+    await $("bStudio").onclick(); if(BOUNCE.msg!=="studio") throw new Error(BOUNCE.msg||"not sent");
+    return {bpm:S.bpm, bars:S.bars, at:BOUNCE.out.at};
+  }
+};
 function isMinorScale(id){ const iv=scaleIv(id); return iv.indexOf(3)>=0 && iv.indexOf(4)<0; }   /* a minor third and no major third */
 if(window.AOGSong) AOGSong.room({
   bpm:{get:()=>S.bpm, set:v=>retime(v), min:60, max:180},

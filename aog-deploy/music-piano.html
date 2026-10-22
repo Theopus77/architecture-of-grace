@@ -2648,6 +2648,11 @@ function bindScales(){
   b.onclick=()=>{ if(downAt && performance.now()-downAt<1500){ downAt=0; return; } anyDown(0.74); anyUp(); };
   b.addEventListener("touchstart",(e)=>{ if(e.cancelable) e.preventDefault(); },{passive:false});   /* no magnifier on a long press */
 }
+/* AOG-QUICKSTART-V1 (2026-10-22): ✦ Start a song (the Studio, aog-quickstart.js) lights the song's scale on the keys: the scale
+   kept for major or for minor is set, as the Scale menu sets it. get() says what the keys show now. */
+window.AOGPianoScale={ set(o){ const L=scLib(); if(!o || (o.id!=="off" && !(L && L.SCALES[o.id]))) return false;
+    if(o.minor) SC.min=o.id; else SC.maj=o.id; scSave(); paintScale(); return true; },
+  get(){ return {key:S.key, minor:!!S.minor, scale:scaleId(), lit:document.querySelectorAll("#kbd .sc-in").length}; } };
 /* the two libraries load with defer, after this script: fill the menus once they are here */
 document.addEventListener("DOMContentLoaded",()=>{ paintScaleSel(); paintAnySel(); paintScale(); });
 /* fingers: each pointer plays the key under it, and sliding moves to the next key */
