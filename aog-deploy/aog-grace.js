@@ -493,22 +493,44 @@
       if (el.closest("[data-aog-card]") || el.querySelector("input, button, select") || el.classList.contains("aog-clamp") || el.hasAttribute("data-aog-fits")) continue;
       if ((el.textContent || "").replace(/\s+/g, " ").trim().length < 60) continue;   /* AOG-THIN-MAST-V1: one line now, so a shorter lede can need More too */
       el.classList.add("aog-clamp");
-      var more = D.createElement("button");
-      more.type = "button"; more.className = "aog-more no-print";
-      more.setAttribute("aria-expanded", "false");
-      more.innerHTML = '<span data-en="More" data-es="M\u00e1s">More</span>';
-      more.addEventListener("click", (function (p, b) { return function () {
-        var open = p.classList.toggle("is-open");
-        b.classList.toggle("is-open", open);
-        b.setAttribute("aria-expanded", open ? "true" : "false");
-        var sp = b.firstChild;
-        sp.setAttribute("data-en", open ? "Less" : "More");
-        sp.setAttribute("data-es", open ? "Menos" : "M\u00e1s");
-        sp.textContent = sp.getAttribute(/^es/i.test(H.lang || "") ? "data-es" : "data-en");
-      }; })(el, more));
+      /* AOG-ONE-MORE-V1 (2026-10-22): one More per masthead. A second long line (Privacy's effective date) joins the
+         first More instead of stacking a second one under it. */
+      var more = hero.__aogMore && hero.__aogMore.parentNode ? hero.__aogMore : null;
+      if (more) more.__ps.push(el);
+      else {
+        more = hero.__aogMore = D.createElement("button");
+        more.__ps = [el];
+        more.type = "button"; more.className = "aog-more no-print";
+        more.setAttribute("aria-expanded", "false");
+        more.innerHTML = '<span data-en="More" data-es="M\u00e1s">More</span>';
+        more.addEventListener("click", (function (b) { return function () {
+          var open = !b.classList.contains("is-open");
+          b.__ps.forEach(function (p) { p.classList.toggle("is-open", open); });
+          b.classList.toggle("is-open", open);
+          b.setAttribute("aria-expanded", open ? "true" : "false");
+          var sp = b.firstChild;
+          sp.setAttribute("data-en", open ? "Less" : "More");
+          sp.setAttribute("data-es", open ? "Menos" : "M\u00e1s");
+          sp.textContent = sp.getAttribute(/^es/i.test(H.lang || "") ? "data-es" : "data-en");
+        }; })(more));
+      }
+      /* the More sits under the last line it opens */
       el.parentNode.insertBefore(more, el.nextSibling);
       /* only keep the link when there is something to open */
-      (function (p, b) { setTimeout(function () { if (p.scrollHeight <= p.clientHeight + 2) { b.remove(); p.classList.remove("aog-clamp"); p.setAttribute("data-aog-fits", "1"); /* AOG-GRACE-STILL-V1: never clamp it again — that loop made pages jitter */ } }, 50); })(el, more);
+      /* AOG-CLAMP-WAIT-V1 (2026-10-22): judge the fit only once aog-grace.css is in. Before it arrives the line is not
+         shortened yet, so every lede "fit", lost its More for good, and the masthead jumped (Privacy, Terms). */
+      (function (p, b) {
+        function check() {
+          if (sheet && !sheet.sheet) { sheet.addEventListener("load", function () { setTimeout(check, 30); }); return; }
+          if (p.scrollHeight <= p.clientHeight + 2) {
+            p.classList.remove("aog-clamp"); p.setAttribute("data-aog-fits", "1"); /* AOG-GRACE-STILL-V1: never clamp it again — that loop made pages jitter */
+            b.__ps = b.__ps.filter(function (q) { return q !== p; });
+            if (!b.__ps.length) b.remove();
+            else if (b.previousSibling === p) b.__ps[b.__ps.length - 1].parentNode.insertBefore(b, b.__ps[b.__ps.length - 1].nextSibling);
+          }
+        }
+        setTimeout(check, 50);
+      })(el, more);
     }
   }
 

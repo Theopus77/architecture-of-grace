@@ -1,0 +1,1807 @@
+<!DOCTYPE html>
+<!-- AOG-FAST-BUILD-V1 source:29de9a96e6f8ddc2 · MADE BY tools/build-fast.py from daily-drops.html: edit daily-drops.html, then run it. -->
+<html lang="en">
+<head>
+<meta charset="utf-8"><style id="aog-first-paint">/* AOG-ONE-PAINT-V1 (2026-09-27) — Jimmy: moving between units was "very choppy, makes me sick". The page now shows once, fully built: it waits on its paper colour until the shared scripts and fonts are in (aog-sketch.js adds .aog-ready), and never longer than ~1 s even if a script fails. No fade, no motion. */html{background:#F7F2E6}html[data-theme="dark"]{background:#0A1E33}html:not(.aog-ready) body{visibility:hidden;animation:aogOnePaint 0s linear 1.1s forwards}@keyframes aogOnePaint{to{visibility:visible}}@media print{html:not(.aog-ready) body{visibility:visible;animation:none}}</style><script>/* AOG-LIGHT-START-V1 — Jimmy: "All pages should start in light mode." Light unless this site was switched to dark. */(function(){var h=document.documentElement;if(!h.getAttribute("data-theme"))h.setAttribute("data-theme","light");})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- AOG-DD-STILL-V1: no zoom on focus (every input is 16px or larger, and the viewport is pinned), boxes clip instead of scrolling, the page never pans sideways. Jimmy: "the screen zooms in or out ... makes me sick." -->
+<script>/* begin in light. Dark only when this device chose it - the stored choice, never the OS setting, decides. Same key as every Interior page. */
+(function(){var t="light";try{if(localStorage.getItem("aog.theme.lightstart.v1")==="1"&&localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);})();</script>
+<title>Daily Practice — K–12 Spiral Review — Architecture of Grace</title>
+<!-- AOG-DD-SUBJECTS-V2 + AOG-DD-DRAFTS-NAME: Science and Social Studies restored, and the page reads Daily Drafts (the N bank from .30j5, transplanted into the 4157 engine) -->
+<meta name="description" content="Ten small things a day. A page of spiral review in ten subjects — math, language arts, writing, science, social studies, Spanish, FACS, world religions, economics and the Word Foundry’s class units — for grades K–8 and two high-school bands, marked the moment it is finished. Private; nothing leaves the device.">
+<meta name="robots" content="noindex">
+<!-- No external requests of any kind. Every byte this page needs is in this file. -->
+<style>
+/* ══ TOKENS ══ same set as the Interior worksheets. Light is the base;
+   dark redefines tokens only — never components. */
+:root{
+  --ground:#F5F1E8; --field:#FFFFFF; --field-2:#EFEAE0;
+  --ink:#1D2733; --ink-soft:#57626F; --ink-faint:#5F6B78;
+  --navy:#1B3A5F; --gold:#B8893A; --gold-deep:#7A5C1F;
+  --rule:rgba(29,39,51,.16); --rule-soft:rgba(29,39,51,.08);
+  /* AOG-DD-WORKINK-V1 (2026-09-23) — Jimmy: "the boxes for the algorithms are very
+     light, can they be darkened a bit." They were drawn in --rule, which is a 16%
+     hairline meant for separating cards, not for showing a child where to write a
+     carried digit. Boxes you WRITE IN get their own ink, about two and a half times
+     that, and it is used for the carry and regroup boxes and the lines in the work
+     pad on screen and on paper alike. */
+  --work-line:rgba(29,39,51,.42);
+  --lift:0 1px 0 rgba(255,255,255,.7), 0 20px 44px -30px rgba(29,39,51,.55);
+  --lift-sm:0 1px 2px rgba(29,39,51,.07), 0 8px 20px -16px rgba(29,39,51,.4);
+  --a:#4A3A8C; --a-wash:rgba(74,58,140,.07);
+  --lock:#2E6B4F; --lock-wash:rgba(46,107,79,.09);
+  --caution:#9A3412; --focus:#B8893A;
+  --t1:#8C5A2B; --t1-wash:rgba(140,90,43,.10);
+  --t2:#2E6B4F; --t2-wash:rgba(46,107,79,.10);
+  --t3:#1B3A5F; --t3-wash:rgba(27,58,95,.10);
+  --good:#2E6B4F; --good-wash:rgba(46,107,79,.12);
+  --miss:#9A3412; --miss-wash:rgba(154,52,18,.10);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#12161C; --field:#1A2029; --field-2:#222A34;
+    --ink:#E9EEF4; --ink-soft:#A3AFBC; --ink-faint:#84909D;
+    --navy:#9CC2E8; --gold:#D6A852; --gold-deep:#D6A852;
+    --rule:rgba(233,238,244,.18); --rule-soft:rgba(233,238,244,.09);
+  --work-line:rgba(233,238,244,.46);   /* AOG-DD-WORKINK-V1 */
+    --work-line:rgba(233,238,244,.46);   /* AOG-DD-WORKINK-V1 */
+    --lift:0 1px 0 rgba(233,238,244,.04), 0 24px 54px -32px rgba(0,0,0,.95);
+    --lift-sm:0 1px 2px rgba(0,0,0,.5), 0 10px 24px -18px rgba(0,0,0,.9);
+    --a:#A99BE8; --a-wash:rgba(169,155,232,.12);
+    --lock:#79C79E; --lock-wash:rgba(121,199,158,.12);
+    --caution:#F0A07C; --focus:#D6A852;
+    --t1:#D8A468; --t1-wash:rgba(216,164,104,.14);
+    --t2:#79C79E; --t2-wash:rgba(121,199,158,.14);
+    --t3:#9CC2E8; --t3-wash:rgba(156,194,232,.14);
+    --good:#79C79E; --good-wash:rgba(121,199,158,.16);
+    --miss:#F0A07C; --miss-wash:rgba(240,160,124,.14);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#12161C; --field:#1A2029; --field-2:#222A34;
+  --ink:#E9EEF4; --ink-soft:#A3AFBC; --ink-faint:#84909D;
+  --navy:#9CC2E8; --gold:#D6A852; --gold-deep:#D6A852;
+  --rule:rgba(233,238,244,.18); --rule-soft:rgba(233,238,244,.09);
+  --lift:0 1px 0 rgba(233,238,244,.04), 0 24px 54px -32px rgba(0,0,0,.95);
+  --lift-sm:0 1px 2px rgba(0,0,0,.5), 0 10px 24px -18px rgba(0,0,0,.9);
+  --a:#A99BE8; --a-wash:rgba(169,155,232,.12);
+  --lock:#79C79E; --lock-wash:rgba(121,199,158,.12);
+  --caution:#F0A07C; --focus:#D6A852;
+  --t1:#D8A468; --t1-wash:rgba(216,164,104,.14);
+  --t2:#79C79E; --t2-wash:rgba(121,199,158,.14);
+  --t3:#9CC2E8; --t3-wash:rgba(156,194,232,.14);
+  --good:#79C79E; --good-wash:rgba(121,199,158,.16);
+  --miss:#F0A07C; --miss-wash:rgba(240,160,124,.14);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+/* AOG-DD-STILL-V1 — the page is locked side to side: nothing pans left or right, a focused box
+   cannot drag its row sideways, and every input is at least 16px so iOS never zooms on focus. */
+html{overflow-x:clip; overscroll-behavior-x:none}
+body{overflow-x:clip; touch-action:pan-y pinch-zoom}
+input,select,textarea,button{font-size:max(16px,1em)}
+input.dg,input.fld,input.tm{font-size:max(16px,1.05rem)}
+#grade,select{font-size:16px!important}
+@media (hover:none){ *,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important} html{scroll-behavior:auto} }
+body{
+  background:var(--ground); color:var(--ink);
+  font: 17px/1.55 -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:980px; margin:0 auto; padding:18px 16px 90px}
+h1,h2,h3{line-height:1.15; margin:0 0 .3em}
+h1{font-size:1.9rem} h2{font-size:1.28rem} h3{font-size:1.05rem}
+p{margin:.4em 0}
+button{font:inherit; color:inherit}
+:focus-visible{outline:3px solid var(--focus); outline-offset:2px}
+/* an author display: rule beats the UA's [hidden]{display:none}, which is how
+   the score strip stayed on screen on the Writing tab. */
+[hidden]{display:none !important}
+
+/* ── masthead ── */
+.mast{display:flex; justify-content:space-between; align-items:flex-start; gap:10px; flex-wrap:wrap}
+.mast .k{font-size:.78rem; letter-spacing:.12em; text-transform:uppercase; color:var(--gold-deep); font-weight:700}
+.mast .row{display:flex; gap:8px}
+.chipbtn{min-height:48px; padding:8px 16px; border:1px solid var(--rule); border-radius:999px;
+  background:var(--field); cursor:pointer; font-weight:700; font-size:.92rem}
+.chipbtn:hover{border-color:var(--gold)}
+.chipbtn[aria-pressed="true"]{background:var(--navy); border-color:var(--navy); color:#fff}
+:root[data-theme="dark"] .chipbtn[aria-pressed="true"]{color:#12161C}
+.deck{color:var(--ink-soft); max-width:64ch}
+.hubline{margin-top:10px}
+.hubline a{color:var(--navy); font-weight:700; text-decoration:none}
+.hubline a:hover{text-decoration:underline}
+
+/* ── the rail ── */
+.rail{margin:22px 0 0; background:var(--field); border:1px solid var(--rule); border-radius:14px;
+  padding:14px 16px; box-shadow:var(--lift-sm); display:flex; gap:16px; align-items:flex-end; flex-wrap:wrap}
+.fg{display:flex; flex-direction:column; gap:6px; min-width:0}
+.lbl{font-size:.7rem; font-weight:700; letter-spacing:.13em; text-transform:uppercase; color:var(--ink-faint)}
+.seg{display:inline-flex; background:var(--field-2); border-radius:999px; padding:3px; gap:2px; flex-wrap:wrap; max-width:100%}
+/* AOG-DD-FIVETABS-V1 — five subjects must all show on a phone: the row wraps, and under 560px it is a
+   two-column grid in a rounded panel, every tab the same width. Jimmy: "the social studies draft
+   doesn't appear, it lays off the screen." */
+@media (max-width:560px){
+  #subjSeg{width:100%; border-radius:16px}
+  #subjSeg .bs{display:grid; grid-template-columns:1fr 1fr; gap:8px}
+  #subjSeg button{border-radius:12px; padding:8px 6px; text-align:center}
+  #subjSeg .bs button:last-child:nth-child(odd){grid-column:1/-1}
+}
+.seg button{min-height:42px; border:0; background:transparent; color:var(--ink-soft); font-weight:700;
+  font-size:.92rem; padding:8px 16px; border-radius:999px; cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--field); color:var(--navy); box-shadow:var(--lift-sm)}
+select,.tin{min-height:48px; background:var(--field); border:1px solid var(--rule); color:var(--ink);
+  border-radius:10px; padding:9px 12px; font:inherit; font-size:.98rem; font-weight:600; outline:none; min-width:0}
+.step{display:flex; align-items:stretch; border:1px solid var(--rule); border-radius:10px;
+  overflow:hidden; background:var(--field)}
+.step button{min-height:48px; width:44px; background:transparent; border:0; color:var(--navy);
+  font-size:1.25rem; font-weight:800; cursor:pointer}
+.step button:hover{background:var(--field-2)}
+.step input{width:64px; text-align:center; background:transparent; border:0; color:var(--ink);
+  font:inherit; font-size:1.02rem; font-weight:800; font-variant-numeric:tabular-nums; outline:none;
+  -moz-appearance:textfield}
+.step input::-webkit-outer-spin-button,.step input::-webkit-inner-spin-button{-webkit-appearance:none; margin:0}
+.btn{min-height:48px; border:1px solid var(--rule); border-radius:999px; padding:10px 22px;
+  font-weight:700; font-size:.95rem; cursor:pointer; background:var(--field)}
+.btn.solid{background:var(--navy); border-color:var(--navy); color:#fff}
+:root[data-theme="dark"] .btn.solid{color:#12161C}
+.btn:hover{border-color:var(--gold)}
+.grow{flex:1 1 auto}
+
+/* ── progress strip ── */
+.strip{display:flex; gap:18px; align-items:center; flex-wrap:wrap; margin:16px 0 22px;
+  padding:14px 16px; background:var(--field); border:1px solid var(--rule); border-radius:14px;
+  box-shadow:var(--lift-sm)}
+.pips{display:flex; gap:6px; flex-wrap:wrap; margin-top:8px}
+.pip{width:34px; height:34px; border-radius:9px; border:1px solid var(--rule); background:var(--field-2);
+  display:grid; place-items:center; font-size:.8rem; font-weight:800; color:var(--ink-faint);
+  font-variant-numeric:tabular-nums; transition:.3s}
+.pip.full{background:var(--good-wash); border-color:var(--good); color:var(--good)}
+.pip.part{background:var(--t1-wash); border-color:var(--t1); color:var(--t1)}
+.pip.miss{background:var(--miss-wash); border-color:var(--miss); color:var(--miss)}
+.stats{display:flex; gap:26px; margin-left:auto}
+.statv{font-size:1.9rem; font-weight:800; line-height:1; font-variant-numeric:tabular-nums; display:block}
+.statv.gold{color:var(--gold-deep)}
+.statl{font-size:.66rem; font-weight:700; letter-spacing:.13em; text-transform:uppercase;
+  color:var(--ink-faint); display:block; margin-top:6px}
+
+/* ── the signature line: a name is signed at the end, not filled in first ── */
+.sig{display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-top:16px; padding-top:14px;
+  border-top:1px solid var(--rule-soft)}
+.sig label{font-size:.7rem; font-weight:700; letter-spacing:.13em; text-transform:uppercase;
+  color:var(--ink-faint)}
+.sig input{flex:1 1 240px; max-width:360px; min-height:48px; border:0; border-bottom:2px solid var(--ink-faint);
+  background:transparent; border-radius:0; padding:8px 4px; font:inherit; font-size:1.02rem; font-weight:700;
+  color:var(--ink); outline:none}
+.sig input:focus{border-color:var(--gold)}
+.sig .signote{font-size:.8rem; color:var(--ink-faint); font-style:italic; flex-basis:100%}
+/* AOG-DD-PRINTNAME-V1 — the paper-only name rule; see the print block below */
+.signprint{display:none}
+
+/* ── AOG-DD-PACK-V1: the print-several bar, and the pack it builds ──
+   The pack is never on screen. It is built only when Print these is pressed and
+   emptied the moment the printer is done with it. */
+.packbar{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-top:12px; padding:12px 14px;
+  border:1px solid var(--rule); border-radius:12px; background:var(--field-2)}
+.packbar .lbl{font-size:.66rem; font-weight:700; letter-spacing:.13em; text-transform:uppercase;
+  color:var(--ink-faint)}
+.packbar input{min-height:48px; width:210px; max-width:100%; border:1px solid var(--rule); border-radius:10px;
+  padding:8px 12px; font:inherit; font-size:1rem; font-weight:700; color:var(--ink); background:var(--field);
+  outline:none}
+.packbar input:focus{border-color:var(--gold)}
+.packnote{flex-basis:100%; font-size:.8rem; line-height:1.5; color:var(--ink-faint)}
+.packnote b{color:var(--ink-soft)}
+#packPack{display:none}
+
+/* ── the sheet ── */
+.sheet{background:var(--field); border:1px solid var(--rule); border-radius:14px; padding:22px 22px 26px;
+  box-shadow:var(--lift)}
+.shead{display:flex; justify-content:space-between; align-items:flex-end; gap:16px; flex-wrap:wrap;
+  border-bottom:2px solid var(--navy); padding-bottom:11px}
+.shead h2{margin:0; font-size:1.34rem}
+.shead .sub{font-size:.7rem; font-weight:700; letter-spacing:.13em; text-transform:uppercase;
+  color:var(--ink-faint); margin-top:5px}
+.snum{text-align:right}
+.snum b{font-size:1.3rem; display:block; line-height:1.1}
+.snum span{font-size:.66rem; font-weight:700; letter-spacing:.13em; text-transform:uppercase; color:var(--ink-faint)}
+.smeta{display:flex; gap:26px; flex-wrap:wrap; font-size:.86rem; color:var(--ink-faint); padding:10px 0 16px;
+  border-bottom:1px solid var(--rule-soft); margin-bottom:16px}
+.smeta b{color:var(--ink)}
+/* AOG-DD-PRINTDATE-V1 — the blank date rule; paper only, see the print block */
+.smeta .dline{display:none}
+.boxes{display:flex; flex-direction:column; gap:11px}
+/* AOG-DD-TALLBOX-V1 — the print wrapper; on screen it is nothing at all */
+.bw{display:block; min-width:0}
+.box{display:grid; grid-template-columns:92px minmax(0,1fr); border:1px solid var(--rule);
+  border-radius:11px; overflow:clip; background:var(--field); transition:.28s}
+.box.right{border-color:var(--good)}
+.box.wrong{border-color:var(--miss)}
+.bnum{background:var(--navy); color:#fff; display:flex; flex-direction:column; align-items:center;
+  justify-content:center; gap:5px; padding:12px 6px; text-align:center}
+:root[data-theme="dark"] .bnum{color:#12161C}
+.box.right .bnum{background:var(--good)}
+.box.wrong .bnum{background:var(--miss); color:#fff}
+.bn{font-size:1.6rem; font-weight:800; line-height:1}
+.bs{font-size:.53rem; line-height:1.24; font-weight:800; letter-spacing:.06em; text-transform:uppercase;
+  opacity:.94; overflow-wrap:normal; word-break:keep-all; hyphens:none; max-width:100%}
+.bbody{padding:13px 15px; display:flex; flex-wrap:wrap; gap:11px 18px; align-items:center;
+  font-size:.98rem; line-height:1.5}
+.bsc{margin-left:auto; align-self:flex-start; font-size:.72rem; font-weight:800; color:var(--ink-faint);
+  font-variant-numeric:tabular-nums}
+.box.right .bsc{color:var(--good)} .box.wrong .bsc{color:var(--miss)}
+.q{flex:1 1 220px; min-width:0}
+/* AOG-DD-WORKROOM-V1 — ruled room to work a problem out. It is not an input and it
+   is not scored; it is the part of the page a teacher reads to find out WHERE it
+   went wrong. Full width, so it sits under the problem and not beside it. */
+/* ── AOG-DD-SOLVESTEPS-V1: an equation laid out as the moves that solve it ──
+   Three columns — left side, the relation, right side — so every row lines up on
+   the equals sign the way it does on a board. The rules span all three, because
+   the line a teacher draws goes under the whole equation, not under one side. */
+.eqp{display:inline-block; vertical-align:top}
+/* AOG-DD-SOLVESTEPS-V2 — four columns: the step number, the left side, the relation,
+   the right side. Every row lines up on the relation the way it does on a board, and
+   the rules run under the whole equation because that is where a teacher draws them. */
+.eqg{display:inline-grid; grid-template-columns:auto auto auto auto; gap:9px 14px;
+  align-items:center}
+.eqS{justify-self:end; min-width:20px}
+.eqL{justify-self:end; font-weight:700; font-size:1.12rem; font-variant-numeric:tabular-nums;
+  white-space:nowrap}
+.eqE{justify-self:center; font-weight:700; font-size:1.12rem; color:var(--ink-soft)}
+.eqR{justify-self:start; font-weight:700; font-size:1.12rem; font-variant-numeric:tabular-nums;
+  white-space:nowrap}
+.eqrule{grid-column:2/-1; height:0; border-top:2px solid var(--ink); margin:1px 0}
+/* the move, in one box: a student writes − 3 or ÷ 6 and there is no second box to
+   put half of it in */
+input.rg.opbx{width:66px; height:32px; min-height:32px; font-size:1.02rem; letter-spacing:.02em}
+input.rg.wk.mid{width:50px; height:34px; min-height:34px; font-size:1.02rem}
+.xv{font-weight:800; font-size:1.12rem; margin-left:4px}
+/* AOG-DD-SOLVESTEPS-V3 — a list of moves: the number, the move named, the room to
+   do it. Three columns so the working lines up down the page. */
+.stepl{flex:1 1 100%; display:grid; grid-template-columns:auto auto 1fr; gap:9px 12px;
+  align-items:center; margin-top:9px}
+.stll{font-size:.92rem; font-weight:700; color:var(--ink-soft); white-space:nowrap}
+.stlw{font-weight:700; font-size:1.04rem; font-variant-numeric:tabular-nums}
+input.rg.wk.sbx{width:48px; height:32px; min-height:32px; font-size:1rem}
+.eqbig{font-size:1.14rem; font-weight:800; font-variant-numeric:tabular-nums}
+.row.eqans{margin-top:10px; padding-top:9px; border-top:2px solid var(--ink);
+  display:inline-flex}
+/* which move this is — it matches the order named in the sentence above */
+.stepn{display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px;
+  border-radius:999px; background:var(--navy); color:#fff; font-size:.68rem; font-weight:800;
+  font-variant-numeric:tabular-nums}
+:root[data-theme="dark"] .stepn{color:#12161C}
+.workpad{flex:1 1 100%; margin-top:9px; border:1.5px dashed var(--work-line); border-radius:9px;
+  padding:7px 11px 9px; background:var(--field-2)}
+.wplab{display:block; font-size:.58rem; font-weight:800; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--ink-faint); margin-bottom:5px}
+/* AOG-DD-WORKROOM-V2 — the rules are painted by the background, and line-height is
+   set to the same 31px period, so a typed line lands ON a rule instead of between
+   two of them. Same trick as textarea.wbox on the writing page. */
+.wpad{display:block; width:100%; min-height:62px; resize:vertical; border:0; border-radius:0;
+  padding:0 4px; font:inherit; font-size:1rem; line-height:31px; color:var(--ink);
+  background-color:transparent; outline:none; overflow:hidden;
+  background-image:repeating-linear-gradient(transparent 0 30px, var(--work-line) 30px 31px);
+  -webkit-print-color-adjust:exact; print-color-adjust:exact}
+.wpad:focus{background-image:repeating-linear-gradient(transparent 0 30px, var(--gold) 30px 31px)}
+/* AOG-DD-STEM-V1 — the sentence a question opens with, as ONE flex item taking a
+   full line, so its words stay together and its <br> works. See done(). */
+.stem{flex:1 1 100%; min-width:0}
+.row{display:flex; gap:15px; flex-wrap:wrap; align-items:center; min-width:0}
+/* AOG-DD-PHONEFIT-V1 — .box is overflow-x:clip, so anything wider than its column used
+   to be cut off with nothing to say so. An algorithm row reaches past its column on a
+   narrow screen, so it scrolls instead of losing its right-hand end. Paper overrides
+   this back to visible. */
+.algrow{overflow-x:auto; overscroll-behavior-x:contain}
+.vstack{display:inline-flex; flex-direction:column; align-items:flex-end; font-variant-numeric:tabular-nums;
+  font-size:1.04rem; font-weight:700; line-height:1.34}
+.vstack .op{border-bottom:2px solid var(--ink); padding-bottom:3px; min-width:76px; text-align:right}
+.inl{display:inline-flex; align-items:center; gap:6px; font-variant-numeric:tabular-nums; flex-wrap:wrap;
+  min-width:0; max-width:100%}
+input.fld{min-height:44px; width:66px; border:0; border-bottom:2px solid var(--ink-faint);
+  background:var(--field-2); border-radius:6px 6px 0 0; padding:6px 8px; font:inherit; font-size:16px;
+  font-weight:700; color:var(--ink); text-align:center; outline:none; transition:.16s;
+  font-variant-numeric:tabular-nums}
+input.fld:focus{border-color:var(--gold); background:var(--field)}
+input.fld.w{width:116px} input.fld.ww{width:210px; text-align:left} input.fld.n{width:52px}
+input.fld.www{width:100%; min-width:230px; text-align:left}
+input.fld.ok{background:var(--good-wash); border-color:var(--good); color:var(--good)}
+input.fld.no{background:var(--miss-wash); border-color:var(--miss); color:var(--miss)}
+/* AOG-DD-ANSWERLINE-V1 — the line that appears under a missed answer used to open
+   with a green check, which reads as 'correct', and it was nowrap, so a diagnosis
+   ran off the right edge of the card. It now names itself and wraps. */
+.sol{display:inline-block; margin-left:6px; font-size:.84rem; font-weight:800; color:var(--good);
+  white-space:normal; overflow-wrap:break-word; max-width:100%}
+/* AOG-DD-SOLSTAY-V1 — an answer that lives inside its own problem: a line of its
+   own under a column algorithm, still on the line beside a small inline widget. */
+.colp>.sol.solin{display:block; margin-left:0; margin-top:7px; align-self:flex-start;
+  max-width:100%}   /* block, not inline: on paper a .colp is an inline-block, where an
+     inline answer would sit alongside the grid instead of under it */
+.sol[data-miss]{color:var(--ink-soft)}
+.sol[data-miss] b{color:var(--miss)}
+.mc{display:inline-flex; gap:6px; flex-wrap:wrap; min-width:0; max-width:100%}
+.mcb{min-height:44px; border:1px solid var(--rule); background:var(--field-2); border-radius:999px;
+  padding:7px 15px; font-size:.9rem; font-weight:700; cursor:pointer; color:var(--ink-soft)}
+.mcb:hover{border-color:var(--gold); color:var(--ink)}
+.mcb.sel{background:var(--navy); border-color:var(--navy); color:#fff}
+:root[data-theme="dark"] .mcb.sel{color:#12161C}
+.mcb.ok{background:var(--good-wash); border-color:var(--good); color:var(--good)}
+.mcb.no{background:var(--miss-wash); border-color:var(--miss); color:var(--miss)}
+.hint{font-size:.82rem; color:var(--ink-faint); flex-basis:100%; font-style:italic}
+.tagt{display:inline-block; background:var(--t1-wash); color:var(--t1); border-radius:5px; padding:2px 8px;
+  font-size:.62rem; font-weight:800; letter-spacing:.09em; text-transform:uppercase; vertical-align:middle}
+svg.art{display:block; max-width:100%; height:auto}
+/* column arithmetic — one box per place, with somewhere to carry */
+.cg{display:inline-grid; gap:4px 3px; justify-items:center; align-items:center}
+/* AOG-DD-DECPOINT-V1 (2026-09-23) — Jimmy's 8th grader, on a printed sheet: he read the
+   decimal point in 3.6 as a MULTIPLICATION dot and rewrote the problem as 6.0 x 3.6.
+   He was reading it correctly. The point sat in a 14px column of its own, CENTRED in
+   that column and lifted 6px off the baseline — which is exactly how a times dot is set,
+   equidistant between two digits and at their middle. A decimal point is the opposite:
+   it sits at the FEET of the digits and belongs to the one on its left. The column stays
+   (a ruled row draws its border across it); only the glyph moves — down onto the baseline
+   and left until it is touching the digit before it. */
+.cg .dot,.divg .dot{width:var(--dw,14px); text-align:center; font-weight:800; font-size:1.05rem;
+  align-self:end; padding-bottom:5px; overflow:visible}
+/* drawn, not typeset: a period glyph at this size reads as a small square in the
+   system font, and a square floating between two digits is the thing he mistook for a
+   times sign. A round dot, at the feet of the digits, tucked hard against the digit on
+   its left, is a decimal point and nothing else. */
+.cg .dot i,.divg .dot i{font-style:normal; display:inline-block; font-size:0; line-height:0;
+  box-sizing:border-box; width:7px; height:7px; border-radius:50%; background:currentColor;
+  transform:translateX(-12px);
+  -webkit-print-color-adjust:exact; print-color-adjust:exact}
+/* a row of answer boxes has no whitespace inside the cell, so its point sits just
+   off the box edge rather than tucked under a glyph */
+.cg .dot.bx i,.divg .dot.bx i{transform:translateX(-5px)}
+.cg .pre{font-weight:800; font-size:1.05rem; justify-self:end; padding-right:2px}
+/* the arrow says where to begin — the ones place, then work left */
+.cg .startlab{font-size:.56rem; letter-spacing:.06em; text-transform:uppercase; color:var(--gold);
+  font-weight:800; white-space:nowrap; line-height:1; margin-top:-2px}
+input.rg.wk{width:34px; height:36px; min-height:36px; font-size:1rem; color:var(--ink); border-radius:5px}
+/* AOG-DD-REGROUP-V3 — the renaming lane: short, tinted and dotted, so it cannot be
+   mistaken for a row to write the working in. It is the small space a pencil uses
+   above a digit, given a shape. */
+input.rg.rgs{height:21px; min-height:21px; width:34px; font-size:13px; border-style:dotted;
+  background:var(--field-2); color:var(--ink-soft); border-radius:4px}
+.rglab.rgsm{font-size:.5rem; letter-spacing:.08em; color:var(--ink-faint); opacity:.85}
+.cg .cell{width:34px; text-align:center; font-weight:700; font-size:1.05rem; font-variant-numeric:tabular-nums;
+  position:relative}
+
+.cg .opx{font-weight:800; font-size:1.35rem; justify-self:end; padding-right:6px; line-height:1}
+/* a partial product is a step, not a second problem — never a big + under the × */
+/* AOG-DD-PHONEFIT-V1 — this label was class "step", which is ALSO the sheet-number
+   stepper up in the toolbar: a bordered, 10px-radius pill. The label inherited its
+   border and its radius, so "THEN ADD" has been printing inside a lozenge with a
+   curved rule under it on every two-digit multiplication — visible in the photo Jimmy
+   sent of a worked sheet. Renamed; nothing else uses .mstep. */
+.cg .opx.mstep{font-size:.58rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--ink-faint); white-space:nowrap; align-self:end; padding-bottom:6px}
+.cg .ruled{border-bottom:2px solid var(--ink); padding-bottom:4px;
+  align-self:stretch; display:flex; align-items:flex-end; justify-content:center;
+  margin:0 -2px; padding-left:2px; padding-right:2px; position:relative}
+/* AOG-DD-ONERULE-V1 (2026-09-24) — THE RULE UNDER THE PROBLEM WAS NOT A LINE. It is
+   drawn as a border on EACH cell of the row, and .cg is a grid with a 3px column gap,
+   so it came out as one short dash per column with a gap between every pair. The
+   -2px margins above were put there to close those gaps and they cannot: a negative
+   margin on a grid item moves the item inside its track, it does not widen the track,
+   and with box-sizing:border-box a 34px cell stays 34px. Measured on the page - five
+   ruled cells at [302.6,336.6] [339.6,373.6] [376.6,410.6] [413.6,427.6] [430.6,464.6],
+   a 3px hole between every one. It has always been five dashes. That was survivable
+   while the answer sat in a row of boxes underneath, and it is not survivable now that
+   the boxes are gone from the paper, because a row of short dashes under a problem is
+   read as a row of BLANKS - one digit per dash - which is the exact false claim
+   PAPERSPACE-V1 is removing. Bridged with a pseudo-element, which is not a grid item
+   and so may cross the gap: it is absolutely positioned, adds no height and shifts
+   nothing, and redraws the same 2px line 3px wider at each end, closing the 3px hole
+   from both sides. The border stays on the cell so the row's height is untouched. */
+.cg .ruled::after{content:''; position:absolute; left:-3px; right:-3px; bottom:-2px;
+  height:0; border-bottom:2px solid var(--ink); pointer-events:none}
+/* the decimal column used to sit on its own baseline, so the rule kinked */
+.cg .dot.ruled{align-self:stretch; padding-bottom:4px}
+input.rg{width:26px; height:26px; min-height:26px; padding:0; text-align:center; font-size:16px;
+  font-weight:700; border:1.5px dashed var(--work-line); border-radius:5px; background:transparent;
+  color:var(--ink); outline:none; font-family:inherit}   /* AOG-DD-WORKINK-V1 */
+/* AOG-DD-PHONEFIT-V1 — Jimmy: "the squares are all squiggly too." A 1.5px dashed
+   border is 4.5 device pixels on a 3x phone, so no dash edge can land on a pixel and
+   the whole outline ripples; the 5px corner radius then restarts the dash pattern at
+   every corner, which is the wobble. Whole pixels and a tighter corner draw straight. */
+@media (max-width:820px){
+  /* the wobble is the CORNERS: Safari restarts the dash pattern at every arc, so a
+     5px radius on a 26px box spends most of its outline turning. Whole-pixel borders
+     and a nearly square corner draw straight dashes on all four sides. */
+  input.rg{border-width:2px; border-radius:2px}
+  input.rg.rgs{border-width:2px; border-radius:2px}
+  input.dg{border-radius:4px 4px 0 0}
+}
+input.rg:focus{border-color:var(--gold); border-style:solid; background:var(--field-2)}
+input.dg{width:34px; min-height:40px; padding:4px 0; text-align:center; font-size:1.05rem; font-weight:700;
+  border:0; border-bottom:2px solid var(--ink-soft); border-radius:5px 5px 0 0;   /* AOG-DD-WORKINK-V1 */
+  background:var(--field-2); color:var(--ink); outline:none; font-family:inherit;
+  font-variant-numeric:tabular-nums}
+input.dg:focus{border-color:var(--gold); background:var(--field)}
+.colp.ok input.dg{background:var(--good-wash); border-color:var(--good); color:var(--good)}
+.colp.no input.dg{background:var(--miss-wash); border-color:var(--miss); color:var(--miss)}
+.cg .unitc{font-weight:700; font-size:.95rem; padding-left:2px; align-self:center}
+/* long division — the quotient sits on the bar, the work goes underneath */
+.divg{display:inline-grid; gap:5px 4px; align-items:center; justify-items:center}
+.divg .dv{font-weight:700; font-size:1.05rem; justify-self:end; padding-right:5px;
+  font-variant-numeric:tabular-nums}
+.divg .bar{border-bottom:2px solid var(--ink);
+  align-self:stretch; display:flex; align-items:flex-end; justify-content:center;
+  margin:0 -2px; padding:0 2px 4px; position:relative}
+/* AOG-DD-ONERULE-V1 — .divg has a 4px column gap and draws every rule as a border on
+   each cell, so the bar over the dividend and the rule under each subtraction came
+   out in pieces. Same bridge as .cg: a pseudo-element, which is not a grid item and
+   may cross the gap, redrawing the same 2px line 4px wider at each end. Absolutely
+   positioned, so nothing moves. */
+.divg .bar::after{content:''; position:absolute; left:-4px; right:-4px; bottom:-2px;
+  height:0; border-bottom:2px solid var(--ink); pointer-events:none}
+.divg .mline::after{content:''; position:absolute; left:-4px; right:-4px; bottom:-2px;
+  height:0; border-bottom:2px solid var(--ink); pointer-events:none}
+.divg .bar.dot{align-self:stretch; padding-bottom:4px}
+.divg .bar.qend{justify-self:stretch; width:100%}
+.divg .brk{border-left:2px solid var(--ink)}
+.divg .wline{border-top:2px solid var(--ink); padding-top:4px; margin:0 -2px; padding-left:2px; padding-right:2px}
+/* AOG-DD-REGROUP-V2 — the subtraction rule under the number being taken away, which
+   is where a subtraction line goes, and which leaves the regroup strip sitting
+   directly above the difference it renames. */
+.divg .mline{border-bottom:2px solid var(--ink); padding-bottom:4px; margin:0 -2px;
+  padding-left:2px; padding-right:2px; align-self:stretch; display:flex;
+  align-items:flex-end; justify-content:center; position:relative}
+.oplab{display:block; font-size:.62rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--navy); margin:0 0 3px}
+/* AOG-DD-DECPOINT-V1 — one line, on decimal multiplication only */
+.declab{display:block; font-size:.55rem; font-weight:700; letter-spacing:.04em; line-height:1.25;
+  color:var(--ink-faint); max-width:190px; margin:-2px 0 4px; text-transform:none}
+.colp{display:inline-flex; flex-direction:column; align-items:flex-start; vertical-align:top}
+/* ══ AOG-DD-WORKSPACE-V1 (2026-09-25) ══════════════════════════════════════════
+   Jimmy: "fix the Algorithms issue and how to give the students extra space to work.
+   Maybe that is it. EXTRA SPACE not boxes... My son and I have had so many issues
+   with those boxes at the 7th grade module."
+   PAPERSPACE-V1 already made every unscored box invisible on paper and kept its
+   room. This is the same rule brought to the screen. In PENCIL mode (the default)
+   the only boxes left are the ones the page scores — the answer digits and the
+   quotient — and every carry, borrow, partial-product and long-division work box
+   becomes open space of the same size, so the columns, the rule and the START
+   arrow do not move. Over each column problem sits a pencil layer: a canvas the
+   student writes on with a finger, a stylus or the mouse, exactly where the boxes
+   used to be and anywhere else around the problem. CARRY, BORROW and THEN ADD keep
+   naming the spaces. The answer boxes sit above the layer, so typing still works.
+   Nothing drawn is scored or sent; it is scratch paper. The "Work space" switch
+   above the sheet brings the typed boxes back for anyone who wants them. */
+body.work-pencil .colp,body.work-pencil .ug{position:relative}
+/* room to write around the problem, not just inside it */
+body.work-pencil .colp{padding:8px 16px 6px 8px}
+body.work-pencil .ug{padding:6px 14px 4px 6px}
+body.work-pencil .ug .scrclr{top:-10px; right:-10px}
+body.work-pencil .colp input.rg,body.work-pencil .ug input.rg{visibility:hidden; pointer-events:none}
+/* a carry is written small and high; give the lane the height of a pencil stroke */
+body.work-pencil .colp input.rg.rgs{height:30px; min-height:30px}
+body.work-pencil .colp input.rg:not(.wk):not(.rgs),body.work-pencil .ug input.rg{height:34px; min-height:34px}
+body.work-pencil .colp input.rg.wk{height:40px; min-height:40px}
+body.work-pencil .colp input.dg,body.work-pencil .ug input.fld,body.work-pencil .ug .fldw{position:relative; z-index:2}
+/* AOG-DD-WORKTIGHT-V1 (2026-09-25) — Jimmy, on a printed grade-7 draft: "The algorithms
+   take up too much space now that there are no boxes, please shrink the work area."
+   The boxes went invisible but kept the height of a typed box, so a two-step division
+   stood half a page tall. A pencil needs less: a carry or a regroup mark is small and
+   high, a work line is one line of handwriting. Lanes shrink to that, the grid gaps
+   close up, and the column problems sit closer together. Typed-box mode and review
+   printouts keep their full-size boxes. */
+body.work-pencil:not(.review) .colp input.rg.rgs{height:16px!important; min-height:16px!important}
+body.work-pencil:not(.review) .colp input.rg:not(.wk):not(.rgs),body.work-pencil:not(.review) .ug input.rg{height:20px!important; min-height:20px!important}
+body.work-pencil:not(.review) .colp input.rg.wk{height:26px!important; min-height:26px!important}
+body.work-pencil:not(.review) .divg,body.work-pencil:not(.review) .cg{row-gap:1px!important}
+body.work-pencil:not(.review) .colp{padding:4px 10px 2px 4px}
+@media print{
+  body:not(.review) .colp input.rg.rgs{height:14px!important; min-height:14px!important}
+  body:not(.review) .colp input.rg:not(.wk):not(.rgs){height:18px!important; min-height:18px!important}
+  body:not(.review) .colp input.rg.wk{height:24px!important; min-height:24px!important}
+  body:not(.review) .divg,body:not(.review) .cg{row-gap:1px!important}
+  body:not(.review) .box.tall .colp{margin:0 18px 8px 0!important}
+}
+canvas.scr{position:absolute; inset:0; z-index:1; touch-action:none; cursor:crosshair; width:100%; height:100%}
+body:not(.work-pencil) canvas.scr{display:none}
+/* on screen in pencil mode a long division keeps only the passes the quotient needs,
+   plus one to spare — the same collapse the print rules make (DIVSPACE-V2), and for
+   the same reason: five empty lanes for a two-step division is a claim, not room */
+body.work-pencil:not(.review) .divg .xpass,body.work-pencil:not(.review) .divg .xpass input{height:0!important; min-height:0!important;
+  padding:0!important; margin:0!important; border:0!important; font-size:0!important; line-height:0!important; overflow:hidden!important; visibility:hidden!important}
+.scrclr{position:absolute; top:2px; right:2px; z-index:3; width:26px; height:26px; border-radius:50%;
+  border:1px solid var(--work-line); background:var(--field); color:var(--ink-soft); font:inherit; font-size:13px;
+  line-height:1; cursor:pointer; display:none; align-items:center; justify-content:center; padding:0}
+.colp.inked .scrclr,.ug.inked .scrclr{display:inline-flex}
+.scrclr:hover{border-color:var(--gold); color:var(--ink)}
+.workbar{display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin:0 0 12px; font-size:13px}
+.workbar .lbl{font-size:.62rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint); margin-right:2px}
+.workbar .wb{min-height:34px; border:1px solid var(--rule); border-radius:999px; padding:6px 14px; background:var(--field);
+  color:var(--ink); font:inherit; font-size:13px; font-weight:700; cursor:pointer}
+.workbar .wb[aria-pressed="true"]{background:var(--navy); border-color:var(--navy); color:#fff}
+.workbar .whint{color:var(--ink-faint); font-size:12px}
+@media print{.workbar,.scrclr{display:none!important}}
+.divg .opx{font-weight:800; font-size:1rem; justify-self:end; padding-right:4px; color:var(--ink-soft)}
+.divg .cell{width:34px; text-align:center; font-weight:700; font-size:1.05rem;
+  font-variant-numeric:tabular-nums}
+.worklab{font-size:.6rem; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-faint);
+  font-weight:700; justify-self:end; padding-right:4px; white-space:nowrap}
+/* AOG-DD-MINUSBOX-V2 — the subtraction sign, printed at the head of the row being
+   taken away. Letter-spacing and uppercase belong to the label, not to the sign. */
+.minus{display:inline-block; margin-left:8px; vertical-align:middle; letter-spacing:normal;
+  text-transform:none; font-size:1.25rem; font-weight:800; line-height:1; color:var(--ink)}
+/* mixed units — two bases side by side, with room to borrow across them */
+.ug{display:inline-grid; gap:3px 10px; justify-items:center; align-items:center}
+.ug .uhead{font-size:.66rem; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-faint);
+  font-weight:800}
+.ug .cell{min-width:44px; text-align:center; font-weight:700; font-size:1.05rem;
+  font-variant-numeric:tabular-nums}
+.ug .ruled{border-bottom:2px solid var(--ink); padding-bottom:4px}
+.ug .opx{font-weight:800; font-size:1.05rem; justify-self:end}
+/* time is written hh:mm — the colon is printed, not typed */
+.timep{display:inline-flex; align-items:center; gap:5px}
+.timep input.tm{width:60px; min-height:44px; border:0; border-bottom:2px solid var(--ink-faint);
+  background:var(--field-2); border-radius:6px 6px 0 0; padding:6px 4px; font:inherit; font-size:1.05rem;
+  font-weight:700; color:var(--ink); text-align:center; outline:none; font-variant-numeric:tabular-nums}
+.timep input.tm:focus{border-color:var(--gold); background:var(--field)}
+.timep .tcol{font-size:1.3rem; font-weight:800; line-height:1}
+.timep.ok input.tm{background:var(--good-wash); border-color:var(--good); color:var(--good)}
+.timep.no input.tm{background:var(--miss-wash); border-color:var(--miss); color:var(--miss)}
+.rglab{font-size:.6rem; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-faint);
+  font-weight:700; justify-self:end; padding-right:4px; white-space:nowrap}
+:root[data-theme="dark"] svg.art{background:#FFFFFF; border-radius:6px; padding:3px}
+.cellbtn{cursor:pointer}
+.cellbtn:hover{opacity:.72}
+.shcell.on{fill:#E8C77A}
+.frac{display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle; font-weight:700;
+  line-height:1.12; font-variant-numeric:tabular-nums}
+.frac .den{border-top:2px solid var(--ink); padding-top:1px; margin-top:1px}
+.fracin{display:inline-flex; flex-direction:column; align-items:center; gap:3px; vertical-align:middle}
+.fracin input.fld{width:50px}
+.fracin input.fld:first-child{border-bottom-color:transparent}
+.fpw{align-items:flex-start;gap:6px}
+.fwork{display:flex;align-items:center;gap:6px}
+.fwlab{font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint)}
+.fwork input.fw{width:190px;max-width:70vw;height:32px;border:1.5px dashed var(--rule);border-radius:7px;background:transparent;font:inherit;font-size:1rem;padding:0 8px}
+.divg .cell.spare{border-bottom:1.5px dashed var(--rule)}
+/* AOG-DD-PRINTINK-V1 (2026-09-24) — this was a 2px-tall span filled with a background
+   colour, and a browser drops background fills when it prints unless it is told not to.
+   On paper the bar simply was not there, so every fraction printed as two numbers with
+   nothing between them. A border draws the same line and always prints. */
+.fracin .bar{width:54px; height:0; border-top:2px solid var(--ink); background:none}
+/* fraction operations read across the line, the way they are written by hand */
+/* AOG-DD-FRACSTEPS-V1 — one problem, then its moves, then the next problem */
+.fpstack{display:flex; flex-direction:column; gap:16px; flex-basis:100%}
+.fpu{border-left:3px solid var(--rule); padding-left:13px}
+.fpq{margin-bottom:2px}
+.stepl.fstep{margin-top:4px; gap:7px 12px}
+.rnm{display:inline-flex; align-items:center; gap:7px; margin-right:22px}
+.fracin.fwk .bar{width:46px}
+input.rg.wk.fwn{width:46px; height:30px; min-height:30px; font-size:.98rem}
+.stlw.hintw{font-size:.86rem; font-weight:600; color:var(--ink-faint); font-style:italic}
+.fpr{gap:9px; font-size:1.08rem; padding:4px 2px}
+.fpr .fop{font-weight:800; font-size:1.05rem}
+.wbank{display:flex; flex-wrap:wrap; gap:7px; padding:9px 12px; background:var(--field-2);
+  border:1px dashed var(--rule); border-radius:10px; font-size:.88rem; flex-basis:100%}
+.wbank b{font-size:.64rem; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-faint);
+  align-self:center; margin-right:4px}
+/* AOG-DD-CHIPBOX-V1 (2026-09-19) — A CHIP IS ONE BOX. The span was inline, so a
+   long chip ("Ayer fui al mercado con mamá") broke across two lines and the
+   border broke with it: an open edge at the right margin and a stray stub
+   underneath. inline-block makes the whole chip move as a unit; max-width
+   lets a chip longer than the row wrap INSIDE its own border instead of
+   spilling past it. */
+.wbank span{display:inline-block; max-width:100%; vertical-align:top;
+  background:var(--field); border:1px solid var(--rule); border-radius:6px; padding:3px 10px; font-weight:700}
+.psg{flex-basis:100%; background:var(--field-2); border-left:3px solid var(--gold); border-radius:0 10px 10px 0;
+  padding:12px 15px; font-size:1rem; line-height:1.75}
+.psg .er{cursor:pointer; padding:1px 2px; border-radius:3px; border-bottom:2px solid transparent;
+  transition:background .12s}
+.psg .er:hover{background:var(--field); border-bottom-color:var(--rule)}
+.psg .er.on{background:var(--t1-wash); border-bottom-color:var(--t1); font-weight:700}
+.psg .er.ok{background:var(--good-wash); border-bottom:2px solid var(--good)}
+.psg .er.no{background:var(--miss-wash); border-bottom:2px solid var(--miss)}
+.psg .er.was{border-bottom:2px dashed var(--good)}
+
+/* ── send to teacher ── */
+.sendbox{margin-top:24px; padding:16px 18px; background:var(--field); border:1px solid var(--rule);
+  border-left:3px solid var(--gold); border-radius:12px; box-shadow:var(--lift-sm); max-width:560px}
+.sendbox .sk{display:block; font-size:.72rem; font-weight:800; letter-spacing:.13em; text-transform:uppercase;
+  color:var(--gold-deep)}
+.sendbox .snote{margin:8px 0 12px; font-size:.88rem; color:var(--ink-soft); line-height:1.5}
+.sendbox label{display:block; font-size:.82rem; color:var(--ink-soft); font-weight:600}
+.sendbox input{display:block; margin-top:6px; min-height:48px; width:100%; max-width:320px;
+  background:var(--field-2); border:1px solid var(--rule); border-radius:10px; padding:9px 12px;
+  font:inherit; font-size:.98rem; font-weight:600; color:var(--ink); outline:none}
+.sendbox input:focus{border-color:var(--gold); background:var(--field)}
+.srow{margin-top:12px}
+.sendbox.waiting{border-left-color:var(--rule)}
+.sendbox.waiting .sk{color:var(--ink-faint)}
+.sendbox button:disabled{opacity:.45; cursor:not-allowed}
+.sst{margin:10px 0 0; font-size:.86rem; font-weight:600; color:var(--ink-soft); min-height:1.2em}
+.sst.ok{color:var(--good)} .sst.bad{color:var(--miss)}
+/* AOG-SEND-BLIND-AMBER-V1 (2026-09-20) — a blind send is not a confirmed one.
+   When the destination is unreachable the CORS post fails, the no-cors retry
+   resolves whatever the server said (a dead Apps Script deployment answers 404
+   just as happily), and this line used to go GREEN. A whole afternoon of work
+   can be lost behind a green tick. Amber says what it is: sent, unconfirmed. */
+.sst.warn{color:var(--caution); font-weight:700}
+
+/* ── the graphic organizer: plan it before you write it ── */
+.wcols{display:grid; grid-template-columns:minmax(230px,290px) minmax(0,1fr); gap:16px; margin-top:11px;
+  align-items:start}
+@media (max-width:760px){.wcols{grid-template-columns:1fr}}
+.org{background:var(--field-2); border:1px solid var(--rule); border-radius:11px; padding:12px 13px}
+.org .ok2{font-size:.64rem; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--gold-deep)}
+.org h4{margin:5px 0 2px; font-size:.95rem; line-height:1.3}
+.org .os{font-size:.76rem; color:var(--ink-faint); margin:0 0 9px; line-height:1.45}
+.ocell{margin-top:9px}
+.ocell label{display:block; font-size:.74rem; font-weight:700; letter-spacing:.03em; color:var(--ink-soft);
+  margin-bottom:3px}
+.ocell textarea{width:100%; min-height:46px; resize:vertical; border:1px solid var(--rule); border-radius:8px;
+  padding:6px 8px; font:inherit; font-size:16px; line-height:1.45; color:var(--ink); background:var(--field);
+  outline:none; overflow:hidden}
+.ocell textarea:focus{border-color:var(--gold)}
+/* AOG-DD-WORDBANK-V1 */
+.wbank{margin-top:12px; padding-top:10px; border-top:1px dashed var(--rule)}
+.wbank .bkh{display:flex; align-items:center; gap:9px}
+.wbank .bkk{font-size:.64rem; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--gold-deep)}
+.wbank .bkt{margin-left:auto; font:inherit; font-size:.68rem; font-weight:800; letter-spacing:.06em;
+  text-transform:uppercase; padding:2px 9px; border-radius:999px; cursor:pointer;
+  border:1px solid var(--rule); background:var(--field); color:var(--ink-soft)}
+.wbank .bkt[aria-pressed="true"]{background:var(--ink); border-color:var(--ink); color:var(--field)}
+.wbank .bkn{font-size:.72rem; color:var(--ink-faint); margin:5px 0 8px; line-height:1.45}
+.wbank .bkg{margin-bottom:7px}
+.wbank .bkl{display:block; font-size:.66rem; font-weight:700; letter-spacing:.05em;
+  text-transform:uppercase; color:var(--ink-faint); margin-bottom:4px}
+.wbank .chip{font:inherit; font-size:.82rem; line-height:1.2; padding:5px 10px; margin:0 5px 5px 0;
+  border:1px solid var(--rule); border-radius:999px; background:var(--field); color:var(--ink);
+  cursor:grab; touch-action:none; -webkit-user-select:none; user-select:none}
+.wbank .chip:hover{border-color:var(--gold); background:var(--field-2)}
+.wbank .chip:active{cursor:grabbing}
+.wbank .chip:focus-visible{outline:2px solid var(--gold-deep); outline-offset:2px}
+.wbank.off .bkn,.wbank.off .bkg{display:none}
+.ocell textarea.dropok{border-color:var(--gold); background:var(--field-2)}
+/* the chip that follows the finger */
+.chipghost{position:fixed; z-index:9999; pointer-events:none; font-size:.82rem; padding:5px 10px;
+  border-radius:999px; background:var(--ink); color:var(--field); box-shadow:0 4px 14px rgba(0,0,0,.22)}
+/* ══ AOG-DD-BANKPRINT-V1 (2026-09-19) — A WORD BANK IS SOMETIMES THE QUESTION
+   `.wbank{display:none}` treated every bank as a hint. For `voc` it is one, and
+   hiding it on paper turns recognition into recall — a fair choice, and kept.
+   But a `seq` box printed as "Pon en orden la carta de Ana" over four numbered
+   blanks and NOTHING TO ORDER: the out-of-order list is the task, not a crutch,
+   and the same holds for the labels under a chain, cycle or layers diagram.
+   Those carry .task now and print. Found on the new Spanish sheets; it has been
+   true of every science and social studies seq box all along. */
+@media print{
+  .wbank{display:none}
+  .wbank.task{display:block!important}
+  .wbank.task span{border:1px solid #000!important; background:#fff!important; color:#000!important}
+}
+
+.otwo{display:grid; grid-template-columns:1fr 1fr; gap:9px}
+.org .onote{font-size:.72rem; color:var(--ink-faint); font-style:italic; margin:10px 0 0}
+
+/* ── suggested scores + the draft builder ── */
+.wacts{display:flex; gap:9px; flex-wrap:wrap; margin-top:12px; align-items:center}
+.why{margin-top:10px; border:1px solid var(--rule); border-left:3px solid var(--a); border-radius:0 10px 10px 0;
+  background:var(--field-2); padding:11px 14px}
+.why h4{margin:0 0 7px; font-size:.86rem}
+.why ul{margin:0; padding-left:18px}
+.why li{font-size:.85rem; line-height:1.55; margin-bottom:3px}
+.why li b{font-variant-numeric:tabular-nums}
+.why .lowc{color:var(--caution); font-weight:700}
+.why .note{font-size:.76rem; color:var(--ink-faint); font-style:italic; margin:9px 0 0}
+.rlv button.sug{border-color:var(--a); border-style:dashed; color:var(--a)}
+.rlv button.sug[aria-pressed="true"]{border-style:solid}
+.sugtag{display:inline-block; background:var(--a-wash); color:var(--a); border-radius:5px; padding:1px 7px;
+  font-size:.6rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; margin-left:7px}
+
+/* ── the writing rubric ── */
+.rub{margin-top:16px; border-top:1px solid var(--rule); padding-top:14px}
+.rub .rh{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap}
+.rub .rk{font-size:.66rem; font-weight:800; letter-spacing:.13em; text-transform:uppercase; color:var(--gold-deep)}
+.rub .rtot{margin-left:auto; font-size:.95rem; font-weight:800; font-variant-numeric:tabular-nums}
+.rub .rtot b{font-size:1.35rem}
+.rrow{display:grid; grid-template-columns:minmax(140px,1.1fr) auto; gap:10px 14px; align-items:center;
+  padding:9px 0; border-top:1px solid var(--rule-soft)}
+.rrow:first-of-type{border-top:0}
+.rcat{font-size:.9rem; font-weight:700; line-height:1.3}
+.rcat span{display:block; font-size:.76rem; font-weight:500; color:var(--ink-faint); margin-top:2px}
+.rlv{display:flex; gap:6px; flex-wrap:wrap}
+.rlv button{min-width:44px; min-height:44px; border:1px solid var(--rule); background:var(--field-2);
+  border-radius:10px; font:inherit; font-weight:800; font-size:.95rem; color:var(--ink-soft); cursor:pointer}
+.rlv button:hover{border-color:var(--gold); color:var(--ink)}
+.rlv button[aria-pressed="true"]{background:var(--navy); border-color:var(--navy); color:#fff}
+:root[data-theme="dark"] .rlv button[aria-pressed="true"]{color:#12161C}
+.rleg{font-size:.74rem; color:var(--ink-faint); margin-top:8px}
+.rleg b{color:var(--ink-soft)}
+/* the proofreading pass — the tool the rubric's fourth row is about */
+.pfbtn{margin-top:12px}
+.pflist{margin-top:11px; border:1px solid var(--rule); border-left:3px solid var(--t1);
+  border-radius:0 10px 10px 0; background:var(--field-2); padding:11px 14px}
+.pflist.clean{border-left-color:var(--good)}
+.pflist h4{margin:0 0 7px; font-size:.86rem}
+.pflist ul{margin:0; padding-left:18px}
+.pflist li{font-size:.86rem; line-height:1.55; margin-bottom:4px}
+.pftag{display:inline-block; background:var(--t1-wash); color:var(--t1); border-radius:5px; padding:1px 7px;
+  font-size:.62rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; margin-right:6px}
+.pfq{font-style:italic; color:var(--ink-soft)}
+.pfnote{font-size:.76rem; color:var(--ink-faint); margin-top:8px; font-style:italic}
+
+/* ── the bonus band: writing, below the ten scored boxes ── */
+.bonus{margin-top:14px; border:1px solid var(--rule); border-left:3px solid var(--gold);
+  border-radius:11px; background:var(--field); padding:14px 16px 16px}
+.bonus .bk{font-size:.66rem; font-weight:800; letter-spacing:.13em; text-transform:uppercase;
+  color:var(--gold-deep)}
+.bonus h3{margin:6px 0 0; font-size:1.02rem; line-height:1.35}
+.bonus .bp{margin:7px 0 0; font-size:.95rem; line-height:1.55; color:var(--ink-soft)}
+textarea.wbox{display:block; width:100%; margin-top:11px; min-height:132px; resize:vertical;
+  border:1px solid var(--rule); border-radius:9px; padding:6px 10px; font:inherit; font-size:1rem;
+  line-height:28px; color:var(--ink); background:var(--field-2); outline:none; overflow:hidden;
+  background-image:repeating-linear-gradient(var(--field-2) 0 27px, var(--rule) 27px 28px);
+  -webkit-print-color-adjust:exact; print-color-adjust:exact}
+textarea.wbox:focus{border-color:var(--gold); background-color:var(--field);
+  background-image:repeating-linear-gradient(var(--field) 0 27px, var(--rule) 27px 28px)}
+.wchk{display:flex; flex-wrap:wrap; gap:8px 16px; margin-top:11px}
+.wchk label{display:inline-flex; align-items:center; gap:7px; font-size:.86rem; color:var(--ink-soft);
+  min-height:40px; cursor:pointer}
+.wchk input{width:19px; height:19px; accent-color:var(--good); cursor:pointer}
+.wfoot{margin-top:9px; font-size:.78rem; color:var(--ink-faint); font-style:italic}
+.wcount{font-variant-numeric:tabular-nums; font-style:normal; font-weight:700; color:var(--ink-soft)}
+
+/* ── actions & footer ── */
+.acts{display:flex; gap:10px; flex-wrap:wrap; margin-top:20px; align-items:center}
+.resline{font-size:.95rem; color:var(--ink-soft)}
+.resline b{color:var(--ink)}
+.sheet-foot{margin-top:28px; padding-top:18px; border-top:1px solid var(--rule); font-size:.84rem;
+  color:var(--ink-faint); line-height:1.65; max-width:78ch}
+.sheet-foot b{color:var(--ink-soft)}
+.toast{position:fixed; left:50%; bottom:26px; transform:translate(-50%,150%); z-index:60;
+  background:var(--navy); color:#fff; padding:13px 26px; border-radius:999px; font-weight:700;
+  box-shadow:var(--lift); transition:.42s cubic-bezier(.16,1,.3,1)}
+:root[data-theme="dark"] .toast{color:#12161C}
+/* AOG-DD-TOAST-HIDE-V1 (2026-10-01) — Jimmy: "secret societies has a blue dot on it." The parked toast was slid
+   150% of its own height below the bottom edge, which left a sliver of navy showing; it is invisible until shown. */
+.toast:not(.show){visibility:hidden; pointer-events:none}
+.toast.show{transform:translate(-50%,0)}
+
+@media (max-width:640px){
+  .box{grid-template-columns:68px minmax(0,1fr)} .bn{font-size:1.3rem} .bs{font-size:.45rem}
+  .sheet{padding:16px 13px 20px} .stats{margin-left:0}
+}
+/* AOG-DD-PHONEFIT-V1 — this block used to sit near the TOP of the stylesheet, where
+   every later rule of equal specificity beat it: the row labels, the division cells
+   and the number rail all kept their desktop sizes on a phone. It belongs after the
+   other breakpoints, so it is here. */
+@media (max-width:480px){
+  /* AOG-DD-PHONEFIT-V1 (2026-09-23) — Jimmy, on an iPhone: "The right side of the
+     algorithms gets cut off." It did. A seven-column multiplication measured 276px
+     inside a 230px column and .box is overflow-x:clip, so the end of the problem was
+     not scrolled off — it was gone, with nothing to say so. Three things give the
+     width back: the number rail narrows, the row labels stop shouting, and the
+     columns come in 2px. Then .algrow scrolls as a last resort, so a problem wider
+     than any phone is still reachable instead of silently cut. */
+  .colp{--cw:25px;--dw:10px}
+  .cg .cell,input.dg,input.rg.wk{width:25px} .cg .dot,.divg .dot{width:10px}
+  .cg .dot i,.divg .dot i{width:6px; height:6px; transform:translateX(-9px)}
+  .cg .dot.bx i,.divg .dot.bx i{transform:translateX(-4px)}
+  .divg .cell{width:25px} .divg .dv{padding-right:2px}
+  .box{grid-template-columns:46px minmax(0,1fr)}
+  .rglab{font-size:.5rem; letter-spacing:.03em; padding-right:3px}
+  .worklab{font-size:.5rem; letter-spacing:.03em; padding-right:3px}
+  .cg .opx.mstep{font-size:.5rem; letter-spacing:.03em}
+  .cg{gap:4px 3px}
+  .algrow{overflow-x:auto; -webkit-overflow-scrolling:touch; padding-bottom:3px;
+    scrollbar-width:thin; flex-wrap:wrap;
+    /* on the smallest phones a long division can still be wider than the screen.
+       The fade on the right edge is the only thing that says so — it appears when
+       there is more to the right and goes when you reach the end. */
+    background:linear-gradient(to left, var(--field) 0, transparent 14px) right / 14px 100% no-repeat local}
+}
+@media print{
+  .no-print,.rail,.strip,.acts,.sheet-foot,.toast,.mast .row,.hubline{display:none!important}
+  .algrow{overflow:visible!important}
+  /* AOG-DD-PRINTLEAN-V1 (2026-09-23) — Jimmy: "get rid of the huge paragraph of
+     words, it is pointless." On paper it was: the page title and the paragraph
+     explaining what Daily Drafts ARE took the top third of sheet one, above a
+     sheet that already says Mathematics · Grade 7 · Draft 1 with a score and a
+     date on it. The screen keeps all of it; paper starts at the work. */
+  .mast .k, .mast h1, .mast .deck{display:none!important}
+  .mast{margin:0!important; padding:0!important; border:0!important; min-height:0!important}
+  /* AOG-DD-PRINTNAME-V1 (2026-09-23) — Jimmy: "For the print out, the signature
+     should be at the top," and: get rid of "use your name or the code your teacher
+     gave you — and use the same one every time." That sentence is about a name
+     TYPED into the page, which is how the work reaches the teacher's sheet; on
+     paper nothing is typed and nothing is sent, so it was instructions for a
+     thing the reader cannot do. The screen keeps every word of it. Paper gets a
+     name rule under the header and the boxes start straight after. */
+  /* ══ AOG-DD-PRINTDATE-V1 (2026-09-23) ═══════════════════════════════════════
+     Jimmy: "I am printing a few sheets out so I can prepare for the next school
+     days. The date is automatically printed on it. I like it on the website, but
+     I don't know if I like it when I have to print them out."
+
+     Right — on screen the date is TODAY and it is true. On paper it is the day the
+     sheet came off the printer, which is not the day it will be worked. A teacher
+     printing Sunday for the week hands out four sheets all dated Sunday, and every
+     one of them is a small lie on a page the student is about to sign. So paper
+     gets a rule to write the real date on, and the screen keeps the date it has
+     always had. ══════════════════════════════════════════════════════════════ */
+  /* AOG-DD-PRINTDATE-V2 — Score, the same way. On a blank sheet nothing will ever
+     compute a score, so the em dash is a placeholder for a number a teacher writes by
+     hand: it gets a rule, like the date. A sheet that HAS been marked keeps its
+     number, because then it is a fact and not a placeholder. */
+  .smeta .sval:not(.scored){display:none!important}
+  .smeta .sval.scored ~ .dline{display:none!important}
+  .smeta .dval{display:none!important}
+  .smeta .dline{display:inline-block!important; width:118px; margin-left:4px;
+    border-bottom:1.5px solid #000; height:15px; vertical-align:baseline}
+  .signprint{display:flex!important; align-items:flex-end; gap:12px; margin:0 0 14px}
+  .signprint .spl{font-size:.7rem; font-weight:700; letter-spacing:.13em; text-transform:uppercase;
+    color:#000; padding-bottom:3px}
+  .signprint .spv{flex:1 1 auto; min-height:24px; border-bottom:1.5px solid #000; font-weight:700;
+    padding:0 4px 2px}
+  .signprint{break-after:avoid; page-break-after:avoid; break-inside:avoid; page-break-inside:avoid}
+  .sig{display:none!important}
+  /* AOG-DD-PACK-V1 — printing a chosen set of drafts. While the pack is up, the
+     page's own sheet and chrome stand down and ONLY the pack goes to paper, one
+     draft a sheet. Each draft is a plain block, not a flex item: same reason as
+     AOG-DD-PAGEBREAK-V1 — WebKit will not honor a page break on a flex item. */
+  body.packing #sheet, body.packing .mast, body.packing .rail, body.packing .strip,
+  body.packing .rvbanner, body.packing .sheet-foot{display:none!important}
+  body.packing #packPack{display:block!important}
+  .packsheet{break-after:page; page-break-after:always; break-inside:auto}
+  .packsheet:last-child{break-after:auto; page-break-after:auto}
+  body{background:#fff; color:#000; font-size:11.5pt}
+  .wrap{max-width:none; padding:0}
+  .sheet{box-shadow:none; border:0; border-radius:0; padding:0}
+  /* AOG-DD-PAGEBREAK-V1 — a question never splits across pages. WebKit ignores break-inside:avoid on
+     flex items, so on paper the column of boxes is a plain block and every box is an unbreakable block
+     with its grid inside it. Jimmy: "do not have questions go over pages." */
+  .boxes{display:block}
+  .box{break-inside:avoid; page-break-inside:avoid; -webkit-column-break-inside:avoid; border-color:#000;
+       overflow:visible; margin:0 0 11px; position:relative}
+  .box>*{break-inside:avoid; page-break-inside:avoid}
+  /* ══ AOG-DD-TALLBOX-V1 (2026-09-23) ═══════════════════════════════════════════
+     Jimmy, on a Safari print preview: "The page break got ruined. Every problem
+     can not break between pages."
+
+     Measured: the grade-7 Algorithms box prints 878pt tall on a 960pt page. It can
+     never share a sheet with the header and box 1, and .box is display:grid — the
+     one layout WebKit will not honor break-inside:avoid on (the same blind spot as
+     the flex items in AOG-DD-PAGEBREAK-V1). Chromium obeyed and pushed the whole
+     box to a fresh sheet, leaving page one two-thirds white; Safari ignored it and
+     sliced the box through the middle of a long division. Neither is any use to a
+     teacher at a copier.
+
+     TWO RULES NOW, and each box gets the one that suits it.
+
+     1. EVERY box is wrapped in a plain block (.bw) that carries the avoid. A block
+        is the one case every engine fragments correctly, so a normal box — all of
+        them small — still never splits, in Safari as well as Chrome.
+
+     2. A box of COLUMN ALGORITHMS (.tall) is too big for that promise to be kept,
+        so its promise changes from "never break this box" to "never break a
+        PROBLEM". On paper it stops being a grid: the black number strip runs across
+        the top instead of down the side, the row becomes plain block flow, and each
+        problem is an unbreakable inline-block. A page can then end between the
+        multiplications and the long divisions — which is where a teacher would cut
+        it — and never inside one. ═══════════════════════════════════════════════ */
+  .bw{break-inside:avoid; page-break-inside:avoid; -webkit-column-break-inside:avoid}
+  .bw.tall{break-inside:auto; page-break-inside:auto}
+  .box.tall{display:block; break-inside:auto; page-break-inside:auto}
+  .box.tall>*{break-inside:auto; page-break-inside:auto}
+  .box.tall .bnum{display:flex; flex-direction:row; align-items:baseline; justify-content:flex-start;
+    gap:9px; padding:5px 11px; text-align:left}
+  .box.tall .bn{font-size:1.1rem}
+  .box.tall .bs{font-size:.53rem; max-width:none}
+  /* orphans and widows default to 2. These boxes hold exactly TWO lines of
+     problems, so "leave 2 behind" and "carry 2 over" cannot both be satisfied and
+     the engine gives up and moves the whole thing — which is how page one ended up
+     holding nothing but the box's title strip. One line either side is fine here:
+     a line is a row of problems, not a line of prose. */
+  .box.tall .bbody{display:block; orphans:1; widows:1}
+  .box.tall .bbody .row{display:block; orphans:1; widows:1}
+  /* AOG-DD-WORKROOM-V1 — on paper the ruled lines have to be dark enough to see */
+  /* AOG-DD-SOLVESTEPS-V2 — the step number is a filled circle; make it print */
+  .stepn{background:#000!important; color:#fff!important;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact}
+  .eqrule{border-top-color:#000!important}
+  .workpad{background:#fff!important; border-color:#000; break-inside:avoid; page-break-inside:avoid}
+  /* AOG-DD-WORKROOM-V2 / AOG-DD-WORKINK-V1 — on paper the rules and the dashed work
+     boxes have to be dark enough for a pencil to aim at. */
+  .wpad{background-color:#fff!important; color:#000!important; min-height:66px;
+    background-image:repeating-linear-gradient(#fff 0 30px, #8a8a8a 30px 31px)!important}
+  input.rg{border-color:#666!important; color:#000!important}
+  /* AOG-DD-REGROUP-V3 — on paper the renaming lane stays short and grey-dotted so it
+     is plainly not one of the work rows */
+  input.rg.rgs{background:#f2f2f2!important; border-style:dotted!important; border-color:#999!important;
+    height:21px!important; min-height:21px!important;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact}
+  input.dg{border-bottom-color:#000!important}
+  /* AOG-DD-PAPERSPACE-V1 (2026-09-24) — Jimmy: "we keep the boxes for the Digital
+     work and get rid of them for the printed version." On the screen a box is an
+     input: the page is asking for a digit and showing where it goes, and it knows
+     how many there are because it holds the answer. ON PAPER THE SAME BOX IS A
+     CLAIM, and the page has no business making it. A row of answer boxes claims how
+     many digits the answer has - that was 4376, and it was wrong by one on every sum
+     and product until it was fixed. But the carry row claims WHICH COLUMNS CARRY,
+     and 1980 x 39 printed six carry boxes over a multiplication that carries in
+     three; the partial-product rows claim how many partial products there are and
+     how wide, and they pre-draw the left shift, which is the single thing the
+     standard algorithm is actually teaching. Thirty dashed boxes were being printed
+     around one multiplication whose whole working is two lines and an answer, and
+     every box left empty at the end reads to a struggling student as a step missed.
+     A pencil also needs less room than a box: a carry is written small, high and
+     left, not centred in a 26px square.
+     So on paper every box inside a column problem goes INVISIBLE - the border and
+     the fill only. The element keeps its exact width and height, so the columns, the
+     rule under the problem, the START arrow and the page count do not move a pixel;
+     what is left is open space in the right place, with CARRY, BORROW and THEN ADD
+     still naming what each space is for. The digits above, the rule and the labels
+     carry all the information the boxes were carrying, minus the guesses.
+     REVIEW PRINTOUTS ARE EXEMPT: those are opened from the dashboard with the
+     student's own typed answers laid over the sheet in green and red, which live
+     INSIDE these inputs, so body.review keeps every box and every mark.
+     Scoped to .colp, which is a column problem and nothing else - the fraction work
+     boxes, the operator boxes and the ruled work pads are not claims about an
+     answer's shape, they are somewhere to work, and they all stay. */
+  body:not(.review) .colp input.rg,
+  body:not(.review) .colp input.dg{
+    border-color:transparent!important; border-bottom-color:transparent!important;
+    background:none!important; background-color:transparent!important; box-shadow:none!important}
+  body:not(.review) .colp .divg .cell.spare{border-bottom-color:transparent!important}
+  /* the answer row's OWN decimal point goes with its boxes. Class bx is only ever on
+     the answer row of a column problem and the quotient line of a division - never on
+     the numbers in the problem, whose points stay printed. Left in, it is a single
+     drawn dot floating in open white space with no digit anywhere near it, which is
+     both meaningless and the precise shape his son already misread once as a times
+     sign. It is also one more claim: it says how many decimal places the answer has,
+     and counting those places is the thing the problem is asking the student to do. */
+  body:not(.review) .colp .dot.bx i{display:none!important}
+  /* AOG-DD-ALGONLY-V1 (2026-09-24) — Jimmy, looking at a four-page grade 7 draft he had
+     printed for algorithms practice: "Remove all of that extra filler nonsense. Just
+     provide the algorithms and that is all." A Daily Draft is a SPIRAL review and the
+     other nine boxes are the point of it on screen, so this is not the default print -
+     it is its own button. .bw.tall is already exactly the set of boxes holding column
+     work: sheetHTML marks a box tall when its html contains a .cg or a .divg, which is
+     what TALLBOX-V1 put there. Everything that is not one of those goes. The header,
+     the score and date and the NAME rule stay - a sheet a teacher collects without a
+     name on it is no use to anybody (PRINTNAME-V1). */
+  body.algonly .bw:not(.tall){display:none!important}
+  /* AOG-DD-DIVSPACE-V2 (2026-09-24) — Jimmy, asked how many work rows a division should
+     get: "Get rid of the rows as well. Just allow space for them to be completed." He is
+     right, and it is PAPERSPACE-V1 again one level up. The page was printing a labelled
+     lane for every column of the dividend - WORK, then REGROUP, then a rule, then
+     REGROUP, five times over - which is a claim about how many subtractions the division
+     takes and where each one sits, and the page cannot know either. 7 into 16.1 was
+     getting five REGROUP lanes with nothing between them and most of a page to itself.
+     What is left on paper is what a long division actually is: the divisor, the bracket,
+     the dividend, the bar over it, and open space underneath to do the work in. The rows
+     keep their HEIGHT - that is the space he asked for, and it means the columns and the
+     page count do not move - they just stop drawing. The multiplication keeps its CARRY
+     and THEN ADD labels, which name a space rather than claiming a step. Review printouts
+     are exempt, as ever. */
+  body:not(.review) .divg .worklab,
+  body:not(.review) .divg .rglab{visibility:hidden!important}
+  body:not(.review) .divg .mline{border-bottom-color:transparent!important}
+  body:not(.review) .divg .mline::after{display:none!important}
+  /* the passes past what the quotient needs collapse to nothing on paper. NOT
+     display:none - these are auto-placed grid items, and removing one pulls every
+     later item up into the wrong cell; zero-height and hidden leaves the placement
+     exactly as it is and takes the paper back. */
+  body:not(.review) .divg .xpass,
+  body:not(.review) .divg .xpass input{height:0!important; min-height:0!important;
+    padding:0!important; margin:0!important; border:0!important; font-size:0!important;
+    line-height:0!important; overflow:hidden!important; visibility:hidden!important}
+  .box.tall .colp{break-inside:avoid; page-break-inside:avoid;
+    -webkit-column-break-inside:avoid; display:inline-block; vertical-align:top;
+    margin:0 22px 14px 0}
+  .shead,.stats,.strip{break-after:avoid; page-break-after:avoid}
+  .bnum{background:#000!important; color:#fff!important; -webkit-print-color-adjust:exact; print-color-adjust:exact}
+  /* AOG-DD-PRINTINK-V1 — Jimmy: "The decimal points do not print." They did not: the
+     point is a drawn dot, and a dot drawn with a background colour is the first thing
+     a printer throws away, so 6.0 x 3.6 came off the printer as 60 x 36. Belt and
+     braces — the fill is marked exact above, and here the same dot is rebuilt out of
+     BORDERS, which print under any setting. box-sizing keeps it exactly 7px across. */
+  .cg .dot i,.divg .dot i{box-sizing:border-box; width:7px; height:7px; background:transparent!important;
+    border:3.5px solid #000!important; border-radius:50%;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact}
+  .fracin .bar{border-top-color:#000!important}
+  input.fld{background:#fff!important; border-color:#000!important; color:#000!important}
+  .mcb{background:#fff!important; border-color:#000!important; color:#000!important}
+  svg.art{background:#fff!important}
+  .bonus{break-inside:avoid; page-break-inside:avoid; border-color:#000}
+  .org{border-color:#000; background:#fff}
+  .ocell textarea{background:#fff!important; border-color:#000!important; color:#000!important; min-height:40px}
+  .wcols{grid-template-columns:minmax(200px,250px) 1fr}
+  textarea.wbox{background:#fff!important; border-color:#000!important; color:#000!important;
+    background-image:repeating-linear-gradient(#fff 0 27px, #999 27px 28px)!important; min-height:190px}
+  .wchk input{-webkit-appearance:none; appearance:none; border:1.5px solid #000; border-radius:3px}
+}
+
+/* ══ tokens the shared AOG-R36-NAV expects, mapped onto this page's own.
+   Never edit NAV_CSS to fit a page — give the page the names it asks for. ══ */
+:root{
+  --card:var(--field); --line:var(--rule); --sub:var(--ink-faint);
+  --bg:var(--ground); --chip:var(--field-2);
+  --sans:-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --serif:Georgia,"Times New Roman",serif;
+}
+.r36top{margin-bottom:14px}
+
+/* AOG-R36-NAV css removed 2026-09-12 — see aog-topbar.js */
+
+/* ══ AOG-DD-REVIEW-V1 (2026-09-12) — Jimmy: "can we get the worksheet with the wrong answers that the
+   student chose ... the printout of the problems with the right answers in green or red." The dashboard
+   opens this page with ?review=<the row's answers> and the page rebuilds the very sheet the student
+   saw (same grade + sheet number = same problems), lays their answers over it, marks every item with
+   the same green/red the student saw, shows the key beside each miss, locks the page, and prints. ══ */
+/* AOG-DD-PRINTNAME-V1 — .signprint too: a reviewed copy is opened from the
+   dashboard for ONE named student and the banner above already says whose it
+   is, with the date and the score. A blank name rule under it would invite a
+   teacher to write a name on a sheet that is already named — and the rule
+   echoes this browser's stored name, which on a teacher's machine is not the
+   student's. */
+body.review .strip, body.review .sig, body.review .signprint, body.review #sendbox, body.review .sendbox, body.review .mast .acts,
+body.review #checkBtn, body.review #checkBtn2, body.review #tryBtn, body.review #clearBtn, body.review .wacts,
+body.review .picker, body.review .conf, body.review #streak, body.review .streak{display:none !important}
+body.review .box input, body.review .box button, body.review .box .mcb, body.review .box .shcell,
+body.review .box .ptcell, body.review .box .ew, body.review .box textarea{pointer-events:none}
+.rvbanner{border:2px solid var(--navy); border-radius:12px; padding:12px 16px; margin:14px 0 6px;
+  display:flex; gap:18px; flex-wrap:wrap; align-items:baseline; background:var(--card)}
+.rvbanner .k{font:800 .7rem var(--sans); letter-spacing:.14em; text-transform:uppercase; color:var(--ink-faint)}
+.rvbanner b{font-size:1.05rem}
+.rvbanner .sc.good{color:var(--good)} .rvbanner .sc.miss{color:var(--miss)}
+.rvbanner .legend{display:inline-flex; gap:12px; font-size:.85rem; color:var(--ink-soft)}
+.rvbanner .legend i{display:inline-block; width:12px; height:12px; border-radius:3px; vertical-align:-1px; margin-right:4px}
+.rvbanner .legend i.g{background:var(--good)} .rvbanner .legend i.r{background:var(--miss)}
+@media print{
+  body.review .rvbanner{border-color:#000; background:#fff}
+  body.review input.fld.ok, body.review .colp.ok input.dg, body.review .timep.ok input.tm, body.review .mcb.ok{color:#1c7a3c !important; border-color:#1c7a3c !important; -webkit-print-color-adjust:exact; print-color-adjust:exact}
+  body.review input.fld.no, body.review .colp.no input.dg, body.review .timep.no input.tm, body.review .mcb.no{color:#b3261e !important; border-color:#b3261e !important; text-decoration:line-through; -webkit-print-color-adjust:exact; print-color-adjust:exact}
+  body.review .sol{color:#1c7a3c !important; font-weight:800}
+}
+
+/* AOG-DD-ALG-PRINT-V1 (2026-09-26) — Jimmy, on a printed Grade 3 sheet: "the algorithms take up
+   two pages … and the cent line is not even." On paper the column problems now sit on ONE row
+   (narrower columns, no wrap), and the unit (¢, $) column is ruled at the same height as the
+   answer line instead of carrying its own short, higher rule. */
+.cg .unitc.ruled{align-self:stretch;display:flex;align-items:center;justify-content:center}
+@media print{
+  .row.algrow{display:flex!important;flex-wrap:nowrap!important;justify-content:space-between;gap:10px!important;overflow:visible!important}
+  .algrow>.colp{flex:1 1 0!important;min-width:0!important;margin:0!important;padding:4px 6px!important}
+  .algrow .cg{--cw:24px!important;gap:3px 2px!important}
+  .algrow .cg .cell,.algrow .cg input{width:24px!important;font-size:15px!important}
+  .algrow .cg .unitc.ruled{border-bottom:2px solid #000!important;align-self:stretch;padding-bottom:4px}
+  .algrow .cg .unitc.ruled::after{display:none!important}
+  .box.tall .algrow{margin-bottom:0!important}
+  .box:has(.algrow){break-inside:avoid}
+}
+/* AOG-DD-PRINT-COLOUR-V1 (2026-09-26) — on paper each strand's number tab carries its own colour
+   (the same ten the screen uses), so a colour printer shows which strand is which. */
+@media print{
+  .boxes>.bw:nth-child(1) .bnum{background:#2F63B8!important} .boxes>.bw:nth-child(2) .bnum{background:#B87A12!important}
+  .boxes>.bw:nth-child(3) .bnum{background:#2E8B57!important} .boxes>.bw:nth-child(4) .bnum{background:#A8323E!important}
+  .boxes>.bw:nth-child(5) .bnum{background:#7B4FA0!important} .boxes>.bw:nth-child(6) .bnum{background:#1F8080!important}
+  .boxes>.bw:nth-child(7) .bnum{background:#B8457A!important} .boxes>.bw:nth-child(8) .bnum{background:#A85A24!important}
+  .boxes>.bw:nth-child(9) .bnum{background:#3F4AA6!important} .boxes>.bw:nth-child(10) .bnum{background:#6E7C22!important}
+  .boxes>.bw .bnum, .boxes>.bw .bnum *{color:#fff!important}
+}
+/* AOG-DD-SPANISH-V1 — the English, one tap away. Only Spanish items emit these. */
+/* AOG-DD-SPANISH-K12-V1 — K-5 do not hide the gloss behind anything. A six-
+   year-old should not have to find the support, so GL() prints it in the open
+   and it prints on paper too. SE() (6-8) is the same information behind a tap;
+   9-12 emit neither. Swapping the helper is how a grade changes rung. */
+.gl{display:inline-block; font-size:.86em; font-style:italic; color:var(--ink-soft);
+  background:var(--field); border-radius:6px; padding:0 7px; margin-left:4px; vertical-align:baseline}
+@media print{ .gl{background:none; color:#555; padding:0} }
+.eng{display:inline-block}
+.engb{font:inherit;font-size:.72em;font-weight:800;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--ink-faint);background:transparent;border:1px solid var(--rule);border-radius:999px;
+  padding:1px 8px;cursor:pointer;vertical-align:middle;line-height:1.5}
+.engb:hover{color:var(--ink);border-color:var(--a)}
+.engb[aria-expanded="true"]{color:var(--a);border-color:var(--a)}
+.engt{display:block;margin-top:4px;font-size:.92em;font-style:italic;color:var(--ink-soft)}
+/* paper carries the English: a student at the kitchen table has no button to tap.
+   .engt[hidden] is (0,2,0) and beats the page's own [hidden]{display:none!important}. */
+@media print{ .engb{display:none!important} .engt,.engt[hidden]{display:block!important;
+  font-style:italic;color:#555} }
+
+/* ══ AOG-DD-GLASS-V1 (2026-09-25) — STAINED GLASS ══════════════════════════
+   Jimmy: "Can the daily drafts get a facelift to the ceiling like everything
+   else?" — the Blueprint's glass, on the page itself. Each of the ten strands
+   is a leaded pane in its own jewel colour; the Structural elements row lights
+   the same colours as the strands are finished; the sheet is framed like a
+   window. Screen only: paper keeps its plain black and white. */
+@media screen{
+  .boxes>.bw:nth-child(1){--gl:#2F63B8} .pips>.pip:nth-child(1){--gl:#2F63B8}
+  .boxes>.bw:nth-child(2){--gl:#B87A12} .pips>.pip:nth-child(2){--gl:#B87A12}
+  .boxes>.bw:nth-child(3){--gl:#2E8B57} .pips>.pip:nth-child(3){--gl:#2E8B57}
+  .boxes>.bw:nth-child(4){--gl:#A8323E} .pips>.pip:nth-child(4){--gl:#A8323E}
+  .boxes>.bw:nth-child(5){--gl:#7B4FA0} .pips>.pip:nth-child(5){--gl:#7B4FA0}
+  .boxes>.bw:nth-child(6){--gl:#1F8080} .pips>.pip:nth-child(6){--gl:#1F8080}
+  .boxes>.bw:nth-child(7){--gl:#B8457A} .pips>.pip:nth-child(7){--gl:#B8457A}
+  .boxes>.bw:nth-child(8){--gl:#A85A24} .pips>.pip:nth-child(8){--gl:#A85A24}
+  .boxes>.bw:nth-child(9){--gl:#3F4AA6} .pips>.pip:nth-child(9){--gl:#3F4AA6}
+  .boxes>.bw:nth-child(10){--gl:#6E7C22} .pips>.pip:nth-child(10){--gl:#6E7C22}
+  .boxes>.bw:nth-child(n+11){--gl:#2F63B8}
+  .bnum{position:relative;background-color:var(--gl,var(--navy))!important;color:#fff!important;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.045' numOctaves='3' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 -.9 .55'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' fill='%23fff'/%3E%3C/svg%3E"),radial-gradient(120% 90% at 30% 20%,rgba(255,255,255,.35),rgba(255,255,255,0) 60%),linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,.28));
+    background-size:160px 160px,100% 100%,100% 100%;background-blend-mode:multiply,screen,normal;
+    text-shadow:0 1px 2px rgba(0,0,0,.55);border-right:3px solid #1E1F22}
+  .bnum .bn{font-size:1.75rem}
+  .box{border:3px solid #1E1F22!important;border-radius:10px;box-shadow:0 0 0 1px rgba(242,201,100,.35),0 6px 16px -10px rgba(0,0,0,.6)}
+  .box.right{box-shadow:0 0 0 2px var(--good),0 0 18px -4px var(--good)}
+  .box.wrong{box-shadow:0 0 0 2px var(--miss)}
+  .box.right .bnum{filter:saturate(1.25) brightness(1.08)}
+  .box.wrong .bnum{filter:saturate(.55) brightness(.85)}
+  .sheet{border:3px solid #1E1F22;box-shadow:0 0 0 7px #A89D88,0 0 0 9px #6f6553,0 18px 40px -20px rgba(0,0,0,.7);margin:10px 9px}
+  .pip{position:relative;border:2px solid #1E1F22!important;color:#fff!important;text-shadow:0 1px 2px rgba(0,0,0,.6);
+    background-color:var(--gl)!important;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.045' numOctaves='3' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 -.9 .55'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' fill='%23fff'/%3E%3C/svg%3E");background-size:160px 160px;background-blend-mode:multiply;opacity:.38}
+  .pip.full{opacity:1;box-shadow:0 0 10px -1px var(--gl)}
+  .pip.part{opacity:.75}
+  .pip.miss{opacity:.6;box-shadow:inset 0 0 0 2px var(--miss)}
+  /* Writing: the plan's boxes are panes too, and the prompt card is leaded */
+  .org .ocell:nth-of-type(1) textarea{--gl:#2F63B8}
+  .org .ocell:nth-of-type(2) textarea{--gl:#B87A12}
+  .org .ocell:nth-of-type(3) textarea{--gl:#2E8B57}
+  .org .ocell:nth-of-type(4) textarea{--gl:#A8323E}
+  .org .ocell:nth-of-type(5) textarea{--gl:#7B4FA0}
+  .org .ocell:nth-of-type(6) textarea{--gl:#1F8080}
+  .org .ocell textarea{border:3px solid #1E1F22!important;border-left:12px solid var(--gl,#2F63B8)!important;border-radius:8px}
+  .bonus{border:3px solid #1E1F22!important;box-shadow:0 0 0 1px rgba(242,201,100,.35)}
+  /* AOG-DD-ALGTILE-V1 — Jimmy: "Can something be done to the algorithm boxes?
+     They jump out as UGLY to me." Each column problem is a small tile of its own,
+     the same shape as its neighbours; the label sits on the tile as a caption in
+     the strand's glass; the answer cells are light and dashed, gold when in use;
+     START is a small gold arrow. Layout and the pencil space are untouched. */
+  .row.algrow{display:flex;flex-wrap:wrap;gap:14px;align-items:stretch;width:100%}
+  .algrow>.colp{flex:0 1 auto;min-width:150px;padding:12px 16px 14px;border-radius:12px;
+    background:color-mix(in srgb,var(--field-2) 70%,var(--gl,#2F63B8) 8%);
+    border:1.5px solid color-mix(in srgb,var(--gl,#2F63B8) 45%,transparent);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
+  .algrow>.colp .oplab{display:inline-block;margin:0 0 8px;padding:3px 10px;border-radius:999px;
+    background:color-mix(in srgb,var(--gl,#2F63B8) 85%,#000 15%);color:#fff!important;letter-spacing:.12em;font-size:.6rem}
+  .algrow .rglab{opacity:.7}
+  .algrow input.dg{background:transparent;border:1.5px dashed color-mix(in srgb,var(--ink) 38%,transparent);
+    border-radius:8px;min-height:40px}
+  .algrow input.dg:focus{border:2px solid var(--gold);background:color-mix(in srgb,var(--gold) 10%,transparent)}
+  .algrow .cg .unitc.ruled{border-bottom-color:transparent}
+  .algrow .cg .unitc.ruled::after{display:none}
+  .algrow .cg .startlab{font-size:0;line-height:1;margin-top:2px}
+  .algrow .cg .startlab::before{content:"\25B2";font-size:.62rem;color:var(--gold);opacity:.85}
+  .algrow .cg .ruled{border-bottom-width:2px}
+  .algrow .colp.ok{border-color:var(--good);box-shadow:0 0 0 1px var(--good)}
+  .algrow .colp.no{border-color:var(--miss)}
+  /* AOG-DD-RAILGLASS-V1 — Jimmy, on the Subject / Grade / Draft card: "Can this
+     get a facelift as well?" Each subject is a tile of its own glass (the same
+     colours as the Blueprint); the chosen one is lit. Grade and Draft match. */
+  .rail{border:3px solid #1E1F22!important;box-shadow:0 0 0 1px rgba(242,201,100,.35),0 10px 26px -18px rgba(0,0,0,.6)!important}
+  .rail .seg{background:transparent!important;padding:0;gap:8px;display:grid!important;grid-template-columns:1fr}
+  .rail .sgrp{display:grid;grid-template-columns:140px 1fr;gap:8px 12px;align-items:center;padding:6px 0;border-top:1px dashed rgba(30,31,34,.18)}
+  .rail .sgrp:first-child{border-top:0;padding-top:0}
+  .rail .sg-k{font:800 11px Inter,system-ui,sans-serif;letter-spacing:.1em;overflow-wrap:break-word;min-width:0;line-height:1.35;text-transform:uppercase;color:var(--ink-soft,#46506E)}
+  .rail .bs{display:flex;flex-wrap:wrap;gap:8px}
+  @media (max-width:640px){.rail .sgrp{grid-template-columns:1fr;gap:6px}.rail .sgrp{padding:8px 0}}
+  .rail .seg button[data-s="math"]{--gl:#2F63B8}
+  .rail .seg button[data-s="ela"]{--gl:#B87A12}
+  .rail .seg button[data-s="write"]{--gl:#C2552A}
+  .rail .seg button[data-s="science"]{--gl:#2E8B57}
+  .rail .seg button[data-s="social-studies"]{--gl:#A8323E}
+  .rail .seg button[data-s="spanish"]{--gl:#B8457A}
+  .rail .seg button[data-s="facs"]{--gl:#7B4FA0}
+  .rail .seg button[data-s="religion"]{--gl:#3F4AA6}
+  .rail .seg button[data-s="bible"]{--gl:#7A3B2E}
+  .rail .seg button[data-s="quran"]{--gl:#1F6B4A}
+  .rail .seg button[data-s="talmud"]{--gl:#2E5A8A}
+  .rail .seg button[data-s="hindu"]{--gl:#B5562B}
+  .rail .seg button[data-s="buddhist"]{--gl:#A0701A}
+  .rail .seg button[data-s="chinese"]{--gl:#9B2F2F}
+  .rail .seg button[data-s="cultures"]{--gl:#2F6F8F}
+  .rail .seg button[data-s="health"]{--gl:#2E8B6A}
+  .rail .seg button[data-s="sports"]{--gl:#8A4B1E}
+  .rail .seg button[data-s="martial"]{--gl:#4B5E2A}
+  .rail .seg button[data-s="unseen"]{--gl:#4A3F7A}
+  .rail .seg button[data-s="secrets"]{--gl:#5C3A1E}
+  .rail .seg button[data-s="skate"]{--gl:#2F5C6B}
+  .rail .seg button[data-s="economics"]{--gl:#6E7C22}
+  .rail .seg button[data-s="foundry"]{--gl:#A85A24}
+  .rail .seg button{min-height:42px;border-radius:10px!important;padding:0 16px!important;
+    border:2px solid color-mix(in srgb,var(--gl) 70%,#1E1F22)!important;
+    background:color-mix(in srgb,var(--gl) 14%,var(--field))!important;color:var(--ink)!important;box-shadow:none!important;
+    transition:transform .12s, background .15s}
+  .rail .seg button:hover{transform:translateY(-1px);background:color-mix(in srgb,var(--gl) 26%,var(--field))!important}
+  .rail .seg button[aria-pressed="true"]{color:#fff!important;border-color:#1E1F22!important;
+    background-color:var(--gl)!important;
+    background-image:radial-gradient(120% 90% at 30% 15%,rgba(255,255,255,.38),rgba(255,255,255,0) 60%),linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,.22))!important;
+    text-shadow:0 1px 2px rgba(0,0,0,.5);box-shadow:0 0 0 2px var(--gl),0 6px 16px -6px var(--gl)!important}
+  .rail select#grade{appearance:none;-webkit-appearance:none;border:2px solid #1E1F22!important;border-radius:12px!important;
+    padding:0 42px 0 16px!important;font-weight:700;background-color:var(--field)!important;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1 1l6 6 6-6' fill='none' stroke='%23C9A24A' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")!important;
+    background-repeat:no-repeat!important;background-position:right 16px center!important;box-shadow:0 0 0 1px rgba(242,201,100,.3)}
+  .rail select#grade:focus{border-color:var(--gold)!important;outline:none}
+  .rail .step{border:2px solid #1E1F22!important;border-radius:12px!important;box-shadow:0 0 0 1px rgba(242,201,100,.3)}
+  .rail .btn.solid{border:2px solid #1E1F22!important;box-shadow:0 0 0 2px var(--gold),0 8px 18px -10px rgba(0,0,0,.6)}
+}
+</style>
+<style>/* AOG-DD-FOUNDRY — the unit a spiral box comes from */
+.q .wfu{display:inline-block;margin-right:6px;padding:1px 8px;border-radius:999px;font-size:.78em;font-weight:800;letter-spacing:.04em;border:1px solid currentColor;opacity:.8}
+@media print{.q .wfu{opacity:1}}</style>
+<script src="/aog-iep.js"></script>
+<style id="aog-dd-shelf">
+/* AOG-DD-SHELF-V1 (2026-09-27) — Jimmy: "Can the daily drafts subject doors look like a book shelf and one is
+   choosing a book off the shelf?" Each subject group is a wooden shelf; each subject a book standing on it, drawn
+   in pencil line with its own colour on the spine and its name on a paper label. The chosen book is lifted off
+   the shelf. Still: it moves only when tapped, and not at all with "reduce motion" or on touch screens. */
+#subjSeg .sgrp{border-top:0 !important;padding:10px 0 4px !important}
+#subjSeg .bs{display:flex !important;flex-wrap:wrap;align-items:flex-end;gap:14px 5px !important;padding:16px 12px 0 !important;
+  background:repeating-linear-gradient(180deg, transparent 0 92px, #7A4E2B 92px 95px, #9A6A40 95px 101px, #5E3A1E 101px 104px, transparent 104px 118px) 0 0/100% 118px content-box !important;background-clip:content-box !important;
+  border-radius:4px;max-width:none !important}
+#subjSeg .bs button{position:relative;isolation:isolate;height:92px;min-height:92px !important;margin:0 0 12px !important;padding:0 12px !important;
+  border-radius:4px 4px 2px 2px !important;border:1.6px solid #2A2622 !important;color:#1D2733 !important;font-weight:700;
+  background:
+    linear-gradient(180deg, transparent 10px, rgba(0,0,0,.28) 10px 12px, transparent 12px calc(100% - 12px), rgba(0,0,0,.28) calc(100% - 12px) calc(100% - 10px), transparent 0),
+    repeating-linear-gradient(38deg, rgba(20,18,16,.16) 0 1.2px, transparent 1.2px 5px),
+    var(--gl, #5E6B7A) !important;
+  box-shadow:inset 3px 0 0 rgba(255,255,255,.18), inset -3px 0 0 rgba(0,0,0,.22), 0 1px 0 #2A2622 !important;
+  transform:none;transition:transform .18s ease, box-shadow .18s ease}
+#subjSeg .bs button::before{content:"";position:absolute;left:6px;right:6px;top:50%;height:2.3em;transform:translateY(-50%);z-index:-1;
+  background:#FBF8F0;border:1px solid #2A2622;border-radius:2px;box-shadow:1px 1px 0 rgba(42,38,34,.35)}
+#subjSeg .bs button:nth-child(3n+2){height:84px;min-height:84px !important;margin-top:8px !important}
+#subjSeg .bs button:nth-child(4n+3){height:88px;min-height:88px !important;margin-top:4px !important}
+#subjSeg .bs button[aria-pressed="true"]{transform:translateY(-14px) rotate(-2deg);box-shadow:inset 3px 0 0 rgba(255,255,255,.18), inset -3px 0 0 rgba(0,0,0,.22), 0 14px 18px -8px rgba(0,0,0,.45) !important;outline:none}
+#subjSeg .bs button[aria-pressed="true"]::before{background:#FFF6D8;border-width:2px}
+#subjSeg .bs button:focus-visible{outline:3px solid #F2C964 !important;outline-offset:3px}
+@media (hover:hover){ #subjSeg .bs button[aria-pressed="false"]:hover{transform:translateY(-5px)} }
+@media (prefers-reduced-motion: reduce), (hover:none){ #subjSeg .bs button{transition:none} }
+@media (max-width:720px){ #subjSeg .bs{gap:14px 4px !important;padding:12px 6px 0 !important;background:repeating-linear-gradient(180deg, transparent 0 64px, #7A4E2B 64px 66px, #9A6A40 66px 71px, #5E3A1E 71px 73px, transparent 73px 87px) 0 0/100% 87px content-box !important;background-clip:content-box !important} #subjSeg .bs button, #subjSeg .bs button:nth-child(n){height:64px;min-height:64px !important;margin:0 0 9px !important;padding:0 9px !important;font-size:14px} }
+@media print{ #subjSeg .bs{background:none !important} }
+
+/* AOG-DD-SHELF-V2 (2026-09-27) — Jimmy: "Can the subjects get the sketch feel? They don't look like a book on a
+   shelf. I figure the subjects would be written vertical." Each subject is a tall pencil-drawn spine, title running
+   down it, a hatched band of its colour top and bottom; the shelf is a pencil-drawn plank. */
+#subjSeg .bs{gap:18px 6px !important;padding:14px 10px 0 !important;
+  background:
+    repeating-linear-gradient(180deg, transparent 0 172px, #2A2622 172px 173.5px, #EFE6D2 173.5px 180px, #2A2622 180px 181.5px, transparent 181.5px 200px) 0 0/100% 200px content-box,
+    repeating-linear-gradient(180deg, transparent 0 151.5px, transparent 151.5px 158px, transparent 158px 178px) !important;
+  background-clip:content-box !important}
+#subjSeg .bs button, #subjSeg .bs button:nth-child(n){writing-mode:vertical-rl;text-orientation:mixed;
+  height:172px;min-height:172px !important;width:44px;min-width:44px !important;margin:0 0 28px !important;padding:10px 0 !important;
+  display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;font:700 14px/1 var(--sans, system-ui, sans-serif) !important;letter-spacing:.02em;
+  color:#1D2733 !important;border:1.5px solid #2A2622 !important;border-radius:3px 3px 1px 1px !important;
+  background:
+    repeating-linear-gradient(40deg, rgba(42,38,34,.10) 0 1px, transparent 1px 6px),
+    #FBF8F0 !important;
+  box-shadow:1.5px 0 0 -0.3px rgba(42,38,34,.45), -1px 1px 0 -0.4px rgba(42,38,34,.3) !important}
+#subjSeg .bs button::before,#subjSeg .bs button::after{content:"" !important;position:absolute;left:0;right:0;height:14px;background:var(--gl,#5E6B7A);z-index:0;pointer-events:none;transform:none !important;top:auto;bottom:auto;border:0;box-shadow:none;border-radius:0}
+#subjSeg .bs button::before{top:0 !important;border-bottom:1.2px solid #2A2622 !important}
+#subjSeg .bs button::after{bottom:0 !important;border-top:1.2px solid #2A2622 !important}
+#subjSeg .bs button:nth-child(3n+2){height:162px;min-height:162px !important;margin-top:10px !important;width:40px;min-width:40px !important}
+#subjSeg .bs button:nth-child(4n+3){height:168px;min-height:168px !important;margin-top:4px !important;width:48px;min-width:48px !important}
+#subjSeg .bs button:nth-child(5n+4){transform:rotate(1.2deg)}
+#subjSeg .bs button[aria-pressed="true"]{background:
+    #FFF3CC !important;border-width:2.5px !important;transform:translateY(-12px) !important}
+@media (max-width:720px){
+  #subjSeg .bs{gap:14px 4px !important;padding:10px 4px 0 !important;
+    background:repeating-linear-gradient(180deg, transparent 0 160px, #2A2622 160px 161.5px, #EFE6D2 161.5px 167px, #2A2622 167px 168.5px, transparent 168.5px 184px) 0 0/100% 184px content-box !important;background-clip:content-box !important}
+  #subjSeg .bs button, #subjSeg .bs button:nth-child(n){height:160px;min-height:160px !important;width:38px;min-width:38px !important;margin:0 0 24px !important;font-size:12.5px !important;transform:none}
+  #subjSeg .bs button[aria-pressed="true"]{transform:translateY(-8px) !important}
+}
+@media (prefers-reduced-motion: reduce), (hover:none){ #subjSeg .bs button[aria-pressed="true"]{transform:none !important} }
+#subjSeg .bs button[aria-pressed="true"]::before{background:var(--gl,#5E6B7A) !important}
+</style>
+<style id="aog-dd-leather">
+/* AOG-DD-LEATHER-V1 (2026-09-29) — Jimmy: "make the books look more real with leather bound books."
+   Each spine is leather in its subject's colour, with raised bands, gold rules and a gold-foil title. */
+#subjSeg .bs button, #subjSeg .bs button:nth-child(n){
+  color:#FBEFC8 !important;text-shadow:0 1px 0 rgba(0,0,0,.55);letter-spacing:0;
+  font-family:"Fraunces",Georgia,serif !important;
+  border:1px solid #1A120C !important;border-radius:4px 4px 2px 2px !important;
+  background-color:color-mix(in srgb,var(--gl,#5E3A1E) 62%,#1A0F08) !important;
+  background-image:
+    linear-gradient(90deg,rgba(0,0,0,.45) 0,rgba(255,255,255,.14) 22%,rgba(255,255,255,.04) 50%,rgba(0,0,0,.18) 78%,rgba(0,0,0,.5) 100%),
+    radial-gradient(rgba(0,0,0,.18) 1px,transparent 1.4px),
+    radial-gradient(rgba(255,255,255,.07) 1px,transparent 1.4px) !important;
+  background-size:100% 100%,5px 5px,7px 7px !important;background-position:0 0,0 0,2px 3px !important;
+  box-shadow:2px 2px 3px rgba(0,0,0,.35) !important}
+#subjSeg .bs button::before,#subjSeg .bs button::after,
+#subjSeg .bs button[aria-pressed="true"]::before{
+  height:20px;border:0 !important;
+  background:
+    linear-gradient(180deg,transparent 0 3px,#C9A24A 3px 4px,transparent 4px 7px,rgba(0,0,0,.45) 7px 8px,rgba(255,255,255,.18) 8px 11px,rgba(0,0,0,.45) 11px 12px,transparent 12px 15px,#C9A24A 15px 16px,transparent 16px) !important}
+#subjSeg .bs button::before{top:6px !important}
+#subjSeg .bs button::after{bottom:6px !important}
+#subjSeg .bs button[aria-pressed="true"]{
+  background-color:color-mix(in srgb,var(--gl,#5E3A1E) 80%,#1A0F08) !important;
+  outline:2.5px solid #C9A24A;outline-offset:2px;color:#FFF6DC !important}
+@media print{ #subjSeg .bs button{background:#fff !important;color:#1D2733 !important;text-shadow:none} }
+/* V2 — "try a bit harder": two raised ribs top and bottom with gold tooling, worn corners,
+   a rounded back, and a real wooden shelf. */
+#subjSeg .bs button, #subjSeg .bs button:nth-child(n){
+  box-shadow:inset 0 0 0 1px rgba(255,235,190,.08),inset 0 6px 8px -6px rgba(255,255,255,.25),inset 0 -6px 8px -6px rgba(0,0,0,.6),3px 3px 4px rgba(0,0,0,.35),1px 0 0 rgba(0,0,0,.4) !important}
+#subjSeg .bs button::before,#subjSeg .bs button::after,
+#subjSeg .bs button[aria-pressed="true"]::before{
+  height:34px;
+  background:
+    linear-gradient(180deg,
+      transparent 0 2px,#D9B45A 2px 3px,transparent 3px 5px,
+      rgba(0,0,0,.5) 5px 6px,rgba(255,255,255,.22) 6px 8px,rgba(0,0,0,.08) 8px 10px,rgba(0,0,0,.55) 10px 11px,
+      transparent 11px 14px,#D9B45A 14px 15px,transparent 15px 18px,
+      rgba(0,0,0,.5) 18px 19px,rgba(255,255,255,.22) 19px 21px,rgba(0,0,0,.08) 21px 23px,rgba(0,0,0,.55) 23px 24px,
+      transparent 24px 27px,#D9B45A 27px 28px,transparent 28px) !important}
+#subjSeg .bs button::before{top:3px !important;transform:scaleY(.7) !important;transform-origin:top}
+#subjSeg .bs button::after{bottom:3px !important;transform:scaleY(.7) !important;transform-origin:bottom}
+#subjSeg .bs button, #subjSeg .bs button:nth-child(n){padding:28px 0 !important;font-size:13px !important}
+#subjSeg .bs{
+  background:
+    repeating-linear-gradient(180deg, transparent 0 172px, #3B2414 172px 173px, #8A5A32 173px 175px, #6B4323 175px 180px, #4A2C16 180px 183px, rgba(0,0,0,.25) 183px 186px, transparent 186px 200px) 0 0/100% 200px content-box !important;
+  background-clip:content-box !important}
+@media (max-width:720px){
+  #subjSeg .bs{background:repeating-linear-gradient(180deg, transparent 0 160px, #3B2414 160px 161px, #8A5A32 161px 163px, #6B4323 163px 167px, #4A2C16 167px 170px, rgba(0,0,0,.25) 170px 173px, transparent 173px 184px) 0 0/100% 184px content-box !important;background-clip:content-box !important}
+  #subjSeg .bs button, #subjSeg .bs button:nth-child(n){font-size:12px !important;padding:26px 0 !important}
+}
+/* V3 — Jimmy's Grok mock: gold capitals that wrap to two lines, a rounder back, cream vellum for a few. */
+#subjSeg .bs button, #subjSeg .bs button:nth-child(n){
+  text-transform:uppercase;letter-spacing:.05em;white-space:normal !important;line-height:1.05 !important;text-align:center;
+  color:#EBCB7E !important;
+  background-image:
+    linear-gradient(90deg,rgba(0,0,0,.6) 0,rgba(0,0,0,.15) 12%,rgba(255,255,255,.2) 30%,rgba(255,255,255,.06) 50%,rgba(0,0,0,.15) 75%,rgba(0,0,0,.65) 100%),
+    radial-gradient(rgba(0,0,0,.2) 1px,transparent 1.4px),
+    radial-gradient(rgba(255,255,255,.07) 1px,transparent 1.4px) !important}
+#subjSeg .bs button[data-s="ela"],#subjSeg .bs button[data-s="bible"],#subjSeg .bs button[data-s="hindu"]{
+  background-color:#D9C49A !important;color:#3A2410 !important;text-shadow:0 1px 0 rgba(255,255,255,.35)}
+#subjSeg .bs button[aria-pressed="true"]{color:#FFE3A0 !important}
+#subjSeg .bs button[data-s="ela"][aria-pressed="true"],#subjSeg .bs button[data-s="bible"][aria-pressed="true"],#subjSeg .bs button[data-s="hindu"][aria-pressed="true"]{background-color:#E6D3A8 !important;color:#2A1808 !important}
+</style>
+<style id="aog-dd-sendbyname">
+/* the send box beside the name line: one row, no repeated heading */
+.sig + #sendBox{margin:10px 0 4px !important;padding:10px 14px !important;display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;max-width:none !important}
+.sig + #sendBox .sk{display:none !important}
+.sig + #sendBox .snote{flex:1 1 260px;margin:0 !important;font-size:14px !important}
+.sig + #sendBox .srow{margin:0 !important;order:-1}
+.sig + #sendBox .sst{flex-basis:100%;margin:0 !important}
+.sig + #sendBox .sst:empty{display:none}
+.sig + #sendBox .backroom{flex-basis:100%;display:inline-flex;align-items:center;min-height:44px;margin:0;font-weight:700;color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+.sig + #sendBox .backroom[hidden]{display:none !important}
+#checkRow{margin:14px 0 10px !important;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+@media print{ #sendBox,#checkRow{display:none !important} }
+</style>
+<style id="aog-dd-sketch-nums">
+/* AOG-DD-SKETCH-NUMS (2026-09-27) — Jimmy: "the numbers should look sketched, not coloured in." Each box's
+   number tab is paper with a pencil hatch in its colour, a graphite number and a pencil edge; the 1–10 row too.
+   Result colours (right / part / missed) stay, because they mean something. Screen only; print keeps its own look. */
+@media screen{
+html body .boxes>.bw:nth-child(1) .bnum{--bnc:#2F63B8}
+html body .pips>.pip:nth-child(1){--bnc:#2F63B8}
+html body .boxes>.bw:nth-child(2) .bnum{--bnc:#B87A12}
+html body .pips>.pip:nth-child(2){--bnc:#B87A12}
+html body .boxes>.bw:nth-child(3) .bnum{--bnc:#2E8B57}
+html body .pips>.pip:nth-child(3){--bnc:#2E8B57}
+html body .boxes>.bw:nth-child(4) .bnum{--bnc:#A8323E}
+html body .pips>.pip:nth-child(4){--bnc:#A8323E}
+html body .boxes>.bw:nth-child(5) .bnum{--bnc:#7B4FA0}
+html body .pips>.pip:nth-child(5){--bnc:#7B4FA0}
+html body .boxes>.bw:nth-child(6) .bnum{--bnc:#1F8080}
+html body .pips>.pip:nth-child(6){--bnc:#1F8080}
+html body .boxes>.bw:nth-child(7) .bnum{--bnc:#B8457A}
+html body .pips>.pip:nth-child(7){--bnc:#B8457A}
+html body .boxes>.bw:nth-child(8) .bnum{--bnc:#A85A24}
+html body .pips>.pip:nth-child(8){--bnc:#A85A24}
+html body .boxes>.bw:nth-child(9) .bnum{--bnc:#3F4AA6}
+html body .pips>.pip:nth-child(9){--bnc:#3F4AA6}
+html body .boxes>.bw:nth-child(10) .bnum{--bnc:#6E7C22}
+html body .pips>.pip:nth-child(10){--bnc:#6E7C22}
+html body .boxes>.bw .bnum{background:repeating-linear-gradient(38deg, var(--bnc,#5E6B7A) 0 3.2px, #FBF8F0 3.2px 7px) !important;
+  border-right:1.6px solid #2A2622 !important;box-shadow:none !important}
+html body .boxes>.bw .bnum, html body .boxes>.bw .bnum *{color:#1F2630 !important}
+html body .boxes>.bw .bnum .bn, html body .boxes>.bw .bnum .bs{background:#FBF8F0 !important;border:1.3px solid #2A2622;border-radius:4px;padding:1px 6px}
+html body .boxes>.bw .bnum .bn{font-family:Georgia,"Times New Roman",serif !important;font-weight:700;padding:0 8px;margin-bottom:4px}
+html body .pips>.pip:not(.full):not(.part):not(.miss){background:#FBF8F0 !important;background-image:none !important;
+  border:4px solid var(--bnc,#5E6B7A) !important;border-image:repeating-linear-gradient(38deg, var(--bnc,#5E6B7A) 0 2.4px, #FBF8F0 2.4px 4.8px) 4 !important;
+  outline:1.4px solid #2A2622;outline-offset:0;color:#1F2630 !important;opacity:1 !important;box-shadow:none !important}
+}
+@media screen and (max-width:700px){
+  html body .boxes>.bw .bnum{min-width:74px !important;width:74px !important;flex:0 0 74px !important;padding:10px 5px !important;align-items:center !important;justify-content:center !important;text-align:center !important}
+  html body .boxes>.bw .bnum .bn{font-size:1.5rem !important;margin:0 auto 5px !important}
+  html body .boxes>.bw .box{grid-template-columns:74px minmax(0,1fr) !important}
+  html body .boxes>.bw .bbody{padding-left:14px !important;padding-right:10px !important;min-width:0;overflow-wrap:anywhere}
+  html body .boxes>.bw .bbody .fld, html body .boxes>.bw .bbody input.www, html body .boxes>.bw .bbody .www{max-width:100% !important;box-sizing:border-box !important;min-width:0 !important}
+  html body .boxes>.bw .bnum .bs{font-size:9.5px !important;line-height:1.2 !important;max-width:100% !important;box-sizing:border-box;white-space:normal !important;overflow-wrap:anywhere;word-break:normal;hyphens:auto;padding:2px 4px !important;margin:0 auto !important;letter-spacing:.02em !important}
+}
+</style>
+<style id="aog-dd-crumple">
+/* AOG-DD-CRUMPLE (2026-09-27) — Jimmy: "A kid, in frustration, wads it up, then unwads it and works on it."
+   The sheet and its boxes carry a faint crumpled-then-smoothed paper (img/paper-crumple.webp, made by
+   _work/paper/make_crumple.py; +-5% light, so text stays easy to read). Screen only; paper prints clean. */
+@media screen{
+  #sheet.sheet{background-image:url(/img/paper-crumple.webp), repeating-linear-gradient(0deg, rgba(29,39,51,.035) 0 1px, transparent 1px 28px) !important;background-size:620px, auto !important;background-blend-mode:multiply !important}
+  html body .boxes>.bw .box{background:url(/img/paper-crumple.webp) 0 0/620px #FFFDF8 !important;background-blend-mode:multiply !important}
+}
+</style>
+<style id="aog-dd-clean">
+/* AOG-DD-CLEAN-V1 — long division: the bar and the bracket are ONE line, drawn along the top and the
+   left of the dividend itself, with a rounded corner like a hand-drawn ). No dashed spare line. */
+.divg{column-gap:0 !important;row-gap:0 !important}
+.divg .bar{border-bottom:0 !important}
+.divg .bar::after{content:none !important}
+.divg .dvc{border-top:2.5px solid var(--ink,#111827) !important;border-bottom:0 !important;padding-top:6px}
+.divg .dvc.spare{border-bottom:0 !important;background:none !important}
+.divg .dvc.spare::before,.divg .dvc.spare::after{content:none !important}
+.divg .brk{border-left:2.5px solid var(--ink,#111827) !important;border-top-left-radius:12px;padding-left:4px}
+.colp .pencilroom{display:block;justify-self:stretch !important;align-self:stretch;width:auto !important;min-width:0;background:linear-gradient(#111827,#111827) left bottom/100% 2px no-repeat !important}
+.divg .dvc{align-self:stretch !important;margin:0 !important;display:flex !important;align-items:flex-end;justify-content:center;min-height:38px}
+.divg .pencilroom{background:none !important}
+@media print{ .pencilroom{height:auto !important;min-height:40px} }
+</style>
+<style id="aog-dd-more">
+/* AOG-DD-MORE-V1 · AOG-DD-STREAK-RULE-V1 · AOG-DD-TEACHERLINES-V1 (2026-10-01) */
+.streaknote{flex:1 1 100%;margin:4px 0 0;font-size:.84rem;line-height:1.5;color:var(--ink-faint)}
+.tlines{margin:14px 0 0;padding:12px 0 0 20px;border-top:1px solid var(--rule-soft);font-size:.8rem;line-height:1.5;color:var(--ink-faint)}
+.tlines li{margin:2px 0}
+body.packing .packsheet .tlines{color:#333}
+</style>
+<style id="aog-dd-roomreturn">
+/* AOG-DD-ROOM-RETURN-V1 (2026-10-02) — the shelf lives on the home page; here, the book you are in and a way back */
+#subjSeg{display:none !important}
+.subjnow{margin:0;font-size:1.05rem;line-height:1.5;display:flex;flex-wrap:wrap;gap:4px 14px;align-items:baseline}
+.subjnow b{font-size:1.15rem}
+.subjnow a{color:var(--ink);font-weight:700;text-decoration:underline;text-underline-offset:3px;min-height:44px;display:inline-flex;align-items:center}
+</style>
+<style id="aog-dd-onesize">
+/* AOG-DD-ONE-SIZE (2026-09-27) — Jimmy: "Grade 7 zooms in compared to the other grades." Pages show at 85% on a
+   computer, but a page with a pencil canvas draws at full size (aog-calm.css), and only some grades' sheets have
+   the pencil work space — so switching grade changed the size. Daily Drafts now always draws at full size, the
+   same for every subject and grade, and the pencil still lands exactly under the finger. */
+@media screen { html body { zoom: 1 !important; } }
+</style>
+<!-- AOG-HOME-APPS-V1 (Jimmy, 2026-10-10: "make a direct link icon"): Add to Home Screen gives this its own icon -->
+<link rel="manifest" href="/practice.webmanifest">
+<link rel="apple-touch-icon" href="/app-practice-touch.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Practice">
+</head>
+<body>
+<script src="/aog-grace.js" defer></script>
+<div class="wrap">
+<script>
+(function(){
+  function add(src){
+    var s=document.createElement("script");
+    s.src=src;
+    s.onerror=function(){ if(src.indexOf("netlify.app")<0) add("https://architectureofgrace.netlify.app/aog-topbar.js"); };
+    document.head.appendChild(s);
+  }
+  add(new URL("/aog-topbar.js", document.baseURI).href);   /* AOG-DD-PATH-V1: from the site root, so /drops/foundry loads the bar too */
+})();
+</script>
+<!-- 2026-09-12: the old AOG-R36-NAV bar is retired here; this page now wears the site bar like every other standalone page (ONE BAR, EVERY PAGE). -->
+
+
+<header class="mast">
+  <div>
+    <div class="k" data-en="The Resource Room — Daily Practice" data-es="La Sala de Recursos — Práctica diaria">The Resource Room — Daily Practice</div>
+    <h1 data-en="Daily Practice — K–12 Spiral Review" data-es="Práctica diaria — Repaso en espiral K–12">Daily Practice — K–12 Spiral Review</h1>
+    <!-- AOG-DD-INTRO-TEN-V1 --><!-- AOG-DD-INTRO-SHORT-V1 (2026-09-26) — Jimmy: "too much words". --><p class="deck" data-en="Ten small things a day, checked the moment you finish. Pick a subject and a grade." data-es="Diez cosas pequeñas al día, revisadas en cuanto terminas. Elige una materia y un grado.">Ten small things a day, checked the moment you finish. Pick a subject and a grade.</p>
+    <!-- the way out. THE HREF IS THE HUB'S FILENAME, not its short link — the
+         filename resolves on the site, on localhost, and from a folder on disk. -->
+    <p class="hubline no-print"><a data-en='← Back to the Resource Room' data-es='← Volver a la Sala de Recursos' href='/' id='hubLink'>← Back to the Resource Room</a></p>
+  </div>
+  <div class="row no-print">
+    <button class="chipbtn" id="langBtn" type="button">Español</button>
+    <button class="chipbtn" id="themeBtn" type="button" data-en="Dark" data-es="Oscuro">Dark</button>
+  </div>
+</header>
+
+<main id="main">
+<div class="rail no-print">
+  <div class="fg">
+    <span class="lbl" data-en="Subject" data-es="Materia">Subject</span>
+    <!-- AOG-DD-ROOM-RETURN-V1 (2026-10-02) — Jimmy: "Does it make sense to have this on the draft page anymore?" The
+         shelf is picked on the home page now (the Daily Drafts room). This page shows the book you are in and one link
+         back to the room; #subjSeg stays in the page, hidden, so ?subject= links and the handlers keep working. -->
+    <p class="subjnow"><b id="subjNow"></b> <a href="/?room=drafts" data-en="Change subject" data-es="Cambiar materia">Change subject</a></p>
+    <!-- AOG-DD-SUBJ-GROUPS-V1 (2026-09-26) — Jimmy: "Can these be paired up better?" Thirteen subjects in three
+         families, each on its own row with a small name, so the eye finds Bible next to Qur'an and Talmud, and
+         Math next to Science, instead of one long shuffle. Same buttons, same data-s, same handler. -->
+    <div class="seg" id="subjSeg" role="group" aria-label="Subject">
+      <div class="sgrp"><span class="sg-k" data-en="Core" data-es="Básicas">Core</span><div class="bs">
+      <button data-s="math" aria-pressed="true" data-en="Math" data-es="Matemáticas">Math</button>
+      <button data-s="ela" aria-pressed="false" data-en="Language Arts" data-es="Lenguaje">Language Arts</button>
+      <button data-s="write" aria-pressed="false" data-en="Writing" data-es="Escritura">Writing</button>
+      <button data-s="science" aria-pressed="false" data-en="Science" data-es="Ciencias">Science</button>
+      <button data-s="social-studies" aria-pressed="false" data-en="Social Studies" data-es="Estudios Sociales">Social Studies</button>
+      </div></div>
+      <!-- AOG-DD-COVERS-V1 (2026-10-01) — Jimmy: "Keep all four shelves." The More subjects fold (AOG-DD-MORE-V1,
+           same morning) is gone; every shelf shows, Core first. -->
+      <div class="sgrp"><span class="sg-k" data-en="Languages &amp; life" data-es="Idiomas y vida">Languages &amp; life</span><div class="bs">
+      <button data-s="spanish" aria-pressed="false" data-en="Spanish" data-es="Español">Spanish</button>
+      <button data-s="foundry" aria-pressed="false" title="Word Foundry" data-en="Foundry" data-es="Foundry">Foundry</button>
+      <button data-s="facs" aria-pressed="false" title="Family and Consumer Sciences" data-en="FACS" data-es="CFC">FACS</button>
+      <button data-s="economics" aria-pressed="false" title="Economics" data-en="Economics" data-es="Econom&#237;a">Economics</button>
+      <button data-s="cultures" aria-pressed="false" title="World Cultures and Societies" data-en="World Cultures" data-es="Culturas del mundo">World Cultures</button>
+      <button data-s="health" aria-pressed="false" title="Medicine and Health" data-en="Medicine &amp; Health" data-es="Medicina y salud">Medicine &amp; Health</button>
+      </div></div>
+      <div class="sgrp"><span class="sg-k" data-en="History books" data-es="Libros de historia">History books</span><div class="bs">
+      <button data-s="sports" aria-pressed="false" title="Sports History" data-en="Sports History" data-es="Historia del deporte">Sports History</button>
+      <button data-s="martial" aria-pressed="false" title="The Measured Step: martial arts history" data-en="The Measured Step" data-es="El paso medido">The Measured Step</button>
+      <button data-s="secrets" aria-pressed="false" title="Secret Societies: lodges, orders, codes and legends" data-en="Secret Societies" data-es="Sociedades secretas">Secret Societies</button>
+      <button data-s="skate" aria-pressed="false" title="Skateboarding: history, tricks and the science of balance" data-en="Skateboarding" data-es="Skateboarding">Skateboarding</button>
+      </div></div>
+      <div class="sgrp"><span class="sg-k" data-en="Faith &amp; texts" data-es="Fe y textos">Faith &amp; texts</span><div class="bs">
+      <button data-s="bible" aria-pressed="false" title="The Bible" data-en="The Bible" data-es="La Biblia">The Bible</button>
+      <button data-s="quran" aria-pressed="false" title="The Qur’an" data-en="The Qur’an" data-es="El Corán">The Qur’an</button>
+      <button data-s="talmud" aria-pressed="false" title="The Talmud" data-en="The Talmud" data-es="El Talmud">The Talmud</button>
+      <button data-s="hindu" aria-pressed="false" title="Hindu Texts" data-en="Hindu Texts" data-es="Textos hindúes">Hindu Texts</button>
+      <button data-s="buddhist" aria-pressed="false" title="Buddhist Texts" data-en="Buddhist Texts" data-es="Textos budistas">Buddhist Texts</button>
+      <button data-s="chinese" aria-pressed="false" title="Chinese Classics: the Analects and the Daodejing" data-en="Chinese Classics" data-es="Clásicos chinos">Chinese Classics</button>
+      <button data-s="unseen" aria-pressed="false" title="The Unseen Realm: Enoch, the Watchers, angels and demons in the ancient texts" data-en="The Unseen Realm" data-es="El reino invisible">The Unseen Realm</button>
+      <button data-s="religion" aria-pressed="false" title="World Religions" data-en="Religions" data-es="Religiones">Religions</button>
+      </div></div>
+    </div>
+  </div>
+  <div class="fg">
+    <label class="lbl" for="grade" data-en="Grade" data-es="Grado">Grade</label>
+    <select id="grade" style="min-width:180px"></select>
+  </div>
+  <div class="fg">
+    <span class="lbl" data-en="Sheet" data-es="Hoja">Sheet</span>
+    <div class="step">
+      <button id="prevS" type="button" aria-label="Previous sheet">&minus;</button>
+      <input id="sheetIn" type="number" min="1" max="180" value="1" inputmode="numeric" aria-label="Sheet number">
+      <button id="nextS" type="button" aria-label="Next sheet">+</button>
+    </div>
+  </div>
+  <span class="grow"></span>
+  <button class="btn" id="keyBtn" type="button" aria-pressed="false" data-en="Answer key" data-es="Clave">Answer key</button>
+  <button class="btn" id="keyPrintBtn" type="button" hidden data-en="Print answer key" data-es="Imprimir la clave">Print answer key</button>
+  <button class="btn solid" id="checkBtn" type="button" data-en="Inspect my build" data-es="Inspeccionar mi obra">Inspect my build</button>
+</div>
+
+<div class="strip no-print">
+  <div>
+    <span class="lbl" data-en="Structural elements" data-es="Elementos estructurales">Structural elements</span>
+    <div class="pips" id="pips"></div>
+  </div>
+  <div class="stats">
+    <div><span class="statv" id="scoreVal">—</span><span class="statl" data-en="Score" data-es="Puntaje">Score</span></div>
+    <div><span class="statv gold" id="streakVal">0</span><span class="statl" data-en="Foundation streak" data-es="Racha de base">Foundation streak</span></div>
+  </div>
+  <p class="streaknote" data-en="A day counts when you finish a sheet with every crack repaired. The streak lives in this browser only, so a new device starts at 0." data-es="Un d&iacute;a cuenta cuando terminas una hoja con todas las grietas reparadas. La racha vive solo en este navegador; un aparato nuevo empieza en 0.">A day counts when you finish a sheet with every crack repaired. The streak lives in this browser only, so a new device starts at 0.</p>
+</div>
+
+<div class="workbar no-print" id="workBar">
+  <span class="lbl" data-en="Work space" data-es="Espacio de trabajo">Work space</span>
+  <button type="button" class="wb" data-work="pencil" aria-pressed="true" data-en="&#9998; Pencil &mdash; write anywhere" data-es="&#9998; L&aacute;piz &mdash; escribe donde quieras">&#9998; Pencil &mdash; write anywhere</button>
+  <button type="button" class="wb" data-work="boxes" aria-pressed="false" data-en="Boxes to type in" data-es="Casillas para escribir">Boxes to type in</button>
+  <span class="whint" data-en="On the algorithms, type only the answer. Carry, borrow and work it out by hand in the space around the problem." data-es="En los algoritmos, escribe solo la respuesta. Lleva, pide prestado y resuelve a mano en el espacio alrededor del problema.">On the algorithms, type only the answer. Carry, borrow and work it out by hand in the space around the problem.</span>
+</div>
+<div class="sheet" id="sheet"></div>
+
+<div class="acts no-print" id="sheetActs">
+  <button class="btn solid" id="checkBtn2" type="button" data-en="Inspect my build" data-es="Inspeccionar mi obra">Inspect my build</button>
+  <button class="btn" id="tryBtn" type="button" data-en="Repair the cracks" data-es="Reparar las grietas">Repair the cracks</button>
+  <button class="btn" id="clearBtn" type="button" data-en="Clear sheet" data-es="Borrar hoja">Clear sheet</button>
+  <button class="btn" id="printBtn" type="button" data-en="Print" data-es="Imprimir">Print</button>
+  <button class="btn" id="packBtn" type="button" data-en="Print several…" data-es="Imprimir varios…">Print several…</button>
+  <span class="resline" id="resLine"></span>
+</div>
+
+<!-- AOG-DD-PACK-V1 (2026-09-23) — Jimmy: "I want draft 10, 13 and 176. Could that be
+     a print option in the actual page?" Type the numbers, get those drafts, one to a
+     page, blank and ready to hand out. Nothing on screen is disturbed by it. -->
+<div class="packbar no-print" id="packBar" hidden>
+  <!-- AOG-DD-PACK-V2 (2026-10-01): a start draft and a count; each page is the next draft number. The exact list still works. -->
+  <label class="lbl" for="packStart" data-en="Start at sheet" data-es="Empezar en la hoja">Start at sheet</label>
+  <input id="packStart" type="number" min="1" max="180" value="1" inputmode="numeric" autocomplete="off" aria-label="First sheet to print">
+  <label class="lbl" for="packCount" data-en="How many" data-es="Cu&aacute;ntos">How many</label>
+  <input id="packCount" type="number" min="1" max="40" value="5" inputmode="numeric" autocomplete="off" aria-label="How many sheets to print">
+  <label class="lbl" for="packIn" data-en="Or exact sheets" data-es="O hojas exactas">Or exact sheets</label>
+  <input id="packIn" type="text" inputmode="numeric" autocomplete="off" placeholder="10, 13, 176"
+         aria-label="Exact sheet numbers to print">
+  <button class="btn solid" id="packGo" type="button" data-en="Print these" data-es="Imprimir estos">Print these</button>
+  <button class="btn" id="packX" type="button" data-en="Close" data-es="Cerrar">Close</button>
+  <span class="packnote" id="packNote"></span>
+</div>
+<div id="packPack" aria-hidden="true"></div>
+
+<p class="sheet-foot" id="footNet" data-en="Your work saves in this browser as you go. When you sign your name and tap Send, it goes once to your teacher&#39;s Sheet: your answers and score, or your writing, plan and rubric. Send again sends it again. With no teacher link, nothing leaves this device. Nothing loads from the internet. Original practice, written for the Architecture of Grace." data-es="Tu trabajo se guarda en este navegador mientras avanzas. Cuando firmas con tu nombre y tocas Enviar, va una vez a la Hoja de tu maestro: tus respuestas y tu puntaje, o tu escritura, tu plan y la rúbrica. Enviar otra vez lo reenvía. Sin enlace del maestro, nada sale de este aparato. Nada se carga de internet. Práctica original, escrita para Architecture of Grace.">Your work saves in this browser as you go. When you sign your name and tap Send, it goes once to your teacher&#39;s Sheet: your answers and score, or your writing, plan and rubric. Send again sends it again. With no teacher link, nothing leaves this device. Nothing loads from the internet. Original practice, written for the Architecture of Grace.</p>
+</main>
+</div>
+<div class="toast" id="toast"></div>
+
+<!-- The deployed site's default destination, same as the w-series worksheets.
+     Same origin, never the internet. A ?dest= on the link WINS over this file,
+     and with neither one present no Send control is added to the page at all. -->
+<script src="/aog-sync-config.js"></script>
+<script src="/front/485547a78fd1.js"></script>
+
+<script>
+/* AOG-R36-NAV behavior removed 2026-09-12 — the site bar (aog-topbar.js) owns Back, Explore, theme, language and accessibility now. */
+</script>
+
+<style>
+/* ══ AOG-PRINTBRAND-V1 — the mark on every printed sheet ══ */
+.aog-printbrand,.aog-printwm{display:none}
+@media print{
+  .aog-printbrand{display:block;position:fixed;bottom:2px;left:0;right:0;text-align:center;
+    font:700 9px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:#1B3A5F;letter-spacing:.08em;z-index:99}
+  .aog-printbrand .mk{display:inline-block;width:12px;height:12px;line-height:12px;border-radius:3px;
+    background:#1B3A5F;color:#fff;font-family:Georgia,serif;font-weight:900;font-size:9px;
+    text-align:center;margin-right:4px;vertical-align:-2px;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .aog-printwm{display:block;position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;
+    overflow:hidden;z-index:98}
+  .aog-printwm span{position:absolute;left:-25%;right:-25%;text-align:center;white-space:nowrap;
+    font:900 44px/1 Georgia,serif;letter-spacing:.2em;color:rgba(27,58,95,.06);
+    transform:rotate(-28deg);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .aog-printwm span:nth-child(1){top:22%}
+  .aog-printwm span:nth-child(2){top:52%}
+  .aog-printwm span:nth-child(3){top:82%}
+}
+</style>
+<div class="aog-printwm" aria-hidden="true"><span>ARCHITECTURE OF GRACE</span><span>ARCHITECTURE OF GRACE</span><span>ARCHITECTURE OF GRACE</span></div>
+<div class="aog-printbrand" aria-hidden="true"><span class="mk">A</span>ARCHITECTURE OF GRACE &middot; architectureofgrace.com</div>
+
+<style>
+/* ══ AOG-DD-TAPBANK-V1 (2026-09-19) — A WORD BANK IS AN OPTION LIST, SO IT
+   SHOULD BE TAPPABLE. Jimmy: "In all of the daily drafts I want the ability to
+   click on drag for the problems that provide the options. I don't like how if
+   you spell the words wrong it is wrong."
+   Three question kinds put the answers on the screen and then made the student
+   TYPE them: voc (word bank + three meanings), seq (out-of-order strip) and the
+   cycle/chain/layers pictures. The thinking those items test is WHICH WORD GOES
+   WHERE. Spelling it was a second, hidden test nobody set, and on an iPad
+   keyboard it is the harder of the two. Now the chips place themselves.
+   ⚠ TYPING STILL WORKS. This is a second way in, not a replacement — a student
+     who wants the spelling practice still gets it, and the bank dims to match
+     whatever is in the blanks, however it got there. */
+.wbank.tapbank span{cursor:pointer; -webkit-user-select:none; user-select:none;
+  -webkit-tap-highlight-color:transparent; transition:opacity .12s ease, transform .06s ease}
+.wbank.tapbank span:hover{border-color:var(--gold)}
+.wbank.tapbank span:active{transform:translateY(1px)}
+.wbank.tapbank span:focus-visible{outline:2px solid var(--gold-deep); outline-offset:2px}
+.wbank.tapbank span.used{opacity:.32; text-decoration:line-through; text-decoration-thickness:1px}
+.wbank.tapbank span.dragging{opacity:.5}
+.wbank .bkhow{flex-basis:100%; order:99; margin:4px 0 0; font-size:.68rem; line-height:1.4;
+  color:var(--ink-faint)}
+input.fld.drop{background:var(--field); border-color:var(--gold); border-bottom-width:3px}
+@media print{
+  /* ⚠ a dimmed chip on paper reads as a crossing-out by the student. On paper
+     every chip is simply a word in a box again. */
+  .wbank span{opacity:1!important; text-decoration:none!important}
+  .wbank .bkhow{display:none}
+}
+
+/* ══ AOG-PRINT-SAFE-V1 (2026-09-20) ═══════════════════════════════════════════
+   Jimmy, printing a novel study from his phone: "another pdf that gets parts of
+   the material cut off." These are the rules that keep paper honest on every
+   engine — a table row, a list item, a figure and a picture stay whole; a head
+   keeps the lines under it; no paragraph strands one line at a page edge; and a
+   long table repeats its head at the top of each page. Printed pages only. */
+@media print{
+  table{break-inside:auto; page-break-inside:auto}
+  thead{display:table-header-group}
+  tfoot{display:table-footer-group}
+  tr{break-inside:avoid; page-break-inside:avoid}
+  li,figure,img,svg{break-inside:avoid; page-break-inside:avoid}
+  h1,h2,h3,h4,h5{break-after:avoid; page-break-after:avoid}
+  p{orphans:3; widows:3}
+}
+</style>
+<script src="/front/b562adb9a352.js"></script>
+
+<script src="/front/0b2784cc15ed.js"></script>
+<script src="/aog-sketch.js" data-pad=".sheet" data-inline=".sheet,.wb" defer></script>
+<!-- AOG-DD-SHELF-FIT-V1 (2026-10-01) — Jimmy: "when you enlarge the screen the books enlarge, but the shelves stay."
+     The shelves were a stripe painted every 200px, so taller books (a bigger window or zoom) stood off them. Now each
+     row of books gets its own shelf, laid exactly under that row's bottom edge, and re-laid whenever the size changes. -->
+<style>
+#subjSeg .bs{background:none !important;position:relative}
+#subjSeg .bs > .aog-shelf{position:absolute;left:0;right:0;height:14px;pointer-events:none;z-index:0;
+  background:linear-gradient(180deg,#3B2414 0 1px,#8A5A32 1px 3px,#6B4323 3px 8px,#4A2C16 8px 11px,rgba(0,0,0,.25) 11px 14px);border-radius:1px}
+#subjSeg .bs > button{position:relative;z-index:1}
+@media print{ #subjSeg .bs > .aog-shelf{display:none} }
+</style>
+<style id="aog-dd-covers">
+/* AOG-DD-COVERS-V1 (2026-10-01) — Jimmy, on the shelf: "Keep all four shelves, more picture, and make the book worn
+   down leather bound brown." Every subject is a book standing on its shelf, seen from the FRONT COVER, like the Daily
+   Drafts room on the home page: worn brown leather with a faded gold rule, the subject's own sketch (the same art the
+   home room uses, from /img/banners) on a paper plate, the name on an aged paper label, the page block showing past
+   the edge. The spines of AOG-DD-SHELF-V2 / LEATHER-V1..V3 are overruled here, rule for rule; the shelf under each
+   row is still laid by AOG-DD-SHELF-FIT-V1. Nothing moves on its own; the chosen book stands forward. */
+#subjSeg .bs{gap:18px 14px !important;padding:14px 10px 0 !important;align-items:flex-end}
+#subjSeg .bs button, #subjSeg .bs button:nth-child(n){
+  --art:none;position:relative;
+  writing-mode:horizontal-tb !important;transform:none;
+  width:118px;min-width:118px !important;height:158px;min-height:158px !important;margin:0 0 30px !important;
+  padding:0 8px 0 !important;display:flex !important;flex-direction:column;align-items:center;justify-content:flex-end;
+  /* AOG-DD-COVERS-V2 (2026-10-01) — Jimmy: "Pictures still need to be bigger, the text should be smaller but bolder,
+     maybe white letters without the white background." The plate fills the cover down to the name band; the name is
+     small, bold, cream, straight on the leather. */
+  font:800 10.5px/1.15 "Fraunces",Georgia,serif !important;text-transform:none !important;letter-spacing:.01em !important;
+  box-sizing:border-box;
+  text-align:center;white-space:normal !important;color:#FFF4DC !important;text-shadow:0 1px 1px rgba(0,0,0,.7) !important;
+  border:1px solid #1A120C !important;border-radius:3px 8px 8px 3px !important;
+  background-color:#5A3A22 !important;
+  background-image:
+    radial-gradient(60% 40% at 30% 25%, rgba(255,230,190,.22), transparent 70%),
+    radial-gradient(50% 35% at 80% 85%, rgba(0,0,0,.38), transparent 70%),
+    radial-gradient(rgba(0,0,0,.22) 1px,transparent 1.4px),
+    radial-gradient(rgba(255,255,255,.07) 1px,transparent 1.4px),
+    linear-gradient(90deg,rgba(0,0,0,.5) 0,rgba(0,0,0,.18) 9px,rgba(255,255,255,.08) 24px,rgba(255,255,255,.03) 50%,rgba(0,0,0,.12) 85%,rgba(0,0,0,.4) 100%) !important;
+  background-size:100% 100%, 100% 100%, 5px 5px, 7px 7px, 100% 100% !important;
+  background-position:0 0, 0 0, 0 0, 2px 3px, 0 0 !important;
+  background-repeat:no-repeat,no-repeat,repeat,repeat,no-repeat !important;
+  box-shadow:inset 0 0 0 8px rgba(201,162,74,0), inset 0 0 0 9px rgba(201,162,74,.5),
+     inset 0 6px 8px -6px rgba(255,255,255,.25), inset 0 -6px 8px -6px rgba(0,0,0,.6),
+     7px -6px 0 -1px #EFE6D2, 7px -6px 0 0.5px #3B2414,
+     3px 3px 4px rgba(0,0,0,.35) !important}
+#subjSeg .bs button::before, #subjSeg .bs button[aria-pressed="true"]::before{
+  content:"" !important;position:absolute !important;left:11px !important;right:11px !important;top:11px !important;bottom:46px !important;
+  height:auto !important;transform:none !important;z-index:0;border-radius:2px;
+  border:1px solid #2A1808 !important;background:#FBF8F0 var(--art) 72% 42% / cover no-repeat !important;
+  box-shadow:1px 1px 0 rgba(42,24,8,.35) !important}
+#subjSeg .bs button::after{content:none !important}
+/* the name band: the text is the button's own text, held in the 46px under the plate */
+#subjSeg .bs button, #subjSeg .bs button:nth-child(n){padding-bottom:0 !important}
+#subjSeg .bs button > .bt{display:flex;align-items:center;justify-content:center;height:46px;width:100%}
+@media (max-width:720px){ #subjSeg .bs button > .bt{height:40px} }
+#subjSeg .bs button[data-s="math"]{--art:url("/img/banners/page-math-hub-pencil-900.webp")}
+#subjSeg .bs button[data-s="ela"]{--art:url("/img/banners/page-english-hub-pencil-900.webp")}
+#subjSeg .bs button[data-s="write"]{--art:url("/img/banners/e12-the-paragraph-pencil-900.webp")}
+#subjSeg .bs button[data-s="science"]{--art:url("/img/banners/page-science-hub-pencil-900.webp")}
+#subjSeg .bs button[data-s="social-studies"]{--art:url("/img/banners/page-social-studies-hub-pencil-900.webp")}
+#subjSeg .bs button[data-s="spanish"]{--art:url("/img/banners/page-spanish-hub-pencil-900.webp")}
+#subjSeg .bs button[data-s="foundry"]{--art:url("/img/banners/word-foundry-pencil-900.webp")}
+#subjSeg .bs button[data-s="facs"]{--art:url("/img/banners/page-facs-hub-pencil-900.webp")}
+#subjSeg .bs button[data-s="economics"]{--art:url("/img/banners/ec1-scarcity-and-choice-pencil-900.webp")}
+#subjSeg .bs button[data-s="cultures"]{--art:url("/img/banners/s14-world-regions-pencil-900.webp")}
+#subjSeg .bs button[data-s="health"]{--art:url("/img/banners/med-u2-pencil-900.webp")}
+#subjSeg .bs button[data-s="sports"]{--art:url("/img/banners/sports-hub-pencil-900.webp")}
+#subjSeg .bs button[data-s="martial"]{--art:url("/img/banners/martial-arts-hub-pencil-900.webp")}
+#subjSeg .bs button[data-s="secrets"]{--art:url("/img/banners/secret-societies-hub-pencil-900.webp")}
+#subjSeg .bs button[data-s="skate"]{--art:url("/img/banners/skateboarding-hub-pencil-900.webp")}
+#subjSeg .bs button[data-s="bible"]{--art:url("/img/banners/bible-hub-pencil-900.webp")}
+#subjSeg .bs button[data-s="quran"]{--art:url("/img/banners/quran-hub-pencil-900.webp")}
+#subjSeg .bs button[data-s="talmud"]{--art:url("/img/banners/talmud-hub-pencil-900.webp")}
+#subjSeg .bs button[data-s="hindu"]{--art:url("/img/banners/hindu-texts-hub-pencil-900.webp")}
+#subjSeg .bs button[data-s="buddhist"]{--art:url("/img/banners/buddhist-texts-hub-pencil-900.webp")}
+#subjSeg .bs button[data-s="chinese"]{--art:url("/img/banners/chinese-classics-hub-pencil-900.webp")}
+#subjSeg .bs button[data-s="unseen"]{--art:url("/img/banners/unseen-realm-hub-pencil-900.webp")}
+#subjSeg .bs button[data-s="religion"]{--art:url("/img/banners/r10-religion-and-the-world-pencil-900.webp")}
+#subjSeg .bs button[aria-pressed="true"], #subjSeg .bs button[data-s][aria-pressed="true"]{
+  transform:translateY(-10px) !important;background-color:#6B4628 !important;color:#FFF4DC !important;
+  outline:2.5px solid #C9A24A;outline-offset:3px}
+#subjSeg .bs button:focus-visible{outline:3px solid #F2C964 !important;outline-offset:3px}
+@media (hover:hover){ #subjSeg .bs button[aria-pressed="false"]:hover{transform:translateY(-5px)} }
+@media (prefers-reduced-motion: reduce), (hover:none){
+  #subjSeg .bs button, #subjSeg .bs button[aria-pressed="true"], #subjSeg .bs button[data-s][aria-pressed="true"]{transform:none !important;transition:none} }
+@media (max-width:720px){
+  #subjSeg .bs{gap:14px 8px !important;padding:10px 2px 0 !important}
+  #subjSeg .bs button, #subjSeg .bs button:nth-child(n){width:90px;min-width:90px !important;height:122px;min-height:122px !important;margin:0 0 24px !important;
+    padding:0 7px 0 !important;font-size:9.5px !important}
+  #subjSeg .bs button::before, #subjSeg .bs button[aria-pressed="true"]::before{left:9px !important;right:9px !important;top:9px !important;bottom:40px !important}
+}
+@media print{ #subjSeg .bs button{background:#fff !important;color:#1D2733 !important} }
+</style>
+<script>
+(function(){
+  function lay(bs){
+    var old=bs.querySelectorAll(":scope > .aog-shelf"); for(var i=0;i<old.length;i++) old[i].remove();
+    var bt=bs.querySelectorAll(":scope > button"), rows={};
+    for(var j=0;j<bt.length;j++){ var b=bt[j]; if(!b.offsetParent) continue;
+      var bottom=b.offsetTop+b.offsetHeight, key=Math.round(bottom/30); rows[key]=Math.max(rows[key]||0,bottom); }
+    Object.keys(rows).forEach(function(k){ var sh=document.createElement("span"); sh.className="aog-shelf"; sh.setAttribute("aria-hidden","true");
+      sh.style.top=(rows[k]-1)+"px"; bs.insertBefore(sh,bs.firstChild); });
+  }
+  function all(){ var g=document.querySelectorAll("#subjSeg .bs"); for(var i=0;i<g.length;i++) lay(g[i]); }
+  var t=0; function soon(){ clearTimeout(t); t=setTimeout(all,60); }
+  if(document.readyState!=="loading") all(); else document.addEventListener("DOMContentLoaded",all);
+  window.addEventListener("load",all); window.addEventListener("resize",soon);
+  if(window.ResizeObserver){ var ro=new ResizeObserver(soon); var g=document.querySelectorAll("#subjSeg .bs"); for(var i=0;i<g.length;i++) ro.observe(g[i]); }
+  if(document.fonts&&document.fonts.ready) document.fonts.ready.then(all);
+})();
+</script>
+</body>
+</html>

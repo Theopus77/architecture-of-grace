@@ -25,7 +25,8 @@ DIR = os.path.join(ROOT, "front")
 MARK = "AOG-FAST-BUILD-V1"
 MIN = 2048   # bytes: a smaller block stays in the page (it gains nothing, and the first paint would wait on it)
 PAGES = [("index.html", "front.html")] + [("music-%s.html" % r, "fast/music-%s.html" % r)
-         for r in ("pads", "kit", "piano", "guitar", "bass", "band", "decks", "studio")]
+         for r in ("pads", "kit", "piano", "guitar", "bass", "band", "decks", "studio")] + [
+         ("daily-drops.html", "fast/daily-drops.html")]   # Daily Practice: its 2.7 MB of banks, kept by a phone between visits
 
 SCRIPT = re.compile(r"<script\b([^>]*)>(.*?)</script>", re.S | re.I)
 NOT_CODE = re.compile(r'type\s*=\s*"(?!text/javascript"|module")', re.I)   # templates and data stay in the page
