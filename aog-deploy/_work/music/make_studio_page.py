@@ -306,12 +306,12 @@ main.sh-main { grid-area:room; min-width:0; margin:0; }
 @media (max-width:349px) { .sh-qs, .sh-mic { font-size:.86rem; padding:0 .4rem; } }
 /* a phone in Safari (the browser's own bars take the rest): a little less air above the room, so the room keeps most of the screen */
 @media (max-width:699px) and (max-height:760px) {
-  .sh-top { padding:2px 0 3px; row-gap:4px; }
+  .sh-top { padding:1px 0 2px; row-gap:3px; }
   .sh-lang button { min-height:38px; }
-  .sh-doors { padding:3px 0 4px; }
-  .sh-doors ul { gap:4px; }
-  .sh-doors a { min-height:40px; padding:1px 5px; line-height:1.1; }
-  .mt { margin-top:4px; padding-top:4px; padding-bottom:max(4px, env(safe-area-inset-bottom)); }
+  .sh-doors { padding:2px 0 3px; }
+  .sh-doors ul { gap:3px; }
+  .sh-doors a { padding:1px 5px; line-height:1.1; }
+  .mt { margin-top:3px; padding-top:3px; padding-bottom:max(3px, env(safe-area-inset-bottom)); }
 }
 @media print { .sh-doors, .mt, .sh-room, .sh-bridge, .sh-lang, .sh-back { display:none; } }
 """
