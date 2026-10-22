@@ -473,6 +473,7 @@
       try { if (window.AOGSong) AOGSong.seedFromRoom(); } catch (e) {}   /* AOG-SONG-V1: a new song takes its first take's tempo and key */
       if (!R.msg || R.msg === "overOn") R.msg = "recKeep";
       R.paint();
+      did("recorded");   /* AOG-MISSIONS-V1: the Studio's missions (the-studio.html) */
     }
     R.toggle = async function () {
       var btn = el("btn");
@@ -522,6 +523,7 @@
       R.kept = false; store(take);
       try { if (window.AOGSong) AOGSong.seedFromRoom(); } catch (e) {}
       R.msg = "recKeep"; R.paint();
+      did("lick");   /* AOG-MISSIONS-V1: every take a room makes itself is a lick (piano, band, guitar and bass licks) */
       return take;
     };
     R.send = async function (n) {
@@ -572,6 +574,7 @@
         R.studioLine = true;
         if (!k.added) { k.added = true; store(k); }   /* AOG-REC-KEEP-V1: it stays known as added, after a reload too */
         if (line) line.innerHTML = studioHtml();
+        did("added");   /* AOG-MISSIONS-V1 */
       } catch (e) {
         R.studioLine = false;
         if (line) line.textContent = w(e && e.name === "QuotaExceededError" ? "noRoom" : "fail");
@@ -674,6 +677,9 @@
     },
     context: function (sec, sr) { var OC = window.OfflineAudioContext || window.webkitOfflineAudioContext; return new OC(2, Math.max(1, Math.ceil(sec * sr)), sr); }
   };
+  /* AOG-MISSIONS-V1 (2026-10-22): what was just done, for the Recording Studio's missions. Inside the Studio it passes this
+     event on (the-studio.html); on its own page nobody listens. */
+  function did(x) { try { window.dispatchEvent(new CustomEvent("aog-studio-did", { detail: { what: x } })); } catch (e) {} }
   window.AOGRecorder = { attach: attach, clock: clock, toPad: toPad,
     /* AOG-NOTES-V1: a room's voice maker says what it just made (live only); its pedal too */
     note: function (c, vc, e) { if (CAP && vc) { try { CAP.note(c, vc, e); } catch (x) {} } return vc; },

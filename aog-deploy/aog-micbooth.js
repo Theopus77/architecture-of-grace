@@ -384,6 +384,7 @@
       B.take = { dry: dry, sr: sr, head: head, body: body, from: B.from, loop: B.loop, bpm: bpm || (bk ? bk.bpm : 0) || 90, bk: bk };
       B.made = {}; B.snd = "clean"; B.state = "take";
       say(why === "ended" ? "ended" : "took");
+      try { window.dispatchEvent(new CustomEvent("aog-studio-did", { detail: { what: "sang" } })); } catch (e) {}   /* AOG-MISSIONS-V1 */
       make("clean").then(function () { paint(); }, function () {});
     });
   }

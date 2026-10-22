@@ -266,9 +266,11 @@
     try {
       var u = URL.createObjectURL(f), a = D.createElement("a"); a.href = u; a.download = f.name; a.rel = "noopener"; a.style.display = "none";
       el.dlg.appendChild(a); a.click(); a.remove(); setTimeout(function () { URL.revokeObjectURL(u); }, 60000);
-      say("saved", { n: f.name });
+      say("saved", { n: f.name }); shared();
     } catch (e) { say("fail"); }
   }
+  /* AOG-MISSIONS-V1 (2026-10-22): the Studio's missions hear that the song went to a friend */
+  function shared() { try { window.dispatchEvent(new CustomEvent("aog-studio-did", { detail: { what: "shared" } })); } catch (e) {} }
   async function share() {
     if (S.busy || !S.bk) return;
     var f = S.file && S.fileOf === S.bk && S.file.name === fileName() ? S.file : null, fresh = !f;
@@ -283,7 +285,7 @@
     var a = artist() || "", msg = a ? w("msg", { t: title(), a: a }) : w("msgNo", { t: title() });
     var can = false; try { can = !!(navigator.share && (!navigator.canShare || navigator.canShare({ files: [f] }))); } catch (e) { can = false; }
     if (!can) { download(f); return; }
-    try { await navigator.share({ files: [f], title: title(), text: msg }); say("shared"); }
+    try { await navigator.share({ files: [f], title: title(), text: msg }); say("shared"); shared(); }
     catch (e) {
       if (e && e.name === "AbortError") say("");
       else if (e && e.name === "NotAllowedError" && fresh) say("again");   /* making the file took the tap's moment: one more tap sends it */

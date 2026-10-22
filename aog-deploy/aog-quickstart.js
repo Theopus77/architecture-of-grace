@@ -70,6 +70,9 @@
     "#qsSheet button:focus-visible { outline:3px solid #b9822a; outline-offset:2px; }",
     "#qsLine { margin:.7rem 0 0; font:700 1rem/1.3 Inter, system-ui, sans-serif; color:#1f1a12; }",
     "#qsLine:empty { display:none; }",
+    /* AOG-MISSIONS-V1: Missions · 3 of 12, the sheet's last line */
+    "#qsMs { display:block; width:100%; margin:.75rem 0 0; min-height:44px; padding:.3rem .9rem; border-radius:9px; border:1.5px solid #b98f3e; background:#fffaf0; color:#1f1a12;",
+    "  font:800 .95rem/1.2 Inter, system-ui, sans-serif; text-align:center; cursor:pointer; touch-action:manipulation; -webkit-tap-highlight-color:transparent; }",
     "@media (min-width:700px) { #qsSheet { top:66px; } #qsList { grid-template-columns:repeat(3, minmax(0,1fr)); } }",
     "@media (orientation:landscape) and (max-height:500px) { #qsSheet { top:8px; max-height:calc(100dvh - 16px); } #qsList { grid-template-columns:repeat(3, minmax(0,1fr)); } #qsList button { min-height:60px; } }"
   ].join("\n");
@@ -84,6 +87,7 @@
     box.addEventListener("click", function (e) {
       var b = e.target.closest && e.target.closest("button"); if (!b) return;
       if (b.id === "qsClose") { close(); return; }
+      if (b.id === "qsMs") { var S0 = shell(); close(true); if (S0 && S0.missions) S0.missions.open("m"); return; }   /* AOG-MISSIONS-V1 */
       var v = VIBES.filter(function (x) { return x.id === b.getAttribute("data-vibe"); })[0]; if (v) choose(v);
     });
     box.addEventListener("keydown", function (e) { if (e.key === "Escape") { e.stopPropagation(); close(); } });
@@ -101,7 +105,12 @@
       '<ul id="qsList">' + VIBES.map(function (v) {
         return '<li><button type="button" data-vibe="' + v.id + '" aria-pressed="' + (picked === v.id ? "true" : "false") + '"' + (busy ? " disabled" : "") + ">" +
           "<b>" + esc(v.name[e]) + "</b><span>" + esc(v.say[e]) + "</span></button></li>"; }).join("") + "</ul>" +
-      '<p id="qsLine" role="status" aria-live="polite">' + (line ? esc(w(line)) : "") + "</p>";
+      '<p id="qsLine" role="status" aria-live="polite">' + (line ? esc(w(line)) : "") + "</p>" + msKey();
+  }
+  /* AOG-MISSIONS-V1: the missions, one tap from here (the Studio counts them; aog-missions.js opens on the tap) */
+  function msKey() {
+    var S = shell(), c = S && S.missions && S.missions.count ? S.missions.count() : null; if (!c) return "";
+    return '<button type="button" id="qsMs" aria-haspopup="dialog">' + esc(es() ? "Misiones · " + c.n + " de " + c.t : "Missions · " + c.n + " of " + c.t) + "</button>";
   }
   function open() {
     if (!busy && line !== "fail") line = "";
@@ -158,6 +167,7 @@
       })
       .then(function () {
         busy = false; pianoScale(v); say("on");
+        try { window.dispatchEvent(new CustomEvent("aog-studio-did", { detail: { what: "started" } })); } catch (e) {}   /* AOG-MISSIONS-V1 */
       }, function () {
         busy = false; S.wake(false); line = "fail"; open();
       });
