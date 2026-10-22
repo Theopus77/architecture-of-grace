@@ -246,6 +246,11 @@ every Learn step reach the end; the three kinds of help, practising one step, th
 color reader, symbols, Read aloud (never on its own) and the move card. Do not push while it fails; add a
 check for anything new the hands can do.
 
+Calm on a phone (Jimmy, 2026-10-22: "is it the ceiling in presentation, structure …?" then "DO as you please";
+AOG-CUBE-CALM-V1): the turn buttons and settings wait in one drawer (closed on a phone and iPad, open on a computer,
+open by itself on The moves); Learn's card shows the path of all 14 steps as dots; on a phone the lesson bar says the
+steps and the card does not say them again; Meet the cube has a hands-on list that ticks each way the hands move it.
+
 ## Skateboarding (Jimmy, 2026-10-11: "a history of skateboarding curriculum … k12 and adult … how to do tricks, grinds … from a science perspective")
 
 - The course is `_work/skt` (id `skt`, 18 units in six bands: K–2 … 11–12 and **Adult**, the first course with an
