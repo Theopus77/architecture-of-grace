@@ -63,11 +63,11 @@
       did: ["you changed a level on the Mixing Desk.", "cambiaste un volumen en la mesa de mezclas."],
       why: ["When one part is a little lower, the others have room to be heard. Mixing is making space.", "Cuando una parte baja un poco, las otras tienen espacio para oírse. Mezclar es hacer espacio."] },
     { id: "shared", can: ["I can send my song to a friend.", "Puedo enviar mi canción a un amigo."],
-      how: ["Press ▶ Listen back, then Share it.", "Pulsa ▶ Escúchala y luego Compártela."],
+      how: ["Press ▶ Listen back, then ✉ Send to a friend.", "Pulsa ▶ Escúchala y luego ✉ Enviar a un amigo."],
       did: ["you sent your song to a friend.", "enviaste tu canción a un amigo."],
       why: ["A friend hears your song with fresh ears. The part they hum back is the part that works.", "Un amigo oye tu canción con oídos nuevos. La parte que tararea después es la que funciona."] },
     { id: "remixopened", can: ["I can open a friend's beat and add to it.", "Puedo abrir el ritmo de un amigo y añadirle algo."],
-      how: ["Open a beat a friend sent you, then add a layer of your own.", "Abre un ritmo que te envió un amigo y añádele una capa tuya."],
+      how: ["Open a beat link a friend sent you, then add a layer of your own.", "Abre el enlace de un ritmo que te envió un amigo y añádele una capa tuya."],
       did: ["you opened a friend's beat to add to it.", "abriste el ritmo de un amigo para añadirle algo."],
       why: ["Remixing is how music grows. You keep what works and add your own voice.", "Remezclar es como crece la música. Te quedas con lo que funciona y añades tu voz."] }
   ];
