@@ -8,7 +8,8 @@
  * not run on this file. Forget the bump and returning visitors keep the stale
  * page from their cache.
  */
-const CACHE = 'aog-cache-2026.10.22.m7557'   // MISSIONS, REMIX CHALLENGES AND WHY IT WORKS (aog-missions.js, the-studio.html, aog-recorder.js, aog-song.js, aog-micbooth.js, aog-listenback.js, aog-quickstart.js) (previous: m7556)
+const CACHE = 'aog-cache-2026.10.22.m7558'   // RUNAWAY: CHECK THE PADS ARE IN E BEFORE THE CHORDS; NO C#m? D-FLAT + MINOR IN ANY CHORD (song-runaway.html) (previous: m7557)
+// const CACHE = 'aog-cache-2026.10.22.m7557'   // MISSIONS, REMIX CHALLENGES AND WHY IT WORKS (aog-missions.js, the-studio.html, aog-recorder.js, aog-song.js, aog-micbooth.js, aog-listenback.js, aog-quickstart.js) (previous: m7556)
 // const CACHE = 'aog-cache-2026.10.22.m7556'   // ✉ SEND TO A FRIEND: THE SONG AS A SMALL FILE, THE BEAT AS A LINK (aog-share.js, aog-listenback.js, music-pads.html, the-studio.html) (previous: m7555)
 // const CACHE = 'aog-cache-2026.10.22.m7555'   // TWO MORE DRUM KITS: 1960S BRITISH, MUFFLED; THE 1970S GIANT ROOM (aog-drumkit.js, music-pads.html, music-kit.html, audio/drums/brit60, giant70) (previous: m7554)
 // const CACHE = 'aog-cache-2026.10.22.m7554'   // TWO MORE DRUM KITS: THRASH METAL, TIGHT; THE CRUNCHY BEAT MACHINE (aog-drumkit.js, music-pads.html, music-kit.html, audio/drums/thrash, crunch) (previous: m7553)
