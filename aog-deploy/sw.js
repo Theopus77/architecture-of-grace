@@ -8,7 +8,9 @@
  * not run on this file. Forget the bump and returning visitors keep the stale
  * page from their cache.
  */
-const CACHE = 'aog-cache-2026.10.22.m7552'   // SLOW LISTENING: LOOP A PHRASE, SLOW IT DOWN, HEAR ONE PART, SEE THE NOTES SOUNDING NOW; THE SONG LESSONS' MELODY STEPS LINK TO IT (slow-listening.html, AOG-SLOW-LISTEN-V1, AOG-SONG-MELODY-EAR-V1) (previous: m7551)
+const CACHE = 'aog-cache-2026.10.22.m7553'   // SONG LESSONS (BAD MOON RISING, SHOES CARS AND SOFT DRINKS, DAY ONE) AND SLOW LISTENING GO LIVE (AOG-SONG-BADMOON-V1, AOG-SONG-SHOES-V1, AOG-SONG-DAYONE-V1, AOG-SLOW-LISTEN-V1) (previous: m7549 on main)
+// const CACHE = 'aog-cache-2026.10.22.m7549'   // 🎤 SING OR RAP: THE MIC BOOTH, FOUR SOUNDS, ON MY TRACK (aog-micbooth.js, the-studio.html, music-studio.html) (previous: m7548)
+// const CACHE = 'aog-cache-2026.10.22.m7552'   // SLOW LISTENING: LOOP A PHRASE, SLOW IT DOWN, HEAR ONE PART, SEE THE NOTES SOUNDING NOW; THE SONG LESSONS' MELODY STEPS LINK TO IT (slow-listening.html, AOG-SLOW-LISTEN-V1, AOG-SONG-MELODY-EAR-V1) (previous: m7551)
 // const CACHE = 'aog-cache-2026.10.22.m7551'   // LEARN A SONG: DAY ONE, POST-ROCK IN LAYERS (song-day-one.html, /day-one, AOG-SONG-DAYONE-V1) (previous: m7550)
 // const CACHE = 'aog-cache-2026.10.22.m7550'   // LEARN A SONG: SHOES, CARS AND SOFT DRINKS, A HIP-HOP BEAT IN LAYERS (song-shoes-cars-and-soft-drinks.html, AOG-SONG-SHOES-V1) (previous: m7549)
 // const CACHE = 'aog-cache-2026.10.22.m7549'   // LEARN A SONG: BAD MOON RISING, BUILT IN THE STUDIO (song-bad-moon-rising.html, /bad-moon-rising, AOG-SONG-BADMOON-V1) (previous: m7548)
