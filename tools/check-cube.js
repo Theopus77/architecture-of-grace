@@ -123,6 +123,16 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
     ok(dimMid > 20 && await dimNow() === 0, `${name}: while a row turns the rest steps back (${dimMid} stickers), and comes back after`);
     ok(await hist(p) === 1 && await view() === home, `${name}: dragging a row turns it, and the view stays put`);
     await p.tap("#stUndo"); await p.waitForTimeout(700); ok(await hist(p) === 0, `${name}: Undo on the cube takes it back`);
+    /* AOG-CUBE-SETTLE-V1: a quick short flick finishes the turn; the same short distance, slow and held, does not */
+    for (const [gap, hold, want] of [[12, 0, 1], [140, 220, 0]]) {
+      await p.evaluate(() => scrollTo(0, 0));
+      const s2 = await p.evaluate(() => { const C = AOGCube, c = AOGCubeLab.cube, i = c.P.findIndex(q => C.eqV(c.pos(q), [1, 0, 1])); const r = document.querySelector(`.face[data-i="${i}"][data-f="F"] i`).getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.y + r.height / 2, w: r.width }; });
+      const step = Math.max(4, s2.w * .07), h0 = await hist(p);
+      await p.tp("touchStart", [[s2.x, s2.y]]); for (let k = 1; k <= 3; k++) { await p.tp("touchMove", [[s2.x, s2.y - k * step]]); await p.waitForTimeout(gap); }
+      if (hold) await p.waitForTimeout(hold); await p.tp("touchEnd", []); await p.waitForTimeout(700);
+      ok(await hist(p) - h0 === want, `${name}: a short ${want ? "quick flick finishes the turn" : "slow drag, held, goes back"} (${await hist(p) - h0} move)`);
+      if (want) { await p.tap("#stUndo"); await p.waitForTimeout(700); }
+    }
     /* the steering wheel: a finger on a middle square, circling it */
     let wheels = 0;
     for (const [dir, face] of [[[0, 0, 1], "F"], [[0, 1, 0], "U"], [[1, 0, 0], "R"]]) for (const sg of [1, -1]) {
@@ -144,6 +154,12 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
       await p.tp("touchEnd", []); await p.waitForTimeout(600);
       ok(await screenCube(p) === want, `${name}: two fingers swiped ${dx ? "left" : "up"} turn the whole cube (${mv})`);
     }
+    /* AOG-CUBE-GOALPIC-V1: each step shows what the cube looks like when it is done (colored stickers on its two sides) */
+    const pics = await p.evaluate(() => { const out = []; for (const i of [2, 3, 4, 5, 6, 7, 8, 11, 12, 13]) {
+      document.querySelector(`#lessonRow [data-lesson="${i}"]`).click();
+      const g = [...document.querySelectorAll("#panel .goalpic .gp")].map(x => [...x.children].filter(s => s.style.background && !/154, 161, 170/.test(s.style.background)).length); out.push(g.join("+")); }
+      document.querySelector('#lessonRow [data-lesson="0"]').click(); return out.join(" "); });
+    ok(pics === "5+3 9+5 9+7 5+7 9+7 9+8 9+9 9+7 9+7 9+9", `${name}: each step shows its goal, the finished pieces in color (${pics})`);
     /* AOG-CUBE-CALM-V1: Meet the cube's hands-on list ticked each way the hands just moved it */
     const G = await p.evaluate(() => JSON.parse(localStorage.getItem("aog.cube.v1")).gest || {});
     ok(G.row && G.look && G.wheel && G.two, `${name}: Meet the cube ticks each way the hands moved it (${Object.keys(G).join(", ")})`);

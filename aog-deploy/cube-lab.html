@@ -205,6 +205,12 @@ header { display:flex; flex-wrap:wrap; justify-content:space-between; align-item
 .path span.now { width:.9rem; height:.9rem; background:var(--steel); box-shadow:0 0 0 2px var(--card), 0 0 0 4px var(--steel); margin:0 .2rem; }
 .path span.gap { width:.5rem; border:0; }
 .allsteps { display:none; }
+.goalpic { margin:.1rem 0 .8rem; }
+.goalpic .lk { margin:0 0 .35rem; font-weight:600; color:var(--muted); }
+.goalpic .gp-row { display:flex; gap:1.2rem; align-items:flex-start; }
+.goalpic .gp-row > div { display:flex; flex-direction:column; align-items:center; gap:.3rem; font-size:.9rem; color:var(--muted); }
+.goalpic .gp { display:grid; grid-template-columns:repeat(3,26px); gap:2px; padding:3px; background:#14161a; border-radius:7px; }
+.goalpic .gp span { width:26px; height:26px; border-radius:4px; display:block; }
 @media (max-width:899px){ body.has-lessonbar #panel ol.steps { display:none; } body.has-lessonbar .allsteps { display:block; margin:.2rem 0 .7rem; }
   .allsteps summary { cursor:pointer; min-height:44px; display:flex; align-items:center; font-weight:600; color:var(--muted); } .allsteps ol { padding-left:1.4rem; margin:.2rem 0; } }
 .tryit { list-style:none; padding:0; margin:.35rem 0 .7rem; display:grid; gap:.45rem; }
@@ -512,6 +518,7 @@ const T={
   gWheel:["Draw a circle around a middle square to turn that side","Dibuja un círculo alrededor de un cuadro del medio para girar ese lado"],
   gTwo:["Swipe with two fingers to turn the whole cube","Desliza dos dedos para girar todo el cubo"],
   gDone:["You can do them all. Tap Front to bring the cube home.","Ya puedes hacerlas todas. Toca Frente para traer el cubo de vuelta."],
+  goalPicH:["When this step is done:","Cuando termines este paso:"],
   levelH:["How much help","Cuánta ayuda"], lvEvery:["Every move","Cada movimiento"], lvHint:["A hint","Una pista"], lvOwn:["On my own","Yo solo"],
   showMove:["Show me the move","Muéstrame el movimiento"], giveHint:["Give me a hint","Dame una pista"],
   ownLine:["You lead. Tap Give me a hint any time.","Tú guías. Toca Dame una pista cuando quieras."],
@@ -1235,6 +1242,19 @@ function algBox(a, k){
     <button type="button" class="btn" data-alg="${k}" data-how="one">${esc(t("one"))}</button></div></div>`;
 }
 let algAt={k:null,i:0};
+/* AOG-CUBE-GOALPIC-V1 (2026-10-22) — Jimmy: "Next pass go" (the goal, shown first). Each step shows what the cube looks
+   like when it is done: the side the step builds (the bottom for the white steps, the top for the yellow) and the front,
+   with the pieces finished so far in color and the rest grey. */
+function goalPic(l){
+  const key=l.method==="faster" ? L2.STAGES2[l.stage] : C.STAGES[l.stage];
+  const rank={cross:1, corners:2, middle:3, ycross:4, yface:5, ycorners:6, done:7, f2l:3, oll:5, pll:7}[key]; if(!rank) return "";
+  const c=new C.Cube(), has=(p,x) => Object.values(p.cols).includes(x);
+  const lit=(p, col) => p.kind===1 ? true : has(p,"W") ? rank>=(p.kind===2 ? 1 : 2) : !has(p,"Y") ? rank>=3
+    : p.kind===2 ? rank>=(col==="Y" ? 4 : 7) : rank>=(col==="Y" ? 5 : 6);
+  const side=f => `<div><div class="gp">${C.facelets(f).map(([pos,dir]) => { const p=c.P.find(q => C.eqV(c.pos(q), pos)), col=c.colorAt(pos,dir), on=lit(p, col);
+      return `<span style="background:${COL[on ? disp(col) : "?"]}"></span>`; }).join("")}</div><span>${esc(tx(T.sideName[f]).replace(/^./,x=>x.toUpperCase()))}</span></div>`;
+  return `<div class="goalpic" aria-hidden="true"><p class="lk">${esc(t("goalPicH"))}</p><div class="gp-row">${side(rank<=3 ? "D" : "U")}${side("F")}</div></div>`;
+}
 function learnHtml(){
   const i=S.lesson, l=L[i];
   const nDone=L.filter((_,j) => S.done[j]).length;
@@ -1242,7 +1262,7 @@ function learnHtml(){
   const items=l.steps.map((s,k)=>`<li class="${k===(S.learnStep||0)?"now":""}">${esc(tx(s))}</li>`).join("");
   let h=`<p class="kicker">${esc(t("step"))} ${i+1} ${esc(t("of"))} ${L.length}</p>
     <p class="path" role="img" aria-label="${esc(t("pathL",{d:nDone, n:L.length}))}">${path}</p><h2>${esc(tx(l.t))}</h2>
-    <p class="goal"><strong>${esc(t("goalW"))}:</strong> ${esc(tx(l.goal))}</p>
+    <p class="goal"><strong>${esc(t("goalW"))}:</strong> ${esc(tx(l.goal))}</p>${l.stage!==undefined ? goalPic(l) : ""}
     <ol class="steps">${items}</ol><details class="allsteps"><summary>${esc(t("allSteps",{n:l.steps.length}))}</summary><ol>${items}</ol></details>`;
   if(l.id==="meet"){   /* the hands learn each way to move it, and each one ticks when done */
     const coarse=matchMedia("(pointer:coarse)").matches, G=S.gest||{}, keys=["row","look","wheel"].concat(coarse?["two"]:[]);
@@ -1807,6 +1827,7 @@ function onMove(e){
       const [sx,sy]=stageXY(e.clientX, e.clientY), na=nearArrow(sx, sy);
       if(na && na.d<Math.max(60, size*1.2)) T2.th=-T2.qs*(Math.PI/2)*((na.s-T2.s0)/(T2.len*.8));
     } else T2.th=(dx*T2.ux+dy*T2.uy)/T2.pxPerRad;
+    const now=performance.now(); if(T2.tPrev!=null && now>T2.tPrev){ T2.v=.6*(T2.v||0)+.4*((T2.th-T2.thPrev)/(now-T2.tPrev)); } T2.thPrev=T2.th; T2.tPrev=now;
     render({a:T2.a, set:T2.set, th:T2.th}); }
 }
 function moveTwo(){
@@ -1837,7 +1858,14 @@ function endDrag(e){
   if(d.mode==="look"){ render(); if(painting) $("lookRow").innerHTML=lookRowHtml(), wireSide(); else gesture("look"); return; }                               /* shading and the arrow, once the hand lets go */
   if(d.mode!=="turn") return;
   /* a short, clear drag is enough: past about 12° the row finishes the quarter turn in that direction */
-  const T2=d.turn, raw=T2.th/(Math.PI/2), quarters=Math.abs(T2.th)<0.21 ? 0 : Math.sign(raw)*(T2.wheel ? 1 : Math.max(1, Math.round(Math.abs(raw)))),   /* a wheel turn is one quarter, the way the finger went */ from=T2.th, to=quarters*Math.PI/2, t0=performance.now(), dur=SPEED[S.speed]?140:0;
+  /* AOG-CUBE-SETTLE-V1 (2026-10-22) — Jimmy: "Next pass go" (turns that glide and settle). A quick flick finishes the turn
+     the way it was going even before 12°; the row then slows into place like a real cube's click, taking longer the
+     farther it has to go, with a settle of about 3° (never on No motion). */
+  const T2=d.turn, raw=T2.th/(Math.PI/2), lateV=T2.tPrev!=null && performance.now()-T2.tPrev<90 ? (T2.v||0) : 0,
+    flick=!T2.wheel && Math.abs(T2.th)>=0.05 && Math.abs(T2.th)<0.21 && Math.abs(lateV)>0.0035 && Math.sign(lateV)===Math.sign(T2.th),
+    quarters=(Math.abs(T2.th)<0.21 && !flick) ? 0 : Math.sign(raw)*(T2.wheel ? 1 : Math.max(1, Math.round(Math.abs(raw)))),   /* a wheel turn is one quarter, the way the finger went */
+    from=T2.th, to=quarters*Math.PI/2, t0=performance.now(), slow=S.speed==="slow" ? 1.6 : 1,
+    dur=SPEED[S.speed] ? Math.round(slow*Math.min(300, Math.max(110, 110+220*Math.abs(to-from)/(Math.PI/2)))) : 0;
   busy=true;
   const finish=() => {
     busy=false; turnFocus=null;
@@ -1860,7 +1888,8 @@ function endDrag(e){
     render(); pump();
   };
   if(!dur){ finish(); return; }
-  const frame=now => { const k=Math.min(1,(now-t0)/dur); if(k<1){ render({a:T2.a, set:T2.set, th:from+(to-from)*k}); requestAnimationFrame(frame); } else finish(); };
+  const settle=k => { const c1=0.9, c3=c1+1; return 1+c3*Math.pow(k-1,3)+c1*Math.pow(k-1,2); };   /* eases out, a touch past, then home */
+  const frame=now => { const k=Math.min(1,(now-t0)/dur); if(k<1){ render({a:T2.a, set:T2.set, th:from+(to-from)*settle(k)}); requestAnimationFrame(frame); } else finish(); };
   requestAnimationFrame(frame);
 }
 stage.addEventListener("pointerup", endDrag);
