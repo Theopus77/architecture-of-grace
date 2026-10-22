@@ -510,8 +510,15 @@ main.sh-main { grid-area:room; min-width:0; margin:0; }
      opened on its own address comes here as ?at=/music-piano.html#lessons (its head script). The frame opens that exact
      address once, so a lesson, a take or a locker link still lands, and the address bar goes back to /the-studio#room. */
   var AT = null;
+  /* AOG-SHARE-V1 (2026-10-22): a beat a friend sent (/the-studio?beat=…): read once, and the address bar goes back to
+     /the-studio#pads, so a reload never loads it over what was made since. aog-share.js cleans it and opens it (below). */
+  var BEAT = null;
   try {
-    var at = new URLSearchParams(location.search).get("at");
+    var bq = new URLSearchParams(location.search).get("beat");
+    if (bq !== null) { BEAT = bq.slice(0, 20000); history.replaceState(null, "", location.pathname + "#pads"); }
+  } catch (e) { BEAT = null; }
+  try {
+    var at = BEAT !== null ? null : new URLSearchParams(location.search).get("at");
     if (at) {
       var u = new URL(at, location.href);
       for (var i = 0; i < ROOMS.length; i++) if (u.origin === location.origin && u.pathname === "/" + ROOMS[i].file) AT = { id: ROOMS[i].id, url: u.pathname + u.search + u.hash };
@@ -519,6 +526,7 @@ main.sh-main { grid-area:room; min-width:0; margin:0; }
     }
   } catch (e) { AT = null; }
   function first() {
+    if (BEAT !== null) return "pads";   /* AOG-SHARE-V1 */
     if (AT) return AT.id;
     var h = (location.hash || "").slice(1); if (room(h)) return h;
     try { var s = localStorage.getItem(KEY); if (room(s)) return s; } catch (e) {}
@@ -1229,6 +1237,14 @@ main.sh-main { grid-area:room; min-width:0; margin:0; }
   window.addEventListener("resize", size);
   go(first(), false);
   size(); refresh();
+  /* AOG-SHARE-V1: a beat link: aog-share.js (fetched only for it) cleans the beat, sets the song's tempo and key, loads it into
+     the Drum Machine and puts its loop on My Track; one line says what to do. Nothing plays until a key is pressed. */
+  if (BEAT !== null) {
+    var shs = D.createElement("script"); shs.src = "/aog-share.js";
+    shs.onload = function () { if (window.AOGShare) AOGShare.arrive(BEAT, window.AOGStudioShell); };
+    shs.onerror = function () { say("fail"); };
+    D.head.appendChild(shs);
+  }
   /* AOG-STUDIO-APP-V1: Back leaves the Studio; EN | ES works the site's own language switch (in the hidden bar) */
   window.addEventListener("popstate", function () { if (steps > 0) steps--; });
   D.getElementById("shBack").addEventListener("click", function () {

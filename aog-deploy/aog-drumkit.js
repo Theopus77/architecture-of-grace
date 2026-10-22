@@ -299,7 +299,20 @@
     ch: ["HAT", [1, 2, 2], "Hi-hat", "Charles"], oh: ["OPEN", [1, 2, 2], "Open hi-hat", "Charles abierto"],
     clap: ["CLAP", [2, 2, 2], "Hand claps", "Palmas", { look: "small" }], tom: ["LOWTOM", [1, 2, 2], "Low tom", "Tom grave"],
     rim: ["RIM", [1, 2, 2], "Cross-stick", "Aro cruzado", { look: "small" }], bell: ["TAMB", [2, 2, 2], "Tambourine", "Pandereta", { look: "small" }] }));
-  IDS.push("OR", "ME", "SB", "BP", "GS", "MT", "DS", "PK", "PO", "JG", "RG", "TR", "TH", "BM");
+  /* BR · 1960s British, muffled, and GR · the 1970s giant room (kits_more3.py; Virtuosity Drums, CC0): BR's drums damped
+     the way a towel on the drums did it, dark and squeezed, a loose hi-hat and a tambourine; GR through the room
+     microphone into a giant room made here and squeezed hard, two big toms, the ride (bell on an accent) and a long crash */
+  KITS.BR = K("drums", "brit60", "1960s British, muffled", "Británico de los 60, apagado", DK({
+    kick: ["KICK", [1, 2, 2], "Kick (muffled)", "Bombo (apagado)"], snare: ["SNARE", [1, 2, 2], "Snare (a towel on it)", "Caja (con una toalla encima)"],
+    ch: ["HAT", [1, 2, 2], "Hi-hat", "Charles"], oh: ["LOOSE", [1, 2, 2], "Loose hi-hat (half open)", "Charles suelto (medio abierto)"],
+    clap: ["TAMB", [2, 2, 2], "Tambourine", "Pandereta", { look: "small" }], tom: ["TOM", [1, 2, 2], "Tom (muffled)", "Tom (apagado)"],
+    rim: ["FLOOR", [1, 2, 2], "Floor tom (muffled)", "Tom de piso (apagado)"], bell: ["CRASH", [1, 2, 2], "Crash", "Crash"] }));
+  KITS.GR = K("drums", "giant70", "1970s giant room", "Sala gigante de los 70", DK({
+    kick: ["KICK", [1, 2, 2], "Kick (open, in a giant room)", "Bombo (abierto, en una sala gigante)"], snare: ["SNARE", [1, 2, 2], "Snare (a booming room)", "Caja (con una sala que retumba)"],
+    ch: ["HAT", [1, 2, 2], "Hi-hat", "Charles"], oh: ["OPEN", [1, 2, 2], "Open hi-hat", "Charles abierto"],
+    clap: ["TOM", [1, 2, 2], "Big tom", "Tom grande"], tom: ["FLOOR", [1, 2, 2], "Floor tom", "Tom de piso"],
+    rim: ["RIDE", [1, 2, 2], "Ride (its bell on an accent)", "Ride (la campana con acento)"], bell: ["CRASH", [1, 2, 2], "Crash", "Crash"] }));
+  IDS.push("OR", "ME", "SB", "BP", "GS", "MT", "DS", "PK", "PO", "JG", "RG", "TR", "TH", "BM", "BR", "GR");
   var LAYERS = ["s", "m", "h"];
   function made(b, id) { var k = KITS[b], p = k && k.pads[id]; return !!(p && p.made); }
 
@@ -479,7 +492,31 @@
       map: { kick: [2,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0], snare: [0,0,0,0,2,0,0,0,0,0,0,0,0,2,0,0], clap: [0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0],
              ch: [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0] },
       parts: [{ len: 16, map: { kick: [2,0,0,0,0,0,1,0,0,1,0,1,0,0,0,0], snare: [0,0,0,0,2,0,0,0,0,0,0,0,0,2,0,0], clap: [0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0],
-        ch: [1,0,1,0,1,0,1,0,1,0,1,0,0,0,0,0], tom: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1] } }] }
+        ch: [1,0,1,0,1,0,1,0,1,0,1,0,0,0,0,0], tom: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1] } }] },
+    /* BR · the 1960s British beat: a beat-group drive with the tambourine on 2 and 4, a swinging shuffle, and a fill
+       round the muffled toms in its second bar */
+    { id: "brit60beat", en: "1960s beat group", es: "Grupo beat de los 60", kit: "BR", bpm: 138, swing: 0.50, hand: 1, grp: "rock",
+      map: { kick: [2,0,0,0,0,0,0,0,2,0,1,0,0,0,0,0], snare: [0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0], ch: [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0],
+             clap: [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0] } },
+    { id: "brit60shuffle", en: "Swinging 60s shuffle", es: "Shuffle de los 60", kit: "BR", bpm: 112, swing: 0.67, hand: 1, grp: "pop",
+      map: { kick: [2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0], snare: [0,0,0,0,2,0,0,3,0,0,0,0,2,0,0,0], ch: [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0],
+             clap: [0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0] } },
+    { id: "brit60fill", en: "Muffled toms, with a fill", es: "Toms apagados, con redoble", kit: "BR", bpm: 96, swing: 0.50, hand: 1, grp: "rock",
+      map: { kick: [2,0,0,0,0,0,1,0,2,0,0,0,0,0,0,0], snare: [0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0], oh: [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0] },
+      parts: [{ len: 16, map: { kick: [2,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0], snare: [0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0], oh: [1,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0],
+        tom: [0,0,0,0,0,0,0,0,2,1,1,1,0,0,0,0], rim: [0,0,0,0,0,0,0,0,0,0,0,0,2,1,1,1] } }] },
+    /* GR · the 1970s giant room: a slow, heavy half-time, a riff groove that leans back, and a big fill round the toms */
+    { id: "giant70stomp", en: "Giant-room half-time", es: "Medio tiempo en una sala gigante", kit: "GR", bpm: 76, swing: 0.50, hand: 1, grp: "rock",
+      map: { kick: [2,0,0,1,0,0,0,0,0,0,2,0,0,0,0,0], snare: [0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0], ch: [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0],
+             bell: [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
+    { id: "giant70riff", en: "Heavy 70s riff groove", es: "Groove pesado de los 70", kit: "GR", bpm: 96, swing: 0.58, hand: 1, grp: "rock",
+      map: { kick: [2,0,0,1,0,0,1,0,2,0,0,0,0,0,1,0], snare: [0,0,0,0,2,0,0,0,0,0,0,3,2,0,0,0], rim: [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0],
+             bell: [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
+    { id: "giant70fill", en: "Big fill round the toms", es: "Gran redoble por los toms", kit: "GR", bpm: 88, swing: 0.50, hand: 1, grp: "rock",
+      map: { kick: [2,0,0,0,0,0,1,0,2,0,0,0,0,0,0,0], snare: [0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0], ch: [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0],
+             bell: [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] },
+      parts: [{ len: 16, map: { kick: [2,0,0,0,0,0,1,0,2,0,0,0,2,0,0,0], snare: [0,0,0,0,2,0,0,0,2,1,1,1,0,0,0,0], ch: [1,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0],
+        clap: [0,0,0,0,0,0,0,0,0,0,0,0,2,1,0,0], tom: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1] } }] }
   );
   /* a beat in parts: part 2 goes in the next part of the song, and the track plays them in turn. Put my beat back
      returns that part and the track as they were; a one-part beat picked afterwards stops the track again. */
