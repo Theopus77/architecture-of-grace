@@ -549,7 +549,10 @@
           .observe(H, { attributes: true, attributeFilter: ["data-theme", "class", "data-accent"] });
         /* content a page renders later (the Inbox's cards, a pulled list) is checked too */
         var mt = 0;
-        new MutationObserver(function () { clearTimeout(mt); mt = setTimeout(markCards, 60); })
+        /* AOG-CARD-NOW-V1 (2026-10-22): at once, before the next paint. 60 ms later let a light button added to the
+           masthead ("← All activities" on the math activities) show cream on white for a moment. Only added content is
+           watched and markCards only stamps attributes, so this never calls itself. */
+        new MutationObserver(function () { clearTimeout(mt); markCards(); })
           .observe(hero, { childList: true, subtree: true });
       } catch (e) {}
     }
