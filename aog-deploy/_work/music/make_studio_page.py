@@ -254,6 +254,18 @@ main.sh-main { grid-area:room; min-width:0; margin:0; }
   main.sh-main { padding:0; }
   .sh-room { border:0; border-radius:0; box-shadow:none; }
 }
+/* AOG-MICBOOTH-V1 (2026-10-22): 🎤 Sing or rap, in the top line of every room, one tap from anywhere in the Studio. It opens the
+   booth (aog-micbooth.js, fetched on the first tap). A red key, the colour of a recording lamp, so it is easy to find. */
+.sh-mic { flex:0 0 auto; min-height:44px; display:inline-flex; align-items:center; justify-content:center; gap:.35rem; padding:0 1rem; border-radius:22px;
+  border:1px solid #3b0d05; background:linear-gradient(#b4472d, #8e321f); color:#fff6f2; font:800 .95rem/1.1 Inter, var(--sans); white-space:nowrap;
+  cursor:pointer; touch-action:manipulation; -webkit-tap-highlight-color:transparent; box-shadow:inset 0 1px 0 rgba(255,220,200,.22), 0 2px 0 var(--st-edge); }
+.sh-mic:active { transform:translateY(1px); box-shadow:inset 0 1px 0 rgba(255,220,200,.12), 0 1px 0 var(--st-edge); }
+.sh-mic:focus-visible { outline:3px solid var(--st-gold); outline-offset:2px; }
+.sh-mic .ic { font-size:1.1rem; line-height:1; }
+@media (max-width:699px) {
+  .sh-top h1 { font-size:1rem !important; }
+  .sh-mic { padding:0 .6rem 0 .5rem; gap:.25rem; font-size:.82rem; line-height:1.05; white-space:normal; text-align:left; max-width:6.4rem; }
+}
 @media print { .sh-doors, .mt, .sh-room, .sh-bridge, .sh-lang, .sh-back { display:none; } }
 """
 JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></script>
@@ -804,6 +816,32 @@ JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></scrip
         TP.back = id === "studio" ? (cur !== "studio" ? cur : TP.back) : ""; cur = id; try { history.replaceState(null, "", "#" + id); } catch (e) {} paint(); }
       size(); }
   };
+  /* AOG-MICBOOTH-V1 (2026-10-22) — Jimmy wants the Studio to be a showstopper: hearing yourself on your own beat. 🎤 Sing or
+     rap opens the booth over the room you are in (aog-micbooth.js, fetched on the first tap; nothing is loaded before). The
+     booth records on the Studio's own sound, with My Track put together by the desk out of sight (as ♫ Play along), and hands
+     the take to the desk's track 8. Here: the desk, ready (desk()); the room quiet while the booth is open (quiet()). */
+  function deskReady() {
+    var f = deskFrame();
+    return new Promise(function (ok, no) {
+      var t0 = Date.now(), k = setInterval(function () {
+        var w = null; try { w = f.contentWindow; } catch (e) {}
+        if (w && w.__aogStudio && w.__aogStudio.voicePut && w.document.readyState === "complete" && !w.__aogStudio.S.decoding && (!f.__new || Date.now() - f.__new > 700)) { clearInterval(k); f.__new = 0; ok(w); }
+        else if (Date.now() - t0 > 20000) { clearInterval(k); no(new Error("no desk")); }
+      }, 120);
+    });
+  }
+  window.AOGStudioShell.desk = deskReady;
+  window.AOGStudioShell.refresh = function () { refresh(); };
+  window.AOGStudioShell.quiet = function (on) {
+    if (on) { alongStop(); var w = deskOf(); if (w && w.__aogStudio.PLAY.on) w.__aogStudio.stop(); }
+    hush(fr, !!on); if (!on) paintTp();
+  };
+  var micLoad = null;
+  D.getElementById("shMic").addEventListener("click", function () {
+    var b = this;
+    if (!micLoad) micLoad = new Promise(function (ok, no) { var s = D.createElement("script"); s.src = "/aog-micbooth.js"; s.onload = ok; s.onerror = function () { micLoad = null; no(); }; D.head.appendChild(s); });
+    micLoad.then(function () { if (window.AOGMicBooth) AOGMicBooth.open(b); }, function () { say("fail"); });
+  });
   D.addEventListener("click", function (e) {
     var a = e.target.closest && e.target.closest("a[data-room]"); if (!a || e.metaKey || e.ctrlKey || e.shiftKey || e.button) return;
     e.preventDefault(); go(a.getAttribute("data-room"), true);
@@ -889,6 +927,8 @@ def build():
            '  <p class="sh-tag">%s</p>' % sp(("Play · Record · Listen · Mix · Send it out", "Toca · Graba · Escucha · Mezcla · Compártela")),
            # AOG-STUDIO-SUPREME-V1: the meter bridge (AOG-ROOM-VU-V1: the room's small VU meters and its room sound)
            '  <div class="sh-bridge"><span class="tp-vu" id="tpVu"></span></div>',
+           # AOG-MICBOOTH-V1: 🎤 Sing or rap (the booth, aog-micbooth.js, fetched on the first tap)
+           '  <button type="button" class="sh-mic" id="shMic" aria-haspopup="dialog"><span class="ic" aria-hidden="true">🎤</span>%s</button>' % sp(("Sing or rap", "Canta o rapea")),
            '  <div class="sh-lang" role="group" aria-label="Language · Idioma"><button type="button" data-lang="en" lang="en">EN</button><button type="button" data-lang="es" lang="es">ES</button></div>',
            "</div>",
            '<nav class="sh-doors" aria-label="Rooms · Salas"><ul>']
