@@ -4,7 +4,9 @@
      stay in the Piano, which still plays under your fingers; the line says what is happening;
    · going to the Guitar and the Bass keeps it playing; ■ Stop stops it and its sound rests;
    · ● Record stops it first (Record plays My Track itself); ▶ Listen too; nothing to play says so;
-   · English and Spanish, an iPhone and an iPad; no page errors. Port 9493. */
+   · English and Spanish, an iPhone and an iPad; no page errors;
+   · a phone on its side (the room on the whole screen, the Studio's bar hidden): the Piano's and the Guitar's whole-screen
+     menu and the Drum Machine's big pads have ♫ Play along too, and it is the Studio's: on, then ■ Stop. Port 9493. */
 const pw=require(require("child_process").execSync("npm root -g").toString().trim()+"/playwright");
 const path=require("path"), ROOT=path.resolve(__dirname,"../../../aog-deploy"), PORT=9493, srv=require("../srv.js")(PORT);
 let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails++; };
@@ -46,6 +48,33 @@ const W=ms=>new Promise(r=>setTimeout(r,ms));
     ok(!s.on, `${nm}: ● Record stops it first (Record plays My Track itself, after four clicks)`);
     await p.click("#tpRec"); await W(1500);
     ok(errs.length===0, `${nm}: no page errors `+errs.slice(0,3).join(" | "));
+    await ctx.close();
+  }
+  /* a phone on its side */
+  { const ctx=await b.newContext({viewport:{width:844,height:390}, isMobile:true, hasTouch:true, serviceWorkers:"block"}); const errs=[];
+    ctx.on("page", x=>x.on("pageerror", e=>errs.push(e.message)));
+    await ctx.route(/^https?:\/\/(?!localhost)/, r=>r.abort());
+    await ctx.route(/\/the-studio(\?[^#]*)?$/, r=>r.fulfill({path:path.join(ROOT,"the-studio.html"), contentType:"text/html"}));
+    const p=await ctx.newPage(); await p.goto(`http://localhost:${PORT}/the-studio#pads`); await W(4500);
+    const f=p.frames().find(x=>/music-pads/.test(x.url()));
+    await f.waitForFunction(()=>document.querySelectorAll("#grpSel option").length>3, null, {timeout:30000});
+    await f.evaluate(async()=>{ startBeat("boombap"); document.getElementById("bounceBtn").click(); for(let i=0;i<120 && document.getElementById("bounceAct").hidden;i++) await new Promise(r=>setTimeout(r,250)); document.getElementById("bStudio").click(); });
+    await W(2500);
+    const A=()=>p.evaluate(()=>AOGStudioShell.along());
+    for(const [room, file, open, sel] of [["piano","music-piano",()=>{ const m=document.getElementById("bpMore"); if(m && document.getElementById("bpDrawer").hidden) m.click(); },"#bpDrawer .aog-along"],
+                                          ["guitar","music-guitar",()=>{ const m=document.getElementById("pvMore"); if(m && document.getElementById("pvDrawer").hidden) m.click(); },"#pvDrawer .aog-along"],
+                                          ["pads","music-pads",()=>{ const b=document.getElementById("bigBtn"); if(b && !document.body.classList.contains("aog-play")) b.click(); },"#padView .aog-along"]]){
+      await p.evaluate(i=>AOGStudioShell.go(i), room); await W(4000);
+      const rf=p.frames().find(x=>new RegExp(file).test(x.url()));
+      await rf.evaluate(open); await W(500);
+      const b0=await rf.evaluate(s=>{ const b=document.querySelector(s); return b ? {t:b.textContent, vis:!!b.offsetParent} : null; }, sel);
+      await rf.evaluate(s=>document.querySelector(s).click(), sel); await W(6000);
+      const on=(await A()).on, b1=await rf.evaluate(s=>{ const b=document.querySelector(s); return {t:b.textContent, p:b.getAttribute("aria-pressed")}; }, sel);
+      await rf.evaluate(s=>document.querySelector(s).click(), sel); await W(800);
+      const off=!(await A()).on;
+      ok(b0 && b0.vis && /Play along/.test(b0.t) && on && b1.p==="true" && /■/.test(b1.t) && off, `a phone on its side, ${room}: ♫ Play along in its whole-screen view plays My Track, then ■ Stop: ${JSON.stringify([b0, b1, on, off])}`);
+    }
+    ok(errs.length===0, "a phone on its side: no page errors "+errs.slice(0,3).join(" | "));
     await ctx.close();
   }
   console.log(fails? fails+" FAILED":"ALL PASS"); await b.close(); srv.close(); process.exit(fails?1:0);
