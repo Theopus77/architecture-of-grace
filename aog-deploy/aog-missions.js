@@ -140,7 +140,7 @@
     "#msDone .ms-k:focus-visible,#msSheet button:focus-visible{outline:3px solid #b9822a;outline-offset:2px}",
     /* in the Studio: a slip laid at the top of the room's window (the keys you play are lower down) */
     "main.sh-main{position:relative}",
-    "main.sh-main>#msDone{position:absolute;z-index:6;top:10px;left:50%;transform:translateX(-50%);width:max-content;max-width:calc(100% - 24px)}",
+    "main.sh-main>#msDone{position:absolute;z-index:4;top:10px;left:50%;transform:translateX(-50%);width:max-content;max-width:calc(100% - 24px)}",
     ".mb-in #msDone{grid-column:1/-1;max-width:none}",
     /* the line at the end of ▶ Listen back (dark, like the view) */
     "#msLb{margin:2px 0 0;padding-top:10px;border-top:1px solid rgba(255,236,200,.14);font:500 .98rem/1.35 Inter,system-ui,sans-serif;color:#efe2c6;text-align:inherit}",
