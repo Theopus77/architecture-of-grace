@@ -124,11 +124,11 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
     ok(await hist(p) === 1 && await view() === home, `${name}: dragging a row turns it, and the view stays put`);
     await p.tap("#stUndo"); await p.waitForTimeout(700); ok(await hist(p) === 0, `${name}: Undo on the cube takes it back`);
     /* AOG-CUBE-SETTLE-V1: a quick short flick finishes the turn; the same short distance, slow and held, does not */
-    for (const [gap, hold, want] of [[4, 0, 1], [140, 220, 0]]) {
+    for (const [gap, hold, want] of [[0, 0, 1], [140, 220, 0]]) {
       await p.evaluate(() => scrollTo(0, 0));
       const s2 = await p.evaluate(() => { const C = AOGCube, c = AOGCubeLab.cube, i = c.P.findIndex(q => C.eqV(c.pos(q), [1, 0, 1])); const r = document.querySelector(`.face[data-i="${i}"][data-f="F"] i`).getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.y + r.height / 2, w: r.width }; });
-      const step = Math.max(5, s2.w * .1), h0 = await hist(p);
-      await p.tp("touchStart", [[s2.x, s2.y]]); for (let k = 1; k <= 3; k++) { await p.tp("touchMove", [[s2.x, s2.y - k * step]]); await p.waitForTimeout(gap); }
+      const h0 = await hist(p), at = (gap ? [.06, .18, .34] : [.1, .34]).map(f => f * s2.w);   /* about 10° in all: short of the 12° a slow drag needs */
+      await p.tp("touchStart", [[s2.x, s2.y]]); for (const d of at) { await p.tp("touchMove", [[s2.x, s2.y - d]]); if (gap) await p.waitForTimeout(gap); }
       if (hold) await p.waitForTimeout(hold); await p.tp("touchEnd", []); await p.waitForTimeout(700);
       ok(await hist(p) - h0 === want, `${name}: a short ${want ? "quick flick finishes the turn" : "slow drag, held, goes back"} (${await hist(p) - h0} move)`);
       if (want) { await p.tap("#stUndo"); await p.waitForTimeout(700); }

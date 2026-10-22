@@ -1743,7 +1743,8 @@ stage.addEventListener("pointerdown", e => {
   stage.classList.add("grabbing");
 });
 let moveEv=null, moveRAF=0;
-stage.addEventListener("pointermove", e => { moveEv=e; if(!moveRAF) moveRAF=requestAnimationFrame(() => { moveRAF=0; if(moveEv) onMove(moveEv); }); });
+stage.addEventListener("pointermove", e => { if(drag && e.pointerId===drag.id){ const tr=drag.trail||(drag.trail=[]); tr.push([performance.now(), e.clientX, e.clientY]); if(tr.length>10) tr.shift(); }   /* the finger's last moments, for a flick */
+  moveEv=e; if(!moveRAF) moveRAF=requestAnimationFrame(() => { moveRAF=0; if(moveEv) onMove(moveEv); }); });
 function onMove(e){
   if(drag && drag.mode==="two"){ moveTwo(); return; }
   if(!drag || e.pointerId!==drag.id) return;
@@ -1827,7 +1828,6 @@ function onMove(e){
       const [sx,sy]=stageXY(e.clientX, e.clientY), na=nearArrow(sx, sy);
       if(na && na.d<Math.max(60, size*1.2)) T2.th=-T2.qs*(Math.PI/2)*((na.s-T2.s0)/(T2.len*.8));
     } else T2.th=(dx*T2.ux+dy*T2.uy)/T2.pxPerRad;
-    const now=performance.now(); if(T2.tPrev!=null && now>T2.tPrev){ const vi=(T2.th-T2.thPrev)/(now-T2.tPrev); T2.v=T2.v==null ? vi : .5*T2.v+.5*vi; } T2.thPrev=T2.th; T2.tPrev=now;
     render({a:T2.a, set:T2.set, th:T2.th}); }
 }
 function moveTwo(){
@@ -1861,8 +1861,10 @@ function endDrag(e){
   /* AOG-CUBE-SETTLE-V1 (2026-10-22) — Jimmy: "Next pass go" (turns that glide and settle). A quick flick finishes the turn
      the way it was going even before 12°; the row then slows into place like a real cube's click, taking longer the
      farther it has to go, with a settle of about 3° (never on No motion). */
-  const T2=d.turn, raw=T2.th/(Math.PI/2), lateV=T2.tPrev!=null && performance.now()-T2.tPrev<90 ? (T2.v||0) : 0,
-    flick=!T2.wheel && Math.abs(T2.th)>=0.05 && Math.abs(T2.th)<0.21 && Math.abs(lateV)>0.002 && Math.sign(lateV)===Math.sign(T2.th),
+  const tr=d.trail||[], last=tr[tr.length-1], first=last && tr.find(q => q[0]>=last[0]-80),
+    speed=(last && first && last[0]>first[0] && performance.now()-last[0]<90) ? Math.hypot(last[1]-first[1], last[2]-first[2])/(last[0]-first[0]) : 0;   /* px/ms */
+  const T2=d.turn, raw=T2.th/(Math.PI/2),
+    flick=!T2.wheel && Math.abs(T2.th)>=0.05 && Math.abs(T2.th)<0.21 && speed>0.25,   /* a careful drag moves under 0.2 px/ms; a flick 0.5 and up */
     quarters=(Math.abs(T2.th)<0.21 && !flick) ? 0 : Math.sign(raw)*(T2.wheel ? 1 : Math.max(1, Math.round(Math.abs(raw)))),   /* a wheel turn is one quarter, the way the finger went */
     from=T2.th, to=quarters*Math.PI/2, t0=performance.now(), slow=S.speed==="slow" ? 1.6 : 1,
     dur=SPEED[S.speed] ? Math.round(slow*Math.min(300, Math.max(110, 110+220*Math.abs(to-from)/(Math.PI/2)))) : 0;
