@@ -51,6 +51,21 @@ const sheetView = p => p.evaluate(() => { const s = document.getElementById("msS
     items: s.querySelectorAll(".ms-it").length, ticked: s.querySelectorAll(".ms-it.ms-done").length, why: [...s.querySelectorAll(".ms-why")].every(x => /Why it works:|Por qué funciona:/.test(x.textContent) && x.textContent.length > 30),
     tabs: [...s.querySelectorAll(".ms-tab")].map(x => x.textContent + (x.getAttribute("aria-pressed") === "true" ? "*" : "")), h: s.querySelector("h2").textContent,
     next: (s.querySelector(".ms-next .ms-can") || {}).textContent || "", line: s.querySelector("#msLine").textContent, focus: document.activeElement && (document.activeElement.id || document.activeElement.getAttribute("data-tab")) }; });
+/* Listen back: its mission line, and whether every key and the cover are on the screen */
+const lbFit = p => p.evaluate(() => { const d = document.getElementById("lbDlg"), l = document.getElementById("msLb"), vis = e => !!(e && e.getClientRects().length && getComputedStyle(e).display !== "none");
+  const inV = e => { const r = e.getBoundingClientRect(); return r.top >= -1 && r.left >= -1 && r.bottom <= innerHeight + 1 && r.right <= innerWidth + 1; };
+  const bt = [...d.querySelectorAll("button")].filter(vis);
+  return { line: vis(l) && !l.hidden ? __txt(l) : "", inDlg: !!(l && d.contains(l)), allIn: bt.every(inV) && inV(document.getElementById("lbCover")), side: d.scrollWidth <= d.clientWidth + 1 }; });
+/* a Drum Machine loop on My Track (as studio/listenback.js does) */
+async function loop(p) {
+  await p.evaluate(() => AOGStudioShell.go("pads")); await W(3500);
+  const f = p.frames().find(x => /music-pads/.test(x.url()));
+  await f.waitForFunction(() => document.querySelectorAll("#grpSel option").length > 3, null, { timeout: 30000 });
+  await f.evaluate(async () => { startBeat("boombap"); document.getElementById("bounceBtn").click();
+    for (let i = 0; i < 160; i++) { const r = await AOGHandoff.list(AOGHandoff.INBOX); if (r && r.items && r.items.some(x => x.from === "pads" && x.sec > 0)) break; await new Promise(r => setTimeout(r, 250)); }
+    try { stopBeat && stopBeat(); } catch (e) {} });
+  await W(1500);
+}
 /* My Track's sheet (a phone, an upright iPad), opened when it is not open; a wide screen has My Track in the bar */
 async function sheetMT(p) { if (await p.evaluate(() => !!document.getElementById("mtOpen").offsetParent && !document.getElementById("mt").classList.contains("mt-open"))) { await p.click("#mtOpen"); await W(250); } }
 (async () => {
@@ -113,18 +128,16 @@ async function sheetMT(p) { if (await p.evaluate(() => !!document.getElementById
     await p.fill("#lbArtist", "DJ Theo"); await p.fill("#lbName", "Noche"); await p.click("#lbDone");
     await p.waitForFunction(() => AOGListenBack.state().on, null, { timeout: 30000 }).catch(() => {});
     await W(500); s = await ST(p);
-    const lbv = await p.evaluate(() => { const l = document.getElementById("msLb"), d = document.getElementById("lbDlg"); const r = l && l.getBoundingClientRect();
-      return l ? { t: __txt(l), vis: !l.hidden && r.height > 10, inDlg: d.contains(l), side: d.scrollWidth <= d.clientWidth + 1 } : null; });
-    ok(s.done.indexOf("listenedback") >= 0 && lbv && lbv.vis && lbv.inDlg && lbv.side && /Misión cumplida: escuchaste tu canción\./.test(lbv.t) && /Siguiente:/.test(lbv.t),
-      `iPhone: ▶ Listen back ticks its mission, and says so as its own last line: ${JSON.stringify(lbv)}`);
-    pc = await p.evaluate(`(${PROBE})()`);
-    ok(!pc.length, `iPhone: Listen back with its mission line reads (${pc.length} ${JSON.stringify(pc.slice(0, 2))})`);
+    let lbv = await lbFit(p);
+    ok(s.done.indexOf("listenedback") >= 0 && lbv.line === "" && lbv.allIn && lbv.side && !(await slipView(p)),
+      `iPhone 390×664 (Safari's bars): ▶ Listen back ticks its mission; there is no room for another line, so Listen back stays as it was and fits: ${JSON.stringify(lbv)}`);
     await p.evaluate(() => { navigator.share = async () => {}; navigator.canShare = () => true; });
     await p.click("#lbShare");
     await p.waitForFunction(() => AOGMissions.state().done.indexOf("shared") >= 0, null, { timeout: 30000 }).catch(() => {});
-    s = await ST(p);
-    ok(s.done.indexOf("shared") >= 0 && /enviaste tu canción a un amigo/.test(s.lb), `iPhone: Share it ticks "I can send my song to a friend": "${s.lb}"`);
-    await p.click("#lbBack"); await W(400);
+    ok((await done(p)).indexOf("shared") >= 0, `iPhone: Share it ticks "I can send my song to a friend"`);
+    await p.click("#lbBack"); await W(500);
+    v = await slipView(p);
+    ok(v && /Misión cumplida: enviaste tu canción a un amigo\./.test(v.text) && v.host === "tp-say", `iPhone: back in the Studio, the line says the mission done in Listen back: "${v && v.text}"`);
     /* 6 · the event: from the Studio's window, from a room's, a bad name; a lick from the room's recorder */
     await p.evaluate(() => window.dispatchEvent(new CustomEvent("aog-studio-did", { detail: { what: "nonsense" } })));
     await p.evaluate(() => window.dispatchEvent(new CustomEvent("aog-studio-did", { detail: { what: "remixopened" } }))); await W(300);
@@ -256,8 +269,28 @@ async function sheetMT(p) { if (await p.evaluate(() => !!document.getElementById
     await p.click('[data-tab="c"]'); await W(200); await p.click('[data-ch="lockin"]'); await W(200);
     sv = await sheetView(p);
     ok(sv.line === "Nice work. Challenge done: Kick and bass together." && sv.min >= 44 && sv.inside, `iPhone, English: a challenge ticked: "${sv.line}"`);
-    const pc = await p.evaluate(`(${PROBE})()`);
+    let pc = await p.evaluate(`(${PROBE})()`);
     ok(!pc.length, `iPhone, light: the challenges read (${pc.length} ${JSON.stringify(pc.slice(0, 2))})`);
+    await p.keyboard.press("Escape"); await W(200);
+    /* ▶ Listen back with room for its last line: the mission done, then (opened again) the next one */
+    await loop(p);
+    await sheetMT(p); await p.click("#mtLb");
+    await p.waitForFunction(() => { const d = document.getElementById("lbDlg"); return d && d.open; }, null, { timeout: 15000 });
+    await p.fill("#lbArtist", "Ava"); await p.click("#lbDone");
+    await p.waitForFunction(() => AOGListenBack.state().on, null, { timeout: 30000 }).catch(() => {});
+    await W(600);
+    let lbv = await lbFit(p);
+    ok(lbv.inDlg && lbv.allIn && lbv.side && /^✓ Mission done: you listened back to your song\. Next: Press ✦ Start a song and pick a vibe\.$/.test(lbv.line),
+      `iPhone 390×844: ▶ Listen back ticks its mission and says so as its own last line, all on the screen: ${JSON.stringify(lbv)}`);
+    pc = await p.evaluate(`(${PROBE})()`);
+    ok(!pc.length, `iPhone: Listen back with its mission line reads (${pc.length} ${JSON.stringify(pc.slice(0, 2))})`);
+    await p.click("#lbBack"); await W(400);
+    ok(!(await slipView(p)), "iPhone: said once: back in the Studio, the line is not said again");
+    await sheetMT(p); await p.click("#mtLb");
+    await p.waitForFunction(() => window.AOGListenBack && AOGListenBack.state().open, null, { timeout: 15000 }); await W(800);
+    lbv = await lbFit(p);
+    ok(/^Next mission: Press ✦ Start a song and pick a vibe\.$/.test(lbv.line) && lbv.allIn, `iPhone: opened again, its last line is the next mission: "${lbv.line}"`);
+    await p.keyboard.press("Escape"); await W(300);
     ok(errs.length === 0, "iPhone 390×844: no page errors " + errs.slice(0, 3).join(" | "));
     await ctx.close();
   }

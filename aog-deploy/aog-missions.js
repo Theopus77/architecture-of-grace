@@ -143,7 +143,7 @@
     "#msLb[hidden]{display:none}",
     "#msLb b{color:#f3d48e;font-weight:800}",
     "#msLb .ms-tk{color:#7fd6a0;font-weight:800}",
-    "@media (orientation:landscape) and (max-height:519px){#msLb{display:none}}",
+    "@media (max-width:699px) and (max-height:760px),(orientation:landscape) and (max-height:519px){#msLb{display:none}}",
     /* the sheet: paper, like ✦ Start a song's */
     "#msSheet{position:fixed;z-index:46;top:calc(max(0px,env(safe-area-inset-top)) + 58px);left:50%;transform:translateX(-50%);width:min(42rem,calc(100vw - 24px));",
     "  max-height:calc(100dvh - 72px);overflow:auto;overscroll-behavior:contain;box-sizing:border-box;padding:.9rem 1rem 1rem;border-radius:8px;",
@@ -195,6 +195,7 @@
     var mb = D.getElementById("aogMicBooth"); if (mb && !mb.hidden) return "booth";
     return "bar";
   }
+  function lbRoom() { try { return !matchMedia("(max-width:699px) and (max-height:760px), (orientation:landscape) and (max-height:519px)").matches; } catch (e) { return true; } }
   function nextText() { var n = next(); return n ? L(n.how) : w("allDone", { t: MISSIONS.length }); }
   function slipBuild() {
     if (slip) return slip;
@@ -222,6 +223,13 @@
     var m = cur.kind === "done" ? byId(cur.id) : null, h = where();
     if (h === "lb") {
       if (slip) slip.hidden = true;
+      /* a phone in Safari (short) or on its side: Listen back has no room for another line. A mission done there is said
+         just above the desk once Listen back closes. */
+      if (!lbRoom()) {
+        var dl = D.getElementById("lbDlg"), q = D.getElementById("msLb"); if (q) q.hidden = true;
+        if (m && dl && !dl.__msWait) { dl.__msWait = 1; dl.addEventListener("close", function () { dl.__msWait = 0; if (cur && cur.kind === "done") paintSlip(); }, { once: true }); }
+        return;
+      }
       var p = lbLine(); if (!p) return;
       p.innerHTML = m ? '<span class="ms-tk" aria-hidden="true">✓ </span><b>' + esc(w("doneP")) + "</b> " + esc(L(m.did)) + " " + esc(w("nextP")) + " " + esc(nextText())
         : (next() ? "<b>" + esc(w("nextM")) + "</b> " + esc(nextText()) : esc(nextText()));
