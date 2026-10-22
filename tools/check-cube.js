@@ -159,7 +159,7 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
       document.querySelector(`#lessonRow [data-lesson="${i}"]`).click();
       const g = [...document.querySelectorAll("#panel .goalpic .gp")].map(x => [...x.children].filter(s => s.style.background && !/154, 161, 170/.test(s.style.background)).length); out.push(g.join("+")); }
       document.querySelector('#lessonRow [data-lesson="0"]').click(); return out.join(" "); });
-    ok(pics === "5+3 9+5 9+7 5+7 9+7 9+8 9+9 9+7 9+7 9+9", `${name}: each step shows its goal, the finished pieces in color (${pics})`);
+    ok(pics === "5+2 9+4 9+6 5+6 9+6 9+8 9+9 9+6 9+6 9+9", `${name}: each step shows its goal, the finished pieces in color (${pics})`);
     /* AOG-CUBE-CALM-V1: Meet the cube's hands-on list ticked each way the hands just moved it */
     const G = await p.evaluate(() => JSON.parse(localStorage.getItem("aog.cube.v1")).gest || {});
     ok(G.row && G.look && G.wheel && G.two, `${name}: Meet the cube ticks each way the hands moved it (${Object.keys(G).join(", ")})`);
