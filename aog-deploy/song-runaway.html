@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><style id="aog-first-paint">/* AOG-ONE-PAINT-V1 — the page shows once, fully built (aog-sketch.js adds .aog-ready), never longer than ~1 s. */html{background:#F7F2E6}html[data-theme="dark"]{background:#0A1E33}html:not(.aog-ready) body{visibility:hidden;animation:aogOnePaint 0s linear 1.1s forwards}@keyframes aogOnePaint{to{visibility:visible}}@media print{html:not(.aog-ready) body{visibility:visible;animation:none}}</style><script>/* AOG-LIGHT-START-V1 */(function(){var h=document.documentElement;if(!h.getAttribute("data-theme"))h.setAttribute("data-theme","light");})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="aog-sync-config.js"></script><!-- same-origin and optional; a 404 changes nothing -->
+<script>(function(){var t="light";try{if(localStorage.getItem("aog.theme.lightstart.v1")==="1"&&localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);if(t==="dark")document.documentElement.classList.add("dark");})();</script>
+<title>Make Runaway: the Instrumental — Architecture of Grace</title>
+<meta name="description" content="Make the Runaway instrumental in the Recording Studio, one part at a time: the chords, the famous high note, the drums, the bass and the strings.">
+<link rel="canonical" href="https://architectureofgrace.com/runaway">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Architecture of Grace">
+<meta property="og:title" content="Make Runaway: the Instrumental — Architecture of Grace">
+<meta property="og:description" content="Make the Runaway instrumental in the Recording Studio, one part at a time.">
+<meta property="og:url" content="https://architectureofgrace.com/runaway">
+<meta property="og:image" content="https://architectureofgrace.com/og-science.png?v=1">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#0A1E33">
+<meta name="robots" content="noindex">
+<!-- AOG-SONG-RUNAWAY-V1 (2026-10-22) — Jimmy: "I would love to teach [my son] how to play RUNAWAY FROM KAYNE WEST in our
+     recording studio … Make a lesson out of it." Then: "recreate the song in an instrumental version! Taught in the
+     simplest manner!", and "Please copy this song … It is a music lesson … for my son".
+     Six takes, one room each, recorded on top of each other (♫ Play My Track while I record, AOG-OVERDUB-V1), so every
+     part lands on its bar by itself. A round is 8 bars. Take 1 is a guide click (Rim on every beat, Drum Machine), muted
+     in the Mix at the end: the Piano has no click of its own. Take 2 is the piano riff, measured from Jimmy's own vinyl
+     (2026-10-22, 87 BPM, E major): one note every 2 beats; round 1 the high E (E6) 16 times; then E E E e | D# D# D# d# |
+     C# C# C# c# | A A G# E, each group 2 bars (high notes E6 D#6 C#6, A5 G#5; low notes an octave down). Then chords
+     (1 1 5 5 6 6 4 4, Hold), drums and bass from bar 17, strings from bar 33. The drum grid is measured from three more clips of the record (87.0 BPM,
+     16ths swung ~58 %): snare 5 13, hats on the eighths, kick 1 3 11 (confirmed on a full recording). The bass under them
+     walks E, D#, …, A, two bars each. No lyrics. The page makes no sound; the Studio plays it. Ticks stay on this
+     device (aog.song.runaway.v1).
+     AOG-SONG-RUNAWAY-ME-V1 (Jimmy: "make sure [his] name is front in center. His favorite number is 29 … favorite
+     color is red"): a Make it yours box (name, favorite number, favorite color) and a cover that prints first, the name
+     big and centered. No name lives in this file: it comes from the box or the link (?for=Name&no=7&color=blue), is
+     cleaned, and stays on the device. -->
+<style>
+:root{
+  --ground:#F5F1E8; --field:#FFFFFF; --field-2:#EFEAE0;
+  --ink:#1D2733; --ink-soft:#57626F;
+  --navy:#1B3A5F; --gold-deep:#7A5C1F;
+  --rule:rgba(29,39,51,.16); --rule-soft:rgba(29,39,51,.08);
+  --a:#8A4A1E; --a-wash:rgba(138,74,30,.10);
+  --hit:#1B3A5F; --hit-ink:#FFFFFF; --acc:#8A4A1E;
+  --ok:#2E6B4F; --focus:#B8893A;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#12161C; --field:#1A2029; --field-2:#222A34;
+    --ink:#E9EEF4; --ink-soft:#A3AFBC;
+    --navy:#9CC2E8; --gold-deep:#D6A852;
+    --rule:rgba(233,238,244,.18); --rule-soft:rgba(233,238,244,.09);
+    --a:#E8A86A; --a-wash:rgba(232,168,106,.12);
+    --hit:#9CC2E8; --hit-ink:#12161C; --acc:#E8A86A;
+    --ok:#79C79E; --focus:#D6A852;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#12161C; --field:#1A2029; --field-2:#222A34;
+  --ink:#E9EEF4; --ink-soft:#A3AFBC;
+  --navy:#9CC2E8; --gold-deep:#D6A852;
+  --rule:rgba(233,238,244,.18); --rule-soft:rgba(233,238,244,.09);
+  --a:#E8A86A; --a-wash:rgba(232,168,106,.12);
+  --hit:#9CC2E8; --hit-ink:#12161C; --acc:#E8A86A;
+  --ok:#79C79E; --focus:#D6A852;
+}
+*{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{margin:0; background:var(--ground); color:var(--ink);
+  font:400 1.06rem/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+.wrap{max-width:52rem; margin:0 auto; padding:0 16px 48px;}
+h1,h2,h3{margin:0; text-wrap:balance; font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif; font-weight:600;}
+.cmast{padding-top:22px;}
+.cmast .k{font-weight:700; font-size:.78rem; letter-spacing:.12em; text-transform:uppercase;}
+.cmast h1{font-size:2.1rem; line-height:1.15; margin:.1em 0 .3em;}
+.cdeck{max-width:62ch; margin:.4em 0;}
+.hubline{margin:.4em 0 0; font-size:.95rem;}
+.hubline a{color:inherit;}
+a{color:var(--navy);}
+.part{background:var(--field); border:1px solid var(--rule); border-radius:14px; padding:18px 18px 16px; margin:18px 0;}
+.part h2{font-size:1.45rem; margin-bottom:.35em;}
+.part .num{display:inline-block; min-width:1.9em; height:1.9em; line-height:1.9em; text-align:center; border-radius:50%;
+  background:var(--navy); color:var(--ground); font:700 1rem/1.9em -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; margin-right:.4em;}
+.part p{margin:.45em 0;}
+.room{display:inline-block; font-weight:700; color:var(--a);}
+ol.do{margin:.5em 0; padding-left:1.4em;}
+ol.do li{margin:.3em 0;}
+.why{background:var(--a-wash); border-left:4px solid var(--a); border-radius:8px; padding:10px 14px; margin:.8em 0;}
+.why b{color:var(--ink);}
+.go{display:flex; flex-wrap:wrap; gap:10px; margin:.8em 0 .2em;}
+.btn{display:inline-block; min-height:44px; padding:10px 16px; border-radius:10px; border:1px solid var(--navy);
+  background:var(--navy); color:var(--ground); font:700 1rem/1.4 inherit; text-decoration:none; cursor:pointer;}
+.btn.soft{background:transparent; color:var(--navy);}
+.st{color:var(--ok); font-weight:700; margin-left:.3em;}
+/* the keys */
+.keys{display:block; width:100%; max-width:420px; height:auto; margin:.6em 0;}
+.keys .w{fill:#FFFFFF; stroke:#1D2733; stroke-width:1.2;}
+.keys .b{fill:#1D2733;}
+.keys .lit{fill:#F2C46B;}
+.keys text{font:700 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; fill:#1D2733;}
+/* chords */
+.chords{display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin:.7em 0;}
+.chord{border:1px solid var(--rule); border-radius:10px; padding:10px 6px; text-align:center; background:var(--field-2);}
+.chord .pad{font-size:.85rem; color:var(--ink-soft);}
+.chord .nm{font:700 1.5rem/1.2 "Iowan Old Style",Palatino,Georgia,serif; color:var(--ink);}
+.chord .nt{font-size:.88rem; color:var(--ink);}
+.chord .nt b{color:var(--a);}
+/* the drum grid */
+.gridwrap{overflow-x:auto; -webkit-overflow-scrolling:touch; margin:.6em 0;}
+table.grid{border-collapse:separate; border-spacing:3px; min-width:560px;}
+table.grid th{font-size:.82rem; font-weight:700; text-align:left; padding-right:6px; white-space:nowrap; color:var(--ink);}
+table.grid td{width:28px; height:28px; border-radius:5px; background:var(--field-2); border:1px solid var(--rule-soft);
+  text-align:center; font-size:.8rem; font-weight:700; color:var(--ink-soft);}
+table.grid td.beat{border-left:2px solid var(--rule);}
+table.grid td.x{background:var(--hit); color:var(--hit-ink); border-color:var(--hit);}
+table.grid td.acc{background:var(--acc); color:var(--hit-ink); border-color:var(--acc);}
+table.grid tr.count td{background:transparent; border:0; color:var(--ink-soft); font-weight:600;}
+table.grid tr.count td.on{color:var(--ink); font-weight:800;}
+.legend{font-size:.9rem; color:var(--ink-soft);}
+/* the song map */
+.map{display:grid; gap:6px; margin:.7em 0;}
+.map div{display:grid; grid-template-columns:7.5em 1fr; gap:10px; padding:8px 10px; border-radius:8px; background:var(--field-2); border:1px solid var(--rule-soft);}
+.map b{color:var(--ink);}
+.map span{color:var(--ink);}
+/* answers */
+.ask{margin:.8em 0 .2em;}
+.ask label{display:block; font-weight:700; margin-bottom:4px;}
+.ask textarea{width:100%; min-height:3.6em; font:inherit; font-size:16px; padding:8px 10px; border-radius:8px;
+  border:1px solid var(--rule); background:var(--ground); color:var(--ink); resize:vertical;}
+.check{display:flex; gap:10px; align-items:flex-start; margin:.35em 0;}
+.check input{width:22px; height:22px; flex:0 0 auto; margin-top:2px;}
+.small{font-size:.92rem; color:var(--ink-soft);}
+footer.foot{margin-top:24px; font-size:.92rem; color:var(--ink-soft);}
+@media (max-width:520px){
+  .cmast h1{font-size:1.75rem;}
+  .chords{grid-template-columns:repeat(2,1fr);}
+  .map div{grid-template-columns:1fr; gap:2px;}
+}
+/* AOG-SONG-RUNAWAY-V1: the round plan and the tick boxes */
+table.plan{border-collapse:separate; border-spacing:3px; width:100%; max-width:30rem;}
+table.plan th{font-size:.9rem; text-align:left; font-weight:700; color:var(--ink); padding-right:6px;}
+table.plan thead th{text-align:center; font-weight:600; color:var(--ink-soft);}
+table.plan td{height:30px; border-radius:6px; background:var(--field-2); border:1px solid var(--rule-soft); text-align:center; color:var(--ink-soft);}
+table.plan td.on{background:var(--hit); border-color:var(--hit); color:var(--hit-ink); font-weight:700;}
+ul.ticks{list-style:none; margin:.6em 0; padding:0;}
+ul.ticks li{display:flex; gap:12px; align-items:flex-start; padding:9px 0; border-top:1px solid var(--rule-soft);}
+ul.ticks li:first-child{border-top:0;}
+ul.ticks input{width:24px; height:24px; flex:0 0 auto; margin:2px 0 0;}
+ul.ticks label{flex:1;}
+.take{display:inline-block; font-size:.85rem; font-weight:700; color:var(--ink-soft); margin-left:.2em;}
+.done-line{font-weight:700; color:var(--ok);}
+/* AOG-SONG-RUNAWAY-ME-V1: the learner's cover, in their color */
+:root{--me:#1B3A5F; --me-on:#FFFFFF; --me-ink:#1B3A5F;}
+:root[data-theme="dark"]{--me:#9CC2E8; --me-on:#12161C; --me-ink:#9CC2E8;}
+/* outlines, not fills: aog-grace.js turns dark fills white before printing, and outlines keep the color on paper */
+.part .num{background:transparent; color:var(--me-ink); box-shadow:inset 0 0 0 2px var(--me);}
+table.plan td.on{background:var(--field); border:2px solid var(--me); color:var(--me-ink);}
+.cover{text-align:center; background:var(--field); border:4px solid var(--me); border-radius:18px; padding:26px 16px 22px; margin:20px 0;}
+.cover .cv-k{font-weight:700; font-size:.85rem; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-soft);}
+.cover .cv-who{font:700 3.4rem/1.05 "Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; color:var(--me-ink); margin:.15em 0 .1em; overflow-wrap:anywhere;}
+.cover .cv-t{font-size:1.2rem; font-weight:600; color:var(--ink);}
+.cover .cv-no{display:inline-block; margin-top:12px; background:transparent; color:var(--me-ink); border:3px solid var(--me); border-radius:999px; padding:4px 18px; font-weight:800; font-size:1.1rem;}
+.cover .cv-no:empty{display:none;}
+.mefields{display:grid; grid-template-columns:repeat(3,1fr); gap:10px;}
+.mefields label{display:flex; flex-direction:column; gap:4px; font-weight:700; font-size:.95rem;}
+.mefields input,.mefields select{font:inherit; font-size:16px; min-height:44px; padding:8px 10px; border-radius:8px; border:1px solid var(--rule); background:var(--ground); color:var(--ink);}
+@media (max-width:520px){ .mefields{grid-template-columns:1fr;} .cover .cv-who{font-size:2.6rem;} }
+:root{--me-p:#1B3A5F; --me-p-on:#FFFFFF;}
+@media print{
+  /* on paper the learner's name gets a page of its own, in the middle; paper is always the light colors */
+  body.has-me header.cmast{display:none;}
+  body.has-me .cover{min-height:9in; display:flex; flex-direction:column; justify-content:center; align-items:center;
+    margin:0; padding:40px 16px; border:6px solid var(--me-p) !important; background:#FFFFFF !important; break-after:page; page-break-after:always;}
+  .cover .cv-k{color:#57626F !important; font-size:1rem;}
+  .cover .cv-who{font-size:6.5rem; color:var(--me-p) !important;}
+  .cover .cv-t{font-size:1.6rem; color:#1D2733 !important;}
+  .cover .cv-no{font-size:1.6rem; padding:6px 26px; margin-top:22px;}
+  .cover .cv-no,.part .num,table.plan td.on{color:var(--me-p) !important; border-color:var(--me-p) !important; -webkit-print-color-adjust:exact; print-color-adjust:exact;}
+  .part .num{box-shadow:inset 0 0 0 2px var(--me-p) !important;}
+}
+.no-screen{display:none;}
+@media print{
+  @page{size:Letter; margin:14mm;}
+  body{background:#fff; color:#000; font-size:11pt;}
+  .no-print{display:none !important;}
+  .part{break-inside:avoid; border-color:#999;}
+  table.grid td.x,table.grid td.acc,.keys .lit,.part .num{-webkit-print-color-adjust:exact; print-color-adjust:exact;}
+}
+</style>
+</head>
+<body>
+<script src="/aog-topbar.js"></script>
+<script src="/aog-grace.js" defer></script>
+<script src="/aog-song.js" defer></script>
+
+<div class="wrap">
+<header class="cmast">
+  <div class="k"><span data-en="The Recording Studio · Learn a song" data-es="El estudio de grabación · Aprende una canción">The Recording Studio · Learn a song</span></div>
+  <h1><span data-en="Make Runaway: the instrumental" data-es="Haz Runaway: la versión instrumental">Make Runaway: the instrumental</span></h1>
+  <p class="cdeck"><span data-en="The song with no voice, made by you. Five parts, one at a time. Tick each box as you go." data-es="La canción sin voz, hecha por ti. Cinco partes, una a la vez. Marca cada casilla al avanzar.">The song with no voice, made by you. Five parts, one at a time. Tick each box as you go.</span></p>
+  <p class="hubline no-print"><a href="/the-studio"><span data-en="← The Recording Studio" data-es="← El estudio de grabación">← The Recording Studio</span></a></p>
+</header>
+
+<section class="cover" id="cover" hidden aria-label="Cover">
+  <div class="cv-k"><span data-en="A song made by" data-es="Una canción hecha por">A song made by</span></div>
+  <div class="cv-who" id="cvWho"></div>
+  <div class="cv-t"><span data-en="Runaway · the instrumental" data-es="Runaway · la versión instrumental">Runaway · the instrumental</span></div>
+  <div class="cv-no" id="cvNo"></div>
+</section>
+
+<section class="part no-print" id="me">
+  <h2><span data-en="Make it yours" data-es="Hazla tuya">Make it yours</span></h2>
+  <div class="mefields">
+    <label><span data-en="Your name" data-es="Tu nombre">Your name</span><input id="meName" type="text" maxlength="24" autocomplete="off"></label>
+    <label><span data-en="Your favorite number" data-es="Tu número favorito">Your favorite number</span><input id="meNo" type="number" inputmode="numeric" min="1" max="999"></label>
+    <label><span data-en="Your favorite color" data-es="Tu color favorito">Your favorite color</span><select id="meColor">
+      <option value=""><span data-en="Pick one" data-es="Elige uno">Pick one</span></option><option value="red"><span data-en="Red" data-es="Rojo">Red</span></option><option value="blue"><span data-en="Blue" data-es="Azul">Blue</span></option><option value="green"><span data-en="Green" data-es="Verde">Green</span></option>
+      <option value="purple"><span data-en="Purple" data-es="Morado">Purple</span></option><option value="orange"><span data-en="Orange" data-es="Naranja">Orange</span></option><option value="gold"><span data-en="Gold" data-es="Dorado">Gold</span></option></select></label>
+  </div>
+  <p class="small"><span data-en="Your name goes big on the front when you print. It stays on this device." data-es="Tu nombre va en grande al frente cuando imprimes. Se queda en este dispositivo.">Your name goes big on the front when you print. It stays on this device.</span></p>
+</section>
+
+<section class="part" id="plan">
+  <h2><span class="num">0</span><span data-en="The plan: 5 rounds" data-es="El plan: 5 vueltas">The plan: 5 rounds</span></h2>
+
+<p><span data-en="A round is 8 bars: the piano riff, one time through. The song is 5 rounds. Each round, something new joins in." data-es="Una vuelta son 8 compases: el riff de piano, una vez. La canción tiene 5 vueltas. En cada vuelta entra algo nuevo.">A round is 8 bars: the piano riff, one time through. The song is 5 rounds. Each round, something new joins in.</span></p>
+
+<table class="plan"><thead><tr><th></th><th scope="col">1</th><th scope="col">2</th><th scope="col">3</th><th scope="col">4</th><th scope="col">5</th></tr></thead><tbody>
+<tr><th scope="row"><span data-en="Piano riff" data-es="Riff de piano">Piano riff</span></th><td class="on" aria-label="on">●</td><td class="on" aria-label="on">●</td><td class="on" aria-label="on">●</td><td class="on" aria-label="on">●</td><td class="on" aria-label="on">●</td></tr>
+<tr><th scope="row"><span data-en="Chords" data-es="Acordes">Chords</span></th><td aria-label="off"></td><td aria-label="off"></td><td class="on" aria-label="on">●</td><td class="on" aria-label="on">●</td><td class="on" aria-label="on">●</td></tr>
+<tr><th scope="row"><span data-en="Drums" data-es="Batería">Drums</span></th><td aria-label="off"></td><td aria-label="off"></td><td class="on" aria-label="on">●</td><td class="on" aria-label="on">●</td><td class="on" aria-label="on">●</td></tr>
+<tr><th scope="row"><span data-en="Bass" data-es="Bajo">Bass</span></th><td aria-label="off"></td><td aria-label="off"></td><td class="on" aria-label="on">●</td><td class="on" aria-label="on">●</td><td class="on" aria-label="on">●</td></tr>
+<tr><th scope="row"><span data-en="Strings" data-es="Cuerdas">Strings</span></th><td aria-label="off"></td><td aria-label="off"></td><td aria-label="off"></td><td aria-label="off"></td><td class="on" aria-label="on">●</td></tr>
+</tbody></table>
+
+<p class="small"><span data-en="Rounds 1 and 2 are the piano alone, like the record. A dot means that part plays." data-es="Las vueltas 1 y 2 son el piano solo, como en el disco. Un punto quiere decir que esa parte suena.">Rounds 1 and 2 are the piano alone, like the record. A dot means that part plays.</span></p>
+
+<p class="small"><span data-en="Keep the recording close. Listen to a part, then play it. Your ears are the best teacher." data-es="Ten la grabación cerca. Escucha una parte y luego tócala. Tus oídos son el mejor maestro.">Keep the recording close. Listen to a part, then play it. Your ears are the best teacher.</span></p>
+
+</section>
+
+<section class="part" id="set">
+  <h2><span class="num">1</span><span data-en="Set the song" data-es="Ajusta la canción">Set the song</span></h2>
+
+<p><span data-en="Runaway is slow (87 beats a minute) and its home note is E." data-es="Runaway es lenta (87 pulsos por minuto) y su nota casa es Mi.">Runaway is slow (87 beats a minute) and its home note is E.</span></p>
+
+<div class="go no-print"><button type="button" class="btn" id="setSong"><span data-en="Set the Studio to 87 · E major" data-es="Pon el estudio en 87 · Mi mayor">Set the Studio to 87 · E major</span></button><span class="st" id="setSt" role="status" aria-live="polite"></span></div>
+
+<ul class="ticks">
+<li><input type="checkbox" id="t1"><label for="t1"><span data-en="Press the button above. (On paper: in ♩ Song, set 87 and E · Major.)" data-es="Pulsa el botón de arriba. (En papel: en ♩ Canción, pon 87 y Mi · Mayor.)">Press the button above. (On paper: in ♩ Song, set 87 and E · Major.)</span></label></li>
+<li><input type="checkbox" id="t2"><label for="t2"><span data-en="Open the Studio. Tap My Track, then ♩ Song. Check it says ♫ Play My Track while I record: On." data-es="Abre el estudio. Toca Mi pista y luego ♩ Canción. Revisa que diga ♫ Tocar mi pista mientras grabo: Sí.">Open the Studio. Tap My Track, then ♩ Song. Check it says ♫ Play My Track while I record: On.</span></label></li>
+</ul>
+
+<p class="small"><span data-en="That switch is the secret: you hear what you already made while you record the next part, and every part lands in the right place." data-es="Ese interruptor es el secreto: oyes lo que ya hiciste mientras grabas la siguiente parte, y cada parte cae en su lugar.">That switch is the secret: you hear what you already made while you record the next part, and every part lands in the right place.</span></p>
+
+</section>
+
+<section class="part" id="click">
+  <h2><span class="num">2</span><span data-en="The guide click" data-es="El clic guía">The guide click</span></h2>
+  <p><span class="take"><span data-en="Drum Machine · all 5 rounds" data-es="Caja de ritmos · las 5 vueltas">Drum Machine · all 5 rounds</span></span></p>
+
+<p><span data-en="A steady tick that every part follows. Studios call it a click track. You turn it off at the end." data-es="Un tic parejo que siguen todas las partes. Los estudios lo llaman pista de clic. Al final lo apagas.">A steady tick that every part follows. Studios call it a click track. You turn it off at the end.</span></p>
+
+<p class="room"><a href="/drum-machine"><span data-en="Open the Drum Machine" data-es="Abre la caja de ritmos">Open the Drum Machine</span></a></p>
+
+<ul class="ticks">
+<li><input type="checkbox" id="t3"><label for="t3"><span data-en="Press Clear the loop. Tap Rim (pad 7) on steps 1, 5, 9 and 13: one tick each beat." data-es="Pulsa Borrar el bucle. Toca Aro (pad 7) en los pasos 1, 5, 9 y 13: un tic en cada pulso.">Press Clear the loop. Tap Rim (pad 7) on steps 1, 5, 9 and 13: one tick each beat.</span></label></li>
+<li><input type="checkbox" id="t4"><label for="t4"><span data-en="Press ▶ Play, then ● Record." data-es="Pulsa ▶ Tocar y luego ● Grabar.">Press ▶ Play, then ● Record.</span></label></li>
+<li><input type="checkbox" id="t5"><label for="t5"><span data-en="Let it tick for about 2 minutes: 40 bars." data-es="Déjalo sonar unos 2 minutos: 40 compases.">Let it tick for about 2 minutes: 40 bars.</span></label></li>
+<li><input type="checkbox" id="t6"><label for="t6"><span data-en="Press ■ Stop, then + Add to My Track." data-es="Pulsa ■ Parar y luego + Añadir a mi pista.">Press ■ Stop, then + Add to My Track.</span></label></li>
+</ul>
+
+</section>
+
+<section class="part" id="note">
+  <h2><span class="num">3</span><span data-en="The piano riff" data-es="El riff de piano">The piano riff</span></h2>
+  <p><span class="take"><span data-en="Piano · all 5 rounds" data-es="Piano · las 5 vueltas">Piano · all 5 rounds</span></span></p>
+
+<p><span data-en="One note every 2 beats. Count 1 2 3 4 and play on 1 and 3." data-es="Una nota cada 2 pulsos. Cuenta 1 2 3 4 y toca en el 1 y el 3.">One note every 2 beats. Count 1 2 3 4 and play on 1 and 3.</span></p>
+
+<svg class="keys" viewBox="0 0 280 120" role="img" aria-label="Piano keys. E is the white key just after the two black keys.">
+    <rect class="w" x="0" y="0" width="40" height="118"/><rect class="w" x="40" y="0" width="40" height="118"/>
+    <rect class="w lit" x="80" y="0" width="40" height="118"/><rect class="w" x="120" y="0" width="40" height="118"/>
+    <rect class="w" x="160" y="0" width="40" height="118"/><rect class="w" x="200" y="0" width="40" height="118"/>
+    <rect class="w" x="240" y="0" width="40" height="118"/>
+    <rect class="b" x="27" y="0" width="26" height="72"/><rect class="b" x="67" y="0" width="26" height="72"/>
+    <rect class="b" x="147" y="0" width="26" height="72"/><rect class="b" x="187" y="0" width="26" height="72"/><rect class="b" x="227" y="0" width="26" height="72"/>
+    <text x="14" y="108">C</text><text x="54" y="108">D</text><text x="94" y="108">E</text><text x="134" y="108">F</text>
+    <text x="174" y="108">G</text><text x="214" y="108">A</text><text x="254" y="108">B</text>
+  </svg>
+
+<p class="small"><span data-en="High E: the E two octaves above middle C. Low E: the E one octave below it." data-es="Mi agudo: el Mi dos octavas arriba del Do central. Mi grave: el Mi una octava más abajo.">High E: the E two octaves above middle C. Low E: the E one octave below it.</span></p>
+
+<p><b><span data-en="Round 1:" data-es="Vuelta 1:">Round 1:</span></b> <span data-en="the high E, 16 times." data-es="el Mi agudo, 16 veces.">the high E, 16 times.</span></p>
+
+<p><b><span data-en="Rounds 2–5:" data-es="Vueltas 2–5:">Rounds 2–5:</span></b> <span data-en="four groups of four notes. Each group is 2 bars." data-es="cuatro grupos de cuatro notas. Cada grupo dura 2 compases.">four groups of four notes. Each group is 2 bars.</span></p>
+
+<div class="chords">
+    <div class="chord"><div class="pad"><span data-en="Group 1" data-es="Grupo 1">Group 1</span></div><div class="nm">E E E</div><div class="nt"><span data-en="+ low E" data-es="+ Mi grave">+ low E</span></div></div>
+    <div class="chord"><div class="pad"><span data-en="Group 2" data-es="Grupo 2">Group 2</span></div><div class="nm">D♯ D♯ D♯</div><div class="nt"><span data-en="+ low D♯" data-es="+ Re♯ grave">+ low D♯</span></div></div>
+    <div class="chord"><div class="pad"><span data-en="Group 3" data-es="Grupo 3">Group 3</span></div><div class="nm">C♯ C♯ C♯</div><div class="nt"><span data-en="+ low C♯" data-es="+ Do♯ grave">+ low C♯</span></div></div>
+    <div class="chord"><div class="pad"><span data-en="Group 4" data-es="Grupo 4">Group 4</span></div><div class="nm">A A G♯</div><div class="nt"><span data-en="+ high E" data-es="+ Mi agudo">+ high E</span></div></div>
+  </div>
+
+<p class="small"><span data-en="The fourth note drops an octave, except in group 4: there it jumps back up to the high E. A and G♯ sit just below the high C♯." data-es="La cuarta nota baja una octava, menos en el grupo 4: ahí vuelve a subir al Mi agudo. La y Sol♯ están justo debajo del Do♯ agudo.">The fourth note drops an octave, except in group 4: there it jumps back up to the high E. A and G♯ sit just below the high C♯.</span></p>
+
+<p class="room"><a href="/piano"><span data-en="Open the Piano" data-es="Abre el piano">Open the Piano</span></a></p>
+
+<ul class="ticks">
+<li><input type="checkbox" id="t7"><label for="t7"><span data-en="Instrument: Grand piano. Practice slowly, one group at a time." data-es="Instrumento: Piano de cola. Practica despacio, un grupo a la vez.">Instrument: Grand piano. Practice slowly, one group at a time.</span></label></li>
+<li><input type="checkbox" id="t8"><label for="t8"><span data-en="Press ● Record. You hear 4 clicks, then your guide click." data-es="Pulsa ● Grabar. Oyes 4 clics y luego tu clic guía.">Press ● Record. You hear 4 clicks, then your guide click.</span></label></li>
+<li><input type="checkbox" id="t9"><label for="t9"><span data-en="Play on 1 and 3: round 1 all high E, then the four groups, again and again until the click ends." data-es="Toca en el 1 y el 3: la vuelta 1 todo Mi agudo, luego los cuatro grupos, una y otra vez hasta que termine el clic.">Play on 1 and 3: round 1 all high E, then the four groups, again and again until the click ends.</span></label></li>
+<li><input type="checkbox" id="t10"><label for="t10"><span data-en="Press ■ Stop, then + Add to My Track." data-es="Pulsa ■ Parar y luego + Añadir a mi pista.">Press ■ Stop, then + Add to My Track.</span></label></li>
+</ul>
+
+<p class="small"><span data-en="A note out of place? Record it again." data-es="¿Una nota fuera de lugar? Grábala otra vez.">A note out of place? Record it again.</span></p>
+
+</section>
+
+<section class="part" id="chords">
+  <h2><span class="num">4</span><span data-en="The chords" data-es="Los acordes">The chords</span></h2>
+  <p><span class="take"><span data-en="Piano · rounds 3–5" data-es="Piano · vueltas 3–5">Piano · rounds 3–5</span></span></p>
+
+<p><span data-en="Each chord lasts 2 bars, under one group of the riff." data-es="Cada acorde dura 2 compases, debajo de un grupo del riff.">Each chord lasts 2 bars, under one group of the riff.</span></p>
+
+<div class="chords">
+    <div class="chord"><div class="pad"><span data-en="Pads 1 1" data-es="Pads 1 1">Pads 1 1</span></div><div class="nm">E</div></div>
+    <div class="chord"><div class="pad"><span data-en="Pads 5 5" data-es="Pads 5 5">Pads 5 5</span></div><div class="nm">B</div></div>
+    <div class="chord"><div class="pad"><span data-en="Pads 6 6" data-es="Pads 6 6">Pads 6 6</span></div><div class="nm">C♯m</div></div>
+    <div class="chord"><div class="pad"><span data-en="Pads 4 4" data-es="Pads 4 4">Pads 4 4</span></div><div class="nm">A</div></div>
+  </div>
+
+<p class="room"><a href="/piano"><span data-en="In the Piano" data-es="En el piano">In the Piano</span></a></p>
+
+<ul class="ticks">
+<li><input type="checkbox" id="t11"><label for="t11"><span data-en="Press Clear, then Make my own. Tap pads 1, 1, 5, 5, 6, 6, 4, 4." data-es="Pulsa Borrar y luego Hacer el mío. Toca los pads 1, 1, 5, 5, 6, 6, 4, 4.">Press Clear, then Make my own. Tap pads 1, 1, 5, 5, 6, 6, 4, 4.</span></label></li>
+<li><input type="checkbox" id="t12"><label for="t12"><span data-en="How the chords play: Hold · one long chord. Press Play the chords." data-es="Cómo suenan los acordes: Mantener · un acorde largo. Pulsa Tocar los acordes.">How the chords play: Hold · one long chord. Press Play the chords.</span></label></li>
+<li><input type="checkbox" id="t13"><label for="t13"><span data-en="In ♩ Song, set My Track starts to From bar 17. That is round 3." data-es="En ♩ Canción, pon Mi pista empieza en Desde el compás 17. Es la vuelta 3.">In ♩ Song, set My Track starts to From bar 17. That is round 3.</span></label></li>
+<li><input type="checkbox" id="t14"><label for="t14"><span data-en="Press ● Record. Let the chords play until My Track ends." data-es="Pulsa ● Grabar. Deja sonar los acordes hasta que termine mi pista.">Press ● Record. Let the chords play until My Track ends.</span></label></li>
+<li><input type="checkbox" id="t15"><label for="t15"><span data-en="Press ■ Stop, then + Add to My Track." data-es="Pulsa ■ Parar y luego + Añadir a mi pista.">Press ■ Stop, then + Add to My Track.</span></label></li>
+</ul>
+
+</section>
+
+<section class="part" id="drums">
+  <h2><span class="num">5</span><span data-en="The drums" data-es="La batería">The drums</span></h2>
+  <p><span class="take"><span data-en="Drum Machine · rounds 3–5" data-es="Caja de ritmos · vueltas 3–5">Drum Machine · rounds 3–5</span></span></p>
+
+<p><span data-en="On the record, the drums are a sample: a drum break from a 1971 funk record, chopped up. This grid was measured from your record. Here we play it ourselves." data-es="En el disco, la batería es una muestra: un solo de batería de un disco de funk de 1971, cortado en pedazos. Esta cuadrícula se midió de tu disco. Aquí la tocamos nosotros.">On the record, the drums are a sample: a drum break from a 1971 funk record, chopped up. This grid was measured from your record. Here we play it ourselves.</span></p>
+
+<div class="gridwrap" tabindex="0" aria-label="Drum grid, 16 steps"><table class="grid" id="grid"></table></div>
+
+<p class="legend"><span data-en="Tap the filled squares. Orange ones are the loud hits." data-es="Toca los cuadros llenos. Los naranjas son los golpes fuertes.">Tap the filled squares. Orange ones are the loud hits.</span></p>
+
+<p class="room"><a href="/drum-machine"><span data-en="Open the Drum Machine" data-es="Abre la caja de ritmos">Open the Drum Machine</span></a></p>
+
+<ul class="ticks">
+<li><input type="checkbox" id="t16"><label for="t16"><span data-en="Press Clear the loop. Tap the squares from the grid above." data-es="Pulsa Borrar el bucle. Toca los cuadros de la cuadrícula de arriba.">Press Clear the loop. Tap the squares from the grid above.</span></label></li>
+<li><input type="checkbox" id="t17"><label for="t17"><span data-en="Set Swing to 58 %. The hits lean, like the record." data-es="Pon el Swing en 58 %. Los golpes se inclinan, como en el disco.">Set Swing to 58 %. The hits lean, like the record.</span></label></li>
+<li><input type="checkbox" id="t18"><label for="t18"><span data-en="Press ▶ Play. Does it match the record? Leave it playing." data-es="Pulsa ▶ Tocar. ¿Suena como el disco? Déjalo sonando.">Press ▶ Play. Does it match the record? Leave it playing.</span></label></li>
+<li><input type="checkbox" id="t19"><label for="t19"><span data-en="My Track starts stays at From bar 17." data-es="Mi pista empieza se queda en Desde el compás 17.">My Track starts stays at From bar 17.</span></label></li>
+<li><input type="checkbox" id="t20"><label for="t20"><span data-en="Press ● Record. Let it play until My Track ends." data-es="Pulsa ● Grabar. Déjalo sonar hasta que termine mi pista.">Press ● Record. Let it play until My Track ends.</span></label></li>
+<li><input type="checkbox" id="t21"><label for="t21"><span data-en="Press ■ Stop, then + Add to My Track." data-es="Pulsa ■ Parar y luego + Añadir a mi pista.">Press ■ Stop, then + Add to My Track.</span></label></li>
+</ul>
+
+</section>
+
+<section class="part" id="bass">
+  <h2><span class="num">6</span><span data-en="The bass" data-es="El bajo">The bass</span></h2>
+  <p><span class="take"><span data-en="Bass · rounds 3–5" data-es="Bajo · vueltas 3–5">Bass · rounds 3–5</span></span></p>
+
+<p><span data-en="Four notes on one string, walking down with the riff. Each one rings for 2 bars." data-es="Cuatro notas en una cuerda, bajando con el riff. Cada una suena 2 compases.">Four notes on one string, walking down with the riff. Each one rings for 2 bars.</span></p>
+
+<div class="chords">
+    <div class="chord"><div class="pad"><span data-en="A string · fret" data-es="Cuerda La · traste">A string · fret</span></div><div class="nm">7</div><div class="nt">E</div></div>
+    <div class="chord"><div class="pad"><span data-en="A string · fret" data-es="Cuerda La · traste">A string · fret</span></div><div class="nm">6</div><div class="nt">D♯</div></div>
+    <div class="chord"><div class="pad"><span data-en="A string · fret" data-es="Cuerda La · traste">A string · fret</span></div><div class="nm">4</div><div class="nt">C♯</div></div>
+    <div class="chord"><div class="pad"><span data-en="A string · fret" data-es="Cuerda La · traste">A string · fret</span></div><div class="nm">0</div><div class="nt">A</div></div>
+  </div>
+
+<p class="small"><span data-en="0 means the open string: no finger." data-es="0 quiere decir la cuerda al aire: sin dedo.">0 means the open string: no finger.</span></p>
+
+<p class="room"><a href="/bass"><span data-en="Open the Bass" data-es="Abre el bajo">Open the Bass</span></a></p>
+
+<ul class="ticks">
+<li><input type="checkbox" id="t22"><label for="t22"><span data-en="Practice: A string, fret 7, 6, 4, then open. Slowly." data-es="Practica: cuerda La, traste 7, 6, 4 y luego al aire. Despacio.">Practice: A string, fret 7, 6, 4, then open. Slowly.</span></label></li>
+<li><input type="checkbox" id="t23"><label for="t23"><span data-en="Press ● Record. My Track starts at bar 17, as before." data-es="Pulsa ● Grabar. Mi pista empieza en el compás 17, como antes.">Press ● Record. My Track starts at bar 17, as before.</span></label></li>
+<li><input type="checkbox" id="t24"><label for="t24"><span data-en="Play a note each time the chord changes: every 2 bars. Let it ring. Keep going to the end." data-es="Toca una nota cada vez que cambia el acorde: cada 2 compases. Déjala sonar. Sigue hasta el final.">Play a note each time the chord changes: every 2 bars. Let it ring. Keep going to the end.</span></label></li>
+<li><input type="checkbox" id="t25"><label for="t25"><span data-en="Press ■ Stop, then + Add to My Track." data-es="Pulsa ■ Parar y luego + Añadir a mi pista.">Press ■ Stop, then + Add to My Track.</span></label></li>
+</ul>
+
+</section>
+
+<section class="part" id="strings">
+  <h2><span class="num">7</span><span data-en="The strings" data-es="Las cuerdas">The strings</span></h2>
+  <p><span class="take"><span data-en="Band · round 5" data-es="Banda · vuelta 5">Band · round 5</span></span></p>
+
+<p class="room"><a href="/band"><span data-en="Open the Band" data-es="Abre la banda">Open the Band</span></a></p>
+
+<ul class="ticks">
+<li><input type="checkbox" id="t26"><label for="t26"><span data-en="Instrument: the cellos, or the string section." data-es="Instrumento: los violonchelos, o la sección de cuerdas.">Instrument: the cellos, or the string section.</span></label></li>
+<li><input type="checkbox" id="t27"><label for="t27"><span data-en="In ♩ Song, set My Track starts to From bar 33. That is round 5." data-es="En ♩ Canción, pon Mi pista empieza en Desde el compás 33. Es la vuelta 5.">In ♩ Song, set My Track starts to From bar 33. That is round 5.</span></label></li>
+<li><input type="checkbox" id="t28"><label for="t28"><span data-en="Press ● Record. Hold pads 1, 5, 6, 4, each for 2 bars." data-es="Pulsa ● Grabar. Mantén los pads 1, 5, 6, 4, cada uno 2 compases.">Press ● Record. Hold pads 1, 5, 6, 4, each for 2 bars.</span></label></li>
+<li><input type="checkbox" id="t29"><label for="t29"><span data-en="Press ■ Stop, then + Add to My Track." data-es="Pulsa ■ Parar y luego + Añadir a mi pista.">Press ■ Stop, then + Add to My Track.</span></label></li>
+</ul>
+
+</section>
+
+<section class="part" id="finish">
+  <h2><span class="num">8</span><span data-en="Finish it" data-es="Termínala">Finish it</span></h2>
+  <p><span class="take"><span data-en="Mix ›" data-es="Mezclar ›">Mix ›</span></span></p>
+
+<ul class="ticks">
+<li><input type="checkbox" id="t30"><label for="t30"><span data-en="Press Mix ›. In the Track menu, pick the guide click. Press Mute." data-es="Pulsa Mezclar ›. En el menú Pista, elige el clic guía. Pulsa Silenciar.">Press Mix ›. In the Track menu, pick the guide click. Press Mute.</span></label></li>
+<li><input type="checkbox" id="t31"><label for="t31"><span data-en="In ♩ Song, set My Track starts back to From the start." data-es="En ♩ Canción, vuelve a poner Mi pista empieza en Desde el principio.">In ♩ Song, set My Track starts back to From the start.</span></label></li>
+<li><input type="checkbox" id="t32"><label for="t32"><span data-en="Press ▶ Listen. That is your Runaway instrumental!" data-es="Pulsa ▶ Escuchar. ¡Esa es tu versión instrumental de Runaway!">Press ▶ Listen. That is your Runaway instrumental!</span></label></li>
+<li><input type="checkbox" id="t33"><label for="t33"><span data-en="Play it for someone." data-es="Tócala para alguien.">Play it for someone.</span></label></li>
+</ul>
+
+<p class="done-line" id="doneLine" role="status" aria-live="polite"></p>
+
+<div class="go no-print"><button type="button" class="btn soft" id="printBtn"><span data-en="Print this lesson" data-es="Imprime esta lección">Print this lesson</span></button><button type="button" class="btn soft" id="resetBtn"><span data-en="Clear my ticks" data-es="Borrar mis marcas">Clear my ticks</span></button></div>
+
+<p class="small"><span data-en="Your ticks stay on this device." data-es="Tus marcas se quedan en este dispositivo.">Your ticks stay on this device.</span></p>
+
+</section>
+
+<footer class="foot"><p><span data-en="Runaway was written and produced by Kanye West and others, 2010. This lesson teaches how to play its music, the way music teachers write out a song to learn it. No words from the song are here." data-es="Runaway fue escrita y producida por Kanye West y otros, en 2010. Esta lección enseña a tocar su música, como un maestro de música escribe una canción para aprenderla. Aquí no hay palabras de la canción.">Runaway was written and produced by Kanye West and others, 2010. This lesson teaches how to play its music, the way music teachers write out a song to learn it. No words from the song are here.</span></p></footer>
+</div>
+<script>
+/* AOG-SONG-RUNAWAY-V1 — the drum grid, the Set button, Print, and the ticks kept on this device. No sound, no timers. */
+(function(){
+  "use strict";
+  function es(){ return (document.documentElement.lang || "").slice(0,2) === "es"; }
+  /* 1 a hit, 2 a loud hit */
+  /* measured from Jimmy's record (2026-10-22): snare on beats 2 and 4, hats on every eighth, kick on 1, the "and" of 1
+     and the "a" of 3 (steps 1, 3, 11); 16ths swung about 58 %. The kick was confirmed on a full recording of the record. */
+  var ROWS = [
+    ["Kick · pad 1", "Bombo · pad 1", [2,0,1,0, 0,0,0,0, 0,0,1,0, 0,0,0,0]],
+    ["Snare · pad 2", "Caja · pad 2", [0,0,0,0, 2,0,0,0, 0,0,0,0, 2,0,0,0]],
+    ["Closed hat · pad 3", "Charles cerrado · pad 3", [1,0,1,0, 1,0,1,0, 1,0,1,0, 1,0,1,0]]
+  ];
+  var grid = document.getElementById("grid");
+  function drawGrid(){
+    var h = "<tr class=\"count\"><th></th>";
+    for (var i = 0; i < 16; i++) h += "<td" + (i % 4 === 0 ? " class=\"beat on\"" : "") + ">" + (i + 1) + "</td>";
+    h += "</tr>";
+    ROWS.forEach(function(r){
+      h += "<tr><th>" + (es() ? r[1] : r[0]) + "</th>";
+      r[2].forEach(function(v, i){
+        var c = []; if (i % 4 === 0) c.push("beat"); if (v === 1) c.push("x"); if (v === 2) c.push("acc");
+        h += "<td" + (c.length ? " class=\"" + c.join(" ") + "\"" : "") + " aria-label=\"" + (i + 1) + (v ? (es() ? ": golpe" : ": hit") : "") + "\">" + (v ? "●" : "") + "</td>";
+      });
+      h += "</tr>";
+    });
+    grid.innerHTML = h;
+  }
+  drawGrid();
+  try { new MutationObserver(function(){ drawGrid(); done(); }).observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] }); } catch (e) {}
+
+  var setSt = document.getElementById("setSt");
+  document.getElementById("setSong").addEventListener("click", function(){
+    var ok = false;
+    try { if (window.AOGSong) { AOGSong.set({ bpm: 87, key: 4, minor: false }); ok = true; } } catch (e) {}
+    setSt.textContent = ok ? (es() ? "Listo ✓ 87 · Mi mayor" : "Done ✓ 87 · E major")
+                           : (es() ? "En ♩ Canción, pon 87 y Mi · Mayor." : "In ♩ Song, set 87 and E · Major.");
+    var t1 = document.getElementById("t1"); if (ok && t1 && !t1.checked) { t1.checked = true; save(t1); }
+  });
+  document.getElementById("printBtn").addEventListener("click", function(){ window.print(); });
+
+  var KEY = "aog.song.runaway.v1", saved = {};
+  try { saved = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { saved = {}; }
+  function keep(){ try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch (e) {} }
+
+  /* AOG-SONG-RUNAWAY-ME-V1 — the learner's name, number and color: from the link or the box, cleaned, kept on the device */
+  var COLORS = { red: ["#B3261E", "#FFFFFF", "#FF8A80", "#12161C"], blue: ["#1F4E99", "#FFFFFF", "#8AB4F8", "#12161C"],
+    green: ["#1E6B3A", "#FFFFFF", "#7ED69B", "#12161C"], purple: ["#6A2C91", "#FFFFFF", "#C9A0F0", "#12161C"],
+    orange: ["#A84B00", "#FFFFFF", "#FFB066", "#12161C"], gold: ["#7A5C1F", "#FFFFFF", "#E0B85A", "#12161C"] };
+  function cleanName(s){ return String(s || "").replace(/[^\p{L}\p{M} '\-]/gu, "").replace(/\s+/g, " ").trim().slice(0, 24); }
+  function cleanNo(s){ var n = parseInt(s, 10); return n >= 1 && n <= 999 ? n : ""; }
+  function cleanColor(s){ s = String(s || "").toLowerCase(); return COLORS[s] ? s : ""; }
+  var me = saved.me || {};
+  try {
+    var q = new URLSearchParams(location.search);
+    if (q.has("for")) me.name = cleanName(q.get("for"));
+    if (q.has("no")) me.no = cleanNo(q.get("no"));
+    if (q.has("color")) me.color = cleanColor(q.get("color"));
+  } catch (e) {}
+  me = { name: cleanName(me.name), no: cleanNo(me.no), color: cleanColor(me.color) };
+  saved.me = me; keep();
+  var nameIn = document.getElementById("meName"), noIn = document.getElementById("meNo"), colIn = document.getElementById("meColor");
+  nameIn.value = me.name; noIn.value = me.no; colIn.value = me.color;
+  function dark(){ return document.documentElement.getAttribute("data-theme") === "dark"; }
+  function paintMe(){
+    var root = document.documentElement.style, c = COLORS[me.color];
+    if (c) { var d = dark(); root.setProperty("--me", d ? c[2] : c[0]); root.setProperty("--me-on", d ? c[3] : c[1]); root.setProperty("--me-ink", d ? c[2] : c[0]);
+             root.setProperty("--me-p", c[0]); root.setProperty("--me-p-on", c[1]); }
+    else { ["--me", "--me-on", "--me-ink", "--me-p", "--me-p-on"].forEach(function(k){ root.removeProperty(k); }); }
+    document.body.classList.toggle("has-me", !!me.name);
+    var cover = document.getElementById("cover");
+    cover.hidden = !me.name;
+    document.getElementById("cvWho").textContent = me.name;
+    document.getElementById("cvNo").textContent = me.no ? (es() ? "Pista " : "Track ") + me.no : "";
+  }
+  function meChanged(){
+    me = { name: cleanName(nameIn.value), no: cleanNo(noIn.value), color: cleanColor(colIn.value) };
+    saved.me = me; keep(); paintMe();
+  }
+  nameIn.addEventListener("input", meChanged); noIn.addEventListener("input", meChanged); colIn.addEventListener("change", meChanged);
+  nameIn.addEventListener("blur", function(){ nameIn.value = me.name; });
+  try { new MutationObserver(paintMe).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme", "lang"] }); } catch (e) {}
+  paintMe();
+  var boxes = [].slice.call(document.querySelectorAll(".ticks input"));
+  function done(){
+    var all = boxes.every(function(b){ return b.checked; });
+    document.getElementById("doneLine").textContent = all ? (es() ? "¡Lo lograste! Hiciste Runaway de principio a fin." : "You did it! You made Runaway from start to finish.") : "";
+  }
+  function save(b){ saved[b.id] = b.checked; keep(); done(); }
+  boxes.forEach(function(b){
+    b.checked = saved[b.id] === true;
+    b.addEventListener("change", function(){ save(b); });
+  });
+  document.getElementById("resetBtn").addEventListener("click", function(){
+    boxes.forEach(function(b){ b.checked = false; }); saved = { me: me }; keep(); done();
+  });
+  done();
+})();
+</script>
+</body>
+</html>
