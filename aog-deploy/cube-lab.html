@@ -181,7 +181,10 @@ header { display:flex; flex-wrap:wrap; justify-content:space-between; align-item
 .calm .chips .chip { font-size:.85rem; padding:.3rem .4rem; min-width:1.8rem; }
 .btn.big { min-height:60px; padding:0 1.5rem; font-size:1.1rem; }
 .calm details.more { margin-top:.7rem; color:var(--muted); }
-.calm details.more summary, #panel details.more summary { cursor:pointer; min-height:44px; display:flex; align-items:center; font-weight:600; }
+.calm details.more summary, #panel details.more summary { cursor:pointer; min-height:44px; display:flex; align-items:center; font-weight:600; list-style:none; }
+#panel details > summary::-webkit-details-marker { display:none; }
+#panel details > summary::before { content:"▸"; display:inline-block; width:1.1em; color:var(--steel); }
+#panel details[open] > summary::before { content:"▾"; }
 .dots { display:flex; gap:.4rem; margin:.35rem 0 .9rem; }
 .dots .dot { width:.7rem; height:.7rem; border-radius:50%; border:2px solid var(--steel); }
 .dots .dot.done { background:var(--steel); }
@@ -327,7 +330,7 @@ footer p { margin-top:2rem; font-size:.9rem; color:var(--muted); max-width:70ch;
 /* AOG-CUBE-PHONEFIT-V1 (2026-10-21) — Jimmy (iPhone, Learn): "It is hard to follow." The navy title, the tabs and the
    Step menu took half the screen, and the lesson bar hid the bottom of the cube. On a phone the title is for screen
    readers only (the tabs and the top bar already say where you are), so the whole cube sits above the lesson. */
-@media (max-width:600px){
+@media (max-width:1024px){
   #nav a.sep { display:none; }   /* the sister tool is in the site menu; here it took a line of its own */
   html.aog-grace #toolMast, #toolMast { position:absolute!important; width:1px!important; height:1px!important; min-height:0!important; padding:0!important; margin:-1px!important; overflow:hidden!important; clip:rect(0 0 0 0)!important; white-space:nowrap!important; border:0!important; }
 }
@@ -521,7 +524,7 @@ const T={
   allSteps:["Show the whole list ({n})","Ver la lista completa ({n})"], pathL:["Your path: {d} of {n} steps done","Tu camino: {d} de {n} pasos hechos"],
   tryH:["Try each one on the cube","Prueba cada una en el cubo"],
   gRow:["Drag a row to turn it","Arrastra una fila para girarla"], gLook:["Drag beside the cube to look around it","Arrastra junto al cubo para verlo por todos lados"],
-  gWheel:["Draw a circle around a middle square to turn that side","Dibuja un círculo alrededor de un cuadro del medio para girar ese lado"],
+  gWheel:["Put a finger on a middle square and circle it to turn that side","Pon un dedo en un cuadro del medio y gíralo en círculo para girar ese lado"],
   gTwo:["Swipe with two fingers to turn the whole cube","Desliza dos dedos para girar todo el cubo"],
   gDone:["You can do them all. Tap Front to bring the cube home.","Ya puedes hacerlas todas. Toca Frente para traer el cubo de vuelta."],
   goalPicH:["When this step is done:","Cuando termines este paso:"],
@@ -633,12 +636,12 @@ const MOVEWORDS={
 };
 const AIM={
   holdWhite:["Hold the cube with white on the bottom.","Sostén el cubo con el blanco abajo."],
-  daisy:["Bring the white and {c} edge up beside the yellow center, white facing up.","Sube la arista blanca y {c} junto al centro amarillo, con el blanco arriba."],
-  crossDown:["Bring the white and {c} edge down to the bottom, over its {c} side.","Baja la arista blanca y {c} a la base, junto a su lado {c}."],
-  cornerAbove:["Bring the white, {a} and {b} corner above its place.","Lleva la esquina blanca, {a} y {b} encima de su lugar."],
+  daisy:["Bring the white and {c} edge up beside the yellow center, white facing up.","Sube la arista blanca y {fc} junto al centro amarillo, con el blanco arriba."],
+  crossDown:["Bring the white and {c} edge down to the bottom, over its {c} side.","Baja la arista blanca y {fc} a la base, junto a su lado {c}."],
+  cornerAbove:["Bring the white, {a} and {b} corner above its place.","Lleva la esquina blanca, {fa} y {fb} encima de su lugar."],
   cornerIn:["Tuck the corner in, white facing down.","Mete la esquina, con el blanco abajo."],
   cornerOut:["Lift this corner out, so it can go to its place.","Saca esta esquina, para que pueda ir a su lugar."],
-  midLine:["Bring the {a} and {b} edge above its {a} side.","Lleva la arista {a} y {b} encima de su lado {a}."],
+  midLine:["Bring the {a} and {b} edge above its {a} side.","Lleva la arista {fa} y {fb} encima de su lado {a}."],
   midRight:["Slide the edge down into the middle.","Baja la arista al medio."], midLeft:["Slide the edge down into the middle.","Baja la arista al medio."],
   midOut:["Lift this edge out, so it can go to its place.","Saca esta arista, para que pueda ir a su lugar."],
   yedgeTurn:["Turn the top until the edges match their sides.","Gira la parte de arriba hasta que las aristas coincidan con sus lados."],
@@ -654,10 +657,10 @@ const AIM={
   lineUp:["Line the corners up with their sides.","Alinea las esquinas con sus lados."],
   uperm:["Put the last edges in their places. Almost done.","Pon las últimas aristas en su lugar. Ya casi."], uperm0:["Put the last edges in their places. Almost done.","Pon las últimas aristas en su lugar. Ya casi."],
   short:["{n} moves to go. Each one brings the whole cube closer.","Faltan {n} movimientos. Cada uno acerca todo el cubo."],
-  crossOne:["Bring the white and {c} edge straight down to its place, white on the bottom.","Baja la arista blanca y {c} directo a su lugar, con el blanco abajo."],
+  crossOne:["Bring the white and {c} edge straight down to its place, white on the bottom.","Baja la arista blanca y {fc} directo a su lugar, con el blanco abajo."],
   pairHold:["Turn the cube so the {a} and {b} spot is at the front right.","Gira el cubo para que el lugar {a} y {b} quede al frente a la derecha."],
   pairOut:["Lift a piece out of the wrong spot, so it can pair up.","Saca una pieza del lugar equivocado, para que pueda hacer pareja."],
-  pairIn:["Pair the white, {a} and {b} corner with its edge, and put them in together.","Junta la esquina blanca, {a} y {b} con su arista y mételas juntas."],
+  pairIn:["Pair the white, {a} and {b} corner with its edge, and put them in together.","Junta la esquina blanca, {fa} y {fb} con su arista y mételas juntas."],
   ycrossLine:["Make a yellow plus sign on top.","Haz un signo más amarillo arriba."], ycrossEll:["Make a yellow plus sign on top.","Haz un signo más amarillo arriba."], ycrossDot:["Make a yellow plus sign on top.","Haz un signo más amarillo arriba."],
   sune:["Make the whole top yellow, in one go.","Haz toda la cara de arriba amarilla, de una vez."], antisune:["Make the whole top yellow, in one go.","Haz toda la cara de arriba amarilla, de una vez."],
   ollH:["Make the whole top yellow, in one go.","Haz toda la cara de arriba amarilla, de una vez."], ollPi:["Make the whole top yellow, in one go.","Haz toda la cara de arriba amarilla, de una vez."],
@@ -722,15 +725,15 @@ const WHY={
 };
 const NOTES={
   holdWhite:["Turn the whole cube so the white center is on the bottom.","Gira el cubo entero para que el centro blanco quede abajo."],
-  daisy:["Make the daisy: bring the white–{c} edge to the top, white side up.","Haz la margarita: sube la arista blanca y {c}, con el blanco hacia arriba."],
-  crossDown:["Turn the top until the white–{c} edge is over the {c} center. Then turn that side twice ({f}2).","Gira la cara de arriba hasta que la arista blanca y {c} quede sobre el centro {c}. Luego gira ese lado dos veces ({f}2)."],
-  cornerAbove:["Turn the cube so the {a}–{b} spot is at the front-right, on the bottom. Turn the top until the corner with white, {a} and {b} sits right above it.","Gira el cubo para que el lugar {a} y {b} quede abajo, al frente a la derecha. Gira la cara de arriba hasta que la esquina blanca, {a} y {b} quede justo encima."],
+  daisy:["Make the daisy: bring the white–{c} edge to the top, white side up.","Haz la margarita: sube la arista blanca y {fc}, con el blanco hacia arriba."],
+  crossDown:["Turn the top until the white–{c} edge is over the {c} center. Then turn that side twice ({f}2).","Gira la cara de arriba hasta que la arista blanca y {fc} quede sobre el centro {c}. Luego gira ese lado dos veces ({f}2)."],
+  cornerAbove:["Turn the cube so the {a}–{b} spot is at the front-right, on the bottom. Turn the top until the corner with white, {a} and {b} sits right above it.","Gira el cubo para que el lugar {a} y {b} quede abajo, al frente a la derecha. Gira la cara de arriba hasta que la esquina blanca, {fa} y {fb} quede justo encima."],
   cornerIn:["Do R U R' U' ({n}×). The corner drops in, white side down.","Haz R U R' U' ({n}×). La esquina baja a su lugar, con el blanco abajo."],
   cornerOut:["This corner is stuck in the wrong spot. Hold it at the front-right and do R U R' U' once. It comes up to the top.","Esta esquina está atascada en otro lugar. Ponla al frente a la derecha y haz R U R' U' una vez. Sube a la cara de arriba."],
-  midLine:["Turn the cube so the {a} center faces you. Turn the top until the {a}–{b} edge is at the front, over the {a} center.","Gira el cubo para que el centro {a} quede hacia ti. Gira la cara de arriba hasta que la arista {a} y {b} quede al frente, sobre el centro {a}."],
+  midLine:["Turn the cube so the {a} center faces you. Turn the top until the {a}–{b} edge is at the front, over the {a} center.","Gira el cubo para que el centro {a} quede hacia ti. Gira la cara de arriba hasta que la arista {fa} y {fb} quede al frente, sobre el centro {a}."],
   midRight:["Its top color, {b}, matches the right side. Do the right-hand moves.","Su color de arriba, {b}, coincide con el lado derecho. Haz los movimientos a la derecha."],
   midLeft:["Its top color, {b}, matches the left side. Do the left-hand moves.","Su color de arriba, {b}, coincide con el lado izquierdo. Haz los movimientos a la izquierda."],
-  midOut:["The {a}–{b} edge is in the middle, but in the wrong spot or flipped. Hold it at the front-right and do the right-hand moves. It comes up to the top.","La arista {a} y {b} está en el medio, pero en otro lugar o al revés. Ponla al frente a la derecha y haz los movimientos a la derecha. Sube a la cara de arriba."],
+  midOut:["The {a}–{b} edge is in the middle, but in the wrong spot or flipped. Hold it at the front-right and do the right-hand moves. It comes up to the top.","La arista {fa} y {fb} está en el medio, pero en otro lugar o al revés. Ponla al frente a la derecha y haz los movimientos a la derecha. Sube a la cara de arriba."],
   yedgeTurn:["All the yellow edges are in order. Turn the top until each one matches its side.","Todas las aristas amarillas están en orden. Gira la parte de arriba hasta que cada una coincida con su lado."],
   yedgeAdj:["Two edges side by side match their sides. Turn the whole cube so they are at the back and the right. Do R U R' U R U2 R' U.","Dos aristas lado a lado coinciden con sus lados. Gira todo el cubo para que queden atrás y a la derecha. Haz R U R' U R U2 R' U."],
   yedgeOpp:["Two edges across from each other match. Do R U R' U R U2 R' U once. Then look again.","Dos aristas una frente a la otra coinciden. Haz R U R' U R U2 R' U una vez. Luego mira otra vez."],
@@ -751,7 +754,7 @@ const NOTES={
   lineUp:["Turn the top until the corners match their sides.","Gira la cara de arriba hasta que las esquinas coincidan con sus lados."],
   uperm:["One side is all done. Turn the whole cube so that side is at the back. Do R2 U R U R' U' R' U' R' U R'.","Un lado está terminado. Gira el cubo entero para que ese lado quede atrás. Haz R2 U R U R' U' R' U' R' U R'."],
   uperm0:["No side is all done yet. Do R2 U R U R' U' R' U' R' U R' once. Then look again.","Aún no hay un lado terminado. Haz R2 U R U R' U' R' U' R' U R' una vez. Luego mira otra vez."],
-  crossOne:["Look for the white and {c} edge. Bring it down so white is on the bottom and {c} matches its center.","Busca la arista blanca y {c}. Bájala con el blanco abajo y el {c} junto a su centro."],
+  crossOne:["Look for the white and {c} edge. Bring it down so white is on the bottom and {c} matches its center.","Busca la arista blanca y {fc}. Bájala con el blanco abajo y el {c} junto a su centro."],
   pairHold:["Turn the whole cube so the spot between the {a} and {b} centers is at the front right, on the bottom.","Gira el cubo entero para que el lugar entre los centros {a} y {b} quede abajo, al frente a la derecha."],
   pairOut:["Hold that spot at the front right and do R U R'. The piece comes up to the top.","Pon ese lugar al frente a la derecha y haz R U R'. La pieza sube."],
   pairIn:["First join the corner and the edge on top, then drop them in together.","Primero junta la esquina y la arista arriba, luego bájalas juntas."],
@@ -789,7 +792,7 @@ const L=[
     ["A letter with 2: turn it two times.","Una letra con 2: gíralo dos veces."],
     ["y means turn the whole cube. The top stays on top.","y quiere decir girar todo el cubo. Lo de arriba sigue arriba."],
     ["Try it: tap R, then R'. The cube goes back.","Pruébalo: toca R y luego R'. El cubo vuelve."],
-    ["Draw a circle around the front's middle square, like turning a steering wheel. That is F.","Dibuja un círculo alrededor del cuadro del medio del frente, como un volante. Eso es F."]],
+    ["Put a finger on the front's middle square and circle it, like a steering wheel. That is F.","Pon un dedo en el cuadro del medio del frente y gíralo en círculo, como un volante. Eso es F."]],
   algs:[{n:["There and back","Ida y vuelta"], s:"R R' U U' F F'"}]},
  {id:"cross", stage:0, t:["The white cross","La cruz blanca"],
   goal:["A white plus sign on the bottom.","Un signo más blanco abajo."],
@@ -912,10 +915,14 @@ function t(k,v){ let s=tx(T[k])||k; if(v) Object.keys(v).forEach(n => { s=s.spli
 const cn=c=>tx(COLN[c]);
 const cnd=c=>cn(disp(c));   /* a solver color, named as it looks on this learner's cube */
 const esc=s=>String(s).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-function aim(p){ let s=tx(AIM[p.note])||""; Object.keys(p.vars||{}).forEach(k => { const x=p.vars[k]; s=s.split("{"+k+"}").join((k==="a"||k==="b"||k==="c")?cnd(x):x); }); return s; }
+/* Spanish color words agree with the piece: "la esquina blanca, roja y azul", "el lado rojo" ({fa} is the feminine form) */
+const FEM={blanco:"blanca", amarillo:"amarilla", rojo:"roja", morado:"morada"};
+const fem=w => es() ? (FEM[w]||w) : w;
+function fillFem(s, vars){ ["a","b","c"].forEach(k => { if(vars && vars[k]) s=s.split("{f"+k+"}").join(fem(cnd(vars[k]))); }); return s; }
+function aim(p){ let s=tx(AIM[p.note])||""; Object.keys(p.vars||{}).forEach(k => { const x=p.vars[k]; s=s.split("{"+k+"}").join((k==="a"||k==="b"||k==="c")?cnd(x):x); }); return fillFem(s, p.vars); }
 const words=tok => tx(MOVEWORDS[tok])||tok;
 function note(p){ const v={}; Object.keys(p.vars||{}).forEach(k => { const x=p.vars[k]; v[k]= (k==="a"||k==="b"||k==="c") ? cnd(x) : x; });
-  let s=tx(NOTES[p.note])||""; Object.keys(v).forEach(n => { s=s.split("{"+n+"}").join(v[n]); }); return s; }
+  let s=tx(NOTES[p.note])||""; Object.keys(v).forEach(n => { s=s.split("{"+n+"}").join(v[n]); }); return fillFem(s, p.vars); }
 
 /* ── drawing the cube ── */
 const COL={W:"#f4f3ee",Y:"#ffd43b",G:"#23a159",B:"#2a62c9",O:"#ff7e1f",R:"#d2303b",P:"#7d3cc0",K:"#ff7eb6","?":"#9aa1aa"};
@@ -1077,7 +1084,7 @@ function drawArrow(){
 function stageTools(){
   const u=$("stUndo"), f=$("stFront"); if(!u) return;
   u.textContent="↶ "+t("undo"); f.textContent=t("look");
-  u.hidden=painting || !S.hist.length;
+  u.hidden=painting || !S.hist.length || !!$("panel").querySelector('.calm [data-act="undo"]') || (S.view==="solve" && cube.solved());
   f.hidden=true;   /* the View row (Front · Back) is the way home now */
   const vb=document.querySelectorAll("#lookRow [data-look]"); vb.forEach(b => { const on=b.getAttribute("data-look")==="front" ? atHome() : atBack(); b.classList.toggle("on", on); b.setAttribute("aria-pressed", on); });
 }
@@ -1331,7 +1338,7 @@ function learnHtml(){
     h+=`<h3>${esc(t("practice"))}</h3><div class="btn-row"><button type="button" class="btn btn-steel" data-act="setup">${esc(t("setup"))}</button>`
       +(at===l.stage && !S.showHint?`<button type="button" class="btn" data-act="hint">${esc(t("help"))}</button>`:"")+`</div>`;
     /* in the middle of a set of moves the layers below are mixed on purpose; keep the help on screen */
-    const n=(guide && guide.i>0) ? guideNow() : null, mid=n && n.left<n.p.moves.length;
+    const n=(guide && guide.i>0) ? guideNow() : null, mid=n && (n.left<n.p.moves.length || n.st.key===way().STAGES[l.stage]);   /* inside this step's own moves (twisting the last corners mixes the top on purpose) */
     if(at>l.stage && S.practice===i) h+=`<p class="state ok">${esc(t("stepDone"))}</p>`;   /* only after practising this step, never on a cube nobody has worked on */
     else if(mid && S.showHint) h+=`<div class="alg">${partCard()}</div>`;
     else if(at<l.stage) h+=`<p class="state warn">${esc(t("earlier"))}</p>`;
@@ -1355,7 +1362,8 @@ function solveHtml(){
       if((S.level||"every")==="every") h+=`<p class="muted">${esc(t("lessHelp"))}</p>${levelSel()}`;
       if(tip>=0) h+=`<div class="btn-row start"><button type="button" class="btn btn-steel big" data-act="drill" data-stage="${tip}">${esc(t("drillBtn",{s:tx(STAGE_NAMES[way().STAGES[tip]]).toLowerCase()}))}</button></div>`;
       if(R.way!=="short" && Object.keys(by).length) h+=`<details class="more"><summary>${esc(t("bySteps"))}</summary><ol class="last">${way().STAGES.map((k,i)=>by[i]?`<li>${esc(tx(STAGE_NAMES[k]))}: ${esc(t("nMoves",{n:by[i]}))}</li>`:"").join("")}</ol></details>`;
-      h+=`<div class="btn-row start"><button type="button" class="btn btn-good big" data-act="own">${esc(t("ownTry"))}</button></div>`; }
+      h+=`<div class="btn-row"><button type="button" class="btn big" data-act="own">${esc(t("ownTry"))}</button></div>`;
+      }
     return h+`<div class="btn-row start start-choices"><a class="btn btn-good big" href="#mine">${esc(t("useMine"))}</a><button type="button" class="btn big" data-act="mix">${esc(t("practiceMixed"))}</button></div>`;
   }
   /* AOG-CUBE-DRILL-V1 — practising one step: when it is done, say so, and offer it again */
@@ -1497,7 +1505,7 @@ let arrowTok=null;
 function panel(){
   const el=$("panel"); arrowTok=null; markIdx=-1; focusSet=null;
   el.innerHTML = S.view==="solve" ? solveHtml() : S.view==="mine" ? mineHtml() : learnHtml();
-  if(S.view==="solve") $("hint").textContent = cube.solved() ? "" : t(S.real?"hintSolveReal":"hintSolve");   /* no arrow and no Turn it until a solve starts */
+  if(S.view==="solve") $("hint").textContent = (cube.solved() || !arrowTok) ? "" : t(S.real?"hintSolveReal":"hintSolve");   /* no arrow and no Turn it until a solve starts */
   el.querySelectorAll("[data-act]").forEach(b => b.onclick=()=>act(b.getAttribute("data-act")));
   el.querySelectorAll("[data-alg]").forEach(b => b.onclick=()=>playAlg(b.getAttribute("data-alg"), b.getAttribute("data-how")));
   const sa=el.querySelector("#startAt"); if(sa) sa.onchange=()=>{ if(sa.value!==""){ S.drill=null; setup(+sa.value); S.real=false; S.mix={t0:null,moves:0}; S.result=null; save(); panel(); } };

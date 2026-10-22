@@ -219,7 +219,7 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
       return { cube: st.top >= 0 && st.bottom <= bar.top + 2, btn: btn.bottom <= innerHeight && btn.top >= 0, text: document.querySelector("#actBar .ab-move").textContent }; });
     ok(lay.cube && lay.btn && lay.text.length > 3, `iPhone: the whole cube and the I did it / Turn it button are on screen together, no scrolling ("${lay.text}")`);
     let n = 0; while (n < 40 && await p.$("#actBar:not([hidden]) [data-act='gnext']")) { await p.tap("#actBar [data-act='gnext']"); n++; await p.waitForTimeout(30); }
-    ok(n > 0 && n <= 22 && /Solved!/.test(await p.textContent("#panel")) && await p.evaluate(() => document.getElementById("actBar").hidden), `iPhone: tapping the bar's button follows the short way to Solved (${n} moves), and the bar steps away`);
+    ok(n > 0 && n <= 22 && /Solved!/.test(await p.textContent("#panel")) && await p.evaluate(() => !document.querySelector("#actBar [data-act='gnext']") && !!document.querySelector("#actBar [data-act='mix']")), `iPhone: tapping the bar's button follows the short way to Solved (${n} moves), and the bar then offers what's next`);
     ok(!p.errs.length, "no page errors (short way first) " + p.errs.join("; "));
     await p.ctx.close(); }
 
@@ -242,7 +242,7 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
     const lb = await p.waitForFunction(() => /can't be fewer than \d+/.test((document.querySelector("#panel .note.fewer") || {}).textContent || ""), null, { timeout: 20000 }).then(() => true).catch(() => false);
     await p.click("#panel [data-act='fewerStop']").catch(() => {}); await p.waitForTimeout(200);
     const after = await p.evaluate(() => (document.querySelector("#panel .note.fewer") || {}).textContent || "");
-    ok(lb && /Best found: \d+ moves/.test(after) && !(await p.$("#panel [data-act='fewerStop']")), "a fully mixed cube: it shows the best so far and how few it could be, and Stop ends the search (" + after.trim() + ")");
+    ok(lb && /Best found: \d+ moves|already the shortest found/.test(after) && !(await p.$("#panel [data-act='fewerStop']")), "a fully mixed cube: it shows the best so far and how few it could be, and Stop ends the search (" + after.trim() + ")");
     ok(!p.errs.length, "no page errors (fewer moves) " + p.errs.join("; "));
     await p.ctx.close(); }
 
@@ -263,6 +263,7 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
   await p.click('#viewRow [data-look="symbols"]');
   /* the move card */
   await p.evaluate(() => { window.print = () => { window.__printed = document.getElementById("printCard").textContent; }; });
+  await p.evaluate(() => document.querySelector('#lessonRow [data-lesson="2"]').click()); await p.waitForTimeout(200);   /* Meet the cube has no moves to print */
   await p.click('#panel [data-act="print"]');
   ok(/R U R' U'/.test(await p.evaluate(() => window.__printed || "")), "Print a move card fills the card with the moves for each step");
   /* every Learn step can be practised to its end */
@@ -283,11 +284,11 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
   ok(await p.evaluate(() => window.__said.length) === 0, "Read aloud says nothing when the page opens");
   await p.click('#panel [data-act="mix"]'); await p.waitForTimeout(150);
   let sawChunk = false, sawWhole = false, sawSide = false, n = 0;
-  while (n < 400) { if (!(await p.$('#panel [data-act="gnext"]'))) break; if (/corner moves/.test(await p.textContent("#panel")) && await p.$("#panel .cdots")) sawChunk = true;
+  while (n < 400) { if (!(await p.$('#panel [data-act="gnext"]'))) break; if (/the trick|corner moves/i.test(await p.textContent("#panel")) && await p.$("#panel .cdots")) sawChunk = true;
     const kind = await p.evaluate(() => { const k = document.querySelector("#panel .kind"); return k ? [k.className, document.querySelectorAll("#arrow path.line").length, document.querySelector("#panel .move-big .tok").textContent] : null; });
     if (kind && /whole/.test(kind[0]) && kind[1] === 3 && /^[xyz]/.test(kind[2])) sawWhole = true;
     if (kind && /side/.test(kind[0]) && kind[1] === 1 && /^[UDLRFB]/.test(kind[2])) sawSide = true; await p.click('#panel [data-act="gnext"]'); n++; }
-  ok(sawChunk, "the corner moves are named as one thing to learn, with still dots");
+  ok(sawChunk, "the trick (and other named moves) is named as one thing to learn, with still dots");
   ok(sawWhole && sawSide, "a whole-cube turn says Whole cube with an arrow on every row; a side turn says One side with one arrow");
   if (hasVoice) { const said = await p.evaluate(() => window.__said); ok(said.length > 5, "Read aloud says each next move after a tap (" + said.length + ": " + said.slice(0, 2).join(" / ") + ")"); }
   const fin = await p.textContent("#panel");
