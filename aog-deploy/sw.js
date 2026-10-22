@@ -8,7 +8,8 @@
  * not run on this file. Forget the bump and returning visitors keep the stale
  * page from their cache.
  */
-const CACHE = 'aog-cache-2026.10.22.m7549'   // LEARN A SONG: BAD MOON RISING, BUILT IN THE STUDIO (song-bad-moon-rising.html, /bad-moon-rising, AOG-SONG-BADMOON-V1) (previous: m7548)
+const CACHE = 'aog-cache-2026.10.22.m7550'   // LEARN A SONG: SHOES, CARS AND SOFT DRINKS, A HIP-HOP BEAT IN LAYERS (song-shoes-cars-and-soft-drinks.html, AOG-SONG-SHOES-V1) (previous: m7549)
+// const CACHE = 'aog-cache-2026.10.22.m7549'   // LEARN A SONG: BAD MOON RISING, BUILT IN THE STUDIO (song-bad-moon-rising.html, /bad-moon-rising, AOG-SONG-BADMOON-V1) (previous: m7548)
 // const CACHE = 'aog-cache-2026.10.22.m7548'   // START A SONG IN ONE TAP (aog-quickstart.js) AND LISTEN BACK WITH YOUR ARTIST NAME (aog-listenback.js) (previous: m7547)
 // const CACHE = 'aog-cache-2026.10.22.m7547'   // LEARN A SONG: RUNAWAY, BUILT IN THE STUDIO PART BY PART, MEASURED FROM THE RECORD, WITH THE LEARNER'S OWN PRINTED COVER (song-runaway.html, /runaway, AOG-SONG-RUNAWAY-V1, AOG-SONG-RUNAWAY-ME-V1) (previous: m7546)
 // const CACHE = 'aog-cache-2026.10.22.m7546'   // THE CUBE LAB: EACH STEP SHOWS ITS GOAL FIRST; TURNS SETTLE INTO PLACE AND A QUICK FLICK FINISHES THE TURN (AOG-CUBE-GOALPIC-V1, AOG-CUBE-SETTLE-V1) (previous: m7545)
