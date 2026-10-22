@@ -5,13 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="aog-sync-config.js"></script><!-- same-origin and optional; a 404 changes nothing -->
 <script>(function(){var t="light";try{if(localStorage.getItem("aog.theme.lightstart.v1")==="1"&&localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);if(t==="dark")document.documentElement.classList.add("dark");})();</script>
-<title>Learn a Song: Runaway — Architecture of Grace</title>
-<meta name="description" content="A song lesson for the Recording Studio: build Runaway part by part. The famous piano note, the four chords, the drums, the bass, then the mix.">
+<title>Make Runaway: the Instrumental — Architecture of Grace</title>
+<meta name="description" content="Make the Runaway instrumental in the Recording Studio, one part at a time: the chords, the famous high note, the drums, the bass and the strings.">
 <link rel="canonical" href="https://architectureofgrace.com/runaway">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Architecture of Grace">
-<meta property="og:title" content="Learn a Song: Runaway — Architecture of Grace">
-<meta property="og:description" content="Build Runaway in the Recording Studio, one part at a time.">
+<meta property="og:title" content="Make Runaway: the Instrumental — Architecture of Grace">
+<meta property="og:description" content="Make the Runaway instrumental in the Recording Studio, one part at a time.">
 <meta property="og:url" content="https://architectureofgrace.com/runaway">
 <meta property="og:image" content="https://architectureofgrace.com/og-science.png?v=1">
 <link rel="icon" href="/favicon.ico" sizes="any">
@@ -19,12 +19,14 @@
 <meta name="theme-color" content="#0A1E33">
 <meta name="robots" content="noindex">
 <!-- AOG-SONG-RUNAWAY-V1 (2026-10-22) — Jimmy: "I would love to teach LUKE how to play RUNAWAY FROM KAYNE WEST in our
-     recording studio. How do make the drums, chords, notes, all the jazz … Make a lesson out of it."
-     One song lesson that walks through the Studio's rooms: set the song (87 · E major, through AOGSong), the famous
-     one-note piano, the four chords (1 5 6 4 in E), a drum beat in the same style (written for this lesson, not copied
-     note for note), the bass walking down, the strings at the end, then the Mixing Desk. No lyrics anywhere: the
-     words of the recording are for grown-ups, and this lesson is about the music. The page itself makes no sound;
-     the Studio plays it. Answers stay on this device (aog.song.runaway.v1). -->
+     recording studio … Make a lesson out of it." Then: "I want him to be able to recreate the song in an instrumental
+     version! Taught in the simplest manner!"
+     Five takes, one room each, recorded on top of each other (♫ Play My Track while I record, AOG-OVERDUB-V1), so every
+     part lands on its bar by itself: the chords first (machine-steady, they keep the time), the high E over them, then
+     the drums and the bass from bar 9 and the strings from bar 17 (My Track starts, in ♩ Song). The Mix only moves the
+     chords to bar 5 so round 1 is the E alone. One action a line, a box to tick for each. The Set button puts the song
+     at 87 · E major (AOGSong). The drum beat is written in the song's style, not copied note for note. No lyrics.
+     The page makes no sound; the Studio plays it. Ticks stay on this device (aog.song.runaway.v1). -->
 <style>
 :root{
   --ground:#F5F1E8; --field:#FFFFFF; --field-2:#EFEAE0;
@@ -74,10 +76,6 @@ a{color:var(--navy);}
   background:var(--navy); color:var(--ground); font:700 1rem/1.9em -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; margin-right:.4em;}
 .part p{margin:.45em 0;}
 .room{display:inline-block; font-weight:700; color:var(--a);}
-ol.do{margin:.5em 0; padding-left:1.4em;}
-ol.do li{margin:.3em 0;}
-.why{background:var(--a-wash); border-left:4px solid var(--a); border-radius:8px; padding:10px 14px; margin:.8em 0;}
-.why b{color:var(--ink);}
 .go{display:flex; flex-wrap:wrap; gap:10px; margin:.8em 0 .2em;}
 .btn{display:inline-block; min-height:44px; padding:10px 16px; border-radius:10px; border:1px solid var(--navy);
   background:var(--navy); color:var(--ground); font:700 1rem/1.4 inherit; text-decoration:none; cursor:pointer;}
@@ -95,7 +93,6 @@ ol.do li{margin:.3em 0;}
 .chord .pad{font-size:.85rem; color:var(--ink-soft);}
 .chord .nm{font:700 1.5rem/1.2 "Iowan Old Style",Palatino,Georgia,serif; color:var(--ink);}
 .chord .nt{font-size:.88rem; color:var(--ink);}
-.chord .nt b{color:var(--a);}
 /* the drum grid */
 .gridwrap{overflow-x:auto; -webkit-overflow-scrolling:touch; margin:.6em 0;}
 table.grid{border-collapse:separate; border-spacing:3px; min-width:560px;}
@@ -108,32 +105,32 @@ table.grid td.acc{background:var(--acc); color:var(--hit-ink); border-color:var(
 table.grid tr.count td{background:transparent; border:0; color:var(--ink-soft); font-weight:600;}
 table.grid tr.count td.on{color:var(--ink); font-weight:800;}
 .legend{font-size:.9rem; color:var(--ink-soft);}
-/* the song map */
-.map{display:grid; gap:6px; margin:.7em 0;}
-.map div{display:grid; grid-template-columns:7.5em 1fr; gap:10px; padding:8px 10px; border-radius:8px; background:var(--field-2); border:1px solid var(--rule-soft);}
-.map b{color:var(--ink);}
-.map span{color:var(--ink);}
-/* answers */
-.ask{margin:.8em 0 .2em;}
-.ask label{display:block; font-weight:700; margin-bottom:4px;}
-.ask textarea{width:100%; min-height:3.6em; font:inherit; font-size:16px; padding:8px 10px; border-radius:8px;
-  border:1px solid var(--rule); background:var(--ground); color:var(--ink); resize:vertical;}
-.check{display:flex; gap:10px; align-items:flex-start; margin:.35em 0;}
-.check input{width:22px; height:22px; flex:0 0 auto; margin-top:2px;}
 .small{font-size:.92rem; color:var(--ink-soft);}
 footer.foot{margin-top:24px; font-size:.92rem; color:var(--ink-soft);}
 @media (max-width:520px){
   .cmast h1{font-size:1.75rem;}
   .chords{grid-template-columns:repeat(2,1fr);}
-  .map div{grid-template-columns:1fr; gap:2px;}
-}
+  }
+/* AOG-SONG-RUNAWAY-V1: the round plan and the tick boxes */
+table.plan{border-collapse:separate; border-spacing:3px; width:100%; max-width:30rem;}
+table.plan th{font-size:.9rem; text-align:left; font-weight:700; color:var(--ink); padding-right:6px;}
+table.plan thead th{text-align:center; font-weight:600; color:var(--ink-soft);}
+table.plan td{height:30px; border-radius:6px; background:var(--field-2); border:1px solid var(--rule-soft); text-align:center; color:var(--ink-soft);}
+table.plan td.on{background:var(--hit); border-color:var(--hit); color:var(--hit-ink); font-weight:700;}
+ul.ticks{list-style:none; margin:.6em 0; padding:0;}
+ul.ticks li{display:flex; gap:12px; align-items:flex-start; padding:9px 0; border-top:1px solid var(--rule-soft);}
+ul.ticks li:first-child{border-top:0;}
+ul.ticks input{width:24px; height:24px; flex:0 0 auto; margin:2px 0 0;}
+ul.ticks label{flex:1;}
+.take{display:inline-block; font-size:.85rem; font-weight:700; color:var(--ink-soft); margin-left:.2em;}
+.done-line{font-weight:700; color:var(--ok);}
 .no-screen{display:none;}
 @media print{
   @page{size:Letter; margin:14mm;}
   body{background:#fff; color:#000; font-size:11pt;}
   .no-print{display:none !important;}
   .part{break-inside:avoid; border-color:#999;}
-  table.grid td.x,table.grid td.acc,.keys .lit,.part .num{-webkit-print-color-adjust:exact; print-color-adjust:exact;}
+  table.grid td.x,table.grid td.acc,table.plan td.on,.keys .lit,.part .num{-webkit-print-color-adjust:exact; print-color-adjust:exact;}
 }
 </style>
 </head>
@@ -145,33 +142,76 @@ footer.foot{margin-top:24px; font-size:.92rem; color:var(--ink-soft);}
 <div class="wrap">
 <header class="cmast">
   <div class="k"><span data-en="The Recording Studio · Learn a song" data-es="El estudio de grabación · Aprende una canción">The Recording Studio · Learn a song</span></div>
-  <h1><span data-en="Build Runaway, one part at a time" data-es="Arma Runaway, una parte a la vez">Build Runaway, one part at a time</span></h1>
-  <p class="cdeck"><span data-en="A famous song from 2010, built in our Studio. One note, four chords, a big slow beat, a bass that walks down. You make each part, then put them together." data-es="Una canción famosa de 2010, armada en nuestro estudio. Una nota, cuatro acordes, un ritmo lento y fuerte, un bajo que baja. Haces cada parte y luego las juntas.">A famous song from 2010, built in our Studio. One note, four chords, a big slow beat, a bass that walks down. You make each part, then put them together.</span></p>
+  <h1><span data-en="Make Runaway: the instrumental" data-es="Haz Runaway: la versión instrumental">Make Runaway: the instrumental</span></h1>
+  <p class="cdeck"><span data-en="The song with no voice, made by you. Five parts, one at a time. Tick each box as you go." data-es="La canción sin voz, hecha por ti. Cinco partes, una a la vez. Marca cada casilla al avanzar.">The song with no voice, made by you. Five parts, one at a time. Tick each box as you go.</span></p>
   <p class="hubline no-print"><a href="/the-studio"><span data-en="← The Recording Studio" data-es="← El estudio de grabación">← The Recording Studio</span></a></p>
 </header>
 
-<section class="part" id="start">
-  <h2><span class="num">0</span><span data-en="Before you start" data-es="Antes de empezar">Before you start</span></h2>
-  <p><span data-en="Runaway is by Kanye West, from 2010. Listen to it first, so your ears know where you are going." data-es="Runaway es de Kanye West, de 2010. Escúchala primero, para que tus oídos sepan adónde vas.">Runaway is by Kanye West, from 2010. Listen to it first, so your ears know where you are going.</span></p>
-  <p><span data-en="The recording has grown-up words. Listen with a grown-up, or find the instrumental: the music with no voice. This lesson is about the music only." data-es="La grabación tiene palabras para adultos. Escúchala con un adulto, o busca la versión instrumental: la música sin voz. Esta lección es solo sobre la música.">The recording has grown-up words. Listen with a grown-up, or find the instrumental: the music with no voice. This lesson is about the music only.</span></p>
-  <p><span data-en="Go one part at a time. Take a break whenever you like. Every part sounds good on its own." data-es="Ve una parte a la vez. Descansa cuando quieras. Cada parte suena bien sola.">Go one part at a time. Take a break whenever you like. Every part sounds good on its own.</span></p>
-  <div class="ask"><label for="q0"><span data-en="Listen to the first minute. What do you hear first?" data-es="Escucha el primer minuto. ¿Qué oyes primero?">Listen to the first minute. What do you hear first?</span></label><textarea id="q0"></textarea></div>
+<section class="part" id="plan">
+  <h2><span class="num">0</span><span data-en="The plan: 5 rounds" data-es="El plan: 5 vueltas">The plan: 5 rounds</span></h2>
+
+<p><span data-en="A round is the four chords, one time through: 16 beats. The song is 5 rounds. Each round, something new joins in." data-es="Una vuelta son los cuatro acordes, una vez: 16 pulsos. La canción tiene 5 vueltas. En cada vuelta entra algo nuevo.">A round is the four chords, one time through: 16 beats. The song is 5 rounds. Each round, something new joins in.</span></p>
+
+<table class="plan"><thead><tr><th></th><th scope="col">1</th><th scope="col">2</th><th scope="col">3</th><th scope="col">4</th><th scope="col">5</th></tr></thead><tbody>
+<tr><th scope="row"><span data-en="The high E" data-es="El Mi agudo">The high E</span></th><td class="on" aria-label="on">●</td><td class="on" aria-label="on">●</td><td class="on" aria-label="on">●</td><td class="on" aria-label="on">●</td><td class="on" aria-label="on">●</td></tr>
+<tr><th scope="row"><span data-en="Chords" data-es="Acordes">Chords</span></th><td aria-label="off"></td><td class="on" aria-label="on">●</td><td class="on" aria-label="on">●</td><td class="on" aria-label="on">●</td><td class="on" aria-label="on">●</td></tr>
+<tr><th scope="row"><span data-en="Drums" data-es="Batería">Drums</span></th><td aria-label="off"></td><td aria-label="off"></td><td class="on" aria-label="on">●</td><td class="on" aria-label="on">●</td><td class="on" aria-label="on">●</td></tr>
+<tr><th scope="row"><span data-en="Bass" data-es="Bajo">Bass</span></th><td aria-label="off"></td><td aria-label="off"></td><td class="on" aria-label="on">●</td><td class="on" aria-label="on">●</td><td class="on" aria-label="on">●</td></tr>
+<tr><th scope="row"><span data-en="Strings" data-es="Cuerdas">Strings</span></th><td aria-label="off"></td><td aria-label="off"></td><td aria-label="off"></td><td aria-label="off"></td><td class="on" aria-label="on">●</td></tr>
+</tbody></table>
+
+<p class="small"><span data-en="The rounds across the top. A dot means that part plays." data-es="Las vueltas van arriba. Un punto quiere decir que esa parte suena.">The rounds across the top. A dot means that part plays.</span></p>
+
+<p class="small"><span data-en="The recording has grown-up words, so listen to the instrumental first, or with a grown-up." data-es="La grabación tiene palabras para adultos: escucha primero la versión instrumental, o con un adulto.">The recording has grown-up words, so listen to the instrumental first, or with a grown-up.</span></p>
+
 </section>
 
 <section class="part" id="set">
-  <h2><span class="num">1</span><span data-en="Set the song: 87 · E major" data-es="Ajusta la canción: 87 · Mi mayor">Set the song: 87 · E major</span></h2>
-  <p><span data-en="Runaway moves slowly: about 87 beats a minute. Its home note is E, and it sounds bright: major." data-es="Runaway va despacio: unos 87 pulsos por minuto. Su nota casa es Mi, y suena brillante: mayor.">Runaway moves slowly: about 87 beats a minute. Its home note is E, and it sounds bright: major.</span></p>
-  <p><span data-en="Press the button. Every room in the Studio will open at 87 · E major, so all your parts line up." data-es="Pulsa el botón. Cada sala del estudio se abrirá en 87 · Mi mayor, y todas tus partes encajarán.">Press the button. Every room in the Studio will open at 87 · E major, so all your parts line up.</span></p>
-  <div class="go no-print">
-    <button type="button" class="btn" id="setSong"><span data-en="Set the Studio to 87 · E major" data-es="Pon el estudio en 87 · Mi mayor">Set the Studio to 87 · E major</span></button><span class="st" id="setSt" role="status" aria-live="polite"></span>
+  <h2><span class="num">1</span><span data-en="Set the song" data-es="Ajusta la canción">Set the song</span></h2>
+
+<p><span data-en="Runaway is slow (87 beats a minute) and its home note is E." data-es="Runaway es lenta (87 pulsos por minuto) y su nota casa es Mi.">Runaway is slow (87 beats a minute) and its home note is E.</span></p>
+
+<div class="go no-print"><button type="button" class="btn" id="setSong"><span data-en="Set the Studio to 87 · E major" data-es="Pon el estudio en 87 · Mi mayor">Set the Studio to 87 · E major</span></button><span class="st" id="setSt" role="status" aria-live="polite"></span></div>
+
+<ul class="ticks">
+<li><input type="checkbox" id="t1"><label for="t1"><span data-en="Press the button above. (On paper: in ♩ Song, set 87 and E · Major.)" data-es="Pulsa el botón de arriba. (En papel: en ♩ Canción, pon 87 y Mi · Mayor.)">Press the button above. (On paper: in ♩ Song, set 87 and E · Major.)</span></label></li>
+<li><input type="checkbox" id="t2"><label for="t2"><span data-en="Open the Studio. Tap My Track, then ♩ Song. Check it says ♫ Play My Track while I record: On." data-es="Abre el estudio. Toca Mi pista y luego ♩ Canción. Revisa que diga ♫ Tocar mi pista mientras grabo: Sí.">Open the Studio. Tap My Track, then ♩ Song. Check it says ♫ Play My Track while I record: On.</span></label></li>
+</ul>
+
+<p class="small"><span data-en="That switch is the secret: you hear what you already made while you record the next part, and every part lands in the right place." data-es="Ese interruptor es el secreto: oyes lo que ya hiciste mientras grabas la siguiente parte, y cada parte cae en su lugar.">That switch is the secret: you hear what you already made while you record the next part, and every part lands in the right place.</span></p>
+
+</section>
+
+<section class="part" id="chords">
+  <h2><span class="num">2</span><span data-en="The chords" data-es="Los acordes">The chords</span></h2>
+  <p><span class="take"><span data-en="Piano · rounds 1–5" data-es="Piano · vueltas 1–5">Piano · rounds 1–5</span></span></p>
+
+<div class="chords">
+    <div class="chord"><div class="pad"><span data-en="Pad 1" data-es="Pad 1">Pad 1</span></div><div class="nm">E</div></div>
+    <div class="chord"><div class="pad"><span data-en="Pad 5" data-es="Pad 5">Pad 5</span></div><div class="nm">B</div></div>
+    <div class="chord"><div class="pad"><span data-en="Pad 6" data-es="Pad 6">Pad 6</span></div><div class="nm">C♯m</div></div>
+    <div class="chord"><div class="pad"><span data-en="Pad 4" data-es="Pad 4">Pad 4</span></div><div class="nm">A</div></div>
   </div>
-  <p class="small"><span data-en="On paper: in each room, set Tempo to 87 and Key to E · Major." data-es="En papel: en cada sala, pon el Tempo en 87 y el Tono en Mi · Mayor.">On paper: in each room, set Tempo to 87 and Key to E · Major.</span></p>
+
+<p class="room"><a href="/piano"><span data-en="Open the Piano" data-es="Abre el piano">Open the Piano</span></a></p>
+
+<ul class="ticks">
+<li><input type="checkbox" id="t3"><label for="t3"><span data-en="Press Clear, then Make my own. Tap pads 1, 5, 6, 4." data-es="Pulsa Borrar y luego Hacer el mío. Toca los pads 1, 5, 6, 4.">Press Clear, then Make my own. Tap pads 1, 5, 6, 4.</span></label></li>
+<li><input type="checkbox" id="t4"><label for="t4"><span data-en="How the chords play: Pulse · four beats." data-es="Cómo suenan los acordes: Pulso · cuatro tiempos.">How the chords play: Pulse · four beats.</span></label></li>
+<li><input type="checkbox" id="t5"><label for="t5"><span data-en="Press ● Record. Then press Play the chords." data-es="Pulsa ● Grabar. Luego pulsa Tocar los acordes.">Press ● Record. Then press Play the chords.</span></label></li>
+<li><input type="checkbox" id="t6"><label for="t6"><span data-en="Let them go round 5 times. Count a finger each time E comes back." data-es="Déjalos dar 5 vueltas. Cuenta un dedo cada vez que vuelve el Mi.">Let them go round 5 times. Count a finger each time E comes back.</span></label></li>
+<li><input type="checkbox" id="t7"><label for="t7"><span data-en="Press ■ Stop, then + Add to My Track. Stop the chords." data-es="Pulsa ■ Parar y luego + Añadir a mi pista. Para los acordes.">Press ■ Stop, then + Add to My Track. Stop the chords.</span></label></li>
+</ul>
+
 </section>
 
 <section class="part" id="note">
-  <h2><span class="num">2</span><span data-en="The famous note" data-es="La nota famosa">The famous note</span></h2>
-  <p><span data-en="The song starts with one piano note, played again and again. It is a high E." data-es="La canción empieza con una sola nota de piano, tocada una y otra vez. Es un Mi agudo.">The song starts with one piano note, played again and again. It is a high E.</span></p>
-  <svg class="keys" viewBox="0 0 280 120" role="img" aria-label="Piano keys. E is the white key just after the two black keys.">
+  <h2><span class="num">3</span><span data-en="The high E" data-es="El Mi agudo">The high E</span></h2>
+  <p><span class="take"><span data-en="Piano · rounds 1–5" data-es="Piano · vueltas 1–5">Piano · rounds 1–5</span></span></p>
+
+<p><span data-en="The famous sound of the song: one note, again and again." data-es="El sonido famoso de la canción: una nota, una y otra vez.">The famous sound of the song: one note, again and again.</span></p>
+
+<svg class="keys" viewBox="0 0 280 120" role="img" aria-label="Piano keys. E is the white key just after the two black keys.">
     <rect class="w" x="0" y="0" width="40" height="118"/><rect class="w" x="40" y="0" width="40" height="118"/>
     <rect class="w lit" x="80" y="0" width="40" height="118"/><rect class="w" x="120" y="0" width="40" height="118"/>
     <rect class="w" x="160" y="0" width="40" height="118"/><rect class="w" x="200" y="0" width="40" height="118"/>
@@ -181,133 +221,107 @@ footer.foot{margin-top:24px; font-size:.92rem; color:var(--ink-soft);}
     <text x="14" y="108">C</text><text x="54" y="108">D</text><text x="94" y="108">E</text><text x="134" y="108">F</text>
     <text x="174" y="108">G</text><text x="214" y="108">A</text><text x="254" y="108">B</text>
   </svg>
-  <p class="small"><span data-en="Find E: the white key just after the two black keys." data-es="Encuentra el Mi: la tecla blanca justo después de las dos teclas negras.">Find E: the white key just after the two black keys.</span></p>
-  <p class="room"><a href="/piano"><span data-en="Open the Piano" data-es="Abre el piano">Open the Piano</span></a></p>
-  <ol class="do">
-    <li><span data-en="Instrument: Grand piano." data-es="Instrumento: Piano de cola.">Instrument: Grand piano.</span></li>
-    <li><span data-en="Pick an E high on the keys. Tap it once on every beat. Count out loud: 1, 2, 3, 4." data-es="Elige un Mi agudo en las teclas. Tócalo una vez en cada pulso. Cuenta en voz alta: 1, 2, 3, 4.">Pick an E high on the keys. Tap it once on every beat. Count out loud: 1, 2, 3, 4.</span></li>
-    <li><span data-en="Keep it even, like a clock. Play it for 8 bars: 32 taps." data-es="Mantenlo parejo, como un reloj. Tócalo 8 compases: 32 toques.">Keep it even, like a clock. Play it for 8 bars: 32 taps.</span></li>
-    <li><span data-en="When it feels steady, press ● Record, play your 8 bars, then ■ Stop. Press + Add to My Track." data-es="Cuando se sienta firme, pulsa ● Grabar, toca tus 8 compases y luego ■ Parar. Pulsa + Añadir a mi pista.">When it feels steady, press ● Record, play your 8 bars, then ■ Stop. Press + Add to My Track.</span></li>
-  </ol>
-  <div class="why"><b><span data-en="Why one note works:" data-es="Por qué funciona una sola nota:">Why one note works:</span></b> <span data-en="A single note, repeated, makes you wait. The listener leans in. Big songs often start small." data-es="Una sola nota repetida te hace esperar. Quien escucha se acerca. Las canciones grandes muchas veces empiezan pequeñas.">A single note, repeated, makes you wait. The listener leans in. Big songs often start small.</span></div>
-  <div class="ask"><label for="q2"><span data-en="How did it feel to play only one note? Easy, hard, calm?" data-es="¿Cómo se sintió tocar una sola nota? ¿Fácil, difícil, tranquilo?">How did it feel to play only one note? Easy, hard, calm?</span></label><textarea id="q2"></textarea></div>
-</section>
 
-<section class="part" id="chords">
-  <h2><span class="num">3</span><span data-en="The four chords: 1 5 6 4" data-es="Los cuatro acordes: 1 5 6 4">The four chords: 1 5 6 4</span></h2>
-  <p><span data-en="Under the high E, the piano plays four chords. Each one lasts one bar. Then they go round again." data-es="Debajo del Mi agudo, el piano toca cuatro acordes. Cada uno dura un compás. Luego vuelven a empezar.">Under the high E, the piano plays four chords. Each one lasts one bar. Then they go round again.</span></p>
-  <div class="chords">
-    <div class="chord"><div class="pad"><span data-en="Pad 1" data-es="Pad 1">Pad 1</span></div><div class="nm">E</div><div class="nt"><b>E</b> G♯ B</div></div>
-    <div class="chord"><div class="pad"><span data-en="Pad 5" data-es="Pad 5">Pad 5</span></div><div class="nm">B</div><div class="nt">B D♯ F♯</div></div>
-    <div class="chord"><div class="pad"><span data-en="Pad 6" data-es="Pad 6">Pad 6</span></div><div class="nm">C♯m</div><div class="nt">C♯ <b>E</b> G♯</div></div>
-    <div class="chord"><div class="pad"><span data-en="Pad 4" data-es="Pad 4">Pad 4</span></div><div class="nm">A</div><div class="nt">A C♯ <b>E</b></div></div>
-  </div>
-  <p class="room"><a href="/piano"><span data-en="In the Piano" data-es="En el piano">In the Piano</span></a></p>
-  <ol class="do">
-    <li><span data-en="Key E · Major · Tempo 87." data-es="Tono Mi · Mayor · Tempo 87.">Key E · Major · Tempo 87.</span></li>
-    <li><span data-en="How the chords play: Pulse · four beats." data-es="Cómo suenan los acordes: Pulso · cuatro tiempos.">How the chords play: Pulse · four beats.</span></li>
-    <li><span data-en="Press Clear, then Make my own and tap pads 1, 5, 6, 4." data-es="Pulsa Borrar, luego Hacer el mío y toca los pads 1, 5, 6, 4.">Press Clear, then Make my own and tap pads 1, 5, 6, 4.</span></li>
-    <li><span data-en="Press Play the chords. Tap the high E on every beat over them." data-es="Pulsa Tocar los acordes. Toca el Mi agudo en cada pulso encima.">Press Play the chords. Tap the high E on every beat over them.</span></li>
-    <li><span data-en="Record 8 bars (the four chords, two times round) and add it to My Track." data-es="Graba 8 compases (los cuatro acordes, dos vueltas) y añádelos a mi pista.">Record 8 bars (the four chords, two times round) and add it to My Track.</span></li>
-  </ol>
-  <div class="why"><b><span data-en="Why the high E fits:" data-es="Por qué encaja el Mi agudo:">Why the high E fits:</span></b> <span data-en="Look at the notes. E is inside three of the four chords. Over B it rubs a little and wants to move on. That small pull keeps the song going." data-es="Mira las notas. El Mi está dentro de tres de los cuatro acordes. Sobre el Si roza un poco y quiere seguir. Ese pequeño tirón mantiene la canción en marcha.">Look at the notes. E is inside three of the four chords. Over B it rubs a little and wants to move on. That small pull keeps the song going.</span></div>
-  <p class="small"><span data-en="You know these chords already: 1 5 6 4 is the Pop anthem pattern, in a new key. Many players put D♯ at the bottom of the B chord (B/D♯). The bass does that for us in part 5." data-es="Ya conoces estos acordes: 1 5 6 4 es el patrón del Himno pop, en otro tono. Muchos músicos ponen Re♯ abajo del acorde de Si (Si/Re♯). El bajo lo hace por nosotros en la parte 5.">You know these chords already: 1 5 6 4 is the Pop anthem pattern, in a new key. Many players put D♯ at the bottom of the B chord (B/D♯). The bass does that for us in part 5.</span></p>
-  <div class="ask"><label for="q3"><span data-en="Which chord sounds the saddest to you? Why?" data-es="¿Qué acorde te suena más triste? ¿Por qué?">Which chord sounds the saddest to you? Why?</span></label><textarea id="q3"></textarea></div>
+<p class="small"><span data-en="E is the white key just after the two black keys. Pick one high up." data-es="El Mi es la tecla blanca justo después de las dos teclas negras. Elige uno agudo.">E is the white key just after the two black keys. Pick one high up.</span></p>
+
+<ul class="ticks">
+<li><input type="checkbox" id="t8"><label for="t8"><span data-en="Press ● Record. You hear 4 clicks, then your chords." data-es="Pulsa ● Grabar. Oyes 4 clics y luego tus acordes.">Press ● Record. You hear 4 clicks, then your chords.</span></label></li>
+<li><input type="checkbox" id="t9"><label for="t9"><span data-en="Tap the high E once on every beat, until the chords end." data-es="Toca el Mi agudo una vez en cada pulso, hasta que terminen los acordes.">Tap the high E once on every beat, until the chords end.</span></label></li>
+<li><input type="checkbox" id="t10"><label for="t10"><span data-en="Press ■ Stop, then + Add to My Track." data-es="Pulsa ■ Parar y luego + Añadir a mi pista.">Press ■ Stop, then + Add to My Track.</span></label></li>
+</ul>
+
+<p class="small"><span data-en="A tap out of place? Record it again. Practice first if you like." data-es="¿Un toque fuera de lugar? Grábalo otra vez. Practica antes si quieres.">A tap out of place? Record it again. Practice first if you like.</span></p>
+
 </section>
 
 <section class="part" id="drums">
-  <h2><span class="num">4</span><span data-en="The drums: big and slow" data-es="La batería: fuerte y lenta">The drums: big and slow</span></h2>
-  <p><span data-en="The drums come in hard after the piano. A heavy kick, a loud snare and clap on beats 2 and 4, and a steady hi-hat. Here is a beat in that style, made for this lesson." data-es="La batería entra fuerte después del piano. Un bombo pesado, una caja y una palmada fuertes en los pulsos 2 y 4, y un charles parejo. Aquí tienes un ritmo en ese estilo, hecho para esta lección.">The drums come in hard after the piano. A heavy kick, a loud snare and clap on beats 2 and 4, and a steady hi-hat. Here is a beat in that style, made for this lesson.</span></p>
-  <div class="gridwrap" tabindex="0" aria-label="Drum grid, 16 steps">
-    <table class="grid" id="grid"></table>
-  </div>
-  <p class="legend"><span data-en="A filled step is a hit. The orange steps are the loud ones. Each beat is 4 steps: beats start on steps 1, 5, 9 and 13." data-es="Un paso lleno es un golpe. Los pasos naranjas son los fuertes. Cada pulso tiene 4 pasos: los pulsos empiezan en los pasos 1, 5, 9 y 13.">A filled step is a hit. The orange steps are the loud ones. Each beat is 4 steps: beats start on steps 1, 5, 9 and 13.</span></p>
-  <p class="room"><a href="/drum-machine"><span data-en="Open the Drum Machine" data-es="Abre la caja de ritmos">Open the Drum Machine</span></a></p>
-  <ol class="do">
-    <li><span data-en="Tempo 87. Bank A: the drums. Start from an empty loop: press Clear the loop." data-es="Tempo 87. Banco A: la batería. Empieza con un bucle vacío: pulsa Borrar el bucle.">Tempo 87. Bank A: the drums. Start from an empty loop: press Clear the loop.</span></li>
-    <li><span data-en="Kick first (pad 1). Tap the steps in the grid: 1, 8 and 11." data-es="Primero el bombo (pad 1). Toca los pasos de la cuadrícula: 1, 8 y 11.">Kick first (pad 1). Tap the steps in the grid: 1, 8 and 11.</span></li>
-    <li><span data-en="Snare (pad 2) and Clap (pad 5): steps 5 and 13. Those are beats 2 and 4." data-es="Caja (pad 2) y Palmada (pad 5): pasos 5 y 13. Son los pulsos 2 y 4.">Snare (pad 2) and Clap (pad 5): steps 5 and 13. Those are beats 2 and 4.</span></li>
-    <li><span data-en="Closed hat (pad 3): every odd step, 1, 3, 5 … 15." data-es="Charles cerrado (pad 3): cada paso impar, 1, 3, 5 … 15.">Closed hat (pad 3): every odd step, 1, 3, 5 … 15.</span></li>
-    <li><span data-en="Press ▶ Play. Nod your head on the snare. Change the kit if you want a heavier sound." data-es="Pulsa ▶ Tocar. Mueve la cabeza con la caja. Cambia la batería si quieres un sonido más pesado.">Press ▶ Play. Nod your head on the snare. Change the kit if you want a heavier sound.</span></li>
-    <li><span data-en="Press + Add the loop to My Track." data-es="Pulsa + Añadir el bucle a mi pista.">Press + Add the loop to My Track.</span></li>
-  </ol>
-  <div class="why"><b><span data-en="Why it hits hard:" data-es="Por qué golpea fuerte:">Why it hits hard:</span></b> <span data-en="Slow songs leave space between the hits. Each kick and snare has room to ring, so it sounds bigger." data-es="Las canciones lentas dejan espacio entre los golpes. Cada bombo y cada caja tiene lugar para sonar, y por eso suena más grande.">Slow songs leave space between the hits. Each kick and snare has room to ring, so it sounds bigger.</span></div>
-  <p class="small"><span data-en="Extra: on bank B · Chords you can tap the same pads 1, 5, 6, 4. The Drum Machine plays chords too." data-es="Extra: en el banco B · Acordes puedes tocar los mismos pads 1, 5, 6, 4. La caja de ritmos también toca acordes.">Extra: on bank B · Chords you can tap the same pads 1, 5, 6, 4. The Drum Machine plays chords too.</span></p>
-  <div class="ask"><label for="q4"><span data-en="Take the kick away for one bar, then bring it back. What happens?" data-es="Quita el bombo un compás y luego vuélvelo a poner. ¿Qué pasa?">Take the kick away for one bar, then bring it back. What happens?</span></label><textarea id="q4"></textarea></div>
+  <h2><span class="num">4</span><span data-en="The drums" data-es="La batería">The drums</span></h2>
+  <p><span class="take"><span data-en="Drum Machine · rounds 3–5" data-es="Caja de ritmos · vueltas 3–5">Drum Machine · rounds 3–5</span></span></p>
+
+<div class="gridwrap" tabindex="0" aria-label="Drum grid, 16 steps"><table class="grid" id="grid"></table></div>
+
+<p class="legend"><span data-en="Tap the filled squares. Orange ones are the loud hits." data-es="Toca los cuadros llenos. Los naranjas son los golpes fuertes.">Tap the filled squares. Orange ones are the loud hits.</span></p>
+
+<p class="room"><a href="/drum-machine"><span data-en="Open the Drum Machine" data-es="Abre la caja de ritmos">Open the Drum Machine</span></a></p>
+
+<ul class="ticks">
+<li><input type="checkbox" id="t11"><label for="t11"><span data-en="Press Clear the loop. Tap the squares from the grid above." data-es="Pulsa Borrar el bucle. Toca los cuadros de la cuadrícula de arriba.">Press Clear the loop. Tap the squares from the grid above.</span></label></li>
+<li><input type="checkbox" id="t12"><label for="t12"><span data-en="Press ▶ Play. Does it match? Leave it playing." data-es="Pulsa ▶ Tocar. ¿Suena igual? Déjalo sonando.">Press ▶ Play. Does it match? Leave it playing.</span></label></li>
+<li><input type="checkbox" id="t13"><label for="t13"><span data-en="In ♩ Song, set My Track starts to From bar 9. That is round 3." data-es="En ♩ Canción, pon Mi pista empieza en Desde el compás 9. Es la vuelta 3.">In ♩ Song, set My Track starts to From bar 9. That is round 3.</span></label></li>
+<li><input type="checkbox" id="t14"><label for="t14"><span data-en="Press ● Record. Let it play until your song ends." data-es="Pulsa ● Grabar. Déjalo sonar hasta que termine tu canción.">Press ● Record. Let it play until your song ends.</span></label></li>
+<li><input type="checkbox" id="t15"><label for="t15"><span data-en="Press ■ Stop, then + Add to My Track." data-es="Pulsa ■ Parar y luego + Añadir a mi pista.">Press ■ Stop, then + Add to My Track.</span></label></li>
+</ul>
+
 </section>
 
 <section class="part" id="bass">
-  <h2><span class="num">5</span><span data-en="The bass walks down" data-es="El bajo baja caminando">The bass walks down</span></h2>
-  <p><span data-en="Under the chords, the low notes step down: E, D♯, C♯, then a jump to A. One note for each bar. Hold each one long." data-es="Debajo de los acordes, las notas graves bajan: Mi, Re♯, Do♯, y luego un salto a La. Una nota por compás. Mantén cada una larga.">Under the chords, the low notes step down: E, D♯, C♯, then a jump to A. One note for each bar. Hold each one long.</span></p>
-  <div class="chords">
-    <div class="chord"><div class="pad"><span data-en="Bar 1" data-es="Compás 1">Bar 1</span></div><div class="nm">E</div><div class="nt"><span data-en="A string, fret 7" data-es="Cuerda La, traste 7">A string, fret 7</span></div></div>
-    <div class="chord"><div class="pad"><span data-en="Bar 2" data-es="Compás 2">Bar 2</span></div><div class="nm">D♯</div><div class="nt"><span data-en="A string, fret 6" data-es="Cuerda La, traste 6">A string, fret 6</span></div></div>
-    <div class="chord"><div class="pad"><span data-en="Bar 3" data-es="Compás 3">Bar 3</span></div><div class="nm">C♯</div><div class="nt"><span data-en="A string, fret 4" data-es="Cuerda La, traste 4">A string, fret 4</span></div></div>
-    <div class="chord"><div class="pad"><span data-en="Bar 4" data-es="Compás 4">Bar 4</span></div><div class="nm">A</div><div class="nt"><span data-en="A string, open" data-es="Cuerda La, al aire">A string, open</span></div></div>
+  <h2><span class="num">5</span><span data-en="The bass" data-es="El bajo">The bass</span></h2>
+  <p><span class="take"><span data-en="Bass · rounds 3–5" data-es="Bajo · vueltas 3–5">Bass · rounds 3–5</span></span></p>
+
+<p><span data-en="Four notes on one string, walking down. Change note when the chord changes." data-es="Cuatro notas en una cuerda, bajando. Cambia de nota cuando cambia el acorde.">Four notes on one string, walking down. Change note when the chord changes.</span></p>
+
+<div class="chords">
+    <div class="chord"><div class="pad"><span data-en="A string · fret" data-es="Cuerda La · traste">A string · fret</span></div><div class="nm">7</div><div class="nt">E</div></div>
+    <div class="chord"><div class="pad"><span data-en="A string · fret" data-es="Cuerda La · traste">A string · fret</span></div><div class="nm">6</div><div class="nt">D♯</div></div>
+    <div class="chord"><div class="pad"><span data-en="A string · fret" data-es="Cuerda La · traste">A string · fret</span></div><div class="nm">4</div><div class="nt">C♯</div></div>
+    <div class="chord"><div class="pad"><span data-en="A string · fret" data-es="Cuerda La · traste">A string · fret</span></div><div class="nm">0</div><div class="nt">A</div></div>
   </div>
-  <p class="room"><a href="/bass"><span data-en="Open the Bass" data-es="Abre el bajo">Open the Bass</span></a></p>
-  <ol class="do">
-    <li><span data-en="All four notes live on one string: the A string. Play fret 7, 6, 4, then the open string." data-es="Las cuatro notas viven en una sola cuerda: la cuerda La. Toca el traste 7, 6, 4 y luego la cuerda al aire.">All four notes live on one string: the A string. Play fret 7, 6, 4, then the open string.</span></li>
-    <li><span data-en="Turn on Play with my drum beat, and play one note at the start of each bar." data-es="Activa Tocar con mi ritmo de batería, y toca una nota al empezar cada compás.">Turn on Play with my drum beat, and play one note at the start of each bar.</span></li>
-    <li><span data-en="Play it on the same beat as the first kick. Bass and kick together hit hardest." data-es="Tócala en el mismo pulso que el primer bombo. Bajo y bombo juntos golpean más fuerte.">Play it on the same beat as the first kick. Bass and kick together hit hardest.</span></li>
-    <li><span data-en="Record 16 bars and add it to My Track." data-es="Graba 16 compases y añádelos a mi pista.">Record 16 bars and add it to My Track.</span></li>
-  </ol>
-  <div class="why"><b><span data-en="Why it walks down:" data-es="Por qué baja:">Why it walks down:</span></b> <span data-en="Each step down is the smallest move there is. Notes that fall step by step feel like walking away. That is the feeling of the song." data-es="Cada paso hacia abajo es el movimiento más pequeño que hay. Las notas que caen paso a paso se sienten como alejarse caminando. Esa es la sensación de la canción.">Each step down is the smallest move there is. Notes that fall step by step feel like walking away. That is the feeling of the song.</span></div>
-  <div class="ask"><label for="q5"><span data-en="Why do you think the song's name fits this bass line?" data-es="¿Por qué crees que el nombre de la canción le queda a esta línea de bajo?">Why do you think the song's name fits this bass line?</span></label><textarea id="q5"></textarea></div>
+
+<p class="small"><span data-en="0 means the open string: no finger." data-es="0 quiere decir la cuerda al aire: sin dedo.">0 means the open string: no finger.</span></p>
+
+<p class="room"><a href="/bass"><span data-en="Open the Bass" data-es="Abre el bajo">Open the Bass</span></a></p>
+
+<ul class="ticks">
+<li><input type="checkbox" id="t16"><label for="t16"><span data-en="Practice: A string, fret 7, 6, 4, then open. Slowly." data-es="Practica: cuerda La, traste 7, 6, 4 y luego al aire. Despacio.">Practice: A string, fret 7, 6, 4, then open. Slowly.</span></label></li>
+<li><input type="checkbox" id="t17"><label for="t17"><span data-en="Press ● Record. My Track starts at bar 9, as before." data-es="Pulsa ● Grabar. Mi pista empieza en el compás 9, como antes.">Press ● Record. My Track starts at bar 9, as before.</span></label></li>
+<li><input type="checkbox" id="t18"><label for="t18"><span data-en="One note each time the chord changes. Let it ring. Keep going to the end." data-es="Una nota cada vez que cambia el acorde. Déjala sonar. Sigue hasta el final.">One note each time the chord changes. Let it ring. Keep going to the end.</span></label></li>
+<li><input type="checkbox" id="t19"><label for="t19"><span data-en="Press ■ Stop, then + Add to My Track." data-es="Pulsa ■ Parar y luego + Añadir a mi pista.">Press ■ Stop, then + Add to My Track.</span></label></li>
+</ul>
+
 </section>
 
 <section class="part" id="strings">
-  <h2><span class="num">6</span><span data-en="The ending: strings" data-es="El final: cuerdas">The ending: strings</span></h2>
-  <p><span data-en="The song ends with a long part for strings, like a cello, and a voice changed by an effect until it sounds like an instrument. Ours keeps the strings." data-es="La canción termina con una parte larga de cuerdas, como un chelo, y una voz cambiada con un efecto hasta que suena como un instrumento. La nuestra se queda con las cuerdas.">The song ends with a long part for strings, like a cello, and a voice changed by an effect until it sounds like an instrument. Ours keeps the strings.</span></p>
-  <p class="room"><a href="/band"><span data-en="Open the Band" data-es="Abre la banda">Open the Band</span></a></p>
-  <ol class="do">
-    <li><span data-en="Pick a strings sound: Cello or String section." data-es="Elige un sonido de cuerdas: Chelo o Sección de cuerdas.">Pick a strings sound: Cello or String section.</span></li>
-    <li><span data-en="Play the same four chords, 1 5 6 4. Hold each one for the whole bar." data-es="Toca los mismos cuatro acordes, 1 5 6 4. Mantén cada uno todo el compás.">Play the same four chords, 1 5 6 4. Hold each one for the whole bar.</span></li>
-    <li><span data-en="Record 8 bars and add it to My Track." data-es="Graba 8 compases y añádelos a mi pista.">Record 8 bars and add it to My Track.</span></li>
-  </ol>
+  <h2><span class="num">6</span><span data-en="The strings" data-es="Las cuerdas">The strings</span></h2>
+  <p><span class="take"><span data-en="Band · round 5" data-es="Banda · vuelta 5">Band · round 5</span></span></p>
+
+<p class="room"><a href="/band"><span data-en="Open the Band" data-es="Abre la banda">Open the Band</span></a></p>
+
+<ul class="ticks">
+<li><input type="checkbox" id="t20"><label for="t20"><span data-en="Instrument: the cellos, or the string section." data-es="Instrumento: los violonchelos, o la sección de cuerdas.">Instrument: the cellos, or the string section.</span></label></li>
+<li><input type="checkbox" id="t21"><label for="t21"><span data-en="In ♩ Song, set My Track starts to From bar 17. That is round 5." data-es="En ♩ Canción, pon Mi pista empieza en Desde el compás 17. Es la vuelta 5.">In ♩ Song, set My Track starts to From bar 17. That is round 5.</span></label></li>
+<li><input type="checkbox" id="t22"><label for="t22"><span data-en="Press ● Record. Hold pads 1, 5, 6, 4: one for each chord change." data-es="Pulsa ● Grabar. Mantén los pads 1, 5, 6, 4: uno por cada cambio de acorde.">Press ● Record. Hold pads 1, 5, 6, 4: one for each chord change.</span></label></li>
+<li><input type="checkbox" id="t23"><label for="t23"><span data-en="Press ■ Stop, then + Add to My Track." data-es="Pulsa ■ Parar y luego + Añadir a mi pista.">Press ■ Stop, then + Add to My Track.</span></label></li>
+</ul>
+
 </section>
 
-<section class="part" id="mix">
-  <h2><span class="num">7</span><span data-en="Put it together" data-es="Júntalo todo">Put it together</span></h2>
-  <p><span data-en="Now every part is on My Track. Line them up like this. Count in bars." data-es="Ahora cada parte está en mi pista. Ordénalas así. Cuenta en compases.">Now every part is on My Track. Line them up like this. Count in bars.</span></p>
-  <div class="map">
-    <div><b><span data-en="Bars 1–8" data-es="Compases 1–8">Bars 1–8</span></b><span data-en="Intro: the high E alone." data-es="Intro: el Mi agudo solo.">Intro: the high E alone.</span></div>
-    <div><b><span data-en="Bars 9–16" data-es="Compases 9–16">Bars 9–16</span></b><span data-en="The piano chords come in, with the high E on top." data-es="Entran los acordes del piano, con el Mi agudo encima.">The piano chords come in, with the high E on top.</span></div>
-    <div><b><span data-en="Bars 17–32" data-es="Compases 17–32">Bars 17–32</span></b><span data-en="Drop the drums and the bass in. The big part." data-es="Entran la batería y el bajo. La parte grande.">Drop the drums and the bass in. The big part.</span></div>
-    <div><b><span data-en="Bars 33–36" data-es="Compases 33–36">Bars 33–36</span></b><span data-en="Take a breath: drums out, piano only." data-es="Respira: sin batería, solo piano.">Take a breath: drums out, piano only.</span></div>
-    <div><b><span data-en="Bars 37–44" data-es="Compases 37–44">Bars 37–44</span></b><span data-en="Everything back in." data-es="Vuelve todo.">Everything back in.</span></div>
-    <div><b><span data-en="Bars 45–52" data-es="Compases 45–52">Bars 45–52</span></b><span data-en="The ending: strings, with a long fade out." data-es="El final: cuerdas, con una salida suave larga.">The ending: strings, with a long fade out.</span></div>
-  </div>
-  <p class="room"><a href="/mixing-desk"><span data-en="Open the Mixing Desk" data-es="Abre la mesa de mezclas">Open the Mixing Desk</span></a></p>
-  <ol class="do">
-    <li><span data-en="Use Starts at bar to move each part to its place. Use Plays to repeat a loop (the drum loop plays 4 times in bars 17–32)." data-es="Usa Empieza en el compás para poner cada parte en su lugar. Usa Suena para repetir un bucle (el bucle de batería suena 4 veces en los compases 17–32).">Use Starts at bar to move each part to its place. Use Plays to repeat a loop (the drum loop plays 4 times in bars 17–32).</span></li>
-    <li><span data-en="Volume: the piano loudest. Drums a little lower. Bass in between." data-es="Volumen: el piano más fuerte. La batería un poco más baja. El bajo en medio.">Volume: the piano loudest. Drums a little lower. Bass in between.</span></li>
-    <li><span data-en="Side: keep the drums and bass in the middle. Move the strings a little to one side." data-es="Lado: deja la batería y el bajo en el medio. Mueve las cuerdas un poco a un lado.">Side: keep the drums and bass in the middle. Move the strings a little to one side.</span></li>
-    <li><span data-en="Give the strings a long Fade out. Then press ▶ Play and listen to the whole song." data-es="Ponle a las cuerdas una Salida suave larga. Luego pulsa ▶ Tocar y escucha toda la canción.">Give the strings a long Fade out. Then press ▶ Play and listen to the whole song.</span></li>
-  </ol>
-  <div class="why"><b><span data-en="Why parts come in one by one:" data-es="Por qué las partes entran una por una:">Why parts come in one by one:</span></b> <span data-en="Each new part makes the song grow. When something drops out, the next part feels even bigger." data-es="Cada parte nueva hace crecer la canción. Cuando algo se quita, la siguiente parte se siente todavía más grande.">Each new part makes the song grow. When something drops out, the next part feels even bigger.</span></div>
+<section class="part" id="finish">
+  <h2><span class="num">7</span><span data-en="Finish it" data-es="Termínala">Finish it</span></h2>
+  <p><span class="take"><span data-en="Mix ›" data-es="Mezclar ›">Mix ›</span></span></p>
+
+<p><span data-en="Last job: round 1 is the high E alone. Move the chords to round 2." data-es="Último trabajo: la vuelta 1 es el Mi agudo solo. Pasa los acordes a la vuelta 2.">Last job: round 1 is the high E alone. Move the chords to round 2.</span></p>
+
+<ul class="ticks">
+<li><input type="checkbox" id="t24"><label for="t24"><span data-en="Press Mix ›. In the Track menu, pick the chords." data-es="Pulsa Mezclar ›. En el menú Pista, elige los acordes.">Press Mix ›. In the Track menu, pick the chords.</span></label></li>
+<li><input type="checkbox" id="t25"><label for="t25"><span data-en="Under Cut from the start, press +1 bar 4 times." data-es="En Recortar el principio, pulsa +1 compás 4 veces.">Under Cut from the start, press +1 bar 4 times.</span></label></li>
+<li><input type="checkbox" id="t26"><label for="t26"><span data-en="Under Starts at bar, press Later + until it says 5." data-es="En Empieza en el compás, pulsa Después + hasta que diga 5.">Under Starts at bar, press Later + until it says 5.</span></label></li>
+<li><input type="checkbox" id="t27"><label for="t27"><span data-en="In ♩ Song, set My Track starts back to From the start." data-es="En ♩ Canción, vuelve a poner Mi pista empieza en Desde el principio.">In ♩ Song, set My Track starts back to From the start.</span></label></li>
+<li><input type="checkbox" id="t28"><label for="t28"><span data-en="Press ▶ Listen. That is your Runaway instrumental!" data-es="Pulsa ▶ Escuchar. ¡Esa es tu versión instrumental de Runaway!">Press ▶ Listen. That is your Runaway instrumental!</span></label></li>
+<li><input type="checkbox" id="t29"><label for="t29"><span data-en="Play it for someone." data-es="Tócala para alguien.">Play it for someone.</span></label></li>
+</ul>
+
+<p class="done-line" id="doneLine" role="status" aria-live="polite"></p>
+
+<div class="go no-print"><button type="button" class="btn soft" id="printBtn"><span data-en="Print this lesson" data-es="Imprime esta lección">Print this lesson</span></button><button type="button" class="btn soft" id="resetBtn"><span data-en="Clear my ticks" data-es="Borrar mis marcas">Clear my ticks</span></button></div>
+
+<p class="small"><span data-en="Your ticks stay on this device." data-es="Tus marcas se quedan en este dispositivo.">Your ticks stay on this device.</span></p>
+
 </section>
 
-<section class="part" id="yours">
-  <h2><span class="num">8</span><span data-en="Make it yours" data-es="Hazla tuya">Make it yours</span></h2>
-  <p><span data-en="Producers learn from songs they love, then add their own idea. Change one thing:" data-es="Los productores aprenden de canciones que les encantan y luego agregan su propia idea. Cambia una cosa:">Producers learn from songs they love, then add their own idea. Change one thing:</span></p>
-  <div class="check"><input type="checkbox" id="c1"><label for="c1"><span data-en="Play the high E on a new sound: electric piano or organ." data-es="Toca el Mi agudo con otro sonido: piano eléctrico u órgano.">Play the high E on a new sound: electric piano or organ.</span></label></div>
-  <div class="check"><input type="checkbox" id="c2"><label for="c2"><span data-en="Add a drum fill in the last bar before the drums come in." data-es="Agrega un redoble en el último compás antes de que entre la batería.">Add a drum fill in the last bar before the drums come in.</span></label></div>
-  <div class="check"><input type="checkbox" id="c3"><label for="c3"><span data-en="Move the whole song to another key. Every part moves with it." data-es="Pasa toda la canción a otro tono. Todas las partes se mueven con ella.">Move the whole song to another key. Every part moves with it.</span></label></div>
-  <div class="check"><input type="checkbox" id="c4"><label for="c4"><span data-en="Try a lick from Licks to try over the big part." data-es="Prueba un lick de Licks para probar sobre la parte grande.">Try a lick from Licks to try over the big part.</span></label></div>
-  <div class="ask"><label for="q8"><span data-en="What did you change? How did it change the feeling?" data-es="¿Qué cambiaste? ¿Cómo cambió la sensación?">What did you change? How did it change the feeling?</span></label><textarea id="q8"></textarea></div>
-  <div class="ask"><label for="q9"><span data-en="Who will you play your song for?" data-es="¿Para quién vas a tocar tu canción?">Who will you play your song for?</span></label><textarea id="q9"></textarea></div>
-  <div class="go no-print"><button type="button" class="btn soft" id="printBtn"><span data-en="Print this lesson" data-es="Imprime esta lección">Print this lesson</span></button></div>
-  <p class="small"><span data-en="Your answers stay on this device." data-es="Tus respuestas se quedan en este dispositivo.">Your answers stay on this device.</span></p>
-</section>
-
-<footer class="foot">
-  <p><span data-en="Runaway was written and produced by Kanye West and others, 2010. This lesson teaches how the music is built. The drum beat here is written in its style for practice." data-es="Runaway fue escrita y producida por Kanye West y otros, en 2010. Esta lección enseña cómo está construida la música. El ritmo de batería de aquí está escrito en su estilo para practicar.">Runaway was written and produced by Kanye West and others, 2010. This lesson teaches how the music is built. The drum beat here is written in its style for practice.</span></p>
-</footer>
+<footer class="foot"><p><span data-en="Runaway was written and produced by Kanye West and others, 2010. This lesson teaches how its music is built. The drum beat here is written in its style for practice." data-es="Runaway fue escrita y producida por Kanye West y otros, en 2010. Esta lección enseña cómo está construida su música. El ritmo de batería de aquí está escrito en su estilo para practicar.">Runaway was written and produced by Kanye West and others, 2010. This lesson teaches how its music is built. The drum beat here is written in its style for practice.</span></p></footer>
 </div>
-
 <script>
-/* AOG-SONG-RUNAWAY-V1 — the drum grid, the Set button, Print, and answers kept on this device. No sound, no timers. */
+/* AOG-SONG-RUNAWAY-V1 — the drum grid, the Set button, Print, and the ticks kept on this device. No sound, no timers. */
 (function(){
   "use strict";
   function es(){ return (document.documentElement.lang || "").slice(0,2) === "es"; }
@@ -315,8 +329,8 @@ footer.foot{margin-top:24px; font-size:.92rem; color:var(--ink-soft);}
   var ROWS = [
     ["Kick · pad 1", "Bombo · pad 1", [2,0,0,0, 0,0,0,1, 0,0,1,0, 0,0,0,0]],
     ["Snare · pad 2", "Caja · pad 2", [0,0,0,0, 2,0,0,0, 0,0,0,0, 2,0,0,0]],
-    ["Clap · pad 5", "Palmada · pad 5", [0,0,0,0, 2,0,0,0, 0,0,0,0, 2,0,0,0]],
-    ["Closed hat · pad 3", "Charles cerrado · pad 3", [1,0,1,0, 1,0,1,0, 1,0,1,0, 1,0,1,0]]
+    ["Closed hat · pad 3", "Charles cerrado · pad 3", [1,0,1,0, 1,0,1,0, 1,0,1,0, 1,0,1,0]],
+    ["Clap · pad 5", "Palmada · pad 5", [0,0,0,0, 2,0,0,0, 0,0,0,0, 2,0,0,0]]
   ];
   var grid = document.getElementById("grid");
   function drawGrid(){
@@ -334,28 +348,35 @@ footer.foot{margin-top:24px; font-size:.92rem; color:var(--ink-soft);}
     grid.innerHTML = h;
   }
   drawGrid();
-  try { new MutationObserver(drawGrid).observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] }); } catch (e) {}
+  try { new MutationObserver(function(){ drawGrid(); done(); }).observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] }); } catch (e) {}
 
-  var setBtn = document.getElementById("setSong"), setSt = document.getElementById("setSt");
-  setBtn.addEventListener("click", function(){
+  var setSt = document.getElementById("setSt");
+  document.getElementById("setSong").addEventListener("click", function(){
     var ok = false;
     try { if (window.AOGSong) { AOGSong.set({ bpm: 87, key: 4, minor: false }); ok = true; } } catch (e) {}
     setSt.textContent = ok ? (es() ? "Listo ✓ 87 · Mi mayor" : "Done ✓ 87 · E major")
-                           : (es() ? "En cada sala, pon el Tempo en 87 y el Tono en Mi · Mayor." : "In each room, set Tempo to 87 and Key to E · Major.");
+                           : (es() ? "En ♩ Canción, pon 87 y Mi · Mayor." : "In ♩ Song, set 87 and E · Major.");
+    var t1 = document.getElementById("t1"); if (ok && t1 && !t1.checked) { t1.checked = true; save(t1); }
   });
   document.getElementById("printBtn").addEventListener("click", function(){ window.print(); });
 
   var KEY = "aog.song.runaway.v1", saved = {};
   try { saved = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { saved = {}; }
   function keep(){ try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch (e) {} }
-  [].forEach.call(document.querySelectorAll(".ask textarea"), function(t){
-    if (typeof saved[t.id] === "string") t.value = saved[t.id];
-    t.addEventListener("input", function(){ saved[t.id] = t.value.slice(0, 2000); keep(); });
+  var boxes = [].slice.call(document.querySelectorAll(".ticks input"));
+  function done(){
+    var all = boxes.every(function(b){ return b.checked; });
+    document.getElementById("doneLine").textContent = all ? (es() ? "¡Lo lograste! Hiciste Runaway de principio a fin." : "You did it! You made Runaway from start to finish.") : "";
+  }
+  function save(b){ saved[b.id] = b.checked; keep(); done(); }
+  boxes.forEach(function(b){
+    b.checked = saved[b.id] === true;
+    b.addEventListener("change", function(){ save(b); });
   });
-  [].forEach.call(document.querySelectorAll(".check input"), function(c){
-    c.checked = saved[c.id] === true;
-    c.addEventListener("change", function(){ saved[c.id] = c.checked; keep(); });
+  document.getElementById("resetBtn").addEventListener("click", function(){
+    boxes.forEach(function(b){ b.checked = false; }); saved = {}; keep(); done();
   });
+  done();
 })();
 </script>
 </body>
