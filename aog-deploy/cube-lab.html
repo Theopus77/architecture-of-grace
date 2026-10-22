@@ -189,7 +189,28 @@ header { display:flex; flex-wrap:wrap; justify-content:space-between; align-item
 /* Solve with me: no turn pad (the steps say every move), and on a phone the card sits right under the cube */
 .cube-bench.solving .pad { display:none; }
 @media (max-width:899px){ .cube-bench { display:flex; flex-direction:column; } .cube-side { display:contents; }
-  .stage { order:1; } .paintbar { order:2; } .look-row { order:2; } .stage-hint { order:3; } .cube-bench > .panel { order:4; } .view-row { order:5; } .pad { order:6; } }
+  .stage { order:1; } .paintbar { order:2; } .look-row { order:2; } .stage-hint { order:3; } .cube-bench > .panel { order:4; } .tools { order:5; } }
+/* AOG-CUBE-CALM-V1 (2026-10-22): the turn buttons and settings wait in one drawer (closed on a phone, open on a big
+   screen); the path of steps as dots; on a phone the lesson bar says the steps, so the card does not say them again */
+.tools { display:block!important; width:100%; margin:.7rem 0 0; }
+.tools > summary { cursor:pointer; list-style:none; min-height:44px; display:flex; align-items:center; gap:.5rem; width:max-content; max-width:100%; margin:0 auto;
+  padding:0 1.1rem; border:1px solid var(--line); border-radius:999px; background:var(--card); color:var(--ink); font-weight:600; }
+.tools > summary::-webkit-details-marker { display:none; }
+.tools > summary::after { content:"▾"; color:var(--muted); }
+.tools[open] > summary::after { content:"▴"; }
+.tools[open] > summary { margin-bottom:.7rem; }
+.path { display:flex; flex-wrap:wrap; align-items:center; gap:.3rem; margin:.15rem 0 .55rem; }
+.path span { width:.62rem; height:.62rem; border-radius:50%; border:2px solid var(--steel); box-sizing:border-box; }
+.path span.done { background:var(--steel); }
+.path span.now { width:.9rem; height:.9rem; background:var(--steel); box-shadow:0 0 0 2px var(--card), 0 0 0 4px var(--steel); margin:0 .2rem; }
+.path span.gap { width:.5rem; border:0; }
+.allsteps { display:none; }
+@media (max-width:899px){ body.has-lessonbar #panel ol.steps { display:none; } body.has-lessonbar .allsteps { display:block; margin:.2rem 0 .7rem; }
+  .allsteps summary { cursor:pointer; min-height:44px; display:flex; align-items:center; font-weight:600; color:var(--muted); } .allsteps ol { padding-left:1.4rem; margin:.2rem 0; } }
+.tryit { list-style:none; padding:0; margin:.35rem 0 .7rem; display:grid; gap:.45rem; }
+.tryit li { display:flex; gap:.6rem; align-items:center; }
+.tryit .tick { width:1.6rem; height:1.6rem; border-radius:50%; border:2px solid var(--steel); display:inline-grid; place-items:center; font-weight:800; flex:0 0 auto; }
+.tryit li.ok .tick { background:var(--good); color:var(--good-fg); border-color:var(--good); }
 .btn-row.start { flex-direction:column; align-items:stretch; max-width:22rem; }
 .btn-row.quiet { margin-top:1.2rem; }
 .btn-row.quiet .btn { font-size:.9rem; color:var(--muted); }
@@ -372,8 +393,10 @@ footer p { margin-top:2rem; font-size:.9rem; color:var(--muted); max-width:70ch;
       <div class="paintbar no-print" id="paintBar" role="group" hidden></div>
       <div class="look-row no-print" id="lookRow"></div>
       <p class="stage-hint" id="hint"></p>
-      <div class="view-row no-print" id="viewRow"></div>
-      <div class="pad no-print" id="pad"></div>
+      <details class="tools no-print" id="tools"><summary id="toolsSum"></summary>
+        <div class="view-row" id="viewRow"></div>
+        <div class="pad" id="pad"></div>
+      </details>
       <p class="sr" id="live" aria-live="polite"></p>
       <p class="sr" id="cubeDesc"></p>
     </div>
@@ -481,6 +504,14 @@ const T={
   did:["Did {m}","Hecho: {m}"],
   /* AOG-CUBE-CEILING-V1 (2026-10-11) — Jimmy: "DO them all": the next list, all of it. */
   hint2:["Two fingers turn the whole cube.","Dos dedos giran todo el cubo."],
+  /* AOG-CUBE-CALM-V1 (2026-10-22) — Jimmy: "is it the ceiling in presentation, structure and the like?" … "DO as you please" */
+  toolsPad:["Turn buttons and settings","Botones para girar y ajustes"], toolsSet:["Settings","Ajustes"],
+  allSteps:["See all {n} steps","Ver los {n} pasos"], pathL:["Your path: {d} of {n} steps done","Tu camino: {d} de {n} pasos hechos"],
+  tryH:["Try each one on the cube","Prueba cada una en el cubo"],
+  gRow:["Drag a row to turn it","Arrastra una fila para girarla"], gLook:["Drag beside the cube to look around it","Arrastra junto al cubo para verlo por todos lados"],
+  gWheel:["Draw a circle around a middle square to turn that side","Dibuja un círculo alrededor de un cuadro del medio para girar ese lado"],
+  gTwo:["Swipe with two fingers to turn the whole cube","Desliza dos dedos para girar todo el cubo"],
+  gDone:["You can do them all. Tap Front to bring the cube home.","Ya puedes hacerlas todas. Toca Frente para traer el cubo de vuelta."],
   levelH:["How much help","Cuánta ayuda"], lvEvery:["Every move","Cada movimiento"], lvHint:["A hint","Una pista"], lvOwn:["On my own","Yo solo"],
   showMove:["Show me the move","Muéstrame el movimiento"], giveHint:["Give me a hint","Dame una pista"],
   ownLine:["You lead. Tap Give me a hint any time.","Tú guías. Toca Dame una pista cuando quieras."],
@@ -707,8 +738,7 @@ const L=[
     ["An edge has 2 colors. A corner has 3 colors.","Una arista tiene 2 colores. Una esquina tiene 3 colores."],
     ["Solved means every side is one color.","Resuelto quiere decir que cada lado es de un solo color."],
     ["You solve it in layers: the bottom, then the middle, then the top.","Se resuelve por capas: abajo, luego el medio y al final arriba."],
-    ["To turn a row on the screen, drag it with your finger.","Para girar una fila en la pantalla, arrástrala con el dedo."],
-    ["Drag beside the cube to look at any side. Tap Front to come back.","Arrastra junto al cubo para ver cualquier lado. Toca Frente para volver."]]},
+    ["Now try the cube with your hands, below.","Ahora prueba el cubo con tus manos, abajo."]]},
  {id:"moves", t:["The moves","Los movimientos"], kind:"moves",
   goal:["Learn what the letters mean.","Aprende qué quieren decir las letras."],
   steps:[["Each letter is a side: F front, B back, R right, L left.","Cada letra es un lado: F frente, B atrás, R derecha, L izquierda."],
@@ -822,7 +852,7 @@ const L=[
 ];
 
 /* ── saved place ── */
-const S={real:false, lang:"en", view:"learn", lesson:0, done:{}, speed:"normal", letters:true, cube:"", hist:[], paint:{}, brush:"W", tried:{}, mix:null, result:null, learnStep:0, method:"short", wayV:0, level:"every", drill:null, camRef:null, realStage:0, symbols:false, voice:false, scheme:{U:"Y",D:"W",F:"G",B:"B",R:"O",L:"R"}};
+const S={real:false, lang:"en", view:"learn", lesson:0, done:{}, speed:"normal", letters:true, cube:"", hist:[], paint:{}, brush:"W", tried:{}, mix:null, result:null, learnStep:0, method:"short", wayV:0, level:"every", drill:null, camRef:null, realStage:0, symbols:false, voice:false, gest:{}, toolsOpen:null, scheme:{U:"Y",D:"W",F:"G",B:"B",R:"O",L:"R"}};
 try{
   const st=JSON.parse(localStorage.getItem(KEY)||"null");
   if(st){ Object.keys(S).forEach(k => { if(st[k]!==undefined) S[k]=st[k]; }); }
@@ -1207,9 +1237,18 @@ function algBox(a, k){
 let algAt={k:null,i:0};
 function learnHtml(){
   const i=S.lesson, l=L[i];
-  let h=`<p class="kicker">${esc(t("step"))} ${i+1} ${esc(t("of"))} ${L.length}</p><h2>${esc(tx(l.t))}</h2>
+  const nDone=L.filter((_,j) => S.done[j]).length;
+  const path=L.map((x,j) => `${j && x.method && !L[j-1].method ? '<span class="gap"></span>' : ""}<span class="${S.done[j]?"done":""} ${j===i?"now":""}"></span>`).join("");
+  const items=l.steps.map((s,k)=>`<li class="${k===(S.learnStep||0)?"now":""}">${esc(tx(s))}</li>`).join("");
+  let h=`<p class="kicker">${esc(t("step"))} ${i+1} ${esc(t("of"))} ${L.length}</p>
+    <p class="path" role="img" aria-label="${esc(t("pathL",{d:nDone, n:L.length}))}">${path}</p><h2>${esc(tx(l.t))}</h2>
     <p class="goal"><strong>${esc(t("goalW"))}:</strong> ${esc(tx(l.goal))}</p>
-    <ol class="steps">${l.steps.map((s,k)=>`<li class="${k===(S.learnStep||0)?"now":""}">${esc(tx(s))}</li>`).join("")}</ol>`;
+    <ol class="steps">${items}</ol><details class="allsteps"><summary>${esc(t("allSteps",{n:l.steps.length}))}</summary><ol>${items}</ol></details>`;
+  if(l.id==="meet"){   /* the hands learn each way to move it, and each one ticks when done */
+    const coarse=matchMedia("(pointer:coarse)").matches, G=S.gest||{}, keys=["row","look","wheel"].concat(coarse?["two"]:[]);
+    h+=`<h3>${esc(t("tryH"))}</h3><ul class="tryit">${keys.map(k => `<li class="${G[k]?"ok":""}"><span class="tick" aria-hidden="true">${G[k]?"✓":""}</span>${esc(t("g"+k[0].toUpperCase()+k.slice(1)))}</li>`).join("")}</ul>`;
+    if(keys.every(k => G[k])) h+=`<p class="state ok">${esc(t("gDone"))}</p>`;
+  }
   (l.algs||[]).forEach((a,k) => { h+=algBox(a, i+":"+k); });
   if(l.kind==="ready"){
     h+= S.done[i] ? `<p class="state ok">${esc(t("gotIt"))}</p>` : `<div class="btn-row"><button type="button" class="btn btn-good" data-act="ready">${esc(t("ready"))}</button></div>`;
@@ -1590,7 +1629,11 @@ function paintAll(){
   $("brand").textContent=t("app"); $("mastK").textContent=t("eyebrow"); $("mastH").textContent=t("app"); $("mastL").textContent=t("tag");
   $("langBtn").textContent=es()?"EN":"ES";
   $("themeBtn").textContent=document.documentElement.getAttribute("data-theme")==="dark"?(es()?"Claro":"Light"):(es()?"Oscuro":"Dark");
-  $("foot").textContent=t("foot"); $("hint").textContent=painting?t("hintPaint"):S.view==="solve"?t(S.real?"hintSolveReal":"hintSolve"):t("hint")+(matchMedia("(pointer:coarse)").matches?" "+t("hint2"):"");
+  const tl=$("tools"); $("toolsSum").textContent=t(S.view==="learn" ? "toolsPad" : "toolsSet");
+  if(!tl.__wired){ tl.__wired=1; tl.open = S.toolsOpen!=null ? S.toolsOpen : matchMedia("(min-width:900px)").matches;
+    tl.addEventListener("toggle", () => { if(tl.__auto){ tl.__auto=false; return; } S.toolsOpen=tl.open; save(); }); }
+  if(S.view==="learn" && L[S.lesson] && L[S.lesson].kind==="moves" && !tl.open){ tl.__auto=true; tl.open=true; }   /* this step asks for the buttons */
+  $("foot").textContent=t("foot"); $("hint").textContent=painting?t("hintPaint"):S.view==="solve"?t(S.real?"hintSolveReal":"hintSolve"):(L[S.lesson] && L[S.lesson].id==="meet") ? "" : t("hint")+(matchMedia("(pointer:coarse)").matches?" "+t("hint2"):"");   /* Meet the cube teaches these in its own list */
   stage.setAttribute("aria-label", es()?"Un cubo de Rubik en 3D":"A 3D Rubik's Cube");
   $("pad").innerHTML=padHtml(); $("viewRow").innerHTML=viewRowHtml(); $("lookRow").innerHTML=lookRowHtml();
   $("pad").querySelectorAll("[data-mv]").forEach(b => b.onclick=()=>{ if(!busy && !queue.length) enqueue([b.getAttribute("data-mv")],"pad"); });
@@ -1783,13 +1826,15 @@ function moveTwo(){
   const T2=drag.turn; T2.th=Math.max(-Math.PI/2, Math.min(Math.PI/2, (dx*T2.ux+dy*T2.uy)/T2.pxPerRad));
   render({a:T2.a, set:T2.set, th:T2.th});
 }
+/* Meet the cube's hands-on list: each way of moving it ticks the first time the hands do it */
+function gesture(k){ S.gest=S.gest||{}; if(S.gest[k]) return; S.gest[k]=1; save(); if(S.view==="learn" && L[S.lesson] && L[S.lesson].id==="meet") panel(); }
 function endDrag(e){
   if(drag && drag.mode==="two"){ if(e && !drag.ids.includes(e.pointerId)) return; drag.mode=drag.turn ? "turn" : "still"; if(!drag.turn){ drag=null; stage.classList.remove("grabbing"); render(); return; } }
   if(!drag || (e && e.pointerId!==drag.id && !drag.ids)) return;
   const d=drag; drag=null; stage.classList.remove("grabbing");
   if(moveRAF){ cancelAnimationFrame(moveRAF); moveRAF=0; } moveEv=null;
   if(!d.mode && d.face && painting){ paintAt(d.face); return; }
-  if(d.mode==="look"){ render(); if(painting) $("lookRow").innerHTML=lookRowHtml(), wireSide(); return; }                               /* shading and the arrow, once the hand lets go */
+  if(d.mode==="look"){ render(); if(painting) $("lookRow").innerHTML=lookRowHtml(), wireSide(); else gesture("look"); return; }                               /* shading and the arrow, once the hand lets go */
   if(d.mode!=="turn") return;
   /* a short, clear drag is enough: past about 12° the row finishes the quarter turn in that direction */
   const T2=d.turn, raw=T2.th/(Math.PI/2), quarters=Math.abs(T2.th)<0.21 ? 0 : Math.sign(raw)*(T2.wheel ? 1 : Math.max(1, Math.round(Math.abs(raw)))),   /* a wheel turn is one quarter, the way the finger went */ from=T2.th, to=quarters*Math.PI/2, t0=performance.now(), dur=SPEED[S.speed]?140:0;
@@ -1798,6 +1843,7 @@ function endDrag(e){
     busy=false; turnFocus=null;
     const q=((quarters%4)+4)%4;
     if(q){
+      gesture(T2.wheel ? "wheel" : T2.whole ? "two" : "row");
       let base;
       if(T2.arrowMv){ const qq=(((-quarters)%4)+4)%4, tok=T2.arrowMv.base+(qq===2?"2":qq===3?"'":"");
         cube.move(tok); after({tok, src:"hand"}); render(); pump(); return; }

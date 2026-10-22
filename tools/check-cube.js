@@ -144,6 +144,15 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
       await p.tp("touchEnd", []); await p.waitForTimeout(600);
       ok(await screenCube(p) === want, `${name}: two fingers swiped ${dx ? "left" : "up"} turn the whole cube (${mv})`);
     }
+    /* AOG-CUBE-CALM-V1: Meet the cube's hands-on list ticked each way the hands just moved it */
+    const G = await p.evaluate(() => JSON.parse(localStorage.getItem("aog.cube.v1")).gest || {});
+    ok(G.row && G.look && G.wheel && G.two, `${name}: Meet the cube ticks each way the hands moved it (${Object.keys(G).join(", ")})`);
+    if (vp.width < 900) {
+      const cl = await p.evaluate(() => ({ open: document.getElementById("tools").open, dots: document.querySelectorAll("#panel .path span:not(.gap)").length }));
+      ok(!cl.open && cl.dots === 14, `${name}: the turn buttons and settings wait in a closed drawer; the path shows all ${cl.dots} steps`);
+      await p.evaluate(() => document.querySelector('#lessonRow [data-lesson="1"]').click()); await p.waitForTimeout(250);
+      ok(await p.evaluate(() => document.getElementById("tools").open), `${name}: the drawer opens by itself on the step that asks for the turn buttons`);
+    }
     /* Learn: the lesson in the bar at the bottom, one step at a time, the cube in view above (Jimmy: "the instructions
        are far too down on the screen") */
     if (vp.width < 900) {
@@ -156,6 +165,8 @@ const wait = ms => new Promise(o => setTimeout(o, ms));
       const two = await p.evaluate(() => (document.querySelector("#actBar .ab-move") || {}).textContent || "");
       const first = await p.evaluate(() => (document.querySelector("#panel .steps li") || {}).textContent || "");
       ok(one.shown && one.inView && one.text === first && two !== one.text && two.length > 3, `${name}: Learn shows its steps one at a time in the bar at the bottom, and Next moves on ("${one.text}" → "${two}")`);
+      ok(await p.evaluate(() => getComputedStyle(document.querySelector("#panel ol.steps")).display === "none" && !!document.querySelector("#panel .allsteps summary").offsetHeight),
+        `${name}: the card does not say the steps again; See all the steps is one tap away`);
       await p.evaluate(() => { document.getElementById("stage").scrollIntoView({ block: "start" }); });
       const fits = await p.evaluate(() => { const st = document.getElementById("stage").getBoundingClientRect(), br = document.getElementById("actBar").getBoundingClientRect(); return st.top >= 0 && st.bottom <= br.top + 2; });
       ok(fits, `${name}: the whole cube and the lesson bar fit on the screen together`);
