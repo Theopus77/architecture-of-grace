@@ -217,6 +217,8 @@ def shape(pad, x):
     if pad.get("echo"):
         gap, n, fb, lp = pad["echo"]
         x = dsp.echo(x, gap, n, fb, lp)
+    if pad.get("crush"):                       # AOG-DRUM-CRUNCH-V1: (bits, rate), after the room, as a sampler hears it
+        x = dsp.crush(x, *pad["crush"])
     if pad.get("shape"):
         x = dsp.env_shape(x, *pad["shape"])
     return dsp.cut(x, pad["len"], pad["fade"])

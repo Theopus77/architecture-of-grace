@@ -13,7 +13,8 @@ stays made on the page inside an otherwise recorded kit (made: True).
 
 A pad: name shown on the pad; layers s/m/h (soft, normal, hard), each a list of takes; then the shaping, in this order:
 tune (semitones), eq [(kind, Hz, q, dB)], comp (threshold re peak, ratio, attack ms, release ms), sat, room (spec,
-wet dB, crush), gate (open s, close s), echo (gap s, repeats, feedback, low-pass Hz), shape (hold s, fall s),
+wet dB, crush), gate (open s, close s), echo (gap s, repeats, feedback, low-pass Hz), crush (bits, rate: a 12-bit
+sampler's grit, AOG-DRUM-CRUNCH-V1), shape (hold s, fall s),
 len and fade (s), soft / hard (dB of those layers against the normal one; default -4 / +1.5).
 A take: T(source, (source, weight), ..., start=s, swell=ms) mixes microphones of one hit; MAKE(...) builds a sound
 from several recordings (a chord, a scratch, a slice of a long brush stir).
@@ -613,3 +614,6 @@ FILE_LU = dict(FILE_LU, **kits_more.FILE_LU)
 import kits_more2              # the drum-set styles and the electronic kits
 KITS.update(kits_more2.MORE2)
 FILE_LU = dict(FILE_LU, **kits_more2.FILE_LU2)
+import kits_more3              # AOG-DRUM-CRUNCH-V1: thrash metal, tight; the crunchy beat machine
+KITS.update(kits_more3.MORE3)
+FILE_LU = dict(FILE_LU, **kits_more3.FILE_LU3)

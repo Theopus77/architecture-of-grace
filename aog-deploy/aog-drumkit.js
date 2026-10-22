@@ -286,7 +286,20 @@
     ch: ["HAT", [1, 1, 1], "Hi-hat", "Charles"], oh: ["OPEN", [1, 1, 1], "Open hi-hat", "Charles abierto"],
     clap: ["CLAP", [2, 2, 2], "Hand claps", "Palmas", { look: "small" }], tom: ["SNAP", [2, 2, 2], "Finger snap", "Chasquido", { look: "small" }],
     rim: ["CLICK", [1, 1, 1], "Click", "Clic", { look: "small" }], bell: ["BOOM", [1, 1, 1], "808 boom (long)", "Bum 808 (largo)"] }));
-  IDS.push("OR", "ME", "SB", "BP", "GS", "MT", "DS", "PK", "PO", "JG", "RG", "TR");
+  /* AOG-DRUM-CRUNCH-V1 (kits_more3.py): TH thrash metal, tight (MuldjordKit, CC BY 4.0): a clicky kick for double-kick
+     runs, a dry cracking snare, a china; BM the crunchy beat machine (Gogodze Phu Vol II, CC0, through its old microphone;
+     VCSL claps and a tambourine), every pad through a 12-bit sampler's grit, made here */
+  KITS.TH = K("drums", "thrash", "Thrash metal, tight", "Thrash metal, seco y preciso", DK({
+    kick: ["KICK", [2, 3, 2], "Kick (a click for fast double kick)", "Bombo (con clic, para doble bombo rápido)"], snare: ["SNARE", [2, 3, 2], "Snare (tight and dry)", "Caja (seca y precisa)"],
+    ch: ["HAT", [2, 3, 2], "Hi-hat", "Charles"], oh: ["OPEN", [1, 2, 2], "Open hi-hat", "Charles abierto"],
+    clap: ["CHINA", [1, 2, 2], "China cymbal", "Platillo china"], tom: ["TOM", [2, 2, 2], "Tom", "Tom"],
+    rim: ["RIDE", [2, 2, 2], "Ride (its bell on an accent)", "Ride (la campana con acento)"], bell: ["CRASH", [1, 2, 2], "Crash", "Crash"] }));
+  KITS.BM = K("electronic", "crunch", "Crunchy beat machine", "Caja de ritmos crujiente", DK({
+    kick: ["KICK", [1, 2, 2], "Kick", "Bombo"], snare: ["SNARE", [1, 2, 2], "Snare", "Caja"],
+    ch: ["HAT", [1, 2, 2], "Hi-hat", "Charles"], oh: ["OPEN", [1, 2, 2], "Open hi-hat", "Charles abierto"],
+    clap: ["CLAP", [2, 2, 2], "Hand claps", "Palmas", { look: "small" }], tom: ["LOWTOM", [1, 2, 2], "Low tom", "Tom grave"],
+    rim: ["RIM", [1, 2, 2], "Cross-stick", "Aro cruzado", { look: "small" }], bell: ["TAMB", [2, 2, 2], "Tambourine", "Pandereta", { look: "small" }] }));
+  IDS.push("OR", "ME", "SB", "BP", "GS", "MT", "DS", "PK", "PO", "JG", "RG", "TR", "TH", "BM");
   var LAYERS = ["s", "m", "h"];
   function made(b, id) { var k = KITS[b], p = k && k.pads[id]; return !!(p && p.made); }
 
@@ -442,7 +455,31 @@
              clap: [0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0], ch: [1,0,1,0,1,0,1,1,1,0,1,0,1,1,1,1] } },
     { id: "trapbounce", en: "Trap bounce with snaps", es: "Trap con chasquidos", kit: "TR", bpm: 150, swing: 0.50, hand: 1, grp: "electronic",
       map: { kick: [2,0,0,2,0,0,0,0,0,0,2,0,0,0,0,0], bell: [2,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0], snare: [0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0],
-             tom: [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0], ch: [1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,1], oh: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } }
+             tom: [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0], ch: [1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,1], oh: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
+    /* AOG-DRUM-CRUNCH-V1 · thrash, tight: the thrash beat (kick on the beat, snare on every "and", the ride on eighths),
+       the gallop (one eighth and two sixteenths on the kick), and a half-time breakdown on a double kick with a fill */
+    { id: "thrashbeat", en: "Thrash beat", es: "Ritmo de thrash", kit: "TH", bpm: 176, swing: 0.50, hand: 1, grp: "metal",
+      map: { kick: [2,0,0,0,1,0,0,0,2,0,0,0,1,0,0,0], snare: [0,0,2,0,0,0,2,0,0,0,2,0,0,0,2,0], rim: [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0],
+             bell: [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
+    { id: "thrashgallop", en: "Gallop on the double kick", es: "Galope con doble bombo", kit: "TH", bpm: 150, swing: 0.50, hand: 1, grp: "metal",
+      map: { kick: [2,0,1,1,2,0,1,1,2,0,1,1,2,0,1,1], snare: [0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0], ch: [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0],
+             bell: [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
+    { id: "thrashbreak", en: "Half-time breakdown with a fill", es: "Breakdown a medio tiempo con redoble", kit: "TH", bpm: 130, swing: 0.50, hand: 1, grp: "metal",
+      map: { kick: [2,1,1,1,2,1,1,1,2,1,1,1,2,1,1,1], snare: [0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0], clap: [2,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0] },
+      parts: [{ len: 16, map: { kick: [2,1,1,1,2,1,1,1,2,0,0,0,2,0,0,0], snare: [0,0,0,0,0,0,0,0,2,0,0,0,2,0,1,1], clap: [2,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0],
+        tom: [0,0,0,0,0,0,0,0,0,0,2,1,0,0,0,0] } }] },
+    /* the crunchy beat machine: boom bap with a swing, a head-nod with the cross-stick, and a loose, late groove in two bars */
+    { id: "crunchboombap", en: "Crunchy boom bap", es: "Boom bap crujiente", kit: "BM", bpm: 90, swing: 0.58, hand: 1, grp: "hiphop",
+      map: { kick: [2,0,0,0,0,0,0,1,0,0,2,0,0,0,0,0], snare: [0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0], ch: [1,0,3,0,1,0,3,0,1,0,3,0,1,0,3,0],
+             bell: [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0] } },
+    { id: "crunchnod", en: "Head-nod with the cross-stick", es: "Para mover la cabeza, con aro cruzado", kit: "BM", bpm: 84, swing: 0.62, hand: 1, grp: "hiphop",
+      map: { kick: [2,0,0,1,0,0,0,0,2,0,1,0,0,0,0,0], snare: [0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,3], ch: [1,0,1,0,1,0,1,0,1,0,1,0,1,0,0,0],
+             oh: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0], rim: [0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0] } },
+    { id: "crunchloose", en: "Loose and late, in two bars", es: "Suelto y atrasado, en dos compases", kit: "BM", bpm: 76, swing: 0.66, hand: 1, grp: "hiphop",
+      map: { kick: [2,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0], snare: [0,0,0,0,2,0,0,0,0,0,0,0,0,2,0,0], clap: [0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0],
+             ch: [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0] },
+      parts: [{ len: 16, map: { kick: [2,0,0,0,0,0,1,0,0,1,0,1,0,0,0,0], snare: [0,0,0,0,2,0,0,0,0,0,0,0,0,2,0,0], clap: [0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0],
+        ch: [1,0,1,0,1,0,1,0,1,0,1,0,0,0,0,0], tom: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1] } }] }
   );
   /* a beat in parts: part 2 goes in the next part of the song, and the track plays them in turn. Put my beat back
      returns that part and the track as they were; a one-part beat picked afterwards stops the track again. */
@@ -476,8 +513,8 @@
     loading: { en: "Getting the recorded drums ready…", es: "Preparando la batería grabada…" },
     failed:  { en: "The recorded drums did not load. Check the internet, then pick the kit again.",
                es: "La batería grabada no se cargó. Revisa el internet y vuelve a elegir el kit." },
-    credit:  { en: "The recorded kits are real drums and percussion, free for everyone (CC0), from Karoryfer Samples, Versilian Studios and Jeff Learman. Kit L is a real 909 drum machine, recorded by Janne G:son Berg (CC BY 4.0). Kits A and B play a real 1978 drum machine (CC0). The hand percussion, hand drums and tabla are real too (CC0): Versilian Studios, Karoryfer Samples, FreePats and dio_333. A few strokes are shaped here from the same drum. The gospel, punk and 1980s pop kits use MuldjordKit by Lars Muldjord (CC BY 4.0); the body percussion is from sfzinstruments (CC0); reggaeton and trap use Sonic Pi's samples (CC0).",
-               es: "Los kits grabados son batería y percusión de verdad, libres para todos (CC0), de Karoryfer Samples, Versilian Studios y Jeff Learman. El kit L es una caja de ritmos 909 de verdad, grabada por Janne G:son Berg (CC BY 4.0). Los kits A y B tocan una caja de ritmos de verdad de 1978 (CC0). La percusión de mano, los tambores de mano y la tabla también son de verdad (CC0): Versilian Studios, Karoryfer Samples, FreePats y dio_333. Algunos golpes se hacen aquí a partir del mismo tambor. Los kits de góspel, punk y pop de los 80 usan MuldjordKit de Lars Muldjord (CC BY 4.0); la percusión corporal es de sfzinstruments (CC0); el reguetón y el trap usan las muestras de Sonic Pi (CC0)." },
+    credit:  { en: "The recorded kits are real drums and percussion, free for everyone (CC0), from Karoryfer Samples, Versilian Studios and Jeff Learman. Kit L is a real 909 drum machine, recorded by Janne G:son Berg (CC BY 4.0). Kits A and B play a real 1978 drum machine (CC0). The hand percussion, hand drums and tabla are real too (CC0): Versilian Studios, Karoryfer Samples, FreePats and dio_333. A few strokes are shaped here from the same drum. The gospel, punk, 1980s pop and thrash kits use MuldjordKit by Lars Muldjord (CC BY 4.0); the body percussion is from sfzinstruments (CC0); reggaeton and trap use Sonic Pi's samples (CC0).",
+               es: "Los kits grabados son batería y percusión de verdad, libres para todos (CC0), de Karoryfer Samples, Versilian Studios y Jeff Learman. El kit L es una caja de ritmos 909 de verdad, grabada por Janne G:son Berg (CC BY 4.0). Los kits A y B tocan una caja de ritmos de verdad de 1978 (CC0). La percusión de mano, los tambores de mano y la tabla también son de verdad (CC0): Versilian Studios, Karoryfer Samples, FreePats y dio_333. Algunos golpes se hacen aquí a partir del mismo tambor. Los kits de góspel, punk, pop de los 80 y thrash usan MuldjordKit de Lars Muldjord (CC BY 4.0); la percusión corporal es de sfzinstruments (CC0); el reguetón y el trap usan las muestras de Sonic Pi (CC0)." },
     handGroup: { en: "Hand drums and percussion", es: "Tambores de mano y percusión" },
     credits: { en: "Full credits", es: "Créditos completos" }
   };

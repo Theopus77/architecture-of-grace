@@ -150,6 +150,16 @@ def tune(x, semis):
     fr = Fraction(1 / r).limit_denominator(400)
     return signal.resample_poly(x, fr.numerator, fr.denominator, axis=0)[:n]
 
+# ---------- AOG-DRUM-CRUNCH-V1: the grit of a late-1980s 12-bit sampler ----------
+def crush(x, bits=12, rate=26040.0):
+    """a drum as an old sampler held it: kept only `rate` times a second (each value held until the next, with no
+    smoothing, so the top end folds back as grit) and rounded to `bits` (measured against the sound's own peak)"""
+    pk = float(np.max(np.abs(x))) + 1e-12
+    step = SR / float(rate)
+    idx = np.minimum((np.floor(np.arange(len(x)) / step) * step).astype(int), len(x) - 1)
+    q = 2 ** (bits - 1)
+    return np.round(x[idx] / pk * q) / q * pk
+
 # ---------- length and fades ----------
 def cut(x, length, fade):
     n = int(SR * length)
