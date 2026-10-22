@@ -47,7 +47,10 @@ canvas, img, video, svg:not([width]) { max-width: 100%; }
   html { scroll-behavior: auto !important; }
 }
 
-:focus-visible { outline: 3px solid #F2C964; outline-offset: 2px; }
+/* AOG-FOCUS-TWOTONE-V1 (2026-10-22): the ring was gold on cream (about 1.4:1, too faint to find). Now two colours:
+   navy outside, a thin gold line inside, so one of them always stands out, on light, on dark and on photos. */
+:focus-visible { outline: 3px solid #1B3A5F; outline-offset: 2px; box-shadow: 0 0 0 2px #F2C964; }
+html[data-theme="dark"] :focus-visible { outline-color: #F2C964; box-shadow: 0 0 0 2px #0A1E33; }
 /* selected text stays readable: a soft gold wash, the words keep their colour */
 ::selection { background: rgba(242,201,100,.42); color: inherit; }
 
