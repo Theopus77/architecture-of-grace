@@ -211,6 +211,7 @@ main.sh-main { grid-area:room; min-width:0; margin:0; }
   .tp { flex:1 1 100%; }
   .tp { gap:5px; }
   .tp .tp-b, .mt .tp a.tp-b { flex:1 1 0; min-width:0; padding:0 .25rem; gap:.3rem; font-size:.85rem; letter-spacing:0; }
+  .tp .tp-b, .mt .tp a.tp-b { white-space:normal; line-height:1.1; text-align:center; }   /* AOG-PLAY-ALONG-V1: five buttons share a phone's width; a long name takes two lines */
   .tp .tp-add { flex:1 1 100%; order:-1; }
   .tp-rec { min-width:0; }
   /* Mix › and ‹ back to a room say what the doors above already say: on a phone the doors do it */
@@ -455,13 +456,17 @@ JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></scrip
   }
   /* ── AOG-STUDIO-TRANSPORT-V1: the transport drives the room you are in ── */
   var TP = { t0: 0, want: "", line: "", back: "", fill: {} };
+  var PA = { on: false, busy: false, ac: null, src: null, g: null };   /* AOG-PLAY-ALONG-V1: ♫ Play along (below) */
   function recOf() { try { return fr.contentWindow && fr.contentWindow.AOGStudioRec || null; } catch (e) { return null; } }
   function deskOf() { try { var w = fr.contentWindow; return cur === "studio" && w && w.__aogStudio ? w : null; } catch (e) { return null; } }
   function clock(s) { s = Math.max(0, Math.floor(s)); return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); }
   function say(k) { TP.line = k; paintTp(); }
   var TPW = {
     rec: ["● Record", "● Grabar"], stop: ["■ Stop", "■ Parar"], add: ["+ Add to My Track", "+ Añadir a mi pista"],
-    listen: ["▶ Listen", "▶ Escuchar"], listenStop: ["■ Stop listening", "■ Dejar de escuchar"], mix: ["Mix ›", "Mezclar ›"], out: ["Send it out", "Compártela"],
+    listen: ["▶ Listen", "▶ Escuchar"], listenStop: ["■ Stop listening", "■ Dejar de escuchar"],
+    /* AOG-PLAY-ALONG-V1 */
+    along: ["♫ Play along", "♫ Toca encima"], alongStop: ["■ Stop", "■ Parar"], alongPrep: ["Getting My Track ready…", "Preparando mi pista…"],
+    alongOn: ["My Track is playing. Play along in any room.", "Suena mi pista. Toca encima en cualquier sala."], mix: ["Mix ›", "Mezclar ›"], out: ["Send it out", "Compártela"],
     added: ["Added to My Track.", "Añadida a mi pista."], noRec: ["Pick a room to record in.", "Elige una sala para grabar."],
     empty: ["Nothing to hear yet. Record in a room, then press + Add to My Track.", "Todavía no hay nada que escuchar. Graba en una sala y luego pulsa + Añadir a mi pista."],
     tap: ["Tap anywhere on the desk to hear it.", "Toca en cualquier parte de la mesa para oírla."],
@@ -513,6 +518,9 @@ JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></scrip
     if (ab.hidden !== !showAdd) ab.hidden = !showAdd; if (ab.textContent !== tw("add")) ab.textContent = tw("add");
     var w = deskOf(), playing = !!(w && w.__aogStudio.PLAY.on), lt = playing ? tw("listenStop") : tw("listen");
     if (lb.textContent !== lt) lb.textContent = lt;
+    var pb = D.getElementById("tpAlong"), pt = PA.on ? tw("alongStop") : tw("along"); if (pb.textContent !== pt) pb.textContent = pt;   /* AOG-PLAY-ALONG-V1 */
+    att(pb, "aria-pressed", PA.on ? "true" : "false"); att(pb, "aria-label", PA.on ? tw("alongStop") + " · " + tw("along").replace("♫ ", "") : tw("along").replace("♫ ", ""));
+    if (pb.disabled !== !!PA.busy) pb.disabled = !!PA.busy;
     /* AOG-STUDIO-SMOOTH-V1: this runs four times a second, so it writes only what changed (a write makes the page lay out again) */
     try { songWords(); } catch (err) {}
     [["tpMix", "mix"], ["tpOut", "out"]].forEach(function (p) { var b = D.getElementById(p[0]), t = tw(p[1]); if (b.textContent !== t) b.textContent = t; });
@@ -534,7 +542,54 @@ JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></scrip
       else if (Date.now() - t0 > 12000) clearInterval(k);
     }, 150);
   }
-  D.getElementById("tpRec").addEventListener("click", function () { var R = recOf(); if (!R) { say("noRec"); return; } TP.line = ""; R.toggle(); setTimeout(paintTp, 60); });
+  /* AOG-PLAY-ALONG-V1 (2026-10-22) — Jimmy: "how can we get the drum loops that are made in kit A to be played so I / or the
+     person can use the keyboard to make the rest of the tracks or the guitar and bass rooms?" ♫ Play along plays My Track
+     (everything added to it: a Drum Machine loop sent to the Mixing Desk, takes) round and round, from the bar ♫ With My
+     Track's From names, while you stay in the room you are in and play over it; nothing is recorded. It is My Track put
+     together by the desk out of sight, as ● Record's backing is (backing()), on the Studio's own sound, so moving to another
+     room keeps it going. It stops when pressed again, when ● Record starts (Record plays My Track itself, after its four
+     clicks), when ▶ Listen plays the song, when the page is hidden or left; then its sound rests (AOG-SILENT-V1). */
+  function alongStop() {
+    if (!PA.on && !PA.src) return;
+    var S0 = PA.src, G0 = PA.g, c = PA.ac; PA.on = false; PA.src = null; PA.g = null;
+    try { var now = c.currentTime; G0.gain.setValueAtTime(G0.gain.value, now); G0.gain.linearRampToValueAtTime(0, now + 0.06); S0.stop(now + 0.08); } catch (e) {}
+    setTimeout(function () { try { if (!PA.on && c && c.state === "running") c.suspend(); } catch (e) {} }, 200);
+    if (TP.line === "alongOn" || TP.line === "alongPrep") TP.line = "";
+    paintTp();
+  }
+  function alongAlign(at, barSec) {   /* a room's own playing pattern (a chord pattern, a loop) starts on the bar with it: at, on the Studio's sound clock, becomes the room's */
+    try { var w = fr.contentWindow; if (!w || !w.AOGRoomClock || !w.AOGRoomClock.align || !w.AOGVU || !w.AOGVU.ctxs) return;
+      var rc = w.AOGVU.ctxs().filter(function (c) { return c.state === "running"; })[0]; if (!rc) return;
+      w.AOGRoomClock.align(rc.currentTime + (at - PA.ac.currentTime), barSec); } catch (e) {}
+  }
+  D.getElementById("tpAlong").addEventListener("click", function () { alongToggle(); });
+  function alongToggle() {   /* the bar's button, and a room's own (its whole-screen menu, aog-labdoors.js) */
+    if (PA.on) { alongStop(); return; }
+    if (PA.busy) return;
+    var R = recOf(); if (R && R.on()) return;
+    var w0 = deskOf(); if (w0 && w0.__aogStudio.PLAY.on) { w0.__aogStudio.stop(); }
+    /* still inside the tap: make or wake the sound now, as an iPhone wants */
+    try { if (!PA.ac) { var AC = window.AudioContext || window.webkitAudioContext; PA.ac = new AC(); if (window.AOGVU && AOGVU.own) AOGVU.own(PA.ac); }
+      if (PA.ac.state !== "running") PA.ac.resume(); } catch (e) {}
+    if (!PA.ac) return;
+    PA.busy = true; say("alongPrep");
+    backing().then(function (bk) {
+      PA.busy = false;
+      if (!bk || !bk.L || !bk.L.length) { say("empty"); return; }
+      var c = PA.ac, buf = c.createBuffer(2, bk.L.length, bk.sr);
+      buf.copyToChannel(bk.L, 0); buf.copyToChannel(bk.R || bk.L, 1);
+      var from = Math.max(1, overGet().from | 0), offs = (from - 1) * bk.barSec; if (offs >= buf.duration - 0.05) offs = 0;
+      var src = c.createBufferSource(), g = c.createGain(); src.buffer = buf; src.loop = true; src.loopStart = offs; src.loopEnd = buf.duration;
+      src.connect(g); g.connect(c.destination);
+      if (c.state !== "running") c.resume();
+      var at = c.currentTime + 0.12; src.start(at, offs);
+      PA.src = src; PA.g = g; PA.on = true; say("alongOn");
+      alongAlign(at, bk.barSec);
+    }, function () { PA.busy = false; say("fail"); });
+  }
+  document.addEventListener("visibilitychange", function () { if (document.hidden) alongStop(); });
+  window.addEventListener("pagehide", alongStop);
+  D.getElementById("tpRec").addEventListener("click", function () { var R = recOf(); if (!R) { say("noRec"); return; } TP.line = ""; if (PA.on && !R.on()) alongStop(); R.toggle(); setTimeout(paintTp, 60); });   /* AOG-PLAY-ALONG-V1: Record plays My Track itself */
   D.getElementById("tpAdd").addEventListener("click", function () {
     var R = recOf(), b = this; if (!R) return; b.disabled = true;
     Promise.resolve(R.add()).then(function () { b.disabled = false; say(R.sent() ? "added" : "fail"); refresh(); }, function () { b.disabled = false; say("fail"); });
@@ -542,7 +597,7 @@ JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></scrip
   /* AOG-STUDIO-LISTEN-V1 (STUDIO-HANDOFF §12b): ▶ Listen plays My Track. The takes in My Track that are on no track yet
      go on the desk's empty tracks by themselves (listenFill), so make something, press Listen, hear it; ‹ takes you back. */
   D.getElementById("tpListen").addEventListener("click", function () {
-    TP.line = "";
+    TP.line = ""; alongStop();   /* AOG-PLAY-ALONG-V1: one song at a time */
     var w0 = deskOf();
     if (w0 && w0.__aogStudio.PLAY.on) { w0.__aogStudio.stop(); paintTp(); return; }
     /* still inside the tap: wake the desk's sound now, as an iPhone wants */
@@ -736,6 +791,8 @@ JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></scrip
   window.AOGStudioShell = {
     go: function (id) { go(id, true); },
     backing: backing, over: overGet,   /* AOG-OVERDUB-V1 */
+    along: function () { return { on: PA.on, busy: PA.busy, ac: PA.ac && PA.ac.state, loop: !!(PA.src && PA.src.loop), line: TP.line }; },   /* AOG-PLAY-ALONG-V1, read only */
+    alongToggle: function () { alongToggle(); },   /* AOG-PLAY-ALONG-V1: a room's own button (its whole-screen menu) */
     renderNotes: renderNotes, roomSounds: roomSounds,   /* AOG-NOTES-V1 */
     arrived: function (id, w) { if (w && fr.contentWindow !== w) return;   /* AOG-STUDIO-KEEP-V1: a room out of sight never takes the screen */
       if (room(id) && id !== cur) {
@@ -852,7 +909,7 @@ def build():
             '<label class="song-from"><span id="fromL"></span> <select class="tp-from" id="tpFrom"></select></label></div>'   # AOG-OVERDUB-V1
             '<div class="song-row song-lat"><h3 id="latH"></h3><p id="latSay"></p><button type="button" class="song-b" id="latGo"></button><p id="latLine" aria-live="polite"></p></div></div>'   # AOG-LATENCY-V1
             '<div class="tp" role="group" aria-label="Transport"><button type="button" class="tp-b tp-rec" id="tpRec" aria-pressed="false"></button>'
-            '<button type="button" class="tp-b tp-add" id="tpAdd" hidden></button><button type="button" class="tp-b" id="tpListen"></button>'
+            '<button type="button" class="tp-b tp-add" id="tpAdd" hidden></button><button type="button" class="tp-b" id="tpListen"></button><button type="button" class="tp-b tp-along" id="tpAlong" aria-pressed="false"></button>'
             '<a class="tp-b tp-mix" id="tpMix" href="#studio" data-room="studio"></a><button type="button" class="tp-b tp-back" id="tpBack" hidden></button>'
             '<button type="button" class="tp-b tp-out" id="tpOut"></button>'
             '<button type="button" class="tp-b tp-mt" id="mtOpen" aria-expanded="false" aria-controls="mtRow"><span class="t"></span><span class="n"></span></button>'   # AOG-STUDIO-SUPREME-V1

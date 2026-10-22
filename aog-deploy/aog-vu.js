@@ -245,7 +245,8 @@
   }
   /* AOG-REST-IDLE-V1: a page that sleeps when nothing happens asks to be woken by any sound starting or any touch (onWake) */
   function onWake(f) { if (typeof f === "function" && WAKE.indexOf(f) < 0) WAKE.push(f); }
-  window.AOGVU = { quietly: quietly, levels: levels, mount: mount, draw: draw, wake: wake, hush: hush, own: ownCtx, still: quietFor, elsewhere: elsewhere, stir: stir, onWake: onWake };
+  window.AOGVU = { quietly: quietly, levels: levels, mount: mount, draw: draw, wake: wake, hush: hush, own: ownCtx, still: quietFor, elsewhere: elsewhere, stir: stir, onWake: onWake,
+    ctxs: function () { return CTXS.slice(); } };   /* AOG-PLAY-ALONG-V1: the page's own sound engines, read only (the Studio lines a room's pattern up with ♫ Play along) */
 
   /* ══ AOG-STUDIO-ROOM-SOUND-V1 (Jimmy, 2026-10-09: "1, 3, 2, 4" — 3: make it sound like a real room). One knob, shared by
      every instrument room: Dry, Small room, Studio, Hall. The room is a reverb made here (a stereo tail that dies away and

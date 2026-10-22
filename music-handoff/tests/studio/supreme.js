@@ -108,7 +108,7 @@ const init = ([th, es]) => { try { localStorage.setItem("aog.grace.navy.v1", "1"
   const row = await m.evaluate(() => { const bt = [...document.querySelectorAll("#mt .tp-b")].filter(x => x.offsetParent), R = x => x.getBoundingClientRect();
     return { labels: bt.map(x => x.textContent).join(" | "), tops: new Set(bt.map(x => Math.round(R(x).top))).size, min: Math.min(...bt.map(x => Math.round(R(x).height))), sheet: !!document.getElementById("mtRow").offsetParent,
       frame: Math.round(R(document.getElementById("room")).height), ih: innerHeight }; });
-  ok(row.labels === "● Record | ▶ Listen | Send it out | My Track" && row.tops === 1 && row.min >= 44 && !row.sheet && row.frame >= row.ih * 0.62,
+  ok(row.labels === "● Record | ▶ Listen | ♫ Play along | Send it out | My Track" && row.tops === 1 && row.min >= 44 && !row.sheet && row.frame >= row.ih * 0.62,
     "a phone: one row of keys, My Track one tap away, and the room keeps most of the screen: " + JSON.stringify(row));
   await m.tap("#mtOpen");
   const open = await m.evaluate(() => { const r = document.getElementById("mtRow").getBoundingClientRect(), mt = document.getElementById("mt").getBoundingClientRect();
