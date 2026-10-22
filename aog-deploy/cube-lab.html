@@ -9,7 +9,7 @@
 <title>The Cube Lab — Architecture of Grace</title>
 <!-- AOG-CUBE-LAB-V1 (2026-10-10) — Jimmy: "a step by step 3d interactive engine … instructions on how to make and
      finish a rubric cube." A real 3D Rubik's Cube on the Lab Bench, drawn with CSS 3D (no canvas, no library):
-     drag a row to turn it; Front and Back show every side. Ten short steps teach the layer-by-layer way
+     drag a row to turn it, or the space around it to look; Front and Back show every side. Ten short steps teach the layer-by-layer way
      (daisy, white cross, white corners, middle, yellow cross, yellow top, yellow corners, yellow edges).
      "Solve with me" solves any mixed cube with the very moves the steps teach (aog-cube.js), one move at a
      time. "My cube" paints a real cube's colours in, then helps finish it. Nothing moves until it is tapped. -->
@@ -297,6 +297,13 @@ footer p { margin-top:2rem; font-size:.9rem; color:var(--muted); max-width:70ch;
 .calm .kind.whole .tag { background:var(--warn-soft); color:var(--ink); border:2px solid var(--warn); }
 .calm .kind.side .tag { background:var(--steel-soft); color:var(--ink); border:2px solid var(--steel); }
 .actbar { display:none; }
+/* AOG-CUBE-PHONEFIT-V1 (2026-10-21) — Jimmy (iPhone, Learn): "It is hard to follow." The navy title, the tabs and the
+   Step menu took half the screen, and the lesson bar hid the bottom of the cube. On a phone the title is for screen
+   readers only (the tabs and the top bar already say where you are), so the whole cube sits above the lesson. */
+@media (max-width:600px){
+  #nav a.sep { display:none; }   /* the sister tool is in the site menu; here it took a line of its own */
+  html.aog-grace #toolMast, #toolMast { position:absolute!important; width:1px!important; height:1px!important; min-height:0!important; padding:0!important; margin:-1px!important; overflow:hidden!important; clip:rect(0 0 0 0)!important; white-space:nowrap!important; border:0!important; }
+}
 @media (max-width:899px){
   .actbar:not([hidden]) { display:flex; align-items:center; gap:.5rem; position:fixed; left:0; right:0; bottom:0; z-index:60; background:var(--card); border-top:1px solid var(--line);
     box-shadow:0 -2px 10px rgb(0 0 0 / .08); padding:.55rem max(16px, env(safe-area-inset-right)) calc(.55rem + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); }
@@ -396,7 +403,7 @@ const T={
   tag:["Learn to solve a Rubik's Cube, one step at a time.","Aprende a resolver un cubo de Rubik, paso a paso."],
   foot:["Turn it on screen, or follow along with a real cube in your hands. Your place is saved on this device.","Gíralo en la pantalla o sigue con un cubo de verdad en tus manos. Tu avance se guarda en este aparato."],
   vLearn:["Learn","Aprende"], vSolve:["Solve with me","Resuélvelo conmigo"], vMine:["My cube","Mi cubo"], micro:["Microscope","Microscopio"],
-  hint:["Drag a row to turn it. Circle a middle square to turn that side.","Arrastra una fila para girarla. Gira el dedo sobre un cuadro del medio para girar ese lado."],
+  hint:["Drag a row to turn it. Drag beside the cube to look around it.","Arrastra una fila para girarla. Arrastra junto al cubo para verlo por todos lados."],
   hintSolve:["Follow the arrow with your finger, or tap Turn it.","Sigue la flecha con el dedo, o toca Girarlo."],
   hintSolveReal:["Follow the arrow on your cube, then tap I did it.","Sigue la flecha en tu cubo y luego toca Ya lo hice."],
   hintPaint:["Pick a color, then tap a square to paint it. Drag the cube to turn it.","Elige un color y toca un cuadro para pintarlo. Arrastra el cubo para girarlo."],
@@ -701,7 +708,7 @@ const L=[
     ["Solved means every side is one color.","Resuelto quiere decir que cada lado es de un solo color."],
     ["You solve it in layers: the bottom, then the middle, then the top.","Se resuelve por capas: abajo, luego el medio y al final arriba."],
     ["To turn a row on the screen, drag it with your finger.","Para girar una fila en la pantalla, arrástrala con el dedo."],
-    ["Tap Back to see the other sides. Tap Front to come back.","Toca Atrás para ver los otros lados. Toca Frente para volver."]]},
+    ["Drag beside the cube to look at any side. Tap Front to come back.","Arrastra junto al cubo para ver cualquier lado. Toca Frente para volver."]]},
  {id:"moves", t:["The moves","Los movimientos"], kind:"moves",
   goal:["Learn what the letters mean.","Aprende qué quieren decir las letras."],
   steps:[["Each letter is a side: F front, B back, R right, L left.","Cada letra es un lado: F frente, B atrás, R derecha, L izquierda."],
@@ -711,7 +718,7 @@ const L=[
     ["A letter with 2: turn it two times.","Una letra con 2: gíralo dos veces."],
     ["y means turn the whole cube. The top stays on top.","y quiere decir girar todo el cubo. Lo de arriba sigue arriba."],
     ["Try it: tap R, then R'. The cube goes back.","Pruébalo: toca R y luego R'. El cubo vuelve."],
-    ["Circle the front's middle square with your finger. That is F.","Gira el dedo alrededor del cuadro del medio del frente. Eso es F."]],
+    ["Draw a circle around the front's middle square, like turning a steering wheel. That is F.","Dibuja un círculo alrededor del cuadro del medio del frente, como un volante. Eso es F."]],
   algs:[{n:["There and back","Ida y vuelta"], s:"R R' U U' F F'"}]},
  {id:"cross", stage:0, t:["The white cross","La cruz blanca"],
   goal:["A white plus sign on the bottom.","Un signo más blanco abajo."],
@@ -1531,7 +1538,8 @@ function padHtml(){
    with the cube … The ceiling has not been reached. Think of special ed needs with neurodivergent needs." A cube that
    spins freely is easy to lose. Now it holds still: the space around it never moves it, and there are two named views,
    each always the same: Front (top, front, right) and Back (bottom, back, left). Together they show all six sides,
-   and Front is always home. Rows still turn by a drag on the cube or along the arrow. */
+   and Front is always home. Rows still turn by a drag on the cube or along the arrow.
+   Since AOG-CUBE-LOOK-V1 (2026-10-21) the space around the cube turns the view again; Front and Back stay the way home. */
 const atBack=() => VIEW.every((x,i) => Math.abs(x-BACK_VIEW[i])<.02);
 /* a view that shows one side nearly straight on, its top up, tipped a little so it still looks like a cube */
 const SIDE_TILT=mul3(C.rot([1,0,0],-14*deg), C.rot([0,1,0],-18*deg));
@@ -1688,24 +1696,22 @@ function onMove(e){
     if(!drag.arrow && arrowGeo){ const na=nearArrow(drag.sx0, drag.sy0); if(na && na.d<Math.max(30, size*.6)) drag.arrow=na; }
     const A=drag.arrow, along=A ? (dx*A.ux+dy*A.uy)/Math.hypot(dx,dy) : 0;
     const RW=arrowGeo && arrowGeo.round, inWheel=RW && Math.hypot(drag.sx0-RW.cx, drag.sy0-RW.cy)<RW.r*1.6;
+    /* AOG-CUBE-WHEEL-V3 (2026-10-21) — Jimmy (iPhone, Learn): "It rotates the whole face when trying to turn a row."
+       A finger on a middle square, or anywhere on the side the round arrow marks, used to turn that whole side the
+       moment it moved, whichever way it went: a thumb sliding along the middle row turned the side instead. Now the
+       finger's path decides. Straight, it turns the row under it, as on a real cube; only a finger that really goes
+       round (its heading turns about 70° one way) becomes the steering wheel. */
+    const onMiddle=drag.face && cube.P[drag.face.i].kind===1 && !(A && arrowGeo && Math.abs(along)>.55);
+    if(!painting && (inWheel || onMiddle)){
+      let mv, cx, cy;
+      if(inWheel){ mv=arrowGeo.mv; cx=RW.cx; cy=RW.cy; }
+      else { const n=C.mulV(cube.P[drag.face.i].M, C.FACES[drag.face.f]).map(Math.round); mv=C.parse(C.faceOf(n)); [cx,cy]=projector()(n.map(x=>x*1.5)); }
+      drag.wheel={mv, cx, cy, last:Math.hypot(drag.sx0-cx, drag.sy0-cy)>size*.25 ? Math.atan2(drag.sy0-cy, drag.sx0-cx) : null, acc:0,
+        hx:drag.x, hy:drag.y, head:null, turned:0};
+    }
     if(painting){ drag.mode="look"; }
-    else if(inWheel && !busy && !queue.length){
-      /* AOG-CUBE-WHEEL-V1 (2026-10-11) — Jimmy: "the 'steering wheel' sometimes screws up and a piece rotates
-         horizontally." With the steering wheel showing, a finger going round anywhere on that face turns the face:
-         how far the finger goes round the middle is how far the face turns, as with a real wheel. */
-      const mv=arrowGeo.mv;
-      drag.mode="turn"; drag.turn={a:mv.n, set:layerSet(mv), th:0, arrowMv:mv, wheel:true, cx:RW.cx, cy:RW.cy,
-        last:Math.atan2(drag.sy0-RW.cy, drag.sx0-RW.cx), acc:0};
-    } else if(drag.face && cube.P[drag.face.i].kind===1 && !(A && arrowGeo && Math.abs(along)>.55) && !painting && !busy && !queue.length){
-      /* AOG-CUBE-WHEEL-V2 (2026-10-11) — Jimmy: "I can't turn it like a steering wheel" (in Learn, with no arrow).
-         A finger on a side's middle square, going round it, turns that whole side like a steering wheel, on any
-         side you can see, anywhere in the lab. (The middle square used to turn the middle slice, which the
-         beginner's way never uses.) */
-      const n=C.mulV(cube.P[drag.face.i].M, C.FACES[drag.face.f]).map(Math.round), base=C.faceOf(n), mv=C.parse(base);
-      const c=projector()(n.map(x=>x*1.5));
-      drag.mode="turn"; drag.turn={a:mv.n, set:layerSet(mv), th:0, arrowMv:mv, wheel:true, cx:c[0], cy:c[1],
-        last:Math.hypot(drag.sy0-c[1], drag.sx0-c[0])>size*.25 ? Math.atan2(drag.sy0-c[1], drag.sx0-c[0]) : null, acc:0};
-    } else if(A && arrowGeo && Math.abs(along)>.55 && !busy && !queue.length){
+    else if(drag.wheel && !drag.face){ drag.mode="wait"; }   /* between stickers on the wheel's side: nothing moves until the finger goes round */
+    else if(A && arrowGeo && Math.abs(along)>.55 && !drag.wheel){
       /* following the arrow (or going back along it): that exact move, whatever piece the finger is on */
       const mv=arrowGeo.mv, qs=mv.q<0?-1:1;
       drag.mode="turn"; drag.turn={a:mv.n, set:layerSet(mv), th:0, arrowMv:mv, qs, ux:A.ux, uy:A.uy, len:Math.max(40, A.len), s0:A.s, sx0:drag.sx0, sy0:drag.sy0};
@@ -1721,7 +1727,25 @@ function onMove(e){
       if(best){ const layer=C.dot(pos,best.a); const set=new Set(); cube.P.forEach((q,i) => { if(C.dot(cube.pos(q),best.a)===layer) set.add(i); });
         drag.mode="turn"; drag.turn={a:best.a, ux:best.v[0]/best.len, uy:best.v[1]/best.len, pxPerRad:best.len*size*1.015, layer, set, th:0}; }
       else drag.mode="still";
-    } else drag.mode="still";   /* AOG-CUBE-STILL-V1: the space around the cube never moves it */
+    } else drag.mode="look";   /* AOG-CUBE-LOOK-V1 (2026-10-21) — Jimmy: "The cube is frozen and you are not able to 'rotate'
+       it like you are in other modes." The space around the cube turns the view any way, as in My cube; Front brings it home.
+       (It used to hold still: AOG-CUBE-STILL-V1.) */
+  }
+  if(drag.wheel && drag.mode!=="look"){
+    /* watch the finger's heading: a path that bends one way by about 70° is going round, so it becomes the wheel */
+    const W=drag.wheel, hd=Math.hypot(e.clientX-W.hx, e.clientY-W.hy);
+    if(hd>=8){ const h=Math.atan2(e.clientY-W.hy, e.clientX-W.hx);
+      if(W.head!=null){ const d=Math.atan2(Math.sin(h-W.head), Math.cos(h-W.head)); W.turned+=d; }
+      W.head=h; W.hx=e.clientX; W.hy=e.clientY; }
+    const [sx,sy]=stageXY(e.clientX, e.clientY);
+    if(Math.hypot(sx-W.cx, sy-W.cy)>size*.25){ const a=Math.atan2(sy-W.cy, sx-W.cx);
+      if(W.last!=null){ let d=a-W.last; d=Math.atan2(Math.sin(d), Math.cos(d)); W.acc+=d; } W.last=a; }
+    if(Math.abs(W.turned)>1.22){
+      drag.wheel=null; drag.mode="turn"; drag.lit=true;
+      drag.turn={a:W.mv.n, set:layerSet(W.mv), th:0, arrowMv:W.mv, wheel:true, cx:W.cx, cy:W.cy, last:W.last, acc:W.acc};
+      turnFocus=drag.turn.set;
+    }
+    if(drag.mode==="wait") return;
   }
   if(drag.mode==="look"){
     const L=Math.hypot(dx,dy); if(L<1) return;

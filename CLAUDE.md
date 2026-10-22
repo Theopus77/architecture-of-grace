@@ -238,8 +238,10 @@ mixed cube it shows the best found and the proven floor. Proving the exact least
 tables, so it is not done in the browser. Turning the cube, leaving or hiding the tab ends both workers.
 
 It turns the cube with a finger on an iPad and an iPhone (acting like Safari) and with a mouse, and checks:
-a finger on the cube never scrolls the page; the space around the cube never moves it; following the arrow,
-circling a middle square (the steering wheel) and two-finger swipes make the right moves; Solve with me and
+a finger on the cube never scrolls the page; dragging the space around the cube turns the view (never a move) and
+Front brings it home; following the arrow, circling a middle square (the steering wheel) and two-finger swipes make
+the right moves, and a straight drag from a middle square turns that row, never the whole side (Jimmy, 2026-10-21,
+iPhone: "It rotates the whole face when trying to turn a row … The cube is frozen"); Solve with me and
 every Learn step reach the end; the three kinds of help, practising one step, the named moves, the camera's
 color reader, symbols, Read aloud (never on its own) and the move card. Do not push while it fails; add a
 check for anything new the hands can do.
