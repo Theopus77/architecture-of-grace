@@ -1,0 +1,442 @@
+{
+ "title": "Exponentes y funciones exponenciales",
+ "years": "Exponenciales",
+ "bigQuestion": "¿Qué pasa cuando una cantidad se multiplica una y otra vez por el mismo factor, y cómo podemos predecir dónde termina?",
+ "story": {
+  "title": "El centavo que superó a un millón de dólares",
+  "kicker": "Cuando se ofrece elegir entre una fortuna y un centavo que se duplica, la mayoría elige mal.",
+  "paragraphs": [
+   "Imagina que un desconocido te hace una oferta. Opción uno: un millón de dólares en efectivo, ahora mismo. Opción dos: un solo centavo hoy, dos centavos mañana, cuatro al día siguiente, y así sucesivamente, duplicándose cada día durante 30 días. Te quedas solo con lo que recibes el día 30. La mayoría de la gente se ríe y toma el millón. Un centavo es un centavo, y 30 días no es mucho tiempo.",
+   "Sigue los centavos por un rato y la risa parece justa. El día 1 son $0.01. El día 5 son $0.16. El día 10 son $5.12, más o menos el precio de un sándwich. Para el día 15 recibirías $163.84. Después de dos semanas completas, el centavo que se duplica no alcanza para comprar una bicicleta usada. El millón de dólares parece seguro.",
+   "Entonces la duplicación empieza a morder. El día 20 paga $5,242.88. El día 25 paga $167,772.16. El día 28 paga $1,342,177.28, y el millón ya quedó atrás. El día 30 paga $5,368,709.12. Nada de la regla cambió. La misma instrucción, multiplicar por 2, se siguió cada día. Lo que cambió es que ahora cada duplicación suma millones en lugar de centavos.",
+   "La cantidad de cualquier día sigue una sola fórmula: 0.01 × 2^(día − 1). El numerito elevado es toda la historia. Cuando una cantidad crece sumando, sube como una escalera de peldaños iguales. Cuando crece multiplicando, empieza plana y luego se levanta como una pared. Las poblaciones, los saldos bancarios, los rumores que se esparcen y las muestras radiactivas siguen la regla de multiplicar. Este capítulo trata de leer, escribir y predecir con esa regla."
+  ],
+  "think": "La oferta del millón gana durante los primeros 27 días. ¿Por qué crees que el centavo que se duplica sigue pareciendo un truco, aun después de ver los números?"
+ },
+ "sections": [
+  {
+   "title": "Reglas de los exponentes",
+   "lessons": [
+    {
+     "title": "Multiplicar y dividir potencias",
+     "mainIdea": "Cuando las potencias tienen la misma base, se multiplican sumando los exponentes y se dividen restando los exponentes.",
+     "reading": [
+      "Una *potencia* es una forma corta de escribir una multiplicación repetida. 2^5 significa 2 × 2 × 2 × 2 × 2, que es igual a 32. El 2 es la *base*, el número que se multiplica, y el 5 es el *exponente*, la cantidad de factores. Supón que un archivo de computadora duplica su tamaño 3 veces y luego lo duplica 4 veces más. El tamaño crece por 2^3 y después por 2^4. Escrito completo, eso es (2 × 2 × 2) × (2 × 2 × 2 × 2), que son siete 2 seguidos, o sea 2^7 = 128.",
+      "Ese ejemplo muestra la *regla del producto*: cuando multiplicas potencias con la misma base, conservas la base y sumas los exponentes. 2^3 × 2^4 = 2^(3 + 4) = 2^7. Compruébalo con números: 8 × 16 = 128, y 2^7 = 128. La regla funciona con cualquier base, incluso con variables: x^2 × x^5 = x^7, y 3a^4 × 5a^2 = 15a^6. Multiplica los coeficientes (3 × 5 = 15) y luego suma los exponentes de a (4 + 2 = 6).",
+      "La división va en sentido contrario. 5^6 ÷ 5^2 significa seis 5 arriba y dos 5 abajo. Se cancelan dos pares y quedan cuatro 5: 5^4 = 625. Esta es la *regla del cociente*: conservas la base y restas los exponentes. 5^6 ÷ 5^2 = 5^(6 − 2) = 5^4. Comprobación: 15,625 ÷ 25 = 625. Con variables, y^9 ÷ y^4 = y^5.",
+      "El error más común es multiplicar los exponentes en lugar de sumarlos. 2^3 × 2^4 no es 2^12; eso sería 4,096, no 128. Otro error es sumar los exponentes cuando las bases son distintas. 2^3 × 5^2 no se puede combinar en una sola potencia. Simplemente calcúlalo: 8 × 25 = 200. Las reglas se aplican solo cuando las bases son iguales."
+     ],
+     "words": [
+      {"w": "potencia", "d": "una base elevada a un exponente, como 2^5, que significa 2 multiplicado por sí mismo 5 veces"},
+      {"w": "base", "d": "el número que se multiplica repetidamente en una potencia; en 2^5 la base es 2"},
+      {"w": "exponente", "d": "el número elevado que cuenta cuántas veces se usa la base como factor; en 2^5 es 5"},
+      {"w": "regla del producto", "d": "para multiplicar potencias con la misma base, conserva la base y suma los exponentes: b^m × b^n = b^(m + n)"},
+      {"w": "regla del cociente", "d": "para dividir potencias con la misma base, conserva la base y resta los exponentes: b^m ÷ b^n = b^(m − n)"}
+     ],
+     "look": {
+      "title": "Potencias de diez",
+      "text": "Las potencias de diez hacen fáciles de ver las reglas. 10^3 = 1,000 y 10^4 = 10,000. Multiplícalos: 1,000 × 10,000 = 10,000,000, que tiene siete ceros, así que es 10^7. La regla del producto dice que 10^3 × 10^4 = 10^(3 + 4) = 10^7. Los ceros simplemente se van juntando. Ahora prueba con la división. 10^8 es 100,000,000 (ocho ceros) y 10^5 es 100,000 (cinco ceros).",
+      "prompt": "Usa la regla del cociente para simplificar 10^8 ÷ 10^5. Luego divide los números reales. ¿Coinciden los ceros con la regla?"
+     },
+     "check": [
+      {"q": "Simplifica 3^4 × 3^2.", "choices": ["3^6", "3^8", "9^6", "9^8"], "why": "La base es la misma, así que se suman los exponentes: 4 + 2 = 6. Comprobación: 81 × 9 = 729 = 3^6. Multiplicar los exponentes o las bases es el error común."},
+      {"q": "Simplifica x^9 ÷ x^3.", "choices": ["x^3", "x^12", "x^6", "1^6"], "why": "La base es la misma, así que se restan los exponentes: 9 − 3 = 6, y da x^6. Sumar da x^12 y dividir los exponentes da x^3; las dos respuestas están mal."},
+      {"q": "¿Cuál expresión NO se puede reescribir como una sola potencia con la regla del producto o la del cociente?", "choices": ["2^3 × 2^2", "7^5 ÷ 7^4", "4^2 × 3^2", "y^3 × y"], "why": "4^2 × 3^2 tiene dos bases distintas, así que las reglas no se aplican. Simplemente calcúlalo: 16 × 9 = 144. Las demás comparten la base."}
+     ],
+     "short": [
+      "A *power* is a short way to write repeated multiplication. In 2^5, the 2 is the *base* and the 5 is the *exponent*, the number of times the base is used as a factor. So 2^5 = 2 × 2 × 2 × 2 × 2 = 32. When you multiply powers with the same base, keep the base and add the exponents. This is the *product rule*: 2^3 × 2^4 = 2^7. When you divide, subtract the exponents. This is the *quotient rule*: 5^6 ÷ 5^2 = 5^4. Check: 8 × 16 = 128 = 2^7, and 15,625 ÷ 25 = 625 = 5^4. It works with variables too: x^2 × x^5 = x^7. Never multiply the exponents, and never use these rules when the bases differ. 2^3 × 5^2 is just 8 × 25 = 200."
+     ],
+     "more": [
+      "Computers store information as bits, and each bit has two possible values, 0 or 1. Two bits can make 2 × 2 = 2^2 = 4 patterns, three bits make 2^3 = 8, and eight bits, one byte, make 2^8 = 256 patterns. Each extra bit doubles the number of patterns, which is why the product rule keeps showing up in computing. Joining a group of 2^3 patterns with a group of 2^5 patterns gives 2^8 = 256, because 3 + 5 = 8."
+     ],
+     "short_es": [
+      "Una *potencia* es una forma corta de escribir una multiplicación repetida. En 2^5, el 2 es la *base* y el 5 es el *exponente*, la cantidad de veces que la base se usa como factor. Así, 2^5 = 2 × 2 × 2 × 2 × 2 = 32. Cuando multiplicas potencias con la misma base, conservas la base y sumas los exponentes. Esta es la *regla del producto*: 2^3 × 2^4 = 2^7. Cuando divides, restas los exponentes. Esta es la *regla del cociente*: 5^6 ÷ 5^2 = 5^4. Comprobación: 8 × 16 = 128 = 2^7, y 15,625 ÷ 25 = 625 = 5^4. Funciona también con variables: x^2 × x^5 = x^7. Nunca multipliques los exponentes, y nunca uses estas reglas cuando las bases sean distintas. 2^3 × 5^2 es simplemente 8 × 25 = 200."
+     ],
+     "more_es": [
+      "Las computadoras guardan la información en bits, y cada bit puede valer 0 o 1. Dos bits pueden formar 2 × 2 = 2^2 = 4 patrones, tres bits forman 2^3 = 8, y ocho bits, un byte, forman 2^8 = 256 patrones. Cada bit extra duplica la cantidad de patrones, y por eso la regla del producto aparece una y otra vez en la computación. Si unes un grupo de 2^3 patrones con un grupo de 2^5 patrones, obtienes 2^8 = 256, porque 3 + 5 = 8."
+     ]
+    },
+    {
+     "title": "Potencias de potencias y el exponente cero",
+     "mainIdea": "Elevar una potencia a otra potencia multiplica los exponentes, y cualquier base distinta de cero elevada a la potencia cero es igual a 1.",
+     "reading": [
+      "Imagina un póster cuadrado cuyo lado mide 2^3 = 8 pulgadas. Su área es (2^3)^2 = 8 × 8 = 64 pulgadas cuadradas. Ahora cuenta los 2: 8 × 8 es (2 × 2 × 2) × (2 × 2 × 2), seis 2, así que el área es 2^6 = 64. Esta es la *regla de la potencia*: para elevar una potencia a otra potencia, se multiplican los exponentes. (2^3)^2 = 2^(3 × 2) = 2^6. Del mismo modo, (x^4)^5 = x^20.",
+      "La regla se extiende a los productos dentro de paréntesis. (3x^2)^3 significa 3x^2 × 3x^2 × 3x^2. Eleva el 3 al cubo para obtener 27, y multiplica los exponentes de x: x^(2 × 3) = x^6. Entonces (3x^2)^3 = 27x^6. Un error común es escribir 3x^6, olvidando elevar el *coeficiente*. Cada factor que está dentro del paréntesis recibe el exponente de afuera.",
+      "¿Qué significa 5^0? Usa la regla del cociente: 5^3 ÷ 5^3 = 5^(3 − 3) = 5^0. Pero 5^3 ÷ 5^3 = 125 ÷ 125 = 1. Entonces 5^0 = 1. Cualquier base distinta de cero elevada al *exponente cero* es 1. Otra manera de verlo: sigue el patrón 5^3 = 125, 5^2 = 25, 5^1 = 5. Cada paso hacia abajo divide entre 5, así que el siguiente paso es 5 ÷ 5 = 1.",
+      "Muchos estudiantes suponen que 5^0 = 0 porque el cero significa nada. Pero el exponente cuenta factores, y usar cero factores de 5 deja el valor inicial, 1, el número que no cambia una multiplicación. Cuidado con los paréntesis: 3x^0 = 3 × 1 = 3, pero (3x)^0 = 1, porque los paréntesis meten el 3 dentro de la potencia."
+     ],
+     "words": [
+      {"w": "regla de la potencia", "d": "para elevar una potencia a otra potencia, se multiplican los exponentes: (b^m)^n = b^(m × n)"},
+      {"w": "coeficiente", "d": "el número que multiplica a una variable, como el 3 en 3x^2"},
+      {"w": "exponente cero", "d": "cualquier base distinta de cero elevada a la potencia 0 es igual a 1; por ejemplo, 7^0 = 1"}
+     ],
+     "look": {
+      "title": "Bajando por las potencias",
+      "text": "Escribe las potencias de 3 en una columna: 3^4 = 81, 3^3 = 27, 3^2 = 9, 3^1 = 3. Cada línea es la anterior dividida entre 3: 81 ÷ 3 = 27, 27 ÷ 3 = 9, 9 ÷ 3 = 3. El patrón no tiene por qué detenerse en 3^1. Sigue dividiendo entre 3 para hallar la línea siguiente, y la que viene después.",
+      "prompt": "¿Qué dice el patrón que debe ser 3^0? Si divides entre 3 una vez más, ¿cuánto sería 3^(−1)?"
+     },
+     "check": [
+      {"q": "Simplifica (x^4)^3.", "choices": ["x^7", "x^12", "x^64", "x^1"], "why": "Una potencia de una potencia multiplica los exponentes: 4 × 3 = 12. Sumarlos da x^7, que es el error de la regla del producto."},
+      {"q": "¿Cuánto es 12^0?", "choices": ["0", "12", "1", "indefinido"], "why": "Cualquier base distinta de cero elevada a la potencia cero es 1. Compruébalo con la regla del cociente: 12^2 ÷ 12^2 = 144 ÷ 144 = 1."},
+      {"q": "Simplifica (2y^3)^4.", "choices": ["2y^12", "8y^12", "16y^7", "16y^12"], "why": "Los dos factores reciben el exponente 4: 2^4 = 16 y (y^3)^4 = y^12. Si no elevas el 2, obtienes 2y^12."}
+     ],
+     "short": [
+      "To raise a power to a power, multiply the exponents. This is the *power rule*: (2^3)^2 = 2^6 = 64, and (x^4)^5 = x^20. Every factor inside the parentheses gets the outside exponent, including the *coefficient*, the number in front of the variable. So (3x^2)^3 = 27x^6, not 3x^6. Any nonzero base with the *zero exponent* equals 1. You can see why: 5^3 ÷ 5^3 = 5^0, and 125 ÷ 125 = 1. So 5^0 = 1, not 0. Watch the parentheses: 3x^0 = 3, but (3x)^0 = 1. Adding the exponents is the product-rule mistake, so check which rule you need."
+     ],
+     "more": [
+      "The zero exponent is what makes place value work. In the number 345, the 5 is in the ones place, the 4 is in the tens place and the 3 is in the hundreds place. Written with powers of ten, 345 = 3 × 10^2 + 4 × 10^1 + 5 × 10^0. Since 10^0 = 1, the ones place fits the same pattern as every other place. If 10^0 were 0, every number would lose its ones digit."
+     ],
+     "short_es": [
+      "Para elevar una potencia a otra potencia, se multiplican los exponentes. Esta es la *regla de la potencia*: (2^3)^2 = 2^6 = 64, y (x^4)^5 = x^20. Cada factor que está dentro del paréntesis recibe el exponente de afuera, incluso el *coeficiente*, el número que va delante de la variable. Así, (3x^2)^3 = 27x^6, no 3x^6. Cualquier base distinta de cero con *exponente cero* es igual a 1. Se ve por qué: 5^3 ÷ 5^3 = 5^0, y 125 ÷ 125 = 1. Entonces 5^0 = 1, no 0. Cuidado con los paréntesis: 3x^0 = 3, pero (3x)^0 = 1. Sumar los exponentes es el error de la regla del producto, así que revisa qué regla necesitas."
+     ],
+     "more_es": [
+      "El exponente cero es lo que hace que funcione el valor posicional. En el número 345, el 5 está en el lugar de las unidades, el 4 en el de las decenas y el 3 en el de las centenas. Escrito con potencias de diez, 345 = 3 × 10^2 + 4 × 10^1 + 5 × 10^0. Como 10^0 = 1, el lugar de las unidades sigue el mismo patrón que todos los demás. Si 10^0 fuera 0, todos los números perderían su dígito de las unidades."
+     ]
+    },
+    {
+     "title": "Exponentes negativos",
+     "mainIdea": "Un exponente negativo significa dividir: b^(−n) es igual a 1/b^n, el recíproco de la potencia positiva.",
+     "reading": [
+      "Continúa el patrón de 2^3 = 8, 2^2 = 4, 2^1 = 2, 2^0 = 1. Cada paso divide entre 2. El siguiente paso es 1 ÷ 2 = 1/2, luego 1/4, luego 1/8. Así que 2^(−1) = 1/2, 2^(−2) = 1/4, 2^(−3) = 1/8. Un *exponente negativo* no vuelve negativo al número. Te dice que tomes el *recíproco*: voltea la potencia y conviértela en fracción. 2^(−3) = 1/2^3 = 1/8.",
+      "La regla del cociente coincide. 4^2 ÷ 4^5 = 4^(2 − 5) = 4^(−3). Escrito completo, 16 ÷ 1,024 = 1/64, y 1/4^3 = 1/64. La misma idea sirve con variables: x^3 ÷ x^7 = x^(−4) = 1/x^4. Para escribir una expresión solo con exponentes positivos, pasa cada factor que tenga un exponente negativo al otro lado de la barra de fracción y haz positivo su exponente. Así, 5x^(−2) = 5/x^2, y 1/y^(−3) = y^3.",
+      "Los científicos usan *potencias de diez* negativas para escribir números diminutos. Un glóbulo rojo mide unos 7 × 10^(−6) metros de ancho. Como 10^(−6) = 1/1,000,000, eso es 0.000007 metros. Un error común es pensar que 10^(−6) es un número negativo. Es pequeño, no negativo: un número positivo menor que 1.",
+      "Dos errores que debes vigilar. Primero, (−3)^2 = 9 pero 3^(−2) = 1/9; el lugar donde está el signo menos lo cambia todo. Segundo, solo se voltea el factor que tiene el exponente negativo. En 3x^(−2), el 3 se queda arriba: 3/x^2, no 1/(3x^2). El exponente pertenece solo a la x."
+     ],
+     "words": [
+      {"w": "exponente negativo", "d": "un exponente menor que cero; b^(−n) significa 1 dividido entre b^n, así que 2^(−3) = 1/8"},
+      {"w": "recíproco", "d": "el número volteado; el recíproco de 8 es 1/8 y el recíproco de 2/3 es 3/2"},
+      {"w": "potencias de diez", "d": "10 elevado a un exponente; 10^3 = 1,000 y 10^(−3) = 0.001"}
+     ],
+     "look": {
+      "title": "Potencias de diez, hacia arriba y hacia abajo",
+      "unit": "valor",
+      "rows": ["10^3", "10^2", "10^1", "10^0", "10^(−1)", "10^(−2)", "10^(−3)"],
+      "prompt": "Cada fila es la fila de arriba dividida entre 10. ¿Cuánto es 10^(−4) como decimal, y cuántos lugares se mueve el punto decimal a partir de 1?"
+     },
+     "check": [
+      {"q": "¿Cuánto es 3^(−2)?", "choices": ["−9", "1/9", "−1/9", "1/6"], "why": "Un exponente negativo significa recíproco: 3^(−2) = 1/3^2 = 1/9. Es positivo, no −9."},
+      {"q": "Escribe 4x^(−3) usando solo exponentes positivos.", "choices": ["1/(4x^3)", "−4x^3", "4/x^3", "x^3/4"], "why": "Solo la x tiene el exponente negativo, así que solo la x pasa abajo: 4/x^3. El 4 se queda arriba."},
+      {"q": "¿Qué número es igual a 10^(−3)?", "choices": ["0.001", "−1000", "−0.001", "0.0001"], "why": "10^(−3) = 1/10^3 = 1/1,000 = 0.001. Es un número positivo pequeño, no uno negativo."}
+     ],
+     "short": [
+      "A *negative exponent* does not make a number negative. It means take the *reciprocal*. Follow the pattern 2^3 = 8, 2^2 = 4, 2^1 = 2, 2^0 = 1. Each step divides by 2, so 2^(−1) = 1/2 and 2^(−3) = 1/8. In the same way, 3^(−2) = 1/3^2 = 1/9, a positive number. To write an expression with only positive exponents, move just the factor that has the negative exponent across the fraction bar. So 4x^(−3) = 4/x^3, and the 4 stays on top. Scientists use negative *powers of ten* for tiny numbers. 10^(−3) = 1/1,000 = 0.001, a small positive number."
+     ],
+     "more": [
+      "The metric system hides negative exponents in its names. A millimeter is 10^(−3) of a meter, a micrometer is 10^(−6) of a meter, and a nanometer is 10^(−9) of a meter. Each of these units is a thousand times smaller than the one before it. So when you read milli, micro or nano, you are reading a negative power of ten in words.",
+      "Many calculators use a negative exponent to show very small answers. The display 7E−6 means 7 × 10^(−6). The minus sign in that display tells you the number is tiny, not negative. It is the same rule you just used, printed in a short form."
+     ],
+     "short_es": [
+      "Un *exponente negativo* no vuelve negativo al número. Significa que tomes el *recíproco*. Sigue el patrón 2^3 = 8, 2^2 = 4, 2^1 = 2, 2^0 = 1. Cada paso divide entre 2, así que 2^(−1) = 1/2 y 2^(−3) = 1/8. De la misma manera, 3^(−2) = 1/3^2 = 1/9, un número positivo. Para escribir una expresión solo con exponentes positivos, pasa solamente el factor que tiene el exponente negativo al otro lado de la barra de fracción. Así, 4x^(−3) = 4/x^3, y el 4 se queda arriba. Los científicos usan *potencias de diez* negativas para escribir números diminutos. 10^(−3) = 1/1,000 = 0.001, un número positivo pequeño."
+     ],
+     "more_es": [
+      "El sistema métrico esconde exponentes negativos en sus nombres. Un milímetro es 10^(−3) de un metro, un micrómetro es 10^(−6) de un metro y un nanómetro es 10^(−9) de un metro. Cada una de estas unidades es mil veces más pequeña que la anterior. Así que cuando lees mili, micro o nano, estás leyendo en palabras una potencia de diez negativa.",
+      "Muchas calculadoras usan un exponente negativo para mostrar respuestas muy pequeñas. La pantalla 7E−6 significa 7 × 10^(−6). El signo menos de esa pantalla te dice que el número es diminuto, no negativo. Es la misma regla que acabas de usar, escrita en forma corta."
+     ]
+    },
+    {
+     "title": "Exponentes racionales y raíces",
+     "mainIdea": "Un exponente de 1/n significa la raíz n-ésima, así que 9^(1/2) = √9 = 3, y 8^(1/3) es igual a la raíz cúbica de 8, que es 2.",
+     "reading": [
+      "Una *raíz cuadrada* de un número es un valor que, multiplicado por sí mismo, da ese número. √49 = 7 porque 7 × 7 = 49. Una *raíz cúbica* usa el valor tres veces: la raíz cúbica de 27 es 3 porque 3 × 3 × 3 = 27. Las raíces deshacen las potencias. Ahora pregunta qué podría significar 9^(1/2). Por la regla del producto, 9^(1/2) × 9^(1/2) = 9^(1/2 + 1/2) = 9^1 = 9. Así que 9^(1/2) es un número que, elevado al cuadrado, da 9. Esa es la raíz cuadrada: 9^(1/2) = √9 = 3.",
+      "En general, b^(1/n) es la raíz n-ésima de b, y b^(m/n) significa sacar la raíz n-ésima y luego elevar a la potencia m, o al revés; el orden no importa. Ejemplo: 8^(2/3). La raíz cúbica de 8 es 2, y 2^2 = 4, así que 8^(2/3) = 4. Compruébalo en el otro orden: 8^2 = 64, y la raíz cúbica de 64 es 4. Es la misma respuesta. Otro ejemplo: 16^(3/4). La raíz cuarta de 16 es 2, porque 2^4 = 16, y 2^3 = 8.",
+      "Un *exponente racional* sigue todas las reglas de los exponentes. 4^(1/2) × 4^(3/2) = 4^(4/2) = 4^2 = 16. Comprobación: 2 × 8 = 16. Las reglas también sirven para simplificar un *radical*. √72 = √(36 × 2) = √36 × √2 = 6√2, porque 36 es el *cuadrado perfecto* más grande que divide a 72. Sacar la raíz de cada factor por separado es la regla de la potencia aplicada a un producto.",
+      "El error más común es leer 8^(1/3) como 8 ÷ 3 o como 8 × 1/3. Es la raíz cúbica: 2. Otro error es 25^(1/2) = 12.5. Sacar la mitad no es lo mismo que sacar la raíz cuadrada; 25^(1/2) = 5. Pregúntate siempre: ¿qué número, multiplicado por sí mismo n veces, da la base?"
+     ],
+     "words": [
+      {"w": "raíz cuadrada", "d": "un número que da el original al multiplicarse por sí mismo; √36 = 6 porque 6 × 6 = 36"},
+      {"w": "raíz cúbica", "d": "un número que se usa tres veces como factor para dar el original; la raíz cúbica de 64 es 4"},
+      {"w": "exponente racional", "d": "un exponente que es una fracción; b^(m/n) significa la raíz n-ésima de b elevada a la potencia m"},
+      {"w": "radical", "d": "una expresión con signo de raíz, como √72 o la raíz cúbica de 20"},
+      {"w": "cuadrado perfecto", "d": "un número entero que es el cuadrado de un número entero, como 1, 4, 9, 16, 25, 36"}
+     ],
+     "look": {
+      "title": "Dos caminos a la misma raíz",
+      "text": "Halla 32^(3/5) de dos maneras. Primer camino: la raíz quinta de 32 es 2, porque 2^5 = 32, y luego 2^3 = 8. Segundo camino: 32^3 = 32,768, y la raíz quinta de 32,768 es 8, porque 8^5 = 32,768. Los dos caminos dan 8, pero el primero mantiene pequeños los números. Ahora prueba con 27^(2/3).",
+      "prompt": "Halla 27^(2/3) sacando primero la raíz cúbica y luego elevando primero al cuadrado. ¿Qué camino es más fácil, y obtienes la misma respuesta?"
+     },
+     "check": [
+      {"q": "¿Cuánto es 64^(1/3)?", "choices": ["21.3", "8", "4", "32"], "why": "El exponente 1/3 significa raíz cúbica. 4 × 4 × 4 = 64, así que la respuesta es 4. Dividir entre 3 o sacar la raíz cuadrada (8) son los errores comunes."},
+      {"q": "¿Cuánto es 27^(2/3)?", "choices": ["18", "6", "3", "9"], "why": "La raíz cúbica de 27 es 3, y 3^2 = 9. Multiplicar 27 por 2/3 da 18, lo cual confunde el exponente con un factor."},
+      {"q": "Simplifica √50.", "choices": ["25√2", "5√2", "5√10", "2√5"], "why": "50 = 25 × 2, y 25 es un cuadrado perfecto: √50 = √25 × √2 = 5√2. Comprobación: 5√2 ≈ 7.07, y 7.07^2 ≈ 50."}
+     ],
+     "short": [
+      "A *square root* of a number gives the number when multiplied by itself: √49 = 7. A *cube root* is used three times: the cube root of 27 is 3. An exponent of 1/n means the nth root, so 9^(1/2) = 3 and 8^(1/3) = 2. With a *rational exponent* m/n, take the nth root, then raise it to the mth power. For 8^(2/3), the cube root of 8 is 2, and 2^2 = 4. Check it the other way: 8^2 = 64, and the cube root of 64 is 4. The order does not matter. Roots also simplify a *radical*, an expression with a root sign. √72 = √36 × √2 = 6√2, because 36 is the largest *perfect square* that divides 72. A fraction exponent does not mean division: 25^(1/2) is 5, not 12.5."
+     ],
+     "more": [
+      "The names come from shapes. A square with an area of 49 square units has sides of 7 units, so 7 is the square root of 49. A cube with a volume of 27 cubic units has edges of 3 units, so 3 is the cube root of 27. The root answers a question about size: how long is one side?",
+      "Most roots are not whole numbers. The number √2 is about 1.414, but its decimal never ends and never repeats, so it cannot be written as a fraction of whole numbers. Mathematicians in ancient Greece were among the first to prove this."
+     ],
+     "short_es": [
+      "Una *raíz cuadrada* de un número da ese número al multiplicarse por sí misma: √49 = 7. Una *raíz cúbica* se usa tres veces: la raíz cúbica de 27 es 3. Un exponente de 1/n significa la raíz n-ésima, así que 9^(1/2) = 3 y 8^(1/3) = 2. Con un *exponente racional* m/n, sacas la raíz n-ésima y luego la elevas a la potencia m. Para 8^(2/3), la raíz cúbica de 8 es 2, y 2^2 = 4. Compruébalo al revés: 8^2 = 64, y la raíz cúbica de 64 es 4. El orden no importa. Las raíces también sirven para simplificar un *radical*, una expresión con signo de raíz. √72 = √36 × √2 = 6√2, porque 36 es el *cuadrado perfecto* más grande que divide a 72. Un exponente fraccionario no significa dividir: 25^(1/2) es 5, no 12.5."
+     ],
+     "more_es": [
+      "Los nombres vienen de las figuras. Un cuadrado con un área de 49 unidades cuadradas tiene lados de 7 unidades, así que 7 es la raíz cuadrada de 49. Un cubo con un volumen de 27 unidades cúbicas tiene aristas de 3 unidades, así que 3 es la raíz cúbica de 27. La raíz responde una pregunta sobre el tamaño: ¿cuánto mide un lado?",
+      "La mayoría de las raíces no son números enteros. El número √2 es más o menos 1.414, pero su decimal nunca termina y nunca se repite, así que no se puede escribir como una fracción de números enteros. Los matemáticos de la antigua Grecia fueron de los primeros en demostrarlo."
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Crecimiento y decaimiento",
+   "lessons": [
+    {
+     "title": "Duplicación y factores de crecimiento",
+     "mainIdea": "El crecimiento exponencial multiplica por el mismo factor en cada paso, así que el valor después de x pasos es inicio × factor^x.",
+     "reading": [
+      "El centavo de la historia del capítulo se duplica cada día. Día 1: $0.01. Día 2: $0.02. Día 3: $0.04. Día 4: $0.08. Cada día multiplicas por 2, no sumas 2. Después de d duplicaciones, la cantidad es 0.01 × 2^d. Después de 10 duplicaciones, 0.01 × 2^10 = 0.01 × 1,024 = $10.24. Después de 20, 0.01 × 1,048,576 = $10,485.76. Esto es *crecimiento exponencial*: el mismo multiplicador se usa una y otra vez.",
+      "La forma general es y = a × b^x. Aquí a es el *valor inicial*, el valor cuando x = 0; b es el *factor de crecimiento*, el número por el que multiplicas en cada paso; y x cuenta los pasos. Una colonia de bacterias que empieza con 500 células y se triplica cada hora tiene y = 500 × 3^x. Después de 4 horas: 500 × 3^4 = 500 × 81 = 40,500 células. Compruébalo paso a paso: 500, 1,500, 4,500, 13,500, 40,500.",
+      "Compáralo con un patrón lineal. Si la colonia ganara 500 células por hora en lugar de triplicarse, después de 4 horas tendría 500 + 4 × 500 = 2,500 células. Sumar la misma cantidad en cada paso es lineal; multiplicar por el mismo factor en cada paso es exponencial. En una tabla, los valores lineales tienen una diferencia constante y los exponenciales tienen una *razón* constante. La razón entre vecinos en 500, 1,500, 4,500 es 1,500 ÷ 500 = 3 y 4,500 ÷ 1,500 = 3.",
+      "Un error común es calcular 500 × 3^4 como (500 × 3)^4 = 1,500^4. El exponente se aplica solo al factor de crecimiento, así que primero evalúa 3^4 y luego multiplica por 500. Otro error es cambiar los papeles de los dos números en 2^10: el 2 es por lo que multiplicas, y el 10 es cuántas veces."
+     ],
+     "words": [
+      {"w": "crecimiento exponencial", "d": "crecimiento que resulta de multiplicar por el mismo factor mayor que 1 en cada paso, como duplicar cada día"},
+      {"w": "valor inicial", "d": "el valor cuando x = 0, la a en y = a × b^x"},
+      {"w": "factor de crecimiento", "d": "el número por el que multiplicas en cada paso, la b en y = a × b^x; duplicar tiene factor de crecimiento 2"},
+      {"w": "razón", "d": "un valor dividido entre el que va antes; las tablas exponenciales tienen una razón constante"}
+     ],
+     "look": {
+      "title": "El centavo que se duplica, día por día",
+      "unit": "dólares",
+      "rows": ["Día 1", "Día 5", "Día 10", "Día 15", "Día 20", "Día 25", "Día 30"],
+      "prompt": "Del día 20 al día 30 hay 10 duplicaciones, así que la cantidad se multiplica por 2^10 = 1,024. Comprueba que 5,242.88 × 1,024 coincide con la última fila."
+     },
+     "check": [
+      {"q": "Una población de 200 se duplica cada año. ¿Qué ecuación da la población después de x años?", "choices": ["y = 200 + 2x", "y = 2 × 200^x", "y = 200 × 2^x", "y = 200x^2"], "why": "Empieza en 200 y multiplica por 2 cada año: y = 200 × 2^x. Sumar 2x es lineal, y 200^x pone el número equivocado en la base."},
+      {"q": "Evalúa 50 × 3^3.", "choices": ["1,350", "3,375,000", "450", "150"], "why": "Haz primero la potencia: 3^3 = 27, y luego 50 × 27 = 1,350. Si multiplicas primero y elevas 150 al cubo, obtienes 3,375,000."},
+      {"q": "¿Qué lista de valores muestra crecimiento exponencial?", "choices": ["3, 6, 9, 12", "3, 6, 12, 24", "3, 5, 8, 12", "3, 9, 15, 21"], "why": "3, 6, 12, 24 tiene una razón constante de 2. Las listas 3, 6, 9, 12 y 3, 9, 15, 21 suman la misma cantidad, así que son lineales."}
+     ],
+     "short": [
+      "The penny from the story doubles each day, so after d doublings the amount is 0.01 × 2^d. This is *exponential growth*: you multiply by the same number again and again. The general form is y = a × b^x. The a is the *starting value*, the value when x = 0. The b is the *growth factor*, the number you multiply by each step. The x counts the steps. A colony that starts at 500 cells and triples each hour is y = 500 × 3^x. Do the power first: 3^4 = 81, and then 500 × 81 = 40,500 cells. In a table, linear values have a constant difference, but exponential values have a constant *ratio*, such as 3 in 500, 1,500, 4,500."
+     ],
+     "more": [
+      "Folding paper shows the same pattern. Each fold stacks the paper on itself, so the number of layers doubles: 2, 4, 8, 16. After n folds there are 2^n layers. On paper, 10 folds would make 1,024 layers. In real life the stack gets thick and stiff so quickly that folding a sheet more than seven or eight times is very hard.",
+      "Doubling also tells you something about time. If a quantity doubles every day, the time to go from 1 to 2 is one day, and the time to go from 1 million to 2 million is also one day. The time stays the same. What changes is how much is added in that time."
+     ],
+     "short_es": [
+      "El centavo de la historia se duplica cada día, así que después de d duplicaciones la cantidad es 0.01 × 2^d. Esto es *crecimiento exponencial*: multiplicas por el mismo número una y otra vez. La forma general es y = a × b^x. La a es el *valor inicial*, el valor cuando x = 0. La b es el *factor de crecimiento*, el número por el que multiplicas en cada paso. La x cuenta los pasos. Una colonia que empieza con 500 células y se triplica cada hora es y = 500 × 3^x. Haz primero la potencia: 3^4 = 81, y luego 500 × 81 = 40,500 células. En una tabla, los valores lineales tienen una diferencia constante, pero los valores exponenciales tienen una *razón* constante, como el 3 en 500, 1,500, 4,500."
+     ],
+     "more_es": [
+      "Doblar papel muestra el mismo patrón. Cada doblez apila el papel sobre sí mismo, así que el número de capas se duplica: 2, 4, 8, 16. Después de n dobleces hay 2^n capas. En teoría, 10 dobleces harían 1,024 capas. En la vida real, la pila se vuelve tan gruesa y rígida tan rápido que doblar una hoja más de siete u ocho veces es muy difícil.",
+      "Duplicar también te dice algo sobre el tiempo. Si una cantidad se duplica cada día, el tiempo para pasar de 1 a 2 es un día, y el tiempo para pasar de 1 millón a 2 millones también es un día. El tiempo se queda igual. Lo que cambia es cuánto se suma en ese tiempo."
+     ]
+    },
+    {
+     "title": "Crecimiento porcentual e interés compuesto",
+     "mainIdea": "Una tasa de r por período da el factor de crecimiento 1 + r, así que un crecimiento de 5% significa multiplicar por 1.05 en cada período.",
+     "reading": [
+      "Supón que una cuenta de ahorros tiene $1,000 y gana 5% de *interés* cada año, que se suma al saldo. Después de un año, el interés es 0.05 × 1,000 = $50, así que el saldo es $1,050. Fíjate en que 1,000 + 0.05 × 1,000 = 1,000 × (1 + 0.05) = 1,000 × 1.05. Crecer 5% es lo mismo que multiplicar por 1.05. En el segundo año, el 5% se calcula sobre $1,050, así que el interés es $52.50 y el saldo es $1,102.50. El interés que gana interés se llama *interés compuesto*.",
+      "El patrón es y = 1,000 × 1.05^t, donde t es el número de años y 1,000 es el *capital*. Después de 10 años, 1.05^10 ≈ 1.629, así que el saldo es de unos $1,629. El interés simple, que paga $50 cada año sin interés compuesto, daría 1,000 + 10 × 50 = $1,500. La diferencia se ensancha con el tiempo. La regla del crecimiento porcentual: el factor de crecimiento es 1 + r, donde r es la *tasa* escrita como decimal. Una tasa de 3% da 1.03, una de 12% da 1.12 y una de 150% da 2.5.",
+      "Algunas cuentas calculan el interés compuesto más de una vez al año. La fórmula A = P(1 + r/n)^(nt) reparte la tasa anual r entre n períodos por año. Con 6% compuesto mensualmente, cada mes se multiplica por 1 + 0.06/12 = 1.005, y dos años tienen 24 períodos. Para $500: 500 × 1.005^24 ≈ 500 × 1.1272 ≈ $563.58. El interés compuesto anual de 6% daría 500 × 1.06^2 = 500 × 1.1236 = $561.80, un poco menos.",
+      "El error más común es usar 0.05 como factor de crecimiento. Multiplicar por 0.05 reduce $1,000 a $50; hay que multiplicar por 1.05 para conservar lo original y sumarle 5%. Un segundo error es escribir una tasa de 5% como 1.5. Mueve el punto decimal dos lugares: 5% = 0.05, así que el factor es 1.05, no 1.5."
+     ],
+     "words": [
+      {"w": "interés", "d": "dinero que se paga por usar dinero, por lo general un porcentaje del saldo en cada período"},
+      {"w": "interés compuesto", "d": "interés calculado sobre el saldo, incluido el interés anterior, de modo que el saldo crece de forma exponencial"},
+      {"w": "capital", "d": "la cantidad inicial de dinero que se deposita o se pide prestada"},
+      {"w": "tasa", "d": "el porcentaje de crecimiento por período, escrito como decimal en el factor de crecimiento 1 + r"}
+     ],
+     "look": {
+      "title": "Mil dólares al 5%",
+      "unit": "dólares",
+      "rows": ["Año 0", "Año 1", "Año 2", "Año 3", "Año 5", "Año 10"],
+      "prompt": "El interés simple daría 1,000 + 50t. ¿Cuánto más adelante está el saldo con interés compuesto que con el simple en el año 5 y en el año 10?"
+     },
+     "check": [
+      {"q": "Una inversión de $2,000 crece 4% por año. ¿Qué expresión da su valor después de 3 años?", "choices": ["2,000 × 0.04^3", "2,000 × 1.4^3", "2,000 × 1.04^3", "2,000 + 3 × 0.04"], "why": "Una tasa de 4% significa que el factor de crecimiento es 1 + 0.04 = 1.04, usado 3 veces: 2,000 × 1.04^3. Usar 0.04 o 1.4 son los tropiezos clásicos con el decimal."},
+      {"q": "Una ciudad de 40,000 personas crece 2% por año. ¿Aproximadamente cuántas personas tendrá después de 1 año?", "choices": ["40,800", "48,000", "800", "42,000"], "why": "40,000 × 1.02 = 40,800. El crecimiento solo es 800; sumar 2,000 sería un aumento de 5%."},
+      {"q": "¿Qué factor de crecimiento corresponde a una tasa de 7.5% por año?", "choices": ["7.5", "1.75", "0.075", "1.075"], "why": "7.5% = 0.075 como decimal, y el factor es 1 + 0.075 = 1.075. El factor 1.75 significaría 75% de crecimiento."}
+     ],
+     "short": [
+      "Suppose a savings account holds $1,000 and earns 5% *interest* each year. After one year the balance is 1,000 × 1.05 = $1,050. Growing by 5% is the same as multiplying by 1.05. Next year the 5% is figured on $1,050, so interest earns interest. This is *compound interest*, and the balance after t years is 1,000 × 1.05^t, where 1,000 is the *principal*. The growth factor is 1 + r, where r is the *rate* written as a decimal: 3% gives 1.03, and 12% gives 1.12. Do not multiply by 0.05, which would shrink $1,000 to $50. After 10 years the balance is about $1,629. Simple interest, with no compounding, would give only $1,500."
+     ],
+     "more": [
+      "Bankers use a shortcut called the rule of 72. Divide 72 by the percent rate to estimate how many years it takes money to double. At 6%, that is 72 ÷ 6 = 12 years. Check it: 1.06^12 is about 2.01, so the money really has doubled. The rule is an estimate, not an exact answer, but it works well for common rates.",
+      "Compound interest works for savers, and it works against borrowers. An unpaid balance on a loan or a credit card can grow by the same rule, with the lender's rate giving the growth factor. Knowing that the factor is 1 + r helps you see how fast a balance moves, in either direction."
+     ],
+     "short_es": [
+      "Supón que una cuenta de ahorros tiene $1,000 y gana 5% de *interés* cada año. Después de un año el saldo es 1,000 × 1.05 = $1,050. Crecer 5% es lo mismo que multiplicar por 1.05. El año siguiente el 5% se calcula sobre $1,050, así que el interés gana interés. Esto es *interés compuesto*, y el saldo después de t años es 1,000 × 1.05^t, donde 1,000 es el *capital*. El factor de crecimiento es 1 + r, donde r es la *tasa* escrita como decimal: 3% da 1.03, y 12% da 1.12. No multipliques por 0.05, porque reduciría $1,000 a $50. Después de 10 años el saldo es de unos $1,629. El interés simple, sin interés compuesto, daría solo $1,500."
+     ],
+     "more_es": [
+      "Los banqueros usan un atajo llamado la regla del 72. Divide 72 entre la tasa en porcentaje para estimar cuántos años tarda el dinero en duplicarse. Con 6%, eso es 72 ÷ 6 = 12 años. Compruébalo: 1.06^12 es cerca de 2.01, así que el dinero de verdad se duplicó. La regla es una estimación, no una respuesta exacta, pero funciona bien con las tasas comunes.",
+      "El interés compuesto trabaja a favor de quien ahorra y en contra de quien pide prestado. Un saldo sin pagar en un préstamo o en una tarjeta de crédito puede crecer con la misma regla, y la tasa del prestamista da el factor de crecimiento. Saber que el factor es 1 + r te ayuda a ver qué tan rápido se mueve un saldo, en cualquier dirección."
+     ]
+    },
+    {
+     "title": "Decaimiento y vida media",
+     "mainIdea": "El decaimiento exponencial multiplica por un factor entre 0 y 1 en cada paso, como 0.5 por cada vida media o 0.85 para una pérdida de 15%.",
+     "reading": [
+      "Un carro nuevo comprado en $30,000 pierde cerca de 15% de su valor cada año. Perder 15% deja 85%, así que cada año se multiplica el valor por 0.85. Después de 1 año: 30,000 × 0.85 = $25,500. Después de 2 años: 25,500 × 0.85 = $21,675. La fórmula es y = 30,000 × 0.85^t. Esto es *decaimiento exponencial*: desaparece la misma fracción en cada período. El *factor de decaimiento* es 1 − r, aquí 1 − 0.15 = 0.85. Después de 5 años, 0.85^5 ≈ 0.4437, así que el carro vale unos $13,311.",
+      "Los materiales radiactivos decaen con una *vida media*: el tiempo que tarda en desaparecer la mitad del material. El yodo-131, que se usa en algunos tratamientos médicos, tiene una vida media de unos 8 días. Empieza con 80 miligramos. Después de 8 días quedan 40 mg. Después de 16 días, 20 mg. Después de 24 días, 10 mg. La fórmula es y = 80 × (1/2)^(t/8), donde t está en días. El exponente t/8 cuenta cuántas vidas medias han pasado. Cuando t = 24, el exponente es 3 y (1/2)^3 = 1/8, así que 80 × 1/8 = 10 mg.",
+      "Los médicos usan la misma idea con las medicinas en el cuerpo. Si una dosis de 200 mg de un medicamento tiene una vida media de 6 horas, quedan 100 mg después de 6 horas, 50 mg después de 12 horas y 25 mg después de 18 horas. Para hallar la cantidad después de 9 horas, el exponente es 9/6 = 1.5, y (1/2)^1.5 ≈ 0.354, así que quedan unos 71 mg. Si se divide a la mitad una y otra vez, nunca se llega a cero; la cantidad solo se acerca más y más. En una gráfica, la curva se aplana hacia el eje horizontal sin tocarlo.",
+      "Un error común es multiplicar por 0.15 cuando hay una pérdida de 15%. Eso calcula la cantidad que se perdió, no la que queda. Primero resta de 1. Otro error en los problemas de vida media es usar t como exponente, en lugar de t dividido entre la vida media. Veinticuatro días con una vida media de 8 días son 3 reducciones a la mitad, no 24."
+     ],
+     "words": [
+      {"w": "decaimiento exponencial", "d": "disminución que resulta de multiplicar por el mismo factor entre 0 y 1 en cada paso"},
+      {"w": "factor de decaimiento", "d": "el número por el que multiplicas en cada paso cuando una cantidad disminuye; una pérdida de 15% tiene factor de decaimiento 0.85"},
+      {"w": "vida media", "d": "el tiempo que tarda en desaparecer la mitad de una cantidad que va decayendo"}
+     ],
+     "look": {
+      "title": "La pelota que rebota",
+      "text": "Una pelota de goma que se suelta desde 250 cm rebota hasta el 60% de su altura anterior en cada rebote. Después del rebote 1 llega a 250 × 0.6 = 150 cm. Después del rebote 2, 150 × 0.6 = 90 cm. Después del rebote 3, 54 cm. Después del rebote 4, 32.4 cm. El factor de decaimiento es 0.6, así que la altura después de n rebotes es 250 × 0.6^n.",
+      "prompt": "¿Hasta qué altura llega la pelota después del 5.º rebote? Según la fórmula, ¿llegará alguna vez a una altura de exactamente 0 cm?"
+     },
+     "check": [
+      {"q": "Un teléfono de $600 pierde 20% de su valor cada año. ¿Qué ecuación da su valor después de t años?", "choices": ["y = 600 × 0.2^t", "y = 600 × 0.8^t", "y = 600 − 0.2t", "y = 600 × 1.2^t"], "why": "Perder 20% deja 80%, así que el factor de decaimiento es 0.8: y = 600 × 0.8^t. Usar 0.2 sigue la cantidad perdida, y 1.2 sería crecimiento."},
+      {"q": "Una muestra de 160 gramos tiene una vida media de 5 años. ¿Cuánto queda después de 15 años?", "choices": ["20 g", "80 g", "40 g", "0 g"], "why": "15 ÷ 5 = 3 vidas medias: 160 → 80 → 40 → 20 gramos. Si usas 15 como el número de reducciones a la mitad, o te detienes después de una, la cantidad sale mal."},
+      {"q": "¿Qué factor de decaimiento corresponde a perder 35% en cada período?", "choices": ["0.35", "1.35", "0.65", "−0.35"], "why": "1 − 0.35 = 0.65 es la fracción que queda. Multiplicar por 0.35 da la parte que se perdió, no la que queda."}
+     ],
+     "short": [
+      "A new car loses about 15% of its value each year, so each year multiplies the value by 0.85. This is *exponential decay*: the same fraction disappears each period. The *decay factor* is 1 − r, here 1 − 0.15 = 0.85, and the value after t years is 30,000 × 0.85^t. Multiplying by 0.15 would give the amount lost, not the amount left. Radioactive materials decay with a *half-life*, the time it takes for half of the material to be gone. With a half-life of 8 days, 80 mg becomes 40, then 20, then 10 after 24 days. The exponent is the time divided by the half-life, because 24 days is 3 half-lives, not 24. Halving over and over never quite reaches zero."
+     ],
+     "more": [
+      "Scientists use half-life to find the age of old objects. Living things take in carbon-14, a form of carbon that slowly decays and has a half-life of about 5,730 years. When a plant or animal dies, it stops taking in new carbon-14, and the amount in its remains begins to halve. By measuring how much is left in a piece of wood or bone, scientists can work out how many half-lives have passed.",
+      "Notice how the losses shrink. From 80 mg, the first 8 days remove 40 mg, the next 8 days remove 20 mg, and the 8 days after that remove only 10 mg. Each period takes away the same fraction, but a fraction of a smaller amount is a smaller loss. That is why a decay curve drops steeply at first and then flattens out."
+     ],
+     "short_es": [
+      "Un carro nuevo pierde cerca de 15% de su valor cada año, así que cada año se multiplica el valor por 0.85. Esto es *decaimiento exponencial*: desaparece la misma fracción en cada período. El *factor de decaimiento* es 1 − r, aquí 1 − 0.15 = 0.85, y el valor después de t años es 30,000 × 0.85^t. Multiplicar por 0.15 daría la cantidad perdida, no la que queda. Los materiales radiactivos decaen con una *vida media*, el tiempo que tarda en desaparecer la mitad del material. Con una vida media de 8 días, 80 mg pasan a 40, luego a 20 y luego a 10 después de 24 días. El exponente es el tiempo dividido entre la vida media, porque 24 días son 3 vidas medias, no 24. Si se divide a la mitad una y otra vez, nunca se llega del todo a cero."
+     ],
+     "more_es": [
+      "Los científicos usan la vida media para hallar la edad de objetos antiguos. Los seres vivos incorporan carbono-14, una forma de carbono que decae lentamente y tiene una vida media de unos 5,730 años. Cuando una planta o un animal muere, deja de incorporar carbono-14 nuevo, y la cantidad que hay en sus restos empieza a reducirse a la mitad. Al medir cuánto queda en un trozo de madera o de hueso, los científicos pueden calcular cuántas vidas medias han pasado.",
+      "Fíjate en cómo se achican las pérdidas. Desde 80 mg, los primeros 8 días quitan 40 mg, los siguientes 8 días quitan 20 mg y los 8 días que siguen quitan solo 10 mg. Cada período quita la misma fracción, pero una fracción de una cantidad menor es una pérdida menor. Por eso una curva de decaimiento baja con mucha pendiente al principio y luego se aplana."
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Sucesiones y modelos",
+   "lessons": [
+    {
+     "title": "Sucesiones geométricas",
+     "mainIdea": "Una sucesión geométrica se multiplica por la misma razón común en cada término, así que el término n-ésimo es a(1) × r^(n − 1).",
+     "reading": [
+      "Un gimnasio tiene un plan de referidos: 3 personas se inscriben la primera semana, y cada semana el número de miembros nuevos es 3 veces el de la semana anterior. Semana 1: 3. Semana 2: 9. Semana 3: 27. Semana 4: 81. La lista 3, 9, 27, 81, … es una *sucesión geométrica*. Cada *término* sale de multiplicar el término anterior por el mismo número, la *razón común*, que aquí es 3. Para hallar la razón de cualquier sucesión geométrica, divide cualquier término entre el anterior: 27 ÷ 9 = 3.",
+      "Puedes describir la sucesión de dos maneras. La *regla recursiva* dice cómo obtener el siguiente término a partir del actual: a(n) = 3 × a(n − 1), con a(1) = 3. La *regla explícita* te deja saltar directo a cualquier término: a(n) = 3 × 3^(n − 1). El término 6 es 3 × 3^5 = 3 × 243 = 729. Compruébalo avanzando desde 81: 243 y luego 729. En general, a(n) = a(1) × r^(n − 1). El exponente es n − 1 porque el primer término todavía no ha tenido ninguna multiplicación.",
+      "Las razones pueden ser fracciones. La sucesión 400, 100, 25, 6.25 tiene razón 100 ÷ 400 = 1/4, y su regla explícita es a(n) = 400 × (1/4)^(n − 1). Las razones pueden ser negativas: 2, −6, 18, −54 tiene razón −3, así que los signos se alternan. Compara con una sucesión aritmética como 5, 8, 11, 14, que suma 3 cada vez. Las sucesiones aritméticas son patrones lineales; las sucesiones geométricas son patrones exponenciales.",
+      "El error más común es usar r^n en vez de r^(n − 1). Para 3, 9, 27, …, la fórmula 3 × 3^n da 9 para el primer término, lo cual es incorrecto. Prueba tu fórmula con n = 1 antes de confiar en ella. Otro error es hallar la razón restando: 9 − 3 = 6 es una diferencia, no una razón."
+     ],
+     "words": [
+      {"w": "sucesión geométrica", "d": "una lista de números donde cada término es el término anterior por el mismo número"},
+      {"w": "término", "d": "un número de una sucesión; a(4) significa el cuarto término"},
+      {"w": "razón común", "d": "el número por el que se multiplica cada término para obtener el siguiente en una sucesión geométrica"},
+      {"w": "regla recursiva", "d": "una regla que da el siguiente término a partir del anterior, más un término inicial"},
+      {"w": "regla explícita", "d": "una fórmula que da cualquier término directamente a partir de su posición n, como a(n) = 3 × 2^(n − 1)"}
+     ],
+     "look": {
+      "title": "Saltar al octavo término",
+      "text": "La sucesión 5, 10, 20, 40, … tiene primer término 5 y razón común 10 ÷ 5 = 2. Su regla explícita es a(n) = 5 × 2^(n − 1). Pruébala: a(1) = 5 × 2^0 = 5, y a(3) = 5 × 2^2 = 20. Los dos coinciden con la lista. Ahora halla el octavo término de dos maneras: siguiendo con las duplicaciones desde 40, y con la fórmula usando n = 8.",
+      "prompt": "¿Cuánto es a(8)? ¿Qué método preferirías para hallar a(20), y por qué?"
+     },
+     "check": [
+      {"q": "¿Cuál es la razón común de 6, 24, 96, 384?", "choices": ["18", "6", "4", "24"], "why": "Divide los vecinos: 24 ÷ 6 = 4 y 96 ÷ 24 = 4. Restar 24 − 6 = 18 da una diferencia, no una razón."},
+      {"q": "Una sucesión geométrica tiene a(1) = 2 y r = 5. ¿Cuál es su regla explícita?", "choices": ["a(n) = 2 × 5^n", "a(n) = 5 × 2^(n − 1)", "a(n) = 2 + 5(n − 1)", "a(n) = 2 × 5^(n − 1)"], "why": "a(n) = a(1) × r^(n − 1) = 2 × 5^(n − 1). Prueba n = 1: 2 × 5^0 = 2, correcto. La regla 2 × 5^n da 10 para el primer término."},
+      {"q": "Halla el 5.º término de 1, 3, 9, …", "choices": ["243", "27", "15", "81"], "why": "a(5) = 1 × 3^4 = 81. Avanzando: 1, 3, 9, 27, 81. Usar 3^5 da 243, el sexto término."}
+     ],
+     "short": [
+      "A gym gets 3 new members the first week, and each week the number is 3 times the week before: 3, 9, 27, 81. This list is a *geometric sequence*. Each *term* is the one before it times the same number, the *common ratio*. To find the ratio, divide a term by the one before it: 27 ÷ 9 = 3. The *recursive rule* gives the next term from the current one: a(n) = 3 × a(n − 1), with a(1) = 3. The *explicit rule* jumps to any term: a(n) = a(1) × r^(n − 1). The exponent is n − 1 because the first term has had no multiplications yet, so test your rule at n = 1. Subtracting 9 − 3 = 6 gives a difference, not a ratio."
+     ],
+     "more": [
+      "Music has a geometric sequence in it. Raising a note by one octave doubles its frequency, the number of vibrations per second. The note A at 220 hertz, the next A at 440 hertz and the next at 880 hertz form a geometric sequence with common ratio 2. Your ear hears equal steps in pitch, but the numbers behind them multiply.",
+      "If the common ratio is between 0 and 1, the terms get smaller and smaller but never reach zero, just like the decay you studied in the last lesson. A geometric sequence is really an exponential function that is only used at the whole numbers 1, 2, 3 and so on."
+     ],
+     "short_es": [
+      "Un gimnasio recibe 3 miembros nuevos la primera semana, y cada semana el número es 3 veces el de la semana anterior: 3, 9, 27, 81. Esta lista es una *sucesión geométrica*. Cada *término* es el anterior por el mismo número, la *razón común*. Para hallar la razón, divide un término entre el anterior: 27 ÷ 9 = 3. La *regla recursiva* da el siguiente término a partir del actual: a(n) = 3 × a(n − 1), con a(1) = 3. La *regla explícita* salta a cualquier término: a(n) = a(1) × r^(n − 1). El exponente es n − 1 porque el primer término todavía no ha tenido ninguna multiplicación, así que prueba tu regla con n = 1. Restar 9 − 3 = 6 da una diferencia, no una razón."
+     ],
+     "more_es": [
+      "En la música hay una sucesión geométrica. Subir una nota una octava duplica su frecuencia, el número de vibraciones por segundo. La nota La a 220 hercios, el siguiente La a 440 hercios y el siguiente a 880 hercios forman una sucesión geométrica con razón común 2. Tu oído escucha pasos iguales en el tono, pero los números que hay detrás se multiplican.",
+      "Si la razón común está entre 0 y 1, los términos se hacen cada vez más pequeños, pero nunca llegan a cero, igual que el decaimiento que estudiaste en la lección anterior. En realidad, una sucesión geométrica es una función exponencial que solo se usa en los números enteros 1, 2, 3 y así sucesivamente."
+     ]
+    },
+    {
+     "title": "Construir un modelo a partir de una tabla",
+     "mainIdea": "Para construir un modelo exponencial a partir de una tabla o una historia, halla el valor inicial en x = 0 y la razón constante entre pasos iguales.",
+     "reading": [
+      "Una clase de biología cuenta células de levadura bajo un microscopio cada hora y anota: hora 0, 40 células; hora 1, 60; hora 2, 90; hora 3, 135. ¿Es exponencial el crecimiento? Revisa las razones: 60 ÷ 40 = 1.5, 90 ÷ 60 = 1.5, 135 ÷ 90 = 1.5. La razón es constante, así que sí. El valor inicial es 40 y el factor de crecimiento es 1.5, por lo tanto el *modelo* es y = 40 × 1.5^x. Predice la hora 6: 40 × 1.5^6 = 40 × 11.390625 ≈ 456 células.",
+      "A veces la tabla se salta x = 0. Una tabla muestra x = 2, y = 50 y x = 3, y = 100. La razón es 2. Trabaja hacia atrás: en x = 1, y = 25; en x = 0, y = 12.5. Entonces y = 12.5 × 2^x. Comprobación: 12.5 × 2^2 = 50. Si los pasos en x son mayores que 1, divide con cuidado. Los valores 10 en x = 0 y 90 en x = 2 significan que el factor para dos pasos es 9, así que el factor de un paso es √9 = 3.",
+      "Las historias funcionan igual. Un video tiene 500 vistas, y las vistas crecen 20% por día. El valor inicial es 500, el factor de crecimiento es 1 + 0.20 = 1.2, y el modelo es y = 500 × 1.2^x. Después de 3 días: 500 × 1.2^3 = 500 × 1.728 = 864 vistas. Para *interpretar* un modelo dado, lee sus partes. En y = 250 × 0.9^x, el 250 es el inicio, y el 0.9 significa una pérdida de 10% en cada paso, porque 1 − 0.9 = 0.10.",
+      "Un error común es usar el primer valor de la tabla como valor inicial aunque la tabla empiece en x = 1. Otro es revisar las diferencias en lugar de las razones. La tabla de la levadura tiene diferencias 20, 30, 45, que no son constantes, así que una recta no se ajustaría. Siempre que los valores parezcan acelerarse, busca una *razón constante*."
+     ],
+     "words": [
+      {"w": "modelo", "d": "una ecuación que describe una situación real, como y = 40 × 1.5^x para una cantidad de células que crece"},
+      {"w": "interpretar", "d": "explicar qué significa cada número de un modelo en la situación"},
+      {"w": "razón constante", "d": "el mismo cociente entre cada par de valores vecinos, la señal de un patrón exponencial"}
+     ],
+     "look": {
+      "title": "Células de levadura cada hora",
+      "unit": "células",
+      "rows": ["Hora 0", "Hora 1", "Hora 2", "Hora 3", "Hora 4"],
+      "prompt": "Divide cada valor entre el anterior. ¿Qué obtienes cada vez, y qué predice el modelo para la hora 5?"
+     },
+     "check": [
+      {"q": "Una tabla muestra x = 0, y = 8; x = 1, y = 24; x = 2, y = 72. ¿Qué modelo se ajusta?", "choices": ["y = 8 × 3^x", "y = 8 + 16x", "y = 3 × 8^x", "y = 8 × 16^x"], "why": "El inicio es 8 y la razón es 24 ÷ 8 = 3, así que y = 8 × 3^x. Comprobación: 8 × 3^2 = 72. Las diferencias 16 y 48 no son constantes, así que no es lineal."},
+      {"q": "En el modelo y = 900 × 0.7^x, ¿qué pasa en cada paso?", "choices": ["el valor crece 70%", "el valor disminuye 30%", "el valor crece 30%", "el valor disminuye 70%"], "why": "Un factor de 0.7 conserva 70%, así que se pierde 1 − 0.7 = 0.3: una disminución de 30% en cada paso."},
+      {"q": "Una tabla muestra x = 1, y = 30 y x = 2, y = 60. ¿Cuál es el valor inicial en x = 0?", "choices": ["30", "0", "15", "90"], "why": "La razón es 2, así que retrocede desde x = 1: 30 ÷ 2 = 15. Usar 30 como inicio es el error de ignorar que la tabla empieza en x = 1."}
+     ],
+     "short": [
+      "A biology class counts yeast cells each hour: 40, 60, 90, 135. Is the growth exponential? Divide each value by the one before it, and you get 1.5 every time. The ratio is constant, so the *model* is y = 40 × 1.5^x, with starting value 40. If a table skips x = 0, step backward. With x = 2, y = 50 and x = 3, y = 100, the ratio is 2, so x = 1 gives 25 and x = 0 gives 12.5. To *interpret* a model, read its parts. In y = 250 × 0.9^x, the 250 is the start, and the 0.9 means a 10% loss each step, because 1 − 0.9 = 0.10. Check ratios, not differences. When values speed up, look for a *constant ratio*."
+     ],
+     "more": [
+      "A model is a good guide, not a promise. Real yeast needs food and room, so a real colony cannot grow by 1.5 times forever. The counts level off when the food runs low. The exponential model fits the early hours well, and a careful scientist says how far to trust it.",
+      "Scientists also test a model by predicting a value they have not used yet. If the model says 202.5 cells at hour 4 and the class counts 205, the model is doing well. If the class counted 300, the pattern may not be exponential after all."
+     ],
+     "short_es": [
+      "Una clase de biología cuenta células de levadura cada hora: 40, 60, 90, 135. ¿Es exponencial el crecimiento? Divide cada valor entre el anterior y obtienes 1.5 todas las veces. La razón es constante, así que el *modelo* es y = 40 × 1.5^x, con valor inicial 40. Si la tabla se salta x = 0, retrocede. Con x = 2, y = 50 y x = 3, y = 100, la razón es 2, así que x = 1 da 25 y x = 0 da 12.5. Para *interpretar* un modelo, lee sus partes. En y = 250 × 0.9^x, el 250 es el inicio, y el 0.9 significa una pérdida de 10% en cada paso, porque 1 − 0.9 = 0.10. Revisa las razones, no las diferencias. Cuando los valores se aceleran, busca una *razón constante*."
+     ],
+     "more_es": [
+      "Un modelo es una buena guía, no una promesa. La levadura real necesita alimento y espacio, así que una colonia real no puede crecer 1.5 veces para siempre. Los conteos se estabilizan cuando se acaba el alimento. El modelo exponencial se ajusta bien a las primeras horas, y un científico cuidadoso dice hasta dónde confiar en él.",
+      "Los científicos también ponen a prueba un modelo prediciendo un valor que todavía no han usado. Si el modelo dice 202.5 células en la hora 4 y la clase cuenta 205, el modelo va bien. Si la clase hubiera contado 300, quizá el patrón no sea exponencial después de todo."
+     ]
+    },
+    {
+     "title": "¿Lineal o exponencial?",
+     "mainIdea": "El crecimiento lineal suma la misma cantidad en cada paso y el exponencial multiplica, así que el crecimiento exponencial con el tiempo supera a cualquier crecimiento lineal.",
+     "reading": [
+      "Dos ofertas de trabajo. El trabajo A paga $100 el primer día y suma $50 cada día. El trabajo B paga $1 el primer día y se duplica cada día. El día 5, el trabajo A paga 100 + 4 × 50 = $300 y el trabajo B paga 1 × 2^4 = $16. El trabajo A parece mucho mejor. Pero el día 10, el trabajo A paga 100 + 9 × 50 = $550 y el trabajo B paga 2^9 = $512. El día 12, el trabajo A paga $650 y el trabajo B paga 2^11 = $2,048. De ahí en adelante, el trabajo B gana por más cada día.",
+      "Esto siempre ocurre. Una *función lineal* y = mx + b suma la misma cantidad m en cada paso; m es la *pendiente*. Una *función exponencial* y = a × b^x con b > 1 multiplica por b en cada paso, así que sus aumentos también van creciendo. Si duplicas desde 512, sumas 512; si duplicas desde 2,048, sumas 2,048. Con el tiempo esos saltos son mayores que cualquier paso fijo, así que la función exponencial pasa a la lineal y se queda adelante. En una gráfica, la recta sube con una pendiente constante, mientras que la curva se dobla hacia arriba cada vez con más inclinación.",
+      "Para decidir qué tipo de patrón ajusta a los datos, compara pasos del mismo tamaño. La lista 5, 8, 11, 14 tiene una *diferencia constante* de 3, así que es lineal: y = 3x + 5. La lista 5, 10, 20, 40 tiene una razón constante de 2, así que es exponencial: y = 5 × 2^x. La lista 5, 8, 13, 20 no tiene ninguna de las dos: las diferencias 3, 5, 7 crecen, y las razones 1.6, 1.625, 1.54 no son constantes. Esa lista es cuadrática, una forma que conocerás en el último capítulo de esta unidad.",
+      "Un error común es juzgar por los primeros valores. Al principio, una función lineal con un valor inicial grande o una pendiente pronunciada puede ir muy adelante, como el trabajo A durante 10 días. Fíjate en el largo plazo. Otro error es llamar exponencial a un patrón porque crece rápido. Rápido no es la prueba; la prueba es una razón constante."
+     ],
+     "words": [
+      {"w": "función lineal", "d": "una función que suma la misma cantidad en cada paso; su gráfica es una recta"},
+      {"w": "función exponencial", "d": "una función y = a × b^x que multiplica por el mismo factor en cada paso"},
+      {"w": "diferencia constante", "d": "la misma cantidad sumada entre cada par de valores vecinos, la señal de un patrón lineal"},
+      {"w": "pendiente", "d": "la tasa de cambio constante de una función lineal, la m en y = mx + b"}
+     ],
+     "look": {
+      "title": "Dos pagos, día por día",
+      "text": "Trabajo A: $100 el día 1 y luego $50 más cada día, así que el día n paga 100 + 50(n − 1). Trabajo B: $1 el día 1, que se duplica, así que el día n paga 2^(n − 1). Día 8: A paga $450, B paga $128. Día 9: A paga $500, B paga $256. Día 10: A paga $550, B paga $512. Día 11: A paga $600, B paga $1,024.",
+      "prompt": "¿En qué día paga el trabajo B por primera vez más que el trabajo A? Para el día 15, ¿cuántas veces mayor es el pago diario del trabajo B que el del trabajo A?"
+     },
+     "check": [
+      {"q": "¿Qué lista de valores es lineal?", "choices": ["2, 4, 8, 16", "2, 6, 18, 54", "2, 5, 8, 11", "2, 3, 5, 8"], "why": "2, 5, 8, 11 suma 3 cada vez, una diferencia constante. Las dos primeras listas multiplican por 2 y por 3, y la última no tiene ninguno de los dos patrones."},
+      {"q": "El plan A paga $20 por semana. El plan B empieza en $1 por semana y se triplica cada semana. ¿Qué afirmación es cierta a largo plazo?", "choices": ["el plan A siempre paga más por semana", "el plan B con el tiempo paga más cada semana y se queda adelante", "los dos planes pagan lo mismo cada semana después de la semana 3", "el plan B nunca lo alcanza"], "why": "El plan B paga 1, 3, 9, 27, 81, … y pasa de $20 en la semana 4 (27). Sus saltos siguen creciendo mientras que el plan A nunca cambia, así que B se queda adelante."},
+      {"q": "Una tabla tiene los valores 4, 12, 36, 108 en x = 0, 1, 2, 3. ¿Qué regla se ajusta?", "choices": ["y = 8x + 4", "y = 12x", "y = 4x^3", "y = 4 × 3^x"], "why": "Cada valor es 3 veces el anterior, y el inicio es 4: y = 4 × 3^x. Comprueba x = 3: 4 × 27 = 108. Las diferencias 8, 24, 72 no son constantes, así que ninguna recta se ajusta."}
+     ],
+     "short": [
+      "Two job offers. Job A pays $100 on day 1 and adds $50 each day. Job B pays $1 on day 1 and doubles each day. At first A is far ahead, but on day 12 A pays $650 and B pays $2,048, and B wins by more every day after that. A *linear function* y = mx + b adds the same amount each step; m is the *slope*. An *exponential function* y = a × b^x with b > 1 multiplies, so its increases keep growing. Eventually it passes any linear function and stays ahead. To tell them apart, compare equal steps. A *constant difference* means linear: 5, 8, 11, 14. A constant ratio means exponential: 5, 10, 20, 40. Growing fast is not the test."
+     ],
+     "more": [
+      "Exponential growth can feel sudden. Suppose lily pads on a pond double in area every day and cover the whole pond on day 30. Then the pond was half covered on day 29 and only a quarter covered on day 28. For most of the month the pads looked small, and then the pond filled up in the last few days.",
+      "A chain message works the same way. If each person who gets it sends it to 2 new people, the number of senders in each round is 1, 2, 4, 8, 16, and soon it is thousands. At first the message seems to go nowhere, and then it seems to be everywhere."
+     ],
+     "short_es": [
+      "Dos ofertas de trabajo. El trabajo A paga $100 el día 1 y suma $50 cada día. El trabajo B paga $1 el día 1 y se duplica cada día. Al principio A va muy adelante, pero el día 12, A paga $650 y B paga $2,048, y de ahí en adelante B gana por más cada día. Una *función lineal* y = mx + b suma la misma cantidad en cada paso; m es la *pendiente*. Una *función exponencial* y = a × b^x con b > 1 multiplica, así que sus aumentos también siguen creciendo. Con el tiempo pasa a cualquier función lineal y se queda adelante. Para distinguirlas, compara pasos iguales. Una *diferencia constante* significa lineal: 5, 8, 11, 14. Una razón constante significa exponencial: 5, 10, 20, 40. Crecer rápido no es la prueba."
+     ],
+     "more_es": [
+      "El crecimiento exponencial puede sentirse repentino. Supón que los nenúfares de un estanque duplican su área cada día y cubren todo el estanque el día 30. Entonces el estanque estaba cubierto hasta la mitad el día 29 y solo hasta una cuarta parte el día 28. Durante casi todo el mes los nenúfares se veían pequeños, y luego el estanque se llenó en los últimos días.",
+      "Un mensaje en cadena funciona igual. Si cada persona que lo recibe lo manda a 2 personas nuevas, el número de personas que lo envían en cada ronda es 1, 2, 4, 8, 16, y pronto son miles. Al principio parece que el mensaje no llega a ningún lado, y luego parece que está en todas partes."
+     ]
+    }
+   ]
+  }
+ ],
+ "review": [
+  {"q": "Simplifica 2^5 × 2^3.", "choices": ["2^8", "2^15", "4^8", "4^15"], "why": "La base es la misma, así que se suman los exponentes: 5 + 3 = 8. Comprobación: 32 × 8 = 256 = 2^8."},
+  {"q": "¿Cuánto es 81^(1/4)?", "choices": ["20.25", "9", "40.5", "3"], "why": "El exponente 1/4 significa raíz cuarta, y 3 × 3 × 3 × 3 = 81, así que la respuesta es 3. Dividir entre 4 da 20.25, y 9 es la raíz cuadrada."},
+  {"q": "Un pueblo de 5,000 personas se reduce 4% por año. ¿Qué modelo da su población después de t años?", "choices": ["y = 5,000 × 0.04^t", "y = 5,000 × 1.04^t", "y = 5,000 − 0.04t", "y = 5,000 × 0.96^t"], "why": "Perder 4% deja 96%, así que el factor de decaimiento es 1 − 0.04 = 0.96. El factor 1.04 sería crecimiento."},
+  {"q": "¿Qué número es igual a 5^(−2)?", "choices": ["1/25", "−25", "−1/25", "1/10"], "why": "Un exponente negativo significa recíproco: 5^(−2) = 1/5^2 = 1/25. Es positivo."},
+  {"q": "Una sucesión geométrica tiene a(1) = 7 y razón común 2. ¿Cuál es el 4.º término?", "choices": ["112", "56", "28", "14"], "why": "a(4) = 7 × 2^3 = 7 × 8 = 56. Avanzando: 7, 14, 28, 56. Usar 2^4 da 112, el quinto término."},
+  {"q": "Se depositan $800 al 3% por año, con interés compuesto anual. ¿Cuál es el saldo después de 2 años?", "choices": ["$848.00", "$824.00", "$1,448.00", "$848.72"], "why": "800 × 1.03^2 = 800 × 1.0609 = $848.72. El interés simple daría 800 + 2 × 24 = $848.00, un poco menos."},
+  {"q": "¿Qué lista tiene una razón constante?", "choices": ["1, 2, 3, 4", "1, 4, 9, 16", "1, 4, 16, 64", "1, 3, 5, 7"], "why": "1, 4, 16, 64 se multiplica por 4 cada vez. Las otras suman una constante (1 o 2) o son los cuadrados perfectos, cuyas razones 4, 2.25, 1.78 cambian."},
+  {"q": "Simplifica (5x^3)^2.", "choices": ["5x^6", "10x^6", "25x^5", "25x^6"], "why": "Eleva al cuadrado los dos factores: 5^2 = 25 y (x^3)^2 = x^6. Si no elevas el 5, obtienes 5x^6, y si sumas los exponentes obtienes x^5."}
+ ]
+}
