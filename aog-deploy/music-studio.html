@@ -1482,7 +1482,7 @@ function cleanClip(c){
   if(c.lp===true) o.lp=true;   /* AOG-DESK-CLIPLOOP-V1: its end was dragged to repeat it */
   /* AOG-MICBOOTH-V1: a voice take keeps its dry recording beside it, and the sound chosen, so it can be made again (AOG-VOCAL-V1: the Vocal Booth's sounds too) */
   if(o.voice && typeof c.dry==="string" && /^c[a-z0-9]{4,41}$/.test(c.dry)) o.dry=c.dry;
-  if(o.voice && /^(clean|warm|radio|rap|echo|hall|tuned|robot|phone|custom)$/.test(c.snd)) o.snd=c.snd;
+  if(o.voice && /^(clean|warm|radio|rap|echo|hall|tuned|robot|phone|deep|high|harmony|wide|slap|mega|old|ghost|chop|custom)$/.test(c.snd)) o.snd=c.snd;   /* AOG-VOCAL-FX-V2: the booth's More sounds too */
   /* AOG-PIANOROLL-V1: a take from the Piano, Guitar, Bass or Band keeps the notes it was played with (checked by aog-pianoroll.js) */
   if(c.notes){ const n=window.AOGPianoRoll ? AOGPianoRoll.clean(c.notes) : (Array.isArray(c.notes.ev) ? c.notes : null); if(n) o.notes=n; }
   /* AOG-STUDIO-INBOX-V1: a take from the list remembers its tool, its number and which take in the list it was */
