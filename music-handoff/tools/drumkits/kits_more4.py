@@ -6,9 +6,11 @@ crossover drummer. On screen they go by their sound, never by a band or a player
                                     a punchy 24" kick with its beater click brought up and its ring cut short, so fast
                                     eighths stay clear (Big Rusty Drums, CC0); tight crisp hi-hats, an open hi-hat, a
                                     stack (a china laid on a crash, struck together and choked short: made here from two
-                                    real hits), a rack tom, a floor tom and a crash (MuldjordKit, CC BY 4.0, credited);
-                                    a small, tight room made here. Eight pads only: the ride gave its place to the floor
-                                    tom, which the floor-tom groove plays on every eighth.
+                                    real hits), a floor tom, a ride (its bell on an accent: pop-punk choruses ride the
+                                    bell) and a crash (MuldjordKit, CC BY 4.0, credited); a small, tight room made here.
+                                    Eight pads only: Jimmy chose the ride over the rack tom (2026-10-23). The floor tom
+                                    sits in the tom slot and the ride in the rim slot, as in the punk and thrash kits, so
+                                    the Drum Kit draws the ride as a cymbal.
   HL  Live hip-hop on a real kit    a real kit played like a breakbeat (Big Rusty Drums, CC0): a fat, round, open 24"
                                     kick; the deep 14x8 snare with its softest hits as ghost notes; tight hi-hats short
                                     enough for 16th and 32nd rolls; a half-open hi-hat; a stack (MuldjordKit's china on
@@ -77,12 +79,11 @@ MORE4 = {
               "eq": [("hp", 400, .7, 0), ("highshelf", 8000, .7, 1)], "len": 0.8, "fade": 0.45},
     "clap":  {"name": "STACK", "s": L(STACK(5, 3)), "m": L(STACK(8, 5), STACK(9, 6)), "h": L(STACK(11, 8), STACK(12, 9)),
               "eq": [("hp", 350, .7, 0), ("peak", 3500, 1.0, 2)], "sat": 1.3, "shape": (0.05, 0.13), "len": 0.6, "fade": 0.25, "ceil": 0.6},
-    "tom":   {"name": "TOM", "s": L(M("Tom2", 5), M("Tom2", 6)), "m": L(M("Tom2", 9), M("Tom2", 10)), "h": L(M("Tom2", 12), M("Tom2", 13)),
-              "eq": [("hp", 80, .7, 0), ("peak", 450, 1.0, -4), ("peak", 4000, 1.0, 4)], "comp": (-16, 4, 4, 90), "punch": (3.0, 10.0),
-              "room": (ROOM_SMALL, -18.0, None), "shape": (0.15, 0.15), "len": 0.6, "fade": 0.25, "ceil": 0.55},
-    "rim":   {"name": "FLOOR", "s": L(M("Tom4", 8), M("Tom4", 10)), "m": L(M("Tom4", 14), M("Tom4", 15)), "h": L(M("Tom4", 18), M("Tom4", 19)),
+    "tom":   {"name": "FLOOR", "s": L(M("Tom4", 8), M("Tom4", 10)), "m": L(M("Tom4", 14), M("Tom4", 15)), "h": L(M("Tom4", 18), M("Tom4", 19)),
               "eq": [("hp", 50, .7, 0), ("peak", 90, 1.0, 2), ("peak", 400, 1.0, -4), ("peak", 4000, 1.0, 3)], "comp": (-16, 4, 4, 100),
               "punch": (3.0, 10.0), "room": (ROOM_SMALL, -18.0, None), "shape": (0.18, 0.18), "len": 0.7, "fade": 0.3, "ceil": 0.55},
+    "rim":   {"name": "RIDE", "s": L(M("RideL", 3), M("RideL", 4)), "m": L(M("RideL", 6), M("RideL", 7)),
+              "h": L(M("RideLBell", 2), M("RideLBell", 3)), "eq": [("hp", 250, .7, 0), ("highshelf", 8000, .7, 1)], "len": 1.6, "fade": 0.9},
     "bell":  {"name": "CRASH", "s": L(M("CrashL", 3)), "m": L(M("CrashL", 5), M("CrashL", 6)), "h": L(M("CrashL", 8), M("CrashL", 9)),
               "eq": [("hp", 250, .7, 0)], "len": 1.6, "fade": 0.9},
   }},
@@ -118,6 +119,6 @@ MORE4 = {
 }
 
 FILE_LU4 = {
-  "PP": {"kick": -23.0, "snare": -32.0, "ch": -42.0, "oh": -41.0, "clap": -34.0, "tom": -27.0, "rim": -27.0, "bell": -31.0},
+  "PP": {"kick": -23.0, "snare": -32.0, "ch": -42.0, "oh": -41.0, "clap": -34.0, "tom": -27.0, "rim": -37.0, "bell": -31.0},
   "HL": {"kick": -22.5, "snare": -33.5, "ch": -44.0, "oh": -41.0, "clap": -35.0, "tom": -27.0, "rim": -33.5, "bell": -32.0},
 }

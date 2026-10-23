@@ -315,14 +315,15 @@
   /* AOG-DRUM-BARKER-V1 (kits_more4.py): Jimmy asked for kits influenced by a favourite pop-punk / hip-hop crossover
      drummer; named by their sound. PP pop-punk, fast and cracking: a high popping snare with a rimshot on the accent
      (Virtuosity Drums, CC0), a clicky short kick (Big Rusty Drums, CC0), crisp hats, a stack (a china on a crash, choked
-     short), a rack tom, a floor tom and a crash (MuldjordKit, CC BY 4.0). HL live hip-hop on a real kit (Big Rusty
+     short), a floor tom, a ride with its bell on an accent (Jimmy chose it over the rack tom, 2026-10-23) and a crash
+     (MuldjordKit, CC BY 4.0). HL live hip-hop on a real kit (Big Rusty
      Drums, CC0): a fat open kick, the deep snare with ghost notes, tight hats for fast rolls, a stack, a tom, a flam
      (two real snare hits, 30 ms apart) and a crash; a little tape drive and a parallel squash, made here */
   KITS.PP = K("drums", "poppunk", "Pop-punk, fast and cracking", "Pop punk, rápido y seco", DK({
     kick: ["KICK", [2, 3, 2], "Kick (a click, for fast eighths)", "Bombo (con clic, para corcheas rápidas)"], snare: ["SNARE", [2, 3, 2], "Snare (high and cracking)", "Caja (aguda y seca)"],
     ch: ["HAT", [2, 3, 2], "Hi-hat", "Charles"], oh: ["OPEN", [1, 2, 2], "Open hi-hat", "Charles abierto"],
-    clap: ["STACK", [1, 2, 2], "Stack (two cymbals, short and trashy)", "Stack (dos platillos, corto y sucio)", { look: "cym" }], tom: ["TOM", [2, 2, 2], "Tom", "Tom"],
-    rim: ["FLOOR", [2, 2, 2], "Floor tom", "Tom de piso"], bell: ["CRASH", [1, 2, 2], "Crash", "Crash"] }));
+    clap: ["STACK", [1, 2, 2], "Stack (two cymbals, short and trashy)", "Stack (dos platillos, corto y sucio)", { look: "cym" }], tom: ["FLOOR", [2, 2, 2], "Floor tom", "Tom de piso"],
+    rim: ["RIDE", [2, 2, 2], "Ride (its bell on an accent)", "Ride (la campana con acento)"], bell: ["CRASH", [1, 2, 2], "Crash", "Crash"] }));
   KITS.HL = K("drums", "hiphoplive", "Live hip-hop on a real kit", "Hip-hop en batería de verdad", DK({
     kick: ["KICK", [1, 2, 2], "Kick (fat and round)", "Bombo (grueso y redondo)"], snare: ["SNARE", [3, 2, 2], "Snare (soft hits are ghost notes)", "Caja (los golpes suaves son notas fantasma)"],
     ch: ["HAT", [2, 3, 2], "Hi-hat (tight, for fast rolls)", "Charles (cerrado, para redobles rápidos)"], oh: ["OPEN", [1, 2, 2], "Half-open hi-hat", "Charles medio abierto"],
@@ -534,20 +535,21 @@
       parts: [{ len: 16, map: { kick: [2,0,0,0,0,0,1,0,2,0,0,0,2,0,0,0], snare: [0,0,0,0,2,0,0,0,2,1,1,1,0,0,0,0], ch: [1,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0],
         clap: [0,0,0,0,0,0,0,0,0,0,0,0,2,1,0,0], tom: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1] } }] },
     /* AOG-DRUM-BARKER-V1 · pop-punk, fast and cracking: the fast punk beat (kick on the beat, snare on every "and", the hats
-       on the eighths; a stack on the last "and" of its second bar), the floor tom on every eighth with kick and snare under
-       it, and a half-time chorus (16th hats, stack accents) whose second bar ends with a short fill down the toms */
+       on the eighths; its second bar rides the ride, the bell on every beat, with a stack on the last "and"), the floor tom
+       on every eighth with kick and snare under it, and a half-time chorus (16th hats, stack accents) whose second bar
+       ends with a short fill, snare then floor tom */
     { id: "poppunkfast", en: "Fast punk beat", es: "Ritmo punk rápido", kit: "PP", bpm: 190, swing: 0.50, hand: 1, grp: "metal",
       map: { kick: [2,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0], snare: [0,0,2,0,0,0,2,0,0,0,2,0,0,0,2,0], ch: [0,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0],
              bell: [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] },
-      parts: [{ len: 16, map: { kick: [2,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0], snare: [0,0,2,0,0,0,2,0,0,0,2,0,0,0,2,0], ch: [1,0,1,0,1,0,1,0,1,0,1,0,1,0,0,0],
+      parts: [{ len: 16, map: { kick: [2,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0], snare: [0,0,2,0,0,0,2,0,0,0,2,0,0,0,2,0], rim: [2,0,1,0,2,0,1,0,2,0,1,0,2,0,0,0],
         clap: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0] } }] },
     { id: "poppunkfloor", en: "Floor-tom groove", es: "Groove en el tom de piso", kit: "PP", bpm: 160, swing: 0.50, hand: 1, grp: "metal",
-      map: { rim: [2,0,1,0,1,0,1,0,2,0,1,0,1,0,1,0], kick: [2,0,0,0,0,0,1,0,2,0,1,0,0,0,0,0], snare: [0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0] } },
+      map: { tom: [2,0,1,0,1,0,1,0,2,0,1,0,1,0,1,0], kick: [2,0,0,0,0,0,1,0,2,0,1,0,0,0,0,0], snare: [0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0] } },
     { id: "poppunkchorus", en: "Half-time chorus with a tom fill", es: "Estribillo a medio tiempo con redoble en los toms", kit: "PP", bpm: 150, swing: 0.50, hand: 1, grp: "metal",
       map: { kick: [2,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0], snare: [0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0], ch: [0,3,1,3,1,3,0,3,1,3,1,3,1,3,1,3],
              clap: [2,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0] },
-      parts: [{ len: 16, map: { kick: [2,0,0,0,0,0,1,0,0,0,0,0,2,0,0,0], snare: [0,0,0,0,0,0,0,0,2,1,0,0,0,0,0,0], ch: [1,3,1,3,1,3,1,3,0,0,0,0,0,0,0,0],
-        tom: [0,0,0,0,0,0,0,0,0,0,2,1,0,0,0,0], rim: [0,0,0,0,0,0,0,0,0,0,0,0,2,1,1,1] } }] },
+      parts: [{ len: 16, map: { kick: [2,0,0,0,0,0,1,0,0,0,0,0,2,0,0,0], snare: [0,0,0,0,0,0,0,0,2,1,1,1,0,0,0,0], ch: [1,3,1,3,1,3,1,3,0,0,0,0,0,0,0,0],
+        tom: [0,0,0,0,0,0,0,0,0,0,0,0,2,1,1,1] } }] },
     /* live hip-hop on a real kit: a head-nod beat with ghost notes on the snare, a rap-rock beat with a crash on the one
        (its second bar on the half-open hat, with a stack), and a groove in 32nd notes (a 32nd-note hat roll) whose second
        bar is a quick snare roll and two flams into the crash */
