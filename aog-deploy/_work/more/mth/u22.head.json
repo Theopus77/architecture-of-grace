@@ -1,0 +1,161 @@
+{
+ "title": "Estadística en Álgebra I",
+ "years": "Estadística",
+ "intro": [
+  "Todos los días te encuentras con números que dicen resumir algo más grande: el promedio de una prueba, el resultado de una encuesta, un titular que dice que una cosa está ligada a otra. Esta unidad trata de mirar más allá del número suelto, hacia todo el conjunto de datos que hay detrás. Dibujarás diagramas de puntos, histogramas y diagramas de caja, medirás dónde se centran los datos y qué tanto se dispersan, y decidirás qué hacer cuando un valor queda lejos de los demás.",
+  "Después pondrás dos variables en una misma gráfica y te preguntarás si se mueven juntas. Trazarás una recta a través de la nube de puntos, leerás su pendiente con palabras sencillas, la revisarás con residuos y medirás la fuerza del patrón con el coeficiente de correlación. También aprenderás cuándo una curva se ajusta mejor que una recta y hasta dónde puede llegar una predicción con seguridad.",
+  "La unidad termina con la advertencia más importante de la estadística: que dos cosas suban juntas no quiere decir que una cause la otra. Al final podrás describir un conjunto de datos con honestidad, comparar dos grupos con justicia, ajustar y revisar un modelo, y leer una afirmación sobre datos con la mezcla justa de confianza y sospecha."
+ ],
+ "bigQuestion": "¿Cómo describimos lo que dice todo un conjunto de datos, y hasta qué punto podemos confiar en un patrón que encontramos en él?",
+ "timeline": [
+  {"t": "John Graunt organiza en tablas los registros de muertes de Londres, un primer paso para que la estadística sea una manera de leer datos"},
+  {"t": "El primer censo de Estados Unidos cuenta a la población, un conjunto de datos que se repite cada diez años hasta hoy"},
+  {"t": "Adrien-Marie Legendre publica el método de mínimos cuadrados para ajustar una recta a las observaciones"},
+  {"t": "Carl Friedrich Gauss publica su propia explicación de los mínimos cuadrados y de la curva del error en forma de campana"},
+  {"t": "Florence Nightingale usa gráficas de muertes en los hospitales para pedir mejor higiene en los hospitales del ejército"},
+  {"t": "Francis Galton describe la regresión hacia la media al estudiar las estaturas de padres e hijos"},
+  {"t": "Karl Pearson desarrolla el coeficiente de correlación r hasta la forma que se usa todavía hoy"},
+  {"t": "El libro de Ronald Fisher, Statistical Methods for Research Workers, lleva el análisis moderno de datos a los científicos"},
+  {"t": "El libro de Fisher, The Design of Experiments, explica la asignación al azar, la herramienta que separa la causa de la correlación"},
+  {"t": "Francis Anscombe publica cuatro conjuntos de datos con la misma recta y la misma r, pero con diagramas de dispersión muy distintos"},
+  {"t": "El libro de John Tukey, Exploratory Data Analysis, populariza el diagrama de caja y el hábito de graficar los datos primero"}
+ ],
+ "wrap": {
+  "words": [
+   {"w": "distribución", "d": "todos los valores de un conjunto de datos y con qué frecuencia aparece cada uno"},
+   {"w": "histograma", "d": "una gráfica que agrupa los números en intervalos del mismo ancho y dibuja una barra pegada a la otra para cada conteo"},
+   {"w": "mediana", "d": "el valor del medio de un conjunto de datos ordenado, o el promedio de los dos valores del medio"},
+   {"w": "rango intercuartílico", "d": "el tercer cuartil menos el primer cuartil; la dispersión de la mitad central de los datos"},
+   {"w": "desviación estándar", "d": "la raíz cuadrada del promedio de las desviaciones al cuadrado respecto a la media; la distancia típica a la media"},
+   {"w": "valor atípico", "d": "un valor muy fuera del patrón del resto de los datos, a menudo a más de 1.5 rangos intercuartílicos de un cuartil"},
+   {"w": "frecuencia relativa condicional", "d": "una celda de una tabla de doble entrada dividida entre el total de su fila o de su columna"},
+   {"w": "diagrama de dispersión", "d": "una gráfica con un punto por cada par de medidas, con una variable en cada eje"},
+   {"w": "residuo", "d": "el valor real menos el valor que predice una recta; la distancia vertical de un punto a la recta"},
+   {"w": "coeficiente de correlación", "d": "un número r de −1 a 1 que da la dirección y la fuerza de una relación en línea recta"},
+   {"w": "variable oculta", "d": "una variable que no está en la gráfica, pero que afecta a las dos variables graficadas y crea su correlación"},
+   {"w": "extrapolación", "d": "usar un modelo para predecir un valor fuera del intervalo de los datos con los que se construyó"}
+  ],
+  "test": [
+   {
+    "q": "¿Qué resúmenes debes dar para un conjunto de datos muy sesgado y con valores atípicos?",
+    "choices": [
+     "La media y el rango",
+     "La mediana y el rango intercuartílico",
+     "La media y la desviación estándar",
+     "La moda y el rango"
+    ],
+    "why": "La mediana y el rango intercuartílico dependen de la posición en la lista ordenada, así que el sesgo y los valores atípicos casi no los mueven; la media, el rango y la desviación estándar sí se desplazan."
+   },
+   {
+    "q": "¿Cuál es la media de 6, 9, 11, 14 y 20?",
+    "choices": ["11", "12", "14", "15"],
+    "why": "La suma es 6 + 9 + 11 + 14 + 20 = 60, y 60 ÷ 5 = 12."
+   },
+   {
+    "q": "¿Cuál es la mediana de 18, 4, 9, 13, 6, 11?",
+    "choices": ["9", "10", "11", "12"],
+    "why": "Ordenados: 4, 6, 9, 11, 13, 18. Los dos valores del medio son 9 y 11, así que la mediana es (9 + 11) ÷ 2 = 10."
+   },
+   {
+    "q": "Un conjunto de datos ordenado es 10, 12, 14, 16, 18, 20, 22. ¿Cuál es su rango intercuartílico?",
+    "choices": ["4", "6", "12", "8"],
+    "why": "La mediana es 16. Q1 es el valor del medio de 10, 12, 14, que es 12; Q3 es el valor del medio de 18, 20, 22, que es 20. El rango intercuartílico es 20 − 12 = 8."
+   },
+   {
+    "q": "El conjunto 3, 5, 7 tiene media 5. Si divides entre el número de valores, ¿cuál es su desviación estándar?",
+    "choices": ["0", "Cerca de 1.63", "2", "Cerca de 2.83"],
+    "why": "Las desviaciones −2, 0, 2 tienen cuadrados 4, 0, 4 que suman 8. La varianza es 8 ÷ 3 ≈ 2.67, y √2.67 ≈ 1.63."
+   },
+   {
+    "q": "Un histograma de 50 tiempos de traslado tiene intervalos de 0 a 9, de 10 a 19, de 20 a 29 y de 30 a 39, con conteos de 8, 17, 15 y 10. ¿Qué porcentaje de los traslados dura menos de 20 minutos?",
+    "choices": ["17%", "25%", "34%", "50%"],
+    "why": "Menos de 20 minutos son los dos primeros intervalos: 8 + 17 = 25, y 25 ÷ 50 = 50%."
+   },
+   {
+    "q": "Un conjunto de datos tiene Q1 = 40 y Q3 = 60. ¿Qué valor es atípico según la regla de 1.5 × rango intercuartílico?",
+    "choices": ["12", "25", "85", "95"],
+    "why": "El rango intercuartílico es 20 y 1.5 × 20 = 30. Las barreras son 40 − 30 = 10 y 60 + 30 = 90. Solo 95 pasa una barrera."
+   },
+   {
+    "q": "En una tabla de doble entrada, 24 de 60 estudiantes de tercer año y 18 de 30 de cuarto año tienen un trabajo de medio tiempo. ¿Qué afirmación es verdadera?",
+    "choices": [
+     "Los de tercer año tienen más probabilidad de tener trabajo, 24 contra 18",
+     "Los de cuarto año tienen más probabilidad de tener trabajo, 60% contra 40%",
+     "Los dos grupos tienen la misma probabilidad de tener trabajo",
+     "Los de tercer año tienen más probabilidad de tener trabajo, 40% contra 60%"
+    ],
+    "why": "Compara las frecuencias relativas condicionales, no los conteos: 24 ÷ 60 = 40% de los de tercer año y 18 ÷ 30 = 60% de los de cuarto año."
+   },
+   {
+    "q": "Una encuesta sobre un estadio nuevo pregunta solo a las personas que salen de un partido en casa. ¿Cuál es el defecto principal?",
+    "choices": [
+     "La muestra favorece a los aficionados",
+     "La muestra es demasiado grande",
+     "Se debió usar la media",
+     "El eje está cortado"
+    ],
+    "why": "Es mucho más probable que quieran un estadio las personas que salen de un partido que el público en general, así que la muestra se inclina hacia un lado antes de hacer cualquier pregunta."
+   },
+   {
+    "q": "¿Cuál es la pendiente de la recta que pasa por (2, 5) y (6, 17)?",
+    "choices": ["12", "4", "3", "2"],
+    "why": "Pendiente = (17 − 5) ÷ (6 − 2) = 12 ÷ 4 = 3."
+   },
+   {
+    "q": "Una recta predice la tarifa de un taxi como f = 3 + 2.5m, con m en millas. ¿Qué significa el 3?",
+    "choices": [
+     "La tarifa sube $3 por cada milla",
+     "Un viaje de 0 millas cuesta $3, el cargo inicial",
+     "El viaje más largo es de 3 millas",
+     "La tarifa siempre es $3 más que las millas"
+    ],
+    "why": "La ordenada al origen es la tarifa predicha cuando m = 0: un cargo base de $3 antes de recorrer ninguna distancia. El 2.5 es el costo por milla."
+   },
+   {
+    "q": "Una recta predice 70 para un punto cuyo valor real es 64. ¿Cuál es el residuo?",
+    "choices": ["6", "−6", "134", "0.91"],
+    "why": "Residuo = real − predicho = 64 − 70 = −6, así que el punto está 6 unidades por debajo de la recta."
+   },
+   {
+    "q": "Una gráfica de residuos muestra una U clara. ¿Qué debes concluir?",
+    "choices": [
+     "La recta se ajusta bien a los datos",
+     "La correlación tiene que ser negativa",
+     "Un modelo curvo se ajustaría mejor que una recta",
+     "Los datos tienen un valor atípico"
+    ],
+    "why": "Una U en los residuos significa que la recta queda demasiado alta en el medio y demasiado baja en los extremos: los datos se curvan, y una recta no puede hacerlo."
+   },
+   {
+    "q": "¿Qué afirmación sobre el coeficiente de correlación r es verdadera?",
+    "choices": [
+     "r = −0.9 es más débil que r = 0.5 porque es negativo",
+     "r cambia cuando conviertes pulgadas a centímetros",
+     "r = 0 prueba que las dos variables no tienen relación",
+     "r mide solo relaciones en línea recta y puede estar cerca de 0 aunque la curva sea perfecta"
+    ],
+    "why": "r no tiene unidades, su fuerza es su distancia a 0 sin importar el signo, y una relación en forma de U puede dar r = 0 aunque y dependa exactamente de x."
+   },
+   {
+    "q": "Las ciudades con más heladerías tienen más casos de quemaduras de sol. ¿Cuál es la mejor explicación?",
+    "choices": [
+     "El helado causa quemaduras de sol",
+     "Las quemaduras de sol hacen que la gente abra heladerías",
+     "El clima cálido y soleado es una variable oculta que impulsa las dos cosas",
+     "La correlación tiene que ser un error"
+    ],
+    "why": "Una tercera variable, el clima soleado, aumenta tanto la demanda de helado como la exposición al sol. La correlación es real, pero no muestra una causa."
+   }
+  ],
+  "write": {
+   "prompt": "Dos grupos hicieron la misma prueba. Puntajes del Grupo A: 70, 72, 75, 78, 80, 82, 85. Puntajes del Grupo B: 55, 60, 78, 80, 82, 95, 98. Calcula la mediana, el rango y el rango intercuartílico de cada grupo, y luego escribe un párrafo que compare los dos grupos. Explica cuál grupo le fue mejor, cuál fue más constante y por qué la media sola no cuenta toda la historia.",
+   "tips": [
+    "Ordena primero cada lista; después busca la mediana, Q1 y Q3 antes de calcular otra cosa.",
+    "Muestra cada resta: el rango es el máximo menos el mínimo, y el rango intercuartílico es Q3 menos Q1.",
+    "Usa la forma, el centro y la dispersión como tres oraciones distintas en tu comparación.",
+    "Di qué significa cada número para un estudiante de ese grupo, no solo cuánto vale.",
+    "Revisa tu trabajo comprobando que cada grupo tenga la misma cantidad de puntajes a cada lado de su mediana."
+   ]
+  }
+ }
+}
