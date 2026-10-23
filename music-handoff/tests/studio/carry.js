@@ -95,6 +95,7 @@ const waitLine = (p, id, re) => p.waitForFunction(([i, s]) => new RegExp(s).test
   await c.addInitScript(() => { try { if (!localStorage.getItem("aog.sync.url")) localStorage.setItem("aog.sync.url", "https://script.google.com/macros/s/SHEET/exec"); } catch (e) {} });
   const p = await c.newPage();
   await p.goto(U + "music-studio.html"); await p.waitForTimeout(700);
+  await p.click("#foldSave > summary");   /* AOG-DESK-FOLDS-V1: saving and opening sit in the Save your song fold, closed at first */
   ok(await p.isVisible("#carryBlk") && (await p.textContent("#carryBlk h2")).trim() === "Your song on your other devices", "the Mixing Desk has \"Your song on your other devices\"");
   ok(!(await p.isDisabled("#fileSave")), "Save song file is there");
   await p.click("#fileSave");
@@ -212,6 +213,7 @@ const waitLine = (p, id, re) => p.waitForFunction(([i, s]) => new RegExp(s).test
       if (conn) localStorage.setItem("aog.studio.locker.v1", JSON.stringify({ url: u, key: k })); } catch (e) {} }, [theme, conn, LOCK_URL, LOCK_KEY]);
     STORE.set("sdemo12345", { name: "Rainy day", size: 10, parts: 1, at: Date.now(), done: true, data: [Buffer.alloc(10)] });
     const m = await cx.newPage(); await m.goto(U + "music-studio.html"); await m.waitForTimeout(900);
+    await m.click("#foldSave > summary");   /* AOG-DESK-FOLDS-V1 */
     if (conn) { await m.waitForSelector("[data-lkopen]"); await m.click("[data-lkrm]"); await m.click("#lkQrBtn"); await m.waitForSelector("#lkQr canvas"); }
     else await m.click("#carryBlk details summary");
     await m.locator("#carryBlk").scrollIntoViewIfNeeded(); await m.waitForTimeout(200);

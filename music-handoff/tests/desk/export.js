@@ -80,9 +80,9 @@ const STATE = p => p.evaluate(async () => { const st = __aogStudio, ids = []; st
   /* 3 · Spanish */
   await p.evaluate(() => document.getElementById("langBtn").click()); await p.waitForTimeout(100);
   const es = await p.evaluate(() => ({ s: document.getElementById("fileSave").textContent, o: document.getElementById("fileOpen").textContent, w: document.querySelector('#carryBlk [data-t="fileWhat"]').textContent }));
-  ok(es.s === "Guardar mi canción" && es.o === "Abrir mi canción" && es.w === "Un archivo guarda toda la mesa y su sonido. Se queda en tu aparato. Muévelo con AirDrop o Archivos.", "in Spanish: " + JSON.stringify(es));
+  ok(es.s === "Guardar mi canción" && es.o === "Abrir mi canción" && es.w === "Un archivo guarda toda la canción. Se queda en tu aparato; muévelo con AirDrop o Archivos.", "in Spanish: " + JSON.stringify(es));
   await c.close();
 
-  await T.looks(b, U, async m => { await m.evaluate(() => document.getElementById("carryBlk").scrollIntoView({ block: "start" })); }, "#carryBlk button, #carryBlk select, #carryBlk input", "Save my song");
+  await T.looks(b, U, async m => { await m.click("#foldSave > summary"); /* AOG-DESK-FOLDS-V1 */ await m.evaluate(() => document.getElementById("carryBlk").scrollIntoView({ block: "start" })); }, "#carryBlk button, #carryBlk select, #carryBlk input", "Save my song");
   await T.done(b, srv);
 })().catch(e => { console.log("CRASH", e.stack); process.exit(1); });
