@@ -340,5 +340,34 @@ const ST = f => f.evaluate(() => AOGVocal.state());
     ok(errs.length === 0, "Studio refused: no page errors " + errs.slice(0, 3).join(" | "));
     await ctx.close();
   }
+  /* 12 · AOG-VOCAL-MIC-V5: another room set the page's sound to "playback" (navigator.audioSession, as on an iPhone), and Safari
+     then refuses any microphone with InvalidStateError until every frame says "play-and-record" */
+  { const ctx = await b.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, serviceWorkers: "block" }); const errs = [];
+    ctx.on("page", x => x.on("pageerror", e => errs.push(e.message)));
+    await routes(ctx, "en"); await ctx.addInitScript(COUNT);
+    await ctx.addInitScript(() => {
+      const sess = { type: "auto" }; Object.defineProperty(navigator, "audioSession", { configurable: true, get: () => sess });
+      const md = navigator.mediaDevices; if (!md) return; const g = md.getUserMedia.bind(md);
+      md.getUserMedia = c => { let top = window; try { while (top.parent !== top) top = top.parent; } catch (e) {}
+        const all = [top]; for (let i = 0; i < top.frames.length; i++) all.push(top.frames[i]); const bad = all.some(w => { try { return w.navigator.audioSession.type === "playback"; } catch (e) { return false; } });
+        return bad ? Promise.reject(new DOMException("AudioSession category is not compatible with audio capture.", "InvalidStateError")) : g(c); };
+    });
+    const p = await ctx.newPage(); await p.goto(U + "the-studio#vocal"); await W(3500);
+    const f = await booth(p);
+    /* a room got its sound ready, as the Studio's rooms do: the page's sound is now "playback" */
+    await p.evaluate(() => { const x = document.createElement("iframe"); x.id = "pbRoom"; x.style.display = "none"; document.body.appendChild(x); x.contentWindow.navigator.audioSession.type = "playback"; }).catch(() => {});
+    const before = await p.evaluate(() => { const x = document.getElementById("pbRoom"); return x && x.contentWindow.navigator.audioSession ? x.contentWindow.navigator.audioSession.type : "none"; });
+    await f.click("#vbRec"); await f.waitForFunction(() => AOGVocal.state().state === "rec", null, { timeout: 15000 }).catch(() => {}); await W(2000);
+    let s = await ST(f); const rec = s.state === "rec";
+    const during = await p.evaluate(() => document.getElementById("pbRoom").contentWindow.navigator.audioSession.type);
+    await f.click("#vbRec"); await f.waitForFunction(() => AOGVocal.state().takes === 1, null, { timeout: 15000 }).catch(() => {});
+    s = await ST(f);
+    ok(rec && s.takes === 1 && !s.allow && during === "play-and-record", `with another room's sound set to playback, the booth sets play-and-record and records: ${JSON.stringify({ before, during, rec, takes: s.takes, allow: s.allow, err: await f.evaluate(() => AOGVocal.state().line) })}`);
+    await f.evaluate(() => window.dispatchEvent(new CustomEvent("aog-hush", { detail: { on: true } }))); await W(1200);
+    const after = await p.evaluate(() => document.getElementById("pbRoom").contentWindow.navigator.audioSession.type);
+    ok(after === "playback", `when the microphone is let go, that room gets its playback back: ${after}`);
+    ok(errs.length === 0, "playback session: no page errors " + errs.slice(0, 3).join(" | "));
+    await ctx.close();
+  }
   console.log(fails ? fails + " FAILED" : "ALL PASS"); await b.close(); srv.close(); process.exit(fails ? 1 : 0);
 })().catch(e => { console.log("CRASH", e.stack); process.exit(1); });

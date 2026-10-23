@@ -303,7 +303,7 @@
     if (B.state === "rec") { stopRec(); return; }
     if (B.state === "asking" || B.state === "stopping" || B.busy) return;
     hearStop();
-    fresh();
+    fresh(); capSession(true);
     var c = wake(); if (!c) { say("fail"); return; }
     B.allow = false; B.state = "asking"; say("asking");
     var mon = $("vbMon").checked;
@@ -313,7 +313,7 @@
     ask.then(function (stream) { return (B.bkP || getBacking(false)).then(function (bk) { return startRec(stream, bk, mon); }); },
       function (e) {
         B.state = "idle"; var n = e && e.name;
-        B.err = n || "";
+        B.err = n || ""; if (!B.mic) capSession(false);
         if (n === "NotFoundError" || n === "OverconstrainedError" || n === "NotReadableError") { B.allow = false; say("nomic"); } else { B.allow = true; say(""); }
         sleepSoon();
       }).catch(function () { release(); B.state = "idle"; say("fail"); sleepSoon(); });
@@ -403,7 +403,21 @@
      An engine Safari interrupted is made again, and a take that hears nothing at all in its first 1.5 s stops and says
      "Tap Record again" (a new engine has to be made inside a tap on an iPad). */
   function drop() { clearTimeout(B.micT); B.micT = 0; if (B.state === "rec" || B.state === "asking") return;
-    if (B.mic) B.mic.getTracks().forEach(function (t) { try { t.stop(); } catch (e) {} }); B.mic = null; }
+    if (B.mic) B.mic.getTracks().forEach(function (t) { try { t.stop(); } catch (e) {} }); B.mic = null; capSession(false); }
+  /* AOG-VOCAL-MIC-V5 (Jimmy, iPhone, 2026-10-23: "(InvalidStateError)"): the other rooms set the phone's sound to "playback"
+     (navigator.audioSession, so they play with the ring switch off), and one page shares one sound setting: with any room
+     ready, Safari will not open a microphone at all. While the booth records, every frame of the Studio is set to
+     "play-and-record"; when the microphone is let go, each gets back what it had. */
+  function capSession(on) {
+    if (on) {
+      var ws = [window]; try { var top = window.parent; if (top && top !== window) { ws.push(top); for (var i = 0; i < top.frames.length; i++) if (top.frames[i] !== window) ws.push(top.frames[i]); } } catch (e) {}
+      B.sess = B.sess || [];
+      ws.forEach(function (w) { try { var a = w.navigator.audioSession; if (!a || a.type === "play-and-record") return;
+        if (!B.sess.some(function (x) { return x[0] === a; })) B.sess.push([a, a.type]); a.type = "play-and-record"; } catch (e) {} });
+    } else if (B.sess) {
+      B.sess.forEach(function (x) { try { if (x[0].type === "play-and-record") x[0].type = x[1]; } catch (e) {} }); B.sess = null;
+    }
+  }
   function armed(mon) {
     var ok = B.mic && B.micMon === mon && B.mic.getAudioTracks().some(function (t) { return t.readyState === "live" && t.enabled && !t.muted; });
     if (!ok && B.mic) drop(); return !!ok;
