@@ -44,8 +44,8 @@ U2·L4 (Ch. 6), U3·L2 (Ch. 14), U3·L4 (Ch. 14), U3·L5 (Ch. 15), U4·L3 (Ch. 1
 Your section 5 asked to hear if the calendar pairs chapters differently. It does, in five places; please take the
 pairs from pairs.json so every page says the same thing:
 
-- Ch. 6 (Guilt & Shame) is read before **U1·L6**, not U1·L2. The chapter happens "six weeks" into the year and comes
-  after Ch. 3–5, so it cannot be read before U1·L2 without breaking the story. U2·L4 looks back to it (Darius's four
+- Ch. 6 (Guilt & Shame) is read before **U1·L6**, not U1·L2. It is told six weeks after a mid-September evening and
+  comes after Ch. 3–5, so it cannot be read before U1·L2 without breaking the story. U2·L4 looks back to it (Darius's four
   steps, which "Mr. Patel will teach the class formally in November"). U1·L2 looks back to Ch. 1's Mistake Wall.
 - Ch. 18 is read before **U4·L1** (the book sets it in "the first week of April"; it names grace), and U4·L3 looks back
   to it. The crosswalk pairs it with U4·L3 only.

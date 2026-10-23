@@ -666,7 +666,7 @@ function sheet(x){
     +'<div class="ft"><span>architectureofgrace.com/room-36-years</span><span>'+esc(tx(["Goal, standards and safety steps are the same every year.","El objetivo, los estándares y los pasos de seguridad son iguales todos los años."]))+'</span></div>'
     +'</section>';
 }
-var paper=D.getElementById("paper"), printing=false;
+var paper=D.getElementById("paper"), pending=null;
 function fill(list){
   paper.innerHTML=list.map(sheet).join("");
   /* measured first; a sheet that would run past one page is drawn a little smaller */
@@ -675,10 +675,11 @@ function fill(list){
   Array.prototype.forEach.call(paper.querySelectorAll(".sheet"),function(s){ if(s.offsetHeight>lim) s.classList.add("dense"); });
   paper.className="";
 }
-function printThese(list){ printing=true; fill(list); try{ window.print(); }finally{ setTimeout(function(){ printing=false; },0); } }
-/* the browser's own Print gets this lesson too */
-window.addEventListener("beforeprint",function(){ if(!printing) fill([byId(cur)]); });
-window.addEventListener("afterprint",function(){ paper.innerHTML=""; });
+/* what the Print buttons asked for stays until the print is done (some browsers print after print() returns) */
+function printThese(list){ pending=list; fill(list); window.print(); }
+/* the browser's own Print gets this lesson */
+window.addEventListener("beforeprint",function(){ fill(pending||[byId(cur)]); });
+window.addEventListener("afterprint",function(){ pending=null; paper.innerHTML=""; });
 
 D.getElementById("pick").addEventListener("change",function(){ go(this.value,false); });
 D.getElementById("prev").addEventListener("click",function(){ go(IDS[(IDS.indexOf(cur)-1+IDS.length)%IDS.length],true); });
