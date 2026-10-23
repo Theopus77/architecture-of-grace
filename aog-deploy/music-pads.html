@@ -206,6 +206,35 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
 #pads .pad.sel:not(.hit){box-shadow:0 0 0 3px #0b0c0e,0 0 0 4px rgba(255,211,107,.5),inset 0 0 0 2px #ffd36b,inset 0 -3px 6px rgba(0,0,0,.45)}
 #pads .pad.hit{background-color:#ffd36b;background-image:radial-gradient(90% 90% at 50% 55%,#fff1c4 0%,#ffd36b 50%,#e8a93a 100%);
   box-shadow:0 0 0 3px #0b0c0e,0 0 16px 2px rgba(255,200,90,.55),inset 0 2px 5px rgba(120,70,0,.35)}
+/* ══ AOG-PADS-STAGE-V1 (2026-10-23) — the pads as a teenager would want them, and as calm as before. Each kind of sound has
+   its colour: a small round lens in the pad's top corner, unlit (it never glows); a hit lights the whole pad in that colour from where
+   the finger landed (--px, --py), brighter and wider the harder the hit (--v), for as long as the finger is on it (.down) or
+   the loop's hit lasts (.hit). The rubber, the gaps and the gold ring of the picked pad stay as they were. Nothing eases:
+   the light is on, then off. ══ */
+#pads .pad{--lit:#ffd36b;--v:.8;--px:50%;--py:50%}
+#pads .pad[data-fam="low"]{--lit:#ff8466}
+#pads .pad[data-fam="snap"]{--lit:#ffd36b}
+#pads .pad[data-fam="shimmer"]{--lit:#8fe6d4}
+#pads .pad[data-fam="metal"]{--lit:#b6cbff}
+#pads .pad[data-fam="skin"]{--lit:#ffb27a}
+#pads .pad[data-fam="wood"]{--lit:#d7b8ff}
+#pads .pad[data-fam="note"]{--lit:#86d9ff}
+#pads .pad[data-fam="chop"]{--lit:#ffa3dc}
+#pads .pad.tube{--lit:var(--tube)}
+/* the steps of the picked pad are lit in its colour: pick the hi-hat, its steps are mint */
+#steps{--lit:#86d9ff}
+#steps[data-fam="low"]{--lit:#ff8466} #steps[data-fam="snap"]{--lit:#ffd36b} #steps[data-fam="shimmer"]{--lit:#8fe6d4} #steps[data-fam="metal"]{--lit:#b6cbff}
+#steps[data-fam="skin"]{--lit:#ffb27a} #steps[data-fam="wood"]{--lit:#d7b8ff} #steps[data-fam="note"]{--lit:#86d9ff} #steps[data-fam="chop"]{--lit:#ffa3dc}
+#steps .st[aria-pressed="true"]{background:var(--lit);border-color:var(--lit);color:#1a1206}
+#pads .pad::after{content:"";position:absolute;top:7px;right:7px;width:7px;height:7px;border-radius:50%;pointer-events:none;
+  background:var(--lit);opacity:.55;box-shadow:inset 0 1px 0 rgba(0,0,0,.35)}
+#pads .pad.tube::after{display:none}
+#pads .pad.hit,#pads .pad.down{color:#1a1206;background-color:var(--lit);
+  background-image:radial-gradient(circle at var(--px) var(--py),color-mix(in srgb,var(--lit) 40%,#fff) 0%,var(--lit) calc(16% + 34% * var(--v)),color-mix(in srgb,var(--lit) 80%,#000) 115%);
+  box-shadow:0 0 0 3px #0b0c0e,0 0 0 4px color-mix(in srgb,var(--lit) 45%,transparent),inset 0 2px 5px rgba(0,0,0,.28)}   /* no blur: a lit pad repaints only itself */
+#pads .pad.hit::after,#pads .pad.down::after{opacity:0}
+#pads .pad.hit .pi,#pads .pad.hit .pk,#pads .pad.hit .pc,#pads .pad.down .pi,#pads .pad.down .pk,#pads .pad.down .pc{color:#2b1d08}
+#pads .pad.down .po{background:#1f1206;color:#ffd36b}
 </style>
 <link rel="stylesheet" href="/aog-bench.css">
 <script src="/aog-vu.js"></script><!-- AOG-ROOM-VU-V1: before any sound, so the small VU meters hear it -->
@@ -1096,9 +1125,14 @@ function trigger(bi, pi, vel, when, T){
 }
 const RING=[], MAXV=32;   /* AOG-PADS-VOICES-V1: the notes ringing now, the oldest first */
 function letGo(v, c){ if(!v) return; try{ const t0=c.currentTime; v.g.gain.cancelScheduledValues(t0); v.g.gain.setTargetAtTime(0, t0, 0.012); v.s.stop(t0+0.06); }catch(e){} }
-function flash(bi, pi, when){
+function flash(bi, pi, when, vel){
   if(bi!==S.bank) return;
-  const go=()=>{ const el=$("pads").querySelector(`.pad[data-p="${pi}"]`); if(!el) return; el.classList.add("hit"); setTimeout(()=>el.classList.remove("hit"), 110); };
+  /* AOG-PADS-STAGE-V1: the light is as bright as the hit; a finger lights the pad from where it landed (bindPads) */
+  const go=()=>{ const el=$("pads").querySelector(`.pad[data-p="${pi}"]`); if(!el) return;
+    const v=(vel==null ? 0.8 : Math.max(0.3, Math.min(1, vel))).toFixed(2), st=el.style;   /* each written only when it changes */
+    if(st.getPropertyValue("--v")!==v) st.setProperty("--v", v);
+    if(!el.classList.contains("down") && st.getPropertyValue("--px")!=="50%"){ st.setProperty("--px", "50%"); st.setProperty("--py", "50%"); }
+    el.classList.add("hit"); setTimeout(()=>el.classList.remove("hit"), 110); };
   const ms=ac ? (when-ac.currentTime)*1000 : 0; if(ms>8) setTimeout(go, ms); else go();
 }
 
@@ -1135,7 +1169,7 @@ function pump(){
       const abs=SEQ.abs, tk=abs%L, when=SEQ.t0+abs*sp, pass=Math.floor(abs/L), list=m.get(tk);
       if(list) list.forEach(e=>{
         if(e._skip===pass){ delete e._skip; return; }
-        const v=trigger(e.b, e.p, e.v, when); flash(e.b, e.p, when);
+        const v=trigger(e.b, e.p, e.v, when); flash(e.b, e.p, when, e.v);
         if(v && gated(e.b)) v.stop(when+Math.max(12, e.len||48)*sp);
       });
       if(S.click && tk%PPQ===0) blip(when, tk===0);
@@ -1173,7 +1207,7 @@ function recordHit(bi, pi, vel, when){
 const RPT=new Map();   /* pads held while Repeat is on */
 function hitPad(bi, pi, vel, when, fromRepeat){
   if(SEQ.on && SEQ.rec){ if(++LT.recN>=4) LES.mark("rechit"); if(fromRepeat) LES.mark("rptrec"); }
-  const v=trigger(bi, pi, vel, when); flash(bi, pi, when);
+  const v=trigger(bi, pi, vel, when); flash(bi, pi, when, vel);
   let e=null; if(SEQ.on && SEQ.rec) e=recordHit(bi, pi, vel, fromRepeat ? when : when-outLat());   /* AOG-PADS-QUICK-V1 */
   if(fromRepeat && v && gated(bi)){ const len=Math.max(6, Math.round(S.rate*0.8)); v.stop(when+len*spt()); if(e) e.len=len; }
   return {v:v, e:e};
@@ -1224,9 +1258,16 @@ function bindPads(){
   box.addEventListener("pointerdown",(e)=>{
     const el=e.target.closest && e.target.closest(".pad"); if(!el || e.button>0) return;
     e.preventDefault(); try{ el.setPointerCapture(e.pointerId); }catch(x){}
+    const r=el.getBoundingClientRect();   /* read before anything is written: velAt's own read, free a second time */
     press("p"+e.pointerId, +el.getAttribute("data-p"), velAt(el, e.clientX, e.clientY));
+    /* AOG-PADS-STAGE-V1: after the sound is on its way, the pad lights from under the finger while it is held */
+    if(r.width){ el.style.setProperty("--px", Math.round((e.clientX-r.left)/r.width*100)+"%"); el.style.setProperty("--py", Math.round((e.clientY-r.top)/r.height*100)+"%"); }
+    clearTimeout(el.__upT); el.__downAt=performance.now(); el.classList.add("down"); HELD.set("p"+e.pointerId, el);
   });
-  const up=(e)=>release("p"+e.pointerId);
+  const HELD=new Map();
+  const up=(e)=>{ release("p"+e.pointerId);
+    const el=HELD.get("p"+e.pointerId); if(!el) return; HELD.delete("p"+e.pointerId);
+    el.__upT=setTimeout(()=>el.classList.remove("down"), Math.max(0, 90-(performance.now()-el.__downAt))); };
   box.addEventListener("pointerup", up); box.addEventListener("pointercancel", up); box.addEventListener("lostpointercapture", up);
   /* a pad reached with Tab plays with Enter or Space */
   box.addEventListener("keydown",(e)=>{ const el=e.target.closest && e.target.closest(".pad"); if(!el || e.repeat || (e.key!=="Enter" && e.key!==" ")) return; e.preventDefault(); e.stopPropagation(); press("kb"+el.dataset.p, +el.dataset.p, S.full?1:0.8); });
@@ -1618,6 +1659,16 @@ function paintSetRow(){
   on("fRec", v=>{ B.rec=v; B.bar=1; LES.mark("crec"); }); on("fBar", v=>{ B.bar=+v; LES.mark("cbar"); }); on("fClen", v=>{ B.clen=+v; });
   const m=$("fMatch"); if(m) m.onclick=()=>{ const R=recInfo(B.rec); if(R && R.bpm>0) retime(R.bpm); LES.mark("cmatch"); };
 }
+/* AOG-PADS-STAGE-V1 (2026-10-23) — Jimmy: "a showstopper presentation that would blow the socks off a teenager, but keeping
+   it calm! the production does the work. I want the pads to be enhanced." Each pad carries the colour of the kind of sound
+   it makes, as a small unlit lens; a hit lights the whole pad in that colour, from where the finger landed, as bright as
+   the hit was hard, and only while it lasts. Nothing glows or moves on its own. Grouped by the sound's own name
+   (AOGDrumKit.family in aog-drumkit.js, shared with the Drum Kit), so a kit that puts a ride in the rim slot shows a ride. */
+function padFam(d){
+  if(d.kind==="chop") return "chop";
+  if(d.kind!=="drum") return "note";
+  return (window.AOGDrumKit && AOGDrumKit.family) ? AOGDrumKit.family(d.kit, d.id) : "snap";
+}
 function paintPads(){
   const box=$("pads"), bk=S.bank;
   const defs=padDefs(bk), fine=matchMedia("(pointer: fine)").matches;
@@ -1625,7 +1676,7 @@ function paintPads(){
   if(cp) patPads(cp).forEach((p,k)=>{ PO[p]=PO[p] ? PO[p]+"·"+(k+1) : String(k+1); });
   const order=[12,13,14,15,22,23, 8,9,10,11,20,21, 4,5,6,7,18,19, 0,1,2,3,16,17];   /* AOG-PADS-24-V1: 17 to 24 on the right */
   box.innerHTML=order.map(i=>{ const d=defs[i];
-    return `<button type="button" class="pad${i===S.sel?" sel":""}${PO[i]?" inpat":""}" data-p="${i}" data-kind="${d.kind}" aria-label="${esc((i+1)+": "+d.name+(PO[i]?" · "+t("patStep",{n:PO[i]}):""))}"><span class="pi">${i+1}</span>${PO[i]?`<span class="po">${PO[i]}</span>`:""}<span class="pn${d.name.length>12?" long":""}">${esc(d.name)}</span>${fine?`<span class="pk keyonly">${KEYCAP[i]}</span>`:""}</button>`; }).join("");
+    return `<button type="button" class="pad${i===S.sel?" sel":""}${PO[i]?" inpat":""}" data-p="${i}" data-kind="${d.kind}" data-fam="${padFam(d)}" aria-label="${esc((i+1)+": "+d.name+(PO[i]?" · "+t("patStep",{n:PO[i]}):""))}"><span class="pi">${i+1}</span>${PO[i]?`<span class="po">${PO[i]}</span>`:""}<span class="pn${d.name.length>12?" long":""}">${esc(d.name)}</span>${fine?`<span class="pk keyonly">${KEYCAP[i]}</span>`:""}</button>`; }).join("");
   box.classList.toggle("waiting", !isReady(bk));
   paintTubes(box, bk, defs);   /* AOG-PADS-CLASSROOM-V1 */
   box.setAttribute("aria-label", t("padsLab"));
@@ -1708,6 +1759,7 @@ function paintSteps(){
   S.ev.forEach(e=>{ if(e.b===bi && e.p===pi && e.t>=lo && e.t<hi) on.add(Math.floor(e.t/24)); });
   const d=padDefs(bi)[pi]||{name:""};
   txt("stepsH", t("stepsH",{n:pi+1, name:d.name}));
+  const fam=d.kind ? padFam(d) : "snap", sb=$("steps"); if(sb.dataset.fam!==fam) sb.dataset.fam=fam;   /* AOG-PADS-STAGE-V1: the picked pad's colour */
   paintBarNav();
   /* a step's number: its beat (1 to 16) in a loop of up to 4 bars; in a longer loop, the bar's number on its first step */
   const cls=i=>`st${i%4===0?" beat":""}${long && i%16===0?" bar":""}${i===stepNow?" now":""}`, num=i=>long ? (i%16===0 ? String(i/16+1) : "") : (i%4===0 ? String(i/4+1) : "");
@@ -2009,7 +2061,7 @@ function init(){
     const had=S.ev.some(x=>x.b===bi && x.p===pi && x.t>=lo && x.t<hi);
     LES.mark(had ? "stepdel" : "stepadd");
     if(had) S.ev=S.ev.filter(x=>!(x.b===bi && x.p===pi && x.t>=lo && x.t<hi));
-    else { S.ev.push({b:bi, p:pi, t:lo, v:0.8, len:24}); if(!SEQ.on && isReady(bi)){ const v=trigger(bi, pi, 0.8, ctx().currentTime); flash(bi, pi, 0); if(v && gated(bi)) v.stop(ctx().currentTime+0.25); } }
+    else { S.ev.push({b:bi, p:pi, t:lo, v:0.8, len:24}); if(!SEQ.on && isReady(bi)){ const v=trigger(bi, pi, 0.8, ctx().currentTime); flash(bi, pi, 0, 0.8); if(v && gated(bi)) v.stop(ctx().currentTime+0.25); } }
     changed(); });
   const setPad=(k, v)=>{ const key=S.bank+":"+S.sel, o=Object.assign({}, S.pads[key]||{}); o[k]=+v; S.pads[key]=o; LES.mark({vol:"pvol", tune:"ptune", pan:"ppan"}[k]); save(); paintPadSet(); };
   $("vol").oninput=()=>setPad("vol", $("vol").value); $("tune").oninput=()=>setPad("tune", $("tune").value); $("pan").oninput=()=>setPad("pan", $("pan").value);

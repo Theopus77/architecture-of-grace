@@ -11,7 +11,7 @@
  * Bump by REPLACING the CACHE line. Don't keep the old one as a comment: every byte here is
  * downloaded again on each update check. Old lines live in tools/sw-cache-history.txt and git log.
  */
-const CACHE = 'aog-cache-2026.10.23.m7561'   // THE FRONT PAGE'S LANGUAGE PASS WRITES ONLY A CHANGE: ITS LONGEST FREEZE AS IT LOADS 1.19 S TO 0.68 S ON A SLOW PHONE (index.html, AOG-I18N-SAME-V1) (previous: m7560)
+const CACHE = 'aog-cache-2026.10.23.m7562'   // THE PADS LIGHT IN THE COLOUR OF THEIR SOUND, FROM UNDER THE FINGER, AS BRIGHT AS THE HIT; THE STEPS TAKE THE PICKED PAD'S COLOUR; THE DRUM KIT'S DRUMS TOO (music-pads.html, music-kit.html, aog-drumkit.js, AOG-PADS-STAGE-V1) (previous: m7561)
 
 // Same-origin essentials — reliable to precache at install.
 /* AOG-SW-LIGHT-V1 (2026-10-01) — Jimmy: "Why is it taking so long for the website to load on my phone now?"
