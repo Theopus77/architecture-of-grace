@@ -661,6 +661,7 @@ input[type=range].slider::-moz-range-thumb{
 
 
 <main class="sheets wrap">
+<p class="r36-private no-print" style="margin:10px auto 0;max-width:var(--maxw,980px);padding:10px 14px;border-radius:12px;border:1.5px solid rgba(46,107,79,.45);background:rgba(46,107,79,.08);font-weight:700;font-size:16px;line-height:1.45"><span data-en="What you write here stays on this device. No one else can read it." data-es="Lo que escribes aquí se queda en este aparato. Nadie más lo puede leer.">What you write here stays on this device. No one else can read it.</span></p><!-- AOG-R36-PRIVATE-V1 -->
 <section class="sheet is-active s-rts" id="sh-rts" role="tabpanel" aria-labelledby="tb-rts" data-id="rts">
   <div class="sheet-head">
     <span class="k">Unit 2 · Lesson 6 · Worksheet</span>
@@ -1105,7 +1106,7 @@ body.wsprev{overflow:hidden}
   try {
     [].slice.call(document.querySelectorAll("p")).some(function (fp) {
       if (fp.textContent.indexOf("sends nothing out") < 0) return false;
-      fp.textContent = "This page loads no fonts, scripts, or images from the internet. Your writing is stored in this browser \u2014 and sent to your teacher only when you tap Send to my teacher.";
+      fp.textContent = "This page loads no fonts, scripts, or images from the internet. Your writing is stored in this browser and never sent. FINISHED tells your teacher only that you are done.";
       return true;
     });
   } catch (e) {}
@@ -1136,11 +1137,10 @@ body.wsprev{overflow:hidden}
   card.id = "wsTurnin"; card.className = "no-print";
   card.innerHTML =
     '<h2>Finished?</h2>' +
-    '<p>Tap FINISHED and your work goes straight to your teacher \u2014 and you\u2019ll see a preview of what you built. ' +
-    'It stays saved on this computer too.</p>' +
+    '<p>Your writing stays on this device. Tap FINISHED to tell your teacher you are done: only your name and this sheet\u2019s name are sent, never your words.</p>' +
     '<div class="row">' +
     '<input type="text" id="wsWho" autocomplete="off" maxlength="60" placeholder="Enter your name" aria-label="Your code or first name">' +
-    '<button class="btn-fin" type="button" id="wsSendBtn">FINISHED</button>' +
+    '<button class="btn-fin" type="button" id="wsSendBtn" data-aog-private>FINISHED</button>' +
     '<span class="st" id="wsSt" aria-live="polite"></span></div>';
   var acts = main.querySelector(".lock-acts");
   if(acts) main.insertBefore(card, acts); else main.appendChild(card);
@@ -1155,7 +1155,7 @@ body.wsprev{overflow:hidden}
     prev.innerHTML = "";
     var bar = document.createElement("div"); bar.className = "pv-bar";
     var t = document.createElement("span"); t.className = "t";
-    t.textContent = "\u2713 Sent \u2014 " + who + " \u00b7 " + CFG.name;
+    t.textContent = "\u2713 Your teacher knows you finished \u2014 " + who + " \u00b7 " + CFG.name;
     var pst = document.createElement("span"); pst.className = "pst"; pst.id = "wsPvSt";
     pst.textContent = statusText;
     var pr = document.createElement("button"); pr.type="button"; pr.className="solid"; pr.textContent = "Print my copy";
@@ -1170,7 +1170,7 @@ body.wsprev{overflow:hidden}
 
     var body = document.createElement("div"); body.className = "pv-body";
     var lead = document.createElement("p"); lead.className = "pv-lead";
-    lead.textContent = "This is what you built \u2014 exactly what your teacher receives.";
+    lead.textContent = "This is what you built. It stays on this device; your teacher only hears that you finished.";
     body.appendChild(lead);
     [].slice.call(document.querySelectorAll("[data-id]")).forEach(function(sheet){
       var clone = sheet.cloneNode(true);
@@ -1218,17 +1218,17 @@ body.wsprev{overflow:hidden}
       skill:"SEL Worksheet \u2014 "+CFG.name,
       setNo:"", itemsTotal:"", independent:"", supported:"", hintsUsed:"", confidence:"",
       source:"link",
-      extra:JSON.stringify({series:"sel-worksheet", build:"ws send v2", worksheet:CFG.id, finished:true, responses:gather()})
+      extra:JSON.stringify({series:"sel-worksheet", build:"ws send v3 finished-only", worksheet:CFG.id, finished:true}) /* AOG-R36-PRIVATE-V1: never the words */
     };
     if(window.AOG_IEP){AOG_IEP.fill(payload);} /* AOG-IEP-REC-V1 */
     var body = JSON.stringify(payload);
     busy = true;
     /* the preview opens NOW — the send reports into its status line */
-    buildPreview(who, "Sending to your teacher\u2026");
+    buildPreview(who, "Telling your teacher you finished\u2026");
     prev.hidden = false; document.body.classList.add("wsprev");
     prev.scrollTop = 0;
-    function done(){ busy = false; setPvStatus("Turned in \u2713"); st.textContent = "Turned in \u2713"; btn.textContent = "FINISHED \u2713"; }
-    function fail(){ busy = false; setPvStatus("That didn\u2019t go through \u2014 check the internet, then tap Send to my teacher again."); }
+    function done(){ busy = false; setPvStatus("Done \u2713 Your words stayed here."); st.textContent = "Done \u2713"; btn.textContent = "FINISHED \u2713"; }
+    function fail(){ busy = false; setPvStatus("That didn\u2019t go through \u2014 check the internet, then tap FINISHED again."); }
     fetch(DEST.url, {method:"POST", mode:"cors", redirect:"follow",
         headers:{"Content-Type":"text/plain;charset=utf-8"}, body:body})
       .then(function(res){ return res.json(); })

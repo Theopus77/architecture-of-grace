@@ -187,6 +187,8 @@
 
   /* 3. SEL worksheets, room workbooks, bench worksheets: the "Finished?" card */
   /* the one short line under Send, as on Daily Drafts */
+  var PRIV_EN = "Your words stay on this device. Tap I'm finished to tell your teacher you are done; only your name goes.",
+      PRIV_ES = "Tus palabras se quedan en este aparato. Toca Terminé para avisar a tu maestro/a que acabaste; solo va tu nombre.";
   var SEND_EN = "Your answers go to your teacher when you tap Send. Tap to send again.",
       SEND_ES = "Tus respuestas le llegan a tu maestro/a cuando tocas Enviar. Toca para enviarlo otra vez.";
 
@@ -225,14 +227,17 @@
       block.appendChild(checkRow(current));
       block.appendChild(sigRow(inp));
       var send = mk("div", "aog-ws-send");
-      send.appendChild(bi(mk("p", "aog-ws-snote"), SEND_EN, SEND_ES));
+      /* AOG-R36-PRIVATE-V1 (2026-10-23): a private sheet (data-aog-private) sends only "I finished", never the words */
+      var priv = btn.hasAttribute("data-aog-private");
+      var GO_EN = priv ? "I'm finished" : "Send to my teacher", GO_ES = priv ? "Terminé" : "Enviar a mi maestro/a";
+      send.appendChild(bi(mk("p", "aog-ws-snote"), priv ? PRIV_EN : SEND_EN, priv ? PRIV_ES : SEND_ES));
       btn.classList.add("go"); send.appendChild(btn);
       if (st) send.appendChild(st);
       block.appendChild(send);
       nameFix(inp, block);
       /* the button keeps its element and listener; only its words follow the model */
       function label() {
-        var t = btn.textContent || "", w = T("Send to my teacher", "Enviar a mi maestro/a");
+        var t = btn.textContent || "", w = T(GO_EN, GO_ES);
         if (/FINISHED/.test(t) && t !== w) btn.textContent = w;
         if (st && /FINISHED/.test(st.textContent)) st.textContent = st.textContent.replace(/FINISHED/g, T("Send", "Enviar"));
       }
@@ -294,6 +299,7 @@
     Array.prototype.forEach.call(D.querySelectorAll(".aog-ws-sig label[data-en], .aog-ws-note, .aog-ws-snote, .aog-ws-k, .aog-ws-chkbtn"), function (e) {
       var w = T(e.getAttribute("data-en"), e.getAttribute("data-es")); if (e.textContent !== w) e.textContent = w; });
     Array.prototype.forEach.call(D.querySelectorAll(".aog-ws-block .aog-ws-send .go"), function (b) {
-      if (/^(Send to my teacher|Enviar a mi maestro\/a)$/.test(b.textContent)) b.textContent = T("Send to my teacher", "Enviar a mi maestro/a"); });
+      if (/^(Send to my teacher|Enviar a mi maestro\/a)$/.test(b.textContent)) b.textContent = T("Send to my teacher", "Enviar a mi maestro/a");
+      else if (/^(I'm finished|Terminé)$/.test(b.textContent)) b.textContent = T("I'm finished", "Terminé"); });
   }).observe(H, { attributes: true, attributeFilter: ["lang"] });
 })();
