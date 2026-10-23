@@ -594,6 +594,424 @@
      ]
     }
    ]
+  },
+  {
+   "title": "Resolver con logaritmos",
+   "lessons": [
+    {
+     "title": "Resolver ecuaciones exponenciales",
+     "mainIdea": "Para hallar un exponente desconocido, iguala las bases si puedes; si no, aplica el logaritmo a ambos lados y usa la regla de la potencia para bajar el exponente.",
+     "reading": [
+      "Una colonia de 5 células se duplica cada hora. ¿Cuándo llegará a 640 células? Escribe 5 × 2^x = 640. Divide ambos lados entre 5: 2^x = 128. Ahora haz la pregunta del logaritmo: ¿2 elevado a qué potencia es 128? Como 2^7 = 128, x = 7 horas. Cuando la respuesta es una potencia exacta de la base, puedes *igualar las bases* y leer el exponente. Otro ejemplo: 9^x = 27. Escribe los dos lados como potencias de 3: (3^2)^x = 3^3, así que 3^(2x) = 3^3, así que 2x = 3 y x = 1.5. Comprobación: 9^1.5 = (√9)^3 = 3^3 = 27.",
+      "Por lo general la respuesta no es una potencia exacta. Resuelve 3^x = 50. Ningún entero sirve, ya que 3^3 = 27 y 3^4 = 81. Aplica el logaritmo natural a ambos lados: ln(3^x) = ln(50). La regla de la potencia pasa la x al frente: x × ln(3) = ln(50). Divide: x = ln(50) ÷ ln(3) ≈ 3.912 ÷ 1.099 ≈ 3.561. Comprobación: 3^3.561 ≈ 50, y 3.561 está entre 3 y 4, como se esperaba. Puedes usar log en lugar de ln; el cociente sale igual. Este es el método estándar para cualquier *ecuación exponencial*: *aislar* la potencia, aplicar un logaritmo a ambos lados, usar la regla de la potencia y dividir.",
+      "Los problemas de dinero se resuelven igual. $1,000 al 5% por año: ¿cuándo se duplican? 1,000 × 1.05^t = 2,000, así que 1.05^t = 2. Aplica ln: t × ln(1.05) = ln(2), así que t = 0.6931 ÷ 0.04879 ≈ 14.2 años. El error que hay que vigilar es sacar el logaritmo antes de aislar la potencia: ln(5 × 2^x) no es 5 × ln(2^x). Divide primero para quitar el 5. Un segundo error es dividir el exponente entre la base, escribiendo x = 50 ÷ 3. El exponente solo sale con un logaritmo."
+     ],
+     "words": [
+      {
+       "w": "ecuación exponencial",
+       "d": "una ecuación con la incógnita en un exponente, como 3^x = 50"
+      },
+      {
+       "w": "igualar las bases",
+       "d": "reescribir los dos lados como potencias de la misma base para poder igualar los exponentes"
+      },
+      {
+       "w": "aislar",
+       "d": "dejar la potencia sola de un lado antes de sacar un logaritmo"
+      }
+     ],
+     "look": {
+      "title": "¿Cuándo se triplica la deuda?",
+      "text": "Una deuda crece 8% por año sin pagos. ¿Cuándo se ha triplicado? 1.08^t = 3. Aplica ln: t × ln(1.08) = ln(3). ln(1.08) ≈ 0.07696 y ln(3) ≈ 1.0986, así que t ≈ 14.3 años. Comprobación: 1.08^14 ≈ 2.94 y 1.08^15 ≈ 3.17, así que 14.3 queda justo entre los dos.",
+      "prompt": "¿Cuánto tarda la misma deuda en crecer 50%? Plantea 1.08^t = 1.5 y resuélvelo; luego comprueba tu respuesta con una potencia."
+     },
+     "check": [
+      {
+       "q": "Resuelve 4 × 3^x = 324.",
+       "choices": [
+        "x = 3",
+        "x = 5",
+        "x = 4",
+        "x = 81"
+       ],
+       "why": "Divide entre 4: 3^x = 81. Como 3^4 = 81, x = 4."
+      },
+      {
+       "q": "Resuelve 2^x = 20 con aproximación a la centésima.",
+       "choices": [
+        "10",
+        "3.00",
+        "1.30",
+        "4.32"
+       ],
+       "why": "x = ln(20) ÷ ln(2) ≈ 2.996 ÷ 0.693 ≈ 4.32. Comprobación: 2^4 = 16 y 2^5 = 32, así que 20 necesita un exponente entre 4 y 5."
+      },
+      {
+       "q": "¿Cuál es el primer paso para resolver 7 × 5^x = 875?",
+       "choices": [
+        "Dividir ambos lados entre 7 para obtener 5^x = 125",
+        "Sacar el logaritmo de 7 × 5^x y multiplicar por 7",
+        "Dividir 875 entre 5",
+        "Restar 7 de ambos lados"
+       ],
+       "why": "Primero aísla la potencia: 875 ÷ 7 = 125. Luego 125 = 5^3, así que x = 3."
+      }
+     ],
+     "short": [
+      "A colony of 5 cells doubles every hour. When does it reach 640? Write 5 × 2^x = 640, then divide by 5 to get 2^x = 128. Since 2^7 = 128, x = 7. When both sides are powers of the same number, you can *match bases* and set the exponents equal: 9^x = 27 becomes 3^(2x) = 3^3, so x = 1.5.",
+      "Usually the answer is not a whole power. For 3^x = 50, take ln of both sides. The power rule brings the x out front: x × ln(3) = ln(50), so x ≈ 3.561. This works for any *exponential equation*: *isolate* the power, take a log of both sides, use the power rule, divide. Isolate first, because ln(5 × 2^x) is not 5 × ln(2^x). And never write x = 50 ÷ 3. The exponent comes out only through a log."
+     ],
+     "more": [
+      "Solving for an exponent is how people answer \"how long?\" questions. How long until a loan grows to a goal, until a medicine falls to a safe level, or until a town reaches a certain size? Each question has the unknown in the exponent, and a logarithm is the tool that brings it down where you can reach it.",
+      "Many science problems are exponential equations in disguise. Suppose bacteria in a dish double every 20 minutes. How long until there are a million times as many? Write 2^(t/20) = 1,000,000 and take a log of both sides. The answer is about 400 minutes, or roughly 6.6 hours. Twenty doublings give a little over a million, which is why the answer is close to 20 × 20."
+     ],
+     "short_es": [
+      "Una colonia de 5 células se duplica cada hora. ¿Cuándo llega a 640? Escribe 5 × 2^x = 640 y divide entre 5 para obtener 2^x = 128. Como 2^7 = 128, x = 7. Cuando los dos lados son potencias del mismo número, puedes *igualar las bases* y poner los exponentes iguales: 9^x = 27 se convierte en 3^(2x) = 3^3, así que x = 1.5.",
+      "Por lo general la respuesta no es una potencia exacta. Para 3^x = 50, aplica ln a ambos lados. La regla de la potencia pasa la x al frente: x × ln(3) = ln(50), así que x ≈ 3.561. Esto sirve para cualquier *ecuación exponencial*: *aislar* la potencia, aplicar un logaritmo a ambos lados, usar la regla de la potencia y dividir. Aísla primero, porque ln(5 × 2^x) no es 5 × ln(2^x). Y nunca escribas x = 50 ÷ 3. El exponente solo sale con un logaritmo."
+     ],
+     "more_es": [
+      "Despejar un exponente es la forma de contestar preguntas del tipo «¿cuánto tiempo?». ¿Cuánto tarda un préstamo en crecer hasta una meta, un medicamento en bajar a un nivel seguro, o un pueblo en llegar a cierto tamaño? Cada pregunta tiene la incógnita en el exponente, y un logaritmo es la herramienta que la baja hasta donde puedes alcanzarla.",
+      "Muchos problemas de ciencia son ecuaciones exponenciales disfrazadas. Supón que las bacterias de una placa de Petri se duplican cada 20 minutos. ¿Cuánto tiempo pasa hasta que haya un millón de veces más? Escribe 2^(t/20) = 1,000,000 y aplica un logaritmo a ambos lados. La respuesta es unos 400 minutos, o más o menos 6.6 horas. Veinte duplicaciones dan un poco más de un millón, y por eso la respuesta se parece a 20 × 20."
+     ]
+    },
+    {
+     "title": "Resolver ecuaciones logarítmicas",
+     "mainIdea": "Reescribe la ecuación logarítmica como una exponencial, resuélvela y después descarta cualquier solución que haga que la entrada de un logaritmo sea cero o negativa.",
+     "reading": [
+      "Resuelve log_2(x + 3) = 5. La ecuación dice: 2 a la quinta potencia es x + 3. Entonces x + 3 = 32 y x = 29. Comprueba poniendo 29 de vuelta: log_2(32) = 5. Es verdadero. El método es la definición al revés: cuando un solo logaritmo es igual a un número, reescríbelo como base^(número) = *entrada*. Otro ejemplo: log_3(2x − 1) = 2 se convierte en 2x − 1 = 9, así que x = 5. Y ln(x) = 2 se convierte en x = e^2 ≈ 7.389. Si la ecuación tiene ln de un lado, la base es e.",
+      "Cuando se suman dos logaritmos, combínalos primero con la regla del producto. Resuelve log(x) + log(x − 3) = 1. Combina: log(x(x − 3)) = 1. Reescribe: x(x − 3) = 10^1 = 10. Desarrolla: x^2 − 3x − 10 = 0, que se factoriza como (x − 5)(x + 2) = 0, así que x = 5 o x = −2. Ahora el paso esencial: comprueba cada uno en la ecuación original. x = 5 da log(5) + log(2) = log(10) = 1. Bien. x = −2 da log(−2), que no existe. Así que x = −2 es una *solución extraña*, un número que produjo el álgebra pero que la ecuación original no puede aceptar. La única solución es x = 5.",
+      "Las soluciones extrañas aparecen porque combinar logaritmos puede crear una ecuación que es verdadera más veces que la original. La entrada de un logaritmo debe ser positiva, así que cualquier candidato que haga que una entrada sea cero o negativa se descarta. No te saltes la comprobación solo porque el álgebra se veía bien. Otro error es reescribir log(x) + log(x − 3) = 1 como x + (x − 3) = 10; la suma de logaritmos es el logaritmo de un producto, no el logaritmo de una suma. Y cuando los dos lados son un solo logaritmo con la misma base, como en log_4(3x) = log_4(x + 8), puedes igualar las entradas: 3x = x + 8, así que x = 4. Comprobación: log_4(12) en ambos lados."
+     ],
+     "words": [
+      {
+       "w": "ecuación logarítmica",
+       "d": "una ecuación con la incógnita dentro de un logaritmo, como log_2(x + 3) = 5"
+      },
+      {
+       "w": "solución extraña",
+       "d": "un número que produce el álgebra pero que falla en la ecuación original y hay que descartar"
+      },
+      {
+       "w": "entrada",
+       "d": "el número dentro del logaritmo; debe ser positivo"
+      }
+     ],
+     "look": {
+      "title": "Dos candidatos, un ganador",
+      "text": "Resuelve log_2(x) + log_2(x − 2) = 3. Combina: log_2(x(x − 2)) = 3, así que x(x − 2) = 8, así que x^2 − 2x − 8 = 0, así que (x − 4)(x + 2) = 0. Candidatos: 4 y −2. Prueba 4: log_2(4) + log_2(2) = 2 + 1 = 3. Prueba −2: log_2(−2) no existe. Solución: x = 4.",
+      "prompt": "Resuelve log_3(x) + log_3(x + 6) = 3 y di qué candidato descartas y por qué."
+     },
+     "check": [
+      {
+       "q": "Resuelve log_5(x − 1) = 2.",
+       "choices": [
+        "x = 11",
+        "x = 26",
+        "x = 24",
+        "x = 9"
+       ],
+       "why": "Reescribe: 5^2 = x − 1, así que 25 = x − 1 y x = 26. Comprobación: log_5(25) = 2."
+      },
+      {
+       "q": "Resuelve ln(x) = 3, redondeado a la centésima más cercana.",
+       "choices": [
+        "8.15",
+        "1000",
+        "20.09",
+        "1.10"
+       ],
+       "why": "ln tiene base e, así que x = e^3 ≈ 20.09. Usar base 10 daría, por error, 1000."
+      },
+      {
+       "q": "Resuelve log(x) + log(x + 3) = 1. ¿Cuál es la solución?",
+       "choices": [
+        "x = −5",
+        "x = 2 y x = −5",
+        "x = 3.5",
+        "x = 2"
+       ],
+       "why": "x(x + 3) = 10 da x^2 + 3x − 10 = 0, así que (x + 5)(x − 2) = 0. Se descarta −5 porque log(−5) no existe; x = 2 sirve: log(2) + log(5) = 1."
+      }
+     ],
+     "short": [
+      "To solve log_2(x + 3) = 5, run the definition backward: 2^5 = x + 3, so x = 29. Whenever one log equals a number, rewrite it as base^(number) = *input*. So log_5(x − 1) = 2 becomes x − 1 = 25. And ln(x) = 3 becomes x = e^3 ≈ 20.09, because ln has base e.",
+      "When two logs are added, combine them with the product rule first. For log(x) + log(x − 3) = 1, write x(x − 3) = 10, so x^2 − 3x − 10 = 0 and x = 5 or x = −2. Then check each one in the original equation. log(−2) does not exist, so −2 is an *extraneous solution*: a number the algebra makes that the original cannot accept. A log's input must be positive. Never turn a sum of logs into the log of a sum."
+     ],
+     "more": [
+      "Why do bad answers sneak in? Think of each log as a gate that lets in only positive numbers. When you combine two logs into one, the two gates become one product, and the product x(x − 3) can be positive even when both x and x − 3 are negative. For x = −2 the product is (−2)(−5) = 10, which is positive, so the combined equation accepts −2 even though the original did not.",
+      "The same thing happens in other parts of algebra. Squaring both sides of an equation, which is how you solve many square root equations, can also create answers that do not belong. So checking each answer in the original equation is a habit that protects you in many kinds of problems, not only with logs."
+     ],
+     "short_es": [
+      "Para resolver log_2(x + 3) = 5, usa la definición al revés: 2^5 = x + 3, así que x = 29. Cuando un solo logaritmo es igual a un número, reescríbelo como base^(número) = *entrada*. Así, log_5(x − 1) = 2 se convierte en x − 1 = 25. Y ln(x) = 3 se convierte en x = e^3 ≈ 20.09, porque ln tiene base e.",
+      "Cuando se suman dos logaritmos, combínalos primero con la regla del producto. Para log(x) + log(x − 3) = 1, escribe x(x − 3) = 10, así que x^2 − 3x − 10 = 0 y x = 5 o x = −2. Después comprueba cada uno en la ecuación original. log(−2) no existe, así que −2 es una *solución extraña*: un número que produce el álgebra y que la ecuación original no puede aceptar. La entrada de un logaritmo debe ser positiva. Nunca conviertas una suma de logaritmos en el logaritmo de una suma."
+     ],
+     "more_es": [
+      "¿Por qué se cuelan respuestas malas? Piensa en cada logaritmo como una puerta que deja pasar solo números positivos. Cuando combinas dos logaritmos en uno, las dos puertas se vuelven un producto, y el producto x(x − 3) puede ser positivo aunque x y x − 3 sean negativos. Con x = −2 el producto es (−2)(−5) = 10, que es positivo, así que la ecuación combinada acepta −2 aunque la original no lo aceptaba.",
+      "Lo mismo ocurre en otras partes del álgebra. Elevar al cuadrado ambos lados de una ecuación, que es como se resuelven muchas ecuaciones con raíces cuadradas, también puede crear respuestas que no corresponden. Por eso comprobar cada respuesta en la ecuación original es un hábito que te protege en muchos tipos de problemas, no solo con logaritmos."
+     ]
+    },
+    {
+     "title": "Tiempo de duplicación a partir de una tasa",
+     "mainIdea": "Iguala la potencia del factor de crecimiento a 2 (o a 1/2) y resuelve con logaritmos; para el crecimiento continuo, el tiempo de duplicación es ln(2) ÷ r, más o menos 70 dividido entre la tasa porcentual.",
+     "reading": [
+      "Una ciudad crece 2% al año. ¿Cuánto tarda en duplicarse? Plantea 1.02^t = 2 y aplica ln: t = ln(2) ÷ ln(1.02) ≈ 0.6931 ÷ 0.0198 ≈ 35 años. Para un crecimiento continuo con tasa r, el modelo es e^(rt) = 2, así que rt = ln(2) y t = ln(2) ÷ r. Con r = 0.02, t = 0.6931 ÷ 0.02 ≈ 34.7 años. Las dos respuestas se parecen porque 2% es una tasa pequeña. Como ln(2) ≈ 0.693, dividir 69.3 entre la tasa porcentual da el *tiempo de duplicación*; la gente redondea a 70 y lo llama la *regla del 70*. Con 7% al año, 70 ÷ 7 = 10 años para duplicarse. Con 1%, unos 70 años.",
+      "La vida media a partir de una *tasa de decaimiento* usa los mismos pasos con 1/2. Un medicamento sale de la sangre a razón de 5% por hora: 0.95^t = 0.5. Aplica ln: t × ln(0.95) = ln(0.5), así que t = (−0.6931) ÷ (−0.0513) ≈ 13.5 horas. Los dos logaritmos son negativos, y los signos negativos se cancelan; un tiempo positivo es la señal de que lo hiciste bien. Al estilo de la regla del 70: 70 ÷ 5 = 14 horas, una buena estimación mental. También aparece la pregunta inversa: una población se duplica cada 12 años, ¿cuál es su tasa anual? Resuelve b^12 = 2: b = 2^(1/12) ≈ 1.0595, o sea unos 5.95% por año, casi 6%.",
+      "La regla del 70 falla cuando la tasa es grande. Con 50% al año, 70 ÷ 50 = 1.4 años, pero la respuesta exacta es ln(2) ÷ ln(1.5) ≈ 0.6931 ÷ 0.4055 ≈ 1.71 años. Usa la regla para estimaciones rápidas y el logaritmo para respuestas de verdad. Una trampa más: el tiempo de duplicación no depende de la cantidad inicial. Un pueblo de 5,000 habitantes y una ciudad de 5 millones que crecen 2% se duplican en unos 35 años. El crecimiento exponencial depende del factor, nunca del tamaño."
+     ],
+     "words": [
+      {
+       "w": "tiempo de duplicación",
+       "d": "el tiempo que tarda en duplicarse una cantidad que crece de forma exponencial"
+      },
+      {
+       "w": "regla del 70",
+       "d": "una estimación rápida: tiempo de duplicación ≈ 70 ÷ (tasa porcentual de crecimiento por período)"
+      },
+      {
+       "w": "tasa de decaimiento",
+       "d": "el porcentaje que se pierde en cada período, como 5% por hora"
+      }
+     ],
+     "look": {
+      "title": "Tiempos de duplicación con distintas tasas anuales",
+      "unit": "años",
+      "rows": [
+       "1% por año",
+       "2% por año",
+       "3% por año",
+       "5% por año",
+       "7% por año",
+       "10% por año"
+      ],
+      "prompt": "Compara cada fila con 70 ÷ la tasa. ¿Dónde se aleja más la regla del 70 del valor exacto, y por qué?"
+     },
+     "check": [
+      {
+       "q": "Según la regla del 70, una población que crece 3.5% por año se duplica en unos",
+       "choices": [
+        "20 años",
+        "35 años",
+        "7 años",
+        "14 años"
+       ],
+       "why": "70 ÷ 3.5 = 20 años. El valor exacto, ln(2) ÷ ln(1.035), es unos 20.1 años."
+      },
+      {
+       "q": "Una cantidad decae 10% por año. ¿Cuál es su vida media, a la décima más cercana?",
+       "choices": [
+        "5.0 años",
+        "6.6 años",
+        "7.0 años",
+        "10.0 años"
+       ],
+       "why": "0.9^t = 0.5, así que t = ln(0.5) ÷ ln(0.9) ≈ (−0.693) ÷ (−0.105) ≈ 6.6 años. La estimación con la regla del 70, 7.0, se acerca pero no es exacta."
+      },
+      {
+       "q": "Una cuenta se duplica en 9 años con capitalización anual. ¿Cuál es la tasa anual?",
+       "choices": [
+        "alrededor de 11.1%",
+        "alrededor de 22.2%",
+        "alrededor de 8.0%",
+        "alrededor de 4.5%"
+       ],
+       "why": "b^9 = 2, así que b = 2^(1/9) ≈ 1.080, una tasa de alrededor de 8.0%. Comprobación con la regla del 70: 70 ÷ 8 ≈ 8.75 años, cerca de 9."
+      }
+     ],
+     "short": [
+      "A city grows 2% a year. To find when it doubles, set 1.02^t = 2 and take ln: t = ln(2) ÷ ln(1.02), about 35 years. For continuous growth, e^(rt) = 2 gives t = ln(2) ÷ r. Since ln(2) is about 0.693, dividing 69.3 by the percent rate gives the *doubling time*. People round to 70 and call it the *rule of 70*: at 7% a year, 70 ÷ 7 = 10 years.",
+      "Half-life from a *decay rate* uses the same steps with 1/2. If a medicine leaves the blood at 5% an hour, 0.95^t = 0.5, and t is about 13.5 hours. To find a rate from a doubling time, solve b^9 = 2 for a 9-year doubling: b = 2^(1/9) ≈ 1.080, about 8.0%. The rule of 70 is only a quick estimate, and it fails for large rates. The doubling time does not depend on the starting amount."
+     ],
+     "more": [
+      "Why 70? Because ln(2) is about 0.693, and a percent rate is the decimal rate times 100. So the exact doubling time for continuous growth is about 69.3 divided by the percent rate, and 70 is an easy number to remember. Some people use 72 instead, since 72 divides evenly by many numbers (2, 3, 4, 6, 8, 9 and 12). For yearly compounding at rates near 8%, the rule of 72 comes a little closer to the exact value.",
+      "Doubling times help you read news about growth. If a country's economy grows 3% a year, it doubles in about 23 years. If prices rise 4% a year, the same money buys half as much in about 17 or 18 years. A small change in the rate makes a big change in the wait, so it is worth asking for the exact percent."
+     ],
+     "short_es": [
+      "Una ciudad crece 2% al año. Para hallar cuándo se duplica, plantea 1.02^t = 2 y aplica ln: t = ln(2) ÷ ln(1.02), unos 35 años. Para el crecimiento continuo, e^(rt) = 2 da t = ln(2) ÷ r. Como ln(2) es más o menos 0.693, dividir 69.3 entre la tasa porcentual da el *tiempo de duplicación*. La gente redondea a 70 y lo llama la *regla del 70*: con 7% al año, 70 ÷ 7 = 10 años.",
+      "La vida media a partir de una *tasa de decaimiento* usa los mismos pasos con 1/2. Si un medicamento sale de la sangre a razón de 5% por hora, 0.95^t = 0.5, y t es unas 13.5 horas. Para hallar una tasa a partir de un tiempo de duplicación, resuelve b^9 = 2 para una duplicación en 9 años: b = 2^(1/9) ≈ 1.080, o sea alrededor de 8.0%. La regla del 70 es solo una estimación rápida, y falla con tasas grandes. El tiempo de duplicación no depende de la cantidad inicial."
+     ],
+     "more_es": [
+      "¿Por qué 70? Porque ln(2) es más o menos 0.693, y una tasa porcentual es la tasa decimal por 100. Así que el tiempo de duplicación exacto para el crecimiento continuo es más o menos 69.3 dividido entre la tasa porcentual, y 70 es un número fácil de recordar. Algunas personas usan 72, porque 72 se divide exactamente entre muchos números (2, 3, 4, 6, 8, 9 y 12). Con capitalización anual y tasas cercanas a 8%, la regla del 72 se acerca un poco más al valor exacto.",
+      "Los tiempos de duplicación te ayudan a leer las noticias sobre crecimiento. Si la economía de un país crece 3% al año, se duplica en unos 23 años. Si los precios suben 4% al año, el mismo dinero compra la mitad en unos 17 o 18 años. Un cambio pequeño en la tasa hace un cambio grande en la espera, así que vale la pena preguntar el porcentaje exacto."
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Modelos basados en exponentes",
+   "lessons": [
+    {
+     "title": "Escalas basadas en logaritmos",
+     "mainIdea": "Las escalas de Richter, de decibeles y de pH informan el exponente, así que cada paso de 1 significa multiplicar la cantidad real por 10 (o, en la energía de un terremoto, por unas 31.6).",
+     "reading": [
+      "La *magnitud* de un terremoto es una escala logarítmica de la sacudida. Un paso de 1 en la magnitud significa que la aguja del sismógrafo se mueve 10 veces más lejos. Así, un terremoto de magnitud 7 sacude 10 veces más que uno de 6 y 10 × 10 = 100 veces más que uno de 5. La diferencia de magnitud es el exponente: razón de sacudida = 10^(diferencia). La energía crece más rápido, unas 10^1.5 ≈ 31.6 veces por paso, y de ahí sale lo de «treinta veces». Razón de energía = 10^(1.5 × diferencia). De 5 a 7, eso es 10^3 = 1,000 veces la energía. Por eso pasar de 5.2 a 6.2 es un terremoto muy distinto.",
+      "El sonido usa el *decibel*: dB = 10 × log(I ÷ I0), donde I es la intensidad del sonido e I0 es el sonido más débil que una persona puede oír. Cada 10 dB significan 10 veces la intensidad. Una conversación de 60 dB tiene 10^3 = 1,000 veces la intensidad de un susurro de 30 dB. En sentido contrario, un sonido con 500 veces la intensidad base tiene 10 × log(500) ≈ 10 × 2.7 = 27 dB. Los químicos usan el *pH* = −log[H+], donde [H+] es la concentración de iones de hidrógeno en moles por litro. El agua pura tiene [H+] = 10^(−7), así que pH 7. El jugo de limón, cerca de pH 2, tiene 10^5 = 100,000 veces la concentración de iones de hidrógeno del agua. Un pH más bajo significa más ácido.",
+      "Cada *escala logarítmica* existe por la misma razón: las cantidades reales abarcan un rango demasiado ancho para una recta numérica normal. Las energías de los terremotos difieren en factores de miles de millones; el logaritmo convierte esos miles de millones en una diferencia de 6. La trampa es tratar la escala como lineal. Una magnitud 8 no es «el doble» de una 4; libera unas 10^6 = 1,000,000 veces la energía. Un pH de 4 no es «un poco más ácido» que uno de 6; es 100 veces más. Cuando leas una escala logarítmica, resta para obtener el exponente y después eleva 10 a esa potencia para obtener la razón real."
+     ],
+     "words": [
+      {
+       "w": "magnitud",
+       "d": "el número del terremoto; cada paso de 1 significa 10 veces la sacudida y unas 31.6 veces la energía"
+      },
+      {
+       "w": "decibel",
+       "d": "la unidad de sonido dB = 10 × log(I ÷ I0); cada 10 dB son 10 veces la intensidad"
+      },
+      {
+       "w": "pH",
+       "d": "−log de la concentración de iones de hidrógeno; pH 7 es neutro y un valor más bajo es más ácido"
+      },
+      {
+       "w": "escala logarítmica",
+       "d": "una escala que informa el exponente, de modo que pasos iguales significan multiplicaciones iguales"
+      }
+     ],
+     "look": {
+      "title": "Energía liberada comparada con la de un terremoto de magnitud 4",
+      "unit": "veces la energía de uno de magnitud 4",
+      "rows": [
+       "magnitud 4",
+       "magnitud 5",
+       "magnitud 6",
+       "magnitud 7",
+       "magnitud 8"
+      ],
+      "prompt": "El terremoto del sur de Illinois en 2008 fue de magnitud 5.2. ¿Aproximadamente cuántas veces más energía liberaría uno de magnitud 6.2? ¿Y uno de 7.2?"
+     },
+     "check": [
+      {
+       "q": "¿Cuántas veces más sacude un sismógrafo un terremoto de magnitud 6 que uno de magnitud 3?",
+       "choices": [
+        "3 veces",
+        "30 veces",
+        "300 veces",
+        "1,000 veces"
+       ],
+       "why": "La diferencia es 3, así que la razón de sacudida es 10^3 = 1,000. Cada paso multiplica por 10, no suma 10."
+      },
+      {
+       "q": "El sonido A es de 40 dB y el sonido B es de 70 dB. La intensidad de B es",
+       "choices": [
+        "1,000 veces la de A",
+        "30 veces la de A",
+        "3 veces la de A",
+        "100 veces la de A"
+       ],
+       "why": "30 dB más son 3 pasos de 10 dB, cada uno un factor de 10: 10^3 = 1,000 veces la intensidad."
+      },
+      {
+       "q": "En comparación con pH 5, una solución con pH 3 tiene una concentración de iones de hidrógeno que es",
+       "choices": [
+        "2 veces mayor",
+        "100 veces mayor",
+        "100 veces menor",
+        "1,000 veces mayor"
+       ],
+       "why": "pH 3 significa 10^(−3) y pH 5 significa 10^(−5); la razón es 10^2 = 100, y un pH más bajo significa más iones."
+      }
+     ],
+     "short": [
+      "Earthquake *magnitude* is a *log scale*. A step of 1 means the needle swings 10 times farther, so a 7 shakes 10 times more than a 6 and 100 times more than a 5. The shaking ratio is 10^(difference). Energy grows faster, about 31.6 times for each step, so the energy ratio is 10^(1.5 × difference).",
+      "Sound uses the *decibel*, and every 10 dB means 10 times the intensity. Chemists use *pH*: pH 7 is neutral, and a lower number means more acid, with one step of pH being a factor of 10 in hydrogen ions. These scales exist because real amounts cover too wide a range for a normal number line. Do not read them as straight lines: a pH of 4 is 100 times more acid than a pH of 6. Subtract to get the exponent, then raise 10 to that power."
+     ],
+     "more": [
+      "Richter first made his scale for earthquakes in southern California, using one kind of seismograph. Today scientists usually report a number called the moment magnitude, which comes from how much rock slipped and how far. It is built to agree with the old numbers for medium quakes, and it stays reliable for the largest earthquakes ever recorded.",
+      "The decibel is named in honor of Alexander Graham Bell, the inventor of the telephone. The \"deci\" means one tenth, because the original unit, the bel, was too big to be handy, so people use tenths of it. The pH scale was introduced in 1909 by the Danish chemist Søren Sørensen, who needed a short way to write very small amounts of acid in a liquid."
+     ],
+     "short_es": [
+      "La *magnitud* de un terremoto es una *escala logarítmica*. Un paso de 1 significa que la aguja se mueve 10 veces más lejos, así que un 7 sacude 10 veces más que un 6 y 100 veces más que un 5. La razón de sacudida es 10^(diferencia). La energía crece más rápido, unas 31.6 veces por cada paso, así que la razón de energía es 10^(1.5 × diferencia).",
+      "El sonido usa el *decibel*, y cada 10 dB significan 10 veces la intensidad. Los químicos usan el *pH*: pH 7 es neutro, y un número más bajo significa más ácido, con un paso de pH que es un factor de 10 en iones de hidrógeno. Estas escalas existen porque las cantidades reales abarcan un rango demasiado ancho para una recta numérica normal. No las leas como rectas: un pH de 4 es 100 veces más ácido que un pH de 6. Resta para obtener el exponente y después eleva 10 a esa potencia."
+     ],
+     "more_es": [
+      "Richter hizo su escala primero para los terremotos del sur de California, con un solo tipo de sismógrafo. Hoy los científicos suelen informar un número llamado magnitud de momento, que se calcula a partir de cuánta roca se deslizó y qué tan lejos. Está hecho para coincidir con los números antiguos en los temblores medianos, y sigue siendo confiable para los terremotos más grandes que se han registrado.",
+      "El decibel se llama así en honor a Alexander Graham Bell, el inventor del teléfono. El prefijo «deci» significa una décima parte, porque la unidad original, el bel, era demasiado grande para usarla con comodidad, así que se usan décimas de ella. La escala de pH la presentó en 1909 el químico danés Søren Sørensen, quien necesitaba una forma corta de escribir cantidades muy pequeñas de ácido en un líquido."
+     ]
+    },
+    {
+     "title": "Crecimiento que llega a un techo",
+     "mainIdea": "El crecimiento logístico empieza como el exponencial y después se frena al acercarse a un límite L, siguiendo P = L ÷ (1 + C × e^(−kt)).",
+     "reading": [
+      "Un rumor empieza con 10 estudiantes en una escuela de 1,000. Al principio se esparce rápido, casi duplicándose cada día, porque casi todos los que lo oyen tienen amigos que todavía no lo saben. Pero el rumor no puede pasar de 1,000 personas. Al acercarse a ese techo se frena: los estudiantes a quienes todavía les falta contárselo son cada vez menos. La curva sube, se dobla y se aplana en forma de S. Esto es el *crecimiento logístico*. El techo se llama *capacidad de carga*, L. Las poblaciones reales de venados, las bacterias en una placa de Petri o los usuarios de una aplicación siguen esta forma porque se acaban el alimento, el espacio o las personas nuevas.",
+      "La fórmula es P(t) = L ÷ (1 + C × e^(−kt)). L es el techo, k fija la rapidez y C queda determinada por el valor inicial. Para el rumor, L = 1,000 y P(0) = 10, así que 1,000 ÷ (1 + C) = 10, lo que da 1 + C = 100 y C = 99. Con k = 0.8 por día, P(t) = 1,000 ÷ (1 + 99e^(−0.8t)). Día 5: e^(−4) ≈ 0.0183, así que 99 × 0.0183 ≈ 1.81, y P ≈ 1,000 ÷ 2.81 ≈ 356 estudiantes. Día 10: e^(−8) ≈ 0.000335, 99 × 0.000335 ≈ 0.033, P ≈ 1,000 ÷ 1.033 ≈ 968. Día 15: unos 999. Los últimos cinco días suman solo unos 30 estudiantes; la curva se ha aplanado contra su *límite*.",
+      "¿Dónde se dobla la S? El punto más empinado está en la mitad del techo, P = L ÷ 2 = 500 aquí. Antes de ese punto el crecimiento se acelera; después, se frena. Para hallar ese día resuelve 99e^(−0.8t) = 1, así que e^(−0.8t) = 1/99, así que −0.8t = ln(1/99) ≈ −4.595, así que t ≈ 5.74 días. El error común es seguir usando un modelo exponencial más allá del punto en que importa el límite; un rumor exponencial «llegaría» a 5,000 estudiantes en una escuela de 1,000. Cuando una situación tiene un límite firme, elige el logístico. Cuando el límite está lejos, el exponencial sirve para el tramo inicial, y las dos curvas coinciden allí."
+     ],
+     "words": [
+      {
+       "w": "crecimiento logístico",
+       "d": "crecimiento que empieza siendo exponencial y después se frena y se estabiliza en un techo, formando una curva en forma de S"
+      },
+      {
+       "w": "capacidad de carga",
+       "d": "la mayor cantidad que puede sostener una situación; el techo L de un modelo logístico"
+      },
+      {
+       "w": "límite",
+       "d": "un valor al que una curva se acerca cada vez más sin pasarlo"
+      }
+     ],
+     "look": {
+      "title": "El rumor, día por día",
+      "unit": "estudiantes que lo han oído",
+      "rows": [
+       "día 0",
+       "día 2",
+       "día 4",
+       "día 6",
+       "día 8",
+       "día 10",
+       "día 12"
+      ],
+      "prompt": "¿Entre qué dos días crece más la cantidad? ¿Dónde se aplana la curva y hacia qué número se dirige?"
+     },
+     "check": [
+      {
+       "q": "En P = 2,000 ÷ (1 + 19e^(−0.5t)), ¿cuál es la capacidad de carga?",
+       "choices": [
+        "19",
+        "100",
+        "2,000",
+        "0.5"
+       ],
+       "why": "L es el numerador, 2,000. Cuando t crece, e^(−0.5t) tiende a 0 y P tiende a 2,000 ÷ 1 = 2,000."
+      },
+      {
+       "q": "¿Cuál es el valor inicial P(0) de P = 2,000 ÷ (1 + 19e^(−0.5t))?",
+       "choices": [
+        "2,000",
+        "19",
+        "105.3",
+        "100"
+       ],
+       "why": "Cuando t = 0, e^0 = 1, así que P = 2,000 ÷ (1 + 19) = 2,000 ÷ 20 = 100."
+      },
+      {
+       "q": "¿Qué situación pide un modelo logístico y no uno exponencial?",
+       "choices": [
+        "Peces en un estanque con alimento limitado",
+        "Dinero que se capitaliza de forma continua en una cuenta",
+        "Carbono-14 que decae en un fósil",
+        "Bacterias en su primera hora con nutrientes ilimitados"
+       ],
+       "why": "Un estanque tiene una capacidad de carga, así que el crecimiento debe estabilizarse. El dinero no tiene techo, el decaimiento disminuye y las bacterias del principio todavía no tienen límite."
+      }
+     ],
+     "short": [
+      "A rumor starts with 10 students in a school of 1,000. At first it spreads fast, almost doubling each day. But it cannot pass 1,000 people, so it slows as it nears that ceiling. The curve rises, bends and flattens into an S. This is *logistic growth*. The ceiling is the *carrying capacity*, L. Deer, bacteria in a dish and app users follow this shape because food, space or new people run out.",
+      "The formula is P(t) = L ÷ (1 + C × e^(−kt)). L is the ceiling, k sets the speed, and C comes from the starting value: at t = 0, e^0 = 1, so P(0) = L ÷ (1 + C). For the rumor, C = 99, and by day 10 about 968 students know, flattening against the *limit*. The steepest point is at half the ceiling. When a situation has a hard limit, choose logistic. When the limit is far away, exponential works for the early stretch."
+     ],
+     "more": [
+      "The logistic curve was first used for populations in the 1830s by the Belgian mathematician Pierre François Verhulst, who wanted to explain why populations do not grow forever. Biologists later fitted it to yeast growing in a flask. Doctors and planners use it for how a disease or a new product spreads through a group. Wherever something grows by passing from one member of a group to another, an S-shaped curve appears.",
+      "Notice what controls the ceiling and what controls the speed. If the school had 5,000 students instead of 1,000, then L would be 5,000 and the rumor would end up reaching more people. If students were quicker to talk, k would be larger and the S would be steeper. The ceiling tells you where the curve ends, and k tells you how fast it gets there."
+     ],
+     "short_es": [
+      "Un rumor empieza con 10 estudiantes en una escuela de 1,000. Al principio se esparce rápido, casi duplicándose cada día. Pero no puede pasar de 1,000 personas, así que se frena al acercarse a ese techo. La curva sube, se dobla y se aplana en forma de S. Esto es el *crecimiento logístico*. El techo es la *capacidad de carga*, L. Los venados, las bacterias en una placa de Petri y los usuarios de una aplicación siguen esta forma porque se acaban el alimento, el espacio o las personas nuevas.",
+      "La fórmula es P(t) = L ÷ (1 + C × e^(−kt)). L es el techo, k fija la rapidez y C sale del valor inicial: con t = 0, e^0 = 1, así que P(0) = L ÷ (1 + C). Para el rumor, C = 99, y en el día 10 lo saben unos 968 estudiantes, una cantidad que se aplana contra el *límite*. El punto más empinado está en la mitad del techo. Cuando una situación tiene un límite firme, elige el modelo logístico. Cuando el límite está lejos, el exponencial sirve para el tramo inicial."
+     ],
+     "more_es": [
+      "La curva logística la usó por primera vez para poblaciones, en la década de 1830, el matemático belga Pierre François Verhulst, quien quería explicar por qué las poblaciones no crecen para siempre. Después, los biólogos la ajustaron al crecimiento de levadura en un matraz. Los médicos y los planificadores la usan para ver cómo se propaga una enfermedad o un producto nuevo en un grupo. Dondequiera que algo crece pasando de un miembro del grupo a otro, aparece una curva en forma de S.",
+      "Fíjate en qué controla el techo y qué controla la rapidez. Si la escuela tuviera 5,000 estudiantes en lugar de 1,000, L sería 5,000 y el rumor terminaría llegando a más personas. Si los estudiantes fueran más rápidos para contarlo, k sería mayor y la S sería más empinada. El techo te dice dónde termina la curva, y k te dice qué tan rápido llega allí."
+     ]
+    }
+   ]
   }
  ]
 }

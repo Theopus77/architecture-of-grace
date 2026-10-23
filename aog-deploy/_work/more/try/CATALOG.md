@@ -13,7 +13,16 @@ sun Sun, with a safe solar filter/Sol, con filtro solar seguro
 Also: /telescope (the whole lab), /telescope-lessons (its lessons).
 
 ## The Microscope Lab — /microscope?slide=<id>
-__MICRO__
+e Letter e/Letra e · onion Onion skin cells/Epidermis de cebolla · pond Pond water (tiny living things)/Agua de estanque ·
+blood Blood smear/Frotis de sangre · cheek Cheek cells/Células de la mejilla · hair Human hair/Cabello humano ·
+elodea Elodea leaf (chloroplasts)/Hoja de elodea · bact Bacteria smear/Frotis de bacterias · virus Virus? (too small to see)/¿Virus? ·
+pollen Pollen/Polen · wing Butterfly wing scales/Ala de mariposa · leaf Leaf peel (stomata)/Piel de hoja (estomas) ·
+diatom Diatoms/Diatomeas · papyrus Papyrus with ink/Papiro con tinta · scroll Parchment scroll fragment/Fragmento de rollo (pergamino) ·
+tablet Clay tablet (cuneiform)/Tablilla de arcilla (cuneiforme) · crystal Salt and sugar crystals/Sal y azúcar ·
+hairs Leaf hairs/Pelos de hoja · dog Dog hair and a tick/Pelo de perro y garrapata · section Leaf cross-section/Corte de hoja ·
+fly Fly wing/Ala de mosca · fern Fern spore capsules/Cápsulas de esporas de helecho · fabric Cotton and polyester cloth/Tela: algodón y poliéster ·
+dna DNA (extracted, a stringy goo)/ADN extraído · sand Beach sand/Arena de playa · yeast Baker's yeast/Levadura de pan ·
+scale Stage micrometer (measuring tiny things)/Micrómetro de platina
 Also: /microscope (the whole lab), /microscope-lessons.
 
 ## The Oscilloscope — /waves?l=<N>#lessons (one lesson on the scope)
@@ -47,3 +56,15 @@ pivot-corner, seam-allowance, press-seam.
 
 ## Other
 /cube (the Cube Lab: patterns, permutations, algorithms, 3D shapes) · /drops/foundry (Word Foundry: word parts)
+
+## Picker's job
+You get one or more courses. Their lessons are listed in `_work/more/threads/index_<group>.txt`, one per line:
+`course|unit|lesson id|band|title — main idea`. Read every line for your courses.
+For each lesson where ONE address above shows exactly what the lesson teaches, so a learner who taps it sees the
+lesson come alive, pick it. Strong fits only; most lessons get none. Never force a fit. Lab moments that would be
+unsafe or confusing for the band are out (the Dojo only for lessons about that move, solo into the air; the stove and
+knives for grades 3 and up with a grown-up).
+Write `_work/more/try/<course>.json` per course (keep any entries already in it):
+{"<unit>:<lesson id>": {"href": "/microscope?slide=onion", "en": "Look at onion cells under the microscope", "es": "Mira células de cebolla en el microscopio"}}
+`en`/`es`: a short plain invitation (≤ 9 words), starting with a verb. Check the JSON loads with python.
+Reply with one line per course: how many picks.
