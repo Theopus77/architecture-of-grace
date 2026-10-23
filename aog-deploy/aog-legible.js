@@ -170,14 +170,20 @@
   }
   /* other layers that repaint a room (aog-chapel.js) ask for a fresh look */
   window.aogLegibleRefresh = function () { soon(true); };
+  /* AOG-LEGIBLE-LOADQUIET-V1 (2026-10-22, Jimmy: the front page froze for seconds as it finished loading): while a page
+     is still loading, its start-up code changes thousands of things and each change was looked at again. Whole looks run
+     at load and 0.9 s later and see all of it, so until then a change waits for them. */
+  var settled = false;
+  function settle() { soon(false); setTimeout(function () { soon(false); settled = true; }, 900); }
   function start() {
     soon(false);
-    window.addEventListener("load", function () { soon(false); setTimeout(function () { soon(false); }, 900); });
+    if (D.readyState === "complete") settle(); else window.addEventListener("load", settle);
+    setTimeout(function () { settled = true; }, 15000);   /* a page whose load never comes still gets its looks */
     if (window.MutationObserver) {
       new MutationObserver(function () { soon(true); })
         .observe(H, { attributes: true, attributeFilter: ["data-theme", "class"] });
       new MutationObserver(function (list) {
-        if (busy) return;
+        if (busy || !settled) return;
         /* AOG-LEGIBLE-PLAY-V1 (2026-10-11, Jimmy: the instruments "should be lighting fast in their reaction time"): a
            drawing is never read here (sweep skips svg), so its lights changing on every note (the guitar's neck, the
            kit) need no look */

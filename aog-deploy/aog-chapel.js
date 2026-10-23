@@ -122,7 +122,22 @@
     ".aog-readmore>summary::-webkit-details-marker{display:none}.aog-readmore>summary::after{content:'\\25BE';font-size:12px}" +
     ".aog-readmore[open]>summary::after{content:'\\25B4'}.aog-readmore[open]>summary span::after{content:''}" +
     "}@media print{.aog-readmore>summary{display:none}}";
-  function run() {
+  /* AOG-CHAPEL-DIRTY-V1 (2026-10-22, Jimmy: the front page froze as it finished loading): a change somewhere on the page
+     used to repaint every room, switching the colours off and on (the whole page restyled each time, five times while the
+     front page loaded). A change now repaints only the room it happened in, or every room when it touched the page
+     around them. A timed look (after load, a click, a page switch) still repaints them all, as before. */
+  var dirtyAll = true;
+  function due(r) { return dirtyAll || r.__aogChapelDirty || !r.__aogChapelSeen; }
+  function run(force) {
+    if (force !== false) dirtyAll = true;
+    var act0 = Array.prototype.map.call(D.querySelectorAll(ROOMS.replace(/,/g, ".active,") + ".active"), function (x) { return x.id; }).join();
+    if (act0 !== seenScreen) dirtyAll = true;
+    var todo = [];
+    D.querySelectorAll("#screen-family.active, #screen-privacy.active").forEach(function (r) { if (due(r)) todo.push(r); });
+    D.querySelectorAll(ROOMS).forEach(function (r) { if ((r.id === "aog-origin" || r.classList.contains("active")) && due(r)) todo.push(r); });
+    if (!todo.length) return;
+    todo.forEach(function (r) { r.__aogChapelSeen = 1; r.__aogChapelDirty = 0; });
+    dirtyAll = false;
     changed = 0;
     /* AOG-CHAPEL-SAFE-V1 (2026-09-26) — the colours only switch on AFTER every light
        box in the room has been found and turned into a dark pane, and they are
@@ -132,16 +147,16 @@
     if (css.sheet) css.sheet.disabled = true;
     var act = Array.prototype.map.call(D.querySelectorAll(ROOMS.replace(/,/g, ".active,") + ".active"), function (x) { return x.id; }).join();
     if (act !== seenScreen) { seenScreen = act; changed++; }
-    D.querySelectorAll("#screen-family.active, #screen-privacy.active").forEach(function (r) { trimLedes(r); });
-    D.querySelectorAll(ROOMS).forEach(function (r) {
-      if (r.id === "aog-origin" || r.classList.contains("active")) { panes(r); fold(r); trimLedes(r); }
+    todo.forEach(function (r) {
+      if (r.matches("#screen-family, #screen-privacy") && !r.matches(ROOMS)) trimLedes(r);
+      else { panes(r); fold(r); trimLedes(r); }
     });
     if (css.sheet) css.sheet.disabled = false;
     /* only when this layer actually repainted something — a steady page is never re-swept (no flicker) */
     if (changed) try { if (window.aogLegibleRefresh) window.aogLegibleRefresh(); } catch (e) {}
   }
   var t = 0;
-  function soon() { clearTimeout(t); t = setTimeout(run, 120); }
+  function soon() { clearTimeout(t); t = setTimeout(function () { run(false); }, 120); }
   /* AOG-BACK-RESCUE-V1 (2026-09-26) — Jimmy: pressing Back sometimes left a blank
      page ("the stoppage … THESE ALL HAVE THE BACK ISSUE"). After any Back, Forward
      or return from the browser's page cache: if no room is showing words, route
@@ -180,7 +195,19 @@
     window.addEventListener("hashchange", function () { setTimeout(run, 250); setTimeout(run, 900); });
     D.addEventListener("click", function () { setTimeout(soon, 200); setTimeout(run, 700); setTimeout(run, 1600); }, true);
     new MutationObserver(function (list) {
-      for (var i = 0; i < list.length; i++) { var x = list[i].target; if (x.closest && x.closest(".aog-readmore")) continue; soon(); return; }
+      var any = false, rooms = null;
+      for (var i = 0; i < list.length && !dirtyAll; i++) { var x = list[i].target; if (!x.closest || x.closest(".aog-readmore")) continue;
+        var room = x.closest(ROOMS + ", #screen-family, #screen-privacy");
+        if (room) { room.__aogChapelDirty = 1; any = true; continue; }
+        /* outside every room: it matters only when it holds rooms (the page around them, a screen switch) */
+        rooms = rooms || D.querySelectorAll(ROOMS + ", #screen-family, #screen-privacy");
+        for (var k = 0; k < rooms.length; k++) if (x.contains(rooms[k])) { dirtyAll = true; break; }
+        if (!dirtyAll && list[i].type === "childList") for (var a = 0; a < list[i].addedNodes.length; a++) {
+          var nd = list[i].addedNodes[a];
+          if (nd.nodeType === 1 && (nd.matches(ROOMS) || nd.querySelector(ROOMS))) { dirtyAll = true; break; }
+        }
+      }
+      if (any || dirtyAll) soon();
     }).observe(D.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["class"] });
   }
   if (D.readyState === "loading") D.addEventListener("DOMContentLoaded", start); else start();

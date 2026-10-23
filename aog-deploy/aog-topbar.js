@@ -800,8 +800,12 @@
   }
   window.aogPrintMark = paint;                      /* testable */
 
-  if (D.readyState === "complete") setTimeout(paint, 0);
-  else window.addEventListener("load", function () { setTimeout(paint, 0); });
+  /* AOG-PRINTMARK-IDLE-V1 (2026-10-22, Jimmy: the front page froze as it finished loading): the marks are only for paper,
+     so they wait until the phone is idle after load instead of landing with every other start-up job. A Print button and
+     beforeprint still paint them at once. */
+  function later() { if (window.requestIdleCallback) requestIdleCallback(paint, { timeout: 4000 }); else setTimeout(paint, 1500); }
+  if (D.readyState === "complete") later();
+  else window.addEventListener("load", later);
 
   /* ⚠ synchronous, in the capture phase, so the marks are in place BEFORE the
      page's own handler calls print() — iOS does not block on print() and will

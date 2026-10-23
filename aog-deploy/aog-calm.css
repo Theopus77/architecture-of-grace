@@ -94,8 +94,11 @@ html[data-theme="dark"] :focus-visible { outline-color: #F2C964; box-shadow: 0 0
 @media screen and (min-width: 1000px) { body { zoom: .85; } } /* Jimmy 2026-09-27: 85% on a computer */
 /* AOG-CANVAS-TRUE-V1 (2026-09-27) — Jimmy: "THE Calibration is WAY WAY off" on the drawing boards. Safari measures a
    canvas without the zoom but the pen with it, so strokes land away from the finger. Any page with a canvas draws at
-   full size, so every pen, pad and scope lands exactly under the finger or mouse. */
-@media screen { body:has(canvas) { zoom: 1 !important; } }
+   full size, so every pen, pad and scope lands exactly under the finger or mouse.
+   AOG-CANVAS-WIDE-V1 (2026-10-22, Jimmy: the front page froze as it loaded): only from 700px up, where the zoom above
+   applies. On a phone it changed nothing, yet body:has(canvas) made the phone search the whole page for a canvas after
+   every change (on the front page, the costliest rule of all). */
+@media screen and (min-width: 700px) { body:has(canvas) { zoom: 1 !important; } }
 
 /* AOG-DAILY-ROW-V1 (2026-09-27) — Jimmy: "Fix it so all the grades / numbers are in one row and apply that to all
    current and future builds." Every "Every day" strip: the name, then one line of words, then the grade buttons in

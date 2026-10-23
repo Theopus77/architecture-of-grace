@@ -272,7 +272,17 @@
     link("preload", "/fonts/fraunces-normal-latin.woff2", { as: "font", type: "font/woff2", crossorigin: "" });
     link("stylesheet", FONTS);
   }
+  /* AOG-GRACE-NOFADE-V1 (2026-10-22): until aog-grace.css is in, nothing on the page eases. A button drawn before it
+     arrived ("← All activities" on the math activities) used to fade from its light page style to the masthead's,
+     showing cream words on a light box on the way; a page should simply appear. */
+  try {
+    var hold = D.createElement("style");
+    hold.textContent = "html[data-aog-wait] *, html[data-aog-wait] *::before, html[data-aog-wait] *::after{ transition:none !important; }";
+    (D.head || H).appendChild(hold); H.setAttribute("data-aog-wait", "1");   /* an attribute no observer watches, unlike class */
+  } catch (e) {}
+  function unhold() { setTimeout(function () { H.removeAttribute("data-aog-wait"); }, 50); }
   var sheet = link("stylesheet", "/aog-grace.css", { "data-aog-grace": "1" });
+  sheet.addEventListener("load", unhold); sheet.addEventListener("error", unhold); setTimeout(unhold, 4000);
 
   /* ── 2 ── find the masthead ───────────────────────────────────────────── */
   function visible(el) {
