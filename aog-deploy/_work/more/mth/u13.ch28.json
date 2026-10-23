@@ -1,0 +1,621 @@
+{
+ "title": "Exponentes, raíces y notación científica",
+ "years": "Número",
+ "bigQuestion": "¿Cómo escribimos, comparamos y calculamos con números que son enormes, diminutos o que ni siquiera son fracciones?",
+ "story": {
+  "title": "Arroz en el tablero de ajedrez",
+  "kicker": "Un cuento antiguo sobre un tablero de ajedrez, un grano de arroz y una recompensa que creció más rápido de lo que cualquier rey podía pagar.",
+  "paragraphs": [
+   "El cuento se ha contado durante siglos, en la India, en Persia y en Europa, con nombres distintos cada vez. Un gobernante está tan complacido con el inventor del ajedrez que le ofrece cualquier recompensa. El inventor pide algo que suena modesto: un grano de arroz en la primera casilla del tablero, dos en la segunda, cuatro en la tercera, y así sucesivamente, duplicando en cada casilla hasta las sesenta y cuatro. El gobernante se ríe de un pedido tan pequeño y ordena a sus sirvientes que traigan el arroz.",
+   "La primera fila va fácil. Las casillas reciben 1, 2, 4, 8, 16, 32, 64 y 128 granos. Son 255 granos en total, menos que un puñado. La segunda fila termina en 32,768 granos en la casilla dieciséis, más o menos una bolsa grande. Los sirvientes empiezan a sudar durante la tercera fila, cuando las cantidades de las casillas pasan del millón. Al final de la cuarta fila, la casilla treinta y dos sola pide 2,147,483,648 granos, más de dos mil millones, y el tablero apenas está medio lleno.",
+   "Cada casilla tiene 2 multiplicado por sí mismo una vez menos que el número de la casilla. La casilla diez tiene 2^9, la veinte tiene 2^19 y la última casilla tiene 2^63. Escrito completo, 2^63 son 9,223,372,036,854,775,808 granos, unos nueve trillones. El tablero entero tiene 2^64 − 1 granos, más o menos 18 trillones. Eso es mucho más arroz del que el mundo cosecha en un año, o en un siglo. En la mayoría de las versiones del cuento, el gobernante admite que lo han superado en ingenio o el inventor no vive para cobrar.",
+   "Los matemáticos necesitaban una manera de escribir esos números sin llenar una página de dígitos. El exponente, el pequeño número elevado de 2^63, lo hace con unos pocos trazos. Para números todavía más grandes, y para números diminutos como el ancho de un virus, los científicos usan una forma construida con potencias de diez, llamada notación científica: 9.2 × 10^18 en lugar de diecinueve dígitos. Este capítulo trata de los exponentes, de su operación opuesta (las raíces), de los números que ninguna fracción puede capturar y de la notación que permite que una sola línea contenga todo el tablero de ajedrez."
+  ],
+  "think": "El inventor pidió duplicar en cada casilla. ¿Por qué duplicar crece tanto más rápido que sumar la misma cantidad cada vez? Compara la casilla diez bajo cada regla."
+ },
+ "sections": [
+  {
+   "title": "Trabajar con exponentes",
+   "lessons": [
+    {
+     "title": "Potencias y multiplicación repetida",
+     "mainIdea": "Un exponente cuenta cuántas veces se usa la base como factor: 2^5 = 2 × 2 × 2 × 2 × 2 = 32.",
+     "reading": [
+      "En 2^5, el 2 es la *base* y el 5 es el *exponente*. La expresión se lee «dos a la quinta potencia» y significa multiplicar cinco 2: 2 × 2 × 2 × 2 × 2 = 32. No significa 2 × 5 = 10, que es el error más común. Prueba 3^4 = 3 × 3 × 3 × 3 = 81 y 10^3 = 10 × 10 × 10 = 1,000. Cualquier base elevada a la primera potencia es ella misma: 7^1 = 7.",
+      "Las potencias de diez son fáciles de reconocer: 10^n es un 1 seguido de n ceros. 10^6 es 1,000,000, un millón. Las potencias de 2 aparecen en las computadoras, donde la memoria se duplica: 2^10 = 1,024, y por eso un «kilobyte» es un poco más de mil bytes. Las casillas del tablero siguen 2^0, 2^1, 2^2 y así sucesivamente, así que la octava casilla tiene 2^7 = 128 granos.",
+      "Las bases negativas necesitan paréntesis. (−3)^2 significa (−3) × (−3) = 9, pero −3^2 significa el opuesto de 3^2, que es −9. Y (−2)^3 = (−2) × (−2) × (−2) = −8, negativo porque hay tres factores negativos. Las fracciones también pueden ser bases: (2/3)^2 = 2/3 × 2/3 = 4/9. Eleva al cuadrado tanto el numerador como el denominador."
+     ],
+     "words": [
+      {"w": "base", "d": "el número que se multiplica repetidamente; en 5^3 la base es 5"},
+      {"w": "exponente", "d": "el pequeño número elevado que dice cuántas veces se usa la base como factor; en 5^3 es 3"},
+      {"w": "potencia", "d": "un número escrito con un exponente, como 5^3, o su valor, 125"}
+     ],
+     "look": {
+      "title": "Granos en las primeras casillas",
+      "rows": ["casilla 1 (2^0)", "casilla 2 (2^1)", "casilla 3 (2^2)", "casilla 4 (2^3)", "casilla 5 (2^4)", "casilla 8 (2^7)", "casilla 11 (2^10)", "casilla 21 (2^20)"],
+      "unit": "granos de arroz",
+      "prompt": "¿Cuántos granos hay en la casilla 12? ¿Y en la casilla 22? Explica cómo puedes obtener cada una a partir de la fila de justo arriba sin multiplicar desde cero."
+     },
+     "check": [
+      {
+       "q": "¿Cuánto es 3^4?",
+       "choices": ["12", "64", "81", "7"],
+       "why": "3 × 3 × 3 × 3 = 9 × 9 = 81. El error de hacer 3 × 4 da 12."
+      },
+      {
+       "q": "¿Cuánto es (−2)^4?",
+       "choices": ["−8", "−16", "8", "16"],
+       "why": "(−2)(−2)(−2)(−2): cuatro factores negativos, un número par, así que da 16 positivo."
+      },
+      {
+       "q": "¿Qué expresión es igual a 10,000?",
+       "choices": ["10^4", "10^5", "4^10", "10 × 4"],
+       "why": "10^4 = 10 × 10 × 10 × 10 = 10,000, un 1 seguido de cuatro ceros."
+      }
+     ],
+     "short": [
+      "In 2^5, the 2 is the *base* and the 5 is the *exponent*. The exponent counts how many times the base is used as a factor, so 2^5 = 2 × 2 × 2 × 2 × 2 = 32. It does not mean 2 × 5 = 10, which is the most common mistake. In the same way, 3^4 = 3 × 3 × 3 × 3 = 81. A power of ten, 10^n, is a 1 followed by n zeros, so 10^4 is 10,000. With a negative base, count the negative factors: (−2)^4 has four of them, an even number, so it is positive 16."
+     ],
+     "more": [
+      "Powers show up in family trees. You have 2 parents, 4 grandparents and 8 great-grandparents, which are 2^1, 2^2 and 2^3. Ten generations back, the count reaches 2^10 = 1,024, if no ancestor is counted twice. Each step back doubles the number, which is exactly how the chessboard grains grow.",
+      "The words 'squared' and 'cubed' come from shapes. A square with sides of 5 has an area of 5^2 = 25 square units, and a cube with edges of 5 has a volume of 5^3 = 125 cubic units. So 'five squared' and 'five cubed' remind us of a flat square and a solid cube."
+     ],
+     "short_es": [
+      "En 2^5, el 2 es la *base* y el 5 es el *exponente*. El exponente cuenta cuántas veces se usa la base como factor, así que 2^5 = 2 × 2 × 2 × 2 × 2 = 32. No significa 2 × 5 = 10, que es el error más común. De la misma manera, 3^4 = 3 × 3 × 3 × 3 = 81. Una potencia de diez, 10^n, es un 1 seguido de n ceros, así que 10^4 es 10,000. Con una base negativa, cuenta los factores negativos: (−2)^4 tiene cuatro, un número par, así que es 16 positivo."
+     ],
+     "more_es": [
+      "Las potencias aparecen en los árboles genealógicos. Tienes 2 padres, 4 abuelos y 8 bisabuelos, que son 2^1, 2^2 y 2^3. Diez generaciones atrás, la cuenta llega a 2^10 = 1,024, si ningún antepasado se cuenta dos veces. Cada paso hacia atrás duplica el número, que es exactamente como crecen los granos del tablero de ajedrez.",
+      "Las palabras «al cuadrado» y «al cubo» vienen de las figuras. Un cuadrado con lados de 5 tiene un área de 5^2 = 25 unidades cuadradas, y un cubo con aristas de 5 tiene un volumen de 5^3 = 125 unidades cúbicas. Así que «cinco al cuadrado» y «cinco al cubo» nos recuerdan un cuadrado plano y un cubo sólido."
+     ]
+    },
+    {
+     "title": "Multiplicar y dividir potencias",
+     "mainIdea": "Con la misma base, las potencias se multiplican sumando los exponentes y se dividen restándolos: 2^3 × 2^4 = 2^7 y 2^7 ÷ 2^4 = 2^3.",
+     "reading": [
+      "Escribe 2^3 × 2^4: (2 × 2 × 2) × (2 × 2 × 2 × 2). Son siete 2 multiplicados entre sí, que es 2^7. Contar los factores muestra la regla: para multiplicar potencias con la misma base, suma los exponentes. 5^2 × 5^6 = 5^8. Las bases tienen que ser iguales; 2^3 × 3^2 no se puede combinar así, así que calcúlalo como 8 × 9 = 72.",
+      "La división va al revés. 2^7 ÷ 2^4 es siete 2 sobre cuatro 2. Cuatro pares se cancelan y quedan tres 2: 2^3 = 8. Comprobación: 128 ÷ 16 = 8. Así que para dividir potencias con la misma base, resta los exponentes. 10^9 ÷ 10^4 = 10^5. Mil millones dividido entre diez mil es cien mil, y eso es correcto.",
+      "El error común es multiplicar los exponentes: escribir 2^3 × 2^4 = 2^12. Pruébalo con números pequeños: 8 × 16 = 128, y 2^12 = 4,096, así que no puede ser. Otro error es sumar las bases: 2^3 × 2^4 no es 4^7. Cuando tengas dudas, escribe los factores y cuéntalos."
+     ],
+     "words": [
+      {"w": "regla del producto", "d": "misma base, multiplicar: se suman los exponentes, a^m × a^n = a^(m+n)"},
+      {"w": "regla del cociente", "d": "misma base, dividir: se restan los exponentes, a^m ÷ a^n = a^(m−n)"}
+     ],
+     "look": {
+      "title": "Cuenta los factores",
+      "text": "Escribe 3^2 × 3^3 como una fila de 3 y cuéntalos. Luego escribe 3^5 ÷ 3^2 como una fracción con 3 arriba y abajo, cancela y cuenta lo que queda. Calcula también cada respuesta como número común: 9 × 27 y 243 ÷ 9. ¿Las reglas de los exponentes coinciden con la aritmética común?",
+      "prompt": "Enuncia las dos reglas con tus propias palabras. Luego explica por qué 3^2 × 5^3 no se puede simplificar de la misma manera."
+     },
+     "check": [
+      {
+       "q": "¿Cuánto es 4^3 × 4^2?",
+       "choices": ["4^6", "16^5", "8^5", "4^5"],
+       "why": "Misma base, así que se suman los exponentes: 3 + 2 = 5. 4^5 = 1,024, y 64 × 16 = 1,024."
+      },
+      {
+       "q": "¿Cuánto es 7^9 ÷ 7^3?",
+       "choices": ["7^3", "7^6", "1^6", "7^12"],
+       "why": "Misma base, se restan los exponentes: 9 − 3 = 6, así que 7^6."
+      },
+      {
+       "q": "¿Qué producto se puede simplificar sumando exponentes?",
+       "choices": ["2^3 × 5^3", "3^2 + 3^4", "6^2 × 6^7", "4^2 × 2^4"],
+       "why": "Solo 6^2 × 6^7 tiene la misma base en una multiplicación. Es igual a 6^9."
+      }
+     ],
+     "short": [
+      "To multiply powers with the same base, add the exponents. Write out 2^3 × 2^4 = (2 × 2 × 2) × (2 × 2 × 2 × 2): that is seven 2s, so 2^7. Likewise 5^2 × 5^6 = 5^8. To divide powers with the same base, subtract the exponents. In 2^7 ÷ 2^4, four pairs of 2s cancel and three 2s are left: 2^3 = 8. The bases must match, so 2^3 × 3^2 cannot be combined this way; compute 8 × 9 = 72. Do not multiply the exponents: 8 × 16 = 128, not 2^12. When in doubt, write out the factors and count them."
+     ],
+     "more": [
+      "Think of the base as the kind of thing you are counting. Three 2s and four 2s make seven 2s, because they are the same kind of factor. But three 2s and two 3s are different kinds of factors, so there is no single count that describes them together. That is why the bases must match before the exponents can be added.",
+      "Computers use this rule all the time. Memory sizes are powers of 2, and 2^10 = 1,024. Multiplying two of them gives 2^10 × 2^10 = 2^20, and 1,024 × 1,024 = 1,048,576, which is about a million. Adding the exponents is much quicker than multiplying the big numbers."
+     ],
+     "short_es": [
+      "Para multiplicar potencias con la misma base, suma los exponentes. Escribe 2^3 × 2^4 = (2 × 2 × 2) × (2 × 2 × 2 × 2): son siete 2, así que 2^7. De igual modo, 5^2 × 5^6 = 5^8. Para dividir potencias con la misma base, resta los exponentes. En 2^7 ÷ 2^4, cuatro pares de 2 se cancelan y quedan tres 2: 2^3 = 8. Las bases tienen que coincidir, así que 2^3 × 3^2 no se puede combinar de esta manera; calcula 8 × 9 = 72. No multipliques los exponentes: 8 × 16 = 128, no 2^12. Cuando tengas dudas, escribe los factores y cuéntalos."
+     ],
+     "more_es": [
+      "Piensa en la base como la clase de cosa que estás contando. Tres 2 y cuatro 2 forman siete 2, porque son la misma clase de factor. Pero tres 2 y dos 3 son clases distintas de factores, así que no hay una sola cuenta que los describa juntos. Por eso las bases tienen que coincidir antes de poder sumar los exponentes.",
+      "Las computadoras usan esta regla todo el tiempo. Los tamaños de memoria son potencias de 2, y 2^10 = 1,024. Multiplicar dos de ellos da 2^10 × 2^10 = 2^20, y 1,024 × 1,024 = 1,048,576, que es más o menos un millón. Sumar los exponentes es mucho más rápido que multiplicar los números grandes."
+     ]
+    },
+    {
+     "title": "Una potencia de una potencia",
+     "mainIdea": "Elevar una potencia a otra potencia multiplica los exponentes: (2^3)^2 = 2^6, y una potencia de un producto se aplica a cada factor: (3x)^2 = 9x^2.",
+     "reading": [
+      "¿Cuánto es (2^3)^2? Significa 2^3 por sí mismo: 2^3 × 2^3. Por la regla del producto, eso es 2^(3+3) = 2^6 = 64. Comprobación: 2^3 = 8 y 8^2 = 64. Así que una potencia de una potencia multiplica los exponentes: (a^m)^n = a^(m × n). Para (5^2)^4, multiplica 2 × 4 y obtienes 5^8. Este es el único lugar donde multiplicar exponentes es correcto, y es fácil confundirlo con la regla del producto, donde se suma.",
+      "Una potencia de un producto se reparte entre cada factor. (2 × 5)^3 = 2^3 × 5^3 = 8 × 125 = 1,000, y en efecto 10^3 = 1,000. Con una variable: (3x)^2 = 3^2 × x^2 = 9x^2, no 3x^2. Los estudiantes suelen olvidar elevar el 3 al cuadrado. De igual modo, (x^2 y)^3 = x^6 y^3. Una fracción funciona igual: (2/3)^3 = 2^3 / 3^3 = 8/27.",
+      "Para no confundir las tres reglas, pruébalas con 2. Producto: 2^2 × 2^3 = 4 × 8 = 32 = 2^5, los exponentes se suman. Cociente: 2^5 ÷ 2^2 = 32 ÷ 4 = 8 = 2^3, los exponentes se restan. Potencia de una potencia: (2^2)^3 = 4^3 = 64 = 2^6, los exponentes se multiplican. Siempre que no estés seguro de qué regla aplica, escribe un ejemplo pequeñito y cuenta."
+     ],
+     "words": [
+      {"w": "regla de la potencia", "d": "una potencia de una potencia: se multiplican los exponentes, (a^m)^n = a^(mn)"},
+      {"w": "potencia de un producto", "d": "el exponente se aplica a cada factor: (ab)^n = a^n × b^n"}
+     ],
+     "look": {
+      "title": "Tres reglas, una base",
+      "text": "Usando la base 10, escribe una comprobación con números comunes para cada regla: 10^2 × 10^3, 10^5 ÷ 10^2 y (10^2)^3. Escribe cada respuesta contando sus ceros y luego como una sola potencia de 10. Por último decide: ¿(10^2)^3 es lo mismo que 10^2 × 10^3? Calcula las dos.",
+      "prompt": "¿Cuáles dos de las tres expresiones resultaron iguales y qué regla explica cada resultado?"
+     },
+     "check": [
+      {
+       "q": "¿Cuánto es (3^2)^4?",
+       "choices": ["3^8", "3^6", "9^6", "3^16"],
+       "why": "Multiplica los exponentes: 2 × 4 = 8, así que 3^8."
+      },
+      {
+       "q": "¿Cuánto es (2x)^3?",
+       "choices": ["2x^3", "6x^3", "8x^3", "8x"],
+       "why": "Eleva al cubo los dos factores: 2^3 = 8 y x^3, lo que da 8x^3."
+      },
+      {
+       "q": "¿Qué dos expresiones son iguales?",
+       "choices": ["2^3 × 2^3 y 2^9", "(2^3)^3 y 2^6", "2^6 ÷ 2^3 y 2^2", "(2^3)^2 y 2^3 × 2^3"],
+       "why": "(2^3)^2 = 2^6 y 2^3 × 2^3 = 2^(3+3) = 2^6. Las dos son 64."
+      }
+     ],
+     "short": [
+      "A power of a power multiplies the exponents. (2^3)^2 means 2^3 × 2^3 = 2^6 = 64, and (5^2)^4 = 5^8. This is the one case where you multiply exponents; when you multiply powers with the same base, you add. A power of a product spreads to every factor: (2 × 5)^3 = 2^3 × 5^3 = 1,000, and (3x)^2 = 3^2 × x^2 = 9x^2, not 3x^2. A fraction works the same way: (2/3)^3 = 8/27. When you are not sure which rule applies, test it with 2s and count."
+     ],
+     "more": [
+      "Here is a way to see why the exponents multiply. (2^3)^2 is two groups, and each group is 2 × 2 × 2, three 2s. Two groups of three 2s make 3 × 2 = 6 twos in all. Picture a grid with 2 rows and 3 columns: the number of cells is the product of the two numbers.",
+      "The spreading rule explains a unit change. A square foot is 12 inches by 12 inches, so it is 12^2 = 144 square inches. Since 12 = 2 × 6, the rule gives (2 × 6)^2 = 2^2 × 6^2 = 4 × 36 = 144. The same answer comes either way, which is what a good rule should do."
+     ],
+     "short_es": [
+      "Una potencia de una potencia multiplica los exponentes. (2^3)^2 significa 2^3 × 2^3 = 2^6 = 64, y (5^2)^4 = 5^8. Este es el único caso en que se multiplican exponentes; cuando multiplicas potencias con la misma base, se suma. Una potencia de un producto se reparte entre todos los factores: (2 × 5)^3 = 2^3 × 5^3 = 1,000, y (3x)^2 = 3^2 × x^2 = 9x^2, no 3x^2. Una fracción funciona igual: (2/3)^3 = 8/27. Cuando no estés seguro de qué regla aplica, pruébala con 2 y cuenta."
+     ],
+     "more_es": [
+      "Esta es una manera de ver por qué los exponentes se multiplican. (2^3)^2 son dos grupos, y cada grupo es 2 × 2 × 2, tres 2. Dos grupos de tres 2 forman 3 × 2 = 6 factores 2 en total. Imagina una cuadrícula de 2 filas y 3 columnas: el número de casillas es el producto de los dos números.",
+      "La regla de repartir explica un cambio de unidades. Un pie cuadrado es de 12 pulgadas por 12 pulgadas, así que son 12^2 = 144 pulgadas cuadradas. Como 12 = 2 × 6, la regla da (2 × 6)^2 = 2^2 × 6^2 = 4 × 36 = 144. Sale la misma respuesta de las dos maneras, que es lo que debe hacer una buena regla."
+     ]
+    },
+    {
+     "title": "Exponentes cero y negativos",
+     "mainIdea": "Cualquier base distinta de cero elevada a la potencia cero es 1, y un exponente negativo significa un recíproco: 2^−3 = 1/2^3 = 1/8.",
+     "reading": [
+      "Sigue el patrón hacia abajo. 2^3 = 8, 2^2 = 4, 2^1 = 2. Cada paso divide entre 2. Sigue: 2^0 debe ser 2 ÷ 2 = 1. Luego 2^−1 = 1 ÷ 2 = 1/2, 2^−2 = 1/4, 2^−3 = 1/8. Así que un *exponente cero* da 1, y un *exponente negativo* da 1 sobre la potencia positiva. En general, a^0 = 1 para cualquier a distinto de cero, y a^−n = 1/a^n.",
+      "La regla del cociente dice lo mismo. 5^3 ÷ 5^3 es claramente 1, y por la regla es 5^(3−3) = 5^0. Así que 5^0 = 1. Y 5^2 ÷ 5^5 es 25/3,125 = 1/125 = 1/5^3, mientras que la regla da 5^(2−5) = 5^−3. Así que 5^−3 = 1/5^3. Los exponentes negativos no son números negativos: 5^−3 es una fracción positiva pequeña, 1/125.",
+      "Las potencias de diez con exponentes negativos nombran lugares decimales. 10^−1 = 0.1, 10^−2 = 0.01, 10^−3 = 0.001. Un exponente negativo en un denominador sube: 1/2^−3 = 2^3 = 8. Dos errores que evitar: pensar que 4^0 = 0 (es 1) y pensar que 3^−2 = −9 (es 1/9). Di «exponente negativo significa recíproco» cada vez, hasta que se te quede."
+     ],
+     "words": [
+      {"w": "exponente cero", "d": "cualquier número distinto de cero elevado a la potencia 0 es igual a 1"},
+      {"w": "exponente negativo", "d": "a^−n significa 1 dividido entre a^n, el recíproco de la potencia positiva"}
+     ],
+     "look": {
+      "title": "Potencias de diez hacia abajo",
+      "rows": ["10^3", "10^2", "10^1", "10^0", "10^−1", "10^−2", "10^−3"],
+      "unit": "valor",
+      "prompt": "¿Cuánto es 10^−4? Explica cómo el patrón obliga a que 10^0 sea 1 y no 0."
+     },
+     "check": [
+      {
+       "q": "¿Cuánto es 6^0?",
+       "choices": ["0", "1", "6", "indefinido"],
+       "why": "Cualquier base distinta de cero elevada a la potencia cero es 1. Comprobación: 6^1 ÷ 6^1 = 1 = 6^0."
+      },
+      {
+       "q": "¿Cuánto es 2^−4?",
+       "choices": ["−8", "−16", "1/8", "1/16"],
+       "why": "Un exponente negativo significa recíproco: 2^−4 = 1/2^4 = 1/16."
+      },
+      {
+       "q": "¿Qué expresión es igual a 0.001?",
+       "choices": ["10^−3", "10^3", "10^−2", "−10^3"],
+       "why": "10^−3 = 1/1,000 = 0.001, tres lugares decimales."
+      }
+     ],
+     "short": [
+      "Follow the pattern down: 2^3 = 8, 2^2 = 4, 2^1 = 2. Each step divides by 2, so 2^0 = 1, then 2^−1 = 1/2, 2^−2 = 1/4 and 2^−3 = 1/8. A *zero exponent* gives 1 for any base that is not zero: 6^0 = 1. A *negative exponent* gives 1 over the positive power: a^−n = 1/a^n, so 2^−4 = 1/2^4. The quotient rule agrees: 5^3 ÷ 5^3 is clearly 1, and the rule gives 5^(3−3) = 5^0. A negative exponent does not make the number negative: 5^−3 = 1/125. Powers of ten show it too: 10^−1 = 0.1, 10^−2 = 0.01 and 10^−3 = 0.001."
+     ],
+     "more": [
+      "The zero exponent has a home in the chessboard story. The first square holds 2^0 = 1 grain, the starting amount before any doubling. If 2^0 were 0, the first square would be empty, and the doubling could never begin.",
+      "Negative exponents run the doubling backwards. Each step to the right of 1 doubles the amount, and each step to the left halves it: 1, 1/2, 1/4, 1/8. Measuring cups show this. A 1/2 cup, a 1/4 cup and a 1/8 cup are 2^−1, 2^−2 and 2^−3 of a cup."
+     ],
+     "short_es": [
+      "Sigue el patrón hacia abajo: 2^3 = 8, 2^2 = 4, 2^1 = 2. Cada paso divide entre 2, así que 2^0 = 1, luego 2^−1 = 1/2, 2^−2 = 1/4 y 2^−3 = 1/8. Un *exponente cero* da 1 para cualquier base distinta de cero: 6^0 = 1. Un *exponente negativo* da 1 sobre la potencia positiva: a^−n = 1/a^n, así que 2^−4 = 1/2^4. La regla del cociente está de acuerdo: 5^3 ÷ 5^3 es claramente 1, y la regla da 5^(3−3) = 5^0. Un exponente negativo no vuelve negativo al número: 5^−3 = 1/125. Las potencias de diez también lo muestran: 10^−1 = 0.1, 10^−2 = 0.01 y 10^−3 = 0.001."
+     ],
+     "more_es": [
+      "El exponente cero tiene su lugar en el cuento del tablero de ajedrez. La primera casilla tiene 2^0 = 1 grano, la cantidad inicial antes de cualquier duplicación. Si 2^0 fuera 0, la primera casilla estaría vacía y la duplicación nunca podría empezar.",
+      "Los exponentes negativos hacen correr la duplicación hacia atrás. Cada paso a la derecha del 1 duplica la cantidad, y cada paso a la izquierda la reduce a la mitad: 1, 1/2, 1/4, 1/8. Las tazas medidoras lo muestran. Una taza de 1/2, una de 1/4 y una de 1/8 son 2^−1, 2^−2 y 2^−3 de una taza."
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Raíces y números irracionales",
+   "lessons": [
+    {
+     "title": "Raíces cuadradas y cuadrados perfectos",
+     "mainIdea": "La raíz cuadrada de un número es el número que, multiplicado por sí mismo, lo da: √49 = 7 porque 7 × 7 = 49.",
+     "reading": [
+      "Un jardín cuadrado tiene un área de 49 pies cuadrados. ¿Cuánto mide cada lado? Necesitas un número que multiplicado por sí mismo dé 49. Ese es 7, porque 7 × 7 = 49. Escribimos √49 = 7 y llamamos al 7 la *raíz cuadrada* de 49. Los números como 49, que salen de elevar al cuadrado un número natural, son *cuadrados perfectos*: 1, 4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144. Memorízalos; hacen rápidas las raíces.",
+      "Todo número positivo tiene dos raíces cuadradas, una positiva y una negativa, porque (−7) × (−7) = 49 también. El símbolo √ significa la positiva. Cuando una ecuación dice x^2 = 49, tanto x = 7 como x = −7 sirven. Un número negativo no tiene raíz cuadrada real: ningún número multiplicado por sí mismo da −49, ya que el producto de dos números con el mismo signo es positivo.",
+      "Las raíces de fracciones toman la raíz del numerador y del denominador: √(9/16) = 3/4, porque (3/4)^2 = 9/16. Raíces de decimales: √0.25 = 0.5, ya que 0.5 × 0.5 = 0.25. El error común es sacar la mitad en lugar de la raíz: √16 es 4, no 8. Pregúntate «¿qué número al cuadrado da este?» en lugar de «¿cuál es la mitad de este?»"
+     ],
+     "words": [
+      {"w": "raíz cuadrada", "d": "un número que, multiplicado por sí mismo, da el original; √36 = 6"},
+      {"w": "cuadrado perfecto", "d": "un número natural que es el cuadrado de un número natural, como 25 o 144"}
+     ],
+     "look": {
+      "title": "Cuadrados perfectos",
+      "rows": ["5^2", "8^2", "11^2", "12^2", "15^2", "20^2", "25^2"],
+      "unit": "valor",
+      "prompt": "Usa la tabla para hallar √225 y √625. Luego estima √200: ¿entre cuáles dos cuadrados perfectos queda?"
+     },
+     "check": [
+      {
+       "q": "¿Cuánto es √81?",
+       "choices": ["40.5", "8", "9", "18"],
+       "why": "9 × 9 = 81. Sacar la mitad, 40.5, es el error común."
+      },
+      {
+       "q": "¿Qué número es un cuadrado perfecto?",
+       "choices": ["169", "150", "200", "175"],
+       "why": "13 × 13 = 169. Los otros tres no son cuadrados de números naturales."
+      },
+      {
+       "q": "Si x^2 = 64, ¿cuáles son las soluciones?",
+       "choices": ["solo 8", "32 y −32", "4 y −4", "8 y −8"],
+       "why": "8 × 8 = 64 y (−8) × (−8) = 64, así que x puede ser 8 o −8."
+      }
+     ],
+     "short": [
+      "A square garden has an area of 49 square feet. Each side is a number that times itself gives 49. That is 7, because 7 × 7 = 49. We write √49 = 7 and call 7 the *square root* of 49. Numbers that come from squaring a whole number are *perfect squares*: 1, 4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144. To test a number, see if some whole number times itself gives it. Every positive number has two square roots, one positive and one negative, so x^2 = 49 gives x = 7 or x = −7. The symbol √ means the positive one. Do not take half: √16 is 4, not 8."
+     ],
+     "more": [
+      "Squares grow faster than the sides that make them. A square garden 7 feet on a side has an area of 49 square feet. Double the side to 14 feet and the area is 196 square feet, which is 4 times as big, not 2 times. That is why finding a side from an area is not a matter of halving.",
+      "Squaring and taking a square root undo each other, as adding and subtracting do. If you square 7 you get 49, and the square root of 49 takes you back to 7. A calculator's square root key gives only the positive root, so it shows 7 for √49, even though −7 also works when you solve x^2 = 49."
+     ],
+     "short_es": [
+      "Un jardín cuadrado tiene un área de 49 pies cuadrados. Cada lado es un número que multiplicado por sí mismo da 49. Ese es 7, porque 7 × 7 = 49. Escribimos √49 = 7 y llamamos al 7 la *raíz cuadrada* de 49. Los números que salen de elevar al cuadrado un número natural son *cuadrados perfectos*: 1, 4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144. Para probar un número, fíjate si algún número natural multiplicado por sí mismo lo da. Todo número positivo tiene dos raíces cuadradas, una positiva y una negativa, así que x^2 = 49 da x = 7 o x = −7. El símbolo √ significa la positiva. No saques la mitad: √16 es 4, no 8."
+     ],
+     "more_es": [
+      "Los cuadrados crecen más rápido que los lados que los forman. Un jardín cuadrado de 7 pies por lado tiene un área de 49 pies cuadrados. Si duplicas el lado a 14 pies, el área es de 196 pies cuadrados, que es 4 veces más grande, no 2 veces. Por eso hallar un lado a partir de un área no es cuestión de sacar la mitad.",
+      "Elevar al cuadrado y sacar la raíz cuadrada se deshacen entre sí, como sumar y restar. Si elevas 7 al cuadrado obtienes 49, y la raíz cuadrada de 49 te devuelve a 7. La tecla de raíz cuadrada de una calculadora da solo la raíz positiva, así que muestra 7 para √49, aunque −7 también sirve cuando resuelves x^2 = 49."
+     ]
+    },
+    {
+     "title": "Raíces cúbicas",
+     "mainIdea": "La raíz cúbica de un número es el número que se usa tres veces como factor para formarlo: la raíz cúbica de 64 es 4 porque 4 × 4 × 4 = 64.",
+     "reading": [
+      "Una caja en forma de cubo tiene 64 pulgadas cúbicas. ¿Cuánto mide cada arista? Necesitas un número que, usado tres veces como factor, dé 64. Como 4 × 4 × 4 = 64, cada arista mide 4 pulgadas. Lo escribimos como la *raíz cúbica* de 64, ³√64 = 4. Los números que salen de elevar al cubo un número natural son *cubos perfectos*: 1, 8, 27, 64, 125, 216, 343, 512, 729, 1,000.",
+      "A diferencia de las raíces cuadradas, las raíces cúbicas de números negativos sí existen. (−4) × (−4) × (−4) = −64, porque tres factores negativos dan un producto negativo. Así que ³√(−64) = −4. Cada número tiene exactamente una raíz cúbica real, con el mismo signo que el número. ³√(−27) = −3 y ³√27 = 3.",
+      "No confundas cuadrados y cubos. √64 = 8, pero ³√64 = 4. √27 no es un número natural, pero ³√27 = 3. Si un problema da un volumen, piensa en la raíz cúbica; si da un área, piensa en la raíz cuadrada. Y un número puede ser ambas cosas: 64 = 8^2 = 4^3, y 1 = 1^2 = 1^3. Cuando veas ³√1,000, pregúntate: ¿qué número multiplicado tres veces por sí mismo da 1,000? Es 10."
+     ],
+     "words": [
+      {"w": "raíz cúbica", "d": "un número que se usa tres veces como factor para formar el original; ³√125 = 5"},
+      {"w": "cubo perfecto", "d": "un número natural que es el cubo de un número natural, como 8, 27 o 1,000"}
+     ],
+     "look": {
+      "title": "Cajas y aristas",
+      "text": "Una empresa de envíos fabrica cajas en forma de cubo con volúmenes de 27, 125, 343 y 1,000 pulgadas cúbicas. Halla la longitud de la arista de cada caja. Luego un acertijo: un tanque en forma de cubo contiene 512 galones, y un pie cúbico contiene unos 7.5 galones. Redondea el volumen al pie cúbico más cercano y estima la longitud de la arista en pies.",
+      "prompt": "¿Cuál de las cuatro cajas cabría dentro de otra? Explícalo con las longitudes de las aristas."
+     },
+     "check": [
+      {
+       "q": "¿Cuál es la raíz cúbica de 125?",
+       "choices": ["25", "41.7", "11.2", "5"],
+       "why": "5 × 5 × 5 = 25 × 5 = 125."
+      },
+      {
+       "q": "¿Cuánto es ³√(−8)?",
+       "choices": ["ninguna respuesta real", "−2", "2", "−4"],
+       "why": "(−2) × (−2) × (−2) = 4 × (−2) = −8. Las raíces cúbicas de números negativos son negativas."
+      },
+      {
+       "q": "Un cubo tiene un volumen de 216 centímetros cúbicos. ¿Cuánto mide su arista?",
+       "choices": ["72 cm", "108 cm", "6 cm", "14.7 cm"],
+       "why": "6 × 6 × 6 = 36 × 6 = 216, así que cada arista mide 6 cm."
+      }
+     ],
+     "short": [
+      "A cube-shaped box holds 64 cubic inches. Each edge is a number used three times as a factor to make 64. Since 4 × 4 × 4 = 64, the edge is 4 inches, and we write the *cube root* of 64 as ³√64 = 4. Numbers made by cubing a whole number are *perfect cubes*: 1, 8, 27, 64, 125, 216, 343, 512, 729, 1,000. Unlike square roots, cube roots of negative numbers exist: (−4) × (−4) × (−4) = −64, so ³√(−64) = −4. Each number has one real cube root, with the same sign as the number. If a problem gives a volume, think cube root. If it gives an area, think square root."
+     ],
+     "more": [
+      "The word 'cubed' comes from the shape. A cube with edges of length s has a volume of s^3. So a cube root undoes a volume: if the volume is 1,000 cubic units, each edge is 10 units. Finding an edge from a volume is the reverse of finding a volume from an edge.",
+      "Volume grows even faster than area when you scale a cube. Take a cube with edges of 2 inches. Its volume is 2 × 2 × 2 = 8 cubic inches. Double each edge to 4 inches, and the volume becomes 64 cubic inches, which is 8 times as big. Doubling every edge of a cube makes its volume eight times larger."
+     ],
+     "short_es": [
+      "Una caja en forma de cubo tiene 64 pulgadas cúbicas. Cada arista es un número que se usa tres veces como factor para formar 64. Como 4 × 4 × 4 = 64, la arista mide 4 pulgadas, y escribimos la *raíz cúbica* de 64 como ³√64 = 4. Los números que salen de elevar al cubo un número natural son *cubos perfectos*: 1, 8, 27, 64, 125, 216, 343, 512, 729, 1,000. A diferencia de las raíces cuadradas, las raíces cúbicas de números negativos existen: (−4) × (−4) × (−4) = −64, así que ³√(−64) = −4. Cada número tiene una raíz cúbica real, con el mismo signo que el número. Si un problema da un volumen, piensa en la raíz cúbica. Si da un área, piensa en la raíz cuadrada."
+     ],
+     "more_es": [
+      "La palabra «cubo» viene de la figura. Un cubo con aristas de longitud s tiene un volumen de s^3. Así que una raíz cúbica deshace un volumen: si el volumen es de 1,000 unidades cúbicas, cada arista mide 10 unidades. Hallar una arista a partir de un volumen es lo contrario de hallar un volumen a partir de una arista.",
+      "El volumen crece todavía más rápido que el área cuando cambias el tamaño de un cubo. Toma un cubo con aristas de 2 pulgadas. Su volumen es 2 × 2 × 2 = 8 pulgadas cúbicas. Duplica cada arista a 4 pulgadas y el volumen pasa a ser 64 pulgadas cúbicas, que es 8 veces más grande. Duplicar todas las aristas de un cubo hace su volumen ocho veces mayor."
+     ]
+    },
+    {
+     "title": "Números irracionales y dónde queda √2",
+     "mainIdea": "Un número que no se puede escribir como una fracción de enteros, como √2 o π, es irracional, pero aun así tiene un lugar exacto en la recta numérica.",
+     "reading": [
+      "Dibuja un cuadrado con lados de 1 unidad. Su diagonal mide √2, porque 1^2 + 1^2 = 2. ¿Cuánto es √2 como decimal? Como 1^2 = 1 y 2^2 = 4, está entre 1 y 2. Prueba 1.4^2 = 1.96 y 1.5^2 = 2.25, así que está entre 1.4 y 1.5. Prueba 1.41^2 = 1.9881 y 1.42^2 = 2.0164, así que está entre 1.41 y 1.42. El decimal es 1.41421356... y nunca termina ni se repite.",
+      "Un número cuyo decimal nunca termina y nunca se repite no se puede escribir como una fracción de dos enteros. Esos números son *irracionales*. √2 es irracional; también lo es π, y también la raíz cuadrada de cualquier número natural que no sea un cuadrado perfecto, como √3, √5 y √10. Juntos, los números racionales y los irracionales forman los *números reales*, todos los puntos de la recta numérica.",
+      "Aunque √2 no tiene un decimal finito, tiene una posición exacta. Abre un compás a la medida de la diagonal de un cuadrado de 1 por 1 y gíralo hacia abajo hasta la recta numérica; la marca cae en √2, un poco después de 1.4. Para ubicar √10 sin compás, fíjate en que 3^2 = 9 y 4^2 = 16, así que √10 está entre 3 y 4, y cerca de 3 porque 10 apenas pasa de 9; 3.2^2 = 10.24, así que √10 ≈ 3.16. El error que hay que evitar es llamar irracional a 0.333... Se repite, así que es 1/3, un número racional."
+     ],
+     "words": [
+      {"w": "irracional", "d": "un número que no se puede escribir como una fracción de enteros; su decimal nunca termina ni se repite"},
+      {"w": "números reales", "d": "todos los números racionales e irracionales juntos; cada punto de la recta numérica"}
+     ],
+     "look": {
+      "title": "Acercándonos a √2",
+      "rows": ["1.4 al cuadrado", "1.41 al cuadrado", "1.414 al cuadrado", "1.4142 al cuadrado", "1.5 al cuadrado", "1.42 al cuadrado"],
+      "unit": "valor",
+      "prompt": "¿Qué filas están por debajo de 2 y cuáles por encima? Con ellas, nombra dos decimales que atrapen a √2 entre ellos con cuatro lugares decimales."
+     },
+     "check": [
+      {
+       "q": "¿Entre qué dos números enteros está √50?",
+       "choices": ["7 y 8", "6 y 7", "24 y 26", "49 y 51"],
+       "why": "7^2 = 49 y 8^2 = 64, y 50 está entre los dos, así que √50 está entre 7 y 8, cerca de 7."
+      },
+      {
+       "q": "¿Qué número es irracional?",
+       "choices": ["√36", "0.75", "√7", "0.666..."],
+       "why": "7 no es un cuadrado perfecto, así que √7 nunca termina ni se repite. √36 = 6, 0.75 = 3/4 y 0.666... = 2/3."
+      },
+      {
+       "q": "¿Qué decimal está más cerca de √2?",
+       "choices": ["1.2", "1.414", "1.5", "2.0"],
+       "why": "1.414^2 ≈ 1.9994, muy cerca de 2. Los otros, elevados al cuadrado, dan 1.44, 2.25 y 4."
+      }
+     ],
+     "short": [
+      "A square with sides of 1 unit has a diagonal of length √2, because 1^2 + 1^2 = 2. Trying squares shows that √2 is between 1 and 2, then between 1.4 and 1.5, then between 1.41 and 1.42. The decimal is 1.41421356... and it never ends or repeats. A number whose decimal never ends and never repeats cannot be written as a fraction of two integers. Such numbers are *irrational*: √2, π, and the square root of any whole number that is not a perfect square, like √3, √5 and √10. A repeating decimal such as 0.666... is rational. The rational and irrational numbers together are the *real numbers*, every point on the number line. Even √2 has an exact spot there, a little past 1.4."
+     ],
+     "more": [
+      "Greek mathematicians around 400 BCE were the first to learn that some lengths are not fractions. They proved that no fraction can equal the diagonal of a square compared with its side. Their proof worked by showing that assuming such a fraction exists leads to a contradiction. It was a surprise, because they had expected every length to be a ratio of whole numbers.",
+      "The number π is irrational too. For every circle, the distance around divided by the distance across is the same number, 3.14159... and its decimal never ends or repeats. A fraction such as 22/7, which is 3.142857..., is close to π and handy for rough work, but it is not equal to it."
+     ],
+     "short_es": [
+      "Un cuadrado con lados de 1 unidad tiene una diagonal de longitud √2, porque 1^2 + 1^2 = 2. Al probar cuadrados se ve que √2 está entre 1 y 2, luego entre 1.4 y 1.5, luego entre 1.41 y 1.42. El decimal es 1.41421356... y nunca termina ni se repite. Un número cuyo decimal nunca termina y nunca se repite no se puede escribir como una fracción de dos enteros. Esos números son *irracionales*: √2, π y la raíz cuadrada de cualquier número natural que no sea un cuadrado perfecto, como √3, √5 y √10. Un decimal periódico como 0.666... es racional. Los números racionales y los irracionales juntos son los *números reales*, todos los puntos de la recta numérica. Hasta √2 tiene allí un lugar exacto, un poco después de 1.4."
+     ],
+     "more_es": [
+      "Los matemáticos griegos, alrededor del año 400 a. C., fueron los primeros en descubrir que algunas longitudes no son fracciones. Demostraron que ninguna fracción puede ser igual a la diagonal de un cuadrado comparada con su lado. Su demostración mostraba que suponer que existe tal fracción lleva a una contradicción. Fue una sorpresa, porque esperaban que toda longitud fuera una razón de números enteros.",
+      "El número π también es irracional. En cualquier círculo, la distancia alrededor dividida entre la distancia de lado a lado es el mismo número, 3.14159..., y su decimal nunca termina ni se repite. Una fracción como 22/7, que es 3.142857..., se acerca a π y sirve para cálculos aproximados, pero no es igual a él."
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Notación científica",
+   "lessons": [
+    {
+     "title": "Escribir números muy grandes",
+     "mainIdea": "La notación científica escribe un número como un decimal entre 1 y 10 multiplicado por una potencia de diez: 4,500,000 = 4.5 × 10^6.",
+     "reading": [
+      "La distancia de la Tierra al Sol es de unos 93,000,000 de millas. Escribir todos esos ceros invita a cometer errores. En *notación científica* el número se vuelve 9.3 × 10^7. La primera parte, 9.3, es al menos 1 y menos que 10. La segunda parte, 10^7, dice cuántos lugares se movió el punto decimal. Empieza en 93,000,000. Mueve el punto a la izquierda hasta que quede un solo dígito distinto de cero al frente: 9.3. Se movió 7 lugares, así que el exponente es 7.",
+      "Ve en sentido contrario para expandir. 2.05 × 10^5: mueve el punto decimal 5 lugares a la derecha, rellenando con ceros: 205,000. Compruébalo razonando: 10^5 es 100,000, y 2.05 × 100,000 = 205,000. El arroz de la última casilla del tablero, unos 9,223,000,000,000,000,000, se vuelve unos 9.2 × 10^18. El exponente cuenta los lugares que se movió, que es el número de dígitos después del primero.",
+      "Dos tropiezos comunes. Escribir 45 × 10^5 no es notación científica correcta porque 45 no es menor que 10; debe ser 4.5 × 10^6. Y contar ceros en lugar de lugares: 93,000,000 tiene seis ceros, pero el punto se mueve siete lugares, porque el 3 también cuenta. Illinois tiene unos 12.5 millones de habitantes, que es 1.25 × 10^7 personas."
+     ],
+     "words": [
+      {"w": "notación científica", "d": "un número escrito como un decimal desde 1 hasta menos de 10, multiplicado por una potencia de diez"},
+      {"w": "coeficiente", "d": "la parte decimal en la notación científica; en 4.5 × 10^6 es 4.5"}
+     ],
+     "look": {
+      "title": "Números grandes en notación científica",
+      "rows": ["población de Illinois, aprox. 1.25 × 10^7", "de la Tierra a la Luna, aprox. 2.4 × 10^5 millas", "de la Tierra al Sol, aprox. 9.3 × 10^7 millas", "segundos en un año, aprox. 3.15 × 10^7", "granos en la casilla 64 del ajedrez, aprox. 9.2 × 10^18"],
+      "unit": "forma estándar",
+      "prompt": "En cada fila, cuenta cuántos lugares se mueve el punto decimal entre las dos formas. ¿Qué filas tienen el mismo exponente y qué te dice eso sobre sus tamaños?"
+     },
+     "check": [
+      {
+       "q": "Escribe 6,800,000 en notación científica.",
+       "choices": ["68 × 10^5", "6.8 × 10^5", "0.68 × 10^7", "6.8 × 10^6"],
+       "why": "Mueve el punto 6 lugares a la izquierda para obtener 6.8, así que 6.8 × 10^6. El coeficiente debe estar entre 1 y 10."
+      },
+      {
+       "q": "¿Cuánto es 3.02 × 10^4 en forma estándar?",
+       "choices": ["30,200", "3,020", "302,000", "30,020"],
+       "why": "Mueve el punto 4 lugares a la derecha: 3.0200 se vuelve 30,200."
+      },
+      {
+       "q": "¿Qué número es el mayor?",
+       "choices": ["8.9 × 10^5", "1.2 × 10^7", "9.9 × 10^6", "5.5 × 10^6"],
+       "why": "Compara primero los exponentes: 10^7 le gana a 10^6 y a 10^5. Así que 1.2 × 10^7 = 12,000,000 es el mayor."
+      }
+     ],
+     "short": [
+      "The distance from Earth to the Sun is about 93,000,000 miles. In *scientific notation* it is 9.3 × 10^7. The first part, 9.3, is at least 1 and less than 10. The power of ten tells how many places the decimal point moved. Move the point left until one nonzero digit is in front. It moved 7 places, so the exponent is 7. To expand, go the other way: 2.05 × 10^5 moves the point 5 places right and gives 205,000. Count places, not zeros: 93,000,000 has six zeros, but the point moves seven places. When coefficients are between 1 and 10, the number with the bigger exponent is larger. And 45 × 10^5 is not proper form; write 4.5 × 10^6."
+     ],
+     "more": [
+      "Calculators and computers often show scientific notation with the letter E, which stands for 'times ten to the power'. A display of 9.3E7 means 9.3 × 10^7. Knowing this lets you read the answer when a very big number does not fit on the screen.",
+      "In the United States, a million is 10^6, a billion is 10^9 and a trillion is 10^12. Each time you multiply by 1,000, the exponent goes up by 3. That makes it easy to compare big amounts: 10^12 is a thousand times 10^9, even though both look like just a number with a small raised digit."
+     ],
+     "short_es": [
+      "La distancia de la Tierra al Sol es de unas 93,000,000 de millas. En *notación científica* es 9.3 × 10^7. La primera parte, 9.3, es al menos 1 y menos que 10. La potencia de diez dice cuántos lugares se movió el punto decimal. Mueve el punto a la izquierda hasta que quede un solo dígito distinto de cero al frente. Se movió 7 lugares, así que el exponente es 7. Para expandir, ve en sentido contrario: 2.05 × 10^5 mueve el punto 5 lugares a la derecha y da 205,000. Cuenta lugares, no ceros: 93,000,000 tiene seis ceros, pero el punto se mueve siete lugares. Cuando los coeficientes están entre 1 y 10, el número con el exponente mayor es el más grande. Y 45 × 10^5 no es la forma correcta; escribe 4.5 × 10^6."
+     ],
+     "more_es": [
+      "Las calculadoras y las computadoras suelen mostrar la notación científica con la letra E, que significa «por diez elevado a». Una pantalla que dice 9.3E7 significa 9.3 × 10^7. Saberlo te permite leer la respuesta cuando un número muy grande no cabe en la pantalla.",
+      "En Estados Unidos, un millón es 10^6, mil millones es 10^9 y un billón (en inglés, trillion) es 10^12. Cada vez que multiplicas por 1,000, el exponente sube 3. Eso facilita comparar cantidades grandes: 10^12 es mil veces 10^9, aunque las dos parezcan solo un número con un pequeño dígito elevado."
+     ]
+    },
+    {
+     "title": "Escribir números muy pequeños",
+     "mainIdea": "Un exponente negativo en el 10 mueve el punto decimal a la izquierda, así que 0.00035 = 3.5 × 10^−4.",
+     "reading": [
+      "Un glóbulo rojo mide unos 0.000008 metros de ancho. Para escribirlo en notación científica, mueve el punto decimal a la derecha hasta que quede un solo dígito distinto de cero al frente: 8. Se movió 6 lugares a la derecha, así que el exponente es −6: 8 × 10^−6 metros. Moverse a la derecha significa que el número original era pequeño, y los números pequeños reciben exponentes negativos. Comprobación: 10^−6 = 0.000001, y 8 × 0.000001 = 0.000008.",
+      "Expande 2.7 × 10^−3 moviendo el punto 3 lugares a la izquierda, rellenando con ceros: 0.0027. Una comprobación rápida: 10^−3 es una milésima, y 2.7 milésimas es 0.0027. El exponente cuenta cuántos lugares, y el signo dice en qué dirección: negativo significa que el número es menor que 1.",
+      "Comparar números pequeños: ¿cuál es menor, 4 × 10^−5 o 9 × 10^−6? Mira primero los exponentes. 10^−6 es la décima parte de 10^−5, así que 9 × 10^−6 = 0.000009 es menor que 4 × 10^−5 = 0.00004. Los estudiantes suelen suponer que gana el coeficiente mayor; el exponente importa más. Y no confundas un exponente negativo con un número negativo: 2.7 × 10^−3 es positivo."
+     ],
+     "words": [
+      {"w": "forma estándar", "d": "un número escrito con todos sus dígitos, como 0.0027 o 205,000"},
+      {"w": "exponente negativo", "d": "en un 10, significa que el punto decimal se mueve a la izquierda; 10^−3 = 0.001"}
+     ],
+     "look": {
+      "title": "Tamaños pequeños en metros",
+      "rows": ["grano de sal de mesa, aprox. 3 × 10^−4", "ancho de un cabello humano, aprox. 7 × 10^−5", "glóbulo rojo, aprox. 8 × 10^−6", "bacteria típica, aprox. 2 × 10^−6", "virus de la gripe, aprox. 1 × 10^−7"],
+      "unit": "metros (aproximado)",
+      "prompt": "Ordena los cinco objetos del más grande al más pequeño usando los exponentes. ¿Aproximadamente cuántos virus de la gripe cabrían en fila a lo ancho de un glóbulo rojo?"
+     },
+     "check": [
+      {
+       "q": "Escribe 0.00052 en notación científica.",
+       "choices": ["5.2 × 10^4", "5.2 × 10^−4", "52 × 10^−5", "5.2 × 10^−3"],
+       "why": "Mueve el punto 4 lugares a la derecha para obtener 5.2. Número pequeño, así que el exponente es −4."
+      },
+      {
+       "q": "¿Cuánto es 6.1 × 10^−2 en forma estándar?",
+       "choices": ["610", "0.0061", "0.00061", "0.061"],
+       "why": "Mueve el punto 2 lugares a la izquierda: 0.061. Comprobación: 6.1 centésimas es 0.061."
+      },
+      {
+       "q": "¿Qué número es el menor?",
+       "choices": ["3 × 10^−4", "9 × 10^−4", "2 × 10^−6", "7 × 10^−5"],
+       "why": "El exponente más negativo, −6, da el valor menor: 0.000002."
+      }
+     ],
+     "short": [
+      "A red blood cell is about 0.000008 meters across. To write it in scientific notation, move the decimal point right until one nonzero digit is in front: 8. It moved 6 places, so the exponent is −6, and the cell is 8 × 10^−6 meters. Small numbers get negative exponents. Check: 8 × 0.000001 = 0.000008. To expand 2.7 × 10^−3, move the point 3 places left: 0.0027. The exponent counts places and the sign says which way. A negative exponent means the number is less than 1, but the number itself stays positive. To compare small numbers, look at the exponents first: 9 × 10^−6 = 0.000009 is smaller than 4 × 10^−5 = 0.00004."
+     ],
+     "more": [
+      "Science uses names for powers of ten. The prefix 'milli-' means 10^−3, 'micro-' means 10^−6 and 'nano-' means 10^−9. So a micrometer is one millionth of a meter, and a red blood cell, about 8 × 10^−6 meters, is about 8 micrometers across.",
+      "A nanometer is one billionth of a meter. A strand of DNA, the molecule that carries our genes, is about 2 nanometers wide. Scientific notation lets us write that as 2 × 10^−9 meters instead of a decimal with eight zeros after the point."
+     ],
+     "short_es": [
+      "Un glóbulo rojo mide unos 0.000008 metros de ancho. Para escribirlo en notación científica, mueve el punto decimal a la derecha hasta que quede un solo dígito distinto de cero al frente: 8. Se movió 6 lugares, así que el exponente es −6, y el glóbulo mide 8 × 10^−6 metros. Los números pequeños reciben exponentes negativos. Comprobación: 8 × 0.000001 = 0.000008. Para expandir 2.7 × 10^−3, mueve el punto 3 lugares a la izquierda: 0.0027. El exponente cuenta lugares y el signo dice en qué dirección. Un exponente negativo significa que el número es menor que 1, pero el número en sí sigue siendo positivo. Para comparar números pequeños, mira primero los exponentes: 9 × 10^−6 = 0.000009 es menor que 4 × 10^−5 = 0.00004."
+     ],
+     "more_es": [
+      "La ciencia usa nombres para las potencias de diez. El prefijo «mili-» significa 10^−3, «micro-» significa 10^−6 y «nano-» significa 10^−9. Así que un micrómetro es una millonésima de metro, y un glóbulo rojo, de unos 8 × 10^−6 metros, mide unos 8 micrómetros de ancho.",
+      "Un nanómetro es una milmillonésima de metro. Una hebra de ADN, la molécula que lleva nuestros genes, mide unos 2 nanómetros de ancho. La notación científica nos permite escribir eso como 2 × 10^−9 metros en lugar de un decimal con ocho ceros después del punto."
+     ]
+    },
+    {
+     "title": "Multiplicar y dividir en notación científica",
+     "mainIdea": "Multiplica o divide los coeficientes, aplica las reglas de los exponentes a las potencias de diez y luego corrige la respuesta para que el coeficiente esté entre 1 y 10.",
+     "reading": [
+      "La luz viaja unos 3 × 10^5 kilómetros por segundo. ¿Hasta dónde llega en 5 × 10^2 segundos? Multiplica los coeficientes: 3 × 5 = 15. Suma los exponentes: 10^5 × 10^2 = 10^7. Así que 15 × 10^7. Pero 15 no está entre 1 y 10, así que reescribe: 15 = 1.5 × 10, lo que da 1.5 × 10^8 kilómetros. Revisa siempre el coeficiente al final.",
+      "División: (8.4 × 10^9) ÷ (2 × 10^4). Divide los coeficientes: 8.4 ÷ 2 = 4.2. Resta los exponentes: 9 − 4 = 5. Respuesta: 4.2 × 10^5. Si el coeficiente resulta menor que 1, ajusta en sentido contrario: (2 × 10^6) ÷ (8 × 10^2) da 0.25 × 10^4, que se convierte en 2.5 × 10^3. Mover el punto un lugar a la derecha significa que el exponente baja una unidad.",
+      "Un problema de población: Estados Unidos tiene unos 3.3 × 10^8 habitantes e Illinois unos 1.25 × 10^7. ¿Cuántas veces más grande es Estados Unidos? (3.3 × 10^8) ÷ (1.25 × 10^7) = 2.64 × 10^1 = 26.4, así que unas 26 veces. Tropiezos comunes: sumar los exponentes al dividir y olvidar reajustar un coeficiente como 15 o 0.25."
+     ],
+     "words": [
+      {"w": "ajustar", "d": "reescribir una respuesta para que el coeficiente sea al menos 1 y menor que 10, cambiando el exponente para que coincida"},
+      {"w": "coeficiente", "d": "la parte decimal de un número en notación científica; en 4.2 × 10^5 es 4.2"}
+     ],
+     "look": {
+      "title": "La luz y la distancia",
+      "text": "La luz viaja unos 3 × 10^5 kilómetros cada segundo. El Sol está a unos 1.5 × 10^8 kilómetros. Divide para hallar cuántos segundos tarda la luz del Sol en llegar a la Tierra. Luego calcula hasta dónde llega la luz en un día: hay unos 8.64 × 10^4 segundos en un día, así que multiplica.",
+      "prompt": "¿Alguna de las dos respuestas necesitó un ajuste para que el coeficiente quedara entre 1 y 10? Convierte el tiempo de la luz del Sol a minutos."
+     },
+     "check": [
+      {
+       "q": "¿Cuánto es (2 × 10^3) × (4 × 10^5)?",
+       "choices": ["8 × 10^15", "6 × 10^8", "8 × 10^8", "8 × 10^2"],
+       "why": "2 × 4 = 8 y 10^3 × 10^5 = 10^8. Así que 8 × 10^8."
+      },
+      {
+       "q": "¿Cuánto es (6 × 10^7) ÷ (3 × 10^2)?",
+       "choices": ["2 × 10^5", "2 × 10^9", "3 × 10^5", "2 × 10^3.5"],
+       "why": "6 ÷ 3 = 2 y 10^7 ÷ 10^2 = 10^5. Así que 2 × 10^5."
+      },
+      {
+       "q": "¿Cuánto es (5 × 10^4) × (6 × 10^3) en notación científica correcta?",
+       "choices": ["30 × 10^7", "30 × 10^12", "3 × 10^7", "3 × 10^8"],
+       "why": "5 × 6 = 30 y 10^4 × 10^3 = 10^7, lo que da 30 × 10^7. Ajusta: 30 = 3 × 10, así que 3 × 10^8."
+      }
+     ],
+     "short": [
+      "To multiply in scientific notation, multiply the coefficients and add the exponents. Light travels about 3 × 10^5 kilometers per second. In 5 × 10^2 seconds it goes 3 × 5 = 15 and 10^5 × 10^2 = 10^7, so 15 × 10^7. But 15 is not between 1 and 10, so rewrite 15 = 1.5 × 10 and the answer is 1.5 × 10^8 kilometers. To divide, divide the coefficients and subtract the exponents: (8.4 × 10^9) ÷ (2 × 10^4) = 4.2 × 10^5. If the coefficient comes out below 1, adjust the other way: 0.25 × 10^4 becomes 2.5 × 10^3. Always check the coefficient at the end."
+     ],
+     "more": [
+      "The exponent rules work here for the same reason as before. 10^5 × 10^2 is 100,000 × 100 = 10,000,000, which is 10^7. A number in scientific notation is a product of two parts, so each part gets its own rule: ordinary multiplication or division for the coefficients, and the exponent rules for the powers of ten.",
+      "Estimating gives a quick check. To multiply (4.9 × 10^6) × (2.1 × 10^3), round to 5 × 2 = 10 and 10^6 × 10^3 = 10^9, so the answer should be near 10 × 10^9, or 10^10. The exact work gives 4.9 × 2.1 = 10.29, so 10.29 × 10^9 = 1.029 × 10^10. The estimate and the exact answer agree."
+     ],
+     "short_es": [
+      "Para multiplicar en notación científica, multiplica los coeficientes y suma los exponentes. La luz viaja unos 3 × 10^5 kilómetros por segundo. En 5 × 10^2 segundos recorre 3 × 5 = 15 y 10^5 × 10^2 = 10^7, así que 15 × 10^7. Pero 15 no está entre 1 y 10, así que reescribe 15 = 1.5 × 10 y la respuesta es 1.5 × 10^8 kilómetros. Para dividir, divide los coeficientes y resta los exponentes: (8.4 × 10^9) ÷ (2 × 10^4) = 4.2 × 10^5. Si el coeficiente resulta menor que 1, ajusta en sentido contrario: 0.25 × 10^4 se convierte en 2.5 × 10^3. Revisa siempre el coeficiente al final."
+     ],
+     "more_es": [
+      "Las reglas de los exponentes funcionan aquí por la misma razón de antes. 10^5 × 10^2 es 100,000 × 100 = 10,000,000, que es 10^7. Un número en notación científica es un producto de dos partes, así que cada parte tiene su propia regla: la multiplicación o división común para los coeficientes, y las reglas de los exponentes para las potencias de diez.",
+      "Estimar da una comprobación rápida. Para multiplicar (4.9 × 10^6) × (2.1 × 10^3), redondea a 5 × 2 = 10 y 10^6 × 10^3 = 10^9, así que la respuesta debe estar cerca de 10 × 10^9, o 10^10. El cálculo exacto da 4.9 × 2.1 = 10.29, así que 10.29 × 10^9 = 1.029 × 10^10. La estimación y la respuesta exacta coinciden."
+     ]
+    },
+    {
+     "title": "Sumar, restar y comparar",
+     "mainIdea": "Para sumar o restar en notación científica, primero haz que los exponentes coincidan; para comparar, mira el exponente antes que el coeficiente.",
+     "reading": [
+      "Suma 3.2 × 10^5 y 4.5 × 10^4. Los exponentes son distintos, así que las potencias de diez son de tamaños distintos, como sumar dólares y monedas de diez centavos. Reescribe la menor para que coincida: 4.5 × 10^4 = 0.45 × 10^5. Ahora suma los coeficientes: 3.2 + 0.45 = 3.65, así que la suma es 3.65 × 10^5. Comprueba en forma estándar: 320,000 + 45,000 = 365,000. Sí.",
+      "La resta funciona igual: 7 × 10^6 − 2.5 × 10^5 = 7 × 10^6 − 0.25 × 10^6 = 6.75 × 10^6, que es 7,000,000 − 250,000 = 6,750,000. Si el coeficiente del resultado queda fuera de 1 a 10, ajústalo. Por ejemplo, 9.5 × 10^3 + 8 × 10^2 = 9.5 × 10^3 + 0.8 × 10^3 = 10.3 × 10^3 = 1.03 × 10^4.",
+      "Para comparar, primero va el exponente. 2 × 10^9 es mayor que 9 × 10^8, porque 10^9 es diez veces 10^8, y 2 × 10 le gana a 9. Solo cuando los exponentes son iguales se comparan los coeficientes: 4.1 × 10^6 < 4.3 × 10^6. Para hallar cuántas veces más grande es un número que otro, divide. El lago Míchigan contiene aproximadamente 4.9 × 10^12 metros cúbicos de agua; una piscina grande contiene unos 2.5 × 10^3 metros cúbicos. El lago contiene unas (4.9 × 10^12) ÷ (2.5 × 10^3) = 1.96 × 10^9 piscinas, casi dos mil millones."
+     ],
+     "words": [
+      {"w": "potencias iguales", "d": "la misma potencia de diez en dos números, lo que permite sumar o restar sus coeficientes"},
+      {"w": "comparar", "d": "decidir cuál de dos números es mayor; en la notación científica, revisa primero el exponente"}
+     ],
+     "look": {
+      "title": "Dólares y monedas de diez centavos",
+      "text": "Explica por qué 3 × 10^2 + 4 × 10^1 no es 7 × 10^3 ni 7 × 10^2. Escribe los dos números en forma estándar, súmalos y escribe la suma de nuevo en notación científica. Luego haz lo mismo con 5 × 10^6 + 5 × 10^5.",
+      "prompt": "¿Qué tuviste que hacer con los exponentes antes de poder sumar los coeficientes? ¿Por qué la segunda suma no dio 1 × 10^7?"
+     },
+     "check": [
+      {
+       "q": "¿Cuánto es 6 × 10^4 + 3 × 10^3?",
+       "choices": ["9 × 10^7", "6.3 × 10^4", "9 × 10^4", "6.3 × 10^3"],
+       "why": "3 × 10^3 = 0.3 × 10^4. Luego 6 + 0.3 = 6.3, así que 6.3 × 10^4 = 63,000."
+      },
+      {
+       "q": "¿Qué comparación es verdadera?",
+       "choices": ["8 × 10^5 > 2 × 10^6", "5 × 10^3 = 5 × 10^−3", "3 × 10^4 < 3 × 10^3", "1 × 10^7 > 9 × 10^6"],
+       "why": "10^7 = 10,000,000 es mayor que 9 × 10^6 = 9,000,000. Los exponentes van primero."
+      },
+      {
+       "q": "¿Aproximadamente cuántas veces más grande es 6 × 10^8 que 3 × 10^5?",
+       "choices": ["2,000", "3", "200", "2 × 10^13"],
+       "why": "Divide: 6 ÷ 3 = 2 y 10^8 ÷ 10^5 = 10^3, así que 2 × 10^3 = 2,000 veces."
+      }
+     ],
+     "short": [
+      "To add or subtract in scientific notation, make the exponents match first. For 3.2 × 10^5 + 4.5 × 10^4, rewrite 4.5 × 10^4 as 0.45 × 10^5. Then 3.2 + 0.45 = 3.65, so the sum is 3.65 × 10^5, which agrees with 320,000 + 45,000 = 365,000. Subtraction works the same way: 7 × 10^6 − 2.5 × 10^5 = 7 × 10^6 − 0.25 × 10^6 = 6.75 × 10^6. If the coefficient ends up outside 1 to 10, adjust it. To compare, look at the exponent first, because 10^9 is ten times 10^8: 2 × 10^9 is bigger than 9 × 10^8. Only when the exponents are equal do you compare coefficients. To find how many times bigger one number is than another, divide."
+     ],
+     "more": [
+      "When two numbers are very different in size, the small one hardly changes the big one. Add 1 × 10^9 and 1 × 10^2, and you get 1,000,000,100. The small number only touches the last few digits. That is why scientists, who often know a measurement to just a few digits, can ignore a part that tiny.",
+      "Negative exponents compare the same way. To compare 4.5 × 10^−3 with 2 × 10^−2, remember that −2 is greater than −3. So 2 × 10^−2 = 0.02 is larger than 4.5 × 10^−3 = 0.0045. Looking at the exponents first saves you from being fooled by the coefficients."
+     ],
+     "short_es": [
+      "Para sumar o restar en notación científica, primero haz que los exponentes coincidan. En 3.2 × 10^5 + 4.5 × 10^4, reescribe 4.5 × 10^4 como 0.45 × 10^5. Entonces 3.2 + 0.45 = 3.65, así que la suma es 3.65 × 10^5, que coincide con 320,000 + 45,000 = 365,000. La resta funciona igual: 7 × 10^6 − 2.5 × 10^5 = 7 × 10^6 − 0.25 × 10^6 = 6.75 × 10^6. Si el coeficiente queda fuera de 1 a 10, ajústalo. Para comparar, mira primero el exponente, porque 10^9 es diez veces 10^8: 2 × 10^9 es mayor que 9 × 10^8. Solo cuando los exponentes son iguales se comparan los coeficientes. Para hallar cuántas veces más grande es un número que otro, divide."
+     ],
+     "more_es": [
+      "Cuando dos números son de tamaños muy distintos, el pequeño casi no cambia al grande. Suma 1 × 10^9 y 1 × 10^2 y obtienes 1,000,000,100. El número pequeño solo toca los últimos dígitos. Por eso los científicos, que muchas veces conocen una medida con unos pocos dígitos nada más, pueden ignorar una parte tan diminuta.",
+      "Los exponentes negativos se comparan de la misma manera. Para comparar 4.5 × 10^−3 con 2 × 10^−2, recuerda que −2 es mayor que −3. Así que 2 × 10^−2 = 0.02 es mayor que 4.5 × 10^−3 = 0.0045. Mirar primero los exponentes evita que los coeficientes te engañen."
+     ]
+    }
+   ]
+  }
+ ],
+ "review": [
+  {
+   "q": "¿Cuánto es 2^6?",
+   "choices": ["64", "12", "36", "32"],
+   "why": "2 × 2 × 2 × 2 × 2 × 2 = 64. Seis factores de 2."
+  },
+  {
+   "q": "¿Cuánto es 5^7 ÷ 5^4?",
+   "choices": ["5^11", "1^3", "5^3", "5^28"],
+   "why": "Misma base, se restan los exponentes: 7 − 4 = 3, así que 5^3 = 125."
+  },
+  {
+   "q": "¿Cuánto es 3^−2?",
+   "choices": ["−9", "1/9", "−6", "1/6"],
+   "why": "Un exponente negativo significa recíproco: 1/3^2 = 1/9."
+  },
+  {
+   "q": "¿Cuánto es √144?",
+   "choices": ["72", "14", "11", "12"],
+   "why": "12 × 12 = 144."
+  },
+  {
+   "q": "¿Cuál es la raíz cúbica de 27?",
+   "choices": ["9", "5.2", "3", "13.5"],
+   "why": "3 × 3 × 3 = 27."
+  },
+  {
+   "q": "¿Qué número es irracional?",
+   "choices": ["√5", "√25", "2/7", "0.125"],
+   "why": "5 no es un cuadrado perfecto, así que √5 nunca termina ni se repite. Los otros son 5, una fracción y 1/8."
+  },
+  {
+   "q": "Escribe 0.0000094 en notación científica.",
+   "choices": ["9.4 × 10^6", "9.4 × 10^−6", "94 × 10^−7", "9.4 × 10^−7"],
+   "why": "Mueve el punto 6 lugares a la derecha para obtener 9.4; número pequeño, exponente −6."
+  },
+  {
+   "q": "¿Cuánto es (4 × 10^6) × (5 × 10^3)?",
+   "choices": ["20 × 10^9", "9 × 10^9", "2 × 10^18", "2 × 10^10"],
+   "why": "4 × 5 = 20 y 10^6 × 10^3 = 10^9, lo que da 20 × 10^9. Ajusta: 2 × 10^10."
+  }
+ ]
+}
