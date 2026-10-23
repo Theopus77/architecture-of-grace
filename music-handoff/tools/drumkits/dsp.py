@@ -79,6 +79,14 @@ def env_shape(x, hold=0.1, decay=0.15, start=0.0):
     e[m] = np.exp(-(t[m] - start - hold) / decay)
     return x * _col(x, e)
 
+def squash(x, thr_db=-30.0, ratio=8.0, wet_db=-6.0):
+    """AOG-DRUM-BARKER-V1: parallel compression: a copy squeezed hard (fast attack, quick release), brought back to the
+    dry hit's peak and mixed in under it, so the body and the ring of the drum swell while the attack stays as played"""
+    pk = peak_db(x)
+    y = comp(x, pk + thr_db, ratio, 1.0, 80.0, 6.0)
+    y = y * 10 ** ((pk - peak_db(y)) / 20)
+    return x + y * 10 ** (wet_db / 20)
+
 def attack_boost(x, db=4.0, ms=12.0):
     """lift the first `ms` of the hit (a transient shaper), fading back to unity"""
     n = int(SR * ms / 1000)
