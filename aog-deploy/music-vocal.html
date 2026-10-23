@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>/* AOG-STUDIO-ONLY-V1 (Jimmy, 2026-10-10: "one location for all the instruments … and that is the studio"): opened on its own address, this room opens inside the Studio instead, at this exact address (its lesson, take or link). Inside the Studio's frame, and for the site's own checks, it stays. */(function(){try{if(window.top!==window||navigator.webdriver)return;var M={"music-pads":"pads","drum-machine":"pads","beat-lab":"pads","music-kit":"kit","drum-kit":"kit","music-piano":"piano","piano":"piano","keys":"piano","music-guitar":"guitar","guitar":"guitar","music-bass":"bass","bass":"bass","music-band":"band","band":"band","music-decks":"decks","decks":"decks","turntables":"decks","music-vocal":"vocal","vocal-booth":"vocal","vocal":"vocal","booth":"vocal","music-studio":"studio","studio":"studio","mixing-desk":"studio"},f=(location.pathname.split("/").pop()||"").replace(/\.html$/,""),r=M[f];if(!r)return;var F={pads:"music-pads",kit:"music-kit",piano:"music-piano",guitar:"music-guitar",bass:"music-bass",band:"music-band",decks:"music-decks",vocal:"music-vocal",studio:"music-studio"};location.replace("/the-studio.html?at="+encodeURIComponent("/"+F[r]+".html"+location.search+location.hash)+"#"+r);}catch(e){}})();</script>
+<meta charset="utf-8"><style id="aog-first-paint">html,html[data-theme="dark"]{background:#120d09}</style>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>
+(function(){var t="light";try{if(localStorage.getItem("aog.theme.lightstart.v1")==="1"&&localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);if(t==="dark")document.documentElement.classList.add("dark");
+try{if(localStorage.getItem("aog.lang")==="es")document.documentElement.setAttribute("lang","es");}catch(e){}})();
+</script>
+<title>The Vocal Booth — Architecture of Grace</title>
+<meta name="description" content="Record your voice over your own beat, then give it a sound: clean, warm, radio, rap, echo, a big hall, tuned or robot, with your own EQ and effects. Works on a phone, a tablet and a computer.">
+<link rel="canonical" href="https://architectureofgrace.com/vocal-booth">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Architecture of Grace">
+<meta property="og:title" content="The Vocal Booth — Architecture of Grace">
+<meta property="og:description" content="Sing or rap over your beat. Give your voice a sound. No login.">
+<meta property="og:url" content="https://architectureofgrace.com/vocal-booth">
+<meta name="theme-color" content="#120d09">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="/aog-calm.css">
+<!-- AOG-VOCAL-V1 (2026-10-23) — Jimmy: "I think we need a vocal studio to record our voice with various effects and eq etc…
+     better than the SING OR RAP icon door", a showstopper "for my teenager children and my 60 year plus parents and everyone
+     in between". The Vocal Booth is the Studio's ninth room, before the Mixing Desk. Everything it does is in aog-vocal.js.
+     Dark in both themes, as a real booth is; the sounds sit on paper inserts; text a size every age reads; every control at
+     least 44 px; nothing moves on its own (the meters move only while you record or listen). -->
+<style>
+:root{--vb-ink:#f4ead6;--vb-soft:#d9ccb2;--vb-dim:#b9aa8c;--vb-panel:#1d1610;--vb-edge:#050403;--vb-gold:#e2b55c;--vb-paper:#f4ecdb;--vb-pink:#1f1a12;--vb-sans:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;--vb-serif:"Fraunces",Georgia,serif}
+html,body{background:#120d09;color:var(--vb-ink)}
+body{margin:0;font:500 1.05rem/1.45 var(--vb-sans);-webkit-text-size-adjust:100%}
+.wrap{max-width:68rem;margin:0 auto;padding:12px max(14px,env(safe-area-inset-right)) 28px max(14px,env(safe-area-inset-left))}
+.mast{padding:6px 2px 12px}
+.mast h1{margin:0;font:600 clamp(1.6rem,4vw,2.2rem)/1.1 var(--vb-serif);color:var(--vb-ink)}
+.mast p{margin:.35rem 0 0;color:var(--vb-soft);font-size:1.05rem}
+html.in-studio .wrap{padding-top:10px}
+.vb-help{margin:0 0 12px;padding:.6rem .85rem;border-radius:4px;background:var(--vb-paper);color:#1f1a12;font:italic 500 1.05rem/1.4 var(--vb-serif)}
+.vb-help[hidden]{display:none}
+.vb-cols{display:grid;gap:14px;align-items:start}
+.vb-col{display:grid;gap:14px;align-content:start;min-width:0}
+.vb-col[hidden]{display:none}
+@media (min-width:760px){ .vb-cols{grid-template-columns:minmax(0,1fr) minmax(0,1.25fr)} }
+.vb-panel{background:linear-gradient(180deg,#261e16 0,#1a140e 100%);border:1px solid var(--vb-edge);border-radius:16px;padding:14px;box-shadow:inset 0 1px 0 rgba(255,240,215,.09),0 2px 0 var(--vb-edge)}
+.vb-panel[hidden]{display:none}
+.vb-h,.vb-shape>summary{margin:0 0 10px;font:800 .85rem/1.2 var(--vb-sans);letter-spacing:.12em;text-transform:uppercase;color:#d7c8aa}
+.vb-booth{display:grid;gap:12px}
+.vb-booth .vb-h{margin:0}
+.vb-b{min-height:48px;min-width:48px;display:inline-flex;align-items:center;justify-content:center;gap:.4rem;padding:0 1rem;border-radius:10px;border:1px solid var(--vb-edge);
+  background:linear-gradient(#36302a,#2a251f 45%,#1d1915);color:var(--vb-ink);font:700 1.05rem/1.15 var(--vb-sans);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;
+  box-shadow:inset 0 1px 0 rgba(255,240,215,.13),0 2px 0 var(--vb-edge);text-align:center}
+.vb-b:active{transform:translateY(1px)}
+.vb-b:disabled{opacity:.6;cursor:default}
+.vb-b:focus-visible,.vb-snd:focus-visible,.vb-tk:focus-visible,.vb-shape>summary:focus-visible{outline:3px solid var(--vb-gold);outline-offset:2px}
+.vb-rec{min-height:80px;width:100%;font-size:1.4rem;border-radius:18px;color:#fff6f2;border-color:#3b0d05;background:linear-gradient(#b4472d,#8e321f);font-variant-numeric:tabular-nums}
+.vb-rec[aria-pressed="true"]{background:linear-gradient(#f6e2a8,#e6c06a 50%,#d2a548);color:#231704;border-color:#5e4512}
+.vb-mrow{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:10px}
+.vb-ml{font:700 .9rem/1.2 var(--vb-sans);color:var(--vb-soft);min-width:6.5em}
+.vb-meter{position:relative;height:14px;border-radius:7px;background:#0b0907;box-shadow:inset 0 1px 3px rgba(0,0,0,.8),0 1px 0 rgba(255,236,200,.07);overflow:hidden}
+.vb-meter span{position:absolute;left:0;top:0;bottom:0;width:100%;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(90deg,#2f9e5c,#2f9e5c 72%,#e2b55c 86%,#c4452a)}
+.vb-line{margin:0;min-height:1.45em;font:500 1.1rem/1.45 var(--vb-sans);color:var(--vb-ink)}
+.vb-allow{margin:0;padding:.7rem .9rem;border-radius:4px;background:var(--vb-paper);color:#1f1a12;display:grid;gap:.35rem}
+.vb-allow[hidden]{display:none}
+.vb-allow p{margin:0;color:#1f1a12}
+.vb-allow .vb-code{font-size:13px;color:#4a4136}
+.vb-mon{display:flex;align-items:center;gap:.6rem;min-height:44px;color:var(--vb-ink);font-weight:600;cursor:pointer}
+.vb-mon input{width:26px;height:26px;accent-color:var(--vb-gold);margin:0}
+.vb-small{margin:0;color:var(--vb-soft);font-size:.98rem}
+.vb-small[hidden]{display:none}
+.vb-takes{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.vb-takes li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
+.vb-tk{min-height:52px;display:flex;align-items:center;justify-content:space-between;gap:.6rem;padding:.4rem .9rem;border-radius:8px;border:1px solid #b9a988;background:var(--vb-paper);color:#1f1a12;
+  font:500 1.05rem/1.2 var(--vb-sans);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;box-shadow:0 2px 0 var(--vb-edge);text-align:left}
+.vb-tk b{font-weight:800;color:#1f1a12}
+.vb-tk span{color:#463c2c;font-variant-numeric:tabular-nums}
+.vb-tk[aria-pressed="true"]{background:#fbf1d8;border-color:#7a5a1c;box-shadow:0 0 0 3px var(--vb-gold),0 2px 0 var(--vb-edge)}
+.vb-tk[aria-pressed="true"] b::before{content:"✓ ";color:#1d6b3f}
+.vb-tx{min-width:52px;font-size:1.15rem}
+.vb-back{margin-top:10px}
+.vb-back[hidden]{display:none}
+.vb-snds{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+@media (min-width:1000px){ .vb-snds{grid-template-columns:repeat(3,minmax(0,1fr))} }
+.vb-snd{min-height:66px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:2px;padding:.45rem .8rem;border-radius:8px;border:1px solid #b9a988;
+  background:var(--vb-paper);color:#1f1a12;text-align:left;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;box-shadow:0 2px 0 var(--vb-edge)}
+.vb-snd[hidden]{display:none}
+.vb-snd b{font:800 1.12rem/1.15 var(--vb-sans);color:#1f1a12}
+.vb-snd span{font:italic 500 .98rem/1.2 var(--vb-serif);color:#463c2c}
+.vb-snd[aria-pressed="true"]{background:#fbf1d8;border-color:#7a5a1c;box-shadow:0 0 0 3px var(--vb-gold),0 2px 0 var(--vb-edge)}
+.vb-snd[aria-pressed="true"] b::before{content:"✓ ";color:#1d6b3f}
+.vb-shape>summary{display:flex;align-items:center;gap:.5rem;min-height:44px;margin:0;cursor:pointer;list-style:none}
+.vb-shape>summary::-webkit-details-marker{display:none}
+.vb-shape>summary::before{content:"▸";color:var(--vb-gold);font-size:1rem}
+.vb-shape[open]>summary::before{content:"▾"}
+.vb-ctrls{display:grid;gap:14px 18px;margin-top:8px}
+@media (min-width:1000px){ .vb-ctrls{grid-template-columns:repeat(2,minmax(0,1fr))} }
+.vb-c{display:grid;gap:4px;color:var(--vb-ink)}
+.vb-ct{display:flex;justify-content:space-between;align-items:baseline;gap:.5rem}
+.vb-ct b{font:700 1.08rem/1.2 var(--vb-sans)}
+.vb-ct i{font:700 1rem/1 var(--vb-sans);font-style:normal;color:var(--vb-gold);font-variant-numeric:tabular-nums}
+.vb-c small{color:var(--vb-soft);font-size:.95rem;line-height:1.3}
+.vb-r{width:100%;min-height:44px;margin:0;accent-color:var(--vb-gold);touch-action:pan-y}
+.vb-sel{min-height:46px;width:100%;padding:0 .7rem;border-radius:8px;border:1px solid #6b5a3a;background:#120d09;color:var(--vb-ink);font:600 16px/1.2 var(--vb-sans)}
+.vb-acts{display:grid;gap:10px}
+.vb-hear{min-height:60px;font-size:1.2rem}
+.vb-add{min-height:58px;font-size:1.15rem;background:linear-gradient(#f6e2a8,#e6c06a 50%,#d2a548);color:#231704;border-color:#5e4512}
+.vb-add[hidden]{display:none}
+/* the room draws at full size in the Studio, as the other rooms do (their canvases opt them out of the computer's 85%):
+   a 44 px key stays 44 px */
+html.in-studio body{zoom:1!important}
+/* the booth keeps its own sizes and its paper's ink: the site's short-screen and dark-theme rules must not shrink a key under
+   44 px or turn the words on a paper slip pale */
+html .vb .vb-sel,html .vb #vbBig{min-height:46px!important;height:auto!important;font-size:16px!important;padding-top:0!important;padding-bottom:0!important}
+html .vb .vb-shape>summary,html .vb .vb-mon{min-height:44px!important}
+html .vb .vb-allow .vb-code{color:#4a4136!important}
+html .vb .vb-allow,html .vb .vb-allow p,html .vb-help,html .vb .vb-snd b,html .vb .vb-tk b{color:#1f1a12!important}
+html .vb .vb-snd span,html .vb .vb-tk span{color:#463c2c!important}
+@media print{ .vb-rec,.vb-acts,.vb-mon{display:none} }
+</style>
+<link rel="stylesheet" href="/aog-bench.css">
+<script src="/aog-vu.js"></script><!-- AOG-ROOM-VU-V1: the meters and the Studio's hush -->
+<script src="/aog-song.js"></script><!-- AOG-SONG-V1: the song's tempo and key -->
+</head>
+<body>
+<script src="/aog-grace.js" defer></script>
+<script src="/aog-labdoors.js" defer></script><!-- AOG-LABDOORS-V1: the music labs, as doors -->
+<script>
+(function(){
+  function add(src){
+    var s=document.createElement("script");
+    s.src=src;
+    s.onerror=function(){ if(src.indexOf("netlify.app")<0) add("https://architectureofgrace.netlify.app/aog-topbar.js"); };
+    document.head.appendChild(s);
+  }
+  add(new URL("aog-topbar.js", document.baseURI).href);
+})();
+</script>
+<div class="wrap">
+  <section class="mast" id="vbMast"><h1 data-en="The Vocal Booth" data-es="La cabina de voz">The Vocal Booth</h1>
+    <p data-en="Record your voice over My Track. Then give it a sound." data-es="Graba tu voz sobre mi pista. Luego dale un sonido.">Record your voice over My Track. Then give it a sound.</p></section>
+  <main class="vb" id="vocal" aria-label="The Vocal Booth"></main>
+</div>
+<script>/* the masthead's words follow the page's language (the Studio reloads the room when it changes) */
+(function(){ if((document.documentElement.getAttribute("lang")||"").indexOf("es")===0) document.querySelectorAll("#vbMast [data-es]").forEach(function(e){ e.textContent=e.getAttribute("data-es"); }); })();</script>
+<script src="/aog-vocal.js" defer></script>
+</body>
+</html>

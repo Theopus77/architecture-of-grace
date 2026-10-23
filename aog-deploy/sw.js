@@ -11,7 +11,7 @@
  * Bump by REPLACING the CACHE line. Don't keep the old one as a comment: every byte here is
  * downloaded again on each update check. Old lines live in tools/sw-cache-history.txt and git log.
  */
-const CACHE = 'aog-cache-2026.10.22.m7560'   // THE FRONT PAGE NO LONGER FREEZES AS IT LOADS: NO :has() OVER THE WHOLE PAGE ON A PHONE (aog-calm.css, index.html), WORDS REWRITTEN ONLY WHEN THEY CHANGE, LEGIBLE AND CHAPEL LOOK ONLY AT WHAT CHANGED, SKETCH READS IN SLICES, PRINT MARKS WAIT FOR IDLE (previous: m7559)
+const CACHE = 'aog-cache-2026.10.23.m7565'   // THE VOCAL BOOTH GETS THE MICROPHONE ON AN IPAD: WHEN SAFARI REFUSES THE ROOM'S FRAME, IT ASKS THROUGH THE STUDIO (aog-vocal.js AOG-VOCAL-MIC-V2, music-vocal.html)
 
 // Same-origin essentials — reliable to precache at install.
 /* AOG-SW-LIGHT-V1 (2026-10-01) — Jimmy: "Why is it taking so long for the website to load on my phone now?"

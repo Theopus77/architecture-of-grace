@@ -89,10 +89,10 @@ call moving forward." On the Educator Dashboard and every page after it:
 - Rows of actions (Save, Copy, Download) stay as buttons; only choices of
   *where to look* become menus.
 - Exception (Jimmy, 2026-10-05): the music labs' picture doors. Every music
-  lab shows the eight labs as small picture doors across the top
+  lab shows the nine labs as small picture doors across the top
   (`aog-labdoors.js`), so moving from room to room is one tap. A new music lab
   joins LABS there and loads the script. The order makes a song: Drum Machine,
-  Drum Kit, Piano, Guitar, Bass, Band, Turntables, Mixing Desk. Menus that list
+  Drum Kit, Piano, Guitar, Bass, Band, Turntables, Vocal Booth, Mixing Desk. Menus that list
   the music labs use the same order.
 - The Drum Machine is `music-pads.html` (/drum-machine; it was the Beat Lab). It is
   where it is at (Jimmy, 2026-10-07: "The old machine is obsolete. THE DRUM MACHINE IS
@@ -108,7 +108,7 @@ call moving forward." On the Educator Dashboard and every page after it:
 
 "One location for all the instruments … and that is the studio. Two designs and
 layouts seems sort of silly." The Recording Studio (`the-studio.html`, /the-studio,
-/music) is the only place the eight rooms are used.
+/music) is the only place the nine rooms are used.
 
 - A room opened on its own address (/piano, `music-piano.html`, an old link or
   bookmark) opens the Studio in that room. A line at the top of each room's
@@ -117,6 +117,10 @@ layouts seems sort of silly." The Recording Studio (`the-studio.html`, /the-stud
 - Design and fix a room as it looks inside the Studio (`html.in-studio`), not on
   its own. There is no "own tab" link.
 - The site's checks still open each room on its own; that is expected.
+- The Vocal Booth (Jimmy, 2026-10-23: "a vocal studio to record our voice with various effects and eq … better than
+  the SING OR RAP icon door"; AOG-VOCAL-V1) is the ninth room, just before the Mixing Desk: `music-vocal.html`
+  (/vocal-booth, also /vocal and /booth), engine `aog-vocal.js`. Its takes go to the desk's track 8, the Voice layer
+  of My Track. It replaced the Studio's 🎤 Sing or rap key; don't add that key back.
 - The Studio has no site top bar (Jimmy, 2026-10-10). Its own line carries Back
   and EN | ES; Back leaves the Studio (the page before, or the front page when it
   was opened from its icon). It is its own Home Screen app: `studio.webmanifest`,
@@ -321,7 +325,7 @@ and add new pages and rooms to its PAGES list. Do not push while it fails.
 A room may build its sound engine before the first tap, so the first note is quick (AOG-AUDIO-WARM-V1, `aog-labdoors.js`),
 but it builds it inside `AOGVU.quietly()` (so the meters stay asleep) and then pauses it: the engine rests until a tap or a
 note wakes it (every room's `ctx()` resumes it). The check passes an engine that stays paused and fails one left running,
-even a silent one (Jimmy, 2026-10-20: "the test needs to learn"; AOG-WARM-QUIET-V1). The Studio and its eight rooms are in
+even a silent one (Jimmy, 2026-10-20: "the test needs to learn"; AOG-WARM-QUIET-V1). The Studio and its nine rooms are in
 its PAGES list.
 
 ## The silent treatment: light speed (standing order from Jimmy, 2026-10-12)

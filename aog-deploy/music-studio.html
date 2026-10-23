@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script>/* AOG-STUDIO-ONLY-V1 (Jimmy, 2026-10-10: "one location for all the instruments … and that is the studio"): opened on its own address, this room opens inside the Studio instead, at this exact address (its lesson, take or link). Inside the Studio's frame, and for the site's own checks, it stays. */(function(){try{if(window.top!==window||navigator.webdriver)return;var M={"music-pads":"pads","drum-machine":"pads","beat-lab":"pads","music-kit":"kit","drum-kit":"kit","music-piano":"piano","piano":"piano","keys":"piano","music-guitar":"guitar","guitar":"guitar","music-bass":"bass","bass":"bass","music-band":"band","band":"band","music-decks":"decks","decks":"decks","turntables":"decks","music-studio":"studio","studio":"studio","mixing-desk":"studio"},f=(location.pathname.split("/").pop()||"").replace(/\.html$/,""),r=M[f];if(!r)return;var F={pads:"music-pads",kit:"music-kit",piano:"music-piano",guitar:"music-guitar",bass:"music-bass",band:"music-band",decks:"music-decks",studio:"music-studio"};location.replace("/the-studio.html?at="+encodeURIComponent("/"+F[r]+".html"+location.search+location.hash)+"#"+r);}catch(e){}})();</script>
+<script>/* AOG-STUDIO-ONLY-V1 (Jimmy, 2026-10-10: "one location for all the instruments … and that is the studio"): opened on its own address, this room opens inside the Studio instead, at this exact address (its lesson, take or link). Inside the Studio's frame, and for the site's own checks, it stays. */(function(){try{if(window.top!==window||navigator.webdriver)return;var M={"music-pads":"pads","drum-machine":"pads","beat-lab":"pads","music-kit":"kit","drum-kit":"kit","music-piano":"piano","piano":"piano","keys":"piano","music-guitar":"guitar","guitar":"guitar","music-bass":"bass","bass":"bass","music-band":"band","band":"band","music-decks":"decks","decks":"decks","turntables":"decks","music-vocal":"vocal","vocal-booth":"vocal","vocal":"vocal","booth":"vocal","music-studio":"studio","studio":"studio","mixing-desk":"studio"},f=(location.pathname.split("/").pop()||"").replace(/\.html$/,""),r=M[f];if(!r)return;var F={pads:"music-pads",kit:"music-kit",piano:"music-piano",guitar:"music-guitar",bass:"music-bass",band:"music-band",decks:"music-decks",vocal:"music-vocal",studio:"music-studio"};location.replace("/the-studio.html?at="+encodeURIComponent("/"+F[r]+".html"+location.search+location.hash)+"#"+r);}catch(e){}})();</script>
 <meta charset="utf-8"><style id="aog-first-paint">/* AOG-ONE-PAINT-V1 — the page shows once, fully built, never longer than ~1 s behind. No fade, no motion. */html{background:#F7F2E6}html[data-theme="dark"]{background:#0A1E33}html:not(.aog-ready) body{visibility:hidden;animation:aogOnePaint 0s linear 1.1s forwards}@keyframes aogOnePaint{to{visibility:visible}}@media print{html:not(.aog-ready) body{visibility:visible;animation:none}}</style><script>/* AOG-LIGHT-START-V1 — light unless this site was switched to dark. */(function(){var h=document.documentElement;if(!h.getAttribute("data-theme"))h.setAttribute("data-theme","light");})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <script>
@@ -1421,9 +1421,9 @@ function cleanClip(c){
   if(XFADES.indexOf(c.xf)>0) o.xf=c.xf;   /* AOG-DESK-XFADE-V1: only when it is on, so a song without crossfades reads as before */
   if(c.warp===true && o.bpm>0) o.warp=true;   /* AOG-DESK-WARP-V1: it follows the song's tempo */
   if(c.lp===true) o.lp=true;   /* AOG-DESK-CLIPLOOP-V1: its end was dragged to repeat it */
-  /* AOG-MICBOOTH-V1: a take from the Sing or rap booth keeps its dry recording beside it, and the sound chosen, so it can be made again */
+  /* AOG-MICBOOTH-V1: a voice take keeps its dry recording beside it, and the sound chosen, so it can be made again (AOG-VOCAL-V1: the Vocal Booth's sounds too) */
   if(o.voice && typeof c.dry==="string" && /^c[a-z0-9]{4,41}$/.test(c.dry)) o.dry=c.dry;
-  if(o.voice && /^(clean|echo|tuned|phone)$/.test(c.snd)) o.snd=c.snd;
+  if(o.voice && /^(clean|warm|radio|rap|echo|hall|tuned|robot|phone|custom)$/.test(c.snd)) o.snd=c.snd;
   /* AOG-PIANOROLL-V1: a take from the Piano, Guitar, Bass or Band keeps the notes it was played with (checked by aog-pianoroll.js) */
   if(c.notes){ const n=window.AOGPianoRoll ? AOGPianoRoll.clean(c.notes) : (Array.isArray(c.notes.ev) ? c.notes : null); if(n) o.notes=n; }
   /* AOG-STUDIO-INBOX-V1: a take from the list remembers its tool, its number and which take in the list it was */
@@ -2887,7 +2887,7 @@ async function restore(){
   if(list.length) S.decoding--;
   if(lost){ save(); $("recLine").textContent=t("gone"); }
   /* tidy: copies no track uses any more (AOG-DESK-MORE-V1: the takes', and those a saved version needs, stay) */
-  try{ const keep=new Set(clips().map(x=>x.c.id)); keep.add("mix"); dmKeepIds(keep); dmAllClips().forEach(c=>{ if(c.dry) keep.add(c.dry); });   /* AOG-MICBOOTH-V1: a booth take's dry copy */
+  try{ const keep=new Set(clips().map(x=>x.c.id)); keep.add("mix"); dmKeepIds(keep); dmAllClips().forEach(c=>{ if(c.dry) keep.add(c.dry); });   /* AOG-MICBOOTH-V1: a voice take's dry copy */
     (await skeys()).forEach(k=>{ if(!keep.has(k)) sdel(k); }); }catch(e){}
   liveApply(applyAll);
   paintTransport(); paintTimeline(); paintTrack(); paintMixer(); paintFinish();
@@ -3522,7 +3522,7 @@ window.AOGStudioRec={
   toggle:()=>{ if(VOICE.rec){ voiceStop(); return; } if(SONG.sel!==VOICE_T) selectTrack(VOICE_T); voiceStart(); },
   last:()=>null, sent:()=>true, add:()=>Promise.resolve()
 };
-/* ══ AOG-MICBOOTH-V1 (2026-10-22) — the Recording Studio's 🎤 Sing or rap booth (aog-micbooth.js) records your voice over My
+/* ══ AOG-MICBOOTH-V1 (2026-10-22) — the Recording Studio's 🎤 voice takes (AOG-VOCAL-V1: the Vocal Booth, aog-vocal.js) records your voice over My
    Track in the Studio itself, on the Studio's own sound, and hands the take here, the way ● Record your voice would have made it:
    - voiceBacking(): My Track without track 8 (the voice the new take will take the place of is not heard under it), its
      tempo, where its music ends, and whether it can go round under a long take (loop: every track that plays is one
@@ -3811,7 +3811,7 @@ function bindOut(){
    ══════════════════════════════════════════════════════════════════════════ */
 /* the music tools in one menu, as on the other tools (AOG-MUSIC-TOOLS-MENU-V1) */
 function navHtml(){
-  const es=S.lang==="es", tools=[["pads","music-pads.html","Drum machine","Caja de ritmos"],["kit","music-kit.html","Drum kit","Batería"],["piano","music-piano.html","Piano","Piano"],["guitar","music-guitar.html","Guitar","Guitarra"],["bass","music-bass.html","Bass","Bajo"],["band","music-band.html","Band","Banda"],["decks","music-decks.html","Turntables","Tocadiscos"],["studio","music-studio.html","Mixing desk","Mesa de mezclas"]];
+  const es=S.lang==="es", tools=[["pads","music-pads.html","Drum machine","Caja de ritmos"],["kit","music-kit.html","Drum kit","Batería"],["piano","music-piano.html","Piano","Piano"],["guitar","music-guitar.html","Guitar","Guitarra"],["bass","music-bass.html","Bass","Bajo"],["band","music-band.html","Band","Banda"],["decks","music-decks.html","Turntables","Tocadiscos"],["vocal","music-vocal.html","Vocal booth","Cabina de voz"],["studio","music-studio.html","Mixing desk","Mesa de mezclas"]];   /* AOG-VOCAL-V1 */
   return `<span class="sisters"><span id="navTools" class="aogdd-src" data-aog-dropdown="Music tools|Instrumentos">`+tools.map(x=>`<a href="${x[1]}"${x[0]==="studio"?' class="on"':""}>${es?x[3]:x[2]}</a>`).join("")+`</span></span>`;
 }
 function trackName(i){
@@ -5104,7 +5104,7 @@ Object.assign(window.__aogStudio, { DESK_ROOMS:DESK_ROOMS, roomBuf:roomBuf, appl
 Object.assign(window.__aogStudio, { kCoef:kCoef, loudOf:loudOf, truePeak:truePeak, lufsTap:lufsTap, lufsStart:lufsStart, lufsStep:lufsStep, LU:LU, outLevel:outLevel,
   wavBuf:wavBuf, bits:()=>BITS, chopsLook:chopsLook, chopCuts:chopCuts, sendChops:sendChops });
 Object.assign(window.__aogStudio, { splitIn:splitIn, SPL:SPL });   /* AOG-STEMS-V1: for stems/split.js */
-Object.assign(window.__aogStudio, { voiceBacking:voiceBacking, voicePut:voicePut, vbLoopable:vbLoopable, dmTune:dmTune });   /* AOG-MICBOOTH-V1: the Studio's Sing or rap booth (aog-micbooth.js) */
+Object.assign(window.__aogStudio, { voiceBacking:voiceBacking, voicePut:voicePut, vbLoopable:vbLoopable, dmTune:dmTune });   /* AOG-VOCAL-V1: the Studio's Vocal Booth (aog-vocal.js) */
 Object.assign(window.__aogStudio, { openNotes:openNotes, keepNotes:keepNotes, cleanClip:cleanClip, beatOf:beatOf });   /* AOG-PIANOROLL-V1 */
 /* AOG-DESK-AUTO-V1: for the tests (music-handoff/tests/studio/auto.js) */
 Object.assign(window.__aogStudio, { AUTO:AUTO, AUI:AUI, drawnAt:drawnAt, autoCorners:autoCorners, lineOf:lineOf, filtHz:filtHz, cleanLines:cleanLines,

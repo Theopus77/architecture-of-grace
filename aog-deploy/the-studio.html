@@ -7,7 +7,7 @@
 (function(){var t="light";try{if(localStorage.getItem("aog.theme.lightstart.v1")==="1"&&localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);if(t==="dark")document.documentElement.classList.add("dark");/* AOG-GUIDE-EMBED-V1 - when this page is opened inside the panel on its machine page, it drops its own header; the panel carries the link out to the printable page. */if(location.search.indexOf("embed")>=0)document.documentElement.classList.add("embed");})();
 </script>
 <title>The Recording Studio &mdash; Architecture of Grace</title>
-<meta name="description" content="Every music room in one studio: the drum machine, drum kit, piano, guitar, bass, band, turntables and mixing desk. Play, make, mix and send it out. No account.">
+<meta name="description" content="Every music room in one studio: the drum machine, drum kit, piano, guitar, bass, band, turntables, vocal booth and mixing desk. Play, make, mix and send it out. No account.">
 <meta name="theme-color" content="#14110d">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <!-- AOG-STUDIO-PAGE-V1 (2026-10-06) · AOG-STUDIO-SHELL-V1 (2026-10-09) — The Studio. MADE BY _work/music/make_studio_page.py: edit there, then run it. -->
@@ -177,7 +177,7 @@ footer { margin-top:2rem; padding-top:1rem; border-top:1px solid var(--line); co
    supreme in its presentation and excellence in its structure and handling." The Recording Studio is one control room made
    of one set of parts, in one order, so you always know where you are:
      1. the meter bridge along the top: Back, the Studio's name, the room's meters and room sound, EN | ES;
-     2. the eight doors, in song order, every one a single tap (two rows of four on a phone; one row of eight on an upright
+     2. the nine doors, in song order, every one a single tap (three rows of three on a phone; one row of nine on an upright
         iPad; a column down the left on an iPad on its side and a computer, where the width is spare and the height is not).
         The room you are in is lit; the Mixing Desk stands a step apart, because it is the control room;
      3. the room's window, as large as the screen allows;
@@ -234,7 +234,7 @@ html:root:root body { --room:#17110c; background-color:#17110c !important; color
 
 /* 2 · the doors: dark keys, each with its drawing on a paper insert; the room you are in is lit */
 .sh-doors { grid-area:doors; padding:8px 0; }
-.sh-doors ul { list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:6px; }
+.sh-doors ul { list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:6px; }
 .sh-doors li { min-width:0; display:flex; }
 .sh-doors a { position:relative; flex:1 1 auto; min-width:0; display:flex; align-items:center; justify-content:center; gap:8px; min-height:44px; padding:4px 6px;
   border-radius:10px; border:1px solid var(--st-edge); background:linear-gradient(#302a24, #221d18); color:var(--st-ink); text-decoration:none; text-align:center;
@@ -343,7 +343,7 @@ main.sh-main { grid-area:room; min-width:0; margin:0; }
   .mt ul.more { -webkit-mask-image:none; mask-image:none; }
   .mt .lay { height:30px; font-size:.95rem; padding:0 .6rem; }
 }
-/* a phone held upright: one slim top line, the doors in two rows of four, the transport in one row */
+/* a phone held upright: one slim top line, the doors in three rows of three, the transport in one row */
 @media (max-width:699px) {
   .sh-top { min-height:50px; gap:8px; padding:3px 0; }
   .sh-top h1 { font-size:1.08rem !important; line-height:1.1; }
@@ -376,16 +376,16 @@ main.sh-main { grid-area:room; min-width:0; margin:0; }
   .sh-lang button { min-width:38px; padding:0 .45rem; }
   .sh-qs { padding:0 .45rem; font-size:.8rem; }
 }
-/* an upright iPad: the doors in one row of eight, each with its drawing above its name; the desk in one row */
+/* an upright iPad: the doors in one row of nine, each with its drawing above its name; the desk in one row */
 @media (min-width:700px) {
-  .sh-doors ul { grid-template-columns:repeat(8,minmax(0,1fr)); }
+  .sh-doors ul { grid-template-columns:repeat(9,minmax(0,1fr)); }
   .sh-doors a { flex-direction:column; gap:3px; padding:4px 4px 5px; font-size:.8rem; }
   .sh-doors .pic { display:block; width:48px; height:32px; }
   .sh-doors li:last-child { margin-left:8px; }
   .sh-doors li:last-child::before { content:""; position:absolute; left:-8px; top:6px; bottom:6px; width:1px; background:rgba(255,236,200,.14); }
 }
 @media (min-width:700px) and (max-width:1099px) { .sh-doors { padding:6px 0 7px; } .mt { flex-wrap:nowrap; } .tp { flex:1 1 auto; } }
-/* a wide screen that is short: one row of eight, each drawing beside its name */
+/* a wide screen that is short: one row of nine, each drawing beside its name */
 @media (min-width:1100px) {
   .sh-doors a { flex-direction:row; justify-content:flex-start; gap:9px; padding:4px 10px 4px 4px; text-align:left; font-size:.88rem; }
   .sh-doors .pic { width:48px; height:36px; }
@@ -406,6 +406,14 @@ main.sh-main { grid-area:room; min-width:0; margin:0; }
   .mtrow { padding-left:16px; border-left:1px solid var(--st-edge); box-shadow:inset 1px 0 0 rgba(255,236,200,.06); }
 }
 @media (min-width:1100px) and (min-height:700px) and (max-width:1279px) { .tp-b, .mt a.tp-b { padding:0 .75rem; } .tp-rec { min-width:6.6rem; } #mtAdd { max-width:10rem; } }
+/* AOG-VOCAL-V1: a short wide screen (700–759 px high): nine doors down the left, each a little slimmer, so the column still fits beside the room */
+@media (min-width:1100px) and (min-height:700px) and (max-height:759px) {
+  .sh-doors ul { grid-auto-rows:minmax(48px, auto); gap:5px; }
+  .sh-doors a { padding:3px 10px 3px 4px; }
+  .sh-doors .pic { width:56px; height:40px; }
+  .sh-doors li:last-child { margin-top:8px; }
+  .sh-doors li:last-child::before { top:-7px; }
+}
 /* a phone on its side: the room gets the whole screen, as its own sideways play view expects (LANDSCAPE-HANDOFF.md) */
 @media (orientation:landscape) and (max-height:500px) {
   .aogtop, .aogtop-spacer, .sh-top, .sh-doors, .mt { display:none !important; }
@@ -413,23 +421,6 @@ main.sh-main { grid-area:room; min-width:0; margin:0; }
   main.sh-main { padding:0; }
   .sh-room { border:0; border-radius:0; box-shadow:none; }
 }
-/* AOG-MICBOOTH-V1 (2026-10-22): 🎤 Sing or rap, in the top line of every room, one tap from anywhere in the Studio. It opens the
-   booth (aog-micbooth.js, fetched on the first tap). A red key, the colour of a recording lamp, so it is easy to find. */
-.sh-mic { flex:0 0 auto; min-height:44px; display:inline-flex; align-items:center; justify-content:center; gap:.35rem; padding:0 1rem; border-radius:22px;
-  border:1px solid #3b0d05; background:linear-gradient(#b4472d, #8e321f); color:#fff6f2; font:800 .95rem/1.1 Inter, var(--sans); white-space:nowrap;
-  cursor:pointer; touch-action:manipulation; -webkit-tap-highlight-color:transparent; box-shadow:inset 0 1px 0 rgba(255,220,200,.22), 0 2px 0 var(--st-edge); }
-.sh-mic:active { transform:translateY(1px); box-shadow:inset 0 1px 0 rgba(255,220,200,.12), 0 1px 0 var(--st-edge); }
-.sh-mic:focus-visible { outline:3px solid var(--st-gold); outline-offset:2px; }
-.sh-mic .ic { font-size:1.1rem; line-height:1; }
-@media (max-width:699px) {
-  .sh-top h1 { font-size:1rem !important; }
-  /* two keys and a title will not share a phone's width: Back · Studio · EN ES on top, then ✦ Start a song and 🎤 Sing or rap, side by side */
-  .sh-top { flex-wrap:wrap; row-gap:6px; padding-bottom:6px; }
-  .sh-top h1 { flex:1 1 auto; }
-  .sh-qs, .sh-mic { order:2; flex:1 1 45%; max-width:none; min-width:0; padding:0 .6rem; font-size:.95rem; line-height:1.1; white-space:normal; text-align:center; }
-  .sh-mic { gap:.35rem; }
-}
-@media (max-width:349px) { .sh-qs, .sh-mic { font-size:.86rem; padding:0 .4rem; } }
 /* a phone in Safari (the browser's own bars take the rest): a little less air above the room, so the room keeps most of the screen */
 @media (max-width:699px) and (max-height:760px) {
   .sh-top { padding:1px 0 2px; row-gap:3px; }
@@ -479,7 +470,6 @@ main.sh-main { grid-area:room; min-width:0; margin:0; }
   <button type="button" class="sh-ms" id="msTop" aria-haspopup="dialog" aria-expanded="false"></button>
   <p class="sh-tag"><span data-en="Play · Record · Listen · Mix · Send it out" data-es="Toca · Graba · Escucha · Mezcla · Compártela">Play · Record · Listen · Mix · Send it out</span></p>
   <div class="sh-bridge"><span class="tp-vu" id="tpVu"></span></div>
-  <button type="button" class="sh-mic" id="shMic" aria-haspopup="dialog"><span class="ic" aria-hidden="true">🎤</span><span data-en="Sing or rap" data-es="Canta o rapea">Sing or rap</span></button>
   <div class="sh-lang" role="group" aria-label="Language · Idioma"><button type="button" data-lang="en" lang="en">EN</button><button type="button" data-lang="es" lang="es">ES</button></div>
 </div>
 <nav class="sh-doors" aria-label="Rooms · Salas"><ul>
@@ -490,6 +480,7 @@ main.sh-main { grid-area:room; min-width:0; margin:0; }
   <li><a href="#bass" data-room="bass"><span class="pic" aria-hidden="true"><picture><source type="image/webp" srcset="/img/banners/music-bass-pencil-900.webp"><img src="/img/banners/music-bass-pencil-900.jpg" alt="" width="900" height="315" decoding="async"></picture></span><span data-en="Bass" data-es="Bajo">Bass</span></a></li>
   <li><a href="#band" data-room="band"><span class="pic" aria-hidden="true"><picture><source type="image/webp" srcset="/img/banners/music-band-pencil-900.webp"><img src="/img/banners/music-band-pencil-900.jpg" alt="" width="900" height="315" decoding="async"></picture></span><span data-en="Band" data-es="Banda">Band</span></a></li>
   <li><a href="#decks" data-room="decks"><span class="pic" aria-hidden="true"><picture><source type="image/webp" srcset="/img/banners/music-decks-pencil-900.webp"><img src="/img/banners/music-decks-pencil-900.jpg" alt="" width="900" height="315" decoding="async"></picture></span><span data-en="Turntables" data-es="Tocadiscos">Turntables</span></a></li>
+  <li><a href="#vocal" data-room="vocal"><span class="pic" aria-hidden="true"><picture><source type="image/webp" srcset="/img/banners/music-vocal-pencil-900.webp"><img src="/img/banners/music-vocal-pencil-900.jpg" alt="" width="900" height="315" decoding="async"></picture></span><span data-en="Vocal Booth" data-es="Cabina de voz">Vocal Booth</span></a></li>
   <li><a href="#studio" data-room="studio"><span class="pic" aria-hidden="true"><picture><source type="image/webp" srcset="/img/banners/music-mixdesk-pencil-900.webp"><img src="/img/banners/music-mixdesk-pencil-900.jpg" alt="" width="900" height="315" decoding="async"></picture></span><span data-en="Mixing Desk" data-es="Mesa de mezclas">Mixing Desk</span></a></li>
 </ul></nav>
 <main class="sh-main"><iframe class="sh-room" id="room" title="The Drum Machine" allow="autoplay; fullscreen; clipboard-write; microphone"></iframe></main>
@@ -502,10 +493,11 @@ main.sh-main { grid-area:room; min-width:0; margin:0; }
 /* AOG-STUDIO-SHELL-V1 — the doors change the room; My Track marks what each room has sent (see make_studio_page.py) */
 (function () {
   "use strict";
-  var D = document, ROOMS = [{"id": "pads", "href": "/drum-machine", "file": "music-pads.html", "name": ["The Drum Machine", "La caja de ritmos"], "short": ["Drum Machine", "Caja de ritmos"], "from": "pads", "shelf": "padbench"}, {"id": "kit", "href": "/drum-kit", "file": "music-kit.html", "name": ["The Drum Kit", "La batería"], "short": ["Drum Kit", "Batería"], "from": "drums", "shelf": "drumtake"}, {"id": "piano", "href": "/piano", "file": "music-piano.html", "name": ["The Piano", "El piano"], "short": ["Piano", "Piano"], "from": "piano", "shelf": "keysbench"}, {"id": "guitar", "href": "/guitar", "file": "music-guitar.html", "name": ["The Guitar", "La guitarra"], "short": ["Guitar", "Guitarra"], "from": "guitar", "shelf": "guitarbench"}, {"id": "bass", "href": "/bass", "file": "music-bass.html", "name": ["The Bass", "El bajo"], "short": ["Bass", "Bajo"], "from": "bass", "shelf": "bassbench"}, {"id": "band", "href": "/band", "file": "music-band.html", "name": ["The Band", "La banda"], "short": ["Band", "Banda"], "from": "band", "shelf": "bandbench"}, {"id": "decks", "href": "/turntables", "file": "music-decks.html", "name": ["The Turntables", "Los tocadiscos"], "short": ["Turntables", "Tocadiscos"], "from": "decks", "shelf": ""}, {"id": "studio", "href": "/mixing-desk", "file": "music-studio.html", "name": ["The Mixing Desk", "La mesa de mezclas"], "short": ["Mixing Desk", "Mesa de mezclas"], "from": "", "shelf": ""}], LAYERS = [{"id": "pads", "name": ["Drums", "Ritmos"]}, {"id": "kit", "name": ["Kit", "Batería"]}, {"id": "piano", "name": ["Piano", "Piano"]}, {"id": "guitar", "name": ["Guitar", "Guitarra"]}, {"id": "bass", "name": ["Bass", "Bajo"]}, {"id": "band", "name": ["Band", "Banda"]}, {"id": "decks", "name": ["Turntables", "Tocadiscos"]}, {"id": "voice", "name": ["Voice", "Voz"]}, {"id": "liveguitar", "name": ["Live guitar", "Guitarra en vivo"]}, {"id": "livebass", "name": ["Live bass", "Bajo en vivo"]}];
+  var D = document, ROOMS = [{"id": "pads", "href": "/drum-machine", "file": "music-pads.html", "name": ["The Drum Machine", "La caja de ritmos"], "short": ["Drum Machine", "Caja de ritmos"], "from": "pads", "shelf": "padbench"}, {"id": "kit", "href": "/drum-kit", "file": "music-kit.html", "name": ["The Drum Kit", "La batería"], "short": ["Drum Kit", "Batería"], "from": "drums", "shelf": "drumtake"}, {"id": "piano", "href": "/piano", "file": "music-piano.html", "name": ["The Piano", "El piano"], "short": ["Piano", "Piano"], "from": "piano", "shelf": "keysbench"}, {"id": "guitar", "href": "/guitar", "file": "music-guitar.html", "name": ["The Guitar", "La guitarra"], "short": ["Guitar", "Guitarra"], "from": "guitar", "shelf": "guitarbench"}, {"id": "bass", "href": "/bass", "file": "music-bass.html", "name": ["The Bass", "El bajo"], "short": ["Bass", "Bajo"], "from": "bass", "shelf": "bassbench"}, {"id": "band", "href": "/band", "file": "music-band.html", "name": ["The Band", "La banda"], "short": ["Band", "Banda"], "from": "band", "shelf": "bandbench"}, {"id": "decks", "href": "/turntables", "file": "music-decks.html", "name": ["The Turntables", "Los tocadiscos"], "short": ["Turntables", "Tocadiscos"], "from": "decks", "shelf": ""}, {"id": "vocal", "href": "/vocal-booth", "file": "music-vocal.html", "name": ["The Vocal Booth", "La cabina de voz"], "short": ["Vocal Booth", "Cabina de voz"], "from": "voice", "shelf": ""}, {"id": "studio", "href": "/mixing-desk", "file": "music-studio.html", "name": ["The Mixing Desk", "La mesa de mezclas"], "short": ["Mixing Desk", "Mesa de mezclas"], "from": "", "shelf": ""}], LAYERS = [{"id": "pads", "name": ["Drums", "Ritmos"]}, {"id": "kit", "name": ["Kit", "Batería"]}, {"id": "piano", "name": ["Piano", "Piano"]}, {"id": "guitar", "name": ["Guitar", "Guitarra"]}, {"id": "bass", "name": ["Bass", "Bajo"]}, {"id": "band", "name": ["Band", "Banda"]}, {"id": "decks", "name": ["Turntables", "Tocadiscos"]}, {"id": "voice", "name": ["Voice", "Voz"], "room": "vocal"}, {"id": "liveguitar", "name": ["Live guitar", "Guitarra en vivo"]}, {"id": "livebass", "name": ["Live bass", "Bajo en vivo"]}];
   var fr = D.getElementById("room"), cur = "", KEY = "aog.studio.room";
   function es() { return (D.documentElement.getAttribute("lang") || "en").indexOf("es") === 0; }
   function room(id) { for (var i = 0; i < ROOMS.length; i++) if (ROOMS[i].id === id) return ROOMS[i]; return null; }
+  function lroom(l) { return room(l.room || l.id); }   /* AOG-VOCAL-V1: a layer's room (Voice is the Vocal Booth's) */
   /* AOG-STUDIO-ONLY-V1 (Jimmy, 2026-10-10: "one location for all the instruments … and that is the studio"): a room
      opened on its own address comes here as ?at=/music-piano.html#lessons (its head script). The frame opens that exact
      address once, so a lesson, a take or a locker link still lands, and the address bar goes back to /the-studio#room. */
@@ -645,7 +637,7 @@ main.sh-main { grid-area:room; min-width:0; margin:0; }
   function paint() {
     var r = room(cur), e = es(); if (!r) return;
     var vb = D.getElementById("tpVu"); if (vb) vb.hidden = cur === "studio";   /* AOG-ROOM-VU-V1: the desk has its own, large */
-    var rk = D.querySelector("#tpVu .aogroom"); if (rk) rk.hidden = cur === "decks";
+    var rk = D.querySelector("#tpVu .aogroom"); if (rk) rk.hidden = cur === "decks" || cur === "vocal";   /* AOG-VOCAL-V1: the booth has its own Room */
     TP.line = ""; if (typeof paintTp === "function") try { paintTp(); } catch (err) {}
     var name = e ? r.name[1] : r.name[0];
     fr.title = name;
@@ -673,8 +665,8 @@ main.sh-main { grid-area:room; min-width:0; margin:0; }
     edge();
     /* + Add a layer: the rooms in song order; a layer already there says so */
     var sel = D.getElementById("mtAdd");
-    sel.innerHTML = '<option value="">' + (e ? "+ Añadir una capa" : "+ Add a layer") + "</option>" + LAYERS.filter(function (l) { return room(l.id); }).map(function (l) {
-      var R = room(l.id); return '<option value="' + l.id + '">' + (e ? R.name[1] : R.name[0]) + (HAVE[l.id] ? " ✓" : "") + "</option>"; }).join("");
+    sel.innerHTML = '<option value="">' + (e ? "+ Añadir una capa" : "+ Add a layer") + "</option>" + LAYERS.filter(function (l) { return lroom(l); }).map(function (l) {
+      var R = lroom(l); return '<option value="' + R.id + '">' + (e ? R.name[1] : R.name[0]) + (HAVE[l.id] ? " ✓" : "") + "</option>"; }).join("");
     sel.setAttribute("aria-label", e ? "Añadir una capa: elige una sala" : "Add a layer: pick a room");
     /* AOG-STUDIO-SUPREME-V1: the My Track key (a phone, an upright iPad) says how many layers are there */
     var k = D.getElementById("mtOpen"), have = LAYERS.filter(function (l) { return HAVE[l.id]; }).length, kt = e ? "Mi pista" : "My Track", kn = have ? String(have) : "";
@@ -694,7 +686,7 @@ main.sh-main { grid-area:room; min-width:0; margin:0; }
     var items = [];
     try { var r = await A.list(A.INBOX); items = (r && r.items) || []; } catch (e) {}
     for (var i = 0; i < LAYERS.length; i++) {
-      var l = LAYERS[i], R = room(l.id), live = /^live/.test(l.id), from = R ? R.from : live ? l.id.slice(4) : l.id, shelf = R ? R.shelf : "";
+      var l = LAYERS[i], R = lroom(l), live = /^live/.test(l.id), from = R ? R.from : live ? l.id.slice(4) : l.id, shelf = R ? R.shelf : "";
       /* a take from the real instrument (aog-liveinput.js, "live") marks Live guitar or Live bass, not the on-screen one */
       var got = items.some(function (x) { return x && x.from === from && x.sec > 0 && !!x.live === live; });
       /* Voice: the take on the Mixing Desk's track 8 (AOG-STUDIO-VOICE-V1), read from the desk's own save */
@@ -1100,10 +1092,9 @@ main.sh-main { grid-area:room; min-width:0; margin:0; }
         TP.back = id === "studio" ? (cur !== "studio" ? cur : TP.back) : ""; cur = id; try { history.replaceState(null, "", "#" + id); } catch (e) {} paint(); }
       size(); }
   };
-  /* AOG-MICBOOTH-V1 (2026-10-22) — Jimmy wants the Studio to be a showstopper: hearing yourself on your own beat. 🎤 Sing or
-     rap opens the booth over the room you are in (aog-micbooth.js, fetched on the first tap; nothing is loaded before). The
-     booth records on the Studio's own sound, with My Track put together by the desk out of sight (as ♫ Play along), and hands
-     the take to the desk's track 8. Here: the desk, ready (desk()); the room quiet while the booth is open (quiet()). */
+  /* AOG-MICBOOTH-V1 (2026-10-22): the desk, ready (desk()), and the room quiet while a voice is recorded (quiet()), for a room
+     that records a voice over My Track and hands the take to the desk's track 8. AOG-VOCAL-V1 (2026-10-23): the Vocal Booth
+     (a room of its own) took the place of the 🎤 Sing or rap key; the key and its loader (aog-micbooth.js) are gone. */
   function deskReady() {
     var f = deskFrame();
     return new Promise(function (ok, no) {
@@ -1120,12 +1111,6 @@ main.sh-main { grid-area:room; min-width:0; margin:0; }
     if (on) { alongStop(); var w = deskOf(); if (w && w.__aogStudio.PLAY.on) w.__aogStudio.stop(); }
     hush(fr, !!on); if (!on) paintTp();
   };
-  var micLoad = null;
-  D.getElementById("shMic").addEventListener("click", function () {
-    var b = this;
-    if (!micLoad) micLoad = new Promise(function (ok, no) { var s = D.createElement("script"); s.src = "/aog-micbooth.js"; s.onload = ok; s.onerror = function () { micLoad = null; no(); }; D.head.appendChild(s); });
-    micLoad.then(function () { if (window.AOGMicBooth) AOGMicBooth.open(b); }, function () { say("fail"); });
-  });
   D.addEventListener("click", function (e) {
     var a = e.target.closest && e.target.closest("a[data-room]"); if (!a || e.metaKey || e.ctrlKey || e.shiftKey || e.button) return;
     e.preventDefault(); go(a.getAttribute("data-room"), true);

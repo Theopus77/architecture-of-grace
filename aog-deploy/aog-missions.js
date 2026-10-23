@@ -44,7 +44,7 @@
       did: ["you listened back to your song.", "escuchaste tu canción."],
       why: ["When your hands are still, your ears do the judging. You hear what to keep and what to change.", "Con las manos quietas, tus oídos juzgan. Oyes qué guardar y qué cambiar."] },
     { id: "sang", can: ["I can record my voice.", "Puedo grabar mi voz."],
-      how: ["Press 🎤 Sing or rap, then ● Record.", "Pulsa 🎤 Canta o rapea y luego ● Grabar."],
+      how: ["Open the Vocal Booth, then press ● Record.", "Abre la cabina de voz y luego pulsa ● Grabar."],   /* AOG-VOCAL-V1 */
       did: ["you recorded your voice.", "grabaste tu voz."],
       why: ["A voice is the part people remember. Headphones keep the beat out of the mic, so your voice stays clear.", "La voz es lo que la gente recuerda. Con audífonos el ritmo no entra al micrófono y tu voz se oye clara."] },
     { id: "lick", can: ["I can record a lick (a short tune that fits the chords).", "Puedo grabar una frase (una melodía corta que encaja con los acordes)."],
@@ -77,7 +77,7 @@
       how: ["In the Drum Machine, pick another drum kit. Keep your chords.", "En la caja de ritmos, elige otra batería. Deja tus acordes."],
       why: ["The drums set the style. The same chords over a new kit can turn pop into rock.", "La batería marca el estilo. Los mismos acordes con otra batería pueden pasar del pop al rock."] },
     { id: "halftime", t: ["Half as fast, and sing over it", "La mitad de rápido, y canta encima"],
-      how: ["In ♩ Song, halve the tempo (120 becomes 60). Then press 🎤 Sing or rap.", "En ♩ Canción, baja el tempo a la mitad (120 pasa a 60). Luego pulsa 🎤 Canta o rapea."],
+      how: ["In ♩ Song, halve the tempo (120 becomes 60). Then sing in the Vocal Booth.", "En ♩ Canción, baja el tempo a la mitad (120 pasa a 60). Luego canta en la cabina de voz."],
       why: ["A slow beat leaves gaps, and gaps are room for words. Half time feels heavy and big.", "Un ritmo lento deja huecos, y los huecos son espacio para las palabras. A mitad de tiempo suena pesado y grande."] },
     { id: "three", t: ["Only three sounds", "Solo tres sonidos"],
       how: ["Make a beat with just three sounds, like a kick, a snare and a hi-hat.", "Haz un ritmo con solo tres sonidos, como bombo, caja y charles."],
@@ -141,6 +141,8 @@
     /* in the Studio: a slip laid at the top of the room's window (the keys you play are lower down) */
     "main.sh-main{position:relative}",
     "main.sh-main>#msDone{position:absolute;z-index:4;top:10px;left:50%;transform:translateX(-50%);width:max-content;max-width:calc(100% - 24px)}",
+    /* AOG-VOCAL-V1: the Vocal Booth's Record is at the top of the room, so there the slip sits at the foot */
+    "main.sh-main>#msDone.ms-low{top:auto;bottom:10px}",
     ".mb-in #msDone{grid-column:1/-1;max-width:none}",
     /* the line at the end of ▶ Listen back (dark, like the view) */
     "#msLb{margin:2px 0 0;padding-top:10px;border-top:1px solid rgba(255,236,200,.14);font:500 .98rem/1.35 Inter,system-ui,sans-serif;color:#efe2c6;text-align:inherit}",
@@ -196,7 +198,6 @@
   var slip = null, cur = null;   /* cur: {kind: "done"|"next", id} */
   function where() {
     var lb = D.getElementById("lbDlg"); if (lb && lb.open) return "lb";
-    var mb = D.getElementById("aogMicBooth"); if (mb && !mb.hidden) return "booth";
     return "bar";
   }
   function lbRoom() { try { return !matchMedia("(max-width:699px) and (max-height:760px), (orientation:landscape) and (max-height:519px)").matches; } catch (e) { return true; } }
@@ -242,9 +243,10 @@
     }
     if (!m) return;   /* "Next mission" is said only in Listen back; elsewhere the slip says a mission is done */
     var s = slipBuild(), c = counts();
-    var host = h === "booth" ? D.querySelector("#aogMicBooth .mb-in") : D.querySelector("main.sh-main");   /* the top of the room: the keys you play are lower down */
+    var host = D.querySelector("main.sh-main");   /* the top of the room (the Vocal Booth's too): the keys you play are lower down */
     if (!host) host = D.body;
     if (s.parentNode !== host) host.appendChild(s);
+    s.classList.toggle("ms-low", location.hash === "#vocal");
     s.innerHTML = '<span class="ms-tk" aria-hidden="true">✓</span><p id="msDoneT"><b>' + esc(w("doneP")) + "</b> " + esc(L(m.did)) +
       "<span>" + esc(next() ? w("nextP") + " " + nextText() : nextText()) + "</span></p>" +
       (h === "bar" ? '<button type="button" class="ms-k" id="msDoneSee">' + esc(w("key", c)) + "</button>" : "") +

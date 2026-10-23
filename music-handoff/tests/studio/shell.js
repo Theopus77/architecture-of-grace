@@ -76,7 +76,7 @@ const state = p => p.evaluate(() => ({ hash: location.hash, title: document.titl
   await f.waitForFunction(() => /Added to My Track/.test(document.getElementById("recLine").textContent), null, { timeout: 8000 });
   ok((await f.textContent("#recLine")).trim() === "Added to My Track. Open the Mixing Desk" && await p.evaluate(async () => (await AOGHandoff.list(AOGHandoff.INBOX)).items.length) === nIn + 1,
     "+ Add to My Track writes through the Mixing Desk's list, and says so");
-  ok(await p.evaluate(() => [...document.querySelectorAll("#mtAdd option")].map(o => o.textContent).join(" | ")) === "+ Add a layer | The Drum Machine | The Drum Kit | The Piano ✓ | The Guitar | The Bass | The Band | The Turntables",
+  ok(await p.evaluate(() => [...document.querySelectorAll("#mtAdd option")].map(o => o.textContent).join(" | ")) === "+ Add a layer | The Drum Machine | The Drum Kit | The Piano ✓ | The Guitar | The Bass | The Band | The Turntables | The Vocal Booth",
     "+ Add a layer lists the rooms in song order, and marks the ones already there");
 
   /* 3 · moving to the Bass keeps My Track; Back goes to the piano */

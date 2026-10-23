@@ -616,6 +616,23 @@
   function padWord(b, id, lang) { var k = KITS[b], p = k && k.pads[id]; return p && p.en ? (lang === "es" ? p.es : p.en) : ""; }
   function drumOf(b, id) { var k = KITS[b], p = k && k.pads[id]; return (p && p.drum) || ""; }
   function look(b, id) { var k = KITS[b], p = k && k.pads[id]; return (p && p.look) || ""; }
+  /* AOG-PADS-STAGE-V1 (2026-10-23): the kind of sound a pad makes, by its own name (a kit that puts a ride in the rim slot
+     still has a ride), else by its slot. The Drum Machine's pads and the Drum Kit's drums light in its colour.
+     AOG-DRUM-BARKER-V1: the stack (two cymbals) glows as metal, the flam (two snare strokes) as a snap. */
+  var FAM = {
+    low: /^(KICK|BASSDR|BOOM|909|BASS|BOMBO|SURDO2?|CAJBASS|CGBASS|DJBASS|DOUM|GHE|GLIDE|TIMPLO|FRAMLO|STOMP|HEEL|THUMP|CHEST|BELLY|DHA)$/,
+    snap: /^(SNARE|CLAPS?|FCLAP|SNAP|RIM|XSTICK|STICKS?|CRACK|GHOST|GATED|BRUSH|CAIXA|CAJSLAP|SKANK|STAB|CLICK|SNTAMB|FLAM)$/,
+    shimmer: /^(HAT|OPEN|LOOSE|CHICK|PEDAL|SHAKER|MARACA|EGG|GANZA|TAMB|TAMBSHK|TAMBHIT|JINGLE|SIZZLE|SWISH|STIR|KEYS)$/,
+    metal: /^(CRASH|RIDE|CHINA|STACK|CYMBAL|SUSCYM|GONG|BELLS?|COWBELL?|AGOGO|TRIANG|TRIMUTE|TRIOPEN|ZILLS)$/,
+    skin: /^(TOM|HITOM|MIDTOM|LOWTOM|FLOOR|SYNTOM|CONGA|CGOPEN|CGMUTE|CGSLAP|BONGO|BGHIGH|BGLOW|BGSLAP|DJEMBE|DJSLAP|DJTONE|TIMBAL|TIMPHI|FRAMHI|REPIQ|TAMBOR|TENOR|TUMBA|KA|KE|NA|PA|TE|TEK|TUN|TIN|SLAP|ROLL)$/,
+    wood: /^(CLAVES?|BLOCK|WBHIGH|WBLOW|GUIRO|TICK|SCRTCH|APITO|FLUTTR|CHEEK)$/
+  };
+  var SLOT_FAM = { kick: "low", snare: "snap", clap: "snap", rim: "snap", ch: "shimmer", oh: "shimmer", tom: "skin", bell: "metal" };
+  function family(b, id) {
+    var k = KITS[b], p = k && k.pads[id], n = (p && p.name) || "";
+    for (var f in FAM) if (FAM[f].test(n)) return f;
+    return SLOT_FAM[id] || "snap";
+  }
   function padNames(b) { var k = KITS[b], o = {}; if (!k) return o; for (var id in k.pads) o[id] = k.pads[id].name; return o; }
   function files(b, id) {
     var k = KITS[b], p = k && k.pads[id], out = {};
@@ -854,7 +871,7 @@
     load: load, post: post, route: route, playDirect: playDirect, state: function (b) { return STATE[b] || null; },
     ready: function (b) { return !!DATA[b]; },
     /* AOG-DRUM-PERC-V1: a pad's own words, the drum it belongs to, how the Drum Kit draws it, and the hand-drum kits */
-    padWord: padWord, drumOf: drumOf, look: look, hand: function (b) { return !!(has(b) && KITS[b].hand); },
+    padWord: padWord, drumOf: drumOf, look: look, family: family, hand: function (b) { return !!(has(b) && KITS[b].hand); },
     /* AOG-DRUM-MORE-V1: the kit menus' groups, in order, and each kit's group; the new grooves' beat-menu groups */
     groups: GROUPS, group: group, beatGroups: BEAT_GROUPS,
     takes: function (b, id) { var p = has(b) && KITS[b].pads[id]; return p ? p.n.slice() : [0, 0, 0]; },   /* the takes of each strength: soft, normal, hard */

@@ -72,7 +72,7 @@ const KIT_LOOK={
 const KIT_OF={A:"ekit",B:"ekit",C:"ekit",D:"ekit",F:"ekit",L:"ekit",E:"maple",G:"burst",H:"maple",I:"wine",J:"blue",K:"pearl",M:"green",N:"maple",O:"pearl",
   P:"maple",Q:"black",R:"pearl",S:"blue",T:"black",U:"burst",V:"pearl",W:"green",X:"burst",Y:"maple"};
 Object.assign(KIT_OF, {HP:"maple", HD:"burst", HC:"green", TB:"maple"});   /* AOG-DRUM-PERC-V1: the hand drums and the tabla */
-Object.assign(KIT_OF, {OR:"wine", ME:"burst", SB:"green", BP:"maple", GS:"wine", MT:"burst", DS:"pearl", PK:"black", PO:"blue", JG:"green", RG:"ekit", TR:"ekit", TH:"black", BM:"ekit", BR:"black", GR:"maple"});   /* AOG-DRUM-MORE-V1: the new kits */
+Object.assign(KIT_OF, {OR:"wine", ME:"burst", SB:"green", BP:"maple", GS:"wine", MT:"burst", DS:"pearl", PK:"black", PO:"blue", JG:"green", RG:"ekit", TR:"ekit", TH:"black", BM:"ekit", BR:"black", GR:"maple", PP:"blue", HL:"burst"});   /* AOG-DRUM-MORE-V1: the new kits */
 const DARK_CYM={K:1,R:1,U:1,V:1};   /* the jazz kits: dark, dry cymbals */
 function kitLook(b){ const L=KIT_LOOK[KIT_OF[b]||"wine"]; return Object.assign({dark:!!DARK_CYM[b]}, L); }
 function drawKit(o){   /* the drum machine's drawing (music-drums.html, AOG-KIT-REAL-V1), with each kit's own instruments */
@@ -84,7 +84,8 @@ function drawKit(o){   /* the drum machine's drawing (music-drums.html, AOG-KIT-
     const kk=KIT_KEYS[id];   /* AOG-KIT-KEYS-V1: the computer key that plays it, shown once a keyboard is in use */
     return `<text class="${cls||"ink"}" x="${f1(x)}" y="${f1(y)}" style="font-size:${fs.toFixed(1)}px">${w}</text>`+
       (kk ? `<text class="${cls||"ink"} kkey" x="${f1(x)}" y="${f1(y+fs*1.05)}" style="font-size:${(fs*0.7).toFixed(1)}px" aria-hidden="true">${kk}</text>` : ""); };
-  const piece=(id, body, glow)=>`<g class="drum" data-pad="${id}" role="button" tabindex="0" aria-label="${nm(id)}">${body}<g class="glow">${glow}</g></g>`;
+  const fam=id=>window.AOGDrumKit && AOGDrumKit.family ? AOGDrumKit.family(o.bank, id) : "snap";   /* AOG-PADS-STAGE-V1 */
+  const piece=(id, body, glow)=>`<g class="drum" data-pad="${id}" data-fam="${fam(id)}" role="button" tabindex="0" aria-label="${nm(id)}">${body}<g class="glow">${glow}</g></g>`;
   /* a drum seen from above and in front: the shell's side under the head, lugs on it, the hoop, the head */
   const drumAt=(id, cx, cy, rx, ry, d, shell, rim)=>{
     let s=`<ellipse cx="${f1(cx)}" cy="${f1(cy+d+4)}" rx="${f1(rx+6)}" ry="${f1(ry+4)}" fill="rgba(0,0,0,.45)"/>`;
@@ -225,7 +226,7 @@ const RING={};   /* AOG-DRUM-PERC-V1: the last stroke of each hand drum */
 /* AOG-KIT-LEVEL-V1 (2026-10-18) — every kit as loud as the others. Each kit plays through its own trim (dB), measured as
    a bar of plain beat through this page's own sound (kick, snare on 2 and 4, eighth-note hats, at 90; K-weighted, the
    loudest 400 ms) and brought to the kits' middle level: node music-handoff/tests/pads/morekits.js --kittable */
-const KIT_LEVEL={"D":2,"E":0.7,"G":1.9,"H":-0.2,"I":0.5,"J":-0.8,"K":2,"N":1,"O":-0.8,"Q":0.7,"R":-1.2,"S":-0.3,"T":-0.8,"U":0.3,"V":2,"W":-0.7,"X":0.1,"Y":0.4,"HP":3.1,"HD":-3.2,"HC":-2.1,"TB":-3.9,"OR":-0.8,"ME":-2.6,"SB":-0.6,"BP":1.2,"GS":0.5,"MT":-0.4,"DS":1.6,"PK":-0.5,"PO":0.9,"JG":0.4,"RG":0.2,"TR":2.7,"TH":-0.5,"BM":-0.6,"BR":-0.4,"GR":-0.9};
+const KIT_LEVEL={"D":2,"E":0.7,"G":1.9,"H":-0.2,"I":0.5,"J":-0.8,"K":2,"N":1,"O":-0.8,"Q":0.7,"R":-1.2,"S":-0.3,"T":-0.8,"U":0.3,"V":2,"W":-0.7,"X":0.1,"Y":0.4,"HP":3.1,"HD":-3.2,"HC":-2.1,"TB":-3.9,"OR":-0.8,"ME":-2.6,"SB":-0.6,"BP":1.2,"GS":0.5,"MT":-0.4,"DS":1.6,"PK":-0.5,"PO":0.9,"JG":0.4,"RG":0.2,"TR":2.7,"TH":-0.5,"BM":-0.6,"BR":-0.4,"GR":-0.9,"PP":-0.1,"HL":-0.5};
 const TRIMS=typeof WeakMap!=="undefined" ? new WeakMap() : null;
 function trimTo(c, dest, b){   /* one small gain per kit and per sound engine, made the first time the kit plays */
   const db=KIT_LEVEL[b]||0; if(!db || !TRIMS || !c || !dest) return dest;
