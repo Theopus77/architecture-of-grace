@@ -42,7 +42,7 @@ def stem_eq(a, b):
     if a in b or b in a: return True
     n = 0
     while n < min(len(a), len(b)) and a[n] == b[n]: n += 1
-    return n >= 5 and n >= 0.7 * min(len(a), len(b))
+    return n >= 4 and n >= 0.6 * min(len(a), len(b))
 def matched(m, words):
     return any(stem_eq(m, w) for w in words)
 

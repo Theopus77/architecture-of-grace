@@ -5924,10 +5924,11 @@ function eyeReadouts(L, deep){
 }
 
 function tickMissions(){
-  const L=S.lab, band=focusBand(L.coarse,L.fine,L.obj);
-  if(L.lightOn) S.missions.lamp=true;
-  if(L.clipped) S.missions.clips=true;
-  if(L.obj===4) S.missions.low=true;
+  /* AOG-MICRO-LINK-V1: what a ?slide= link set up (LINKED) never counts as done until the learner does it */
+  const L=S.lab, band=LINKED.focus?"out":focusBand(L.coarse,L.fine,L.obj);
+  if(L.lightOn&&!LINKED.lamp) S.missions.lamp=true;
+  if(L.clipped&&!LINKED.clips) S.missions.clips=true;
+  if(L.obj===4&&!LINKED.low) S.missions.low=true;
   if(L.obj===10) S.missions.ten=true;
   if(L.obj===40) S.missions.forty=true;
   if(L.spec==="e"&&L.obj===4&&band==="in"&&L.lightOn&&!L.cracked) S.missions.coarse=true;
@@ -6038,6 +6039,10 @@ function paint(){
         || (a==="grat1"||a==="meas1")&&step<LX("m4")
         || a.startsWith("spec-")&&a!=="spec-e"&&step<LX("m8");
       if(locked) return;
+      if(a==="lamp1"||a==="lamp0"||a==="rife"||a==="universal") delete LINKED.lamp;
+      if(a==="clip1"||a==="clip0"||a==="rife"||a==="universal") delete LINKED.clips;
+      if(/^obj\d/.test(a)) delete LINKED.low;
+      if(a==="newslide"||a==="universal") delete LINKED.focus;
       if(a==="depth1") L.depth=true;
       if(a==="depth0"){ L.depth=false; if(L.illum==="phase"||L.illum==="fluor") L.illum="bright"; }
       if(a==="plate1") L.plate=true; if(a==="plate0") L.plate=false;
@@ -6093,6 +6098,7 @@ function paint(){
         const v=+inp.value, L=S.lab, k=inp.getAttribute("data-knob");
         if(k==="coarse"){ if(!L.cracked && wouldCrack(L.obj,v,L.fine) && v>L.coarse){ L.cracked=true; S.cracked++; persist(); paint(); return; } L.coarse=v; }
         if(k==="fine") L.fine=v;
+        if(k==="coarse"||k==="fine") delete LINKED.focus;
         if(k==="dia") L.dia=v;
         if(k==="polar") L.polar=v;
         if(k==="band") L.band=v;
@@ -6184,13 +6190,17 @@ function pickSlide(L, id){
 /* AOG-MICRO-LINK-V1 (2026-10-23) — a lesson's "Try it" button opens the lab on one slide:
    /microscope?slide=onion (any id in SPECIMENS). The slide goes on the stage as the tray would put it, lamp on,
    clipped, on the 4× and in focus. It only sets the bench: pond water still waits for Play, and a depth slide
-   loads its engine just as it does when picked by hand. An unknown id opens the lab as before. */
+   loads its engine just as it does when picked by hand. An unknown id opens the lab as before.
+   The link ticks no lesson step: LINKED holds back the lamp, the clips, the 4× and the focus it set, until the
+   learner works that lamp, clip, objective or focus knob. */
+const LINKED={};
 (function(){
   let id=""; try{ id=new URLSearchParams(location.search).get("slide")||""; }catch(e){}
   if(!SPECIMENS.some(s=>s.id===id)) return;
   const L=S.lab;
   pickSlide(L, id);
   L.lightOn=true; L.clipped=true; L.obj=4; L.oil=false; L.coarse=Math.round(idealZ(4)-L.fine*0.12);
+  Object.assign(LINKED,{lamp:true,clips:true,low:true,focus:true});
   try{ history.replaceState(history.state,"",location.pathname+location.search+"#lab"); }catch(e){ location.hash="lab"; }
 })();
 window.addEventListener("hashchange", paint);

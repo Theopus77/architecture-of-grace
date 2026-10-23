@@ -1,0 +1,958 @@
+{
+ "title": "Sistemas de ecuaciones y desigualdades",
+ "years": "Sistemas",
+ "bigQuestion": "Cuando dos condiciones deben cumplirse al mismo tiempo, ¿cómo encuentras la única respuesta que satisface las dos?",
+ "story": {
+  "title": "El presupuesto de la venta de pasteles",
+  "kicker": "Galletas, brownies, una mesa plegable y un presupuesto de $60: el club necesita una respuesta que encaje con todos los límites a la vez.",
+  "paragraphs": [
+   "El club de robótica de una preparatoria de Chicago hace una venta de pasteles cada octubre para pagar las cuotas de las competencias. Este año Priya es la tesorera, y tiene frente a ella el libro de cuentas del año pasado. Dice que el club vendió 120 artículos y recaudó $170, galletas a $1 y brownies a $2. Nadie anotó cuántos de cada uno. Priya quiere saberlo, porque los brownies dejan más dinero pero cuestan más de hornear.",
+   "Escribe lo que sabe como dos oraciones con letras. Sea c las galletas y b los brownies. El conteo: c + b = 120. El dinero: 1c + 2b = 170. Dos incógnitas, dos datos. Se da cuenta de que, si todos los artículos hubieran sido galletas, el club solo habría ganado $120. Los $50 extra deben haber salido de los brownies, cada uno de los cuales aporta $1 más que una galleta. Así que hubo 50 brownies y 120 − 50 = 70 galletas. Comprueba: 70 + 50 = 120 artículos, y 70 + 100 = $170. Los dos datos son verdaderos a la vez.",
+   "Este año es más difícil. La única mesa plegable del club admite como máximo 150 artículos. Los ingredientes cuestan más o menos $0.30 por galleta y $0.60 por brownie, y el presupuesto es de $60. Cada galleta deja $0.70 de ganancia y cada brownie $1.50. Priya podría hornear 100 brownies y ninguna galleta, pero el asesor del profesorado insiste en que haya al menos 40 galletas para los estudiantes a quienes no les gusta el chocolate. ¿Qué mezcla deja más dinero sin romper ningún límite?",
+   "Priya dibuja los límites en una cuadrícula, con las galletas a lo ancho y los brownies hacia arriba. Cada límite corta la cuadrícula con una recta, y la región permitida es la figura que queda en el medio. El mejor plan, resulta, está en una esquina de esa figura. Hallarlo ocupa todo el capítulo: resolver dos ecuaciones juntas, graficar desigualdades y probar las esquinas. Al final, Priya tiene un número, y el club tiene sus cuotas."
+  ],
+  "think": "Priya halló 50 brownies y 70 galletas razonando «los $50 extra deben ser de brownies». Intenta explicar por qué funciona ese razonamiento, usando las dos ecuaciones."
+ },
+ "sections": [
+  {
+   "title": "Dos ecuaciones, una respuesta",
+   "lessons": [
+    {
+     "title": "Qué es un sistema",
+     "mainIdea": "Un sistema de ecuaciones son dos o más ecuaciones sobre las mismas variables, y su solución hace verdaderas todas las ecuaciones a la vez.",
+     "reading": [
+      "Una sola ecuación con dos variables, como c + b = 120, tiene soluciones sin fin: 0 y 120, 1 y 119, 60 y 60. No te puede decir cuántas galletas se vendieron. Un segundo dato, c + 2b = 170, por sí solo también tiene soluciones sin fin. Pero solo un par encaja con los dos. Dos ecuaciones que deben cumplirse al mismo tiempo forman un *sistema de ecuaciones*, y el par que hace verdaderas a las dos es la *solución del sistema*.",
+      "Prueba un par candidato de la misma manera que pruebas una solución de una sola ecuación, pero revisa todas las ecuaciones. ¿Es (70, 50), es decir, c = 70 y b = 50, la solución? Primera ecuación: 70 + 50 = 120, verdadero. Segunda: 70 + 2(50) = 170, verdadero. Así que sí. ¿Es (60, 60) la solución? Primera: 60 + 60 = 120, verdadero. Segunda: 60 + 120 = 180, no 170. Falla una ecuación, así que no es la solución. Un par tiene que pasar todas las pruebas.",
+      "Puedes hallar una solución con el método de *adivinar y comprobar* en una tabla. Prueba b = 40: entonces c = 80 y el dinero es 80 + 80 = 160, muy poco. Prueba b = 50: c = 70 y el dinero es 70 + 100 = 170, justo. Cada brownie extra suma $1, así que la tabla sube de 1 en 1 en cada fila, y puedes ver exactamente dónde cae. El resto de este capítulo reemplaza la tabla con métodos más rápidos, pero el significado se queda igual: hallar el par que satisface las dos."
+     ],
+     "words": [
+      {
+       "w": "sistema de ecuaciones",
+       "d": "dos o más ecuaciones que deben ser verdaderas al mismo tiempo para las mismas variables"
+      },
+      {
+       "w": "solución del sistema",
+       "d": "los valores que hacen verdaderas todas las ecuaciones del sistema"
+      },
+      {
+       "w": "adivinar y comprobar",
+       "d": "probar valores en una tabla y ajustarlos hasta que se cumplan todas las ecuaciones"
+      }
+     ],
+     "look": {
+      "title": "Probar cantidades de brownies",
+      "rows": [
+       "30 brownies, 90 galletas",
+       "40 brownies, 80 galletas",
+       "50 brownies, 70 galletas",
+       "60 brownies, 60 galletas",
+       "70 brownies, 50 galletas"
+      ],
+      "unit": "dólares recaudados",
+      "prompt": "Cada fila cambia 10 galletas por 10 brownies. ¿Por qué el dinero sube exactamente $10 cada vez?"
+     },
+     "check": [
+      {
+       "q": "¿Cuál par (x, y) resuelve las dos ecuaciones x + y = 10 y x − y = 4?",
+       "choices": [
+        "(5, 5)",
+        "(6, 4)",
+        "(7, 3)",
+        "(4, 6)"
+       ],
+       "why": "7 + 3 = 10 y 7 − 3 = 4, así que las dos ecuaciones son verdaderas. (6, 4) da 6 − 4 = 2, no 4."
+      },
+      {
+       "q": "¿Por qué (60, 60) no es la solución de c + b = 120 y c + 2b = 170?",
+       "choices": [
+        "Falla la primera ecuación",
+        "Falla la segunda ecuación y da 180",
+        "Los dos números deben ser diferentes",
+        "No es un par de números enteros"
+       ],
+       "why": "60 + 60 = 120 funciona, pero 60 + 2(60) = 180, no 170. Una solución debe satisfacer todas las ecuaciones."
+      },
+      {
+       "q": "Un sistema de dos ecuaciones con dos variables por lo general tiene…",
+       "choices": [
+        "exactamente un par solución",
+        "dos pares solución",
+        "ninguna solución",
+        "una solución para cada ecuación"
+       ],
+       "why": "Cada ecuación por sí sola tiene pares sin fin, pero por lo general solo un par encaja con las dos. Los casos especiales sin soluciones o con infinitas soluciones vienen después."
+      }
+     ],
+     "short": [
+      "One equation with two variables, like c + b = 120, has endless solutions: 0 and 120, 1 and 119, 60 and 60. A second fact, c + 2b = 170, also has endless solutions by itself. But only one pair fits both. Two equations that must hold at the same time form a *system of equations*, and the pair that makes both true is the *solution of the system*. To test a pair, check every equation. The pair (70, 50) works in both: 70 + 50 = 120 and 70 + 2(50) = 170. The pair (60, 60) gives 120 but then 180, so it fails. You can also try values in a table, called *guess and check*, until one row fits both."
+     ],
+     "more": [
+      "Think of two clues in a mystery. One clue alone, such as 'the number is even,' leaves many possibilities. A second clue, such as 'it is greater than 10 and less than 14,' narrows it down to just one, which is 12. A system works like that. Each equation is a clue, and together the clues can point to a single answer.",
+      "Systems appear whenever two facts are known about the same things. A store clerk who knows how many items were sold and how much money came in is facing a system. The tools in the next lessons turn that kind of puzzle into steady steps that anyone can follow."
+     ],
+     "short_es": [
+      "Una ecuación con dos variables, como c + b = 120, tiene soluciones sin fin: 0 y 120, 1 y 119, 60 y 60. Un segundo dato, c + 2b = 170, también tiene soluciones sin fin por sí solo. Pero solo un par encaja con los dos. Dos ecuaciones que deben cumplirse al mismo tiempo forman un *sistema de ecuaciones*, y el par que hace verdaderas a las dos es la *solución del sistema*. Para probar un par, revisa todas las ecuaciones. El par (70, 50) funciona en las dos: 70 + 50 = 120 y 70 + 2(50) = 170. El par (60, 60) da 120 pero luego 180, así que falla. También puedes probar valores en una tabla, lo que se llama *adivinar y comprobar*, hasta que una fila encaje con las dos."
+     ],
+     "more_es": [
+      "Piensa en dos pistas de un misterio. Una pista sola, como «el número es par», deja muchas posibilidades. Una segunda pista, como «es mayor que 10 y menor que 14», lo reduce a uno solo, que es el 12. Un sistema funciona así. Cada ecuación es una pista, y juntas las pistas pueden señalar una sola respuesta.",
+      "Los sistemas aparecen siempre que se conocen dos datos sobre las mismas cosas. Una persona que atiende una tienda y sabe cuántos artículos se vendieron y cuánto dinero entró se enfrenta a un sistema. Las herramientas de las próximas lecciones convierten ese tipo de acertijo en pasos firmes que cualquiera puede seguir."
+     ]
+    },
+    {
+     "title": "Resolver con gráficas",
+     "mainIdea": "Grafica las dos ecuaciones; el punto donde las rectas se cruzan es la solución, y leerlo en la gráfica da una estimación.",
+     "reading": [
+      "Cada ecuación de un sistema es una recta, y cada punto de una recta satisface esa ecuación. La solución del sistema satisface las dos, así que debe estar en las dos rectas. Esa es la *intersección*, el punto donde se cruzan. Toma y = 2x + 1 y y = −x + 7. La primera tiene *intercepto en y* 1 y sube 2 por cada paso a la derecha. La segunda empieza en 7 y baja 1 por paso. Marca cada recta a partir de su intercepto y su pendiente, y se cruzan en (2, 5).",
+      "Confirma sustituyendo: 2(2) + 1 = 5 y −2 + 7 = 5. Las dos ecuaciones dan y = 5 cuando x = 2, así que (2, 5) es la solución. Cuando una ecuación no está en forma pendiente-intercepto, reescríbela primero. Para c + b = 120, despeja b: b = −c + 120. Para c + 2b = 170, despeja b: 2b = −c + 170, así que b = −0.5c + 85. Las rectas se cruzan en c = 70, b = 50, la respuesta de la venta de pasteles.",
+      "Graficar muestra la respuesta, pero una gráfica dibujada a mano es una *estimación*. Si las rectas se cruzan en (2.4, 5.8), leer eso en papel cuadriculado es difícil. Usa la gráfica para ver más o menos dónde está la respuesta y si tiene sentido, y luego usa el álgebra para obtenerla con exactitud. Si dos rectas parecen paralelas, espera que no haya solución; si una está encima de la otra, todos los puntos son solución."
+     ],
+     "words": [
+      {
+       "w": "intersección",
+       "d": "el punto donde se cruzan dos gráficas; satisface las dos ecuaciones"
+      },
+      {
+       "w": "intercepto en y",
+       "d": "donde una recta cruza el eje vertical; el valor de y cuando x es 0"
+      },
+      {
+       "w": "estimación",
+       "d": "una respuesta aproximada leída de una gráfica, que se debe comprobar con álgebra"
+      }
+     ],
+     "look": {
+      "title": "Dos rectas en una cuadrícula",
+      "text": "Grafica y = x + 1 y y = −2x + 7. La primera empieza en (0, 1) y sube 1 por paso. La segunda empieza en (0, 7) y baja 2 por paso. En x = 2 la primera da 3 y la segunda da 3. Se cruzan en (2, 3). Comprueba: 2 + 1 = 3 y −4 + 7 = 3.",
+      "prompt": "Grafica y = 3x − 2 y y = x + 4. ¿Dónde se cruzan? Sustituye tu punto en las dos ecuaciones para confirmarlo."
+     },
+     "check": [
+      {
+       "q": "¿Dónde se cruzan y = 2x + 1 y y = −x + 7?",
+       "choices": [
+        "(1, 3)",
+        "(3, 4)",
+        "(2, 5)",
+        "(5, 2)"
+       ],
+       "why": "En x = 2, las dos dan y = 5: 2(2) + 1 = 5 y −2 + 7 = 5. Los otros puntos encajan con una recta como máximo."
+      },
+      {
+       "q": "Reescribe c + 2b = 170 en forma pendiente-intercepto para b.",
+       "choices": [
+        "b = −2c + 170",
+        "b = −0.5c + 85",
+        "b = 0.5c + 85",
+        "b = −c + 170"
+       ],
+       "why": "Resta c: 2b = −c + 170. Divide todo entre 2: b = −0.5c + 85."
+      },
+      {
+       "q": "Una gráfica dibujada a mano muestra dos rectas que se cruzan cerca de (3.2, 4.7). ¿Qué debes hacer después?",
+       "choices": [
+        "Dar (3.2, 4.7) como exacto",
+        "Redondear a (3, 5) y parar",
+        "Volver a dibujar la gráfica más grande",
+        "Resolver con álgebra para hallar el punto exacto"
+       ],
+       "why": "Una gráfica da una estimación. El álgebra, como la sustitución o la eliminación, da la solución exacta, que luego comparas con la estimación."
+      }
+     ],
+     "short": [
+      "Each equation in a system is a line. The solution must satisfy both equations, so it lies on both lines. That point is the *intersection*, where they cross. For y = 2x + 1 and y = −x + 7, the first line has *y-intercept* 1 and rises 2 per step. The second starts at 7 and falls 1 per step. Plotted from their intercepts and slopes, they cross at (2, 5). Substitute to confirm: both equations give y = 5 at x = 2. If an equation is not in slope-intercept form, rewrite it first, so c + 2b = 170 becomes b = −0.5c + 85. A hand-drawn graph is only an *estimate*, so use algebra to find the exact point."
+     ],
+     "more": [
+      "Graphing is also a good way to catch mistakes. If your algebra says two lines cross at (3, 6) but your graph shows them crossing far from there, one of the two has an error, and you can find it before you hand in your work. Graphing calculators and apps do this quickly, but the idea is the same as a sketch on paper.",
+      "Two straight lines can meet in one point, nowhere, or everywhere. One point is the usual case. Lines with the same slope but different intercepts never meet. Lines with the same slope and the same intercept are one and the same line. You will meet both of these special cases later in this chapter."
+     ],
+     "short_es": [
+      "Cada ecuación de un sistema es una recta. La solución debe satisfacer las dos ecuaciones, así que está en las dos rectas. Ese punto es la *intersección*, donde se cruzan. En y = 2x + 1 y y = −x + 7, la primera recta tiene *intercepto en y* 1 y sube 2 por paso. La segunda empieza en 7 y baja 1 por paso. Marcadas a partir de sus interceptos y sus pendientes, se cruzan en (2, 5). Sustituye para confirmar: las dos ecuaciones dan y = 5 cuando x = 2. Si una ecuación no está en forma pendiente-intercepto, reescríbela primero, así c + 2b = 170 se convierte en b = −0.5c + 85. Una gráfica dibujada a mano es solo una *estimación*, así que usa el álgebra para hallar el punto exacto."
+     ],
+     "more_es": [
+      "Graficar también es una buena manera de detectar errores. Si tu álgebra dice que dos rectas se cruzan en (3, 6) pero tu gráfica las muestra cruzándose lejos de ahí, una de las dos tiene un error, y puedes encontrarlo antes de entregar tu trabajo. Las calculadoras y las aplicaciones de gráficas hacen esto rápido, pero la idea es la misma que la de un dibujo en papel.",
+      "Dos rectas pueden encontrarse en un punto, en ninguna parte o en todas partes. Un punto es el caso usual. Las rectas con la misma pendiente pero interceptos distintos nunca se encuentran. Las rectas con la misma pendiente y el mismo intercepto son una sola y la misma recta. Volverás a encontrar estos dos casos especiales más adelante en este capítulo."
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Resolver con exactitud",
+   "lessons": [
+    {
+     "title": "Sustitución",
+     "mainIdea": "Si una ecuación te dice a qué es igual una variable, sustituye esa expresión en la otra ecuación y resuelve.",
+     "reading": [
+      "Resuelve y = 2x + 1 y 3x + y = 16. La primera ecuación ya dice cuánto vale y. Reemplaza y en la segunda ecuación por 2x + 1: 3x + (2x + 1) = 16. Ahora hay una sola variable. Combina: 5x + 1 = 16. Resta 1: 5x = 15. Divide: x = 3. Luego halla y con la primera ecuación: y = 2(3) + 1 = 7. La solución es (3, 7). Este método es la *sustitución*, y funciona mejor cuando una ecuación ya está despejada para una variable o se puede despejar con facilidad.",
+      "Comprueba en las dos ecuaciones: 7 = 2(3) + 1 es verdadero, y 3(3) + 7 = 16 es verdadero. Para la venta de pasteles, c + b = 120 da c = 120 − b. Sustituye en c + 2b = 170: (120 − b) + 2b = 170, así que 120 + b = 170 y b = 50. Entonces c = 120 − 50 = 70. El álgebra es el razonamiento de Priya sobre «los $50 extra» escrito paso a paso.",
+      "Hay dos errores comunes. El primero es sustituir en la misma ecuación de la que sacaste la expresión, lo que da un inútil 0 = 0. Sustituye siempre en la otra. El segundo es olvidar los paréntesis: en 4x − (x + 3) = 9, el signo menos debe aplicarse a todo x + 3, lo que da 4x − x − 3 = 9, así que 3x = 12 y x = 4. Escribir 4x − x + 3 = 9 por error da x = 2, y la comprobación falla."
+     ],
+     "words": [
+      {
+       "w": "sustitución",
+       "d": "reemplazar una variable por una expresión a la que es igual, para que una ecuación tenga una sola variable"
+      },
+      {
+       "w": "expresión",
+       "d": "una combinación de números y variables, como 2x + 1, que representa un valor"
+      },
+      {
+       "w": "comprobar",
+       "d": "volver a poner la solución en todas las ecuaciones originales para confirmar que son verdaderas"
+      }
+     ],
+     "look": {
+      "title": "Sustituir y luego volver a sustituir",
+      "text": "Resuelve x = y + 4 y 2x + 3y = 23. Reemplaza x en la segunda ecuación: 2(y + 4) + 3y = 23. Distribuye: 2y + 8 + 3y = 23. Combina: 5y + 8 = 23, así que 5y = 15 y y = 3. Entonces x = 3 + 4 = 7. Comprueba: 2(7) + 3(3) = 14 + 9 = 23.",
+      "prompt": "Resuelve y = 3x − 5 y 2x + y = 10 por sustitución, y comprueba tu par en las dos ecuaciones."
+     },
+     "check": [
+      {
+       "q": "Resuelve y = 2x + 1 y 3x + y = 16.",
+       "choices": [
+        "(3, 7)",
+        "(5, 1)",
+        "(7, 3)",
+        "(3, 5)"
+       ],
+       "why": "3x + (2x + 1) = 16 da 5x = 15, así que x = 3 y y = 2(3) + 1 = 7. Comprueba: 9 + 7 = 16."
+      },
+      {
+       "q": "Resuelve y = 3x − 5 y 2x + y = 10.",
+       "choices": [
+        "(5, 10)",
+        "(1, −2)",
+        "(2, 6)",
+        "(3, 4)"
+       ],
+       "why": "2x + (3x − 5) = 10 da 5x = 15, así que x = 3 y y = 9 − 5 = 4. Comprueba: 6 + 4 = 10."
+      },
+      {
+       "q": "Al resolver 4x − (x + 3) = 9, un estudiante escribe 4x − x + 3 = 9. ¿Qué salió mal?",
+       "choices": [
+        "Los términos con x no se pueden combinar",
+        "La ecuación no tiene solución",
+        "El signo menos no se distribuyó al 3",
+        "El 9 debió pasarse primero"
+       ],
+       "why": "Restar toda la expresión da 4x − x − 3 = 9, así que 3x = 12 y x = 4. La versión del estudiante da x = 2, que no pasa la comprobación."
+      }
+     ],
+     "short": [
+      "To solve y = 2x + 1 and 3x + y = 16, notice that the first equation already says what y is. Replace y in the second equation with 2x + 1: 3x + (2x + 1) = 16. That gives 5x + 1 = 16, so x = 3. Then y = 2(3) + 1 = 7, and the solution is (3, 7). This method is *substitution*. Always substitute into the other equation, not the one the expression came from. Use parentheses too. In 4x − (x + 3) = 9, the minus applies to the whole x + 3, which gives 4x − x − 3 = 9, so x = 4. Then check your pair in both equations."
+     ],
+     "more": [
+      "Swapping something for an equal thing is something you do every day. If Mia is 3 years older than her brother, and her brother is 9, then Mia is 12. Substitution does exactly the same thing, but with letters in place of the names and ages.",
+      "Pick the equation and the variable that make the work easiest. If a variable already stands alone, or has a coefficient of 1, solving for it takes no fractions. Looking for the easy path first can save you many steps. Either choice leads to the same answer in the end, so you can trust whichever route you pick."
+     ],
+     "short_es": [
+      "Para resolver y = 2x + 1 y 3x + y = 16, fíjate en que la primera ecuación ya dice cuánto vale y. Reemplaza y en la segunda ecuación por 2x + 1: 3x + (2x + 1) = 16. Eso da 5x + 1 = 16, así que x = 3. Entonces y = 2(3) + 1 = 7, y la solución es (3, 7). Este método es la *sustitución*. Sustituye siempre en la otra ecuación, no en aquella de la que sacaste la expresión. Usa también paréntesis. En 4x − (x + 3) = 9, el signo menos se aplica a todo x + 3, lo que da 4x − x − 3 = 9, así que x = 4. Luego comprueba tu par en las dos ecuaciones."
+     ],
+     "more_es": [
+      "Cambiar algo por una cosa igual es algo que haces todos los días. Si Mia tiene 3 años más que su hermano, y su hermano tiene 9, entonces Mia tiene 12. La sustitución hace exactamente lo mismo, pero con letras en lugar de los nombres y las edades.",
+      "Elige la ecuación y la variable que hagan más fácil el trabajo. Si una variable ya está sola, o tiene coeficiente 1, despejarla no lleva fracciones. Buscar primero el camino fácil puede ahorrarte muchos pasos. Cualquier elección lleva a la misma respuesta al final, así que puedes confiar en el camino que elijas."
+     ]
+    },
+    {
+     "title": "Eliminación por suma",
+     "mainIdea": "Sumar dos ecuaciones es válido porque sumas cantidades iguales a ambos lados, y puede hacer desaparecer una variable.",
+     "reading": [
+      "Toma x + y = 10 y x − y = 4. Los términos con y son opuestos: +y y −y. Suma las dos ecuaciones, lado izquierdo con lado izquierdo y lado derecho con lado derecho: (x + y) + (x − y) = 10 + 4, que es 2x = 14, así que x = 7. La y desapareció. Sustituye de vuelta: 7 + y = 10, así que y = 3. Solución (7, 3). Comprueba la segunda: 7 − 3 = 4. Este método es la *eliminación*.",
+      "¿Por qué se permite sumar ecuaciones? La segunda ecuación dice que x − y y 4 son el mismo número. Sumar el mismo número a ambos lados de la primera ecuación la mantiene verdadera; solo escribiste ese número de dos maneras distintas. Esta es la propiedad de la suma de la igualdad del primer capítulo, aplicada a una ecuación completa. Si los términos que coinciden son iguales y no opuestos, resta en su lugar. Con 3x + 2y = 19 y x + 2y = 9, al restar se obtiene 2x = 10, así que x = 5 y luego 2y = 4, y = 2.",
+      "Los errores de signo son el problema usual. Al restar, resta todos los términos de la segunda ecuación, incluido su lado derecho. Y después de hallar una variable, halla la otra sustituyendo en una ecuación original, no en la combinada. Por último, comprueba el par en las dos originales: 3(5) + 2(2) = 19 y 5 + 4 = 9. Las dos son verdaderas, así que (5, 2) es correcto."
+     ],
+     "words": [
+      {
+       "w": "eliminación",
+       "d": "sumar o restar ecuaciones para que una variable se cancele"
+      },
+      {
+       "w": "términos opuestos",
+       "d": "términos como +2y y −2y que suman cero"
+      },
+      {
+       "w": "propiedad de la suma de la igualdad",
+       "d": "sumar la misma cantidad a ambos lados de una ecuación la mantiene verdadera"
+      }
+     ],
+     "look": {
+      "title": "Los opuestos se cancelan",
+      "text": "Resuelve 2x + 3y = 13 y 4x − 3y = 5. Los términos con 3y son opuestos, así que suma: 6x = 18 y x = 3. Sustituye en la primera: 6 + 3y = 13, así que 3y = 7 y y = 7/3. Comprueba la segunda: 4(3) − 3(7/3) = 12 − 7 = 5. No todas las respuestas son números enteros, y eso está bien.",
+      "prompt": "Resuelve 5x + 2y = 16 y 3x − 2y = 8 sumando. Comprueba tu respuesta en las dos ecuaciones."
+     },
+     "check": [
+      {
+       "q": "Resuelve x + y = 10 y x − y = 4 por eliminación.",
+       "choices": [
+        "(3, 7)",
+        "(7, 3)",
+        "(6, 4)",
+        "(5, 5)"
+       ],
+       "why": "Al sumar se obtiene 2x = 14, así que x = 7, y luego y = 3. Comprueba: 7 − 3 = 4."
+      },
+      {
+       "q": "Resuelve 5x + 2y = 16 y 3x − 2y = 8.",
+       "choices": [
+        "(2, 3)",
+        "(3, 1/2)",
+        "(4, −2)",
+        "(3, −1/2)"
+       ],
+       "why": "Al sumar se obtiene 8x = 24, así que x = 3. Luego 15 + 2y = 16, así que y = 1/2. Comprueba: 9 − 1 = 8."
+      },
+      {
+       "q": "¿Por qué puedes sumar dos ecuaciones de un sistema?",
+       "choices": [
+        "Porque los dos lados de cada ecuación son iguales, así que sumas cantidades iguales a ambos lados",
+        "Porque las variables son las mismas letras",
+        "Porque sumar siempre quita una variable",
+        "Porque las dos ecuaciones son rectas"
+       ],
+       "why": "La segunda ecuación dice que sus dos lados son el mismo número, así que sumarlos a los dos lados de la primera ecuación la mantiene en equilibrio."
+      }
+     ],
+     "short": [
+      "Take x + y = 10 and x − y = 4. The y terms are opposites: +y and −y. Add the equations, left side to left side and right side to right side: 2x = 14, so x = 7. The y vanished. Substitute back: 7 + y = 10, so y = 3. This method is *elimination*. Adding is allowed because the second equation says that x − y and 4 are the same number, so adding them to both sides of the first equation keeps it true. If the matching terms are equal, subtract instead. From 3x + 2y = 19 and x + 2y = 9, subtracting gives 2x = 10. When you subtract, subtract every term, including the right side. Then check in both original equations."
+     ],
+     "more": [
+      "People have solved systems this way for a very long time. A Chinese book called the Nine Chapters on the Mathematical Art, written around 200 BCE, solved systems of equations with a method much like elimination. The idea has stayed useful for about two thousand years.",
+      "Answers do not have to be whole numbers. A system can give a fraction such as y = 2/5, and a fraction or a decimal is a perfectly good coordinate. The way to know a pair is right is the same as always: put it into both of the original equations and see that both come out true."
+     ],
+     "short_es": [
+      "Toma x + y = 10 y x − y = 4. Los términos con y son opuestos: +y y −y. Suma las ecuaciones, lado izquierdo con lado izquierdo y lado derecho con lado derecho: 2x = 14, así que x = 7. La y desapareció. Sustituye de vuelta: 7 + y = 10, así que y = 3. Este método es la *eliminación*. Sumar se permite porque la segunda ecuación dice que x − y y 4 son el mismo número, así que sumarlos a ambos lados de la primera ecuación la mantiene verdadera. Si los términos que coinciden son iguales, resta en su lugar. Con 3x + 2y = 19 y x + 2y = 9, al restar se obtiene 2x = 10. Cuando restes, resta todos los términos, incluido el lado derecho. Luego comprueba en las dos ecuaciones originales."
+     ],
+     "more_es": [
+      "La gente resuelve sistemas de esta manera desde hace mucho tiempo. Un libro chino llamado Los nueve capítulos sobre el arte matemático, escrito alrededor del año 200 a. e. c., resolvía sistemas de ecuaciones con un método muy parecido a la eliminación. La idea sigue siendo útil después de unos dos mil años.",
+      "Las respuestas no tienen que ser números enteros. Un sistema puede dar una fracción como y = 2/5, y una fracción o un decimal es una coordenada perfectamente buena. La manera de saber que un par es correcto es la de siempre: ponerlo en las dos ecuaciones originales y ver que las dos resultan verdaderas."
+     ]
+    },
+    {
+     "title": "Eliminación con multiplicación",
+     "mainIdea": "Multiplica primero una o las dos ecuaciones por un número para que un par de términos se vuelvan opuestos, y luego suma.",
+     "reading": [
+      "Resuelve 2x + 3y = 12 y 4x − y = 10. Todavía no se cancela nada: al sumar se obtiene 6x + 2y = 22, que sigue teniendo dos variables. Pero al multiplicar toda la segunda ecuación por 3 se obtiene 12x − 3y = 30, y ahora los términos con y son opuestos al 3y de la primera ecuación. Multiplicar ambos lados por 3 es la propiedad de la multiplicación de la igualdad, así que la nueva ecuación es *equivalente* a la anterior. Suma: (2x + 3y) + (12x − 3y) = 12 + 30, así que 14x = 42 y x = 3.",
+      "Sustituye en una original: 4(3) − y = 10, así que y = 2. Comprueba la primera: 2(3) + 3(2) = 6 + 6 = 12. Solución (3, 2). A veces hay que multiplicar las dos ecuaciones. Para 3x + 2y = 7 y 2x + 5y = 12, multiplica la primera por 2 y la segunda por −3 para obtener 6x + 4y = 14 y −6x − 15y = −36. Suma: −11y = −22, así que y = 2. Entonces 3x + 4 = 7 da x = 1. Comprueba la segunda: 2 + 10 = 12.",
+      "Elige el *multiplicador* hallando un múltiplo común de los dos coeficientes que quieres cancelar, y dale a uno de ellos un signo negativo. El descuido clásico es multiplicar solo el lado izquierdo de una ecuación. Todos los términos, incluida la constante de la derecha, se multiplican. Otro es olvidar el cambio de signo, que hace que los términos se sumen en lugar de cancelarse. Cuando la ecuación combinada todavía tiene dos variables, vuelve a buscar uno de esos dos errores."
+     ],
+     "words": [
+      {
+       "w": "multiplicador",
+       "d": "el número por el que multiplicas toda una ecuación para preparar una cancelación"
+      },
+      {
+       "w": "equivalente",
+       "d": "una ecuación con las mismas soluciones que otra; multiplicar ambos lados por un número distinto de cero las mantiene equivalentes"
+      },
+      {
+       "w": "múltiplo común",
+       "d": "un número entre el que se dividen exactamente dos coeficientes, como 6 para 2 y 3"
+      }
+     ],
+     "look": {
+      "title": "Preparar la cancelación",
+      "text": "Resuelve 3x + 4y = 26 y 5x − 2y = 13. Multiplica la segunda por 2: 10x − 4y = 26. Suma con la primera: 13x = 52, así que x = 4. Entonces 12 + 4y = 26, así que 4y = 14 y y = 3.5. Comprueba la segunda: 5(4) − 2(3.5) = 20 − 7 = 13.",
+      "prompt": "Resuelve 2x + 5y = 1 y 3x + 2y = 7 multiplicando las dos ecuaciones. ¿Qué multiplicadores elegiste y por qué?"
+     },
+     "check": [
+      {
+       "q": "Resuelve 2x + 3y = 12 y 4x − y = 10.",
+       "choices": [
+        "(2, 2)",
+        "(3, 2)",
+        "(3, −2)",
+        "(1, 10/3)"
+       ],
+       "why": "Multiplica la segunda por 3 y suma: 14x = 42, así que x = 3. Entonces 12 − y = 10 da y = 2. Comprueba: 6 + 6 = 12."
+      },
+      {
+       "q": "Para eliminar y de 3x + 2y = 7 y 2x + 5y = 12, ¿cuáles multiplicadores sirven?",
+       "choices": [
+        "Multiplicar la primera por 2 y la segunda por 3",
+        "Multiplicar la primera por 5 y la segunda por 2, y luego sumar",
+        "Multiplicar la primera por 5 y la segunda por −2",
+        "Multiplicar solo la primera por 5"
+       ],
+       "why": "10y y −10y se cancelan: 15x + 10y = 35 y −4x − 10y = −24 suman 11x = 11, así que x = 1 y y = 2."
+      },
+      {
+       "q": "Un estudiante multiplica 4x − y = 10 por 3 y escribe 12x − 3y = 10. ¿Qué está mal?",
+       "choices": [
+        "El término con x debería ser 7x",
+        "No hay nada mal",
+        "El término con y debería quedarse en −y",
+        "También hay que multiplicar el lado derecho, lo que da 30"
+       ],
+       "why": "Multiplicar ambos lados por 3 significa que el 10 se convierte en 30. Dejar el 10 hace que la nueva ecuación no sea equivalente a la original."
+      }
+     ],
+     "short": [
+      "Solve 2x + 3y = 12 and 4x − y = 10. Adding gives 6x + 2y = 22, which still has two variables. Instead, multiply the whole second equation by 3 to get 12x − 3y = 30. Now the y terms are opposites. The new equation is *equivalent* to the old one, because multiplying both sides by the same number does not change the solutions. Add to get 14x = 42, so x = 3. Then 4(3) − y = 10 gives y = 2. Sometimes both equations need a *multiplier*. Pick them from a common multiple of the two coefficients you want to cancel, and give one a negative sign. Every term gets multiplied, including the number on the right."
+     ],
+     "more": [
+      "Multiplying an equation changes how it looks but not what it says. The equations 2x + 3y = 12 and 4x + 6y = 24 describe exactly the same line. Doubling a recipe changes how much you make, but not how it tastes. In the same way, multiplying an equation by a number other than zero keeps all of its solutions.",
+      "There is often more than one good way to set up a cancel. To solve 3x + 2y = 13 and x − y = 1, you could multiply the second equation by 2 to get 2x − 2y = 2. Adding gives 5x = 15, so x = 3. Or you could multiply the second equation by −3 to get −3x + 3y = −3. Adding gives 5y = 10, so y = 2. Both ways lead to the same pair, (3, 2)."
+     ],
+     "short_es": [
+      "Resuelve 2x + 3y = 12 y 4x − y = 10. Al sumar se obtiene 6x + 2y = 22, que todavía tiene dos variables. En cambio, multiplica toda la segunda ecuación por 3 para obtener 12x − 3y = 30. Ahora los términos con y son opuestos. La nueva ecuación es *equivalente* a la anterior, porque multiplicar ambos lados por el mismo número no cambia las soluciones. Suma para obtener 14x = 42, así que x = 3. Entonces 4(3) − y = 10 da y = 2. A veces las dos ecuaciones necesitan un *multiplicador*. Elígelos a partir de un múltiplo común de los dos coeficientes que quieres cancelar, y dale a uno un signo negativo. Se multiplican todos los términos, incluido el número de la derecha."
+     ],
+     "more_es": [
+      "Multiplicar una ecuación cambia cómo se ve, pero no lo que dice. Las ecuaciones 2x + 3y = 12 y 4x + 6y = 24 describen exactamente la misma recta. Duplicar una receta cambia cuánto preparas, pero no cómo sabe. De la misma manera, multiplicar una ecuación por un número distinto de cero conserva todas sus soluciones.",
+      "A menudo hay más de una buena manera de preparar una cancelación. Para resolver 3x + 2y = 13 y x − y = 1, podrías multiplicar la segunda ecuación por 2 para obtener 2x − 2y = 2. Al sumar se obtiene 5x = 15, así que x = 3. O podrías multiplicar la segunda ecuación por −3 para obtener −3x + 3y = −3. Al sumar se obtiene 5y = 10, así que y = 2. Las dos maneras llevan al mismo par, (3, 2)."
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Sistemas especiales y desigualdades",
+   "lessons": [
+    {
+     "title": "Ninguna solución o infinitas",
+     "mainIdea": "Las rectas paralelas dejan a un sistema sin solución, y dos formas de la misma recta dan infinitas soluciones.",
+     "reading": [
+      "Considera y = 2x + 1 y y = 2x − 3. Las dos tienen pendiente 2, así que son *rectas paralelas* que nunca se cruzan. Prueba la sustitución de todos modos: 2x + 1 = 2x − 3. Resta 2x a ambos lados: 1 = −3. Eso es falso sin importar cuánto valga x. Cuando las variables desaparecen y dejan una afirmación falsa, el sistema *no tiene solución*. Ningún par de números puede estar en las dos rectas.",
+      "Ahora considera 2x + 4y = 8 y x + 2y = 4. Multiplica la segunda por 2: 2x + 4y = 8, idéntica a la primera. Son la misma recta escrita de dos maneras, así que todos los puntos de la recta sirven: (4, 0), (0, 2), (2, 1) y una infinidad más. La eliminación lo muestra: resta la segunda ecuación duplicada de la primera y obtienes 0 = 0, una afirmación que siempre es verdadera. Eso indica *infinitas soluciones*.",
+      "Entonces hay tres resultados. Si al resolver sale un valor específico de x, las rectas se cruzan una vez y hay una solución. Si las variables se cancelan y queda algo falso como 1 = −3, no hay solución. Si se cancelan y queda algo verdadero como 0 = 0, hay infinitas soluciones. En un relato, ninguna solución podría significar que dos planes nunca cuestan lo mismo, e infinitas soluciones podría significar que dos datos «diferentes» eran en realidad el mismo dato. Una revisión rápida de las pendientes predice el resultado antes de resolver."
+     ],
+     "words": [
+      {
+       "w": "rectas paralelas",
+       "d": "rectas con la misma pendiente e interceptos distintos; nunca se encuentran"
+      },
+      {
+       "w": "no tiene solución",
+       "d": "un sistema en el que ningún par de valores satisface las dos ecuaciones"
+      },
+      {
+       "w": "infinitas soluciones",
+       "d": "un sistema cuyas ecuaciones describen la misma recta, así que todos sus puntos sirven"
+      }
+     ],
+     "look": {
+      "title": "Predice antes de resolver",
+      "text": "Sistema A: y = 3x + 2 y y = 3x + 5. La misma pendiente, interceptos distintos, así que son paralelas: ninguna solución. Sistema B: y = 3x + 2 y 2y = 6x + 4. Divide la segunda entre 2 para obtener y = 3x + 2, la misma recta: infinitas soluciones. Sistema C: y = 3x + 2 y y = −x + 6. Pendientes distintas, así que hay exactamente una solución, en x = 1, y = 5.",
+      "prompt": "Clasifica 4x + 2y = 10 y 2x + y = 3 sin resolverlas por completo. Explica qué pasa si intentas la eliminación."
+     },
+     "check": [
+      {
+       "q": "¿Cuántas soluciones tiene el sistema y = 2x + 1 y y = 2x − 3?",
+       "choices": [
+        "Una",
+        "Dos",
+        "Infinitas",
+        "Ninguna"
+       ],
+       "why": "Las dos rectas tienen pendiente 2 con interceptos distintos, así que son paralelas. La sustitución da 1 = −3, que es falso."
+      },
+      {
+       "q": "Al resolver un sistema, terminas con 0 = 0. ¿Qué significa eso?",
+       "choices": [
+        "El sistema tiene infinitas soluciones",
+        "El sistema no tiene solución",
+        "Cometiste un error de aritmética",
+        "La solución es (0, 0)"
+       ],
+       "why": "Una afirmación que siempre es verdadera significa que las dos ecuaciones describen la misma recta, así que todos sus puntos son solución."
+      },
+      {
+       "q": "¿Cuál sistema tiene exactamente una solución?",
+       "choices": [
+        "y = 4x + 1 y y = 4x + 9",
+        "x + y = 5 y 2x + 2y = 10",
+        "y = 4x + 1 y y = −4x + 9",
+        "y = 4x + 1 y 3y = 12x + 3"
+       ],
+       "why": "Las pendientes 4 y −4 son distintas, así que las rectas se cruzan una vez, en x = 1, y = 5. Los otros pares son rectas paralelas o idénticas."
+      }
+     ],
+     "short": [
+      "Take y = 2x + 1 and y = 2x − 3. Both have slope 2, so they are *parallel lines* that never cross. Substituting gives 2x + 1 = 2x − 3, so 1 = −3, which is false for every x. When the variables vanish and leave a false statement, the system has *no solution*. Now take 2x + 4y = 8 and x + 2y = 4. Multiplying the second by 2 gives the first, so they are the same line and every point on it works. Elimination ends with 0 = 0, a statement that is always true, and that means *infinitely many solutions*. If solving gives a specific x, there is one solution. A quick check of the slopes predicts the outcome."
+     ],
+     "more": [
+      "Think of two roads. Parallel roads never meet, and they stay the same distance apart. If a map drew the very same road twice, the two drawings would share every point. Most roads cross just once, at an intersection. Lines in a system behave in the same three ways.",
+      "A system with no solution is not a mistake. It tells you something true: the two conditions cannot happen together. For example, if one plan always costs $5 more than another no matter how much it is used, then there is no amount of use where the two plans cost the same."
+     ],
+     "short_es": [
+      "Toma y = 2x + 1 y y = 2x − 3. Las dos tienen pendiente 2, así que son *rectas paralelas* que nunca se cruzan. Al sustituir se obtiene 2x + 1 = 2x − 3, o sea 1 = −3, que es falso para todo x. Cuando las variables desaparecen y dejan una afirmación falsa, el sistema *no tiene solución*. Ahora toma 2x + 4y = 8 y x + 2y = 4. Al multiplicar la segunda por 2 se obtiene la primera, así que son la misma recta y todos sus puntos sirven. La eliminación termina en 0 = 0, una afirmación que siempre es verdadera, y eso significa *infinitas soluciones*. Si al resolver sale un valor específico de x, hay una solución. Una revisión rápida de las pendientes predice el resultado."
+     ],
+     "more_es": [
+      "Piensa en dos caminos. Los caminos paralelos nunca se encuentran, y se mantienen a la misma distancia. Si un mapa dibujara el mismo camino dos veces, los dos dibujos compartirían todos los puntos. La mayoría de los caminos se cruzan una sola vez, en una intersección. Las rectas de un sistema se comportan de esas mismas tres maneras.",
+      "Un sistema sin solución no es un error. Te dice algo verdadero: las dos condiciones no pueden darse juntas. Por ejemplo, si un plan siempre cuesta $5 más que otro sin importar cuánto se use, entonces no hay ninguna cantidad de uso en la que los dos planes cuesten lo mismo."
+     ]
+    },
+    {
+     "title": "Graficar una desigualdad",
+     "mainIdea": "Una desigualdad lineal sombrea una mitad del plano; la recta es la frontera, y un punto de prueba te dice qué lado.",
+     "reading": [
+      "La ecuación y = 2x + 1 es una recta. La desigualdad y ≤ 2x + 1 es toda una región: cada punto que está sobre la recta o debajo de ella. Para graficarla, primero dibuja la *recta frontera* y = 2x + 1. Como la desigualdad incluye «igual a», dibújala sólida. Luego elige un *punto de prueba* que no esté en la recta, por lo general (0, 0): ¿es 0 ≤ 2(0) + 1? Sí, 0 ≤ 1 es verdadero. Así que se sombrea el lado que contiene a (0, 0), la región debajo de la recta. Esa área sombreada es el *semiplano* de soluciones.",
+      "Para y > −x + 3, la frontera y = −x + 3 se dibuja discontinua, porque los puntos de la recta hacen falsa la desigualdad; solo cuenta el «mayor que». Prueba (0, 0): 0 > 3 es falso, así que se sombrea el otro lado, arriba de la recta. Cualquier punto del área sombreada satisface la desigualdad. Comprueba uno: (4, 2) da 2 > −4 + 3, es decir 2 > −1, verdadero.",
+      "Reescribe primero si hace falta. Para 2x + y ≥ 6, despeja y: y ≥ −2x + 6, recta sólida, y (0, 0) da 0 ≥ 6, falso, así que se sombrea arriba. Dos hábitos evitan la mayoría de los errores: prueba siempre un punto en lugar de adivinar «arriba para mayor que», porque la regla se invierte si divides entre un número negativo al despejar y, y haz siempre que el estilo de la recta coincida con el símbolo, discontinua para < y >, sólida para ≤ y ≥."
+     ],
+     "words": [
+      {
+       "w": "recta frontera",
+       "d": "la recta que se obtiene al cambiar el signo de desigualdad por un signo igual"
+      },
+      {
+       "w": "punto de prueba",
+       "d": "un punto que no está en la frontera y sirve para decidir qué lado se sombrea"
+      },
+      {
+       "w": "semiplano",
+       "d": "todo lo que está de un lado de una recta; la región solución de una desigualdad lineal"
+      }
+     ],
+     "look": {
+      "title": "Sólida o discontinua, arriba o abajo",
+      "text": "Grafica y < 0.5x + 2. La frontera y = 0.5x + 2 es discontinua, porque los puntos que están en ella no son soluciones. Prueba (0, 0): 0 < 0 + 2 es verdadero, así que se sombrea el lado que tiene el origen, que es el de abajo. El punto (2, 3) da 3 < 3, falso, así que está en la frontera y no se sombrea.",
+      "prompt": "Grafica x + y ≥ 4. ¿La recta es sólida o discontinua? ¿Qué lado se sombrea y cómo te lo dijo el punto de prueba?"
+     },
+     "check": [
+      {
+       "q": "¿Cuál punto es una solución de y ≤ 2x + 1?",
+       "choices": [
+        "(1, 5)",
+        "(0, 2)",
+        "(3, 4)",
+        "(−2, 0)"
+       ],
+       "why": "Para (3, 4): 4 ≤ 2(3) + 1 = 7, verdadero. Para (1, 5): 5 ≤ 3 es falso. Para (0, 2): 2 ≤ 1 es falso. Para (−2, 0): 0 ≤ −3 es falso."
+      },
+      {
+       "q": "¿Cómo se debe dibujar la recta frontera de y > −x + 3?",
+       "choices": [
+        "Sólida, porque es una recta",
+        "Discontinua, porque los puntos que están en ella no son soluciones",
+        "Sólida, porque 3 es positivo",
+        "Discontinua solo si la pendiente es negativa"
+       ],
+       "why": "Con una desigualdad estricta, los puntos de la recta hacen que y sea igual a −x + 3, no mayor, así que la recta es discontinua."
+      },
+      {
+       "q": "Para 2x + y ≥ 6, el punto de prueba (0, 0) da 0 ≥ 6. ¿Qué concluyes?",
+       "choices": [
+        "Sombrear el lado que contiene a (0, 0)",
+        "La desigualdad no tiene soluciones",
+        "La recta frontera debe ser discontinua",
+        "Sombrear el lado que no contiene a (0, 0)"
+       ],
+       "why": "El punto de prueba da una afirmación falsa, así que las soluciones están del otro lado de la recta."
+      }
+     ],
+     "short": [
+      "The inequality y ≤ 2x + 1 is a whole region: every point on the line or below it. To graph it, first draw the *boundary line* y = 2x + 1. It is solid, because the inequality includes 'equal to.' Then pick a *test point* not on the line, usually (0, 0). Since 0 ≤ 1 is true, shade the side that holds (0, 0). That shaded area is the *half-plane* of solutions. If the test point gives a false statement, shade the other side. For y > −x + 3, draw the boundary dashed, because points on the line make the inequality false. Always test a point, and match the line style to the symbol: dashed for < and >, solid for ≤ and ≥."
+     ],
+     "more": [
+      "A line splits the plane into two halves, and every point is in one half or on the line. That means one test point tells you about a whole half-plane at once. You do not have to check every point, only one on each side, if you want to be sure that you shaded the right side.",
+      "The point (0, 0) is the easiest test point because the arithmetic is tiny. But you cannot use it when the line passes right through it, as with y > 2x. Then choose another point that is clearly on one side, such as (1, 0) or (0, 1), and test that one instead."
+     ],
+     "short_es": [
+      "La desigualdad y ≤ 2x + 1 es toda una región: cada punto que está sobre la recta o debajo de ella. Para graficarla, primero dibuja la *recta frontera* y = 2x + 1. Es sólida, porque la desigualdad incluye «igual a». Luego elige un *punto de prueba* que no esté en la recta, por lo general (0, 0). Como 0 ≤ 1 es verdadero, se sombrea el lado que contiene a (0, 0). Esa área sombreada es el *semiplano* de soluciones. Si el punto de prueba da una afirmación falsa, se sombrea el otro lado. Para y > −x + 3, dibuja la frontera discontinua, porque los puntos de la recta hacen falsa la desigualdad. Prueba siempre un punto, y haz que el estilo de la recta coincida con el símbolo: discontinua para < y >, sólida para ≤ y ≥."
+     ],
+     "more_es": [
+      "Una recta divide el plano en dos mitades, y cada punto está en una de las mitades o sobre la recta. Eso significa que un solo punto de prueba te informa sobre todo un semiplano a la vez. No tienes que revisar cada punto, solo uno de cada lado, si quieres asegurarte de haber sombreado el lado correcto.",
+      "El punto (0, 0) es el punto de prueba más fácil porque la aritmética es mínima. Pero no puedes usarlo cuando la recta pasa justo por él, como en y > 2x. Entonces elige otro punto que esté claramente de un lado, como (1, 0) o (0, 1), y prueba ese."
+     ]
+    },
+    {
+     "title": "Sistemas de desigualdades y regiones factibles",
+     "mainIdea": "Grafica cada desigualdad y quédate solo con lo que se traslapa; esa zona es la región factible donde se cumplen todas las restricciones.",
+     "reading": [
+      "La venta de pasteles de Priya tiene límites. La mesa admite como máximo 150 artículos: c + b ≤ 150. Los ingredientes cuestan $0.30 por galleta y $0.60 por brownie, con $60 para gastar: 0.30c + 0.60b ≤ 60. Y no se puede hornear una cantidad negativa: c ≥ 0 y b ≥ 0. Juntas, estas forman un *sistema de desigualdades*. Un par (c, b) se permite solo si satisface las cuatro. Al graficar cada una como un semiplano sombreado y quedarte con la zona que se traslapa, obtienes la *región factible*.",
+      "Halla los bordes de la región cambiando cada ≤ por =. La recta c + b = 150 va de (150, 0) a (0, 150). La recta del presupuesto 0.30c + 0.60b = 60 va de (200, 0) a (0, 100). ¿Dónde se cruzan? Multiplica la ecuación del presupuesto por 10: 3c + 6b = 600. Multiplica la ecuación de la mesa por 3: 3c + 3b = 450. Resta: 3b = 150, así que b = 50 y c = 100. Comprueba el presupuesto: 0.30(100) + 0.60(50) = 30 + 30 = 60.",
+      "La región factible es la figura de cuatro lados con *vértices* en (0, 0), (150, 0), (100, 50) y (0, 100). Cualquier punto del interior sirve: (60, 40) tiene 100 artículos y cuesta 18 + 24 = $42. Cualquier punto del exterior rompe una regla: (120, 60) tiene 180 artículos, demasiados para la mesa. Los vértices son donde dos límites se agotan a la vez y, como mostrará la siguiente lección, ahí es donde viven los mejores planes."
+     ],
+     "words": [
+      {
+       "w": "sistema de desigualdades",
+       "d": "varias desigualdades que deben ser todas verdaderas para las mismas variables"
+      },
+      {
+       "w": "región factible",
+       "d": "el conjunto de puntos que satisfacen todas las desigualdades del sistema"
+      },
+      {
+       "w": "vértice",
+       "d": "una esquina de la región factible, donde se encuentran dos rectas frontera"
+      },
+      {
+       "w": "traslape",
+       "d": "el área sombreada por todas las desigualdades a la vez"
+      }
+     ],
+     "look": {
+      "title": "Adentro o afuera",
+      "text": "Las restricciones son c + b ≤ 150, 0.30c + 0.60b ≤ 60, c ≥ 0 y b ≥ 0. Prueba (80, 50): 130 artículos, bien; costo 24 + 30 = 54, bien. Adentro. Prueba (50, 90): 140 artículos, bien; costo 15 + 54 = 69, se pasa del presupuesto. Afuera. Prueba (100, 50): 150 artículos y costo 60, los dos límites justo en el tope. Un vértice.",
+      "prompt": "¿Es factible (40, 80)? Revisa todas las restricciones y di cuáles límites, si hay alguno, se agotan por completo."
+     },
+     "check": [
+      {
+       "q": "¿Dónde se cruzan c + b = 150 y 0.30c + 0.60b = 60?",
+       "choices": [
+        "(100, 50)",
+        "(50, 100)",
+        "(75, 75)",
+        "(150, 0)"
+       ],
+       "why": "Al escalar y restar se obtiene 3b = 150, así que b = 50 y c = 100. Comprueba: 150 artículos y 30 + 30 = 60 dólares."
+      },
+      {
+       "q": "¿Cuál punto NO está en la región factible?",
+       "choices": [
+        "(60, 40)",
+        "(0, 100)",
+        "(120, 60)",
+        "(100, 50)"
+       ],
+       "why": "(120, 60) tiene 180 artículos, más que los 150 de la mesa. Los otros satisfacen todas las restricciones."
+      },
+      {
+       "q": "¿Qué es un vértice de una región factible?",
+       "choices": [
+        "Cualquier punto dentro de la región",
+        "Un punto de prueba como (0, 0)",
+        "El punto más alejado del origen",
+        "Una esquina donde se encuentran dos rectas frontera"
+       ],
+       "why": "Las esquinas de la región son donde dos restricciones se agotan al mismo tiempo."
+      }
+     ],
+     "short": [
+      "Priya's bake sale has limits. The table holds at most 150 items: c + b ≤ 150. Ingredients cost $0.30 per cookie and $0.60 per brownie, with $60 to spend: 0.30c + 0.60b ≤ 60. Also c ≥ 0 and b ≥ 0. Together these form a *system of inequalities*. Graph each one as a shaded half-plane and keep the overlap. That overlap is the *feasible region*. Its edges come from turning each ≤ into =. The two main lines cross at (100, 50), where both limits are used up. Each corner is a *vertices*: (0, 0), (150, 0), (100, 50) and (0, 100). A point inside works. A point outside breaks a rule: (120, 60) has 180 items, too many for the table."
+     ],
+     "more": [
+      "You can think of a feasible region as the set of all plans that follow the rules. Many different plans can sit inside it, and the rules do not say which one is best. They only say which ones are allowed. Choosing among the allowed plans is the next step, and it comes in the next lesson.",
+      "Adding one more rule can only make the region smaller, or leave it the same. If the club added a rule that no more than 80 brownies could be baked, the region would lose every point with more than 80 brownies. Each new limit trims the region, and the vertices of the trimmed region can be new corners."
+     ],
+     "short_es": [
+      "La venta de pasteles de Priya tiene límites. La mesa admite como máximo 150 artículos: c + b ≤ 150. Los ingredientes cuestan $0.30 por galleta y $0.60 por brownie, con $60 para gastar: 0.30c + 0.60b ≤ 60. Además, c ≥ 0 y b ≥ 0. Juntas, estas forman un *sistema de desigualdades*. Grafica cada una como un semiplano sombreado y quédate con el traslape. Ese traslape es la *región factible*. Sus bordes salen de cambiar cada ≤ por =. Las dos rectas principales se cruzan en (100, 50), donde se agotan los dos límites. La región tiene *vértices* en (0, 0), (150, 0), (100, 50) y (0, 100). Un punto del interior sirve. Un punto del exterior rompe una regla: (120, 60) tiene 180 artículos, demasiados para la mesa."
+     ],
+     "more_es": [
+      "Puedes pensar en una región factible como el conjunto de todos los planes que siguen las reglas. Muchos planes distintos pueden estar dentro de ella, y las reglas no dicen cuál es el mejor. Solo dicen cuáles se permiten. Elegir entre los planes permitidos es el siguiente paso, y llega en la próxima lección.",
+      "Agregar una regla más solo puede hacer más pequeña la región, o dejarla igual. Si el club agregara una regla de que no se pueden hornear más de 80 brownies, la región perdería todos los puntos con más de 80 brownies. Cada nuevo límite recorta la región, y los vértices de la región recortada pueden ser esquinas nuevas."
+     ]
+    }
+   ]
+  },
+  {
+   "title": "La mejor mezcla",
+   "lessons": [
+    {
+     "title": "Problemas de mezclas",
+     "mainIdea": "En un problema de mezclas, una ecuación cuenta la cantidad total y otra cuenta el total del ingrediente.",
+     "reading": [
+      "Un puesto de jugos tiene una bebida con 10% de jugo y otra con 40% de jugo. Quiere 30 litros de una mezcla al 20%. ¿Cuánto de cada una? Sea x los litros de la bebida al 10% y y los litros de la bebida al 40%. La ecuación de la cantidad cuenta los litros: x + y = 30. La ecuación de la *concentración* cuenta el jugo puro: 0.10x + 0.40y es el jugo de la mezcla, y debe ser igual al 20% de 30 litros, que es 0.20 × 30 = 6. Así que 0.10x + 0.40y = 6.",
+      "Resuelve por sustitución. De la primera, y = 30 − x. Sustituye: 0.10x + 0.40(30 − x) = 6. Distribuye: 0.10x + 12 − 0.40x = 6. Combina: −0.30x + 12 = 6. Resta 12: −0.30x = −6. Divide: x = 20. Entonces y = 10. Comprueba: 20 + 10 = 30 litros, y 0.10(20) + 0.40(10) = 2 + 4 = 6 litros de jugo, que es el 20% de 30. Veinte litros de la débil y diez de la fuerte.",
+      "Los problemas de monedas y de boletos también son problemas de mezclas. Un frasco tiene 40 monedas, todas de 5 y de 10 centavos, que valen $3.10. Conteo: n + d = 40. *Valor*: 0.05n + 0.10d = 3.10. Sustituye n = 40 − d: 0.05(40 − d) + 0.10d = 3.10, así que 2 − 0.05d + 0.10d = 3.10, así que 0.05d = 1.10 y d = 22, n = 18. Comprueba: 18(0.05) + 22(0.10) = 0.90 + 2.20 = 3.10. El error común es escribir la ecuación de valor con las cantidades en lugar de los valores por artículo."
+     ],
+     "words": [
+      {
+       "w": "problema de mezclas",
+       "d": "un problema que combina dos cosas con diferente fuerza o valor en un solo total"
+      },
+      {
+       "w": "concentración",
+       "d": "la fracción de una mezcla que es el ingrediente puro, como 20% de jugo"
+      },
+      {
+       "w": "ecuación de valor",
+       "d": "una ecuación que suma lo que valen los artículos, no cuántos hay"
+      }
+     ],
+     "look": {
+      "title": "Monedas de 5 y de 10 centavos",
+      "text": "Un frasco tiene 40 monedas que valen $3.10, solo de 5 y de 10 centavos. Conteo: n + d = 40. Valor: 0.05n + 0.10d = 3.10. Atajo de razonamiento: si las 40 fueran de 5 centavos, el frasco tendría $2.00. Los $1.10 extra vienen de las monedas de 10 centavos, que valen 5 centavos más cada una, así que 1.10 ÷ 0.05 = 22 monedas de 10 centavos y 18 de 5 centavos.",
+      "prompt": "Un frasco tiene 50 monedas que valen $6.50, solo de 10 y de 25 centavos. Escribe las dos ecuaciones y resuelve."
+     },
+     "check": [
+      {
+       "q": "Para hacer 30 litros de jugo al 20% con bebidas al 10% y al 40%, ¿cuánto de la bebida al 10% se necesita?",
+       "choices": [
+        "10 litros",
+        "15 litros",
+        "20 litros",
+        "24 litros"
+       ],
+       "why": "x + y = 30 y 0.10x + 0.40y = 6 dan x = 20 y y = 10. Comprueba: 2 + 4 = 6 litros de jugo."
+      },
+      {
+       "q": "Un frasco tiene 40 monedas de 5 y de 10 centavos que valen $3.10. ¿Cuántas son de 10 centavos?",
+       "choices": [
+        "18",
+        "22",
+        "31",
+        "20"
+       ],
+       "why": "0.05n + 0.10d = 3.10 con n = 40 − d da 0.05d = 1.10, así que d = 22. Entonces hay 18 de 5 centavos: 0.90 + 2.20 = 3.10."
+      },
+      {
+       "q": "¿Cuál ecuación suma correctamente el jugo de x litros de bebida al 10% y y litros de bebida al 40% para hacer 30 litros al 20%?",
+       "choices": [
+        "10x + 40y = 20",
+        "x + y = 20",
+        "0.10x + 0.40y = 30",
+        "0.10x + 0.40y = 6"
+       ],
+       "why": "La mezcla contiene 0.20 × 30 = 6 litros de jugo puro, y 0.10x + 0.40y cuenta el jugo que viene de cada bebida."
+      }
+     ],
+     "short": [
+      "A juice stand has a 10% juice drink and a 40% juice drink, and it wants 30 liters of a 20% mix. Let x be liters of the 10% drink and y liters of the 40% drink. One equation counts liters: x + y = 30. The *concentration* equation counts pure juice. The amount 0.10x + 0.40y must equal 20% of 30, which is 6. Substituting y = 30 − x gives x = 20 and y = 10. Coin problems work the same way. For 40 nickels and dimes worth $3.10, count with n + d = 40. The *value* equation uses what each coin is worth: 0.05n + 0.10d = 3.10. This gives d = 22 and n = 18. Use the value of each item, not just the counts."
+     ],
+     "more": [
+      "Mixtures are not only about drinks. A coach mixing a sports drink, a farmer blending two kinds of seed, and a pool worker adding chlorine all solve the same kind of problem. In each case, one equation counts the total amount and another counts how much of the special ingredient is in it.",
+      "The answer to a mixture must land between the two strengths. In the juice stand problem, a 20% mix has to be stronger than 10% and weaker than 40%. If your work says the mix is 50% juice, there is an error, because mixing two drinks can never make one stronger than the strongest drink."
+     ],
+     "short_es": [
+      "Un puesto de jugos tiene una bebida con 10% de jugo y otra con 40% de jugo, y quiere 30 litros de una mezcla al 20%. Sea x los litros de la bebida al 10% y y los litros de la bebida al 40%. Una ecuación cuenta los litros: x + y = 30. La ecuación de la *concentración* cuenta el jugo puro. La cantidad 0.10x + 0.40y debe ser igual al 20% de 30, que es 6. Al sustituir y = 30 − x se obtiene x = 20 y y = 10. Los problemas de monedas funcionan igual. Para 40 monedas de 5 y de 10 centavos que valen $3.10, cuenta con n + d = 40. La ecuación de *valor* usa lo que vale cada moneda: 0.05n + 0.10d = 3.10. Esto da d = 22 y n = 18. Usa el valor de cada artículo, no solo las cantidades."
+     ],
+     "more_es": [
+      "Las mezclas no son solo de bebidas. Un entrenador que prepara una bebida deportiva, un agricultor que combina dos tipos de semilla y una persona que agrega cloro a una alberca resuelven el mismo tipo de problema. En cada caso, una ecuación cuenta la cantidad total y otra cuenta cuánto del ingrediente especial hay en ella.",
+      "La respuesta de una mezcla debe quedar entre las dos fuerzas. En el problema del puesto de jugos, una mezcla al 20% tiene que ser más fuerte que el 10% y más débil que el 40%. Si tu trabajo dice que la mezcla tiene 50% de jugo, hay un error, porque mezclar dos bebidas nunca puede hacer una más fuerte que la bebida más fuerte."
+     ]
+    },
+    {
+     "title": "Problemas de negocios y punto de equilibrio",
+     "mainIdea": "Un negocio llega al equilibrio donde el costo es igual a los ingresos, y los problemas de boletos reparten un conteo total y un valor total.",
+     "reading": [
+      "Una empresa de estudiantes estampa camisetas. El equipo cuesta $200 y cada camiseta cuesta $3 de hacer, así que el costo es C = 200 + 3x para x camisetas. Cada camiseta se vende a $8, así que los *ingresos* son R = 8x. El *punto de equilibrio* es donde R = C: 8x = 200 + 3x. Resta 3x: 5x = 200. Así que x = 40. Con 40 camisetas, el costo y los ingresos son de $320. Vender menos de 40 pierde dinero; vender más deja una *ganancia*, que es R − C = 5x − 200. Con 100 camisetas, la ganancia es 500 − 200 = $300.",
+      "Las ventas de boletos son un problema de dos ecuaciones. Una obra escolar vendió 200 boletos por $1,520. Los boletos de adulto costaban $10 y los de estudiante $6. Sean a y s las cantidades. Conteo: a + s = 200. Dinero: 10a + 6s = 1520. Sustituye s = 200 − a: 10a + 6(200 − a) = 1520, así que 10a + 1200 − 6a = 1520, así que 4a = 320 y a = 80. Entonces s = 120. Comprueba: 80 + 120 = 200 y 800 + 720 = 1,520.",
+      "La eliminación también funciona: multiplica la ecuación del conteo por 6 para obtener 6a + 6s = 1200 y réstala de la ecuación del dinero para obtener 4a = 320. La misma respuesta. Uses el método que uses, nombra la respuesta con palabras: 80 boletos de adulto y 120 boletos de estudiante. Un par suelto como (80, 120) es fácil de invertir y, invertido, no pasa la comprobación del dinero: 800 + 480 son solo $1,280."
+     ],
+     "words": [
+      {
+       "w": "ingresos",
+       "d": "el dinero que entra por las ventas antes de restar los costos"
+      },
+      {
+       "w": "punto de equilibrio",
+       "d": "el número de artículos en el que los ingresos son iguales al costo, así que la ganancia es cero"
+      },
+      {
+       "w": "ganancia",
+       "d": "ingresos menos costo; una ganancia negativa es una pérdida"
+      }
+     ],
+     "look": {
+      "title": "Ganancia de las camisetas según las vendidas",
+      "rows": [
+       "0 camisetas",
+       "20 camisetas",
+       "40 camisetas",
+       "60 camisetas",
+       "100 camisetas"
+      ],
+      "unit": "dólares de ganancia",
+      "prompt": "La ganancia sube $100 por cada 20 camisetas. Usa ese patrón para hallar la ganancia con 140 camisetas y luego confírmala con la fórmula."
+     },
+     "check": [
+      {
+       "q": "El costo es 200 + 3x y los ingresos son 8x. ¿Cuál es el número de camisetas en el punto de equilibrio?",
+       "choices": [
+        "25",
+        "40",
+        "66",
+        "200"
+       ],
+       "why": "8x = 200 + 3x da 5x = 200, así que x = 40. Dividir 200 entre 8 ignora el costo de $3 por camiseta."
+      },
+      {
+       "q": "Una obra vendió 200 boletos por $1,520, a $10 los de adulto y a $6 los de estudiante. ¿Cuántos boletos de adulto se vendieron?",
+       "choices": [
+        "120",
+        "152",
+        "80",
+        "100"
+       ],
+       "why": "10a + 6(200 − a) = 1520 da 4a = 320, así que a = 80. Comprueba: 800 + 6(120) = 1,520."
+      },
+      {
+       "q": "Con 100 camisetas, ¿cuál es la ganancia si el costo es 200 + 3x y los ingresos son 8x?",
+       "choices": [
+        "$300",
+        "$800",
+        "$500",
+        "$100"
+       ],
+       "why": "Ingresos de 800 menos costo de 500 son 300. Con 5x − 200 se obtienen los mismos 300."
+      }
+     ],
+     "short": [
+      "A student startup prints T-shirts. Equipment costs $200 and each shirt costs $3 to make, so cost is C = 200 + 3x. Each shirt sells for $8, so *revenue* is R = 8x. The *break-even point* is where R = C: 8x = 200 + 3x, so 5x = 200 and x = 40. At 40 shirts, both are $320. Selling more earns *profit*, which is R − C = 5x − 200. At 100 shirts, profit is $300. Ticket problems use two equations, one for the count of tickets and one for the money. A play sold 200 tickets for $1,520 at $10 and $6. Substituting s = 200 − a gives a = 80 adult tickets and s = 120 student tickets. Label the answer in words."
+     ],
+     "more": [
+      "Cost and revenue each tell their own story. The fixed cost, $200, is paid even if no shirt is sold. The cost per shirt, $3, grows with each one made. The price, $8, is what each shirt brings in. Profit grows only after the early sales have covered the fixed cost.",
+      "Break-even is the first question many new businesses ask: how many must we sell before we stop losing money? The answer can help decide the price. If the shirt price were $10 instead of $8, the break-even number would fall. Then 10x = 200 + 3x gives x of about 28.6, so the shop would need 29 shirts."
+     ],
+     "short_es": [
+      "Una empresa de estudiantes estampa camisetas. El equipo cuesta $200 y cada camiseta cuesta $3 de hacer, así que el costo es C = 200 + 3x. Cada camiseta se vende a $8, así que los *ingresos* son R = 8x. El *punto de equilibrio* es donde R = C: 8x = 200 + 3x, así que 5x = 200 y x = 40. Con 40 camisetas, los dos son de $320. Vender más deja *ganancia*, que es R − C = 5x − 200. Con 100 camisetas, la ganancia es de $300. Los problemas de boletos usan dos ecuaciones, una para la cantidad de boletos y otra para el dinero. Una obra vendió 200 boletos por $1,520 a $10 y a $6. Al sustituir s = 200 − a se obtiene a = 80 boletos de adulto y s = 120 boletos de estudiante. Nombra la respuesta con palabras."
+     ],
+     "more_es": [
+      "El costo y los ingresos cuentan cada uno su propia historia. El costo fijo, $200, se paga aunque no se venda ninguna camiseta. El costo por camiseta, $3, crece con cada una que se hace. El precio, $8, es lo que aporta cada camiseta. La ganancia solo crece cuando las primeras ventas ya cubrieron el costo fijo.",
+      "El punto de equilibrio es la primera pregunta de muchos negocios nuevos: ¿cuántas debemos vender antes de dejar de perder dinero? La respuesta puede ayudar a decidir el precio. Si el precio de la camiseta fuera $10 en lugar de $8, el número del punto de equilibrio bajaría. Entonces 10x = 200 + 3x da una x de unos 28.6, así que la tienda necesitaría 29 camisetas."
+     ]
+    },
+    {
+     "title": "La mejor mezcla dentro de los límites",
+     "mainIdea": "Para hallar el mejor plan con varias restricciones, evalúa la meta en cada vértice de la región factible.",
+     "reading": [
+      "Priya quiere la mayor ganancia: $0.70 por galleta y $1.50 por brownie, así que la meta es P = 0.70c + 1.50b. Este es su *objetivo*. Las restricciones son la mesa, c + b ≤ 150; el presupuesto, 0.30c + 0.60b ≤ 60; la regla del asesor, c ≥ 40; y b ≥ 0. Elegir el mejor punto de una región factible para una meta lineal se llama *programación lineal*, y su dato clave es sencillo: el mejor valor siempre ocurre en un vértice de la región.",
+      "Así que haz la lista de los vértices. Dos de ellos salen de c = 40. En el eje c es (40, 0). En la recta del presupuesto, 0.30(40) + 0.60b = 60 da 12 + 0.60b = 60, así que b = 80: el punto (40, 80). Las otras esquinas son (150, 0), donde la mesa está llena de galletas, y (100, 50), donde se cruzan las rectas de la mesa y del presupuesto. Ahora evalúa el objetivo en cada una: (40, 0) da 28; (150, 0) da 105; (100, 50) da 70 + 75 = 145; (40, 80) da 28 + 120 = 148.",
+      "El plan *óptimo* es 40 galletas y 80 brownies, con $148 de ganancia. Compruébalo con todas las restricciones: 120 artículos caben en la mesa, 12 + 48 = $60 usa todo el presupuesto, y 40 galletas cumplen con la regla del asesor. Fíjate en que el ganador no es la esquina con más artículos; usa todo el presupuesto en el artículo de mayor ganancia mientras cumple la regla de las galletas. Si las restricciones cambian, la región cambia, los vértices se mueven y el mejor plan puede cambiar con ellos. Por eso las empresas repiten este cálculo siempre que cambian los precios."
+     ],
+     "words": [
+      {
+       "w": "objetivo",
+       "d": "la cantidad que quieres hacer lo más grande o lo más pequeña posible, como la ganancia"
+      },
+      {
+       "w": "programación lineal",
+       "d": "hallar el mejor valor de un objetivo lineal dentro de una región factible"
+      },
+      {
+       "w": "óptimo",
+       "d": "lo mejor posible dentro de las restricciones"
+      }
+     ],
+     "look": {
+      "title": "Ganancia en cada vértice",
+      "rows": [
+       "40 galletas, 0 brownies",
+       "150 galletas, 0 brownies",
+       "100 galletas, 50 brownies",
+       "40 galletas, 80 brownies"
+      ],
+      "unit": "dólares de ganancia",
+      "prompt": "Supón que la ganancia por brownie baja a $1.00 cada uno. Calcula de nuevo las cuatro esquinas. ¿Cambia la mejor esquina?"
+     },
+     "check": [
+      {
+       "q": "¿Cuál plan da la mayor ganancia para P = 0.70c + 1.50b dentro de las restricciones de la venta de pasteles?",
+       "choices": [
+        "150 galletas, 0 brownies",
+        "100 galletas, 50 brownies",
+        "40 galletas, 80 brownies",
+        "40 galletas, 0 brownies"
+       ],
+       "why": "En (40, 80), P = 28 + 120 = 148, el mayor de los valores de los vértices 28, 105, 145 y 148."
+      },
+      {
+       "q": "¿Dónde se encuentran la recta c = 40 y la recta del presupuesto 0.30c + 0.60b = 60?",
+       "choices": [
+        "(40, 60)",
+        "(40, 100)",
+        "(40, 110)",
+        "(40, 80)"
+       ],
+       "why": "0.30(40) = 12, así que 0.60b = 48 y b = 80."
+      },
+      {
+       "q": "¿Por qué revisar solo los vértices de la región factible?",
+       "choices": [
+        "El mejor valor de un objetivo lineal siempre ocurre en una esquina",
+        "Los puntos del interior de la región nunca se permiten",
+        "Los vértices son los únicos puntos con números enteros",
+        "El objetivo vale cero en todos los demás lugares"
+       ],
+       "why": "Un objetivo lineal crece de manera constante en una dirección, así que alcanza su mayor valor permitido en un borde y, en concreto, en una esquina de la región."
+      }
+     ],
+     "short": [
+      "Priya wants the most profit: $0.70 per cookie and $1.50 per brownie, so P = 0.70c + 1.50b. This is her *objective*. The constraints are c + b ≤ 150, 0.30c + 0.60b ≤ 60, c ≥ 40 and b ≥ 0. Choosing the best point in a feasible region for a linear goal is *linear programming*, and its key fact is that the best value always occurs at a vertex. The corners are (40, 0), (150, 0), (100, 50), and (40, 80), where c = 40 meets the budget line. The objective gives 28, 105, 145 and 148. The *optimal* plan is 40 cookies and 80 brownies, for $148 profit, and it meets every constraint. If the constraints change, the vertices move, and the best plan can change too."
+     ],
+     "more": [
+      "Linear programming became practical in 1947, when George Dantzig developed the simplex method. Today businesses use the same idea to plan how to use limited time, money and materials. The bake sale is a small case of a very large family of problems.",
+      "Here is why the corners win. Picture sliding the line P = 0.70c + 1.50b across the region in the direction of larger profit. The last place that line touches the region is a corner, or sometimes a whole edge. So a corner is always among the best points. If an edge ties, both of its corners tie."
+     ],
+     "short_es": [
+      "Priya quiere la mayor ganancia: $0.70 por galleta y $1.50 por brownie, así que P = 0.70c + 1.50b. Este es su *objetivo*. Las restricciones son c + b ≤ 150, 0.30c + 0.60b ≤ 60, c ≥ 40 y b ≥ 0. Elegir el mejor punto de una región factible para una meta lineal es la *programación lineal*, y su dato clave es que el mejor valor siempre ocurre en un vértice. Las esquinas son (40, 0), (150, 0), (100, 50) y (40, 80), donde c = 40 se encuentra con la recta del presupuesto. El objetivo da 28, 105, 145 y 148. El plan *óptimo* es 40 galletas y 80 brownies, con $148 de ganancia, y cumple todas las restricciones. Si las restricciones cambian, los vértices se mueven y el mejor plan también puede cambiar."
+     ],
+     "more_es": [
+      "La programación lineal se volvió práctica en 1947, cuando George Dantzig desarrolló el método símplex. Hoy las empresas usan la misma idea para planear cómo usar tiempo, dinero y materiales limitados. La venta de pasteles es un caso pequeño de una familia muy grande de problemas.",
+      "Esta es la razón por la que ganan las esquinas. Imagina que deslizas la recta P = 0.70c + 1.50b por la región en la dirección de mayor ganancia. El último lugar donde esa recta toca la región es una esquina, o a veces todo un borde. Así que una esquina siempre está entre los mejores puntos. Si un borde empata, sus dos esquinas empatan."
+     ]
+    }
+   ]
+  }
+ ],
+ "review": [
+  {
+   "q": "¿Cuál par resuelve x + y = 12 y x − y = 2?",
+   "choices": [
+    "(7, 5)",
+    "(5, 7)",
+    "(6, 6)",
+    "(8, 4)"
+   ],
+   "why": "Al sumar las ecuaciones se obtiene 2x = 14, así que x = 7 y y = 5. Comprueba: 7 − 5 = 2."
+  },
+  {
+   "q": "Resuelve y = x + 3 y 2x + y = 12 por sustitución.",
+   "choices": [
+    "(4, 7)",
+    "(5, 2)",
+    "(3, 6)",
+    "(2, 5)"
+   ],
+   "why": "2x + (x + 3) = 12 da 3x = 9, así que x = 3 y y = 6. Comprueba: 6 + 6 = 12."
+  },
+  {
+   "q": "Para eliminar x de 3x + 2y = 16 y 6x − y = 7, ¿qué podrías hacer primero?",
+   "choices": [
+    "Sumar las ecuaciones tal como están",
+    "Multiplicar la primera ecuación por −2",
+    "Multiplicar la segunda ecuación por 2",
+    "Multiplicar la primera ecuación por 2"
+   ],
+   "why": "Al multiplicar la primera por −2 se obtiene −6x − 4y = −32, que cancela el 6x al sumarla con la segunda y deja −5y = −25, así que y = 5."
+  },
+  {
+   "q": "¿Cuántas soluciones tienen y = 3x − 4 y 2y = 6x − 8?",
+   "choices": [
+    "Ninguna",
+    "Una",
+    "Dos",
+    "Infinitas"
+   ],
+   "why": "Al dividir la segunda ecuación entre 2 se obtiene y = 3x − 4, la misma recta, así que todos sus puntos son solución."
+  },
+  {
+   "q": "¿Cuál punto satisface y > x − 2?",
+   "choices": [
+    "(5, 1)",
+    "(3, 1)",
+    "(1, 3)",
+    "(4, 2)"
+   ],
+   "why": "Para (1, 3): 3 > −1 es verdadero. Para (5, 1): 1 > 3 es falso. Para (3, 1): 1 > 1 es falso. Para (4, 2): 2 > 2 es falso."
+  },
+  {
+   "q": "Una mezcla de jugo al 10% y al 40% debe dar 30 litros al 20%. ¿Cuál sistema es correcto?",
+   "choices": [
+    "x + y = 30 y 0.10x + 0.40y = 20",
+    "x + y = 20 y 0.10x + 0.40y = 30",
+    "x + y = 30 y 10x + 40y = 30",
+    "x + y = 30 y 0.10x + 0.40y = 6"
+   ],
+   "why": "Los litros suman 30 y el jugo puro suma 0.20 × 30 = 6 litros."
+  },
+  {
+   "q": "El costo es 150 + 2x y cada artículo se vende a $7. ¿Cuál es el número de artículos en el punto de equilibrio?",
+   "choices": [
+    "21",
+    "30",
+    "75",
+    "50"
+   ],
+   "why": "7x = 150 + 2x da 5x = 150, así que x = 30. El costo y los ingresos son de $210 ahí."
+  },
+  {
+   "q": "¿Dónde se encuentra el mejor valor de un objetivo lineal en una región factible?",
+   "choices": [
+    "En el centro de la región",
+    "En el origen",
+    "En un vértice de la región",
+    "Solo a lo largo del borde más largo"
+   ],
+   "why": "Para un objetivo lineal, el máximo o el mínimo siempre ocurre en una esquina de la región factible, así que evalúas el objetivo en cada vértice."
+  }
+ ]
+}

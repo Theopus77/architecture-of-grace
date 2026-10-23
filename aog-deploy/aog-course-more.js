@@ -48,7 +48,7 @@
     a = fold(a); b = fold(b);
     if (a.indexOf(b) > -1 || b.indexOf(a) > -1) return true;
     var n = 0, m = Math.min(a.length, b.length); while (n < m && a.charAt(n) === b.charAt(n)) n++;
-    return n >= 5 && n >= 0.7 * m;
+    return n >= 4 && n >= 0.6 * m;
   }
   function kw(text, words) {
     return esc(text).replace(/\*([^*]+)\*/g, function (_, w) {

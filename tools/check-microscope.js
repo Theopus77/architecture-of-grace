@@ -16,7 +16,7 @@
      · the lessons still count (a few lesson steps on depth slides), the Home Screen app links are there, and every view
        fits an iPhone and an iPad in English and Spanish with no sideways scroll,
      · a lesson's Try it link (?slide=onion, ?slide=elodea; AOG-MICRO-LINK-V1) opens the lab with that slide on the stage,
-       in focus, with no errors, and still while idle.
+       in focus, with no errors, still while idle, and ticks no lesson step the learner did not do.
        node tools/check-microscope.js
    Exit code 1 when anything fails. Run it after any change to science-microscope.html or aog-micro-*.js (see CLAUDE.md). */
 const path = require("path"), fs = require("fs"), http = require("http"), cp = require("child_process");
@@ -261,6 +261,11 @@ const DESK = { viewport: { width: 1280, height: 900 }, deviceScaleFactor: 1 };
     ok(lk.page === "lab" && lk.hash === "#lab" && lk.spec === id && lk.menu === id && lk.obj === 4 && lk.lamp && lk.band === "in" && lk.depth && st.sd > 1.5 && st.mean > 8,
        `${name}: ?slide=${id} opens the lab with ${id} on the stage, lamp on, 4×, in focus (${st.mean.toFixed(0)}±${st.sd.toFixed(1)})`);
     ok(!lk.playing && !q1[2] && q1[0] === q0[0] && q1[1] === q0[1], `${name}: ?slide=${id} is still while idle (${q1[0] - q0[0]} frames in 2.5 s; nothing plays until Play)`);
+    const tk = await p.evaluate(sid => { const first = STAIR[0].steps.filter(k => S.missions[k] && k !== "low"), own0 = !!S.missions["sl_" + sid + "_1"];
+      const kn = document.querySelector('#view [data-knob="coarse"]'); if (kn) { kn.value = String(S.lab.coarse); kn.dispatchEvent(new Event("input")); }
+      return { first, own0, own1: !!S.missions["sl_" + sid + "_1"], lamp: !!S.missions.lamp, knob: !!kn }; }, id);
+    ok(!tk.first.length && !tk.own0, `${name}: ?slide=${id} ticks no lesson step on its own (lesson 1: ${tk.first.join(", ") || "none ticked"}; "${id} sharp at 4×" unticked)`);
+    ok(tk.knob && tk.own1 && !tk.lamp, `${name}: once the learner turns the focus knob, "${id} sharp at 4×" ticks; the lamp the link turned on still does not`);
     ok(!p.errs.length, `${name}: ?slide=${id} has no console errors` + (p.errs.length ? ": " + p.errs[0] : ""));
     await p.context().close();
   }
