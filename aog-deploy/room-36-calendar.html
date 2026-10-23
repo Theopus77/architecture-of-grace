@@ -50,7 +50,8 @@ section.card{scroll-margin-top:90px}
 .tools label,.field label{display:block;font-weight:700;font-size:15px;margin:0 0 6px}
 .tools .pickwrap{flex:1 1 260px;min-width:0}
 select{width:100%;min-height:48px;font-size:17px;padding:8px 12px;border:1.5px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);font-weight:600}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:46px;padding:0 16px;border-radius:999px;border:1.5px solid var(--gold);background:var(--card);color:var(--ink);font:700 15px/1.2 inherit;text-decoration:none;cursor:pointer}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:46px;padding:0 16px;border-radius:999px;border:1.5px solid var(--gold);background:var(--card);color:var(--ink);font-family:inherit;font-weight:700;font-size:15px;line-height:1.2;text-decoration:none;cursor:pointer}
+.btn.sm{min-height:44px;padding:0 14px;border-color:var(--line);font-size:14.5px}
 .btn.main{background:var(--navy);border-color:var(--navy);color:#F4EEE2}
 [data-theme="dark"] .btn.main{background:#F2C964;border-color:#F2C964;color:#0A1E33}
 .btn[aria-pressed="true"]{background:var(--navy);border-color:var(--navy);color:#F4EEE2}
@@ -62,7 +63,7 @@ select{width:100%;min-height:48px;font-size:17px;padding:8px 12px;border:1.5px s
 @media (min-width:720px){.setup{grid-template-columns:1fr 1fr}}
 .seg{display:flex;gap:8px}
 .seg .btn{flex:1 1 0}
-.status{display:flex;gap:10px;align-items:flex-start;font-size:15.5px;color:var(--ink);background:var(--chip);border-radius:12px;padding:10px 12px;margin:14px 0 0}
+.status{display:block;font-size:15.5px;color:var(--ink);background:var(--chip);border-radius:12px;padding:10px 12px;margin:14px 0 0}
 .status b{color:var(--sage)}
 .status.bad b{color:var(--warn)}
 .status p{margin:0}
@@ -88,7 +89,7 @@ select{width:100%;min-height:48px;font-size:17px;padding:8px 12px;border:1.5px s
 .wk .w{font:800 12.5px/1.3 Inter,sans-serif;letter-spacing:.04em;text-transform:uppercase;color:var(--soft);padding-top:3px}
 .wk .rest{color:var(--soft);font-size:15px;background:var(--rest);border-radius:8px;padding:6px 8px}
 .wk .free{color:var(--soft);font-size:15px;padding-top:2px}
-.lk{display:block;width:100%;text-align:left;background:none;border:0;padding:4px 0;min-height:44px;color:var(--ink);font:700 16px/1.35 inherit;cursor:pointer;text-decoration:underline;text-decoration-color:var(--gold);text-underline-offset:3px}
+.lk{display:block;width:100%;text-align:left;background:none;border:0;padding:4px 0;min-height:44px;color:var(--ink);font-family:inherit;font-weight:700;font-size:16px;line-height:1.35;cursor:pointer;text-decoration:underline;text-decoration-color:var(--gold);text-underline-offset:3px}
 .wk .rd,.wk .ev,.wk .mv{font-size:14.5px;color:var(--soft);margin:2px 0 0}
 .wk .mv{font-style:italic}
 .ways{display:grid;grid-template-columns:1fr;gap:10px;margin:8px 0 14px}
@@ -183,6 +184,7 @@ details[open].chk summary::before,details[open].fold summary::before{content:"�
 .sheet tr{break-inside:avoid;page-break-inside:avoid}
 .sheet td.r{color:#555;font-style:italic}
 .sheet td.blank{width:14%}
+.sheet td:first-child{white-space:nowrap}
 .sheet ul{margin:0;padding-left:14pt}
 .sheet li{margin:0 0 3pt}
 .sheet.snug{font-size:11pt;line-height:1.32}
@@ -266,8 +268,9 @@ details[open].chk summary::before,details[open].fold summary::before{content:"�
       <div class="way"><b><span data-en="In class" data-es="En clase">In class</span></b><span data-en="Read it aloud in the days before the lesson, about 150 words a minute. Split a long chapter over two days." data-es="Léelo en voz alta en los días antes de la lección, unas 150 palabras por minuto. Divide un capítulo largo en dos días.">Read it aloud in the days before the lesson, about 150 words a minute. Split a long chapter over two days.</span></div>
       <div class="way"><b><span data-en="At home" data-es="En casa">At home</span></b><span data-en="Send the chapter's link home. A family can read it together. Three chapters are read in class only." data-es="Envía a casa el enlace del capítulo. La familia puede leerlo junta. Tres capítulos se leen solo en clase.">Send the chapter's link home. A family can read it together. Three chapters are read in class only.</span></div>
     </div>
-    <ul class="rlist" id="rlist"></ul>
-    <p class="sub" id="rtotal" style="margin-top:10px"></p>
+    <p class="sub" id="rtotal"></p>
+    <details class="fold" id="rfold"><summary><span data-en="All 22 chapters, in order" data-es="Los 22 capítulos, en orden">All 22 chapters, in order</span></summary>
+    <ul class="rlist" id="rlist"></ul></details>
   </section>
 
   <section class="card" id="lesson" aria-labelledby="h-lesson">
@@ -310,7 +313,8 @@ var MON=[["September","Septiembre"],["October","Octubre"],["November","Noviembre
 var UNITS=[null,["Identity","Identidad"],["Self-Compassion","Autocompasión"],["Empathy & Forgiveness","Empatía y perdón"],["Grace & Generosity","Gracia y generosidad"]];
 function code(l){ return "U"+l.u+"·L"+l.n; }
 function byId(id){ for(var i=0;i<LS.length;i++) if(LS[i].id===id) return LS[i]; return null; }
-function wkName(w){ return [MON[w[0]][0]+", Week "+w[1], MON[w[0]][1]+", semana "+w[1]]; }
+function wkName(w){ return [MON[w[0]][0]+", Week "+w[1], MON[w[0]][1].toLowerCase()+", semana "+w[1]]; }
+function cap1(p){ return [p[0],p[1].charAt(0).toUpperCase()+p[1].slice(1)]; }
 function chs(list){ if(!list.length) return ""; return list.length>1&&list[list.length-1]-list[0]===list.length-1?list[0]+"–"+list[list.length-1]:list.join(", "); }
 function chap(n){ return CH[n-1]; }
 function readerUrl(c){ return "room-36-novel.html?ch="+c.at; }
@@ -371,7 +375,7 @@ function readLine(l){
 /* ── draw: the setup, the year ── */
 function paintSetup(P){
   var bs=D.querySelectorAll("[data-end]"); for(var i=0;i<bs.length;i++) bs[i].setAttribute("aria-pressed",bs[i].getAttribute("data-end")===state.end?"true":"false");
-  var s=D.getElementById("spring"); s.innerHTML=SPRING.map(function(w,i){ return '<option value="'+i+'">'+esc(tx(wkName(w)))+'</option>'; }).join(""); s.value=String(state.spring);
+  var s=D.getElementById("spring"); s.innerHTML=SPRING.map(function(w,i){ return '<option value="'+i+'">'+esc(tx(cap1(wkName(w))))+'</option>'; }).join(""); s.value=String(state.spring);
   var r=D.getElementById("rule"), ok=!P.bad.length&&!P.over.length, h="<p><b>"+(ok?"✓ ":"! ")+"</b>";
   if(ok) h+=L("Checked: no ★★ lesson falls in the week before a break.","Revisado: ninguna lección ★★ cae en la semana antes de unas vacaciones.");
   if(P.over.length) h+=L(P.over.length+" lesson(s) do not fit before the year ends. Use an open week, or move spring break.",P.over.length+" lección(es) no caben antes de que termine el año. Usa una semana libre o cambia las vacaciones.");
@@ -417,7 +421,7 @@ function paintReading(P){
       +'<span class="m">'+L(c.min+" min aloud",c.min+" min en voz alta")+(c.min>=14?" · "+L("two days?","¿dos días?"):"")+'</span>'
       +'<span class="f">'+L("Before ","Antes de ")+esc(code(l))+" · "+LP(whenOf(l,P))+(f.back.length?'<br><span class="h">'+L("Looked back to in ","Se retoma en ")+esc(f.back.map(code).join(", "))+'</span>':"")+'</span>'
       +(c.heavy?'<span class="h">'+L("In class only","Solo en clase")+'</span>'
-               :'<span><button type="button" class="btn" data-copy="'+c.n+'">'+L("Copy link for home","Copiar enlace para casa")+'</button></span>')
+               :'<span><button type="button" class="btn sm" data-copy="'+c.n+'">'+L("Copy link for home","Copiar enlace para casa")+'</button></span>')
       +'<p class="said" data-said="'+c.n+'" aria-live="polite"></p></li>';
     if(c.n===22){ ex=EXTRA.filter(function(e){ return e.at===27; })[0]; if(ex) h+='<li class="mini"><span>'+L("After Ch. 22, if you like: "+ex.t[0]+" · "+ex.min+" min","Después del Cap. 22, si quieres: "+ex.t[1]+" · "+ex.min+" min")+'</span></li>'; }
   });
@@ -429,7 +433,7 @@ function paintReading(P){
 /* ── one lesson: its plans, its checklist ── */
 function planHTML(l,key){
   var p=l[key], h='<div class="plan"><h4>'+(key==="p25"?L("25 minutes","25 minutos"):L("40 minutes","40 minutos"))+'</h4><ol>', sum=p.cards+p.exit, waits=[];
-  if(l.open) h+='<li class="o"><span>'+L("Opening (before the clock)","Apertura (antes del reloj)")+'</span><b>'+esc(l.open)+' min</b></li>';
+  if(l.open) h+='<li class="o"><span>'+L("Opening (not counted)","Apertura (no se cuenta)")+'</span><b>'+esc(l.open)+' min</b></li>';
   l.steps.forEach(function(s){ var m=p.steps[s[0]]; if(m==null){ waits.push(s); return; } sum+=m; h+='<li><span>'+esc(s[0])+" · "+LP(s[1])+'</span><b>'+m+' min</b></li>'; });
   if(p.cards) h+='<li><span>'+L("Scenario cards","Tarjetas de casos")+'</span><b>'+p.cards+' min</b></li>';
   h+='<li><span>'+L("Exit ticket","Boleto de salida")+'</span><b>'+p.exit+' min</b></li></ol>';
@@ -475,7 +479,7 @@ function paintLesson(P){
   r.new.concat(r.back).forEach(function(n){ more.push([readerUrl(chap(n)),t("The novel, Ch. ","La novela, Cap. ")+n]); });
   if(l.star) more.push(["room-36-safety.html",t("Safety and the counselor","Seguridad y el consejero")]);
   var x='<div class="lhead"><p class="code">'+esc(code(l))+" · "+L("Unit "+l.u+" · "+UNITS[l.u][0],"Unidad "+l.u+" · "+UNITS[l.u][1])+'</p><h3>'+LP(l.t)+'</h3>'
-    +'<p class="when">'+LP(whenOf(l,P))+" · "+L(l.len+" as written",l.len+" como está escrita")+(sw?" · "+LP(sw):"")+(l.ppra?" · "+L("PPRA: tell the counselor; families may opt out","PPRA: avisa al consejero; las familias pueden optar por no participar"):"")+'</p></div>'
+    +'<p class="when">'+LP(cap1(whenOf(l,P)))+" · "+L(l.len+" as written",l.len+" como está escrita")+(sw?" · "+LP(sw):"")+(l.ppra?" · "+L("PPRA: tell the counselor; families may opt out","PPRA: avisa al consejero; las familias pueden optar por no participar"):"")+'</p></div>'
     +'<div class="openrow"><a class="btn main" href="room-36-lessons.html?l='+l.id+'">'+L("Open the lesson","Abrir la lección")+'</a>'
     +'<div class="pickwrap"><label for="more">'+L("Also for this lesson","También para esta lección")+'</label><select id="more">'+more.map(function(o){ return '<option value="'+esc(o[0])+'">'+esc(o[1])+'</option>'; }).join("")+'</select></div></div>';
   x+='<div class="readbox"><p><b>'+(r.new.length?L("Read before this lesson","Leer antes de esta lección"):L("Reading","Lectura"))+'</b></p>';
@@ -532,7 +536,7 @@ function bx(p,extra){ return '<div class="bx"><i></i><span>'+esc(tx(p))+(extra||
 function sheetFor(l,P){
   var k=checklist(l), sw=starWords(l);
   return '<section class="sheet"><p class="sk">'+esc(t("Room 36 · ","Salón 36 · ")+code(l)+t(" · Lesson checklist"," · Lista de la lección"))+'</p>'
-    +'<h2>'+esc(tx(l.t))+'</h2><p class="ld">'+esc(tx(whenOf(l,P))+" · "+l.len+(sw?" · "+tx(sw):""))+'</p>'
+    +'<h2>'+esc(tx(l.t))+'</h2><p class="ld">'+esc(tx(cap1(whenOf(l,P)))+" · "+l.len+(sw?" · "+tx(sw):""))+'</p>'
     +'<div class="who"><span>'+esc(t("Teacher","Docente"))+'</span><span class="d">'+esc(t("Date","Fecha"))+'</span><span>'+esc(t("Observer (if any)","Observador (si hay)"))+'</span></div>'
     +'<div class="sec"><h3>'+esc(t("Before class","Antes de la clase"))+'</h3>'+k.before.map(function(p){ return bx(p); }).join("")+'</div>'
     +'<div class="sec"><h3>'+esc(t("The lesson, in order","La lección, en orden"))+'</h3>'
@@ -551,7 +555,7 @@ function guideSheet(){
 }
 function yearSheets(P){
   var rows=P.W.map(function(w){
-    var wn=esc(tx(wkName([w.m,w.w])));
+    var MS=[["Sep","sept."],["Oct","oct."],["Nov","nov."],["Dec","dic."],["Jan","ene."],["Feb","feb."],["Mar","mar."],["Apr","abr."],["May","may."],["Jun","jun."]], wn=esc(t(MS[w.m][0]+" · Wk "+w.w,MS[w.m][1]+" · sem "+w.w));
     if(w.brk) return '<tr><td>'+wn+'</td><td class="r" colspan="4">'+esc(w.brk==="winter"?t("Winter break","Vacaciones de invierno"):t("Spring break","Vacaciones de primavera"))+'</td></tr>';
     if(!w.lid) return '<tr><td>'+wn+'</td><td class="r" colspan="3">'+esc(t("Open week","Semana libre"))+(w.short?esc(t(" (short week)"," (semana corta)")):"")+'</td><td class="blank"></td></tr>';
     var l=byId(w.lid), r=l.read, rd=(r.new.length?t("Ch. ","Cap. ")+chs(r.new):"")+(r.back.length?(r.new.length?" · ":"")+t("look back ","mirar atrás ")+chs(r.back):""), m=0; r.new.forEach(function(n){ m+=chap(n).min; });
@@ -559,7 +563,7 @@ function yearSheets(P){
   }).join("");
   var y='<section class="sheet"><p class="sk">'+esc(t("Room 36 · Grades 6–8","Salón 36 · Grados 6–8"))+'</p><h2>'+esc(t("The year at a glance","El año de un vistazo"))+'</h2>'
     +'<p class="ld">'+esc(t("★ elevated: the counselor is on site or on standby. ★★ highest: the counselor is in the room. Send the family letter at least 10 days before U1·L1.","★ elevada: el consejero está en la escuela o disponible. ★★ máxima: el consejero está en el salón. Envía la carta a las familias al menos 10 días antes de U1·L1."))+'</p>'
-    +'<table><thead><tr><th>'+esc(t("Week","Semana"))+'</th><th>'+esc(t("Lesson","Lección"))+'</th><th>'+esc(t("Read first","Leer antes"))+'</th><th>'+esc(t("Aloud","En voz alta"))+'</th><th>'+esc(t("Taught on","Se dio el"))+'</th></tr></thead><tbody>'+rows+'</tbody></table>'
+    +'<table><colgroup><col style="width:15%"><col><col style="width:13%"><col style="width:9%"><col style="width:14%"></colgroup><thead><tr><th>'+esc(t("Week","Semana"))+'</th><th>'+esc(t("Lesson","Lección"))+'</th><th>'+esc(t("Read first","Leer antes"))+'</th><th>'+esc(t("Aloud","En voz alta"))+'</th><th>'+esc(t("Taught on","Se dio el"))+'</th></tr></thead><tbody>'+rows+'</tbody></table>'
     +'<div class="ft"><span>'+esc(t("Crisis lines: 988 Suicide & Crisis Lifeline (call or text 988) · Crisis Text Line: text HOME to 741741","Líneas de crisis: 988 Suicide & Crisis Lifeline (llama o envía un texto al 988) · Crisis Text Line: envía HOME al 741741"))+'</span><span>architectureofgrace.com/room-36-calendar</span></div></section>';
   var rr=CH.map(function(c){ var f=feeds(c.n); return '<tr><td><b>'+c.n+'</b> '+esc(tx(c.t))+'</td><td>'+c.min+' min</td><td>'+esc(code(f.first)+" · "+tx(whenOf(f.first,P)))+(f.back.length?'<br><span style="color:#555">'+esc(t("looked back to in ","se retoma en ")+f.back.map(code).join(", "))+'</span>':"")+'</td><td>'+esc(c.heavy?t("In class only","Solo en clase"):t("Class or home","Clase o casa"))+'</td></tr>'; }).join("");
   var rs='<section class="sheet"><p class="sk">'+esc(t("Room 36 · The Year of Two Voices","Salón 36 · El año de las dos voces"))+'</p><h2>'+esc(t("The reading schedule","El plan de lectura"))+'</h2>'
@@ -604,6 +608,7 @@ D.getElementById("pick").addEventListener("change",function(){ CUR=this.value; l
 D.getElementById("lv").addEventListener("change",function(ev){ if(ev.target.id==="more"&&ev.target.value) location.href=ev.target.value; });
 D.getElementById("go").addEventListener("change",function(){ var s=D.getElementById(this.value); if(s) s.scrollIntoView({block:"start"}); });
 try{ var q=new URL(location.href).searchParams.get("l"); if(q&&byId(q)) CUR=q; }catch(e){}
+try{ if(matchMedia("(min-width:820px)").matches) D.getElementById("rfold").open=true; }catch(e){}
 paintAll();
 if(CUR&&new URL(location.href).searchParams.get("l")){ D.getElementById("lesson").scrollIntoView({block:"start"}); }
 /* the bar's EN | ES sets <html lang>; menus and lists are drawn again in the new language */
