@@ -16,6 +16,12 @@
      Slapback adds one echo about 108 ms late and no second; Chop is shut between the song's sixteenths from the take's bar;
      Ghost swells before each line; Old record is band-limited with a soft wow and a quiet crackle; Wide is wider than Double;
      the fold (closed on a phone), each new sound tapped as it plays, 44 px keys; take 2 goes to My Track with its new name;
+   · AOG-VOCAL-TUNE-V2, the booth's own Tune: on the recorded voice, Key picks the notes (A♭ major: B♭; A minor: A) and Pop
+     polish tunes; on pretend singers made here (iPad pass): notes sung 25–40 cents off with a ±30-cent vibrato land within 5
+     cents with the vibrato kept (Tuned) or within 3 cents and flat (Hard); a note held near halfway never flips; a slide is a
+     clean step (Hard) or a smooth glide (natural); an s and a breath keep their spectrum; same length and onsets; no clicks;
+     a low bass and a soprano; less warble than the desk's old dmTune on a held note; a minute in under 3 s. Shape your voice
+     has Key (one select, EN and ES, 44 px), Tune speed and Keep my vibrato; ▶ Hear it says Making the sound… while it works;
    · ▶ Hear it plays with the beat; a control moved while it plays changes the sound (the sound becomes Custom) and it plays on;
    · + Add to My Track puts it on the desk's track 8 at the right bar (From bar 1; bar 3 on the iPad), called Voz 1 / Voice 1,
      its sound named, its dry take kept, and My Track marks Voice; a take longer than the loop makes the beat repeat to fit;
@@ -117,7 +123,105 @@ const MEASURE = async () => {
   const old = await one("old", "old");
   r.old = { high: await band(old.L, "highpass", 6000), low: await band(old.L, "lowpass", 120), cleanLow: await band(clean.L, "lowpass", 120), gap: gap(old.L), wow: spread(old.L), cleanWow: spread(clean.L) };
   const wide = await one("wide", "wide", { room: 0 }); r.wide = { side: side(wide) };
+  /* AOG-VOCAL-TUNE-V2: the Key choice on the recorded voice (A, 46 cents sharp): A♭ major has no A, so it goes to B♭; A minor keeps A */
+  r.tunedAb = pitch((await one("tunedAb", "tuned", { tk: 8 })).L); r.tunedAm = pitch((await one("tunedAm", "tuned", { tk: 21 })).L);
+  r.pop = pitch((await one("pop", "pop")).L);
   r.peak = Math.max(...peaks);
+  return r;
+};
+/* AOG-VOCAL-TUNE-V2: Tune measured on pretend singers (made here, 48 kHz: a voice's harmonics shaped by a vowel, a little
+   jitter), through the booth's own engine (AOGVocal.tune, the Worker) and the desk's old dmTune for the same voice */
+const TUNETEST = async () => {
+  const sr = 48000, V = AOGVocal, hz = m => 440 * 2 ** ((m - 69) / 12), C = 0;
+  const voice = (dur, fn, F = [700, 1200, 2600], weak = false, seed = 3) => { let s = seed; const rnd = () => { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296 * 2 - 1; };
+    const n = Math.round(dur * sr), x = new Float32Array(n); let ph = 0, jit = 0, on = 0;
+    for (let i = 0; i < n; i++) { const t = i / sr, m = fn(t); if (m == null) { on = 0; continue; } on = Math.min(1, on + 1 / (0.01 * sr)); jit += 0.002 * (rnd() - jit * 0.05);
+      const f = hz(m) * (1 + 0.002 * jit); ph += 2 * Math.PI * f / sr; let v = 0;
+      for (let k = 1; k * f < 5000; k++) { const fk = k * f; let g = 0.15 / k; F.forEach((fc, q) => { g += (q ? 0.5 : 1) / (1 + ((fk - fc) / (80 + fc * 0.08)) ** 2); }); if (weak && k === 1) g *= 0.1; v += g * Math.sin(k * ph); }
+      x[i] = 0.12 * v * on; }
+    return x; };
+  /* the pitch every few ms (YIN, 20 ms) in midi, null where there is no note; lo–hi Hz is where to look */
+  const track = (x, hop = 0.005, lo = 120, hi = 500) => { const N = Math.round(0.02 * sr), H = Math.round(hop * sr), tmin = Math.floor(sr / hi), tmax = Math.ceil(sr / lo), out = [], d = new Float64Array(tmax + 2), raw = new Float64Array(tmax + 2);
+    let em = 0; for (let i = 0; i + N < x.length; i += H) { let e = 0; for (let j = 0; j < N; j++) e += x[i + j] * x[i + j]; if (e > em) em = e; }
+    for (let i = 0; i + N + tmax + 2 < x.length; i += H) { let e = 0; for (let j = 0; j < N; j++) e += x[i + j] * x[i + j]; if (e < 0.05 * em) { out.push(null); continue; }
+      let run = 0; d[0] = 1; for (let t = 1; t <= tmax + 1; t++) { let s = 0; for (let j = 0; j < N; j++) { const v = x[i + j] - x[i + j + t]; s += v * v; } raw[t] = s; run += s; d[t] = s * t / run; }
+      let tau = -1; for (let t = tmin; t <= tmax; t++) if (d[t] < 0.15) { while (t + 1 <= tmax && d[t + 1] < d[t]) t++; tau = t; break; }
+      if (tau < 0) { out.push(null); continue; }
+      const y0 = raw[tau - 1], y1 = raw[tau], y2 = raw[tau + 1], den = y0 - 2 * y1 + y2; out.push(69 + 12 * Math.log2(sr / (tau + (den > 0 ? 0.5 * (y0 - y2) / den : 0)) / 440)); }
+    return out; };
+  const at = (tr, a, b, hop = 0.005) => tr.slice(Math.round(a / hop), Math.round(b / hop)).filter(v => v != null);
+  const mean = v => v.reduce((p, q) => p + q, 0) / v.length, sd = v => { const m = mean(v); return Math.sqrt(mean(v.map(q => (q - m) ** 2))); };
+  const jump = x => { let m = 0; for (let i = 1; i < x.length; i++) m = Math.max(m, Math.abs(x[i] - x[i - 1])); return m; };
+  /* where each note starts: the level over 10 ms (read every 1 ms) first passing a tenth of the loudest, at least 0.5 s apart */
+  const onsets = x => { const S = Math.round(0.001 * sr), Wn = Math.round(0.01 * sr), e = []; for (let i = 0; i + Wn <= x.length; i += S) { let s = 0; for (let j = 0; j < Wn; j++) s += x[i + j] * x[i + j]; e.push(s); }
+    const m = Math.max(...e), o = []; for (let i = 1; i < e.length; i++) if (e[i] > 0.1 * m && e[i - 1] <= 0.1 * m && (!o.length || i * S - o[o.length - 1] > 0.5 * sr)) o.push(i * S); return o; };
+  const NAT = {}, HARD = { spd: 100, vib: 0 }, r = {};
+  /* 1 · four notes sung a little off (flat and sharp), each with a 5.5 Hz vibrato of ±30 cents, in C major */
+  const NOTES = [[57, -0.30], [60, 0.35], [52, -0.40], [67, 0.25]], L = 1.2, G = 0.25;
+  const L0 = 0.15, x1 = voice(L0 + NOTES.length * (L + G) + 0.2, t => { if (t < L0) return null; const k = Math.floor((t - L0) / (L + G)), u = t - L0 - k * (L + G); if (k >= NOTES.length || u >= L) return null; return NOTES[k][0] + NOTES[k][1] + 0.3 * Math.sin(2 * Math.PI * 5.5 * t); });
+  const n1 = await V.tune(x1, sr, NAT), h1 = await V.tune(x1, sr, HARD);
+  const per = (y, lo, hi) => { const tr = track(y, 0.005, lo, hi); return NOTES.map((nt, k) => { const a = L0 + k * (L + G) + 0.25, v = at(tr, a, a + L - 0.4); return { dev: (mean(v) - nt[0]) * 100, sd: sd(v) * 100 }; }); };
+  const dT = per(x1, 120, 450), nT = per(n1.x, 120, 450), hT = per(h1.x, 120, 450);
+  r.offkey = NOTES.map((nt, k) => ({ note: nt[0], sung: Math.round(nt[1] * 100), dry: dT[k], nat: nT[k], hard: hT[k] }));
+  r.offkeyLen = [n1.x.length, h1.x.length, x1.length];
+  const oD = onsets(x1), oN = onsets(n1.x), oH = onsets(h1.x);
+  r.timing = { dry: oD.length, n: oN.length, h: oH.length, worst: Math.max(...oD.map((o, i) => Math.max(Math.abs(o - (oN[i] || 0)), Math.abs(o - (oH[i] || 0))))) / sr * 1000 };
+  r.jumps = { dry: jump(x1), nat: jump(n1.x), hard: jump(h1.x) };
+  /* 2 · held near the halfway point: between A and B♭ with All notes (48 cents up), and between A and B in C major (97 cents up), a slow drift of a few cents and vibrato */
+  const mid1 = voice(3, t => 57.48 + 0.08 * Math.sin(2 * Math.PI * 0.3 * t) + 0.3 * Math.sin(2 * Math.PI * 5.5 * t));
+  const mid2 = voice(3, t => 57.97 + 0.06 * Math.sin(2 * Math.PI * 0.3 * t + 1) + 0.3 * Math.sin(2 * Math.PI * 5.5 * t));
+  const m1n = await V.tune(mid1, sr, { tk: -2, plan: 1 }), m1h = await V.tune(mid1, sr, { tk: -2, spd: 100, vib: 0, plan: 1 }), m2n = await V.tune(mid2, sr, { plan: 1 }), m2h = await V.tune(mid2, sr, { spd: 100, vib: 0, plan: 1 });
+  const flips = t => { let c = 0; const v = t.tg.filter((g, i) => t.v[i]); for (let i = 1; i < v.length; i++) if (v[i] !== v[i - 1]) c++; return c; };
+  const hm = at(track(m1h.x), 0.1, 2.8);
+  r.mid = { all: [m1n.t.changes, m1h.t.changes, flips(m1n.t), flips(m1h.t)], major: [m2n.t.changes, m2h.t.changes, flips(m2n.t), flips(m2h.t)], hardSpan: (Math.max(...hm) - Math.min(...hm)) * 100 };
+  /* 3 · a slide: A3 held, 150 ms up to B3, held (both 20 cents flat) */
+  const sl = voice(1.6, t => t < 0.6 ? 56.8 : t < 0.75 ? 56.8 + 2 * (t - 0.6) / 0.15 : 58.8);
+  const sN = await V.tune(sl, sr, NAT), sH = await V.tune(sl, sr, HARD), slide = y => { const tr = track(y, 0.0025); let between = 0, over = 0, back = 0, top = -1e9;
+    tr.forEach((v, i) => { if (v == null) return; const ti = i * 0.0025; if (ti > 0.4 && ti < 1.0 && v > 57.25 && v < 58.6) between++; if (v > 59.15) over++; if (ti > 0.55 && ti < 1.0) { if (v < top - 0.05) back++; top = Math.max(top, v); } });
+    return { ms: between * 2.5, over, back, a: (mean(at(tr, 0.15, 0.5, 0.0025)) - 57) * 100, b: (mean(at(tr, 1.05, 1.45, 0.0025)) - 59) * 100 }; };
+  r.slide = { nat: slide(sN.x), hard: slide(sH.x), dry: slide(sl), changes: [sN.t.changes, sH.t.changes] };
+  /* 4 · an s and a breath between two notes: their sound (a spectrum of 1024-point frames) against the dry */
+  const xs = voice(2.4, t => (t < 0.5 || (t > 1.2 && t < 1.7)) ? 56.7 + 0.3 * Math.sin(2 * Math.PI * 5.5 * t) : null);
+  { let seed = 7, prev = 0, lp = 0; const rnd = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296 * 2 - 1; };
+    for (let i = 0; i < xs.length; i++) { const t = i / sr; if (t > 0.52 && t < 0.64) { const q = rnd(), hi = q - prev; prev = q; xs[i] += 0.12 * hi * Math.min(1, (t - 0.52) / 0.005, (0.64 - t) / 0.005); }
+      if (t > 0.75 && t < 1.1) { lp += 0.15 * (rnd() - lp); xs[i] += 0.05 * lp * Math.sin(Math.PI * (t - 0.75) / 0.35); } } }
+  const fft = (re, im) => { const n = re.length; for (let i = 1, j = 0; i < n; i++) { let b = n >> 1; for (; j & b; b >>= 1) j ^= b; j ^= b; if (i < j) { [re[i], re[j]] = [re[j], re[i]]; [im[i], im[j]] = [im[j], im[i]]; } }
+    for (let len = 2; len <= n; len <<= 1) { const a = -2 * Math.PI / len; for (let i = 0; i < n; i += len) for (let k = 0; k < len / 2; k++) { const c = Math.cos(a * k), s = Math.sin(a * k), ur = re[i + k], ui = im[i + k], vr = re[i + k + len / 2] * c - im[i + k + len / 2] * s, vi = re[i + k + len / 2] * s + im[i + k + len / 2] * c; re[i + k] = ur + vr; im[i + k] = ui + vi; re[i + k + len / 2] = ur - vr; im[i + k + len / 2] = ui - vi; } } };
+  const spec = (y, a, b) => { const N = 1024, acc = new Float64Array(N / 2); for (let s = Math.round(a * sr); s + N <= Math.round(b * sr); s += N / 2) { const re = new Float64Array(N), im = new Float64Array(N); for (let i = 0; i < N; i++) re[i] = y[s + i] * (0.5 - 0.5 * Math.cos(2 * Math.PI * i / N)); fft(re, im); for (let k = 0; k < N / 2; k++) acc[k] += re[k] * re[k] + im[k] * im[k]; } return acc; };
+  const bandsDiff = (y, a, b) => { const A = spec(xs, a, b), Bs = spec(y, a, b); let worst = 0; for (let f = 250; f < 16000; f *= 2 ** (1 / 3)) { const k0 = Math.round(f / sr * 1024), k1 = Math.max(k0 + 1, Math.round(f * 2 ** (1 / 3) / sr * 1024)); let ea = 0, eb = 0; for (let k = k0; k < k1; k++) { ea += A[k]; eb += Bs[k]; } if (ea > 1e-12) worst = Math.max(worst, Math.abs(10 * Math.log10((eb + 1e-20) / ea))); } return worst; };
+  const xsN = await V.tune(xs, sr, NAT), xsH = await V.tune(xs, sr, HARD);
+  r.unvoiced = { s: [bandsDiff(xsN.x, 0.53, 0.63), bandsDiff(xsH.x, 0.53, 0.63)], breath: [bandsDiff(xsN.x, 0.78, 1.08), bandsDiff(xsH.x, 0.78, 1.08)], len: xsN.x.length === xs.length && xsH.x.length === xs.length };
+  r.jumps.s = [jump(xs), jump(xsN.x), jump(xsH.x)];
+  /* 5 · voices low and high: a bass with a weak fundamental (G2), and a soprano (C6), each 32 cents flat, Hard */
+  r.range = [];
+  for (const [nm, base, lo, hi, F, weak] of [["bass G2", 43, 70, 200, [400, 900, 2400], true], ["soprano C6", 84, 800, 1300, [1000, 1400, 3000], false]]) {
+    const x = voice(1.6, t => base - 0.32 + 0.3 * Math.sin(2 * Math.PI * 5.5 * t), F, weak), y = (await V.tune(x, sr, HARD)).x, v = at(track(y, 0.005, lo, hi), 0.2, 1.4);
+    r.range.push({ nm, dev: (mean(v) - base) * 100, sd: sd(v) * 100 }); }
+  /* 6 · warble: a held note, 42 cents flat of A3, as a person holds it (a slow wander of a few cents, a little breath), plain
+     and with a 25-cent vibrato, in C major and with All notes; the frame-to-frame jitter of the pitch (cents, 5 ms frames):
+     Robot's output should be flat, so all its jitter is warble; Tuned keeps the singer's own movement, so its warble is the
+     jitter it adds (its pitch minus the singer's). New against the desk's old dmTune, as the booth used it (Tuned 85/65, Robot 100/100) */
+  const w = await window.parent.AOGStudioShell.desk(), old = async (x, amt, spd, key) => { const ab = new w.AudioBuffer({ numberOfChannels: 1, length: x.length, sampleRate: sr }); ab.copyToChannel(new w.Float32Array(x), 0);
+    return new Float32Array((await w.__aogStudio.dmTune(ab, { amt, spd, key, minor: false }, () => false)).getChannelData(0)); };
+  const trk = y => track(y).slice(60, 380), jitOf = v => { let s = 0, k = 0; for (let i = 1; i < v.length; i++) if (v[i] != null && v[i - 1] != null) { s += ((v[i] - v[i - 1]) * 100) ** 2; k++; } return Math.sqrt(s / k); };
+  let wd = 0, ws = 11; const wr = () => { ws = (ws * 1664525 + 1013904223) >>> 0; return ws / 4294967296 * 2 - 1; }, wander = new Float32Array(2300); for (let i = 0; i < 2300; i++) { wd += 0.02 * wr() - 0.01 * wd; wander[i] = wd; }
+  r.warble = [];
+  for (const vd of [0, 0.25]) {
+    const held = voice(2.2, t => 57 - 0.42 + 0.5 * wander[Math.min(2299, Math.floor(t * 1000))] + vd * Math.sin(2 * Math.PI * 5.5 * t));
+    { let s = 5, lp = 0; for (let i = 0; i < held.length; i++) { s = (s * 1664525 + 1013904223) >>> 0; lp += 0.3 * (s / 4294967296 * 2 - 1 - lp); held[i] += 0.02 * lp; } }   /* breath */
+    const d = trk(held), added = y => { const a = trk(y); return jitOf(a.map((v, i) => v != null && d[i] != null ? v - d[i] : null)); };
+    for (const [kn, key, tk] of [["C major", 0, -1], ["All notes", -1, -2]]) {
+      const oT = await old(held, 85, 65, key), oR = await old(held, 100, 100, key), nT = (await V.tune(held, sr, { tk })).x, nR = (await V.tune(held, sr, { tk, spd: 100, vib: 0 })).x;
+      r.warble.push({ what: (vd ? "vibrato" : "plain") + ", " + kn, dry: jitOf(d), tunedOld: added(oT), tunedNew: added(nT), robotOld: jitOf(trk(oR)), robotNew: jitOf(trk(nR)) }); } }
+  /* and a perfectly steady pretend tone (no person holds a note this still), for the report */
+  { const pure = voice(2.2, t => 57 - 0.35); r.pure = { dry: jitOf(trk(pure)), robotOld: jitOf(trk(await old(pure, 100, 100, 0))), robotNew: jitOf(trk((await V.tune(pure, sr, HARD)).x)) }; }
+  /* the old path on the off-key voices too, for the report */
+  { const ab = new w.AudioBuffer({ numberOfChannels: 1, length: x1.length, sampleRate: sr }); ab.copyToChannel(new w.Float32Array(x1), 0);
+    const o = new Float32Array((await w.__aogStudio.dmTune(ab, { amt: 100, spd: 100, key: C, minor: false }, () => false)).getChannelData(0)); r.offkeyOld = per(o, 120, 450); }
+  /* 7 · speed: one minute of singing (eight notes over and over) */
+  const ns = [57, 59, 60, 62, 64, 62, 60, 59], x4 = voice(4, t => { const k = Math.floor(t / 0.5), u = t % 0.5; return u > 0.42 ? null : ns[k % 8] + 0.25 * Math.sin(k) + 0.3 * Math.sin(2 * Math.PI * 5.5 * t); });
+  const x60 = new Float32Array(15 * x4.length); for (let k = 0; k < 15; k++) x60.set(x4, k * x4.length);   /* 4 s, 15 times over */
+  const t0 = performance.now(); const y60 = await V.tune(x60, sr, NAT); r.minute = { ms: performance.now() - t0, same: y60.x.length === x60.length, notes: y60.t.notes };
   return r;
 };
 async function routes(ctx, lang) {
@@ -213,6 +317,60 @@ const ST = f => f.evaluate(() => AOGVocal.state());
     ok(R.old.high < R.clean.high / 4 && R.old.low < R.clean.low / 2 + 1e-4 && R.old.wow > 3 && R.old.wow < 40 && R.old.wow > 3 * R.old.cleanWow + 1 && R.old.gap < 0.03,
       `${nm}: Old record is band-limited (above 6 kHz ${(R.old.high * 100).toFixed(2)}% against ${(R.clean.high * 100).toFixed(2)}%), with a soft wow (${R.old.wow.toFixed(1)} cents against ${R.old.cleanWow.toFixed(1)}) and a quiet crackle (${(R.old.gap * 100).toFixed(2)}% in the gaps)`);
     ok(R.wide.side > 1.5 * R.dbl.side, `${nm}: Wide spreads the voice wider than Double (side ${(R.wide.side * 100).toFixed(1)}% against ${(R.dbl.side * 100).toFixed(1)}%)`);
+    /* AOG-VOCAL-TUNE-V2: the Key choice and Pop polish on the recorded voice */
+    ok(Math.abs(R.tunedAb - 440 * 2 ** (-11 / 12)) < 1.2 && Math.abs(R.tunedAm - 220) < 1, `${nm}: Key picks the notes: in A♭ major (no A) the voice goes up to B♭ (${R.tunedAb.toFixed(1)} Hz; B♭ is 233.1), in A minor to A (${R.tunedAm.toFixed(1)} Hz)`);
+    ok(Math.abs(R.pop - 220) < 1.5, `${nm}: Pop polish tunes it to A as well (${R.pop.toFixed(1)} Hz)`);
+    if (nm === "iPad") {   /* the pretend singers, measured once */
+      const TT = await f.evaluate(TUNETEST), c1 = v => v.toFixed(1), sg = v => (v > 0 ? "+" : "") + c1(v);
+      ok(TT.offkey.every(o => Math.abs(o.nat.dev) <= 5 && o.nat.sd >= 0.7 * o.dry.sd && o.nat.sd <= 1.3 * o.dry.sd),
+        `Tuned (natural) puts each note's centre on the scale note and keeps the vibrato: ` + TT.offkey.map(o => `${o.note}${o.sung > 0 ? "+" : ""}${o.sung}c → ${sg(o.nat.dev)}c, vibrato ${c1(o.nat.sd)} of ${c1(o.dry.sd)}c`).join("; "));
+      ok(TT.offkey.every(o => Math.abs(o.hard.dev) <= 3 && o.hard.sd < 5 && o.hard.sd < 0.25 * o.dry.sd),
+        `Hard (Robot's speed) lands within 3 cents with no vibrato left: ` + TT.offkey.map(o => `${sg(o.hard.dev)}c, wobble ${c1(o.hard.sd)}c`).join("; ") + ` (the old dmTune at full: ` + TT.offkeyOld.map(o => `${sg(o.dev)}c, wobble ${c1(o.sd)}c`).join("; ") + `)`);
+      ok(TT.offkeyLen[0] === TT.offkeyLen[2] && TT.offkeyLen[1] === TT.offkeyLen[2] && TT.timing.dry === 4 && TT.timing.n === 4 && TT.timing.h === 4 && TT.timing.worst <= 3 && TT.unvoiced.len && TT.minute.same,
+        `Tune keeps the take's length to the sample and each note starts where it did (worst ${TT.timing.worst.toFixed(1)} ms): ${JSON.stringify(TT.timing)}`);
+      ok(TT.jumps.nat <= 1.15 * TT.jumps.dry && TT.jumps.hard <= 1.15 * TT.jumps.dry && TT.jumps.s[1] <= 1.15 * TT.jumps.s[0] && TT.jumps.s[2] <= 1.15 * TT.jumps.s[0],
+        `no clicks: the largest step from one sample to the next ${TT.jumps.nat.toFixed(4)} (natural) and ${TT.jumps.hard.toFixed(4)} (hard) against the dry's ${TT.jumps.dry.toFixed(4)}; with an s and a breath ${TT.jumps.s.map(v => v.toFixed(4)).join(" / ")}`);
+      ok(TT.mid.all.every(v => v === 0) && TT.mid.major.every(v => v === 0) && TT.mid.hardSpan < 20,
+        `held near halfway between two notes, the target never flips (All notes, 48 cents up: ${TT.mid.all.join(" ")}; C major, 97 cents up: ${TT.mid.major.join(" ")}; changes and flips, natural and hard); hard stays on one note (span ${c1(TT.mid.hardSpan)} cents)`);
+      ok(TT.slide.hard.ms <= 25 && Math.abs(TT.slide.hard.a) <= 3 && Math.abs(TT.slide.hard.b) <= 3 && TT.slide.changes[1] === 1,
+        `a slide from A to B: Hard makes one clean step (${TT.slide.hard.ms} ms between the notes, A ${sg(TT.slide.hard.a)}c, B ${sg(TT.slide.hard.b)}c; the singer's slide took ${TT.slide.dry.ms} ms)`);
+      ok(TT.slide.nat.ms >= 60 && TT.slide.nat.over === 0 && TT.slide.nat.back === 0 && Math.abs(TT.slide.nat.a) <= 5 && Math.abs(TT.slide.nat.b) <= 5 && TT.slide.changes[0] === 1,
+        `the same slide, natural: a smooth glide (${TT.slide.nat.ms} ms between the notes, never past B, never back down; A ${sg(TT.slide.nat.a)}c, B ${sg(TT.slide.nat.b)}c)`);
+      ok(TT.unvoiced.s.every(v => v < 0.5) && TT.unvoiced.breath.every(v => v < 0.5),
+        `an s and a breath are left as they were (their spectrum against the dry, worst third-octave band: s ${TT.unvoiced.s.map(v => v.toFixed(2)).join(" / ")} dB, breath ${TT.unvoiced.breath.map(v => v.toFixed(2)).join(" / ")} dB)`);
+      ok(TT.range.every(o => Math.abs(o.dev) <= 3 && o.sd < 6), `low and high voices are found and tuned: ` + TT.range.map(o => `${o.nm} ${sg(o.dev)}c, wobble ${c1(o.sd)}c`).join("; "));
+      ok(TT.warble.length === 4 && TT.warble.every(o => o.tunedNew < o.tunedOld && o.robotNew < o.robotOld),
+        `less warble than the old dmTune on a held note (pitch jitter frame to frame, cents; new against old): ` + TT.warble.map(o => `${o.what}: Tuned adds ${o.tunedNew.toFixed(2)} against ${o.tunedOld.toFixed(2)}, Robot ${o.robotNew.toFixed(2)} against ${o.robotOld.toFixed(2)} (the singer ${o.dry.toFixed(2)})`).join("; ") +
+        `; a perfectly steady pretend tone: Robot ${TT.pure.robotNew.toFixed(2)} against ${TT.pure.robotOld.toFixed(2)} (dry ${TT.pure.dry.toFixed(2)}), both far below hearing`);
+      ok(TT.minute.ms <= 3000, `a minute of singing is tuned in ${(TT.minute.ms / 1000).toFixed(2)} s, in the Worker (${TT.minute.notes} notes)`);
+    }
+    /* AOG-VOCAL-TUNE-V2: Key, Tune speed and Keep my vibrato in Shape your voice; their words in both languages; Making the sound… */
+    await f.evaluate(() => { document.getElementById("vbShape").open = true; });
+    await f.click('.vb-snd[data-snd="tuned"]'); await W(300);
+    const tunedLine = (await ST(f)).line;
+    const kk = await f.evaluate(() => { const r = e => e.getBoundingClientRect(), k = document.getElementById("vbKey"), ck = document.querySelector('.vb-chk input[data-k="vib"]'), sp = document.querySelector('.vb-r[data-k="spd"]');
+      const words = () => ({ t: document.querySelector('[data-t="tk"]').textContent, o: [...k.options].map(o => o.textContent), g: [...k.querySelectorAll("optgroup")].map(g => g.label), v: document.querySelector('[data-t="vib"]').textContent, s: document.querySelector('[data-t="spd"]').textContent });
+      const here = words(), lang = document.documentElement.getAttribute("lang") || "en";
+      document.documentElement.setAttribute("lang", lang.indexOf("es") === 0 ? "en" : "es");
+      return new Promise(done => setTimeout(() => { const other = words(); document.documentElement.setAttribute("lang", lang);
+        setTimeout(() => done({ here, other, lang, h: r(k).height, ck: r(ck.closest(".vb-ck")).height, vib: ck.checked, spd: +sp.value, val: k.value, sw: document.scrollingElement.scrollWidth, iw: innerWidth, right: r(k).right }), 60); }, 60)); });
+    const EN = { t: "Key", o0: "Song's key: C major", o1: "All notes", o2: "C major", o10: "A♭ major", o14: "C minor", g: "Major keys,Minor keys", v: "Keep my vibrato", s: "Tune speed" },
+      ES = { t: "Tonalidad", o0: "Tonalidad de la canción: Do mayor", o1: "Todas las notas", o2: "Do mayor", o10: "La♭ mayor", o14: "Do menor", g: "Tonalidades mayores,Tonalidades menores", v: "Mantener mi vibrato", s: "Velocidad de afinado" };
+    const wordsOk = (w, X) => w.t === X.t && w.o.length === 26 && w.o[0] === X.o0 && w.o[1] === X.o1 && w.o[2] === X.o2 && w.o[10] === X.o10 && w.o[14] === X.o14 && w.g.join() === X.g && w.v === X.v && w.s === X.s;
+    const mine = lang === "es" ? ES : EN, theirs = lang === "es" ? EN : ES;
+    ok(wordsOk(kk.here, mine) && wordsOk(kk.other, theirs) && kk.h >= 44 && kk.ck >= 44 && kk.right <= kk.iw + 1 && kk.sw <= kk.iw && kk.vib && kk.spd === 60 && kk.val === "-1" && (lang === "es" ? /Afinada en Do mayor/ : /Tuned to C major/).test(tunedLine),
+      `${nm}: Shape your voice has one Key choice (${kk.h.toFixed(0)} px tall: "${kk.here.o[0]}", "${kk.here.o[1]}", 12 major and 12 minor keys), Tune speed and Keep my vibrato (${kk.ck.toFixed(0)} px, on for Tuned), in ${lang === "es" ? "Spanish and English" : "English and Spanish"} ("${kk.other.t}", "${kk.other.o[0]}", "${kk.other.v}"); "${tunedLine}"`);
+    await f.selectOption("#vbKey", "8"); await W(300); s = await ST(f);
+    ok(s.P.tk === 8 && s.snd === "custom" && (lang === "es" ? /Afinada en La♭ mayor/ : /Tuned to A♭ major/).test(s.line), `${nm}: choosing A♭ major tunes to it, now Custom: "${s.line}"`);
+    await f.click('.vb-snd[data-snd="robot"]'); await W(300);
+    const rob = await f.evaluate(() => ({ vib: document.querySelector('.vb-chk input[data-k="vib"]').checked, spd: +document.querySelector('.vb-r[data-k="spd"]').value, key: document.getElementById("vbKey").value }));
+    ok(!rob.vib && rob.spd === 100 && rob.key === "-1", `${nm}: Robot is the hard sound: Keep my vibrato off, Tune speed 100, back to the song's key: ${JSON.stringify(rob)}`);
+    const mk = await f.evaluate(() => { const r = document.querySelector('.vb-r[data-k="spd"]'); r.value = 37; r.dispatchEvent(new Event("input", { bubbles: true }));
+      const hb = document.getElementById("vbHear"); hb.click(); return { t: hb.textContent, busy: hb.getAttribute("aria-busy"), dis: hb.disabled }; });
+    await f.waitForFunction(() => !AOGVocal.state().making && AOGVocal.state().hear, null, { timeout: 30000 }).catch(() => {});
+    const mk2 = await f.evaluate(() => document.getElementById("vbHear").textContent);
+    ok((lang === "es" ? /Haciendo el sonido/ : /Making the sound/).test(mk.t) && mk.dis && mk.busy === "true" && /Stop|Parar/.test(mk2), `${nm}: while Tune works, ▶ Hear it says "${mk.t}", then plays ("${mk2}")`);
+    await f.click("#vbHear"); await W(400);
     /* 4 · Hear it; a control moved while it plays; every ready-made sound tapped */
     await f.click("#vbHear"); await W(900); s = await ST(f);
     ok(s.hear && s.ac === "running" && s.raf, `${nm}: ▶ Hear it plays the take with the beat, and its meter moves`);
@@ -232,7 +390,7 @@ const ST = f => f.evaluate(() => AOGVocal.state());
     await f.waitForFunction(() => !AOGVocal.state().making, null, { timeout: 30000 }).catch(() => {});
     await W(700); s = await ST(f);
     const words = await f.evaluate(() => [...document.querySelectorAll("#vbMore .vb-snd")].map(b => b.querySelector("b").textContent + " · " + b.querySelector("span").textContent));
-    ok(s.snd === "chop" && s.hear && words.length === 9 && words.every(w => w.length > 8), `${nm}: each of the nine More sounds can be tapped as it plays; Chop picked, still playing: ${words.join(" | ")}`);
+    ok(s.snd === "chop" && s.hear && words.length === 10 && more.length === 10 && words.every(w => w.length > 8), `${nm}: each of the ten More sounds (Pop polish first, AOG-VOCAL-TUNE-V2) can be tapped as it plays; Chop picked, still playing: ${words.join(" | ")}`);
     const lay2 = await f.evaluate(() => { const r = e => e.getBoundingClientRect(), bs = [...document.querySelectorAll("button,select,summary,input[type=range]")].filter(x => x.offsetParent);
       return { sw: document.scrollingElement.scrollWidth, iw: innerWidth, small: bs.filter(x => r(x).height < 44).map(x => x.getAttribute("data-snd") || x.getAttribute("data-k") || x.id || x.className), out: bs.filter(x => r(x).right > innerWidth + 1).map(x => x.id || x.className) }; });
     ok(lay2.sw <= lay2.iw && !lay2.small.length && !lay2.out.length, `${nm}: with More sounds open, the booth still fits and every key is 44px+: ${JSON.stringify(lay2)}`);
