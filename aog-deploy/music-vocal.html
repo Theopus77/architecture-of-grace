@@ -9,7 +9,7 @@
 try{if(localStorage.getItem("aog.lang")==="es")document.documentElement.setAttribute("lang","es");}catch(e){}})();
 </script>
 <title>The Vocal Booth — Architecture of Grace</title>
-<meta name="description" content="Record your voice over your own beat, then give it a sound: clean, warm, radio, rap, echo, a big hall, tuned or robot, with your own EQ and effects. Works on a phone, a tablet and a computer.">
+<meta name="description" content="Record your voice over your own beat, then give it a sound: clean, warm, radio, rap, echo, a big hall, tuned or robot, deep or high, a harmony, a megaphone, an old record and more, with your own EQ and effects. Works on a phone, a tablet and a computer.">
 <link rel="canonical" href="https://architectureofgrace.com/vocal-booth">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Architecture of Grace">
@@ -87,6 +87,14 @@ html.in-studio .wrap{padding-top:10px}
 .vb-snd span{font:italic 500 .98rem/1.2 var(--vb-serif);color:#463c2c}
 .vb-snd[aria-pressed="true"]{background:#fbf1d8;border-color:#7a5a1c;box-shadow:0 0 0 3px var(--vb-gold),0 2px 0 var(--vb-edge)}
 .vb-snd[aria-pressed="true"] b::before{content:"✓ ";color:#1d6b3f}
+/* AOG-VOCAL-FX-V2: More sounds, a fold under the first nine (closed on a phone, so the sounds stay calm) */
+.vb-more{margin-top:12px}
+.vb-more>summary{display:flex;align-items:center;gap:.5rem;min-height:44px;cursor:pointer;list-style:none;font:800 .85rem/1.2 var(--vb-sans);letter-spacing:.12em;text-transform:uppercase;color:#d7c8aa}
+.vb-more>summary::-webkit-details-marker{display:none}
+.vb-more>summary::before{content:"▸";color:var(--vb-gold);font-size:1rem}
+.vb-more[open]>summary::before{content:"▾"}
+.vb-more>summary:focus-visible{outline:3px solid var(--vb-gold);outline-offset:2px}
+.vb-more>.vb-snds{margin-top:8px}
 .vb-shape>summary{display:flex;align-items:center;gap:.5rem;min-height:44px;margin:0;cursor:pointer;list-style:none}
 .vb-shape>summary::-webkit-details-marker{display:none}
 .vb-shape>summary::before{content:"▸";color:var(--vb-gold);font-size:1rem}
@@ -110,7 +118,7 @@ html.in-studio body{zoom:1!important}
 /* the booth keeps its own sizes and its paper's ink: the site's short-screen and dark-theme rules must not shrink a key under
    44 px or turn the words on a paper slip pale */
 html .vb .vb-sel,html .vb #vbBig{min-height:46px!important;height:auto!important;font-size:16px!important;padding-top:0!important;padding-bottom:0!important}
-html .vb .vb-shape>summary,html .vb .vb-mon{min-height:44px!important}
+html .vb .vb-shape>summary,html .vb .vb-more>summary,html .vb .vb-mon{min-height:44px!important}
 html .vb .vb-allow .vb-code{color:#4a4136!important}
 html .vb .vb-allow,html .vb .vb-allow p,html .vb-help,html .vb .vb-snd b,html .vb .vb-tk b{color:#1f1a12!important}
 html .vb .vb-snd span,html .vb .vb-tk span{color:#463c2c!important}
