@@ -12,6 +12,8 @@
        on it (instant with reduce motion), an object below the horizon says when it rises, "Use my location" is asked
        only when tapped, a typed place is checked,
      · the four telescopes, the air and the sky glow change what the eyepiece can show, truthfully,
+     · a course lesson's link, /telescope?target=<id> (AOG-TELESCOPE-LINK-V1), opens the eyepiece on that target and
+       loads nothing more; an unknown id opens the page as always,
      · iPhone and iPad, English and Spanish, no sideways scroll.
        node tools/check-telescope.js            (add --shots DIR to save pictures of the views)
    Exit code 1 when anything fails. Run it after any change to telescope.html or aog-telescope-*.js. */
@@ -107,7 +109,7 @@ function initScript(o) {
     await ctx.addInitScript(initScript(o));
     const p = await ctx.newPage(); p.errs = [];
     p.on("pageerror", e => p.errs.push(e.message)); p.on("console", m => { if (m.type() === "error" && !/Failed to load resource/.test(m.text())) p.errs.push(m.text()); });
-    await p.goto(BASE + (hash ? "#" + hash : ""), { waitUntil: "load" }); await wait(600);
+    await p.goto(BASE + (hash ? (hash[0] === "?" ? "" : "#") + hash : ""), { waitUntil: "load" }); await wait(600);
     return p;
   }
   const files = p => p.evaluate(() => performance.getEntriesByType("resource").map(e => e.name));
@@ -136,6 +138,26 @@ function initScript(o) {
   /* the lessons still open their controls: every lesson card has its buttons */
   const lessons = await p.evaluate(() => { const out = []; for (let i = 0; i < STAIR.length; i++) { setLessonPick(i); paint(); const n = document.querySelectorAll("#lessons [data-act]").length; if (!n) out.push(i + 1); } setLessonPick(0); paint(); return { n: STAIR.length, empty: out }; });
   ok(lessons.n >= 36 && !lessons.empty.length, `all ${lessons.n} lessons still show their buttons at the eyepiece` + (lessons.empty.length ? " — none on " + lessons.empty.join(", ") : ""));
+
+  /* ── 2b. a lesson's "Try it" link: /telescope?target=<id> opens the eyepiece on it, as if chosen by hand ── */
+  console.log("── links ──");
+  for (const [id, name] of [["saturn", "Saturn"], ["orion", "Orion"]]) {
+    const lp = await open({ width: 1280, height: 900 }, false, "?target=" + id); await wait(900);
+    const r = await lp.evaluate(() => { const box = [...document.querySelectorAll(".aogdd")].find(x => /Target/.test(x.textContent));
+      const sel = box && box.querySelector("select"), on = document.querySelector('#view [data-act^="tg-"][aria-pressed="true"]');
+      return { t: S.lab.target, page: S.page, hash: location.hash, search: location.search, eye: !!document.getElementById("eyecanvas"),
+        menu: sel ? sel.options[sel.selectedIndex].text : "", on: on ? on.getAttribute("data-act") : "" }; });
+    const extra = (await files(lp)).filter(u => SKYFILES.test(u));
+    const r1 = await lp.evaluate(() => window.__raf); await wait(1500); const still = await lp.evaluate(() => window.__raf) === r1;
+    ok(r.t === id && r.page === "lab" && r.hash === "#lab" && !/target=/.test(r.search) && r.eye && r.menu === name && r.on === "tg-" + id,
+      `?target=${id} opens the eyepiece on ${name} (the Target menu says "${r.menu}"), and the address is tidied to #lab`);
+    ok(!extra.length && still && !lp.errs.length, `?target=${id} loads no star catalog, sky engine or map, is still while idle, and has no errors` + (extra[0] ? " — loaded " + extra[0] : "") + (lp.errs[0] ? " — " + lp.errs[0] : ""));
+    await lp.context().close();
+  }
+  { const lp = await open({ width: 1280, height: 900 }, false, "?target=pluto"); await wait(600);
+    const r = await lp.evaluate(() => ({ t: S.lab.target, page: S.page }));
+    ok(r.t === "moon" && r.page === "home" && !lp.errs.length, "an unknown ?target= opens the page as always (the welcome page, the Moon ready)");
+    await lp.context().close(); }
 
   /* ── 3. the four telescopes, the air and the sky glow ── */
   console.log("── telescopes, air, sky glow ──");

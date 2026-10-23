@@ -136,8 +136,9 @@ def check_unit(cid, n):
                 num += 1
                 LP = "%s lesson %d.%d" % (P, c["n"], num)
                 stats["lessons"] += 1
-                orig = le["reading"]; om = marks(orig)
+                orig = le["reading"]
                 ew = [w["w"] for w in le.get("words", [])]
+                om = [m for m in marks(orig) if matched(m, ew)]   # a starred word with no key word of its own is only emphasis
                 # Shorter
                 sh = plist(l.get("short"), LP + ".short", lo=1, hi=min(2, len(orig)), plo=min(plo, 40), phi=phi)
                 if sh:
@@ -165,9 +166,8 @@ def check_unit(cid, n):
                 sw = words_es(l.get("words"), le.get("words", []), LP + ".words")
                 if rd:
                     rm = marks(rd)
-                    if len(set(rm)) != len(set(om)): E(LP + ".reading", "mark the same key words the English marks (%d), with *asterisks*" % len(set(om)))
-                    for m in rm:
-                        if not matched(m, sw): E(LP + ".reading", "*%s* does not match a Spanish key word in words" % m)
+                    if len(set(rm)) not in (len(set(om)), len(set(marks(orig)))): E(LP + ".reading", "mark the same key words the English marks (%d), with *asterisks*" % len(set(om)))
+                    if len([m for m in set(rm) if matched(m, sw)]) < len(set(om)): E(LP + ".reading", "each starred key word must match a Spanish key word in words")
                 lk, lke = l.get("look") or {}, le["look"]
                 txt(lk.get("title"), LP + ".look.title", 2, 200); txt(lk.get("prompt"), LP + ".look.prompt", 4, 500)
                 if lke.get("type") == "data":

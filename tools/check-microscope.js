@@ -14,7 +14,9 @@
      · silent until used: nothing redraws while idle, the depth engine loads only when a depth slide is opened, and
        leaving lets go of the graphics chip,
      · the lessons still count (a few lesson steps on depth slides), the Home Screen app links are there, and every view
-       fits an iPhone and an iPad in English and Spanish with no sideways scroll.
+       fits an iPhone and an iPad in English and Spanish with no sideways scroll,
+     · a lesson's Try it link (?slide=onion, ?slide=elodea; AOG-MICRO-LINK-V1) opens the lab with that slide on the stage,
+       in focus, with no errors, and still while idle.
        node tools/check-microscope.js
    Exit code 1 when anything fails. Run it after any change to science-microscope.html or aog-micro-*.js (see CLAUDE.md). */
 const path = require("path"), fs = require("fs"), http = require("http"), cp = require("child_process");
@@ -38,7 +40,7 @@ const DESK = { viewport: { width: 1280, height: 900 }, deviceScaleFactor: 1 };
 (async () => {
   await new Promise(o => server.listen(0, o)); const base = `http://127.0.0.1:${server.address().port}/`;
   const b = await pw.chromium.launch({ args: ["--use-gl=angle", "--use-angle=swiftshader", "--enable-unsafe-swiftshader"] });   // WebGL for the depth engine
-  async function open(dev, hash, extra) {
+  async function open(dev, hash, extra, query) {
     const ctx = await b.newContext(Object.assign({}, dev, extra || {}));
     await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, r => r.abort());
     await ctx.addInitScript(() => {
@@ -50,7 +52,7 @@ const DESK = { viewport: { width: 1280, height: 900 }, deviceScaleFactor: 1 };
     });
     const p = await ctx.newPage(); p.errs = [];
     p.on("pageerror", e => p.errs.push(e.message)); p.on("console", m => { if (m.type() === "error" && !/Failed to load resource/.test(m.text())) p.errs.push(m.text()); });
-    await p.goto(base + "science-microscope.html" + (hash ? "#" + hash : ""), { waitUntil: "load" }); await wait(900);
+    await p.goto(base + "science-microscope.html" + (query || "") + (hash ? "#" + hash : ""), { waitUntil: "load" }); await wait(900);
     return p;
   }
   const files = p => p.evaluate(() => performance.getEntriesByType("resource").map(e => e.name));
@@ -245,6 +247,26 @@ const DESK = { viewport: { width: 1280, height: 900 }, deviceScaleFactor: 1 };
   let man = {}; try { man = JSON.parse(fs.readFileSync(path.join(ROOT, "microscope.webmanifest"), "utf8")); } catch (e) {}
   ok(app.man === "/microscope.webmanifest" && app.icon === "/app-microscope-touch.png" && fs.existsSync(path.join(ROOT, "app-microscope-touch.png")) && /microscope/.test(man.start_url || ""),
      `the Home Screen app is linked (${app.man}, ${app.icon}, start ${man.start_url})`);
+  await p.context().close();
+
+  /* ── a lesson's Try it link (AOG-MICRO-LINK-V1): ?slide=<id> opens the lab with that slide on the stage, then is still ── */
+  for (const [id, dev, name] of [["onion", DESK, "computer"], ["elodea", PHONE, "iPhone"]]) {
+    p = await open(dev, "", null, "?slide=" + id);
+    await p.waitForFunction(() => !depthWanted(S.lab) || DEPTH.state === "failed" || (DEPTH.state === "ready" && AOGMicro3D.info().spec === S.lab.spec), null, { timeout: 90000 }).catch(() => {});
+    let last = -1; for (let k = 0; k < 60; k++) { const n = await p.evaluate(() => window.__eyeFrames || 0); if (n === last) break; last = n; await wait(350); }
+    const lk = await p.evaluate(() => ({ page: S.page, hash: location.hash, spec: S.lab.spec, menu: (document.querySelector("[data-slidemenu]") || {}).value, obj: S.lab.obj, lamp: S.lab.lightOn, band: focusBand(S.lab.coarse, S.lab.fine, S.lab.obj),
+      depth: !depthWanted(S.lab) || (DEPTH.state === "ready" && AOGMicro3D.info().spec === S.lab.spec), playing: LIVE.playing }));
+    const st = await stat(p, "eye");
+    const q0 = await p.evaluate(() => [window.__silent.raf, LIVE.t]); await wait(2500); const q1 = await p.evaluate(() => [window.__silent.raf, LIVE.t, LIVE.playing]);
+    ok(lk.page === "lab" && lk.hash === "#lab" && lk.spec === id && lk.menu === id && lk.obj === 4 && lk.lamp && lk.band === "in" && lk.depth && st.sd > 1.5 && st.mean > 8,
+       `${name}: ?slide=${id} opens the lab with ${id} on the stage, lamp on, 4×, in focus (${st.mean.toFixed(0)}±${st.sd.toFixed(1)})`);
+    ok(!lk.playing && !q1[2] && q1[0] === q0[0] && q1[1] === q0[1], `${name}: ?slide=${id} is still while idle (${q1[0] - q0[0]} frames in 2.5 s; nothing plays until Play)`);
+    ok(!p.errs.length, `${name}: ?slide=${id} has no console errors` + (p.errs.length ? ": " + p.errs[0] : ""));
+    await p.context().close();
+  }
+  p = await open(DESK, "", null, "?slide=nosuchslide");
+  const unk = await p.evaluate(() => [S.page, S.lab.spec, S.lab.lightOn]);
+  ok(unk[0] === "home" && unk[1] === "e" && !unk[2] && !p.errs.length, `an unknown ?slide= opens the lab as before (${unk[0]}, ${unk[1]})`);
   await p.context().close();
 
   /* ── iPhone and iPad, English and Spanish: it fits, and it speaks both ── */

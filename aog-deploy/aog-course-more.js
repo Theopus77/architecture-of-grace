@@ -89,6 +89,10 @@
     paintPicker();
   }
 
+  /* the teacher's record (aog-iep.js): a send from this page names the reading length used, as it names Listen */
+  function markSupport() { try { if (level && window.AOG_IEP) window.AOG_IEP.mark(level === "short" ? "shorter reading" : "more reading"); } catch (e) {} }
+  markSupport();
+
   /* ── Shorter · Just right · More: one row in each lesson, one choice for all ── */
   var CHOICES = [["short", "Shorter", "Más corto"], ["", "Just right", "Normal"], ["more", "More", "Más"]];
   function paintPicker() {
@@ -123,6 +127,7 @@
       var b = ev.target.closest && ev.target.closest(".aog-lv button"); if (!b) return;
       level = b.getAttribute("data-lv") || "";
       try { if (level) localStorage.setItem(K_LV, level); else localStorage.removeItem(K_LV); } catch (e) {}
+      markSupport();
       need(function () {
         paintReadings();
         var les = b.closest(".les"); if (les && les.getBoundingClientRect().top < 0) les.scrollIntoView({ block: "start" });

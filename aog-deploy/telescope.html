@@ -1844,7 +1844,8 @@ function targetsFor(step){
   if (step>=LX("t10")) list.push(["sea","sea"]);
   if (step>=LX("t6")) list.push(["albireo","albireo"],["split","split"],["pair","pair"]);
   list.push(["sun","sunName"]);
-  if (S.lab.target && S.lab.target.startsWith("x:")) list.push([S.lab.target, S.lab.target]);
+  /* a target pointed at from the star map ("x:…"), or opened by a link (AOG-TELESCOPE-LINK-V1) before its lesson */
+  if (S.lab.target && !list.some(([id])=>id===S.lab.target)) list.push([S.lab.target, S.lab.target]);
   return list;
 }
 function teacherRow(){
@@ -2518,6 +2519,20 @@ function paint(){
 }
 document.getElementById("langBtn").onclick=()=>{ S.lang=S.lang==="en"?"es":"en"; persist(); paint(); };
 document.getElementById("themeBtn").onclick=()=>{ S.theme=S.theme==="dark"?"light":"dark"; persist(); paint(); };
+/* AOG-TELESCOPE-LINK-V1 (2026-10-23): a course lesson's "Try it" button opens the bench on one target,
+   /telescope?target=saturn. The ids are the Target menu's own (LINK_TARGETS). It is the same as choosing it from that
+   menu, so it loads nothing more (Real sky only if this browser already has it on). An unknown id opens the page as
+   always. The address is then tidied to #lab, so a reload or a new choice is not pulled back. */
+const LINK_TARGETS=["moon",...STEP2_TARGETS,"sea","albireo","split","pair","sun"];
+(function(){
+  let q; try{ q=new URLSearchParams(location.search); }catch(e){ return; }
+  const id=String(q.get("target")||"").trim().toLowerCase();
+  if (!LINK_TARGETS.includes(id)) return;
+  const L=S.lab; L.target=id; centerTarget(id); if(id==="sun" && !L.filter) L.cap=true;
+  if (OPT.real) loadSky().then(()=>{ if(S.lab.target===id){ centerTarget(id); if(S.page==="lab") paint(); } }).catch(()=>{});
+  q.delete("target"); const rest=q.toString();
+  try{ history.replaceState(null,"",location.pathname+(rest?"?"+rest:"")+"#lab"); }catch(e){ location.hash="#lab"; }
+})();
 window.addEventListener("hashchange", paint);
 paint();
 </script>

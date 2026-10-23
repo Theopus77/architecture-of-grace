@@ -6066,13 +6066,7 @@ function paint(){
         if(L.cracked){ L.cracked=false; }
       }
       if(a==="newslide"){ L.cracked=false; L.coarse=18; L.fine=40; L.obj=4; L.panX=0; L.panY=0; L.stageX=50; L.stageY=50; L.mA=null; L.mB=null; L.oil=false; L.oil40=false; }
-      if(a.startsWith("spec-")){
-        L.spec=a.slice(5); L.panX=0; L.panY=0; L.mA=null; L.mB=null;
-        if((L.illum==="phase"||L.illum==="fluor")&&!depthCapable(L.spec)) L.illum="bright";
-        if(LIVE.playing) setPlaying(false,"pause");
-        if(!allowedStains(L.spec).includes(L.stain)) L.stain=DEFAULT_STAIN[L.spec]||"none";
-        if(L.cracked){ L.cracked=false; L.coarse=18; L.fine=40; L.obj=4; }
-      }
+      if(a.startsWith("spec-")) pickSlide(L, a.slice(5));
       if(a.startsWith("illum-")){
         const id=a.slice(6);
         if(id==="dark" && L.obj===100){ L.illum="bright"; L.dfNote=true; }
@@ -6179,6 +6173,26 @@ window.addEventListener("afterprint", function(){
     if(S._back){ S.page=S._back; S._back=null; paint(); }
   }catch(e){}
 });
+/* putting a slide on the stage: the slide tray's buttons and a ?slide= link both come here */
+function pickSlide(L, id){
+  L.spec=id; L.panX=0; L.panY=0; L.mA=null; L.mB=null;
+  if((L.illum==="phase"||L.illum==="fluor")&&!depthCapable(L.spec)) L.illum="bright";
+  if(LIVE.playing) setPlaying(false,"pause");
+  if(!allowedStains(L.spec).includes(L.stain)) L.stain=DEFAULT_STAIN[L.spec]||"none";
+  if(L.cracked){ L.cracked=false; L.coarse=18; L.fine=40; L.obj=4; }
+}
+/* AOG-MICRO-LINK-V1 (2026-10-23) — a lesson's "Try it" button opens the lab on one slide:
+   /microscope?slide=onion (any id in SPECIMENS). The slide goes on the stage as the tray would put it, lamp on,
+   clipped, on the 4× and in focus. It only sets the bench: pond water still waits for Play, and a depth slide
+   loads its engine just as it does when picked by hand. An unknown id opens the lab as before. */
+(function(){
+  let id=""; try{ id=new URLSearchParams(location.search).get("slide")||""; }catch(e){}
+  if(!SPECIMENS.some(s=>s.id===id)) return;
+  const L=S.lab;
+  pickSlide(L, id);
+  L.lightOn=true; L.clipped=true; L.obj=4; L.oil=false; L.coarse=Math.round(idealZ(4)-L.fine*0.12);
+  try{ history.replaceState(history.state,"",location.pathname+location.search+"#lab"); }catch(e){ location.hash="lab"; }
+})();
 window.addEventListener("hashchange", paint);
 S.page=hashPage();
 paint();
