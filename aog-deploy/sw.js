@@ -11,7 +11,7 @@
  * Bump by REPLACING the CACHE line. Don't keep the old one as a comment: every byte here is
  * downloaded again on each update check. Old lines live in tools/sw-cache-history.txt and git log.
  */
-const CACHE = 'aog-cache-2026.10.23.m7568'   // THE STUDIO FROM AN IPHONE'S HOME SCREEN: THE TOP LINE STARTS BELOW THE CLOCK, AND + ADD TO MY TRACK TAKES ITS OWN LINE ABOVE THE FIVE KEYS (the-studio.html AOG-STUDIO-SAFE-V1)
+const CACHE = 'aog-cache-2026.10.23.m7569'   // THE VOCAL BOOTH ASKS FOR THE MICROPHONE THROUGH THE STUDIO FIRST, INSIDE THE TAP, SO AN IPHONE NEVER REFUSES THE ROOM'S FRAME FOR THE VISIT; A HOME SCREEN LINE IN THE HELP (aog-vocal.js AOG-VOCAL-MIC-V4)
 
 // Same-origin essentials — reliable to precache at install.
 /* AOG-SW-LIGHT-V1 (2026-10-01) — Jimmy: "Why is it taking so long for the website to load on my phone now?"

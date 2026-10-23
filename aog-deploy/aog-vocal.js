@@ -81,6 +81,7 @@
     allowI: ["iPhone or iPad: open Settings, then Safari, then Microphone, and choose Allow.", "iPhone o iPad: abre Ajustes, luego Safari, luego Micrófono, y elige Permitir."],
     allowC: ["Computer: click the icon to the left of the web address, and allow the microphone.", "Computadora: haz clic en el icono a la izquierda de la dirección web y permite el micrófono."],
     allowThen: ["Then press Record again.", "Luego pulsa Grabar otra vez."],
+    allowApp: ["Opened from its Home Screen icon: close the app all the way (swipe it up and away), open it again, and choose Allow when it asks.", "Si la abriste desde su icono en la pantalla de inicio: cierra la app del todo (deslízala hacia arriba), ábrela otra vez y elige Permitir cuando pregunte."],
     nomic: ["No microphone was found. Plug one in, or use a phone or tablet.", "No se encontró un micrófono. Conecta uno, o usa un teléfono o una tableta."],
     again: ["That take heard nothing. Tap Record again.", "Esa toma no oyó nada. Pulsa Grabar otra vez."],
     fail: ["That did not work. Please try again.", "Eso no funcionó. Inténtalo otra vez."],
@@ -228,7 +229,7 @@
     txt($("vbInL"), tw("inLvl")); txt($("vbOutL"), tw("outLvl"));
     var ln = B.line ? tw(B.line, B.lineF) : ""; if (B.line === "added" && B.fit) ln += " " + tw("fit"); txt($("vbLine"), ln);
     var al = $("vbAllow"); al.hidden = !B.allow;
-    if (B.allow) { var h = '<p>' + tw("denied") + '</p><p>' + tw("allowI") + '</p><p>' + tw("allowC") + '</p><p>' + tw("allowThen") + '</p>' + (B.err ? '<p class="vb-code">(' + B.err.replace(/[^A-Za-z]/g, "") + ')</p>' : ''); if (al.__h !== h) { al.innerHTML = h; al.__h = h; } }
+    if (B.allow) { var h = '<p>' + tw("denied") + '</p><p>' + tw("allowI") + '</p>' + (homeApp() ? '<p>' + tw("allowApp") + '</p>' : '') + '<p>' + tw("allowC") + '</p><p>' + tw("allowThen") + '</p>' + (B.err ? '<p class="vb-code">(' + B.err.replace(/[^A-Za-z]/g, "") + ')</p>' : ''); if (al.__h !== h) { al.innerHTML = h; al.__h = h; } }
     txt($("vbMonT"), tw("mon")); $("vbMonW").hidden = !$("vbMon").checked; txt($("vbMonW"), tw("monWarn")); $("vbMon").disabled = rec;
     /* the takes */
     $("vbTakesBox").hidden = !B.takes.length && !B.gone; txt($("vbTakesH"), tw("takesH"));
@@ -320,10 +321,16 @@
   /* AOG-VOCAL-MIC-V2 (Jimmy, 2026-10-23, iPad: "I HAVE Allowed the microphone but it still says I can't"): Safari can refuse
      the microphone to the room's frame even when the site is allowed. So ask the room first (with the booth's settings, then
      plain), then the Studio around it (same site, the way the old Sing or rap key asked); "off" only when every way says no. */
+  function homeApp() {   /* opened from the Home Screen icon: its own microphone permission, asked again each time it opens */
+    try { var w = window.parent || window; return !!(w.navigator.standalone || (w.matchMedia && w.matchMedia("(display-mode: standalone)").matches)); } catch (e) { return false; }
+  }
   function getMic(want) {
     var ways = [], own = navigator.mediaDevices, top = null;
     try { if (window.parent !== window && window.parent.navigator.mediaDevices) top = window.parent.navigator.mediaDevices; } catch (e) {}
-    (B.way === "top" ? [top, own] : [own, top]).forEach(function (md) { if (md && md.getUserMedia) {
+    /* AOG-VOCAL-MIC-V4 (Jimmy, iPhone, 2026-10-23: the booth said the microphone was off though it was allowed): inside the
+       Studio, ask through the Studio first, inside the tap itself. Safari can refuse a room's frame, and after one refusal it
+       can refuse the rest of the visit, so the frame is asked only if the Studio cannot (or got it from the frame before). */
+    (B.way === "own" || !top ? [own, top] : [top, own]).forEach(function (md) { if (md && md.getUserMedia) {
       var w = md === top ? "top" : "own";
       ways.push(function () { return md.getUserMedia(want).then(function (st) { B.way = w; return st; }); });
       ways.push(function () { return md.getUserMedia({ audio: true }).then(function (st) { B.way = w; return st; }); }); } });

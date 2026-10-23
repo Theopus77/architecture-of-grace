@@ -178,7 +178,7 @@ const ST = f => f.evaluate(() => AOGVocal.state());
     await f.click("#vbRec");
     await f.waitForFunction(() => AOGVocal.state().takes === 1 && AOGVocal.state().state === "idle", null, { timeout: 15000 });
     s = await ST(f);
-    const ended = await f.evaluate(() => window.__streams.every(x => x.getTracks().every(t => t.readyState === "ended")));
+    const ended = await p.evaluate(() => [window].concat([...document.querySelectorAll("iframe")].map(x => x.contentWindow)).every(w => { try { return (w.__streams || []).every(x => x.getTracks().every(t => t.readyState === "ended")); } catch (e) { return true; } }));   /* the Studio asks (AOG-VOCAL-MIC-V4), so its stream may live in the Studio's window */
     const still = await f.evaluate(() => document.getElementById("vbIn").style.transform);
     ok(s.take && Math.abs(s.take.body - wall) < 1.3 && s.take.head >= 0 && s.take.head <= 0.26 && s.take.from === from && !s.mic && !ended && s.armed && !s.raf && /scaleX\(0\)/.test(still),
       `${nm}: ■ Stop ends the recording (the microphone stays ready for the next take) and makes a take of the right length (${wall.toFixed(2)} s recorded): ${JSON.stringify(s.take)}`);
@@ -317,11 +317,27 @@ const ST = f => f.evaluate(() => AOGVocal.state());
     let s = await ST(f); const rec = s.state === "rec", asked = await f.evaluate(() => window.__frameAsked || 0);
     await f.click("#vbRec"); await f.waitForFunction(() => AOGVocal.state().takes === 1, null, { timeout: 15000 }).catch(() => {});
     s = await ST(f);
-    ok(rec && asked >= 1 && (await gums(p)) >= 1 && s.takes === 1 && !s.allow, `the room's frame refused, the Studio's microphone records instead: ${JSON.stringify({ rec, asked, studio: await gums(p), takes: s.takes, allow: s.allow })}`);
+    ok(rec && asked === 0 && (await gums(p)) === 1 && s.takes === 1 && !s.allow, `inside the Studio the booth asks through the Studio first, so a frame Safari would refuse is never asked (AOG-VOCAL-MIC-V4): ${JSON.stringify({ rec, asked, studio: await gums(p), takes: s.takes, allow: s.allow })}`);
     await W(1500); s = await ST(f);
     await f.evaluate(() => { Object.defineProperty(document, "hidden", { configurable: true, get: () => true }); document.dispatchEvent(new Event("visibilitychange")); }); await W(1200); s = await ST(f);
     ok(!s.mic && !s.armed, "the Studio's microphone is let go when the tab is hidden");
     ok(errs.length === 0, "frame refused: no page errors " + errs.slice(0, 3).join(" | "));
+    await ctx.close();
+  }
+  /* 11 · AOG-VOCAL-MIC-V4: the other way round: the Studio is refused, the room's frame records */
+  { const ctx = await b.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, serviceWorkers: "block" }); const errs = [];
+    ctx.on("page", x => x.on("pageerror", e => errs.push(e.message)));
+    await routes(ctx, "en"); await ctx.addInitScript(COUNT);
+    await ctx.addInitScript(() => { if (window.parent !== window) return; const md = navigator.mediaDevices; if (!md) return;
+      md.getUserMedia = async () => { window.__topAsked = (window.__topAsked || 0) + 1; throw new DOMException("refused", "NotAllowedError"); }; });
+    const p = await ctx.newPage(); await p.goto(U + "the-studio#vocal"); await W(3500);
+    const f = await booth(p);
+    await f.click("#vbRec"); await f.waitForFunction(() => AOGVocal.state().state === "rec", null, { timeout: 15000 }).catch(() => {}); await W(2000);
+    let s = await ST(f); const rec = s.state === "rec", top = await p.evaluate(() => window.__topAsked || 0), own = await f.evaluate(() => window.__gum || 0);
+    await f.click("#vbRec"); await f.waitForFunction(() => AOGVocal.state().takes === 1, null, { timeout: 15000 }).catch(() => {});
+    s = await ST(f);
+    ok(rec && top >= 1 && own >= 1 && s.takes === 1 && !s.allow, `the Studio refused, the room's own microphone records instead: ${JSON.stringify({ rec, top, own, takes: s.takes })}`);
+    ok(errs.length === 0, "Studio refused: no page errors " + errs.slice(0, 3).join(" | "));
     await ctx.close();
   }
   console.log(fails ? fails + " FAILED" : "ALL PASS"); await b.close(); srv.close(); process.exit(fails ? 1 : 0);
