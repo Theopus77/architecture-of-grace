@@ -12,7 +12,8 @@ made on the page, as those machines make their sound electronically too. Kit M's
 stays made on the page inside an otherwise recorded kit (made: True).
 
 A pad: name shown on the pad; layers s/m/h (soft, normal, hard), each a list of takes; then the shaping, in this order:
-tune (semitones), eq [(kind, Hz, q, dB)], comp (threshold re peak, ratio, attack ms, release ms), sat, room (spec,
+tune (semitones), eq [(kind, Hz, q, dB)], comp (threshold re peak, ratio, attack ms, release ms), punch (dB, ms: the
+attack lifted) and squash (threshold re peak, ratio, wet dB: parallel compression; both AOG-DRUM-BARKER-V1), sat, room (spec,
 wet dB, crush), gate (open s, close s), echo (gap s, repeats, feedback, low-pass Hz), crush (bits, rate: a 12-bit
 sampler's grit, AOG-DRUM-CRUNCH-V1), shape (hold s, fall s),
 len and fade (s), soft / hard (dB of those layers against the normal one; default -4 / +1.5).
@@ -617,3 +618,6 @@ FILE_LU = dict(FILE_LU, **kits_more2.FILE_LU2)
 import kits_more3              # AOG-DRUM-CRUNCH-V1: thrash metal, tight; the crunchy beat machine
 KITS.update(kits_more3.MORE3)
 FILE_LU = dict(FILE_LU, **kits_more3.FILE_LU3)
+import kits_more4              # AOG-DRUM-BARKER-V1: pop-punk, fast and cracking; live hip-hop on a real kit
+KITS.update(kits_more4.MORE4)
+FILE_LU = dict(FILE_LU, **kits_more4.FILE_LU4)

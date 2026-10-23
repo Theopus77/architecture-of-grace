@@ -312,7 +312,23 @@
     ch: ["HAT", [1, 2, 2], "Hi-hat", "Charles"], oh: ["OPEN", [1, 2, 2], "Open hi-hat", "Charles abierto"],
     clap: ["TOM", [1, 2, 2], "Big tom", "Tom grande"], tom: ["FLOOR", [1, 2, 2], "Floor tom", "Tom de piso"],
     rim: ["RIDE", [1, 2, 2], "Ride (its bell on an accent)", "Ride (la campana con acento)"], bell: ["CRASH", [1, 2, 2], "Crash", "Crash"] }));
-  IDS.push("OR", "ME", "SB", "BP", "GS", "MT", "DS", "PK", "PO", "JG", "RG", "TR", "TH", "BM", "BR", "GR");
+  /* AOG-DRUM-BARKER-V1 (kits_more4.py): Jimmy asked for kits influenced by a favourite pop-punk / hip-hop crossover
+     drummer; named by their sound. PP pop-punk, fast and cracking: a high popping snare with a rimshot on the accent
+     (Virtuosity Drums, CC0), a clicky short kick (Big Rusty Drums, CC0), crisp hats, a stack (a china on a crash, choked
+     short), a rack tom, a floor tom and a crash (MuldjordKit, CC BY 4.0). HL live hip-hop on a real kit (Big Rusty
+     Drums, CC0): a fat open kick, the deep snare with ghost notes, tight hats for fast rolls, a stack, a tom, a flam
+     (two real snare hits, 30 ms apart) and a crash; a little tape drive and a parallel squash, made here */
+  KITS.PP = K("drums", "poppunk", "Pop-punk, fast and cracking", "Pop punk, rápido y seco", DK({
+    kick: ["KICK", [2, 3, 2], "Kick (a click, for fast eighths)", "Bombo (con clic, para corcheas rápidas)"], snare: ["SNARE", [2, 3, 2], "Snare (high and cracking)", "Caja (aguda y seca)"],
+    ch: ["HAT", [2, 3, 2], "Hi-hat", "Charles"], oh: ["OPEN", [1, 2, 2], "Open hi-hat", "Charles abierto"],
+    clap: ["STACK", [1, 2, 2], "Stack (two cymbals, short and trashy)", "Stack (dos platillos, corto y sucio)", { look: "cym" }], tom: ["TOM", [2, 2, 2], "Tom", "Tom"],
+    rim: ["FLOOR", [2, 2, 2], "Floor tom", "Tom de piso"], bell: ["CRASH", [1, 2, 2], "Crash", "Crash"] }));
+  KITS.HL = K("drums", "hiphoplive", "Live hip-hop on a real kit", "Hip-hop en batería de verdad", DK({
+    kick: ["KICK", [1, 2, 2], "Kick (fat and round)", "Bombo (grueso y redondo)"], snare: ["SNARE", [3, 2, 2], "Snare (soft hits are ghost notes)", "Caja (los golpes suaves son notas fantasma)"],
+    ch: ["HAT", [2, 3, 2], "Hi-hat (tight, for fast rolls)", "Charles (cerrado, para redobles rápidos)"], oh: ["OPEN", [1, 2, 2], "Half-open hi-hat", "Charles medio abierto"],
+    clap: ["STACK", [1, 2, 2], "Stack (two cymbals, short and trashy)", "Stack (dos platillos, corto y sucio)", { look: "cym" }], tom: ["TOM", [2, 2, 2], "Tom", "Tom"],
+    rim: ["FLAM", [1, 2, 2], "Flam (two sticks, one just before the other)", "Flam (dos baquetas, una justo antes que la otra)"], bell: ["CRASH", [1, 2, 2], "Crash", "Crash"] }));
+  IDS.push("OR", "ME", "SB", "BP", "GS", "MT", "DS", "PK", "PO", "JG", "RG", "TR", "TH", "BM", "BR", "GR", "PP", "HL");
   var LAYERS = ["s", "m", "h"];
   function made(b, id) { var k = KITS[b], p = k && k.pads[id]; return !!(p && p.made); }
 
@@ -516,7 +532,43 @@
       map: { kick: [2,0,0,0,0,0,1,0,2,0,0,0,0,0,0,0], snare: [0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0], ch: [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0],
              bell: [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] },
       parts: [{ len: 16, map: { kick: [2,0,0,0,0,0,1,0,2,0,0,0,2,0,0,0], snare: [0,0,0,0,2,0,0,0,2,1,1,1,0,0,0,0], ch: [1,0,1,0,1,0,1,0,0,0,0,0,0,0,0,0],
-        clap: [0,0,0,0,0,0,0,0,0,0,0,0,2,1,0,0], tom: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1] } }] }
+        clap: [0,0,0,0,0,0,0,0,0,0,0,0,2,1,0,0], tom: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1] } }] },
+    /* AOG-DRUM-BARKER-V1 · pop-punk, fast and cracking: the fast punk beat (kick on the beat, snare on every "and", the hats
+       on the eighths; a stack on the last "and" of its second bar), the floor tom on every eighth with kick and snare under
+       it, and a half-time chorus (16th hats, stack accents) whose second bar ends with a short fill down the toms */
+    { id: "poppunkfast", en: "Fast punk beat", es: "Ritmo punk rápido", kit: "PP", bpm: 190, swing: 0.50, hand: 1, grp: "metal",
+      map: { kick: [2,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0], snare: [0,0,2,0,0,0,2,0,0,0,2,0,0,0,2,0], ch: [0,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0],
+             bell: [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] },
+      parts: [{ len: 16, map: { kick: [2,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0], snare: [0,0,2,0,0,0,2,0,0,0,2,0,0,0,2,0], ch: [1,0,1,0,1,0,1,0,1,0,1,0,1,0,0,0],
+        clap: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0] } }] },
+    { id: "poppunkfloor", en: "Floor-tom groove", es: "Groove en el tom de piso", kit: "PP", bpm: 160, swing: 0.50, hand: 1, grp: "metal",
+      map: { rim: [2,0,1,0,1,0,1,0,2,0,1,0,1,0,1,0], kick: [2,0,0,0,0,0,1,0,2,0,1,0,0,0,0,0], snare: [0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0] } },
+    { id: "poppunkchorus", en: "Half-time chorus with a tom fill", es: "Estribillo a medio tiempo con redoble en los toms", kit: "PP", bpm: 150, swing: 0.50, hand: 1, grp: "metal",
+      map: { kick: [2,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0], snare: [0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0], ch: [0,3,1,3,1,3,0,3,1,3,1,3,1,3,1,3],
+             clap: [2,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0] },
+      parts: [{ len: 16, map: { kick: [2,0,0,0,0,0,1,0,0,0,0,0,2,0,0,0], snare: [0,0,0,0,0,0,0,0,2,1,0,0,0,0,0,0], ch: [1,3,1,3,1,3,1,3,0,0,0,0,0,0,0,0],
+        tom: [0,0,0,0,0,0,0,0,0,0,2,1,0,0,0,0], rim: [0,0,0,0,0,0,0,0,0,0,0,0,2,1,1,1] } }] },
+    /* live hip-hop on a real kit: a head-nod beat with ghost notes on the snare, a rap-rock beat with a crash on the one
+       (its second bar on the half-open hat, with a stack), and a groove in 32nd notes (a 32nd-note hat roll) whose second
+       bar is a quick snare roll and two flams into the crash */
+    { id: "hiphoplive", en: "Live hip-hop beat with ghost notes", es: "Hip-hop en vivo con notas fantasma", kit: "HL", bpm: 92, swing: 0.56, hand: 1, grp: "hiphop",
+      map: { kick: [2,0,0,0,0,0,0,1,0,0,2,0,0,0,0,0], snare: [0,0,3,0,2,0,0,3,0,3,0,0,2,0,0,3], ch: [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0] },
+      parts: [{ len: 16, map: { kick: [2,0,0,0,0,0,0,1,0,0,2,0,0,1,0,0], snare: [0,0,3,0,2,0,0,3,0,0,3,0,2,0,3,0], ch: [1,0,1,0,1,0,1,0,1,0,1,0,1,0,0,0],
+        oh: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0] } }] },
+    { id: "raprock", en: "Rap-rock beat, a crash on the one", es: "Rap rock, con crash en el uno", kit: "HL", bpm: 100, swing: 0.50, hand: 1, grp: "rock",
+      map: { kick: [2,0,0,0,0,0,1,0,2,0,1,0,0,0,0,0], snare: [0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,3], ch: [0,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0],
+             bell: [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] },
+      parts: [{ len: 16, map: { kick: [2,0,0,0,0,0,1,0,2,0,1,0,0,0,1,0], snare: [0,0,0,0,2,0,0,0,0,0,0,0,2,0,0,0], oh: [0,0,1,0,1,0,1,0,1,0,1,0,1,0,0,0],
+        bell: [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], clap: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0] } }] },
+    { id: "hiphoproll", en: "Snare roll and flams into the crash", es: "Redoble de caja y flams hacia el crash", kit: "HL", bpm: 88, res: 8, swing: 0.50, hand: 1, grp: "hiphop",
+      map: { kick:  [2,0,0,0,0,0,0,0, 0,0,0,0,0,0,1,0, 0,0,0,0,2,0,0,0, 0,0,0,0,0,0,0,0],
+             snare: [0,0,0,0,0,0,0,0, 2,0,0,0,0,0,0,0, 0,0,3,0,0,0,0,0, 2,0,0,0,0,0,3,0],
+             ch:    [0,0,0,0,1,0,0,0, 1,0,0,0,1,0,0,0, 1,0,0,0,1,0,0,0, 1,0,0,0,3,3,1,1],
+             bell:  [2,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0] },
+      parts: [{ map: { kick:  [2,0,0,0,0,0,0,0, 0,0,0,0,0,0,1,0, 0,0,0,0,0,0,0,0, 1,0,0,0,1,0,0,0],
+                       snare: [0,0,0,0,0,0,0,0, 2,0,0,0,0,0,0,0, 3,3,1,3,1,3,1,1, 0,0,0,0,0,0,0,0],
+                       ch:    [1,0,0,0,1,0,0,0, 1,0,0,0,1,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0],
+                       rim:   [0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 1,0,0,0,2,0,0,0] } }] }
   );
   /* a beat in parts: part 2 goes in the next part of the song, and the track plays them in turn. Put my beat back
      returns that part and the track as they were; a one-part beat picked afterwards stops the track again. */
@@ -550,8 +602,8 @@
     loading: { en: "Getting the recorded drums ready…", es: "Preparando la batería grabada…" },
     failed:  { en: "The recorded drums did not load. Check the internet, then pick the kit again.",
                es: "La batería grabada no se cargó. Revisa el internet y vuelve a elegir el kit." },
-    credit:  { en: "The recorded kits are real drums and percussion, free for everyone (CC0), from Karoryfer Samples, Versilian Studios and Jeff Learman. Kit L is a real 909 drum machine, recorded by Janne G:son Berg (CC BY 4.0). Kits A and B play a real 1978 drum machine (CC0). The hand percussion, hand drums and tabla are real too (CC0): Versilian Studios, Karoryfer Samples, FreePats and dio_333. A few strokes are shaped here from the same drum. The gospel, punk, 1980s pop and thrash kits use MuldjordKit by Lars Muldjord (CC BY 4.0); the body percussion is from sfzinstruments (CC0); reggaeton and trap use Sonic Pi's samples (CC0).",
-               es: "Los kits grabados son batería y percusión de verdad, libres para todos (CC0), de Karoryfer Samples, Versilian Studios y Jeff Learman. El kit L es una caja de ritmos 909 de verdad, grabada por Janne G:son Berg (CC BY 4.0). Los kits A y B tocan una caja de ritmos de verdad de 1978 (CC0). La percusión de mano, los tambores de mano y la tabla también son de verdad (CC0): Versilian Studios, Karoryfer Samples, FreePats y dio_333. Algunos golpes se hacen aquí a partir del mismo tambor. Los kits de góspel, punk, pop de los 80 y thrash usan MuldjordKit de Lars Muldjord (CC BY 4.0); la percusión corporal es de sfzinstruments (CC0); el reguetón y el trap usan las muestras de Sonic Pi (CC0)." },
+    credit:  { en: "The recorded kits are real drums and percussion, free for everyone (CC0), from Karoryfer Samples, Versilian Studios and Jeff Learman. Kit L is a real 909 drum machine, recorded by Janne G:son Berg (CC BY 4.0). Kits A and B play a real 1978 drum machine (CC0). The hand percussion, hand drums and tabla are real too (CC0): Versilian Studios, Karoryfer Samples, FreePats and dio_333. A few strokes are shaped here from the same drum. The gospel, punk, 1980s pop, thrash and pop-punk kits, and the live hip-hop kit's stack, use MuldjordKit by Lars Muldjord (CC BY 4.0); the body percussion is from sfzinstruments (CC0); reggaeton and trap use Sonic Pi's samples (CC0).",
+               es: "Los kits grabados son batería y percusión de verdad, libres para todos (CC0), de Karoryfer Samples, Versilian Studios y Jeff Learman. El kit L es una caja de ritmos 909 de verdad, grabada por Janne G:son Berg (CC BY 4.0). Los kits A y B tocan una caja de ritmos de verdad de 1978 (CC0). La percusión de mano, los tambores de mano y la tabla también son de verdad (CC0): Versilian Studios, Karoryfer Samples, FreePats y dio_333. Algunos golpes se hacen aquí a partir del mismo tambor. Los kits de góspel, punk, pop de los 80, thrash y pop punk, y el stack del hip-hop en batería de verdad, usan MuldjordKit de Lars Muldjord (CC BY 4.0); la percusión corporal es de sfzinstruments (CC0); el reguetón y el trap usan las muestras de Sonic Pi (CC0)." },
     handGroup: { en: "Hand drums and percussion", es: "Tambores de mano y percusión" },
     credits: { en: "Full credits", es: "Créditos completos" }
   };
@@ -565,12 +617,13 @@
   function drumOf(b, id) { var k = KITS[b], p = k && k.pads[id]; return (p && p.drum) || ""; }
   function look(b, id) { var k = KITS[b], p = k && k.pads[id]; return (p && p.look) || ""; }
   /* AOG-PADS-STAGE-V1 (2026-10-23): the kind of sound a pad makes, by its own name (a kit that puts a ride in the rim slot
-     still has a ride), else by its slot. The Drum Machine's pads and the Drum Kit's drums light in its colour. */
+     still has a ride), else by its slot. The Drum Machine's pads and the Drum Kit's drums light in its colour.
+     AOG-DRUM-BARKER-V1: the stack (two cymbals) glows as metal, the flam (two snare strokes) as a snap. */
   var FAM = {
     low: /^(KICK|BASSDR|BOOM|909|BASS|BOMBO|SURDO2?|CAJBASS|CGBASS|DJBASS|DOUM|GHE|GLIDE|TIMPLO|FRAMLO|STOMP|HEEL|THUMP|CHEST|BELLY|DHA)$/,
-    snap: /^(SNARE|CLAPS?|FCLAP|SNAP|RIM|XSTICK|STICKS?|CRACK|GHOST|GATED|BRUSH|CAIXA|CAJSLAP|SKANK|STAB|CLICK|SNTAMB)$/,
+    snap: /^(SNARE|CLAPS?|FCLAP|SNAP|RIM|XSTICK|STICKS?|CRACK|GHOST|GATED|BRUSH|CAIXA|CAJSLAP|SKANK|STAB|CLICK|SNTAMB|FLAM)$/,
     shimmer: /^(HAT|OPEN|LOOSE|CHICK|PEDAL|SHAKER|MARACA|EGG|GANZA|TAMB|TAMBSHK|TAMBHIT|JINGLE|SIZZLE|SWISH|STIR|KEYS)$/,
-    metal: /^(CRASH|RIDE|CHINA|CYMBAL|SUSCYM|GONG|BELLS?|COWBELL?|AGOGO|TRIANG|TRIMUTE|TRIOPEN|ZILLS)$/,
+    metal: /^(CRASH|RIDE|CHINA|STACK|CYMBAL|SUSCYM|GONG|BELLS?|COWBELL?|AGOGO|TRIANG|TRIMUTE|TRIOPEN|ZILLS)$/,
     skin: /^(TOM|HITOM|MIDTOM|LOWTOM|FLOOR|SYNTOM|CONGA|CGOPEN|CGMUTE|CGSLAP|BONGO|BGHIGH|BGLOW|BGSLAP|DJEMBE|DJSLAP|DJTONE|TIMBAL|TIMPHI|FRAMHI|REPIQ|TAMBOR|TENOR|TUMBA|KA|KE|NA|PA|TE|TEK|TUN|TIN|SLAP|ROLL)$/,
     wood: /^(CLAVES?|BLOCK|WBHIGH|WBLOW|GUIRO|TICK|SCRTCH|APITO|FLUTTR|CHEEK)$/
   };
