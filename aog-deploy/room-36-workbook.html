@@ -1053,7 +1053,7 @@ body.wbprev{overflow:hidden}
   function play(b, box){
     stop();
     var lang = es() ? "es" : "en", u = new SpeechSynthesisUtterance(textOf(box)), v = voice(lang);
-    u.lang = v ? v.lang : (lang === "es" ? "es-MX" : "en-US"); if(v) u.voice = v; u.rate = 0.95;
+    u.lang = v ? v.lang : (lang === "es" ? "es-MX" : "en-US"); try{ if(v) u.voice = v; }catch(e){} u.rate = 0.95;
     u.onend = u.onerror = function(){ if(cur === b){ cur = null; paint(b, false); } };
     cur = b; paint(b, true);
     try{ S.speak(u); }catch(e){ cur = null; paint(b, false); }
