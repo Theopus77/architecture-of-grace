@@ -445,6 +445,7 @@ const STR={
   loading:{en:"Getting the sounds ready… {a} of {b}",es:"Preparando los sonidos… {a} de {b}"},
   failed:{en:"Some sounds did not load. Check the internet, then pick the bank again.",es:"Algunos sonidos no se cargaron. Revisa internet y vuelve a elegir el banco."},
   ready:{en:"Ready. Tap a pad. Near the middle plays louder.",es:"Listo. Toca un pad. Cerca del centro suena más fuerte."},
+  readyKeysB:{en:"Ready. Tap a chord, or press 1 to 0, − and = for chords 1 to 12.",es:"Listo. Toca un acorde o pulsa 1 a 0, − e = para los acordes 1 a 12."},   /* AOG-PADS-NUMKEYS-V1 */
   readyKeys:{en:"Ready. Tap a pad, or use the keys Z to V, A to F, Q to R and 1 to 4.",es:"Listo. Toca un pad o usa las teclas Z a V, A a F, Q a R y 1 a 4."},
   recOn:{en:"Recording. Play the pads; you hear them back the next time round.",es:"Grabando. Toca los pads; los oirás en la siguiente vuelta."},
   recOff:{en:"Your loop is kept on this device.",es:"Tu bucle se guarda en este dispositivo."},
@@ -1302,15 +1303,22 @@ function bindMidi(){
 }
 const KEYMAP={z:0,x:1,c:2,v:3,a:4,s:5,d:6,f:7,q:8,w:9,e:10,r:11,"1":12,"2":13,"3":14,"4":15,b:16,n:17,g:18,h:19,t:20,y:21,"5":22,"6":23};
 const KEYCAP=["Z","X","C","V","A","S","D","F","Q","W","E","R","1","2","3","4","B","N","G","H","T","Y","5","6"];
+/* AOG-PADS-NUMKEYS-V1 (Jimmy, 2026-10-23: chords on the number keys, as on the Guitar and Bass): in B · Chords the keys
+   1 to 0, − and = play chords 1 to 12 by their number; the letters still play the pads where they sit */
+const NUMKEYS=["1","2","3","4","5","6","7","8","9","0","-","="], NUMCAP=["1","2","3","4","5","6","7","8","9","0","−","="];
+function numBank(){ return S.bank===1; }
+function keyCap(i){ if(!numBank()) return KEYCAP[i]; if(i<12) return NUMCAP[i]; return /^[0-9]$/.test(KEYCAP[i]) ? "" : KEYCAP[i]; }
 function typing(el){ return el && el.closest && el.closest("input,select,textarea,[contenteditable]"); }
 document.addEventListener("keydown",(e)=>{
   if(e.metaKey||e.ctrlKey||e.altKey||typing(e.target)) return;
   const k=e.key.toLowerCase();
   if(k===" "){ if(e.target.closest && e.target.closest("button,summary,a")) return; e.preventDefault(); if(!e.repeat) (SEQ.on?stop:play)(); return; }
+  const ni=numBank() ? NUMKEYS.indexOf(k) : -1;
+  if(ni>=0){ e.preventDefault(); if(!e.repeat) press("k"+k, ni, S.full?1:0.8); return; }   /* AOG-PADS-NUMKEYS-V1 */
   if(KEYMAP[k]==null) return; e.preventDefault(); if(e.repeat) return;
   press("k"+k, KEYMAP[k], S.full?1:0.8);
 });
-document.addEventListener("keyup",(e)=>{ const k=e.key.toLowerCase(); if(KEYMAP[k]!=null) release("k"+k); });
+document.addEventListener("keyup",(e)=>{ const k=e.key.toLowerCase(); if(KEYMAP[k]!=null || NUMKEYS.indexOf(k)>=0) release("k"+k); });
 
 /* ══ AOG-PADS-BOUNCE-V1 — the loop as one exact file ════════════════════════════════════════════════════════════════
    Jimmy: "Make it" (a loop that goes to the Mixing Desk exactly, not a live take). The loop is played offline, never
@@ -1632,7 +1640,7 @@ function paintLine(){
   if(R && R.state==="failed") s=t("failed");
   else if(!isReady(S.bank)) s=t("loading",{a:(R&&R.got)||0, b:(R&&R.total)||"…"});
   else if(SEQ.rec) s=t("recOn");
-  else s=matchMedia("(pointer: fine)").matches ? t("readyKeys") : t("ready");
+  else s=matchMedia("(pointer: fine)").matches ? t(numBank() ? "readyKeysB" : "readyKeys") : t("ready");
   $("line").textContent=s;
 }
 function opt(v, label, cur){ return `<option value="${v}"${String(v)===String(cur)?" selected":""}>${label}</option>`; }
@@ -1703,7 +1711,7 @@ function paintPads(){
   if(cp) patPads(cp).forEach((p,k)=>{ PO[p]=PO[p] ? PO[p]+"·"+(k+1) : String(k+1); });
   const order=[12,13,14,15,22,23, 8,9,10,11,20,21, 4,5,6,7,18,19, 0,1,2,3,16,17];   /* AOG-PADS-24-V1: 17 to 24 on the right */
   box.innerHTML=order.map(i=>{ const d=defs[i];
-    return `<button type="button" class="pad${i===S.sel?" sel":""}${PO[i]?" inpat":""}" data-p="${i}" data-kind="${d.kind}" data-fam="${padFam(d)}" aria-label="${esc((i+1)+": "+d.name+(PO[i]?" · "+t("patStep",{n:PO[i]}):""))}"><span class="pi">${i+1}</span>${PO[i]?`<span class="po">${PO[i]}</span>`:""}<span class="pn${d.name.length>12?" long":""}">${esc(d.name)}</span>${fine?`<span class="pk keyonly">${KEYCAP[i]}</span>`:""}</button>`; }).join("");
+    return `<button type="button" class="pad${i===S.sel?" sel":""}${PO[i]?" inpat":""}" data-p="${i}" data-kind="${d.kind}" data-fam="${padFam(d)}" aria-label="${esc((i+1)+": "+d.name+(PO[i]?" · "+t("patStep",{n:PO[i]}):""))}"><span class="pi">${i+1}</span>${PO[i]?`<span class="po">${PO[i]}</span>`:""}<span class="pn${d.name.length>12?" long":""}">${esc(d.name)}</span>${fine&&keyCap(i)?`<span class="pk keyonly">${keyCap(i)}</span>`:""}</button>`; }).join("");
   box.classList.toggle("waiting", !isReady(bk));
   paintFamKey(defs);
   paintTubes(box, bk, defs);   /* AOG-PADS-CLASSROOM-V1 */
