@@ -1,0 +1,1043 @@
+{
+ "title": "Resolver ecuaciones y desigualdades lineales",
+ "years": "Álgebra",
+ "bigQuestion": "¿Cómo sabes que el número que encontraste es de verdad la respuesta, y no solo un número?",
+ "story": {
+  "title": "La fórmula en el reverso de la bolsa de fertilizante",
+  "kicker": "Un huerto comunitario, una bolsa de 20 libras y una línea de letra pequeña que resulta ser álgebra.",
+  "paragraphs": [
+   "Jasmine es voluntaria los sábados en un huerto comunitario en el lado sur de Chicago. En abril, la coordinadora del huerto le entrega una bolsa de fertilizante de 20 libras y le señala los bancales elevados. «Esparce la cantidad correcta», le dice, «si es muy poco no sirve de nada y si es demasiado se queman las raíces». Jasmine le da la vuelta a la bolsa. En el reverso, en letra pequeña, hay una oración: aplicar 3 libras por cada 1,000 pies cuadrados.",
+   "Esa oración es una fórmula disfrazada. Jasmine mide a pasos el bancal principal: 40 pies por 60 pies. Multiplica para obtener el área, 40 × 60 = 2,400 pies cuadrados. Luego razona: 2,400 son 2.4 grupos de 1,000, así que necesita 2.4 × 3 = 7.2 libras. Escribe la regla con letras para no tener que pensarla otra vez: libras = 0.003 × área, porque 3 ÷ 1,000 = 0.003. Comprueba: 0.003 × 2,400 = 7.2. Coincide.",
+   "Ahora la coordinadora hace la pregunta al revés. «Tenemos 20 libras. ¿Cuánto terreno puede cubrir una bolsa?» Esta vez las libras son conocidas y el área es el misterio. Jasmine escribe 20 = 0.003 × A y se pregunta qué deshace una multiplicación por 0.003. Dividir entre 0.003 lo hace. Así que A = 20 ÷ 0.003, que son unos 6,667 pies cuadrados. Una bolsa cubre el bancal principal casi tres veces.",
+   "Al final de la mañana, Jasmine ha usado la misma fórmula de cuatro maneras distintas: hacia adelante, hacia atrás, para un bancal con forma de L, y para decidir si una bolsa alcanza para toda la temporada. Cada vez hace una sola cosa: trata la ecuación como una oración que debe seguir siendo verdadera, y hace lo mismo en ambos lados. Ese único hábito es de lo que trata este capítulo."
+  ],
+  "think": "La bolsa dice 3 libras por cada 1,000 pies cuadrados. El amigo de Jasmine dice que un bancal de 30 por 30 pies necesita 9 libras. ¿Tiene razón? Explica cómo lo comprobarías sin calculadora."
+ },
+ "sections": [
+  {
+   "title": "Ecuaciones como afirmaciones",
+   "lessons": [
+    {
+     "title": "Verdadera, falsa o abierta",
+     "mainIdea": "Una ecuación es una afirmación que puede ser verdadera o falsa, y una solución es un valor que la hace verdadera.",
+     "reading": [
+      "Mira tres oraciones: 3 + 4 = 7, 3 + 4 = 8 y x + 4 = 7. La primera es verdadera. La segunda es falsa. La tercera no es ninguna de las dos, porque tiene un espacio en blanco. Una oración con una variable se llama *oración abierta*: solo se vuelve verdadera o falsa cuando pones un número. Si pones 3, obtienes 3 + 4 = 7, verdadera. Si pones 5, obtienes 5 + 4 = 7, falsa. Así que una *ecuación* no es una orden de «hacer algo». Es una afirmación de que dos lados son iguales, y tu trabajo es averiguar cuándo se cumple.",
+      "Un número que hace verdadera la ecuación es una *solución*. Para probar un número, lo *sustituyes* en lugar de la variable y simplificas ambos lados. ¿Es 5 una solución de 2x − 3 = 7? Sustituye: 2(5) − 3 = 10 − 3 = 7. El lado izquierdo es 7, el lado derecho es 7, así que sí. ¿Es 4 una solución? 2(4) − 3 = 8 − 3 = 5, y 5 no es 7, así que no. Este paso de probar es el hábito más importante del álgebra, porque funciona sin importar cómo hallaste el número.",
+      "A veces los estudiantes deciden que un número es una solución porque «se ve bien» o porque apareció en el problema. La prueba no se fija en las apariencias. En 3x + 2 = 17, el número 17 está en el problema, pero 3(17) + 2 = 53, no 17. El número 5 no está en el problema, pero 3(5) + 2 = 17, así que 5 es la solución. Siempre sustituye y compara los dos lados antes de confiar en una respuesta."
+     ],
+     "words": [
+      {
+       "w": "ecuación",
+       "d": "una afirmación de que dos expresiones son iguales, como 2x − 3 = 7"
+      },
+      {
+       "w": "oración abierta",
+       "d": "una afirmación con una variable que es verdadera o falsa solo después de poner un número"
+      },
+      {
+       "w": "solución",
+       "d": "un valor de la variable que hace verdadera la ecuación"
+      },
+      {
+       "w": "sustituir",
+       "d": "reemplazar la variable por un número para poder simplificar y comprobar"
+      }
+     ],
+     "look": {
+      "title": "Prueba tres números",
+      "text": "La ecuación es 3x + 2 = 17. Prueba x = 4: 3(4) + 2 = 14, no 17. Prueba x = 5: 3(5) + 2 = 17, verdadero. Prueba x = 6: 3(6) + 2 = 20, no 17. Solo uno de los tres funciona.",
+      "prompt": "Ahora prueba 4, 5 y 6 en 4x − 1 = 19. ¿Cuál es la solución y cómo lo sabes?"
+     },
+     "check": [
+      {
+       "q": "¿Cuál valor es una solución de 4x − 6 = 18?",
+       "choices": [
+        "3",
+        "5",
+        "6",
+        "8"
+       ],
+       "why": "4(6) − 6 = 24 − 6 = 18, así que 6 hace iguales los dos lados. Los otros dan 6, 14 y 26."
+      },
+      {
+       "q": "¿Qué significa que un número sea una solución de una ecuación?",
+       "choices": [
+        "Al sustituirlo, ambos lados quedan iguales",
+        "Aparece en alguna parte de la ecuación",
+        "Es el número más grande que encaja",
+        "Hace que el lado izquierdo sea igual a cero"
+       ],
+       "why": "Una solución hace que la ecuación sea una afirmación verdadera: después de sustituir, el lado izquierdo y el lado derecho se simplifican al mismo número."
+      },
+      {
+       "q": "¿Es 7 una solución de 2x + 5 = 19?",
+       "choices": [
+        "No, porque 2(7) + 5 = 14",
+        "Sí, porque 2(7) + 5 = 19",
+        "No, porque 7 no está en la ecuación",
+        "Sí, porque 7 + 5 + 2 = 14"
+       ],
+       "why": "Sustituye 7: 2(7) + 5 = 14 + 5 = 19, que es igual al lado derecho, así que 7 es una solución."
+      }
+     ],
+     "short": [
+      "An *equation* says that two sides are equal. A sentence with a variable, like x + 4 = 7, is an *open sentence*: it is true or false only after you put in a number. A number that makes the equation true is a *solution*. To test a number, *substitute* it for the variable and simplify both sides. Is 5 a solution of 2x − 3 = 7? 2(5) − 3 = 7, so yes. Is 4? 2(4) − 3 = 5, so no. A number does not count just because it looks right or is in the problem: in 3x + 2 = 17, the number 17 fails, since 3(17) + 2 = 53, but 5 works."
+     ],
+     "more": [
+      "An equation can have one solution, many solutions, or none at all. The equation x + 4 = 7 has exactly one: 3. The equation x + 1 = x + 1 is true for every number you try, and x + 1 = x + 2 is true for none. Later in this unit you will see these same cases again when two equations are solved together.",
+      "Testing numbers is also a fair way to explore a problem you do not yet know how to solve. If you try several values and none work, that tells you something, and you can adjust. Checking only takes a few seconds, and it turns 'I think this is the answer' into 'I know this is the answer.'"
+     ],
+     "short_es": [
+      "Una *ecuación* dice que dos lados son iguales. Una oración con una variable, como x + 4 = 7, es una *oración abierta*: es verdadera o falsa solo después de poner un número. Un número que hace verdadera la ecuación es una *solución*. Para probar un número, *sustitúyelo* en lugar de la variable y simplifica ambos lados. ¿Es 5 una solución de 2x − 3 = 7? 2(5) − 3 = 7, así que sí. ¿Y 4? 2(4) − 3 = 5, así que no. Un número no cuenta solo porque se ve bien o está en el problema: en 3x + 2 = 17, el número 17 no sirve, porque 3(17) + 2 = 53, pero 5 sí funciona."
+     ],
+     "more_es": [
+      "Una ecuación puede tener una solución, muchas soluciones o ninguna. La ecuación x + 4 = 7 tiene exactamente una: 3. La ecuación x + 1 = x + 1 es verdadera para cualquier número que pruebes, y x + 1 = x + 2 no es verdadera para ninguno. Más adelante en esta unidad volverás a ver estos mismos casos cuando se resuelvan dos ecuaciones juntas.",
+      "Probar números también es una buena manera de explorar un problema que todavía no sabes resolver. Si pruebas varios valores y ninguno funciona, eso te dice algo, y puedes ajustar. Comprobar solo toma unos segundos, y convierte «creo que esta es la respuesta» en «sé que esta es la respuesta»."
+     ]
+    },
+    {
+     "title": "Mantener el equilibrio",
+     "mainIdea": "Lo que le hagas a un lado de una ecuación, hazlo también al otro lado, y la afirmación sigue siendo verdadera.",
+     "reading": [
+      "Imagina una balanza que está nivelada. Si pones 2 libras más solo en el platillo izquierdo, se inclina. Si pones 2 libras más en los dos platillos, sigue nivelada. Una ecuación funciona igual. Las *propiedades de la igualdad* dicen que puedes sumar, restar, multiplicar o dividir ambos lados por el mismo número, y la nueva ecuación tiene la misma solución que la anterior. Esa es toda la caja de herramientas para resolver. La usas para *despejar* la variable, que significa dejarla sola en un lado.",
+      "Resuelve 3x + 7 = 22. La variable está envuelta en dos operaciones: se multiplicó por 3 y luego se sumó 7. Deshazlas en orden inverso con *operaciones inversas*. Primero resta 7 a ambos lados: 3x + 7 − 7 = 22 − 7, así que 3x = 15. Luego divide ambos lados entre 3: x = 5. Comprueba sustituyendo: 3(5) + 7 = 15 + 7 = 22. Verdadero. Fíjate en que el *coeficiente* 3 se resolvió al final, porque se aplicó primero a x.",
+      "Un ejemplo más: x/4 − 2 = 3. Suma 2 a ambos lados: x/4 = 5. Multiplica ambos lados por 4: x = 20. Comprueba: 20/4 − 2 = 5 − 2 = 3. El error más común es hacer el paso en un solo lado, escribiendo 3x = 22 − 7 pero olvidando que el 7 también estaba en el lado izquierdo. Otro error es dividir solo un término, convirtiendo 3x + 7 = 22 en x + 7 = 22/3. Cada operación toca la totalidad de ambos lados."
+     ],
+     "words": [
+      {
+       "w": "propiedades de la igualdad",
+       "d": "las reglas que te permiten sumar, restar, multiplicar o dividir ambos lados de una ecuación por el mismo número"
+      },
+      {
+       "w": "despejar",
+       "d": "dejar la variable sola en un lado de la ecuación"
+      },
+      {
+       "w": "operaciones inversas",
+       "d": "operaciones que se deshacen entre sí, como sumar 7 y restar 7"
+      },
+      {
+       "w": "coeficiente",
+       "d": "el número que multiplica a una variable, como el 3 en 3x"
+      }
+     ],
+     "look": {
+      "title": "La factura de mensajes de texto",
+      "text": "Un plan de teléfono cuesta $45 al mes más $0.10 por cada mensaje de texto después del límite. Un mes la factura es de $52.50. Sea t el número de mensajes extra: 45 + 0.10t = 52.50. Resta 45 a ambos lados: 0.10t = 7.50. Divide ambos lados entre 0.10: t = 75. Comprueba: 45 + 0.10(75) = 45 + 7.50 = 52.50.",
+      "prompt": "La factura del mes siguiente es de $61.20. Plantea el mismo tipo de ecuación y encuentra el número de mensajes extra."
+     },
+     "check": [
+      {
+       "q": "Resuelve 5x − 8 = 27.",
+       "choices": [
+        "3.8",
+        "35",
+        "19",
+        "7"
+       ],
+       "why": "Suma 8 a ambos lados: 5x = 35. Divide entre 5: x = 7. Comprueba: 5(7) − 8 = 27. Si olvidas dividir, obtienes 35."
+      },
+      {
+       "q": "Resuelve x/3 + 4 = 10.",
+       "choices": [
+        "2",
+        "18",
+        "42",
+        "6"
+       ],
+       "why": "Resta 4: x/3 = 6. Multiplica por 3: x = 18. Comprueba: 18/3 + 4 = 6 + 4 = 10. Sumar 4 en lugar de restarlo da 14 × 3 = 42, un descuido común."
+      },
+      {
+       "q": "¿Cuál es el mejor primer paso para resolver 2x + 9 = 25?",
+       "choices": [
+        "Dividir ambos lados entre 2",
+        "Restar 9 solo del lado izquierdo",
+        "Restar 9 de ambos lados",
+        "Sumar 9 a ambos lados"
+       ],
+       "why": "Deshaz primero la suma: restar 9 de ambos lados da 2x = 16, y luego dividir da x = 8. Si dividieras primero, tendrías que dividir también el 9."
+      }
+     ],
+     "short": [
+      "A balance scale stays level if you add the same weight to both pans. An equation works the same way. The *properties of equality* let you add, subtract, multiply or divide both sides by the same number without changing the solution. You use them to *isolate* the variable, which means getting it alone on one side. Undo the operations in reverse order with *inverse operations*. To solve 3x + 7 = 22, subtract 7 from both sides to get 3x = 15, then divide both sides by 3 to get x = 5. The *coefficient* 3 is handled last. Do every step to both sides, and check by substituting."
+     ],
+     "more": [
+      "Think of getting dressed: socks go on before shoes, but shoes come off before socks. Undoing an equation works the same way. The last operation that was applied to the variable is the first one you undo. Pairs of inverse operations are adding and subtracting, and multiplying and dividing.",
+      "A coefficient can also be a fraction. In (2/3)x = 12, multiply both sides by 3/2, which is the fraction flipped over, to get x = 18. Check: (2/3)(18) = 12. Dividing both sides by 2/3 gives the same answer, because dividing by a fraction is the same as multiplying by that fraction flipped over."
+     ],
+     "short_es": [
+      "Una balanza se mantiene nivelada si pones el mismo peso en los dos platillos. Una ecuación funciona igual. Las *propiedades de la igualdad* te permiten sumar, restar, multiplicar o dividir ambos lados por el mismo número sin cambiar la solución. Las usas para *despejar* la variable, que significa dejarla sola en un lado. Deshaz las operaciones en orden inverso con *operaciones inversas*. Para resolver 3x + 7 = 22, resta 7 a ambos lados y obtienes 3x = 15; luego divide ambos lados entre 3 y obtienes x = 5. El *coeficiente* 3 se resuelve al final. Haz cada paso en los dos lados y comprueba sustituyendo."
+     ],
+     "more_es": [
+      "Piensa en vestirte: los calcetines se ponen antes que los zapatos, pero los zapatos se quitan antes que los calcetines. Deshacer una ecuación funciona igual. La última operación que se aplicó a la variable es la primera que deshaces. Las parejas de operaciones inversas son sumar y restar, y multiplicar y dividir.",
+      "Un coeficiente también puede ser una fracción. En (2/3)x = 12, multiplica ambos lados por 3/2, que es la fracción dada vuelta, y obtienes x = 18. Comprueba: (2/3)(18) = 12. Dividir ambos lados entre 2/3 da la misma respuesta, porque dividir entre una fracción es lo mismo que multiplicar por esa fracción dada vuelta."
+     ]
+    },
+    {
+     "title": "Ecuaciones de varios pasos con razones",
+     "mainIdea": "Simplifica primero cada lado, luego junta la variable en un lado y nombra la razón de cada paso.",
+     "reading": [
+      "Algunas ecuaciones tienen paréntesis, varios términos y variables en los dos lados. Resuelve 4(x − 3) + 2x = 3x + 6. Empieza ordenando cada lado. La *propiedad distributiva* convierte 4(x − 3) en 4x − 12, porque el 4 multiplica tanto a la x como al 3. Ahora el lado izquierdo es 4x − 12 + 2x. Combina los *términos semejantes* 4x y 2x para obtener 6x − 12. La ecuación ahora es 6x − 12 = 3x + 6.",
+      "Después, junta todos los términos con x en un lado. Resta 3x a ambos lados: 3x − 12 = 6. Suma 12 a ambos lados: 3x = 18. Divide ambos lados entre 3: x = 6. Comprueba en la ecuación original: 4(6 − 3) + 2(6) = 4(3) + 12 = 24, y 3(6) + 6 = 24. Los dos lados son 24, así que x = 6 es correcto. Escribir la razón junto a cada paso se llama *justificar* ese paso: propiedad distributiva, combinar términos semejantes, propiedad de la resta de la igualdad, propiedad de la suma, propiedad de la división.",
+      "Dos errores causan la mayoría de las respuestas incorrectas aquí. El primero es distribuir solo al primer término, escribiendo 4(x − 3) como 4x − 3. Pruébalo con números: 4(5 − 3) = 8, pero 4(5) − 3 = 17, así que no son lo mismo. El segundo es pasar un término al otro lado del signo igual sin cambiar su signo. Restar 3x del lado derecho significa restar también 3x del lado izquierdo. Justificar cada paso te obliga a notar los dos errores."
+     ],
+     "words": [
+      {
+       "w": "propiedad distributiva",
+       "d": "a(b + c) = ab + ac; el número de afuera multiplica cada término de adentro"
+      },
+      {
+       "w": "términos semejantes",
+       "d": "términos con la misma parte variable, como 4x y 2x, que se pueden combinar"
+      },
+      {
+       "w": "justificar",
+       "d": "decir la propiedad o la regla que hace válido un paso"
+      }
+     ],
+     "look": {
+      "title": "Cada paso, una razón",
+      "text": "Resuelve 5(2x + 1) − 3x = 2x + 30. Distribuye: 10x + 5 − 3x = 2x + 30. Combina términos semejantes: 7x + 5 = 2x + 30. Resta 2x a ambos lados: 5x + 5 = 30. Resta 5: 5x = 25. Divide entre 5: x = 5. Comprueba: 5(11) − 15 = 40 y 2(5) + 30 = 40.",
+      "prompt": "Resuelve 3(x + 4) − x = x + 20 de la misma manera, escribiendo la razón junto a cada línea. ¿Qué obtienes y se comprueba?"
+     },
+     "check": [
+      {
+       "q": "Resuelve 3(x + 2) = 2x + 11.",
+       "choices": [
+        "9",
+        "3",
+        "5",
+        "13"
+       ],
+       "why": "Distribuye: 3x + 6 = 2x + 11. Resta 2x: x + 6 = 11. Resta 6: x = 5. Escribir 3x + 2 en lugar de 3x + 6 da la respuesta incorrecta 9."
+      },
+      {
+       "q": "¿Qué propiedad justifica pasar de 2x + 6 = 14 a 2x = 8?",
+       "choices": [
+        "Propiedad distributiva",
+        "Propiedad de la resta de la igualdad",
+        "Propiedad de la división de la igualdad",
+        "Combinar términos semejantes"
+       ],
+       "why": "Se restó seis de ambos lados, algo que la propiedad de la resta de la igualdad permite sin cambiar la solución."
+      },
+      {
+       "q": "Resuelve 7x − 4 = 3x + 20.",
+       "choices": [
+        "6",
+        "4",
+        "2.4",
+        "8"
+       ],
+       "why": "Resta 3x: 4x − 4 = 20. Suma 4: 4x = 24. Divide: x = 6. Comprueba: 7(6) − 4 = 38 y 3(6) + 20 = 38. Sumar 3x en lugar de restarlo da 24/10 = 2.4."
+      }
+     ],
+     "short": [
+      "To solve 4(x − 3) + 2x = 3x + 6, first clean up each side. The *distributive property* turns 4(x − 3) into 4x − 12, because the 4 multiplies both terms. Combine the *like terms* 4x and 2x to get 6x − 12 = 3x + 6. Subtract 3x from both sides, add 12, then divide by 3 to get x = 6. Check: both sides equal 24. Naming the reason for each step is called to *justify* it. Two slips to watch for: distributing to only the first term, and changing only one side when you move a term."
+     ],
+     "more": [
+      "Mathematicians write out reasons because a solution is an argument, and an argument is only as strong as each step. Anyone reading your work, including you next week, can follow a line of reasons and see exactly where a mistake slipped in. That is why a teacher may ask you to show your steps even when your answer is right.",
+      "Variables on both sides do not need a special trick. Pick one side to hold the variable terms, and move the others across by doing the opposite operation to both sides. In 7x − 4 = 3x + 20, you could subtract 3x or you could subtract 7x. Both reach x = 6, because each step keeps the equation true."
+     ],
+     "short_es": [
+      "Para resolver 4(x − 3) + 2x = 3x + 6, primero ordena cada lado. La *propiedad distributiva* convierte 4(x − 3) en 4x − 12, porque el 4 multiplica a los dos términos. Combina los *términos semejantes* 4x y 2x para obtener 6x − 12 = 3x + 6. Resta 3x a ambos lados, suma 12 y luego divide entre 3 para obtener x = 6. Comprueba: los dos lados valen 24. Nombrar la razón de cada paso se llama *justificar* el paso. Dos descuidos que debes vigilar: distribuir solo al primer término y cambiar solo un lado cuando pasas un término."
+     ],
+     "more_es": [
+      "Los matemáticos escriben las razones porque una solución es un argumento, y un argumento es tan fuerte como cada uno de sus pasos. Cualquiera que lea tu trabajo, incluido tú la semana próxima, puede seguir una línea de razones y ver exactamente dónde se coló un error. Por eso una maestra o un maestro puede pedirte que muestres tus pasos aunque tu respuesta sea correcta.",
+      "Las variables en los dos lados no necesitan un truco especial. Elige un lado para que contenga los términos con la variable y pasa los demás haciendo la operación contraria en ambos lados. En 7x − 4 = 3x + 20, podrías restar 3x o podrías restar 7x. Los dos caminos llegan a x = 6, porque cada paso mantiene verdadera la ecuación."
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Fórmulas y ecuaciones literales",
+   "lessons": [
+    {
+     "title": "Reordenar una fórmula",
+     "mainIdea": "Una fórmula con varias letras se resuelve igual que cualquier ecuación: deshaz las operaciones hasta que la letra que quieres quede sola.",
+     "reading": [
+      "El perímetro de un rectángulo es P = 2l + 2w. Por lo general conoces el largo y el ancho, y quieres hallar P. Pero quien construye una cerca a menudo conoce el total de cerca y el largo, y necesita el ancho. Una fórmula con más de una letra es una *ecuación literal*, y puedes *despejar* cualquier letra que tenga. Trata todas las demás letras como si fueran números conocidos.",
+      "Pruébalo primero con números. Si P = 50 y l = 15, entonces 50 = 2(15) + 2w, así que 50 = 30 + 2w. Resta 30 a ambos lados: 20 = 2w. Divide entre 2: w = 10. Ahora haz los mismos pasos con letras. Empieza con P = 2l + 2w. Resta 2l a ambos lados: P − 2l = 2w. Divide ambos lados entre 2: w = (P − 2l)/2. Sustituye P = 50 y l = 15 y verás que da el mismo 10. La versión con letras es una nueva *fórmula* que puedes reutilizar para cualquier cerca.",
+      "La regla del fertilizante de Jasmine era libras = 0.003 × A. Para despejar A, divide ambos lados entre 0.003: A = libras/0.003. Seis libras cubren 6/0.003 = 2,000 pies cuadrados. El error clásico al reordenar es dividir solo una parte de un lado. A partir de P − 2l = 2w, algunos estudiantes escriben w = P − 2l/2, que divide solo el 2l. Los paréntesis importan: toda la expresión P − 2l se divide entre 2."
+     ],
+     "words": [
+      {
+       "w": "ecuación literal",
+       "d": "una ecuación con dos o más letras, como P = 2l + 2w"
+      },
+      {
+       "w": "fórmula",
+       "d": "una regla escrita como ecuación que relaciona cantidades, como A = lw"
+      },
+      {
+       "w": "despejar",
+       "d": "reordenar una ecuación para que una variable elegida quede sola en un lado"
+      }
+     ],
+     "look": {
+      "title": "Distancia, velocidad y tiempo",
+      "text": "La fórmula de la distancia es d = rt. Un autobús de la CTA que va a un promedio de 30 millas por hora y necesita recorrer 45 millas: 45 = 30t. Divide ambos lados entre 30: t = 1.5 horas. Con letras, dividir ambos lados de d = rt entre r da t = d/r. El mismo reordenamiento sirve para un carro, una persona que camina o un tren.",
+      "prompt": "Despeja r en d = rt. Luego usa tu fórmula para hallar la velocidad de una persona que corre 12 millas en 1.5 horas."
+     },
+     "check": [
+      {
+       "q": "Despeja w en A = lw.",
+       "choices": [
+        "w = A − l",
+        "w = l/A",
+        "w = Al",
+        "w = A/l"
+       ],
+       "why": "El ancho está multiplicado por l, así que divide ambos lados entre l: w = A/l. Por ejemplo, una alfombra de 24 pies cuadrados y 6 pies de largo mide 24/6 = 4 pies de ancho."
+      },
+      {
+       "q": "Despeja x en y = mx + b.",
+       "choices": [
+        "x = (y − b)/m",
+        "x = (y + b)/m",
+        "x = y/m − b",
+        "x = (y − m)/b"
+       ],
+       "why": "Resta b a ambos lados: y − b = mx. Divide ambos lados entre m: x = (y − b)/m. Toda la diferencia y − b se divide entre m."
+      },
+      {
+       "q": "Con P = 2l + 2w, P = 36 y l = 10, ¿cuánto es w?",
+       "choices": [
+        "16",
+        "8",
+        "13",
+        "26"
+       ],
+       "why": "36 = 20 + 2w, así que 2w = 16 y w = 8. Comprueba: 2(10) + 2(8) = 36. Si olvidas dividir entre 2, obtienes 16."
+      }
+     ],
+     "short": [
+      "A formula with more than one letter is a *literal equation*. You can *solve for* any letter by treating the other letters as known numbers and undoing operations. For the perimeter of a rectangle, P = 2l + 2w, subtract 2l from both sides to get P − 2l = 2w. Then divide the whole of both sides by 2: w = (P − 2l)/2. With P = 50 and l = 15, this gives w = 10, the same as solving with numbers. The result is a new *formula* you can reuse. Use parentheses, because dividing only the 2l is the classic mistake."
+     ],
+     "more": [
+      "Rearranging is useful because you solve once and then use the result many times. A spreadsheet or a calculator program can use w = (P − 2l)/2 for hundreds of fences without redoing the steps each time. Many formulas you know can be turned around this way. From A = lw you can get l = A/w, and from d = rt you can get r = d/t.",
+      "Check a rearranged formula with numbers you already trust. A rectangle with l = 8 and w = 3 has perimeter 2(8) + 2(3) = 22. Put P = 22 and l = 8 into w = (P − 2l)/2 and you should get 3 again. If you do, the new formula is very likely right. If you do not, look for a step where only part of one side was changed."
+     ],
+     "short_es": [
+      "Una fórmula con más de una letra es una *ecuación literal*. Puedes *despejar* cualquier letra si tratas las demás como números conocidos y deshaces las operaciones. Para el perímetro de un rectángulo, P = 2l + 2w, resta 2l a ambos lados y obtienes P − 2l = 2w. Luego divide todo en ambos lados entre 2: w = (P − 2l)/2. Con P = 50 y l = 15, da w = 10, igual que al resolver con números. El resultado es una nueva *fórmula* que puedes reutilizar. Usa paréntesis, porque dividir solo el 2l es el error clásico."
+     ],
+     "more_es": [
+      "Reordenar es útil porque resuelves una vez y luego usas el resultado muchas veces. Una hoja de cálculo o un programa de calculadora puede usar w = (P − 2l)/2 para cientos de cercas sin repetir los pasos cada vez. Muchas fórmulas que conoces se pueden dar vuelta de esta manera. De A = lw puedes obtener l = A/w, y de d = rt puedes obtener r = d/t.",
+      "Comprueba una fórmula reordenada con números en los que ya confías. Un rectángulo con l = 8 y w = 3 tiene perímetro 2(8) + 2(3) = 22. Pon P = 22 y l = 8 en w = (P − 2l)/2 y deberías obtener 3 otra vez. Si lo obtienes, es muy probable que la nueva fórmula sea correcta. Si no, busca un paso en el que se cambió solo una parte de un lado."
+     ]
+    },
+    {
+     "title": "Temperatura y otras conversiones",
+     "mainIdea": "Una fórmula de conversión se puede usar en cualquier dirección una vez que la despejas para la otra variable.",
+     "reading": [
+      "El clima de Chicago se informa en grados *Fahrenheit*, pero la clase de ciencias y la mayor parte del mundo usan *Celsius*. Las dos escalas se relacionan con F = (9/5)C + 32. El agua se congela a 0 °C, y la fórmula da (9/5)(0) + 32 = 32 °F. El agua hierve a 100 °C: (9/5)(100) + 32 = 180 + 32 = 212 °F. Un día cálido de 25 °C se convierte en (9/5)(25) + 32 = 45 + 32 = 77 °F.",
+      "Para ir en la otra dirección, despeja C. Empieza con F = (9/5)C + 32. Resta 32 a ambos lados: F − 32 = (9/5)C. Multiplica ambos lados por 5/9, que deshace la multiplicación por 9/5: C = (5/9)(F − 32). Pruébalo en una tarde calurosa de verano de 86 °F: 86 − 32 = 54, y (5/9)(54) = 30, así que 86 °F son 30 °C. En una mañana fría de enero de −4 °F: −4 − 32 = −36, y (5/9)(−36) = −20, así que −4 °F son −20 °C. Las dos fórmulas son *equivalentes*; describen la misma relación.",
+      "La trampa del orden de las operaciones aquí es restar 32 después de multiplicar. (5/9)(86) − 32 = 47.8 − 32 = 15.8, que es incorrecto. El 32 se suma al final en la fórmula de ida, así que hay que quitarlo primero al regresar. Cada vez que reordenes una fórmula, prueba tu nueva versión con un par de valores en los que ya confíes, como 0 °C y 32 °F."
+     ],
+     "words": [
+      {
+       "w": "Fahrenheit",
+       "d": "la escala de temperatura que se usa en los reportes del clima de EE. UU.; el agua se congela a 32 °F"
+      },
+      {
+       "w": "Celsius",
+       "d": "la escala de temperatura que se usa en la ciencia; el agua se congela a 0 °C y hierve a 100 °C"
+      },
+      {
+       "w": "equivalente",
+       "d": "dos ecuaciones o fórmulas que describen exactamente la misma relación"
+      }
+     ],
+     "look": {
+      "title": "De Celsius a Fahrenheit",
+      "rows": [
+       "0 °C",
+       "10 °C",
+       "20 °C",
+       "30 °C",
+       "40 °C",
+       "100 °C"
+      ],
+      "unit": "°F",
+      "prompt": "Cada paso de 10 °C suma el mismo número de °F. ¿Cuál es ese número y de dónde sale en la fórmula?"
+     },
+     "check": [
+      {
+       "q": "Convierte 50 °F a Celsius.",
+       "choices": [
+        "10 °C",
+        "18 °C",
+        "122 °C",
+        "32 °C"
+       ],
+       "why": "50 − 32 = 18, y (5/9)(18) = 10. Si te detienes después de restar, obtienes 18; si usas la fórmula de ida, obtienes 122."
+      },
+      {
+       "q": "Convierte 15 °C a Fahrenheit.",
+       "choices": [
+        "47 °F",
+        "27 °F",
+        "59 °F",
+        "85 °F"
+       ],
+       "why": "(9/5)(15) = 27, y luego 27 + 32 = 59. Si olvidas multiplicar, obtienes 47; si olvidas sumar 32, obtienes 27."
+      },
+      {
+       "q": "¿Cuál es F = (9/5)C + 32 despejada correctamente para C?",
+       "choices": [
+        "C = (9/5)F − 32",
+        "C = (5/9)F − 32",
+        "C = (F + 32)(5/9)",
+        "C = (5/9)(F − 32)"
+       ],
+       "why": "Primero resta 32 y luego multiplica por 5/9. Comprueba con 212 °F: (5/9)(180) = 100 °C, el punto de ebullición."
+      }
+     ],
+     "short": [
+      "Chicago weather is reported in degrees *Fahrenheit*, while science uses *Celsius*. The two scales are linked by F = (9/5)C + 32. Water freezes at 0 °C, which is 32 °F, and boils at 100 °C, which is 212 °F. To go the other way, subtract 32 first, then multiply by 5/9: C = (5/9)(F − 32). So 86 °F is (5/9)(54) = 30 °C. The two formulas are *equivalent*, because they describe the same relationship. Mind the order. The 32 is added last going forward, so take it away first going backward."
+     ],
+     "more": [
+      "The Celsius scale is built on water: 0 for freezing and 100 for boiling at sea level. The Fahrenheit scale puts those same two points at 32 and 212, which are 180 degrees apart. That is where the fraction 9/5 comes from. There are 180 Fahrenheit degrees in the same span as 100 Celsius degrees, and 180/100 = 9/5.",
+      "One temperature reads the same on both scales: −40. Check it with the formula: (9/5)(−40) + 32 = −72 + 32 = −40. You can also find it by asking when F and C are equal. Setting (9/5)C + 32 = C gives (4/5)C = −32, so C = −40."
+     ],
+     "short_es": [
+      "El clima de Chicago se informa en grados *Fahrenheit*, mientras que la ciencia usa *Celsius*. Las dos escalas se relacionan con F = (9/5)C + 32. El agua se congela a 0 °C, que son 32 °F, y hierve a 100 °C, que son 212 °F. Para ir en la otra dirección, primero resta 32 y luego multiplica por 5/9: C = (5/9)(F − 32). Así, 86 °F son (5/9)(54) = 30 °C. Las dos fórmulas son *equivalentes*, porque describen la misma relación. Cuida el orden. El 32 se suma al final al ir de ida, así que quítalo primero al regresar."
+     ],
+     "more_es": [
+      "La escala Celsius está basada en el agua: 0 para el congelamiento y 100 para la ebullición al nivel del mar. La escala Fahrenheit pone esos mismos dos puntos en 32 y 212, que están separados por 180 grados. De ahí viene la fracción 9/5. Hay 180 grados Fahrenheit en el mismo tramo que 100 grados Celsius, y 180/100 = 9/5.",
+      "Hay una temperatura que se lee igual en las dos escalas: −40. Compruébalo con la fórmula: (9/5)(−40) + 32 = −72 + 32 = −40. También puedes hallarla preguntando cuándo F y C son iguales. Al plantear (9/5)C + 32 = C se obtiene (4/5)C = −32, así que C = −40."
+     ]
+    },
+    {
+     "title": "Ecuaciones con valor absoluto",
+     "mainIdea": "Una ecuación con valor absoluto suele tener dos soluciones, una a cada lado del punto central.",
+     "reading": [
+      "El *valor absoluto* de un número es su *distancia* a cero en la recta numérica, sin importar la dirección. Por eso |5| = 5 y |−5| = 5. Eso significa que la ecuación |x| = 5 tiene dos soluciones, 5 y −5, porque dos números están a cinco unidades de cero. La ecuación |x − 3| = 5 pregunta qué números están a 5 unidades de 3. Sepárala en dos ecuaciones comunes: x − 3 = 5 da x = 8, y x − 3 = −5 da x = −2. Comprueba: |8 − 3| = 5 y |−2 − 3| = |−5| = 5.",
+      "Si el valor absoluto no está solo, despéjalo primero. Resuelve 3|x| + 2 = 14. Resta 2: 3|x| = 12. Divide entre 3: |x| = 4, así que x = 4 o x = −4. Ahora prueba |2x + 1| = 7. Caso uno: 2x + 1 = 7, así que 2x = 6 y x = 3. Caso dos: 2x + 1 = −7, así que 2x = −8 y x = −4. Comprueba el segundo: |2(−4) + 1| = |−7| = 7. Los dos funcionan.",
+      "Una distancia nunca puede ser negativa, así que |x| + 5 = 2 no tiene ninguna solución: necesitaría |x| = −3. El valor absoluto aparece en la manufactura como *tolerancia*. Una pieza debe medir 50 milímetros, con una diferencia permitida de 0.2 milímetros. Los extremos aceptables resuelven |m − 50| = 0.2, y dan m = 50.2 y m = 49.8. El error común es olvidar el segundo caso y dar solo la respuesta positiva."
+     ],
+     "words": [
+      {
+       "w": "valor absoluto",
+       "d": "la distancia de un número a cero, escrita |x|; nunca es negativa"
+      },
+      {
+       "w": "distancia",
+       "d": "qué tan separados están dos números en la recta numérica; siempre es cero o positiva"
+      },
+      {
+       "w": "tolerancia",
+       "d": "cuánto puede alejarse una medida de su meta y aun así ser aceptada"
+      }
+     ],
+     "look": {
+      "title": "A tres unidades de siete",
+      "text": "|x − 7| = 3 pregunta por los números que están a 3 unidades de distancia de 7. Hacia arriba: x − 7 = 3, así que x = 10. Hacia abajo: x − 7 = −3, así que x = 4. En una recta numérica, 4 y 10 quedan a cada lado de 7, cada uno a 3 pasos.",
+      "prompt": "Escribe una ecuación con valor absoluto cuyas soluciones sean 2 y 12. ¿Cuál es el centro y cuál es la distancia?"
+     },
+     "check": [
+      {
+       "q": "¿Cuáles son las soluciones de |x + 2| = 6?",
+       "choices": [
+        "Solo 4",
+        "4 y −8",
+        "−4 y 8",
+        "6 y −6"
+       ],
+       "why": "x + 2 = 6 da x = 4; x + 2 = −6 da x = −8. Comprueba: |−8 + 2| = |−6| = 6. Si olvidas el segundo caso, obtienes solo 4."
+      },
+      {
+       "q": "¿Cuántas soluciones tiene |x| + 5 = 2?",
+       "choices": [
+        "Dos",
+        "Una",
+        "Ninguna",
+        "Infinitas"
+       ],
+       "why": "Al restar 5 se obtiene |x| = −3. Una distancia no puede ser negativa, así que ningún número sirve."
+      },
+      {
+       "q": "Resuelve |3x − 6| = 12.",
+       "choices": [
+        "Solo 6",
+        "2 y −6",
+        "18 y −6",
+        "6 y −2"
+       ],
+       "why": "3x − 6 = 12 da x = 6; 3x − 6 = −12 da 3x = −6, así que x = −2. Comprueba: |3(−2) − 6| = |−12| = 12."
+      }
+     ],
+     "short": [
+      "The *absolute value* of a number is its *distance* from zero, so |5| = 5 and |−5| = 5. That is why |x| = 5 has two solutions, 5 and −5. To solve |x − 3| = 5, split it into two equations. Then x − 3 = 5 gives 8, and x − 3 = −5 gives −2. If the absolute value is not alone, isolate it first. A distance is never negative, so |x| + 5 = 2 has no solution. Factories use this idea for *tolerance*: a 50 mm part, give or take 0.2, solves |m − 50| = 0.2. Do not forget the second case."
+     ],
+     "more": [
+      "On a number line, |a − b| is the distance between a and b. So |x − 3| = 5 can be read in plain words: 'x is 5 away from 3.' Read that way, you can see both answers, one on each side of 3, before you do any algebra. The two equations then confirm what the picture already shows.",
+      "Absolute value shows up in everyday life too. When you guess a number of jelly beans in a jar, the size of your mistake is the same whether you guessed too high or too low. Only how far off you were matters, not the direction. That is exactly what absolute value measures."
+     ],
+     "short_es": [
+      "El *valor absoluto* de un número es su *distancia* a cero, así que |5| = 5 y |−5| = 5. Por eso |x| = 5 tiene dos soluciones, 5 y −5. Para resolver |x − 3| = 5, sepárala en dos ecuaciones. Entonces x − 3 = 5 da 8, y x − 3 = −5 da −2. Si el valor absoluto no está solo, despéjalo primero. Una distancia nunca es negativa, así que |x| + 5 = 2 no tiene solución. Las fábricas usan esta idea para la *tolerancia*: una pieza de 50 mm, con una diferencia de 0.2, resuelve |m − 50| = 0.2. No olvides el segundo caso."
+     ],
+     "more_es": [
+      "En una recta numérica, |a − b| es la distancia entre a y b. Así que |x − 3| = 5 se puede leer con palabras sencillas: «x está a 5 de distancia de 3». Leída así, puedes ver las dos respuestas, una a cada lado de 3, antes de hacer cualquier álgebra. Las dos ecuaciones confirman entonces lo que la imagen ya muestra.",
+      "El valor absoluto también aparece en la vida diaria. Cuando adivinas cuántos dulces hay en un frasco, el tamaño de tu error es el mismo si adivinaste de más o de menos. Lo que importa es cuánto te equivocaste, no la dirección. Eso es justo lo que mide el valor absoluto."
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Desigualdades",
+   "lessons": [
+    {
+     "title": "Las desigualdades muestran un rango",
+     "mainIdea": "Una desigualdad se resuelve como una ecuación, pero su solución es todo un rango de números, que se muestra en una recta numérica.",
+     "reading": [
+      "Una *desigualdad* compara dos lados con <, >, ≤ o ≥ en lugar de un signo igual. La afirmación x + 4 > 9 es verdadera para x = 6, x = 10, x = 5.5 y una infinidad de otros valores. Todos esos valores juntos forman el *conjunto solución*. Para hallarlo, usa los mismos movimientos de equilibrio que con las ecuaciones. Resta 4 a ambos lados: x > 5. Sirve todo número mayor que 5, y el 5 mismo no sirve.",
+      "Resuelve 2x − 3 ≤ 11. Suma 3 a ambos lados: 2x ≤ 14. Divide entre 2: x ≤ 7. Comprueba con un número dentro del rango, por ejemplo x = 0: 2(0) − 3 = −3, y −3 ≤ 11 es verdadero. Comprueba con un número fuera, por ejemplo x = 10: 2(10) − 3 = 17, y 17 ≤ 11 es falso. Comprobar un valor de adentro y uno de afuera te ayuda a detectar una dirección equivocada.",
+      "Dibuja la solución en una *recta numérica*. El número *frontera*, 7, lleva un punto relleno porque ≤ lo incluye, y una flecha apunta a la izquierda hacia todos los números menores. Para x > 5, la frontera 5 lleva un círculo abierto, porque el 5 no está incluido, y la flecha apunta a la derecha. El dibujo es la respuesta; un solo número no lo es."
+     ],
+     "words": [
+      {
+       "w": "desigualdad",
+       "d": "una afirmación que compara dos lados con <, >, ≤ o ≥"
+      },
+      {
+       "w": "conjunto solución",
+       "d": "todos los valores que hacen verdadera la desigualdad"
+      },
+      {
+       "w": "recta numérica",
+       "d": "una línea con los números en orden, que sirve para dibujar un conjunto solución"
+      },
+      {
+       "w": "frontera",
+       "d": "el número donde empieza o termina el conjunto solución"
+      }
+     ],
+     "look": {
+      "title": "Cuántos viajes",
+      "text": "Cargas $20 en una tarjeta de transporte. Cada viaje cuesta $2.50. El número de viajes r debe cumplir 2.50r ≤ 20. Divide ambos lados entre 2.50: r ≤ 8. Puedes hacer hasta 8 viajes. El conjunto solución son los números enteros del 0 al 8, porque no puedes hacer una parte de un viaje.",
+      "prompt": "Supón que la tarjeta ya tenía $4.25 antes de cargarle $20. Escribe y resuelve la nueva desigualdad."
+     },
+     "check": [
+      {
+       "q": "Resuelve 3x + 5 < 20.",
+       "choices": [
+        "x < 5",
+        "x < 15",
+        "x > 5",
+        "x < 25/3"
+       ],
+       "why": "Resta 5: 3x < 15. Divide entre 3: x < 5. Comprueba x = 0: 5 < 20 es verdadero. Si olvidas dividir, obtienes x < 15."
+      },
+      {
+       "q": "¿Cuál valor está en el conjunto solución de x − 4 ≥ 2?",
+       "choices": [
+        "5",
+        "2",
+        "0",
+        "6"
+       ],
+       "why": "Al sumar 4 se obtiene x ≥ 6, y el 6 está incluido por el ≥. Comprueba: 6 − 4 = 2, y 2 ≥ 2 es verdadero."
+      },
+      {
+       "q": "¿Cómo se dibuja x ≤ 7 en una recta numérica?",
+       "choices": [
+        "Círculo abierto en 7, flecha a la derecha",
+        "Punto relleno en 7, flecha a la izquierda",
+        "Punto relleno en 7, flecha a la derecha",
+        "Círculo abierto en 7, flecha a la izquierda"
+       ],
+       "why": "El ≤ incluye el 7, así que el punto va relleno, y las soluciones son menores que 7, así que la flecha apunta a la izquierda."
+      }
+     ],
+     "short": [
+      "An *inequality* compares two sides with <, >, ≤ or ≥. Its answer is a whole range of numbers, called the *solution set*. Solve it with the same balancing moves as an equation: x + 4 > 9 becomes x > 5. For 2x − 3 ≤ 11, add 3 and divide by 2 to get x ≤ 7. Check one number inside the range and one outside. Then draw the answer on a *number line*. The *boundary* number, like 7, gets a closed dot if it is included (≤ or ≥) and an open circle if it is not (< or >). An arrow points toward the solutions."
+     ],
+     "more": [
+      "Inequalities describe limits we meet every day: a speed limit, a height needed to ride a roller coaster, a lowest score needed to pass. In each one, many values are allowed, not just one. An inequality captures all of them at once, which is why its answer is a range and not a single number.",
+      "It helps to read an inequality out loud. The statement x > 5 says 'x is greater than 5.' You can also turn it around: 5 < x says exactly the same thing. The small, pointed end of the sign always faces the smaller number, so you can check the direction of a sign by looking at where it points."
+     ],
+     "short_es": [
+      "Una *desigualdad* compara dos lados con <, >, ≤ o ≥. Su respuesta es todo un rango de números, que se llama *conjunto solución*. Se resuelve con los mismos movimientos de equilibrio que una ecuación: x + 4 > 9 se convierte en x > 5. Para 2x − 3 ≤ 11, suma 3 y divide entre 2 para obtener x ≤ 7. Comprueba un número dentro del rango y uno fuera. Luego dibuja la respuesta en una *recta numérica*. El número *frontera*, como el 7, lleva un punto relleno si está incluido (≤ o ≥) y un círculo abierto si no lo está (< o >). Una flecha apunta hacia las soluciones."
+     ],
+     "more_es": [
+      "Las desigualdades describen límites que encontramos todos los días: un límite de velocidad, una estatura necesaria para subir a una montaña rusa, una calificación mínima para aprobar. En cada caso se permiten muchos valores, no solo uno. Una desigualdad los reúne todos a la vez, y por eso su respuesta es un rango y no un solo número.",
+      "Ayuda leer una desigualdad en voz alta. La afirmación x > 5 dice «x es mayor que 5». También puedes darle la vuelta: 5 < x dice exactamente lo mismo. El extremo pequeño y puntiagudo del signo siempre mira hacia el número menor, así que puedes revisar la dirección de un signo fijándote hacia dónde apunta."
+     ]
+    },
+    {
+     "title": "Cuando el signo se invierte",
+     "mainIdea": "Multiplicar o dividir ambos lados de una desigualdad por un número negativo invierte el signo de la desigualdad.",
+     "reading": [
+      "Empieza con una afirmación verdadera: 2 < 5. Multiplica ambos lados por −1. Obtienes −2 y −5, y en la recta numérica −2 queda a la derecha de −5, así que −2 > −5. La dirección cambió. Multiplicar o dividir por un *coeficiente negativo* pasa cada número al otro lado del cero e intercambia el orden. Entonces la regla es: cada vez que multipliques o dividas ambos lados de una desigualdad por un número negativo, debes *invertir* el signo.",
+      "Resuelve −3x + 4 ≥ 19. Resta 4 a ambos lados: −3x ≥ 15. Ahora divide ambos lados entre −3 e invierte el signo: x ≤ −5. Comprueba con x = −6: −3(−6) + 4 = 18 + 4 = 22, y 22 ≥ 19 es verdadero. Comprueba con x = 0: 0 + 4 = 4, y 4 ≥ 19 es falso. El valor de adentro funciona y el de afuera no, así que x ≤ −5 es correcto.",
+      "Puedes evitar el cambio por completo pasando la variable al otro lado. A partir de −3x + 4 ≥ 19, suma 3x a ambos lados: 4 ≥ 19 + 3x. Resta 19: −15 ≥ 3x. Divide entre 3, que es positivo: −5 ≥ x, que es la misma *desigualdad equivalente* x ≤ −5. El error común es invertir en el momento equivocado, como al restar un número negativo. Sumar y restar nunca invierten el signo; solo lo hace multiplicar o dividir por un número negativo."
+     ],
+     "words": [
+      {
+       "w": "coeficiente negativo",
+       "d": "una variable multiplicada por un número negativo, como −3x"
+      },
+      {
+       "w": "invertir",
+       "d": "cambiar < por > o ≤ por ≥ (y al revés)"
+      },
+      {
+       "w": "desigualdad equivalente",
+       "d": "una desigualdad con exactamente el mismo conjunto solución que otra"
+      }
+     ],
+     "look": {
+      "title": "Dos caminos, la misma respuesta",
+      "text": "Resuelve 8 − 2x > 14. Camino uno: resta 8 para obtener −2x > 6, luego divide entre −2 e invierte: x < −3. Camino dos: suma 2x a ambos lados para obtener 8 > 14 + 2x, resta 14 para obtener −6 > 2x, divide entre 2: −3 > x, que es x < −3. Comprueba x = −4: 8 − 2(−4) = 16 > 14. Verdadero.",
+      "prompt": "Resuelve 5 − 3x ≤ 20 de las dos maneras. ¿Obtienes la misma respuesta? ¿Qué camino prefieres y por qué?"
+     },
+     "check": [
+      {
+       "q": "Resuelve −4x < 12.",
+       "choices": [
+        "x < −3",
+        "x > −3",
+        "x < 3",
+        "x > 3"
+       ],
+       "why": "Divide ambos lados entre −4 e invierte el signo: x > −3. Comprueba x = 0: 0 < 12 es verdadero, así que el 0 debe estar en el conjunto."
+      },
+      {
+       "q": "Resuelve 5 − x ≥ 2.",
+       "choices": [
+        "x ≥ 3",
+        "x ≥ −3",
+        "x ≤ 3",
+        "x ≤ −3"
+       ],
+       "why": "Resta 5: −x ≥ −3. Multiplica por −1 e invierte: x ≤ 3. Comprueba x = 0: 5 ≥ 2 es verdadero."
+      },
+      {
+       "q": "¿Qué paso requiere invertir el signo de la desigualdad?",
+       "choices": [
+        "Restar 6 a ambos lados",
+        "Sumar −6 a ambos lados",
+        "Dividir ambos lados entre 6",
+        "Dividir ambos lados entre −6"
+       ],
+       "why": "Solo multiplicar o dividir por un número negativo invierte el signo. Sumar o restar cualquier número, positivo o negativo, no lo hace."
+      }
+     ],
+     "short": [
+      "Start with 2 < 5 and multiply both sides by −1. You get −2 > −5, so the direction changed. Multiplying or dividing by a *negative coefficient* swaps the order of numbers. So whenever you multiply or divide both sides of an inequality by a negative number, *reverse* the sign. To solve −3x + 4 ≥ 19, subtract 4 to get −3x ≥ 15. Then divide by −3 and reverse: x ≤ −5. Check one number inside and one outside. You can also avoid the flip by moving the variable to the other side, which gives an *equivalent inequality*. Adding and subtracting never flip the sign."
+     ],
+     "more": [
+      "A number line shows why the sign flips. Numbers get bigger as you move to the right. Multiplying by −1 reflects each number across zero, like a mirror. A number that was on the right lands on the left, so the one that was larger is now smaller, and the sign has to turn around to keep the statement true.",
+      "Here is a quick way to catch a wrong direction. After you solve, pick a number from your answer and put it into the original inequality. If it gives a false statement, the sign is the problem. Zero is often the easiest number to test, as long as zero is part of the answer you found. If it is not, test any other number your answer allows."
+     ],
+     "short_es": [
+      "Empieza con 2 < 5 y multiplica ambos lados por −1. Obtienes −2 > −5, así que la dirección cambió. Multiplicar o dividir por un *coeficiente negativo* intercambia el orden de los números. Entonces, cada vez que multipliques o dividas ambos lados de una desigualdad por un número negativo, debes *invertir* el signo. Para resolver −3x + 4 ≥ 19, resta 4 y obtienes −3x ≥ 15. Luego divide entre −3 e invierte: x ≤ −5. Comprueba un número dentro y uno fuera. También puedes evitar el cambio pasando la variable al otro lado, lo que da una *desigualdad equivalente*. Sumar y restar nunca invierten el signo."
+     ],
+     "more_es": [
+      "Una recta numérica muestra por qué cambia el signo. Los números se hacen mayores cuando te mueves hacia la derecha. Multiplicar por −1 refleja cada número al otro lado del cero, como un espejo. Un número que estaba a la derecha pasa a la izquierda, así que el que era mayor ahora es menor, y el signo tiene que darse vuelta para que la afirmación siga siendo verdadera.",
+      "Esta es una manera rápida de detectar una dirección equivocada. Después de resolver, elige un número de tu respuesta y ponlo en la desigualdad original. Si da una afirmación falsa, el problema es el signo. El cero suele ser el número más fácil de probar, siempre que el cero sea parte de la respuesta que encontraste. Si no lo es, prueba cualquier otro número que tu respuesta permita."
+     ]
+    },
+    {
+     "title": "Desigualdades compuestas",
+     "mainIdea": "Una desigualdad compuesta une dos condiciones con «y» o con «o», y se resuelven todas las partes a la vez.",
+     "reading": [
+      "Un refrigerador debe mantenerse entre 34 °F y 40 °F. Son dos condiciones a la vez: T ≥ 34 y T ≤ 40. Escrita como una sola *desigualdad compuesta*, es 34 ≤ T ≤ 40. La solución es la *intersección*, los números que cumplen las dos partes, y forma un *intervalo* en la recta numérica de 34 a 40 con puntos rellenos en ambos extremos.",
+      "Resuelve −2 < x + 3 ≤ 6. Hay tres partes, y todo lo que hagas debe hacerse en las tres. Resta 3 en cada parte: −5 < x ≤ 3. La solución es todo número mayor que −5 y como máximo 3. Comprueba x = 0, que está dentro: −2 < 3 ≤ 6, verdadero. Comprueba x = 5, que está fuera: −2 < 8 ≤ 6 es falso porque 8 no es ≤ 6. Un error frecuente es restar 3 solo en la parte del medio y en la de la derecha, y dejar el −2 sin cambiar.",
+      "Una desigualdad con «o» es diferente. Resuelve 2x − 1 < −7 o 3x + 2 > 11. Trata cada una por separado: 2x < −6 da x < −3, y 3x > 9 da x > 3. La solución es la *unión*: x < −3 o x > 3, dos flechas que apuntan en direcciones opuestas con un hueco entre −3 y 3. Números como el 0 no son soluciones. Con «y» te quedas solo con lo que comparten las dos partes; con «o» te quedas con todo lo que permita cualquiera de las dos."
+     ],
+     "words": [
+      {
+       "w": "desigualdad compuesta",
+       "d": "dos desigualdades unidas por «y» o por «o»"
+      },
+      {
+       "w": "intersección",
+       "d": "los valores que cumplen las dos partes de una desigualdad con «y»"
+      },
+      {
+       "w": "unión",
+       "d": "los valores que cumplen al menos una parte de una desigualdad con «o»"
+      },
+      {
+       "w": "intervalo",
+       "d": "un tramo de la recta numérica entre dos fronteras"
+      }
+     ],
+     "look": {
+      "title": "Tres partes a la vez",
+      "text": "Resuelve 1 ≤ 2x − 3 ≤ 9. Suma 3 a las tres partes: 4 ≤ 2x ≤ 12. Divide las tres partes entre 2: 2 ≤ x ≤ 6. Comprueba el valor del medio, x = 4: 2(4) − 3 = 5, y 1 ≤ 5 ≤ 9 es verdadero. Comprueba x = 7: 2(7) − 3 = 11, y 11 ≤ 9 es falso.",
+      "prompt": "Resuelve −4 < 3x + 2 < 14. Luego nombra un número entero que sea solución y uno que no lo sea."
+     },
+     "check": [
+      {
+       "q": "Resuelve −1 ≤ 3x + 2 < 11.",
+       "choices": [
+        "−1 ≤ x < 3",
+        "1 ≤ x < 13",
+        "−3 ≤ x < 9",
+        "−1 ≤ x < 11/3"
+       ],
+       "why": "Resta 2 en las tres partes: −3 ≤ 3x < 9. Divide entre 3: −1 ≤ x < 3. Si omites la división, obtienes −3 ≤ x < 9."
+      },
+      {
+       "q": "¿Qué número cumple x < −2 o x > 4?",
+       "choices": [
+        "0",
+        "3",
+        "−5",
+        "4"
+       ],
+       "why": "−5 es menor que −2, así que cumple la primera parte. El 0 y el 3 están en el hueco, y el 4 no es mayor que 4."
+      },
+      {
+       "q": "¿Cómo se escribe «x ≥ 3 y x ≤ 8» como una sola desigualdad?",
+       "choices": [
+        "3 ≥ x ≥ 8",
+        "3 ≤ x ≤ 8",
+        "x ≤ 3 o x ≥ 8",
+        "8 ≤ x ≤ 3"
+       ],
+       "why": "Las dos condiciones se cumplen a la vez, así que x está entre 3 y 8, con ambos extremos incluidos: 3 ≤ x ≤ 8."
+      }
+     ],
+     "short": [
+      "A *compound inequality* joins two conditions. A fridge should stay between 34 °F and 40 °F, which is 34 ≤ T ≤ 40. With 'and', the solution is the *intersection*, the numbers that satisfy both parts, and it forms an *interval* on the number line. To solve −2 < x + 3 ≤ 6, subtract 3 from all three parts: −5 < x ≤ 3. With 'or', the solution is the *union*. For x < −3 or x > 3, the two arrows point away from each other, with a gap between. With 'and' keep what both parts share. With 'or' keep everything either part allows."
+     ],
+     "more": [
+      "Everyday language already uses both kinds. 'You must be at least 8 years old and no older than 12' is an 'and' rule, and it gives one interval of ages. A sign that says a bus runs 'before 6 a.m. or after 8 p.m.' is an 'or' rule: it gives two separate stretches of the day with a gap in between.",
+      "Be careful when you write a compound inequality in one line, because it has to make sense from end to end. The statement 5 < x < 2 describes no numbers at all, since nothing is greater than 5 and less than 2 at the same time. In the one-line form, the smaller number goes on the left and the larger number goes on the right."
+     ],
+     "short_es": [
+      "Una *desigualdad compuesta* une dos condiciones. Un refrigerador debe mantenerse entre 34 °F y 40 °F, lo que se escribe 34 ≤ T ≤ 40. Con «y», la solución es la *intersección*, los números que cumplen las dos partes, y forma un *intervalo* en la recta numérica. Para resolver −2 < x + 3 ≤ 6, resta 3 en las tres partes: −5 < x ≤ 3. Con «o», la solución es la *unión*. En x < −3 o x > 3, las dos flechas apuntan en direcciones opuestas, con un hueco entre ellas. Con «y» te quedas con lo que comparten las dos partes. Con «o» te quedas con todo lo que permita cualquiera de las dos."
+     ],
+     "more_es": [
+      "El lenguaje de todos los días ya usa los dos tipos. «Debes tener al menos 8 años y no más de 12» es una regla con «y», y da un intervalo de edades. Un letrero que dice que un autobús pasa «antes de las 6 a. m. o después de las 8 p. m.» es una regla con «o»: da dos tramos separados del día con un hueco en medio.",
+      "Ten cuidado cuando escribas una desigualdad compuesta en una sola línea, porque debe tener sentido de un extremo al otro. La afirmación 5 < x < 2 no describe ningún número, ya que nada es mayor que 5 y menor que 2 a la vez. En la forma de una línea, el número menor va a la izquierda y el mayor va a la derecha."
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Ecuaciones y desigualdades como modelos",
+   "lessons": [
+    {
+     "title": "Escribir ecuaciones a partir de situaciones",
+     "mainIdea": "Para modelar una situación, define una variable, traduce las palabras a una ecuación, resuélvela y di qué significa el número.",
+     "reading": [
+      "Un gimnasio cobra $25 por inscribirse y $15 al mes. Una persona ha pagado $130 en total. ¿Cuántos meses lleva de socia? Un *modelo* es una ecuación que captura la situación. Primero hay que *definir la variable*: sea m el número de meses. La cuota de inscripción se paga una vez y la cuota mensual se paga m veces, así que 25 + 15m = 130. Resta 25: 15m = 105. Divide entre 15: m = 7. Por último, hay que *interpretar*: lleva 7 meses de socia. Comprueba: 25 + 15(7) = 25 + 105 = 130.",
+      "Los acertijos con números usan los mismos pasos. Tres enteros consecutivos suman 48. Sea n el menor. Los otros dos son n + 1 y n + 2. La ecuación es n + (n + 1) + (n + 2) = 48, que se simplifica a 3n + 3 = 48. Resta 3: 3n = 45. Divide: n = 15. Los enteros son 15, 16 y 17, y 15 + 16 + 17 = 48.",
+      "Fíjate en las frases clave. «El doble de un número disminuido en 7» es 2n − 7, no 2(n − 7); la disminución ocurre después de duplicar. «Siete menos que un número» es n − 7, no 7 − n. Si la redacción no es clara, pon un número fácil y mira cuál expresión coincide con lo que dice la oración. Luego, después de resolver, lee siempre tu respuesta dentro del relato para ver si tiene sentido."
+     ],
+     "words": [
+      {
+       "w": "modelo",
+       "d": "una ecuación o desigualdad que representa una situación real"
+      },
+      {
+       "w": "definir la variable",
+       "d": "decir con palabras exactamente qué representa la letra, incluidas las unidades"
+      },
+      {
+       "w": "interpretar",
+       "d": "explicar qué significa el número resuelto en la situación original"
+      }
+     ],
+     "look": {
+      "title": "Boletos más una cuota",
+      "text": "Cuatro boletos de concierto más una sola cuota de servicio de $12 cuestan $172 en total. Sea t el precio de un boleto: 4t + 12 = 172. Resta 12: 4t = 160. Divide entre 4: t = 40. Cada boleto cuesta $40. Comprueba: 4(40) + 12 = 172.",
+      "prompt": "Seis boletos para otro espectáculo más una cuota de $15 cuestan $195. Escribe la ecuación, resuélvela y di el precio del boleto."
+     },
+     "check": [
+      {
+       "q": "Un gimnasio cobra $25 por inscribirse y $15 al mes. Una persona socia ha pagado $175. ¿Cuántos meses son?",
+       "choices": [
+        "7 meses",
+        "12 meses",
+        "10 meses",
+        "15 meses"
+       ],
+       "why": "25 + 15m = 175, así que 15m = 150 y m = 10. Comprueba: 25 + 150 = 175."
+      },
+      {
+       "q": "¿Qué ecuación dice «el doble de un número disminuido en 7 es 19»?",
+       "choices": [
+        "2(n − 7) = 19",
+        "7 − 2n = 19",
+        "2n + 7 = 19",
+        "2n − 7 = 19"
+       ],
+       "why": "Primero duplica el número y luego resta 7: 2n − 7 = 19. Al resolver, n = 13, y 2(13) − 7 = 19."
+      },
+      {
+       "q": "Dos enteros pares consecutivos suman 54. ¿Cuáles son?",
+       "choices": [
+        "26 y 28",
+        "26 y 27",
+        "24 y 26",
+        "28 y 30"
+       ],
+       "why": "Sea n el primero: n + (n + 2) = 54, así que 2n = 52 y n = 26. Los enteros son 26 y 28, y 26 + 28 = 54."
+      }
+     ],
+     "short": [
+      "A *model* is an equation that captures a situation. A gym charges $25 to join and $15 a month, and someone has paid $130. First *define the variable*: let m be the number of months. The join fee is paid once, so 25 + 15m = 130. Subtract 25 and divide by 15 to get m = 7. Then *interpret* the answer: they have been a member for 7 months. Number puzzles work the same way. Three consecutive integers are n, n + 1 and n + 2, and consecutive even integers go up by 2. Watch the phrases: 'twice a number decreased by 7' is 2n − 7. Read your answer back into the story."
+     ],
+     "more": [
+      "Choosing a good letter helps you remember what it means. Use m for months, t for the ticket price and p for people. Writing the unit next to the letter, like 'm = number of months,' removes any doubt about what the answer measures. A number with no meaning attached is only half an answer.",
+      "There is often more than one way to set up the same problem. Another way to write three consecutive integers is to call the middle one n. Then the three are n − 1, n and n + 1, and their sum is 3n = 48, so n = 16 and the integers are 15, 16 and 17. Both ways reach the same answer. Choosing the one that makes the algebra shorter is part of the skill of modeling."
+     ],
+     "short_es": [
+      "Un *modelo* es una ecuación que captura una situación. Un gimnasio cobra $25 por inscribirse y $15 al mes, y alguien ha pagado $130. Primero hay que *definir la variable*: sea m el número de meses. La cuota de inscripción se paga una vez, así que 25 + 15m = 130. Resta 25 y divide entre 15 para obtener m = 7. Luego hay que *interpretar* la respuesta: lleva 7 meses de socia. Los acertijos con números funcionan igual. Tres enteros consecutivos son n, n + 1 y n + 2, y los enteros pares consecutivos aumentan de 2 en 2. Fíjate en las frases: «el doble de un número disminuido en 7» es 2n − 7. Lee tu respuesta dentro del relato."
+     ],
+     "more_es": [
+      "Elegir una buena letra te ayuda a recordar qué significa. Usa m para los meses, t para el precio del boleto y p para las personas. Escribir la unidad junto a la letra, como «m = número de meses», elimina cualquier duda sobre qué mide la respuesta. Un número sin significado es solo media respuesta.",
+      "A menudo hay más de una manera de plantear el mismo problema. Otra manera de escribir tres enteros consecutivos es llamar n al del medio. Entonces los tres son n − 1, n y n + 1, y su suma es 3n = 48, así que n = 16 y los enteros son 15, 16 y 17. Las dos maneras llegan a la misma respuesta. Elegir la que acorta el álgebra es parte de la habilidad de modelar."
+     ]
+    },
+    {
+     "title": "Los límites se vuelven desigualdades",
+     "mainIdea": "Palabras como «como máximo», «al menos» y «no más de» señalan una desigualdad, y la respuesta es un rango que puede necesitar redondeo.",
+     "reading": [
+      "Un elevador de carga tiene una capacidad nominal de 2,000 libras. Dentro ya hay un carrito de 180 libras, y cada trabajador pesa unas 150 libras. ¿Cuántos trabajadores pueden subir? El límite es una *restricción*, y «capacidad nominal de» significa que el total debe ser *como máximo* 2,000. Sea p el número de trabajadores: 180 + 150p ≤ 2000. Resta 180: 150p ≤ 1820. Divide entre 150: p ≤ 12.13. No puede haber 0.13 de una persona, así que pueden subir como máximo 12 trabajadores. Redondear a 13 rompería el límite: 180 + 150(13) = 2,130.",
+      "Un club necesita reunir *al menos* $500 y hasta ahora tiene $124. Vende velas a $8 cada una. Sea c el número de velas: 124 + 8c ≥ 500. Resta 124: 8c ≥ 376. Divide entre 8: c ≥ 47. Deben vender 47 velas o más. Comprueba: 124 + 8(47) = 124 + 376 = 500 exactos, así que 47 justo alcanza la meta y 46 se queda corto, en 492.",
+      "Traduce las frases con cuidado. «Como máximo 30» y «no más de 30» significan ambas ≤ 30. «Al menos 30» y «no menos de 30» significan ambas ≥ 30. «Más de 30» es estrictamente > 30. Después de resolver, decide cuáles números son realmente *factibles*: números enteros para personas o velas, y nunca negativos. Un modelo con una solución como p ≤ 12.13 te está diciendo 12, no 12.13, y no 13."
+     ],
+     "words": [
+      {
+       "w": "restricción",
+       "d": "un límite que la situación le pone a la variable, como una capacidad de peso"
+      },
+      {
+       "w": "como máximo",
+       "d": "no más de; se traduce como ≤"
+      },
+      {
+       "w": "al menos",
+       "d": "no menos de; se traduce como ≥"
+      },
+      {
+       "w": "factible",
+       "d": "un valor que permiten todas las restricciones y que tiene sentido en la situación"
+      }
+     ],
+     "look": {
+      "title": "Cargar la camioneta",
+      "text": "Una camioneta puede cargar como máximo 1,200 libras. Ya lleva 300 libras de herramientas. Las bolsas de tierra pesan 40 libras cada una. Sea b el número de bolsas: 300 + 40b ≤ 1200. Resta 300: 40b ≤ 900. Divide entre 40: b ≤ 22.5. Como no se vende media bolsa, la camioneta puede llevar 22 bolsas. Comprueba: 300 + 40(22) = 1,180, por debajo del límite.",
+      "prompt": "Si primero se descargan las herramientas, ¿cuántas bolsas caben? Escribe y resuelve la nueva desigualdad."
+     },
+     "check": [
+      {
+       "q": "¿Qué desigualdad significa «no más de 30 personas»?",
+       "choices": [
+        "x < 30",
+        "x ≥ 30",
+        "x > 30",
+        "x ≤ 30"
+       ],
+       "why": "«No más de 30» permite el 30 mismo y todo lo menor, que es x ≤ 30."
+      },
+      {
+       "q": "Un club tiene $124 y vende velas a $8 cada una. ¿Cuántas debe vender para reunir al menos $500?",
+       "choices": [
+        "46",
+        "47",
+        "63",
+        "376"
+       ],
+       "why": "124 + 8c ≥ 500 da 8c ≥ 376 y c ≥ 47. Vender 46 da solo $492. Dividir 500 entre 8 ignora los $124 que ya se reunieron."
+      },
+      {
+       "q": "Un elevador soporta 2,000 libras. Dentro hay un carrito de 180 libras y los trabajadores pesan en promedio 150 libras. ¿Cuántos trabajadores pueden subir?",
+       "choices": [
+        "12",
+        "13",
+        "14",
+        "11"
+       ],
+       "why": "180 + 150p ≤ 2000 da p ≤ 12.13, así que 12 trabajadores. Trece sumarían 2,130 libras, por encima del límite."
+      }
+     ],
+     "short": [
+      "A freight elevator is rated for 2,000 pounds. The limit is a *constraint*: the total must be *at most* 2,000. A 180-pound cart is inside and each worker weighs 150 pounds, so 180 + 150p ≤ 2000 and p ≤ 12.13. Only 12 workers can ride, because 13 would total 2,130 pounds. A club that must raise *at least* $500 and has $124 solves 124 + 8c ≥ 500, so it needs c ≥ 47 candles. 'No more than' means ≤, and 'no fewer than' means ≥. After solving, keep only *feasible* answers: whole numbers for people, and never negative."
+     ],
+     "more": [
+      "Rounding goes in the direction the limit asks for. With an 'at most' limit, you round down, because rounding up would break the limit. With an 'at least' goal, you round up, because rounding down would fall short. That is why 12.13 workers becomes 12, while a goal that needed c ≥ 46.2 candles would mean 47.",
+      "Limits are everywhere: a bridge's weight limit, the number of seats on a bus, a minimum order for free delivery. Writing the limit as an inequality turns the rule into something you can calculate with. Then you can plan before you reach the limit instead of finding out after you have passed it."
+     ],
+     "short_es": [
+      "Un elevador de carga tiene una capacidad nominal de 2,000 libras. El límite es una *restricción*: el total debe ser *como máximo* 2,000. Dentro hay un carrito de 180 libras y cada trabajador pesa 150 libras, así que 180 + 150p ≤ 2000 y p ≤ 12.13. Solo pueden subir 12 trabajadores, porque 13 sumarían 2,130 libras. Un club que debe reunir *al menos* $500 y tiene $124 resuelve 124 + 8c ≥ 500, así que necesita c ≥ 47 velas. «No más de» significa ≤, y «no menos de» significa ≥. Después de resolver, quédate solo con las respuestas *factibles*: números enteros para personas, y nunca negativos."
+     ],
+     "more_es": [
+      "El redondeo va en la dirección que pide el límite. Con un límite de «como máximo», redondeas hacia abajo, porque redondear hacia arriba rompería el límite. Con una meta de «al menos», redondeas hacia arriba, porque redondear hacia abajo se quedaría corto. Por eso 12.13 trabajadores se convierte en 12, mientras que una meta que necesitara c ≥ 46.2 velas significaría 47.",
+      "Los límites están en todas partes: el límite de peso de un puente, el número de asientos de un autobús, un pedido mínimo para tener entrega gratis. Escribir el límite como una desigualdad convierte la regla en algo con lo que puedes calcular. Así puedes planear antes de llegar al límite, en lugar de enterarte después de haberlo pasado."
+     ]
+    },
+    {
+     "title": "Unidades y sentido común",
+     "mainIdea": "Lleva las unidades a lo largo de tu trabajo y compara la respuesta con una estimación aproximada antes de confiar en ella.",
+     "reading": [
+      "Volvamos a la bolsa de fertilizante: 3 libras por cada 1,000 pies cuadrados. Una cama de 40 pies por 60 pies tiene un área de 40 pies × 60 pies = 2,400 pies cuadrados. La tasa es 3 lb por 1,000 pies², así que libras = 2,400 pies² × (3 lb / 1,000 pies²) = 7.2 lb. Fíjate en que los pies cuadrados se cancelan y solo quedan las libras. Este seguimiento de las unidades se llama *análisis de unidades*. Si un estudiante multiplicara por 3 sin dividir entre 1,000, la respuesta sería 7,200, y las unidades sobrantes serían libras-pie-cuadrado, que no significan nada. Las unidades señalan el error.",
+      "Una *estimación* también detecta errores. Antes de calcular, pregúntate: ¿2,400 pies cuadrados es más o menos que 1,000? Es un poco más del doble, así que la respuesta debería ser un poco más del doble de 3 libras, más o menos entre 6 y 8. Una respuesta de 7.2 es *razonable*; una respuesta de 720 o de 0.72 no lo es. Estimar primero toma diez segundos y ahorra una página entera de errores.",
+      "El tiempo es la unidad que más confunde a la gente. Un viaje de 60 millas a 40 millas por hora toma 60 ÷ 40 = 1.5 horas. Eso es 1 hora y 30 minutos, no 1 hora y 50 minutos, porque 0.5 hora × 60 minutos por hora = 30 minutos. De la misma manera, 0.6 hora son 36 minutos. Y algunas respuestas son imposibles a simple vista: −3 boletos, 4.5 personas o un niño de kínder de 90 años. Cuando el número es imposible, lo que está mal es el modelo o la aritmética, no el mundo."
+     ],
+     "words": [
+      {
+       "w": "análisis de unidades",
+       "d": "seguir las unidades a lo largo de un cálculo y cancelarlas como si fueran factores"
+      },
+      {
+       "w": "estimación",
+       "d": "una respuesta aproximada que se halla rápido y sirve para juzgar si la respuesta exacta tiene sentido"
+      },
+      {
+       "w": "razonable",
+       "d": "una respuesta cuyo tamaño y cuyas unidades encajan con la situación"
+      }
+     ],
+     "look": {
+      "title": "Fertilizante para camas distintas",
+      "rows": [
+       "500 pies cuadrados",
+       "1,000 pies cuadrados",
+       "2,000 pies cuadrados",
+       "2,400 pies cuadrados",
+       "5,000 pies cuadrados"
+      ],
+      "unit": "libras",
+      "prompt": "Al duplicar el área se duplican las libras. Usa la tabla para estimar las libras para 3,300 pies cuadrados antes de calcularlas exactamente."
+     },
+     "check": [
+      {
+       "q": "¿Cuántos minutos son 0.6 horas?",
+       "choices": [
+        "60 minutos",
+        "36 minutos",
+        "6 minutos",
+        "40 minutos"
+       ],
+       "why": "0.6 × 60 minutos = 36 minutos. Leer 0.6 hora como «60 minutos» o como «6 minutos» es un descuido común."
+      },
+      {
+       "q": "Una cama mide 30 pies por 50 pies. Con 3 libras por cada 1,000 pies cuadrados, ¿cuánto fertilizante se necesita?",
+       "choices": [
+        "4,500 libras",
+        "15 libras",
+        "4.5 libras",
+        "0.45 libras"
+       ],
+       "why": "El área es 30 × 50 = 1,500 pies² y eso es 1.5 miles, así que 1.5 × 3 = 4.5 libras. Una respuesta de 4,500 olvidó dividir entre 1,000."
+      },
+      {
+       "q": "¿Cuál respuesta debería hacerte revisar tu trabajo?",
+       "choices": [
+        "7.2 libras de fertilizante",
+        "1.5 horas de viaje en autobús",
+        "$40 por boleto de concierto",
+        "−3 boletos de concierto"
+       ],
+       "why": "Un número negativo de boletos es imposible, así que la ecuación o la aritmética tienen un error. Todas las demás respuestas son posibles."
+      }
+     ],
+     "short": [
+      "The fertilizer bag says 3 pounds for every 1,000 square feet. A bed 40 feet by 60 feet is 2,400 square feet, so pounds = 2,400 × (3/1,000) = 7.2. The square feet cancel and only pounds remain. This tracking is called *unit analysis*. If you forgot to divide by 1,000, you would get 7,200 and meaningless units. An *estimate* helps too. Since 2,400 is a bit more than double 1,000, the answer should be a bit more than 6 pounds, so 7.2 is *reasonable*. Watch time as well: 0.5 hour is 30 minutes and 0.6 hour is 36 minutes. An impossible answer, like −3 tickets, means the model or the arithmetic is wrong."
+     ],
+     "more": [
+      "Units can also help you choose the right operation. Suppose you know a distance in miles and a speed in miles per hour, and you want the time. Dividing miles by miles per hour leaves hours, so division is the right move. When the words of a problem are confusing, the units can tell you what to do.",
+      "Builders and cooks estimate all the time. A cook who doubles a recipe expects about twice the flour. A carpenter who cuts a board in half expects each piece to be about half as long. When an exact answer lands far from a guess like that, it is time to look at the arithmetic again before going on."
+     ],
+     "short_es": [
+      "La bolsa de fertilizante dice 3 libras por cada 1,000 pies cuadrados. Una cama de 40 pies por 60 pies tiene 2,400 pies cuadrados, así que libras = 2,400 × (3/1,000) = 7.2. Los pies cuadrados se cancelan y solo quedan las libras. Este seguimiento se llama *análisis de unidades*. Si olvidaras dividir entre 1,000, obtendrías 7,200 y unas unidades sin sentido. Una *estimación* también ayuda. Como 2,400 es un poco más del doble de 1,000, la respuesta debería ser un poco más de 6 libras, así que 7.2 es *razonable*. Cuida también el tiempo: 0.5 hora son 30 minutos y 0.6 hora son 36 minutos. Una respuesta imposible, como −3 boletos, significa que el modelo o la aritmética están mal."
+     ],
+     "more_es": [
+      "Las unidades también pueden ayudarte a elegir la operación correcta. Supón que conoces una distancia en millas y una velocidad en millas por hora, y quieres el tiempo. Dividir millas entre millas por hora deja horas, así que dividir es el movimiento correcto. Cuando las palabras de un problema confunden, las unidades pueden decirte qué hacer.",
+      "Quienes construyen y quienes cocinan estiman todo el tiempo. Una persona que duplica una receta espera usar más o menos el doble de harina. Un carpintero que corta una tabla por la mitad espera que cada pieza mida más o menos la mitad. Cuando una respuesta exacta cae lejos de una suposición así, es momento de revisar otra vez la aritmética antes de seguir."
+     ]
+    }
+   ]
+  }
+ ],
+ "review": [
+  {
+   "q": "¿Cuál valor es una solución de 6x − 5 = 31?",
+   "choices": [
+    "4",
+    "6",
+    "5",
+    "7"
+   ],
+   "why": "6(6) − 5 = 36 − 5 = 31. Al sumar 5 se obtiene 6x = 36, así que x = 6."
+  },
+  {
+   "q": "Resuelve 2(x − 4) = 3x − 15.",
+   "choices": [
+    "−7",
+    "11",
+    "7",
+    "−11"
+   ],
+   "why": "Distribuye: 2x − 8 = 3x − 15. Resta 2x: −8 = x − 15. Suma 15: x = 7. Comprueba: 2(3) = 6 y 21 − 15 = 6."
+  },
+  {
+   "q": "Despeja r en C = 2πr.",
+   "choices": [
+    "r = C/(2π)",
+    "r = 2πC",
+    "r = C − 2π",
+    "r = 2π/C"
+   ],
+   "why": "r está multiplicada por 2π, así que divide ambos lados entre 2π: r = C/(2π)."
+  },
+  {
+   "q": "¿Cuáles son las soluciones de |x − 5| = 2?",
+   "choices": [
+    "Solo 7",
+    "−3 y 3",
+    "5 y −5",
+    "3 y 7"
+   ],
+   "why": "x − 5 = 2 da 7; x − 5 = −2 da 3. Los dos números están a 2 unidades de 5."
+  },
+  {
+   "q": "Resuelve −2x + 7 > 1.",
+   "choices": [
+    "x > 3",
+    "x < 3",
+    "x < −3",
+    "x > −3"
+   ],
+   "why": "Resta 7: −2x > −6. Divide entre −2 e invierte el signo: x < 3. Comprueba x = 0: 7 > 1 es verdadero."
+  },
+  {
+   "q": "Resuelve 3 ≤ 2x + 1 ≤ 11.",
+   "choices": [
+    "2 ≤ x ≤ 10",
+    "4 ≤ x ≤ 12",
+    "1 ≤ x ≤ 5",
+    "3 ≤ x ≤ 11"
+   ],
+   "why": "Resta 1 en todas las partes: 2 ≤ 2x ≤ 10. Divide entre 2: 1 ≤ x ≤ 5."
+  },
+  {
+   "q": "Un plomero cobra $60 por la visita más $45 por hora. La cuenta es de $240. ¿Cuántas horas tomó el trabajo?",
+   "choices": [
+    "5.3 horas",
+    "6 horas",
+    "3 horas",
+    "4 horas"
+   ],
+   "why": "60 + 45h = 240, así que 45h = 180 y h = 4. Dividir 240 entre 45 ignora el cargo por la visita."
+  },
+  {
+   "q": "Una camioneta tiene asientos para 12 personas como máximo. Deben viajar dos adultos. ¿Qué desigualdad da el número de estudiantes s?",
+   "choices": [
+    "2 + s ≤ 12",
+    "2 + s ≥ 12",
+    "2s ≤ 12",
+    "s − 2 ≤ 12"
+   ],
+   "why": "Los dos adultos más los estudiantes no pueden pasar de 12 asientos: 2 + s ≤ 12, así que s ≤ 10."
+  }
+ ]
+}

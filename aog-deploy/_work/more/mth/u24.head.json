@@ -1,0 +1,125 @@
+{
+ "title": "Álgebra II: funciones exponenciales, logarítmicas y trigonométricas",
+ "years": "Álgebra",
+ "intro": [
+  "Una cuenta de ahorros, un rumor que se esparce, un hueso desenterrado en una granja, un terremoto en el sur de Illinois: cada uno cambia al multiplicarse, no al sumarse. El dinero crece por un factor cada año, un rumor se duplica hasta que se queda sin oídos que lo escuchen, el carbono-14 se reduce a la mitad cada 5,730 años, y cada paso de la escala de terremotos significa diez veces más sacudida. Las funciones exponenciales describen ese tipo de cambio, y los logaritmos responden la pregunta que ellas dejan abierta: ¿cuántos pasos fueron necesarios? Con las dos herramientas puedes saber cuándo se duplica una cuenta, qué edad tiene el hueso y qué significa de verdad una magnitud 7.",
+  "La segunda mitad de la unidad trata del cambio que se repite. La luz del día en Chicago oscila entre unas 9 horas en diciembre y unas 15 en junio, y vuelve, cada año, en una curva suave. Las mareas suben y bajan, una cuerda de guitarra vibra, la corriente de un enchufe de pared cambia de sentido 60 veces por segundo. Todo esto nace de un punto que se mueve alrededor de un círculo, y la altura de ese punto es la función seno. Los radianes, el círculo unitario y las gráficas del seno, el coseno y la tangente te dan el vocabulario para ajustar una onda a datos reales y leer su período y su amplitud.",
+  "Al final podrás resolver ecuaciones donde la incógnita está en un exponente, usar las reglas de los logaritmos para desarmar una fórmula, modelar un crecimiento que se va frenando, escribir un modelo de seno o coseno a partir de un máximo y un mínimo, resolver ecuaciones trigonométricas sencillas y hallar todos los lados y ángulos de un triángulo con tres datos, usando las leyes de los senos y de los cosenos."
+ ],
+ "bigQuestion": "¿Cómo describimos el cambio que se multiplica y el cambio que se repite, y cómo despejamos la incógnita en cada caso?",
+ "timeline": [
+  {"t": "El Almagesto de Ptolomeo incluye una tabla de cuerdas, la primera gran tabla trigonométrica"},
+  {"t": "Aryabhata, en la India, calcula una tabla de semicuerdas, el antepasado de la función seno"},
+  {"t": "John Napier publica la primera tabla de logaritmos para acortar las multiplicaciones largas"},
+  {"t": "Henry Briggs imprime los logaritmos de base 10, los logaritmos comunes que se usaron durante tres siglos"},
+  {"t": "William Oughtred construye la regla de cálculo, una regla que suma logaritmos para multiplicar"},
+  {"t": "Jacob Bernoulli estudia el interés compuesto y halla el límite que se convierte en el número e"},
+  {"t": "La Introductio de Leonhard Euler une e, los logaritmos, el seno y el coseno en una sola teoría de funciones"},
+  {"t": "Søren Sørensen presenta la escala de pH, un logaritmo de la concentración de iones de hidrógeno"},
+  {"t": "Charles Richter publica la escala de magnitud de los terremotos, un logaritmo de la sacudida"},
+  {"t": "Las primeras calculadoras científicas de mano ponen log, ln, sen y cos en un teclado"}
+ ],
+ "wrap": {
+  "words": [
+   {"w": "función exponencial", "d": "una función y = a × b^x que se multiplica por el mismo factor b en cada paso"},
+   {"w": "el número e", "d": "2.71828…, el límite de (1 + 1/n)^n; la base del crecimiento continuo"},
+   {"w": "logaritmo", "d": "el exponente que necesitas: log_b(y) es la potencia de b que da y"},
+   {"w": "logaritmo natural", "d": "el logaritmo de base e, que se escribe ln; deshace e^x"},
+   {"w": "vida media", "d": "el tiempo que tarda una cantidad que decae en reducirse a la mitad"},
+   {"w": "tiempo de duplicación", "d": "el tiempo que tarda en duplicarse una cantidad que crece de forma exponencial; más o menos 70 ÷ la tasa porcentual"},
+   {"w": "radián", "d": "el ángulo cuyo arco mide lo mismo que el radio; 2π radianes forman una vuelta completa"},
+   {"w": "círculo unitario", "d": "el círculo de radio 1 con centro en el origen; sus puntos son (cos θ, sen θ)"},
+   {"w": "amplitud", "d": "la distancia desde la línea media de una onda hasta su cresta"},
+   {"w": "período", "d": "la longitud de un ciclo completo de una función que se repite"},
+   {"w": "desfase", "d": "el desplazamiento horizontal de una onda, C en y = A sen(B(x − C)) + D"},
+   {"w": "ley de los cosenos", "d": "c^2 = a^2 + b^2 − 2ab cos C, para dos lados y el ángulo entre ellos, o para tres lados"}
+  ],
+  "test": [
+   {
+    "q": "Una colonia de 300 células se duplica cada 4 horas. ¿Cuántas células hay después de 12 horas?",
+    "choices": ["900", "1,200", "2,400", "4,800"],
+    "why": "12 ÷ 4 = 3 duplicaciones: 300 × 2^3 = 300 × 8 = 2,400."
+   },
+   {
+    "q": "¿Qué expresión es igual a log_3(x) + log_3(y)?",
+    "choices": ["log_3(x + y)", "log_3(x) × log_3(y)", "log_3(x ÷ y)", "log_3(xy)"],
+    "why": "La regla del producto: una suma de logaritmos es el logaritmo del producto."
+   },
+   {
+    "q": "log_2(64) = ?",
+    "choices": ["6", "32", "8", "5"],
+    "why": "2^6 = 64, así que el exponente es 6. Dividir 64 entre 2 da 32, la operación equivocada."
+   },
+   {
+    "q": "Resuelve 3^x = 100 con aproximación a la centésima.",
+    "choices": ["33.33", "4.19", "2.00", "4.61"],
+    "why": "x = ln(100) ÷ ln(3) ≈ 4.605 ÷ 1.099 ≈ 4.19. Comprobación: 3^4 = 81 y 3^5 = 243."
+   },
+   {
+    "q": "$2,000 crecen de forma continua al 3% anual durante 10 años. ¿Cuánto dinero hay?",
+    "choices": ["$2,600.00", "$2,687.83", "$2,699.72", "$2,060.00"],
+    "why": "A = 2,000 × e^(0.03 × 10) = 2,000 × e^0.3 ≈ 2,000 × 1.34986 = $2,699.72. Con capitalización anual daría $2,687.83."
+   },
+   {
+    "q": "Una sustancia pierde el 20% de su masa cada año. Su vida media, a la décima más cercana, es",
+    "choices": ["2.5 años", "3.5 años", "5.0 años", "3.1 años"],
+    "why": "0.8^t = 0.5, así que t = ln(0.5) ÷ ln(0.8) ≈ (−0.693) ÷ (−0.223) ≈ 3.1 años."
+   },
+   {
+    "q": "¿Cuántas veces más sacude un sismógrafo un terremoto de magnitud 6.0 que uno de magnitud 4.0?",
+    "choices": ["100 veces", "2 veces", "20 veces", "1,000 veces"],
+    "why": "Una diferencia de 2 pasos significa 10^2 = 100 veces la sacudida. La energía sería unas 10^3 = 1,000 veces."
+   },
+   {
+    "q": "Resuelve log_4(x + 1) = 3.",
+    "choices": ["x = 11", "x = 63", "x = 65", "x = 80"],
+    "why": "4^3 = 64 = x + 1, así que x = 63. Comprobación: log_4(64) = 3."
+   },
+   {
+    "q": "300° en radianes es",
+    "choices": ["3π/5", "5π/6", "5π/3", "300π"],
+    "why": "300 × π/180 = 300π/180 = 5π/3. Eso es 2π − π/3, en el cuadrante IV."
+   },
+   {
+    "q": "cos(2π/3) = ?",
+    "choices": ["1/2", "−√3/2", "√3/2", "−1/2"],
+    "why": "2π/3 = 120° está en el cuadrante II con ángulo de referencia π/3; allí el coseno es negativo: −1/2."
+   },
+   {
+    "q": "sen θ = 12/13 y cos θ = −5/13. ¿Cuánto vale tan θ?",
+    "choices": ["−12/5", "12/5", "−5/12", "5/12"],
+    "why": "tan θ = sen θ ÷ cos θ = (12/13) ÷ (−5/13) = −12/5."
+   },
+   {
+    "q": "El período de y = 4 cos(πx/3) es",
+    "choices": ["3", "6", "2π/3", "π/3"],
+    "why": "Período = 2π ÷ B = 2π ÷ (π/3) = 6. El 4 es la amplitud."
+   },
+   {
+    "q": "Una onda va entre 1 y 9, con período 4, y empieza en su línea media subiendo. ¿Qué ecuación le corresponde?",
+    "choices": ["y = 5 + 8 sen(πx/2)", "y = 5 + 4 sen(4x)", "y = 5 + 4 sen(πx/2)", "y = 4 + 5 sen(πx/2)"],
+    "why": "Línea media (9 + 1) ÷ 2 = 5, amplitud (9 − 1) ÷ 2 = 4, B = 2π ÷ 4 = π/2, y el seno empieza en la línea media."
+   },
+   {
+    "q": "Las soluciones de cos x = −√3/2 en [0, 2π) son",
+    "choices": ["π/6 y 11π/6", "solo 5π/6", "π/3 y 5π/3", "5π/6 y 7π/6"],
+    "why": "El ángulo de referencia es π/6; el coseno es negativo en los cuadrantes II y III: π − π/6 = 5π/6 y π + π/6 = 7π/6."
+   },
+   {
+    "q": "Dos lados de un triángulo miden 6 y 10, y el ángulo entre ellos es de 120°. El tercer lado mide",
+    "choices": ["14", "unos 8.7", "unos 11.7", "16"],
+    "why": "c^2 = 36 + 100 − 2 × 6 × 10 × cos 120° = 136 − 120 × (−0.5) = 136 + 60 = 196, así que c = 14."
+   }
+  ],
+  "write": {
+   "prompt": "Una ciudad de 80,000 habitantes crece 2.5% por año. Halla su población después de 10 años y cuántos años tarda en llegar a 160,000. Explica cada paso, incluido dónde usas un logaritmo y por qué, y compara tu tiempo de duplicación con la regla del 70.",
+   "tips": [
+    "Escribe primero las dos respuestas: la población después de 10 años y el tiempo de duplicación en años.",
+    "Muestra el factor de crecimiento (1.025) y el modelo 80,000 × 1.025^t antes de calcular nada.",
+    "Para el tiempo de duplicación, escribe 1.025^t = 2, aplica un logaritmo a ambos lados y explica por qué la regla de la potencia te permite bajar la t.",
+    "Compara tu tiempo de duplicación con 70 ÷ 2.5 = 28 y explica por qué los dos valores se parecen pero no son idénticos.",
+    "Comprueba calculando 1.025 elevado a tu tiempo de duplicación; debe dar un número cercano a 2."
+   ]
+  }
+ }
+}

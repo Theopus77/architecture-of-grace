@@ -145,6 +145,7 @@
     + '#dstd .dstd-code{display:block}'
     + '#dstd .dstd-words{display:block;color:var(--soft);font-size:15px;line-height:1.45;margin-top:2px}'
     + '#dstd .dstd-tbl td:nth-child(n+2){white-space:nowrap}'
+    + '@media (min-width:761px){#dstd .dstd-tbl{table-layout:fixed}#dstd .dstd-tbl th:nth-child(2){width:96px}#dstd .dstd-tbl th:nth-child(3){width:120px}#dstd .dstd-tbl th:nth-child(4){width:92px}#dstd .dstd-tbl th:nth-child(5){width:158px}}'
     + '#dstd .dstd-lab{margin:0}'
     + '@media (max-width:760px){#dstd .dstd-tbl td:nth-child(n+2){white-space:normal}#dstd .dstd-ctl select{min-width:0;width:100%}#dstd .dstd-ctl{width:100%}}'
     + '@media print{html,body{background:#fff!important}'
