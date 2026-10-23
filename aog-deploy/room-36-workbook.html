@@ -10,6 +10,12 @@ choice the dark palette would ride the OS setting (prefers-color-scheme), and a
 dark-set Chromebook would open the page dark. Same key as the other activity pages. */
 (function(){var t="light";try{if(localStorage.getItem("aog.theme.lightstart.v1")==="1"&&localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);})();</script>
 <title>Room 36 — The Companion Workbook · Architecture of Grace</title>
+<!-- AOG-R36-V1 (2026-10-23) — Room 36's companion workbook (grades 6–8): for each of the four units and the year-end,
+     Part A (choose the answer, with a why-note) and Part B (in your own words). Every word a student reads is in English
+     and Spanish (data-en/data-es leaves; the page follows the site's language). Each question has a Listen button
+     (speechSynthesis, silent until tapped; stops on aog-hush and when the tab hides). Which Part A questions are checked
+     is kept on this device (aog.interior.wb36.v1, ids only) for /room-36-students; Start over clears it. Part B never
+     leaves the device (AOG-R36-PRIVATE-V1). The answer key prints from "For the teacher" at the foot. -->
 <meta name="description" content="The Room 36 companion workbook — multiple choice and in-your-own-words practice for the four units of Book 3 · The Interior (Grades 6–8). Printable, with a teacher answer key.">
 <!-- ═══ AOG ICONS + LINK PREVIEW · managed block · .30k0 ═══
      Inserted by _work/aog_head.py — DO NOT hand-edit one page; edit the
@@ -91,10 +97,10 @@ button{touch-action:manipulation}
 }
 header{padding:26px 0 8px}
 .eyebrow{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
-.eyebrow a{color:var(--sub);font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;font-weight:700}
+.eyebrow a{display:inline-flex;align-items:center;min-height:44px;color:var(--sub);font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;font-weight:700}
 .eyebrow a:hover{color:var(--ink)}
 .tools{display:flex;gap:8px;flex-wrap:wrap}
-.tools button{border:1px solid var(--line);background:var(--card);color:var(--sub);border-radius:999px;padding:5px 12px;font:600 .78rem var(--sans);cursor:pointer}
+.tools button{border:1px solid var(--line);background:var(--card);color:var(--sub);border-radius:999px;padding:5px 14px;min-height:44px;font:600 .84rem var(--sans);cursor:pointer}
 .tools button:hover{color:var(--ink)}
 h1{font-family:var(--serif);font-weight:900;font-size:clamp(2rem,5.5vw,2.8rem);margin:12px 0 0;letter-spacing:-.01em}
 .tag{color:var(--sub);margin:6px 0 0}
@@ -105,7 +111,7 @@ h1{font-family:var(--serif);font-weight:900;font-size:clamp(2rem,5.5vw,2.8rem);m
 .howto b{color:var(--navy)}
 .privnote{margin:14px 0 0;background:var(--good-soft);border-left:4px solid var(--good);border-radius:10px;padding:11px 14px;font-size:.88rem}
 .mats{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0 0}
-.mats a{display:inline-block;border:1px solid var(--line);background:var(--card);color:var(--navy);border-radius:999px;padding:7px 14px;font:600 .84rem var(--sans);text-decoration:none}
+.mats a{display:inline-flex;align-items:center;min-height:44px;border:1px solid var(--line);background:var(--card);color:var(--navy);border-radius:999px;padding:7px 14px;font:600 .84rem var(--sans);text-decoration:none}
 .mats a:hover{border-color:var(--navy)}
 section.unit{margin:6px 0 0}
 .uhead{border-bottom:3px solid var(--uc);padding-bottom:6px}
@@ -135,10 +141,23 @@ section.unit{margin:6px 0 0}
 .keyblock{display:none}
 .keybanner{display:none}
 footer{margin:48px 0 0;border-top:1px solid var(--line);padding-top:16px;color:var(--sub);font-size:.85rem;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
-footer a{color:var(--navy);font-weight:700;text-decoration:none}
+footer a{color:var(--navy);font-weight:700;text-decoration:none;display:inline-flex;align-items:center;min-height:44px}
+/* AOG-R36-V1: Listen, the teacher's fold, and the unit menu (aog-dropdowns.js) */
+.lis{display:inline-flex;align-items:center;gap:7px;min-height:44px;margin:0 0 10px;padding:0 14px;border:1px solid var(--line);border-radius:999px;background:var(--bg);color:var(--navy);font:700 .88rem var(--sans);cursor:pointer}
+.lis svg{flex:none}
+.lis:hover{border-color:var(--navy)}
+.lis[aria-pressed="true"]{background:var(--chip);border-color:var(--navy);color:var(--ink)}
+.opt{min-height:44px}
+.forteacher{margin:40px 0 0;border:1px solid var(--line);border-radius:12px;background:var(--card);padding:0 16px}
+.forteacher summary{display:flex;align-items:center;min-height:48px;cursor:pointer;font-weight:800;color:var(--ink)}
+.forteacher p{margin:0 0 10px;color:var(--sub);font-size:.9rem}
+.forteacher button{min-height:44px;margin:0 0 16px;padding:0 18px;border:1px solid var(--navy);border-radius:999px;background:var(--bg);color:var(--navy);font:700 .9rem var(--sans);cursor:pointer}
+.layout .aogdd{margin:0 0 14px}
+@media(min-width:841px){.layout{display:block}}
+.tally .trw[hidden]{display:none}
 @media print{
   body{background:#fff;color:#111;padding:0;font-size:11.5px}
-  .tools,.mats,.privnote,.tally,.rail{display:none!important}
+  .tools,.mats,.privnote,.tally,.rail,.lis,.forteacher,.aogdd{display:none!important}
   /* the rail shows one unit on screen; paper always gets the whole packet */
   section.unit[hidden]{display:block!important}
   .wrap{max-width:none}
@@ -263,436 +282,436 @@ html.a11y-dyslexic body{letter-spacing:.02em;word-spacing:.09em;line-height:1.8}
 <div class="wrap">
 <header>
   <div class="eyebrow">
-    <a href="room-36-curriculum.html">Room 36 · Book 3 · The Interior</a>
+    <a href="room-36-curriculum.html"><span data-en="Room 36 · Book 3 · The Interior" data-es="Salón 36 · Libro 3 · El Interior">Room 36 · Book 3 · The Interior</span></a>
     <div class="tools">
-      <button id="themeBtn" type="button" aria-label="Toggle dark mode">Theme</button>
-      <button type="button" id="printWb">Print workbook</button>
-      <button type="button" id="printKey">Print answer key</button>
+      <button id="themeBtn" type="button" aria-label="Toggle dark mode"><span data-en="Theme" data-es="Tema">Theme</span></button>
+      <button type="button" id="printWb"><span data-en="Print workbook" data-es="Imprimir el cuaderno">Print workbook</span></button>
+      <button type="button" id="wbErase"><span data-en="Start over" data-es="Empezar de nuevo">Start over</span></button>
     </div>
   </div>
-  <h1>The Companion Workbook</h1>
-  <p class="tag"><b>Room 36 · The Year of Two Voices</b> · Grades 6–8 · goes with the novel and the four units</p>
-  <div class="keybanner">Teacher answer key — for the educator&rsquo;s desk, not for distribution.</div>
-  <div class="nameline"><span>Name</span><span>Class</span><span>Date</span></div>
-  <div class="howto"><b>How to use this workbook.</b> Work one unit at a time, after the unit&rsquo;s
-  lessons. <b>Part A</b> is choose-the-answer — tap an answer on screen and the workbook tells you why;
-  on paper, circle the letter. <b>Part B</b> is in-your-own-words — there is no answer key for Part B,
-  because those answers are yours. <b>What you write in Part B stays on this device. No one else can read it.</b>
-  When you&rsquo;re done, tap <b>Send to my teacher</b> at the bottom: only your Part A checks go to the adult who
-  shared this page.</div><!-- AOG-R36-PRIVATE-V1 -->
+  <h1><span data-en="The Companion Workbook" data-es="El cuaderno de trabajo">The Companion Workbook</span></h1>
+  <p class="tag"><b data-en="Room 36 · The Year of Two Voices" data-es="Salón 36 · El año de las dos voces">Room 36 · The Year of Two Voices</b> <span data-en="· Grades 6–8 · goes with the novel and the four units" data-es="· Grados 6.º a 8.º · va con la novela y las cuatro unidades">· Grades 6–8 · goes with the novel and the four units</span></p>
+  <div class="keybanner"><span data-en="Teacher answer key — for the educator’s desk, not for distribution." data-es="Respuestas para el maestro o la maestra — para su escritorio, no para repartir.">Teacher answer key — for the educator’s desk, not for distribution.</span></div>
+  <div class="nameline"><span data-en="Name" data-es="Nombre">Name</span><span data-en="Class" data-es="Grupo">Class</span><span data-en="Date" data-es="Fecha">Date</span></div>
+  <div class="howto"><b data-en="How to use this workbook." data-es="Cómo usar este cuaderno.">How to use this workbook.</b> <span data-en="Work one unit at a time, after the unit’s lessons." data-es="Trabaja una unidad a la vez, después de sus lecciones.">Work one unit at a time, after the unit’s lessons.</span> <b data-en="Part A" data-es="La Parte A">Part A</b> <span data-en="is choose-the-answer — tap an answer on screen and the workbook tells you why; on paper, circle the letter." data-es="es para elegir la respuesta — toca una respuesta en la pantalla y el cuaderno te dice por qué; en papel, encierra la letra en un círculo.">is choose-the-answer — tap an answer on screen and the workbook tells you why; on paper, circle the letter.</span> <b data-en="Part B" data-es="La Parte B">Part B</b> <span data-en="is in-your-own-words — there is no answer key for Part B, because those answers are yours." data-es="es con tus propias palabras — la Parte B no tiene respuestas correctas, porque esas respuestas son tuyas.">is in-your-own-words — there is no answer key for Part B, because those answers are yours.</span> <b data-en="What you write in Part B stays on this device. No one else can read it." data-es="Lo que escribes en la Parte B se queda en este aparato. Nadie más lo puede leer.">What you write in Part B stays on this device. No one else can read it.</b> <span data-en="When you’re done, tap" data-es="Cuando termines, toca">When you’re done, tap</span> <b data-en="Send to my teacher" data-es="Enviar a mi maestro/a">Send to my teacher</b> <span data-en="at the bottom: only your Part A checks go to the adult who shared this page." data-es="abajo: solo tus respuestas de la Parte A le llegan al adulto que compartió esta página.">at the bottom: only your Part A checks go to the adult who shared this page.</span></div><!-- AOG-R36-PRIVATE-V1 -->
   <div class="mats">
-    <a href="room-36-curriculum.html">The Room 36 curriculum</a>
-    <a href="room-36-lessons.html">The Lessons — all 28, ready to teach</a>
-    <a href="files/AoG-Book3-Room36-DIGITAL.pdf" target="_blank" rel="noopener">The Year of Two Voices (PDF)</a>
-    <a href="AoG-Interior-Worksheets.html">The Interior worksheets</a>
+    <a href="room-36-curriculum.html"><span data-en="The Room 36 curriculum" data-es="El programa del Salón 36">The Room 36 curriculum</span></a>
+    <a href="room-36-lessons.html"><span data-en="The Lessons — all 28, ready to teach" data-es="Las lecciones — las 28, listas para enseñar">The Lessons — all 28, ready to teach</span></a>
+    <a href="files/AoG-Book3-Room36-DIGITAL.pdf" target="_blank" rel="noopener"><span data-en="The Year of Two Voices (PDF)" data-es="El año de las dos voces (PDF, en inglés)">The Year of Two Voices (PDF)</span></a>
+    <a href="AoG-Interior-Worksheets.html"><span data-en="The Interior worksheets" data-es="Las hojas de trabajo de El Interior">The Interior worksheets</span></a>
   </div>
 </header>
 <div class="layout">
-<nav class="rail" id="rail" aria-label="Workbook units">
+<nav class="rail" id="rail" aria-label="Workbook units" data-aog-dropdown="Unit|Unidad">
 <button type="button" class="ritem" data-u="u1" style="--uc:var(--u1)">
-  <span class="rl">Unit 1</span><span class="rn">Identity</span>
-  <span class="rc">7 questions · 4 prompts</span>
+  <span class="rl" data-en="Unit 1" data-es="Unidad 1">Unit 1</span><span class="rn" data-en="Identity" data-es="Identidad">Identity</span>
+  <span class="rc" data-en="7 questions · 4 prompts" data-es="7 preguntas · 4 para escribir">7 questions · 4 prompts</span>
 </button>
 <button type="button" class="ritem" data-u="u2" style="--uc:var(--u2)">
-  <span class="rl">Unit 2</span><span class="rn">Self-Compassion</span>
-  <span class="rc">8 questions · 4 prompts</span>
+  <span class="rl" data-en="Unit 2" data-es="Unidad 2">Unit 2</span><span class="rn" data-en="Self-Compassion" data-es="Autocompasión">Self-Compassion</span>
+  <span class="rc" data-en="8 questions · 4 prompts" data-es="8 preguntas · 4 para escribir">8 questions · 4 prompts</span>
 </button>
 <button type="button" class="ritem" data-u="u3" style="--uc:var(--u3)">
-  <span class="rl">Unit 3</span><span class="rn">Forgiveness</span>
-  <span class="rc">7 questions · 4 prompts</span>
+  <span class="rl" data-en="Unit 3" data-es="Unidad 3">Unit 3</span><span class="rn" data-en="Forgiveness" data-es="Perdón">Forgiveness</span>
+  <span class="rc" data-en="7 questions · 4 prompts" data-es="7 preguntas · 4 para escribir">7 questions · 4 prompts</span>
 </button>
 <button type="button" class="ritem" data-u="u4" style="--uc:var(--u4)">
-  <span class="rl">Unit 4</span><span class="rn">Grace</span>
-  <span class="rc">7 questions · 4 prompts</span>
+  <span class="rl" data-en="Unit 4" data-es="Unidad 4">Unit 4</span><span class="rn" data-en="Grace" data-es="Gracia">Grace</span>
+  <span class="rc" data-en="7 questions · 4 prompts" data-es="7 preguntas · 4 para escribir">7 questions · 4 prompts</span>
 </button>
 <button type="button" class="ritem" data-u="u5" style="--uc:var(--brass)">
-  <span class="rl">Year-End</span><span class="rn">Integration</span>
-  <span class="rc">4 questions · 2 prompts</span>
+  <span class="rl" data-en="Year-End" data-es="Fin de año">Year-End</span><span class="rn" data-en="Integration" data-es="Integración">Integration</span>
+  <span class="rc" data-en="4 questions · 2 prompts" data-es="4 preguntas · 2 para escribir">4 questions · 2 prompts</span>
 </button>
 </nav>
 <div class="stage">
 <section class="unit u1" id="u1" style="--uc:var(--u1)" hidden>
-  <div class="uhead"><h2>Unit 1 · Identity</h2></div>
-  <p class="urecap">The Mask and the Mirror. The Identity Audit. The Digital Backpack. This unit practiced telling the version of you that performs from the version of you that is real — and noticing what the gap costs.</p>
-  <h3 class="parth">Part A · Choose the answer</h3>
+  <div class="uhead"><h2><span data-en="Unit 1 · Identity" data-es="Unidad 1 · Identidad">Unit 1 · Identity</span></h2></div>
+  <p class="urecap"><span data-en="The Mask and the Mirror. The Identity Audit. The Digital Backpack. This unit practiced telling the version of you that performs from the version of you that is real — and noticing what the gap costs." data-es="La Máscara y el Espejo. La Auditoría de Identidad. La Mochila Digital. En esta unidad practicamos cómo distinguir la versión de ti que actúa de la versión de ti que es real — y notar lo que cuesta esa distancia.">The Mask and the Mirror. The Identity Audit. The Digital Backpack. This unit practiced telling the version of you that performs from the version of you that is real — and noticing what the gap costs.</span></p>
+  <h3 class="parth"><span data-en="Part A · Choose the answer" data-es="Parte A · Elige la respuesta">Part A · Choose the answer</span></h3>
   <div class="q" id="u1-q1">
-  <div class="qt"><span class="qn">1</span> The Mask is —</div>
-  <div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">A</span> my real opinions, actual struggles, and real values</button>
-<button type="button" class="opt" data-ok="1"><span class="ol">B</span> what I show: the performed, edited, hidden version of me</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">C</span> a bad habit that only some people have</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">D</span> the same thing as lying</button></div>
-  <div class="why" hidden><b>B.</b> The Mask is the performed self — what I show, perform, edit, hide. The Mirror holds the real opinions, actual struggles, and real values. Everyone carries both.</div>
+  <div class="qt"><span class="qn">1</span> <span data-en="The Mask is —" data-es="La Máscara es —">The Mask is —</span></div>
+  <div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">A</span> <span data-en="my real opinions, actual struggles, and real values" data-es="mis opiniones reales, mis luchas de verdad y mis valores reales">my real opinions, actual struggles, and real values</span></button>
+<button type="button" class="opt" data-ok="1"><span class="ol">B</span> <span data-en="what I show: the performed, edited, hidden version of me" data-es="lo que muestro: la versión de mí que actúa, se edita y se esconde">what I show: the performed, edited, hidden version of me</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> <span data-en="a bad habit that only some people have" data-es="un mal hábito que solo tienen algunas personas">a bad habit that only some people have</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> <span data-en="the same thing as lying" data-es="lo mismo que mentir">the same thing as lying</span></button></div>
+  <div class="why" hidden><b>B.</b> <span data-en="The Mask is the performed self — what I show, perform, edit, hide. The Mirror holds the real opinions, actual struggles, and real values. Everyone carries both." data-es="La Máscara es el yo que actúa — lo que muestro, actúo, edito, escondo. El Espejo guarda las opiniones reales, las luchas de verdad y los valores reales. Todos llevamos las dos.">The Mask is the performed self — what I show, perform, edit, hide. The Mirror holds the real opinions, actual struggles, and real values. Everyone carries both.</span></div>
 </div><div class="q" id="u1-q2">
-  <div class="qt"><span class="qn">2</span> “The gap between the Mask and the Mirror is where the ______ lives.”</div>
-  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> cost</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">B</span> fun</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">C</span> truth</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">D</span> audience</button></div>
-  <div class="why" hidden><b>A.</b> The wider the gap between the performed self and the real one, the more it costs to carry — that is the anchor chart’s exact sentence.</div>
+  <div class="qt"><span class="qn">2</span> <span data-en="“The gap between the Mask and the Mirror is where the ______ lives.”" data-es="“La distancia entre la Máscara y el Espejo es donde vive ______.”">“The gap between the Mask and the Mirror is where the ______ lives.”</span></div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> <span data-en="cost" data-es="el costo">cost</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> <span data-en="fun" data-es="la diversión">fun</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> <span data-en="truth" data-es="la verdad">truth</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> <span data-en="audience" data-es="el público">audience</span></button></div>
+  <div class="why" hidden><b>A.</b> <span data-en="The wider the gap between the performed self and the real one, the more it costs to carry — that is the anchor chart’s exact sentence." data-es="Mientras más grande es la distancia entre el yo que actúa y el real, más cuesta cargarla — esa es la oración exacta del cartel.">The wider the gap between the performed self and the real one, the more it costs to carry — that is the anchor chart’s exact sentence.</span></div>
 </div><div class="q" id="u1-q3">
-  <div class="qt"><span class="qn">3</span> The two columns of the Identity Audit are —</div>
-  <div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">A</span> collected by the teacher at the end of class</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">B</span> posted on the classroom wall</button>
-<button type="button" class="opt" data-ok="1"><span class="ol">C</span> private: never collected, never shared</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">D</span> shared with a partner for feedback</button></div>
-  <div class="why" hidden><b>C.</b> The Identity Audit is two private columns — who I am when performing, who I am when not. Never collected. Never shared. The privacy is the point.</div>
+  <div class="qt"><span class="qn">3</span> <span data-en="The two columns of the Identity Audit are —" data-es="Las dos columnas de la Auditoría de Identidad son —">The two columns of the Identity Audit are —</span></div>
+  <div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">A</span> <span data-en="collected by the teacher at the end of class" data-es="las recoge el maestro o la maestra al final de la clase">collected by the teacher at the end of class</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> <span data-en="posted on the classroom wall" data-es="se pegan en la pared del salón">posted on the classroom wall</span></button>
+<button type="button" class="opt" data-ok="1"><span class="ol">C</span> <span data-en="private: never collected, never shared" data-es="privadas: nunca se recogen, nunca se comparten">private: never collected, never shared</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> <span data-en="shared with a partner for feedback" data-es="se comparten con un compañero para recibir comentarios">shared with a partner for feedback</span></button></div>
+  <div class="why" hidden><b>C.</b> <span data-en="The Identity Audit is two private columns — who I am when performing, who I am when not. Never collected. Never shared. The privacy is the point." data-es="La Auditoría de Identidad son dos columnas privadas — quién soy cuando actúo, quién soy cuando no. Nunca se recoge. Nunca se comparte. La privacidad es lo importante.">The Identity Audit is two private columns — who I am when performing, who I am when not. Never collected. Never shared. The privacy is the point.</span></div>
 </div><div class="q" id="u1-q4">
-  <div class="qt"><span class="qn">4</span> “The internet is an ______, not a moment.”</div>
-  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> archive</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">B</span> opinion</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">C</span> accident</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">D</span> audience</button></div>
-  <div class="why" hidden><b>A.</b> The Digital Backpack chart: every post is still there, searchable and permanent. A digital Mask becomes an archive.</div>
+  <div class="qt"><span class="qn">4</span> <span data-en="“The internet is an ______, not a moment.”" data-es="“El internet es ______, no un momento.”">“The internet is an ______, not a moment.”</span></div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> <span data-en="archive" data-es="un archivo">archive</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> <span data-en="opinion" data-es="una opinión">opinion</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> <span data-en="accident" data-es="un accidente">accident</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> <span data-en="audience" data-es="un público">audience</span></button></div>
+  <div class="why" hidden><b>A.</b> <span data-en="The Digital Backpack chart: every post is still there, searchable and permanent. A digital Mask becomes an archive." data-es="El cartel de la Mochila Digital: cada publicación sigue ahí, se puede buscar y es permanente. Una Máscara digital se vuelve un archivo.">The Digital Backpack chart: every post is still there, searchable and permanent. A digital Mask becomes an archive.</span></div>
 </div><div class="q" id="u1-q5">
-  <div class="qt"><span class="qn">5</span> Jordan keeps the funny bit going even when it exhausts him. In this curriculum, the exhaustion is —</div>
-  <div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">A</span> weakness</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">B</span> proof he is not really funny</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">C</span> something to hide</button>
-<button type="button" class="opt" data-ok="1"><span class="ol">D</span> information</button></div>
-  <div class="why" hidden><b>D.</b> “Being funny IS one of your real selves. It is also one of your most costly performances. Both can be true. The exhaustion is information.”</div>
+  <div class="qt"><span class="qn">5</span> <span data-en="Jordan keeps the funny bit going even when it exhausts him. In this curriculum, the exhaustion is —" data-es="Jordan sigue haciendo el papel de chistoso aunque lo deja agotado. En este programa, el cansancio es —">Jordan keeps the funny bit going even when it exhausts him. In this curriculum, the exhaustion is —</span></div>
+  <div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">A</span> <span data-en="weakness" data-es="debilidad">weakness</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> <span data-en="proof he is not really funny" data-es="prueba de que en realidad no es chistoso">proof he is not really funny</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> <span data-en="something to hide" data-es="algo que hay que esconder">something to hide</span></button>
+<button type="button" class="opt" data-ok="1"><span class="ol">D</span> <span data-en="information" data-es="información">information</span></button></div>
+  <div class="why" hidden><b>D.</b> <span data-en="“Being funny IS one of your real selves. It is also one of your most costly performances. Both can be true. The exhaustion is information.”" data-es="“Ser chistoso SÍ es uno de tus yo reales. También es una de tus actuaciones que más cuestan. Las dos cosas pueden ser ciertas. El cansancio es información.”">“Being funny IS one of your real selves. It is also one of your most costly performances. Both can be true. The exhaustion is information.”</span></div>
 </div><div class="q" id="u1-q6">
-  <div class="qt"><span class="qn">6</span> Which of these is NOT one of the three digital-backpack rules?</div>
-  <div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">A</span> Phone charges outside the bedroom</button>
-<button type="button" class="opt" data-ok="1"><span class="ol">B</span> Post right away so the feeling is authentic</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">C</span> Wait 24 hours before any emotional post</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">D</span> One trusted adult sees your accounts</button></div>
-  <div class="why" hidden><b>B.</b> The three rules are: charge outside the bedroom, the 24-hour rule before emotional posts, and one trusted adult as witness. Posting right away is the opposite of the 24-hour rule.</div>
+  <div class="qt"><span class="qn">6</span> <span data-en="Which of these is NOT one of the three digital-backpack rules?" data-es="¿Cuál de estas NO es una de las tres reglas de la Mochila Digital?">Which of these is NOT one of the three digital-backpack rules?</span></div>
+  <div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">A</span> <span data-en="Phone charges outside the bedroom" data-es="El celular se carga fuera de la recámara">Phone charges outside the bedroom</span></button>
+<button type="button" class="opt" data-ok="1"><span class="ol">B</span> <span data-en="Post right away so the feeling is authentic" data-es="Publica enseguida para que el sentimiento sea auténtico">Post right away so the feeling is authentic</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> <span data-en="Wait 24 hours before any emotional post" data-es="Espera 24 horas antes de publicar algo con mucha emoción">Wait 24 hours before any emotional post</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> <span data-en="One trusted adult sees your accounts" data-es="Un adulto de confianza ve tus cuentas">One trusted adult sees your accounts</span></button></div>
+  <div class="why" hidden><b>B.</b> <span data-en="The three rules are: charge outside the bedroom, the 24-hour rule before emotional posts, and one trusted adult as witness. Posting right away is the opposite of the 24-hour rule." data-es="Las tres reglas son: cargar el celular fuera de la recámara, la regla de las 24 horas antes de publicar algo con mucha emoción, y un adulto de confianza como testigo. Publicar enseguida es lo contrario de la regla de las 24 horas.">The three rules are: charge outside the bedroom, the 24-hour rule before emotional posts, and one trusted adult as witness. Posting right away is the opposite of the 24-hour rule.</span></div>
 </div><div class="q" id="u1-q7">
-  <div class="qt"><span class="qn">7</span> In Room 36, masking is treated as —</div>
-  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> a documented cost — not a virtue, not an expectation</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">B</span> good manners that everyone should learn</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">C</span> something only younger kids do</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">D</span> a skill to practice until it is invisible</button></div>
-  <div class="why" hidden><b>A.</b> The room’s promise: “You can be how you ARE.” Masking is made visible as a cost the curriculum tracks — never a virtue, never an expectation.</div>
+  <div class="qt"><span class="qn">7</span> <span data-en="In Room 36, masking is treated as —" data-es="En el Salón 36, ponerse la Máscara se ve como —">In Room 36, masking is treated as —</span></div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> <span data-en="a documented cost — not a virtue, not an expectation" data-es="un costo que se anota — no una virtud, no algo que se espera de ti">a documented cost — not a virtue, not an expectation</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> <span data-en="good manners that everyone should learn" data-es="buenos modales que todos deberían aprender">good manners that everyone should learn</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> <span data-en="something only younger kids do" data-es="algo que solo hacen los niños más chicos">something only younger kids do</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> <span data-en="a skill to practice until it is invisible" data-es="una habilidad que se practica hasta que nadie la nota">a skill to practice until it is invisible</span></button></div>
+  <div class="why" hidden><b>A.</b> <span data-en="The room’s promise: “You can be how you ARE.” Masking is made visible as a cost the curriculum tracks — never a virtue, never an expectation." data-es="La promesa del salón: “Puedes ser como ERES”. Ponerse la Máscara se hace visible como un costo que el programa sigue de cerca — nunca una virtud, nunca algo que se espera de ti.">The room’s promise: “You can be how you ARE.” Masking is made visible as a cost the curriculum tracks — never a virtue, never an expectation.</span></div>
 </div>
-  <div class="tally" data-total="7">Checked: <b class="tn">0</b> / 7 · Right on the first try: <b class="tr">0</b></div>
-  <h3 class="parth">Part B · In your own words</h3>
+  <div class="tally" data-total="7"><span data-en="Checked:" data-es="Revisadas:">Checked:</span> <b class="tn">0</b> / 7<span class="trw"> · <span data-en="Right on the first try:" data-es="Bien al primer intento:">Right on the first try:</span> <b class="tr">0</b></span></div>
+  <h3 class="parth"><span data-en="Part B · In your own words" data-es="Parte B · Con tus propias palabras">Part B · In your own words</span></h3>
   <div class="ow">
-  <div class="owt"><span class="qn">1</span> Amara found a word for her Mask: “adjacent.” If you have a word for one of your Masks, write it here — just the word. (Performing. Smaller. Quieter. Brighter. Or your own.) Then write one sentence about when that Mask goes on.</div>
-  <textarea rows="3" placeholder="Type here. Your words stay on this device." aria-label="Your answer"></textarea>
+  <div class="owt"><span class="qn">1</span> <span data-en="Amara found a word for her Mask: “adjacent.” If you have a word for one of your Masks, write it here — just the word. (Performing. Smaller. Quieter. Brighter. Or your own.) Then write one sentence about when that Mask goes on." data-es="Amara encontró una palabra para su Máscara: “adyacente”. Si tienes una palabra para una de tus Máscaras, escríbela aquí — solo la palabra. (Actuando. Más pequeña. Más callada. Más brillante. O la tuya.) Luego escribe una oración sobre cuándo te pones esa Máscara.">Amara found a word for her Mask: “adjacent.” If you have a word for one of your Masks, write it here — just the word. (Performing. Smaller. Quieter. Brighter. Or your own.) Then write one sentence about when that Mask goes on.</span></div>
+  <textarea rows="3" placeholder="Type here. Your words stay on this device." aria-label="Your answer" data-ph-en="Type here. Your words stay on this device." data-ph-es="Escribe aquí. Tus palabras se quedan en este aparato." data-al-en="Your answer" data-al-es="Tu respuesta"></textarea>
   <div class="plines"><span></span><span></span><span></span></div>
 </div><div class="ow">
-  <div class="owt"><span class="qn">2</span> Two columns, your own Identity Audit: on the left, three things about who you are when performing. On the right, three things about who you are when you are not.</div>
-  <textarea rows="4" placeholder="Type here. Your words stay on this device." aria-label="Your answer"></textarea>
+  <div class="owt"><span class="qn">2</span> <span data-en="Two columns, your own Identity Audit: on the left, three things about who you are when performing. On the right, three things about who you are when you are not." data-es="Dos columnas, tu propia Auditoría de Identidad: a la izquierda, tres cosas sobre quién eres cuando actúas. A la derecha, tres cosas sobre quién eres cuando no actúas.">Two columns, your own Identity Audit: on the left, three things about who you are when performing. On the right, three things about who you are when you are not.</span></div>
+  <textarea rows="4" placeholder="Type here. Your words stay on this device." aria-label="Your answer" data-ph-en="Type here. Your words stay on this device." data-ph-es="Escribe aquí. Tus palabras se quedan en este aparato." data-al-en="Your answer" data-al-es="Tu respuesta"></textarea>
   <div class="plines"><span></span><span></span><span></span><span></span><span></span></div>
 </div><div class="ow">
-  <div class="owt"><span class="qn">3</span> Your three digital-backpack rules, starting tonight — copy the ones from the chart or write your own three. Under them, write which one will be hardest and why.</div>
-  <textarea rows="3" placeholder="Type here. Your words stay on this device." aria-label="Your answer"></textarea>
+  <div class="owt"><span class="qn">3</span> <span data-en="Your three digital-backpack rules, starting tonight — copy the ones from the chart or write your own three. Under them, write which one will be hardest and why." data-es="Tus tres reglas de la Mochila Digital, desde esta noche — copia las del cartel o escribe tus propias tres. Debajo, escribe cuál será la más difícil y por qué.">Your three digital-backpack rules, starting tonight — copy the ones from the chart or write your own three. Under them, write which one will be hardest and why.</span></div>
+  <textarea rows="3" placeholder="Type here. Your words stay on this device." aria-label="Your answer" data-ph-en="Type here. Your words stay on this device." data-ph-es="Escribe aquí. Tus palabras se quedan en este aparato." data-al-en="Your answer" data-al-es="Tu respuesta"></textarea>
   <div class="plines"><span></span><span></span><span></span><span></span></div>
 </div><div class="ow">
-  <div class="owt"><span class="qn">4</span> “The exhaustion is information.” Describe one moment this month when keeping a Mask on made you tired. What was the information?</div>
-  <textarea rows="3" placeholder="Type here. Your words stay on this device." aria-label="Your answer"></textarea>
+  <div class="owt"><span class="qn">4</span> <span data-en="“The exhaustion is information.” Describe one moment this month when keeping a Mask on made you tired. What was the information?" data-es="“El cansancio es información”. Describe un momento de este mes en que llevar puesta una Máscara te cansó. ¿Qué información te dio?">“The exhaustion is information.” Describe one moment this month when keeping a Mask on made you tired. What was the information?</span></div>
+  <textarea rows="3" placeholder="Type here. Your words stay on this device." aria-label="Your answer" data-ph-en="Type here. Your words stay on this device." data-ph-es="Escribe aquí. Tus palabras se quedan en este aparato." data-al-en="Your answer" data-al-es="Tu respuesta"></textarea>
   <div class="plines"><span></span><span></span><span></span><span></span></div>
 </div>
-  <div class="keyblock"><h3 class="parth">Answer key · Unit 1 · Identity</h3><ol class="key"><li><b>B</b> — The Mask is the performed self — what I show, perform, edit, hide. The Mirror holds the real opinions, actual struggles, and real values. Everyone carries both.</li>
-<li><b>A</b> — The wider the gap between the performed self and the real one, the more it costs to carry — that is the anchor chart’s exact sentence.</li>
-<li><b>C</b> — The Identity Audit is two private columns — who I am when performing, who I am when not. Never collected. Never shared. The privacy is the point.</li>
-<li><b>A</b> — The Digital Backpack chart: every post is still there, searchable and permanent. A digital Mask becomes an archive.</li>
-<li><b>D</b> — “Being funny IS one of your real selves. It is also one of your most costly performances. Both can be true. The exhaustion is information.”</li>
-<li><b>B</b> — The three rules are: charge outside the bedroom, the 24-hour rule before emotional posts, and one trusted adult as witness. Posting right away is the opposite of the 24-hour rule.</li>
-<li><b>A</b> — The room’s promise: “You can be how you ARE.” Masking is made visible as a cost the curriculum tracks — never a virtue, never an expectation.</li></ol></div>
+  <div class="keyblock"><h3 class="parth"><span data-en="Answer key · Unit 1 · Identity" data-es="Respuestas · Unidad 1 · Identidad">Answer key · Unit 1 · Identity</span></h3><ol class="key"><li><b>B</b> — <span data-en="The Mask is the performed self — what I show, perform, edit, hide. The Mirror holds the real opinions, actual struggles, and real values. Everyone carries both." data-es="La Máscara es el yo que actúa — lo que muestro, actúo, edito, escondo. El Espejo guarda las opiniones reales, las luchas de verdad y los valores reales. Todos llevamos las dos.">The Mask is the performed self — what I show, perform, edit, hide. The Mirror holds the real opinions, actual struggles, and real values. Everyone carries both.</span></li>
+<li><b>A</b> — <span data-en="The wider the gap between the performed self and the real one, the more it costs to carry — that is the anchor chart’s exact sentence." data-es="Mientras más grande es la distancia entre el yo que actúa y el real, más cuesta cargarla — esa es la oración exacta del cartel.">The wider the gap between the performed self and the real one, the more it costs to carry — that is the anchor chart’s exact sentence.</span></li>
+<li><b>C</b> — <span data-en="The Identity Audit is two private columns — who I am when performing, who I am when not. Never collected. Never shared. The privacy is the point." data-es="La Auditoría de Identidad son dos columnas privadas — quién soy cuando actúo, quién soy cuando no. Nunca se recoge. Nunca se comparte. La privacidad es lo importante.">The Identity Audit is two private columns — who I am when performing, who I am when not. Never collected. Never shared. The privacy is the point.</span></li>
+<li><b>A</b> — <span data-en="The Digital Backpack chart: every post is still there, searchable and permanent. A digital Mask becomes an archive." data-es="El cartel de la Mochila Digital: cada publicación sigue ahí, se puede buscar y es permanente. Una Máscara digital se vuelve un archivo.">The Digital Backpack chart: every post is still there, searchable and permanent. A digital Mask becomes an archive.</span></li>
+<li><b>D</b> — <span data-en="“Being funny IS one of your real selves. It is also one of your most costly performances. Both can be true. The exhaustion is information.”" data-es="“Ser chistoso SÍ es uno de tus yo reales. También es una de tus actuaciones que más cuestan. Las dos cosas pueden ser ciertas. El cansancio es información.”">“Being funny IS one of your real selves. It is also one of your most costly performances. Both can be true. The exhaustion is information.”</span></li>
+<li><b>B</b> — <span data-en="The three rules are: charge outside the bedroom, the 24-hour rule before emotional posts, and one trusted adult as witness. Posting right away is the opposite of the 24-hour rule." data-es="Las tres reglas son: cargar el celular fuera de la recámara, la regla de las 24 horas antes de publicar algo con mucha emoción, y un adulto de confianza como testigo. Publicar enseguida es lo contrario de la regla de las 24 horas.">The three rules are: charge outside the bedroom, the 24-hour rule before emotional posts, and one trusted adult as witness. Posting right away is the opposite of the 24-hour rule.</span></li>
+<li><b>A</b> — <span data-en="The room’s promise: “You can be how you ARE.” Masking is made visible as a cost the curriculum tracks — never a virtue, never an expectation." data-es="La promesa del salón: “Puedes ser como ERES”. Ponerse la Máscara se hace visible como un costo que el programa sigue de cerca — nunca una virtud, nunca algo que se espera de ti.">The room’s promise: “You can be how you ARE.” Masking is made visible as a cost the curriculum tracks — never a virtue, never an expectation.</span></li></ol></div>
 </section><section class="unit u2" id="u2" style="--uc:var(--u2)" hidden>
-  <div class="uhead"><h2>Unit 2 · Self-Compassion</h2></div>
-  <p class="urecap">The Internal Critic and its three tactics. The Comparison Trap. The Friend Test. The Compassionate Witness. This unit practiced catching the Critic in the act and answering it honestly and fairly.</p>
-  <h3 class="parth">Part A · Choose the answer</h3>
+  <div class="uhead"><h2><span data-en="Unit 2 · Self-Compassion" data-es="Unidad 2 · Autocompasión">Unit 2 · Self-Compassion</span></h2></div>
+  <p class="urecap"><span data-en="The Internal Critic and its three tactics. The Comparison Trap. The Friend Test. The Compassionate Witness. This unit practiced catching the Critic in the act and answering it honestly and fairly." data-es="El Crítico Interior y sus tres tácticas. La Trampa de la Comparación. La Prueba del Amigo. El Testigo Compasivo. En esta unidad practicamos cómo atrapar al Crítico en el momento y responderle con honestidad y justicia.">The Internal Critic and its three tactics. The Comparison Trap. The Friend Test. The Compassionate Witness. This unit practiced catching the Critic in the act and answering it honestly and fairly.</span></p>
+  <h3 class="parth"><span data-en="Part A · Choose the answer" data-es="Parte A · Elige la respuesta">Part A · Choose the answer</span></h3>
   <div class="q" id="u2-q1">
-  <div class="qt"><span class="qn">1</span> The Internal Critic’s three tactics are —</div>
-  <div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">A</span> yelling, blaming, ignoring</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">B</span> comparing, competing, copying</button>
-<button type="button" class="opt" data-ok="1"><span class="ol">C</span> catastrophizing, globalizing, personalizing</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">D</span> masking, mirroring, matching</button></div>
-  <div class="why" hidden><b>C.</b> Catastrophizing (one bad moment = forever). Globalizing (one mistake = always). Personalizing (it must be about me).</div>
+  <div class="qt"><span class="qn">1</span> <span data-en="The Internal Critic’s three tactics are —" data-es="Las tres tácticas del Crítico Interior son —">The Internal Critic’s three tactics are —</span></div>
+  <div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">A</span> <span data-en="yelling, blaming, ignoring" data-es="gritar, culpar, ignorar">yelling, blaming, ignoring</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> <span data-en="comparing, competing, copying" data-es="comparar, competir, copiar">comparing, competing, copying</span></button>
+<button type="button" class="opt" data-ok="1"><span class="ol">C</span> <span data-en="catastrophizing, globalizing, personalizing" data-es="catastrofizar, generalizar, personalizar">catastrophizing, globalizing, personalizing</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> <span data-en="masking, mirroring, matching" data-es="enmascarar, reflejar, igualar">masking, mirroring, matching</span></button></div>
+  <div class="why" hidden><b>C.</b> <span data-en="Catastrophizing (one bad moment = forever). Globalizing (one mistake = always). Personalizing (it must be about me)." data-es="Catastrofizar (un mal momento = para siempre). Generalizar (un error = siempre). Personalizar (seguro es por mí).">Catastrophizing (one bad moment = forever). Globalizing (one mistake = always). Personalizing (it must be about me).</span></div>
 </div><div class="q" id="u2-q2">
-  <div class="qt"><span class="qn">2</span> “One bad moment = forever” is the tactic called —</div>
-  <div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">A</span> globalizing</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">B</span> personalizing</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">C</span> witnessing</button>
-<button type="button" class="opt" data-ok="1"><span class="ol">D</span> catastrophizing</button></div>
-  <div class="why" hidden><b>D.</b> Catastrophizing stretches one bad moment into a permanent future. Naming the tactic is how you catch it.</div>
+  <div class="qt"><span class="qn">2</span> <span data-en="“One bad moment = forever” is the tactic called —" data-es="“Un mal momento = para siempre” es la táctica llamada —">“One bad moment = forever” is the tactic called —</span></div>
+  <div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">A</span> <span data-en="globalizing" data-es="generalizar">globalizing</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> <span data-en="personalizing" data-es="personalizar">personalizing</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> <span data-en="witnessing" data-es="atestiguar">witnessing</span></button>
+<button type="button" class="opt" data-ok="1"><span class="ol">D</span> <span data-en="catastrophizing" data-es="catastrofizar">catastrophizing</span></button></div>
+  <div class="why" hidden><b>D.</b> <span data-en="Catastrophizing stretches one bad moment into a permanent future. Naming the tactic is how you catch it." data-es="Catastrofizar estira un mal momento hasta volverlo un futuro permanente. Nombrar la táctica es la forma de atraparla.">Catastrophizing stretches one bad moment into a permanent future. Naming the tactic is how you catch it.</span></div>
 </div><div class="q" id="u2-q3">
-  <div class="qt"><span class="qn">3</span> “One mistake = always” is the tactic called —</div>
-  <div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">A</span> catastrophizing</button>
-<button type="button" class="opt" data-ok="1"><span class="ol">B</span> globalizing</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">C</span> personalizing</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">D</span> rehearsing</button></div>
-  <div class="why" hidden><b>B.</b> Globalizing turns one mistake into a rule about who you are. One data point is not a pattern.</div>
+  <div class="qt"><span class="qn">3</span> <span data-en="“One mistake = always” is the tactic called —" data-es="“Un error = siempre” es la táctica llamada —">“One mistake = always” is the tactic called —</span></div>
+  <div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">A</span> <span data-en="catastrophizing" data-es="catastrofizar">catastrophizing</span></button>
+<button type="button" class="opt" data-ok="1"><span class="ol">B</span> <span data-en="globalizing" data-es="generalizar">globalizing</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> <span data-en="personalizing" data-es="personalizar">personalizing</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> <span data-en="rehearsing" data-es="ensayar">rehearsing</span></button></div>
+  <div class="why" hidden><b>B.</b> <span data-en="Globalizing turns one mistake into a rule about who you are. One data point is not a pattern." data-es="Generalizar convierte un error en una regla sobre quién eres. Un solo dato no es un patrón.">Globalizing turns one mistake into a rule about who you are. One data point is not a pattern.</span></div>
 </div><div class="q" id="u2-q4">
-  <div class="qt"><span class="qn">4</span> “It must be about me” is the tactic called —</div>
-  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> personalizing</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">B</span> globalizing</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">C</span> catastrophizing</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">D</span> forgiving</button></div>
-  <div class="why" hidden><b>A.</b> Personalizing makes you the cause of things that mostly are not about you at all.</div>
+  <div class="qt"><span class="qn">4</span> <span data-en="“It must be about me” is the tactic called —" data-es="“Seguro es por mí” es la táctica llamada —">“It must be about me” is the tactic called —</span></div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> <span data-en="personalizing" data-es="personalizar">personalizing</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> <span data-en="globalizing" data-es="generalizar">globalizing</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> <span data-en="catastrophizing" data-es="catastrofizar">catastrophizing</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> <span data-en="forgiving" data-es="perdonar">forgiving</span></button></div>
+  <div class="why" hidden><b>A.</b> <span data-en="Personalizing makes you the cause of things that mostly are not about you at all." data-es="Personalizar te hace la causa de cosas que casi siempre no tienen nada que ver contigo.">Personalizing makes you the cause of things that mostly are not about you at all.</span></div>
 </div><div class="q" id="u2-q5">
-  <div class="qt"><span class="qn">5</span> The comparison between their highlight reel and your blooper reel is —</div>
-  <div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">A</span> fair, if you try harder</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">B</span> a good way to stay motivated</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">C</span> only a problem for people without phones</button>
-<button type="button" class="opt" data-ok="1"><span class="ol">D</span> structurally rigged — it will never be a fair fight</button></div>
-  <div class="why" hidden><b>D.</b> Everyone has both reels. Most people show only one. You are watching everyone else’s trailer and comparing it to your own deleted scenes.</div>
+  <div class="qt"><span class="qn">5</span> <span data-en="The comparison between their highlight reel and your blooper reel is —" data-es="Comparar sus mejores momentos con tus tomas falsas es —">The comparison between their highlight reel and your blooper reel is —</span></div>
+  <div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">A</span> <span data-en="fair, if you try harder" data-es="justo, si te esfuerzas más">fair, if you try harder</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> <span data-en="a good way to stay motivated" data-es="una buena manera de mantenerte motivado">a good way to stay motivated</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> <span data-en="only a problem for people without phones" data-es="un problema solo para quien no tiene celular">only a problem for people without phones</span></button>
+<button type="button" class="opt" data-ok="1"><span class="ol">D</span> <span data-en="structurally rigged — it will never be a fair fight" data-es="una trampa desde el inicio — nunca será una pelea justa">structurally rigged — it will never be a fair fight</span></button></div>
+  <div class="why" hidden><b>D.</b> <span data-en="Everyone has both reels. Most people show only one. You are watching everyone else’s trailer and comparing it to your own deleted scenes." data-es="Todos tienen las dos cintas. Casi todos muestran solo una. Estás viendo el avance de los demás y comparándolo con tus propias escenas eliminadas.">Everyone has both reels. Most people show only one. You are watching everyone else’s trailer and comparing it to your own deleted scenes.</span></div>
 </div><div class="q" id="u2-q6">
-  <div class="qt"><span class="qn">6</span> The Friend Test asks you to write down —</div>
-  <div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">A</span> what your best friend thinks of you</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">B</span> a list of your mistakes this week</button>
-<button type="button" class="opt" data-ok="1"><span class="ol">C</span> what you would say to your best friend — then say it to yourself</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">D</span> what the Critic says, so you can agree with it</button></div>
-  <div class="why" hidden><b>C.</b> Left column: to my best friend — kind, fair, honest, without punishment. Right column: to myself. The test: would you say that to your best friend?</div>
+  <div class="qt"><span class="qn">6</span> <span data-en="The Friend Test asks you to write down —" data-es="La Prueba del Amigo te pide escribir —">The Friend Test asks you to write down —</span></div>
+  <div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">A</span> <span data-en="what your best friend thinks of you" data-es="lo que tu mejor amigo o amiga piensa de ti">what your best friend thinks of you</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> <span data-en="a list of your mistakes this week" data-es="una lista de tus errores de esta semana">a list of your mistakes this week</span></button>
+<button type="button" class="opt" data-ok="1"><span class="ol">C</span> <span data-en="what you would say to your best friend — then say it to yourself" data-es="lo que le dirías a tu mejor amigo o amiga — y luego decírtelo a ti">what you would say to your best friend — then say it to yourself</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> <span data-en="what the Critic says, so you can agree with it" data-es="lo que dice el Crítico, para darle la razón">what the Critic says, so you can agree with it</span></button></div>
+  <div class="why" hidden><b>C.</b> <span data-en="Left column: to my best friend — kind, fair, honest, without punishment. Right column: to myself. The test: would you say that to your best friend?" data-es="Columna izquierda: a mi mejor amigo o amiga — amable, justo, honesto, sin castigo. Columna derecha: a mí. La prueba: ¿le dirías eso a tu mejor amigo o amiga?">Left column: to my best friend — kind, fair, honest, without punishment. Right column: to myself. The test: would you say that to your best friend?</span></div>
 </div><div class="q" id="u2-q7">
-  <div class="qt"><span class="qn">7</span> The Compassionate Witness is —</div>
-  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> the honest, fair alternative to the Critic</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">B</span> a voice that says everything is fine</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">C</span> a friend who takes your side no matter what</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">D</span> the teacher’s voice in your head</button></div>
-  <div class="why" hidden><b>A.</b> The Witness is not a cheerleader — it is honest AND fair. The Critic is loud, not true; the Witness is quiet and accurate.</div>
+  <div class="qt"><span class="qn">7</span> <span data-en="The Compassionate Witness is —" data-es="El Testigo Compasivo es —">The Compassionate Witness is —</span></div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> <span data-en="the honest, fair alternative to the Critic" data-es="la opción honesta y justa frente al Crítico">the honest, fair alternative to the Critic</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> <span data-en="a voice that says everything is fine" data-es="una voz que dice que todo está bien">a voice that says everything is fine</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> <span data-en="a friend who takes your side no matter what" data-es="un amigo que se pone de tu lado pase lo que pase">a friend who takes your side no matter what</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> <span data-en="the teacher’s voice in your head" data-es="la voz del maestro o la maestra en tu cabeza">the teacher’s voice in your head</span></button></div>
+  <div class="why" hidden><b>A.</b> <span data-en="The Witness is not a cheerleader — it is honest AND fair. The Critic is loud, not true; the Witness is quiet and accurate." data-es="El Testigo no es una porra — es honesto Y justo. El Crítico es ruidoso, no cierto; el Testigo es tranquilo y acertado.">The Witness is not a cheerleader — it is honest AND fair. The Critic is loud, not true; the Witness is quiet and accurate.</span></div>
 </div><div class="q" id="u2-q8">
-  <div class="qt"><span class="qn">8</span> “The Critic is loud, not ______.”</div>
-  <div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">A</span> fair</button>
-<button type="button" class="opt" data-ok="1"><span class="ol">B</span> true</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">C</span> new</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">D</span> yours</button></div>
-  <div class="why" hidden><b>B.</b> Volume is not evidence. The whole unit turns on that one sentence.</div>
+  <div class="qt"><span class="qn">8</span> <span data-en="“The Critic is loud, not ______.”" data-es="“El Crítico es ruidoso, no ______.”">“The Critic is loud, not ______.”</span></div>
+  <div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">A</span> <span data-en="fair" data-es="justo">fair</span></button>
+<button type="button" class="opt" data-ok="1"><span class="ol">B</span> <span data-en="true" data-es="cierto">true</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> <span data-en="new" data-es="nuevo">new</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> <span data-en="yours" data-es="tuyo">yours</span></button></div>
+  <div class="why" hidden><b>B.</b> <span data-en="Volume is not evidence. The whole unit turns on that one sentence." data-es="Que algo suene fuerte no lo hace prueba. Toda la unidad gira alrededor de esa oración.">Volume is not evidence. The whole unit turns on that one sentence.</span></div>
 </div>
-  <div class="tally" data-total="8">Checked: <b class="tn">0</b> / 8 · Right on the first try: <b class="tr">0</b></div>
-  <h3 class="parth">Part B · In your own words</h3>
+  <div class="tally" data-total="8"><span data-en="Checked:" data-es="Revisadas:">Checked:</span> <b class="tn">0</b> / 8<span class="trw"> · <span data-en="Right on the first try:" data-es="Bien al primer intento:">Right on the first try:</span> <b class="tr">0</b></span></div>
+  <h3 class="parth"><span data-en="Part B · In your own words" data-es="Parte B · Con tus propias palabras">Part B · In your own words</span></h3>
   <div class="ow">
-  <div class="owt"><span class="qn">1</span> Write one sentence your Critic actually says to you. Under it, write what the Compassionate Witness — honest AND fair — would say about the same moment.</div>
-  <textarea rows="3" placeholder="Type here. Your words stay on this device." aria-label="Your answer"></textarea>
+  <div class="owt"><span class="qn">1</span> <span data-en="Write one sentence your Critic actually says to you. Under it, write what the Compassionate Witness — honest AND fair — would say about the same moment." data-es="Escribe una oración que tu Crítico de verdad te dice. Debajo, escribe lo que diría el Testigo Compasivo — honesto Y justo — sobre ese mismo momento.">Write one sentence your Critic actually says to you. Under it, write what the Compassionate Witness — honest AND fair — would say about the same moment.</span></div>
+  <textarea rows="3" placeholder="Type here. Your words stay on this device." aria-label="Your answer" data-ph-en="Type here. Your words stay on this device." data-ph-es="Escribe aquí. Tus palabras se quedan en este aparato." data-al-en="Your answer" data-al-es="Tu respuesta"></textarea>
   <div class="plines"><span></span><span></span><span></span><span></span></div>
 </div><div class="ow">
-  <div class="owt"><span class="qn">2</span> Which of the three tactics does your Critic use most: catastrophizing, globalizing, or personalizing? Give one real example of it in action, and name the tactic in your answer.</div>
-  <textarea rows="3" placeholder="Type here. Your words stay on this device." aria-label="Your answer"></textarea>
+  <div class="owt"><span class="qn">2</span> <span data-en="Which of the three tactics does your Critic use most: catastrophizing, globalizing, or personalizing? Give one real example of it in action, and name the tactic in your answer." data-es="¿Cuál de las tres tácticas usa más tu Crítico: catastrofizar, generalizar o personalizar? Da un ejemplo real de cómo la usa y nombra la táctica en tu respuesta.">Which of the three tactics does your Critic use most: catastrophizing, globalizing, or personalizing? Give one real example of it in action, and name the tactic in your answer.</span></div>
+  <textarea rows="3" placeholder="Type here. Your words stay on this device." aria-label="Your answer" data-ph-en="Type here. Your words stay on this device." data-ph-es="Escribe aquí. Tus palabras se quedan en este aparato." data-al-en="Your answer" data-al-es="Tu respuesta"></textarea>
   <div class="plines"><span></span><span></span><span></span><span></span></div>
 </div><div class="ow">
-  <div class="owt"><span class="qn">3</span> Run the Friend Test on something you said to yourself this week. Left: what you would say to your best friend in that moment. Right: what you actually said to yourself. What is the difference?</div>
-  <textarea rows="4" placeholder="Type here. Your words stay on this device." aria-label="Your answer"></textarea>
+  <div class="owt"><span class="qn">3</span> <span data-en="Run the Friend Test on something you said to yourself this week. Left: what you would say to your best friend in that moment. Right: what you actually said to yourself. What is the difference?" data-es="Haz la Prueba del Amigo con algo que te dijiste esta semana. Izquierda: lo que le dirías a tu mejor amigo o amiga en ese momento. Derecha: lo que de verdad te dijiste. ¿Cuál es la diferencia?">Run the Friend Test on something you said to yourself this week. Left: what you would say to your best friend in that moment. Right: what you actually said to yourself. What is the difference?</span></div>
+  <textarea rows="4" placeholder="Type here. Your words stay on this device." aria-label="Your answer" data-ph-en="Type here. Your words stay on this device." data-ph-es="Escribe aquí. Tus palabras se quedan en este aparato." data-al-en="Your answer" data-al-es="Tu respuesta"></textarea>
   <div class="plines"><span></span><span></span><span></span><span></span><span></span></div>
 </div><div class="ow">
-  <div class="owt"><span class="qn">4</span> One “deleted scene” of yours that you keep comparing to other people’s trailers. What would change if you compared trailer to trailer — or stopped comparing at all?</div>
-  <textarea rows="3" placeholder="Type here. Your words stay on this device." aria-label="Your answer"></textarea>
+  <div class="owt"><span class="qn">4</span> <span data-en="One “deleted scene” of yours that you keep comparing to other people’s trailers. What would change if you compared trailer to trailer — or stopped comparing at all?" data-es="Una “escena eliminada” tuya que sigues comparando con los avances de otras personas. ¿Qué cambiaría si compararas avance con avance — o si dejaras de comparar?">One “deleted scene” of yours that you keep comparing to other people’s trailers. What would change if you compared trailer to trailer — or stopped comparing at all?</span></div>
+  <textarea rows="3" placeholder="Type here. Your words stay on this device." aria-label="Your answer" data-ph-en="Type here. Your words stay on this device." data-ph-es="Escribe aquí. Tus palabras se quedan en este aparato." data-al-en="Your answer" data-al-es="Tu respuesta"></textarea>
   <div class="plines"><span></span><span></span><span></span><span></span></div>
 </div>
-  <div class="keyblock"><h3 class="parth">Answer key · Unit 2 · Self-Compassion</h3><ol class="key"><li><b>C</b> — Catastrophizing (one bad moment = forever). Globalizing (one mistake = always). Personalizing (it must be about me).</li>
-<li><b>D</b> — Catastrophizing stretches one bad moment into a permanent future. Naming the tactic is how you catch it.</li>
-<li><b>B</b> — Globalizing turns one mistake into a rule about who you are. One data point is not a pattern.</li>
-<li><b>A</b> — Personalizing makes you the cause of things that mostly are not about you at all.</li>
-<li><b>D</b> — Everyone has both reels. Most people show only one. You are watching everyone else’s trailer and comparing it to your own deleted scenes.</li>
-<li><b>C</b> — Left column: to my best friend — kind, fair, honest, without punishment. Right column: to myself. The test: would you say that to your best friend?</li>
-<li><b>A</b> — The Witness is not a cheerleader — it is honest AND fair. The Critic is loud, not true; the Witness is quiet and accurate.</li>
-<li><b>B</b> — Volume is not evidence. The whole unit turns on that one sentence.</li></ol></div>
+  <div class="keyblock"><h3 class="parth"><span data-en="Answer key · Unit 2 · Self-Compassion" data-es="Respuestas · Unidad 2 · Autocompasión">Answer key · Unit 2 · Self-Compassion</span></h3><ol class="key"><li><b>C</b> — <span data-en="Catastrophizing (one bad moment = forever). Globalizing (one mistake = always). Personalizing (it must be about me)." data-es="Catastrofizar (un mal momento = para siempre). Generalizar (un error = siempre). Personalizar (seguro es por mí).">Catastrophizing (one bad moment = forever). Globalizing (one mistake = always). Personalizing (it must be about me).</span></li>
+<li><b>D</b> — <span data-en="Catastrophizing stretches one bad moment into a permanent future. Naming the tactic is how you catch it." data-es="Catastrofizar estira un mal momento hasta volverlo un futuro permanente. Nombrar la táctica es la forma de atraparla.">Catastrophizing stretches one bad moment into a permanent future. Naming the tactic is how you catch it.</span></li>
+<li><b>B</b> — <span data-en="Globalizing turns one mistake into a rule about who you are. One data point is not a pattern." data-es="Generalizar convierte un error en una regla sobre quién eres. Un solo dato no es un patrón.">Globalizing turns one mistake into a rule about who you are. One data point is not a pattern.</span></li>
+<li><b>A</b> — <span data-en="Personalizing makes you the cause of things that mostly are not about you at all." data-es="Personalizar te hace la causa de cosas que casi siempre no tienen nada que ver contigo.">Personalizing makes you the cause of things that mostly are not about you at all.</span></li>
+<li><b>D</b> — <span data-en="Everyone has both reels. Most people show only one. You are watching everyone else’s trailer and comparing it to your own deleted scenes." data-es="Todos tienen las dos cintas. Casi todos muestran solo una. Estás viendo el avance de los demás y comparándolo con tus propias escenas eliminadas.">Everyone has both reels. Most people show only one. You are watching everyone else’s trailer and comparing it to your own deleted scenes.</span></li>
+<li><b>C</b> — <span data-en="Left column: to my best friend — kind, fair, honest, without punishment. Right column: to myself. The test: would you say that to your best friend?" data-es="Columna izquierda: a mi mejor amigo o amiga — amable, justo, honesto, sin castigo. Columna derecha: a mí. La prueba: ¿le dirías eso a tu mejor amigo o amiga?">Left column: to my best friend — kind, fair, honest, without punishment. Right column: to myself. The test: would you say that to your best friend?</span></li>
+<li><b>A</b> — <span data-en="The Witness is not a cheerleader — it is honest AND fair. The Critic is loud, not true; the Witness is quiet and accurate." data-es="El Testigo no es una porra — es honesto Y justo. El Crítico es ruidoso, no cierto; el Testigo es tranquilo y acertado.">The Witness is not a cheerleader — it is honest AND fair. The Critic is loud, not true; the Witness is quiet and accurate.</span></li>
+<li><b>B</b> — <span data-en="Volume is not evidence. The whole unit turns on that one sentence." data-es="Que algo suene fuerte no lo hace prueba. Toda la unidad gira alrededor de esa oración.">Volume is not evidence. The whole unit turns on that one sentence.</span></li></ol></div>
 </section><section class="unit u3" id="u3" style="--uc:var(--u3)" hidden>
-  <div class="uhead"><h2>Unit 3 · Forgiveness</h2></div>
-  <p class="urecap">Impact vs. Intent. Forgiveness vs. Reconciliation. The Letter of Release. This unit practiced repair that names what landed, and release that does not require trust.</p>
-  <h3 class="parth">Part A · Choose the answer</h3>
+  <div class="uhead"><h2><span data-en="Unit 3 · Forgiveness" data-es="Unidad 3 · Perdón">Unit 3 · Forgiveness</span></h2></div>
+  <p class="urecap"><span data-en="Impact vs. Intent. Forgiveness vs. Reconciliation. The Letter of Release. This unit practiced repair that names what landed, and release that does not require trust." data-es="Impacto vs. Intención. Perdón vs. Reconciliación. La Carta de Liberación. En esta unidad practicamos una reparación que nombra lo que dolió, y una liberación que no exige confianza.">Impact vs. Intent. Forgiveness vs. Reconciliation. The Letter of Release. This unit practiced repair that names what landed, and release that does not require trust.</span></p>
+  <h3 class="parth"><span data-en="Part A · Choose the answer" data-es="Parte A · Elige la respuesta">Part A · Choose the answer</span></h3>
   <div class="q" id="u3-q1">
-  <div class="qt"><span class="qn">1</span> When something you did lands badly, the repair conversation is about —</div>
-  <div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">A</span> intent first — what you meant is what matters</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">B</span> whoever is most upset</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">C</span> making sure everyone knows it was an accident</button>
-<button type="button" class="opt" data-ok="1"><span class="ol">D</span> impact first — intent is for understanding, not absolution</button></div>
-  <div class="why" hidden><b>D.</b> “Impact is what is addressed in repair. Intent matters for understanding but does not reduce accountability.” The rule cuts both ways.</div>
+  <div class="qt"><span class="qn">1</span> <span data-en="When something you did lands badly, the repair conversation is about —" data-es="Cuando algo que hiciste cae mal, la conversación para reparar se trata de —">When something you did lands badly, the repair conversation is about —</span></div>
+  <div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">A</span> <span data-en="intent first — what you meant is what matters" data-es="primero la intención — lo que quisiste decir es lo que importa">intent first — what you meant is what matters</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> <span data-en="whoever is most upset" data-es="quien esté más molesto">whoever is most upset</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> <span data-en="making sure everyone knows it was an accident" data-es="asegurarte de que todos sepan que fue un accidente">making sure everyone knows it was an accident</span></button>
+<button type="button" class="opt" data-ok="1"><span class="ol">D</span> <span data-en="impact first — intent is for understanding, not absolution" data-es="primero el impacto — la intención sirve para entender, no para quedar libre de culpa">impact first — intent is for understanding, not absolution</span></button></div>
+  <div class="why" hidden><b>D.</b> <span data-en="“Impact is what is addressed in repair. Intent matters for understanding but does not reduce accountability.” The rule cuts both ways." data-es="“En la reparación se habla del impacto. La intención importa para entender, pero no quita la responsabilidad”. La regla vale para los dos lados.">“Impact is what is addressed in repair. Intent matters for understanding but does not reduce accountability.” The rule cuts both ways.</span></div>
 </div><div class="q" id="u3-q2">
-  <div class="qt"><span class="qn">2</span> Forgiveness, in this curriculum, is —</div>
-  <div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">A</span> telling the person everything is okay now</button>
-<button type="button" class="opt" data-ok="1"><span class="ol">B</span> internal, mine to give, and requires nothing of the other person</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">C</span> going back to how things were</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">D</span> something the other person has to earn first</button></div>
-  <div class="why" hidden><b>B.</b> Forgiveness is internal — mine to give, requiring nothing of the other. That is what makes it different from reconciliation.</div>
+  <div class="qt"><span class="qn">2</span> <span data-en="Forgiveness, in this curriculum, is —" data-es="En este programa, el perdón es —">Forgiveness, in this curriculum, is —</span></div>
+  <div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">A</span> <span data-en="telling the person everything is okay now" data-es="decirle a la persona que ya todo está bien">telling the person everything is okay now</span></button>
+<button type="button" class="opt" data-ok="1"><span class="ol">B</span> <span data-en="internal, mine to give, and requires nothing of the other person" data-es="algo interno, mío para dar, que no le pide nada a la otra persona">internal, mine to give, and requires nothing of the other person</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> <span data-en="going back to how things were" data-es="volver a como estaban las cosas">going back to how things were</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> <span data-en="something the other person has to earn first" data-es="algo que la otra persona primero tiene que ganarse">something the other person has to earn first</span></button></div>
+  <div class="why" hidden><b>B.</b> <span data-en="Forgiveness is internal — mine to give, requiring nothing of the other. That is what makes it different from reconciliation." data-es="El perdón es interno — mío para dar, sin pedirle nada al otro. Eso es lo que lo hace distinto de la reconciliación.">Forgiveness is internal — mine to give, requiring nothing of the other. That is what makes it different from reconciliation.</span></div>
 </div><div class="q" id="u3-q3">
-  <div class="qt"><span class="qn">3</span> Reconciliation is different from forgiveness because reconciliation requires —</div>
-  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> both people, changed behavior over time, and safety</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">B</span> only your decision</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">C</span> an adult to supervise it</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">D</span> forgetting what happened</button></div>
-  <div class="why" hidden><b>A.</b> Reconciliation is external: it takes BOTH people, changed behavior over time, and safety. Forgiveness never requires trust.</div>
+  <div class="qt"><span class="qn">3</span> <span data-en="Reconciliation is different from forgiveness because reconciliation requires —" data-es="La reconciliación es distinta del perdón porque la reconciliación necesita —">Reconciliation is different from forgiveness because reconciliation requires —</span></div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> <span data-en="both people, changed behavior over time, and safety" data-es="a las dos personas, un cambio de conducta con el tiempo, y seguridad">both people, changed behavior over time, and safety</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> <span data-en="only your decision" data-es="solo tu decisión">only your decision</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> <span data-en="an adult to supervise it" data-es="un adulto que la supervise">an adult to supervise it</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> <span data-en="forgetting what happened" data-es="olvidar lo que pasó">forgetting what happened</span></button></div>
+  <div class="why" hidden><b>A.</b> <span data-en="Reconciliation is external: it takes BOTH people, changed behavior over time, and safety. Forgiveness never requires trust." data-es="La reconciliación es externa: necesita a LAS DOS personas, un cambio de conducta con el tiempo, y seguridad. El perdón nunca exige confianza.">Reconciliation is external: it takes BOTH people, changed behavior over time, and safety. Forgiveness never requires trust.</span></div>
 </div><div class="q" id="u3-q4">
-  <div class="qt"><span class="qn">4</span> Amara’s grandmother taught: forgiveness is not the same as —</div>
-  <div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">A</span> love</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">B</span> strength</button>
-<button type="button" class="opt" data-ok="1"><span class="ol">C</span> trust</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">D</span> memory</button></div>
-  <div class="why" hidden><b>C.</b> “Forgiveness, but the kind that does not include trust.” You can release someone and still not hand them access.</div>
+  <div class="qt"><span class="qn">4</span> <span data-en="Amara’s grandmother taught: forgiveness is not the same as —" data-es="La abuela de Amara le enseñó: perdonar no es lo mismo que —">Amara’s grandmother taught: forgiveness is not the same as —</span></div>
+  <div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">A</span> <span data-en="love" data-es="amar">love</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> <span data-en="strength" data-es="ser fuerte">strength</span></button>
+<button type="button" class="opt" data-ok="1"><span class="ol">C</span> <span data-en="trust" data-es="confiar">trust</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> <span data-en="memory" data-es="recordar">memory</span></button></div>
+  <div class="why" hidden><b>C.</b> <span data-en="“Forgiveness, but the kind that does not include trust.” You can release someone and still not hand them access." data-es="“Perdón, pero del tipo que no incluye confianza”. Puedes liberar a alguien y aun así no darle acceso.">“Forgiveness, but the kind that does not include trust.” You can release someone and still not hand them access.</span></div>
 </div><div class="q" id="u3-q5">
-  <div class="qt"><span class="qn">5</span> The Letter of Release is —</div>
-  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> never sent — a private ritual for your own nervous system</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">B</span> mailed to the person who hurt you</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">C</span> read aloud to the class</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">D</span> graded by the teacher</button></div>
-  <div class="why" hidden><b>A.</b> Four sections, never sent. “Release is not what they earned. Release is what you stop paying.”</div>
+  <div class="qt"><span class="qn">5</span> <span data-en="The Letter of Release is —" data-es="La Carta de Liberación —">The Letter of Release is —</span></div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> <span data-en="never sent — a private ritual for your own nervous system" data-es="nunca se envía — es un ritual privado para tu propio sistema nervioso">never sent — a private ritual for your own nervous system</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> <span data-en="mailed to the person who hurt you" data-es="se le manda por correo a la persona que te lastimó">mailed to the person who hurt you</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> <span data-en="read aloud to the class" data-es="se lee en voz alta frente al grupo">read aloud to the class</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> <span data-en="graded by the teacher" data-es="la califica el maestro o la maestra">graded by the teacher</span></button></div>
+  <div class="why" hidden><b>A.</b> <span data-en="Four sections, never sent. “Release is not what they earned. Release is what you stop paying.”" data-es="Cuatro partes, nunca se envía. “Liberar no es lo que se ganaron. Liberar es dejar de pagar”.">Four sections, never sent. “Release is not what they earned. Release is what you stop paying.”</span></div>
 </div><div class="q" id="u3-q6">
-  <div class="qt"><span class="qn">6</span> The section of the Letter of Release that most curricula leave out — and the one that makes it work — is —</div>
-  <div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">A</span> what you did</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">B</span> what it cost me</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">C</span> the greeting</button>
-<button type="button" class="opt" data-ok="1"><span class="ol">D</span> what I am keeping</button></div>
-  <div class="why" hidden><b>D.</b> Section four: what I am keeping. You are not erasing the experience — you are extracting what to take with you and putting down what you do not.</div>
+  <div class="qt"><span class="qn">6</span> <span data-en="The section of the Letter of Release that most curricula leave out — and the one that makes it work — is —" data-es="La parte de la Carta de Liberación que casi todos los programas dejan fuera — y la que hace que funcione — es —">The section of the Letter of Release that most curricula leave out — and the one that makes it work — is —</span></div>
+  <div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">A</span> <span data-en="what you did" data-es="lo que hiciste">what you did</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> <span data-en="what it cost me" data-es="lo que me costó">what it cost me</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> <span data-en="the greeting" data-es="el saludo">the greeting</span></button>
+<button type="button" class="opt" data-ok="1"><span class="ol">D</span> <span data-en="what I am keeping" data-es="lo que me quedo">what I am keeping</span></button></div>
+  <div class="why" hidden><b>D.</b> <span data-en="Section four: what I am keeping. You are not erasing the experience — you are extracting what to take with you and putting down what you do not." data-es="La parte cuatro: lo que me quedo. No estás borrando la experiencia — estás sacando lo que te llevas y dejando lo que no.">Section four: what I am keeping. You are not erasing the experience — you are extracting what to take with you and putting down what you do not.</span></div>
 </div><div class="q" id="u3-q7">
-  <div class="qt"><span class="qn">7</span> “Release is what you stop ______.”</div>
-  <div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">A</span> feeling</button>
-<button type="button" class="opt" data-ok="1"><span class="ol">B</span> paying</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">C</span> remembering</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">D</span> pretending</button></div>
-  <div class="why" hidden><b>B.</b> Not the same as okay. Not reconciliation. Not what they earned. Release ends the ongoing cost to YOU.</div>
+  <div class="qt"><span class="qn">7</span> <span data-en="“Release is what you stop ______.”" data-es="“Liberar es dejar de ______.”">“Release is what you stop ______.”</span></div>
+  <div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">A</span> <span data-en="feeling" data-es="sentir">feeling</span></button>
+<button type="button" class="opt" data-ok="1"><span class="ol">B</span> <span data-en="paying" data-es="pagar">paying</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> <span data-en="remembering" data-es="recordar">remembering</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> <span data-en="pretending" data-es="fingir">pretending</span></button></div>
+  <div class="why" hidden><b>B.</b> <span data-en="Not the same as okay. Not reconciliation. Not what they earned. Release ends the ongoing cost to YOU." data-es="No es lo mismo que “está bien”. No es reconciliación. No es lo que se ganaron. Liberar termina el costo que TÚ sigues pagando.">Not the same as okay. Not reconciliation. Not what they earned. Release ends the ongoing cost to YOU.</span></div>
 </div>
-  <div class="tally" data-total="7">Checked: <b class="tn">0</b> / 7 · Right on the first try: <b class="tr">0</b></div>
-  <h3 class="parth">Part B · In your own words</h3>
+  <div class="tally" data-total="7"><span data-en="Checked:" data-es="Revisadas:">Checked:</span> <b class="tn">0</b> / 7<span class="trw"> · <span data-en="Right on the first try:" data-es="Bien al primer intento:">Right on the first try:</span> <b class="tr">0</b></span></div>
+  <h3 class="parth"><span data-en="Part B · In your own words" data-es="Parte B · Con tus propias palabras">Part B · In your own words</span></h3>
   <div class="ow">
-  <div class="owt"><span class="qn">1</span> Describe a time your intent was good but your impact landed badly. What was the repair about — and what would it have sounded like to address impact first?</div>
-  <textarea rows="4" placeholder="Type here. Your words stay on this device." aria-label="Your answer"></textarea>
+  <div class="owt"><span class="qn">1</span> <span data-en="Describe a time your intent was good but your impact landed badly. What was the repair about — and what would it have sounded like to address impact first?" data-es="Describe una vez en que tu intención era buena pero tu impacto cayó mal. ¿De qué se trató la reparación — y cómo habría sonado hablar primero del impacto?">Describe a time your intent was good but your impact landed badly. What was the repair about — and what would it have sounded like to address impact first?</span></div>
+  <textarea rows="4" placeholder="Type here. Your words stay on this device." aria-label="Your answer" data-ph-en="Type here. Your words stay on this device." data-ph-es="Escribe aquí. Tus palabras se quedan en este aparato." data-al-en="Your answer" data-al-es="Tu respuesta"></textarea>
   <div class="plines"><span></span><span></span><span></span><span></span><span></span></div>
 </div><div class="ow">
-  <div class="owt"><span class="qn">2</span> In your own words: what does forgiveness require of the other person? What does reconciliation require? Why does the difference protect you?</div>
-  <textarea rows="3" placeholder="Type here. Your words stay on this device." aria-label="Your answer"></textarea>
+  <div class="owt"><span class="qn">2</span> <span data-en="In your own words: what does forgiveness require of the other person? What does reconciliation require? Why does the difference protect you?" data-es="Con tus propias palabras: ¿qué le pide el perdón a la otra persona? ¿Qué necesita la reconciliación? ¿Por qué esa diferencia te protege?">In your own words: what does forgiveness require of the other person? What does reconciliation require? Why does the difference protect you?</span></div>
+  <textarea rows="3" placeholder="Type here. Your words stay on this device." aria-label="Your answer" data-ph-en="Type here. Your words stay on this device." data-ph-es="Escribe aquí. Tus palabras se quedan en este aparato." data-al-en="Your answer" data-al-es="Tu respuesta"></textarea>
   <div class="plines"><span></span><span></span><span></span><span></span></div>
 </div><div class="ow">
-  <div class="owt"><span class="qn">3</span> Think of something you have released — or want to release. Without writing the story itself, write only section four: what you are KEEPING from that experience.</div>
-  <textarea rows="3" placeholder="Type here. Your words stay on this device." aria-label="Your answer"></textarea>
+  <div class="owt"><span class="qn">3</span> <span data-en="Think of something you have released — or want to release. Without writing the story itself, write only section four: what you are KEEPING from that experience." data-es="Piensa en algo que ya liberaste — o que quieres liberar. Sin escribir la historia, escribe solo la parte cuatro: lo que te QUEDAS de esa experiencia.">Think of something you have released — or want to release. Without writing the story itself, write only section four: what you are KEEPING from that experience.</span></div>
+  <textarea rows="3" placeholder="Type here. Your words stay on this device." aria-label="Your answer" data-ph-en="Type here. Your words stay on this device." data-ph-es="Escribe aquí. Tus palabras se quedan en este aparato." data-al-en="Your answer" data-al-es="Tu respuesta"></textarea>
   <div class="plines"><span></span><span></span><span></span><span></span></div>
 </div><div class="ow">
-  <div class="owt"><span class="qn">4</span> “Release is what you stop paying.” What does carrying an old hurt cost — attention, sleep, trust, energy? Name the cost you would most like to stop paying.</div>
-  <textarea rows="3" placeholder="Type here. Your words stay on this device." aria-label="Your answer"></textarea>
+  <div class="owt"><span class="qn">4</span> <span data-en="“Release is what you stop paying.” What does carrying an old hurt cost — attention, sleep, trust, energy? Name the cost you would most like to stop paying." data-es="“Liberar es dejar de pagar”. ¿Qué cuesta cargar una herida vieja — atención, sueño, confianza, energía? Nombra el costo que más te gustaría dejar de pagar.">“Release is what you stop paying.” What does carrying an old hurt cost — attention, sleep, trust, energy? Name the cost you would most like to stop paying.</span></div>
+  <textarea rows="3" placeholder="Type here. Your words stay on this device." aria-label="Your answer" data-ph-en="Type here. Your words stay on this device." data-ph-es="Escribe aquí. Tus palabras se quedan en este aparato." data-al-en="Your answer" data-al-es="Tu respuesta"></textarea>
   <div class="plines"><span></span><span></span><span></span></div>
 </div>
-  <div class="keyblock"><h3 class="parth">Answer key · Unit 3 · Forgiveness</h3><ol class="key"><li><b>D</b> — “Impact is what is addressed in repair. Intent matters for understanding but does not reduce accountability.” The rule cuts both ways.</li>
-<li><b>B</b> — Forgiveness is internal — mine to give, requiring nothing of the other. That is what makes it different from reconciliation.</li>
-<li><b>A</b> — Reconciliation is external: it takes BOTH people, changed behavior over time, and safety. Forgiveness never requires trust.</li>
-<li><b>C</b> — “Forgiveness, but the kind that does not include trust.” You can release someone and still not hand them access.</li>
-<li><b>A</b> — Four sections, never sent. “Release is not what they earned. Release is what you stop paying.”</li>
-<li><b>D</b> — Section four: what I am keeping. You are not erasing the experience — you are extracting what to take with you and putting down what you do not.</li>
-<li><b>B</b> — Not the same as okay. Not reconciliation. Not what they earned. Release ends the ongoing cost to YOU.</li></ol></div>
+  <div class="keyblock"><h3 class="parth"><span data-en="Answer key · Unit 3 · Forgiveness" data-es="Respuestas · Unidad 3 · Perdón">Answer key · Unit 3 · Forgiveness</span></h3><ol class="key"><li><b>D</b> — <span data-en="“Impact is what is addressed in repair. Intent matters for understanding but does not reduce accountability.” The rule cuts both ways." data-es="“En la reparación se habla del impacto. La intención importa para entender, pero no quita la responsabilidad”. La regla vale para los dos lados.">“Impact is what is addressed in repair. Intent matters for understanding but does not reduce accountability.” The rule cuts both ways.</span></li>
+<li><b>B</b> — <span data-en="Forgiveness is internal — mine to give, requiring nothing of the other. That is what makes it different from reconciliation." data-es="El perdón es interno — mío para dar, sin pedirle nada al otro. Eso es lo que lo hace distinto de la reconciliación.">Forgiveness is internal — mine to give, requiring nothing of the other. That is what makes it different from reconciliation.</span></li>
+<li><b>A</b> — <span data-en="Reconciliation is external: it takes BOTH people, changed behavior over time, and safety. Forgiveness never requires trust." data-es="La reconciliación es externa: necesita a LAS DOS personas, un cambio de conducta con el tiempo, y seguridad. El perdón nunca exige confianza.">Reconciliation is external: it takes BOTH people, changed behavior over time, and safety. Forgiveness never requires trust.</span></li>
+<li><b>C</b> — <span data-en="“Forgiveness, but the kind that does not include trust.” You can release someone and still not hand them access." data-es="“Perdón, pero del tipo que no incluye confianza”. Puedes liberar a alguien y aun así no darle acceso.">“Forgiveness, but the kind that does not include trust.” You can release someone and still not hand them access.</span></li>
+<li><b>A</b> — <span data-en="Four sections, never sent. “Release is not what they earned. Release is what you stop paying.”" data-es="Cuatro partes, nunca se envía. “Liberar no es lo que se ganaron. Liberar es dejar de pagar”.">Four sections, never sent. “Release is not what they earned. Release is what you stop paying.”</span></li>
+<li><b>D</b> — <span data-en="Section four: what I am keeping. You are not erasing the experience — you are extracting what to take with you and putting down what you do not." data-es="La parte cuatro: lo que me quedo. No estás borrando la experiencia — estás sacando lo que te llevas y dejando lo que no.">Section four: what I am keeping. You are not erasing the experience — you are extracting what to take with you and putting down what you do not.</span></li>
+<li><b>B</b> — <span data-en="Not the same as okay. Not reconciliation. Not what they earned. Release ends the ongoing cost to YOU." data-es="No es lo mismo que “está bien”. No es reconciliación. No es lo que se ganaron. Liberar termina el costo que TÚ sigues pagando.">Not the same as okay. Not reconciliation. Not what they earned. Release ends the ongoing cost to YOU.</span></li></ol></div>
 </section><section class="unit u4" id="u4" style="--uc:var(--u4)" hidden>
-  <div class="uhead"><h2>Unit 4 · Grace</h2></div>
-  <p class="urecap">The Pause. The Three-Strike Rule. The Micro-Moment Menu. Difficult vs. Unsafe. This unit practiced grace as a chosen act with a real cost — and grace that never means access for unsafe people.</p>
-  <h3 class="parth">Part A · Choose the answer</h3>
+  <div class="uhead"><h2><span data-en="Unit 4 · Grace" data-es="Unidad 4 · Gracia">Unit 4 · Grace</span></h2></div>
+  <p class="urecap"><span data-en="The Pause. The Three-Strike Rule. The Micro-Moment Menu. Difficult vs. Unsafe. This unit practiced grace as a chosen act with a real cost — and grace that never means access for unsafe people." data-es="La Pausa. La Regla de las Tres Veces. El Menú de Micromomentos. Difícil vs. Insegura. En esta unidad practicamos la gracia como una acción que eliges y que cuesta de verdad — y una gracia que nunca significa dar acceso a personas inseguras.">The Pause. The Three-Strike Rule. The Micro-Moment Menu. Difficult vs. Unsafe. This unit practiced grace as a chosen act with a real cost — and grace that never means access for unsafe people.</span></p>
+  <h3 class="parth"><span data-en="Part A · Choose the answer" data-es="Parte A · Elige la respuesta">Part A · Choose the answer</span></h3>
   <div class="q" id="u4-q1">
-  <div class="qt"><span class="qn">1</span> The Pause asks you, before deciding what someone’s behavior meant, to —</div>
-  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> list three alternative explanations that are not about you</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">B</span> ask them directly, right away</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">C</span> decide quickly so you can move on</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">D</span> assume the worst so you are never surprised</button></div>
-  <div class="why" hidden><b>A.</b> “Maybe they didn’t see. Maybe they had a bad morning. Maybe it is not about me.” Three maybes before the verdict — then decide if you even have enough information.</div>
+  <div class="qt"><span class="qn">1</span> <span data-en="The Pause asks you, before deciding what someone’s behavior meant, to —" data-es="La Pausa te pide, antes de decidir qué quiso decir lo que alguien hizo, que —">The Pause asks you, before deciding what someone’s behavior meant, to —</span></div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> <span data-en="list three alternative explanations that are not about you" data-es="hagas una lista de tres explicaciones distintas que no tengan que ver contigo">list three alternative explanations that are not about you</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> <span data-en="ask them directly, right away" data-es="le preguntes directamente, enseguida">ask them directly, right away</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> <span data-en="decide quickly so you can move on" data-es="decidas rápido para seguir adelante">decide quickly so you can move on</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> <span data-en="assume the worst so you are never surprised" data-es="pienses lo peor para que nada te sorprenda">assume the worst so you are never surprised</span></button></div>
+  <div class="why" hidden><b>A.</b> <span data-en="“Maybe they didn’t see. Maybe they had a bad morning. Maybe it is not about me.” Three maybes before the verdict — then decide if you even have enough information." data-es="“Tal vez no vio. Tal vez tuvo una mala mañana. Tal vez no es por mí”. Tres “tal vez” antes del veredicto — luego decide si de verdad tienes suficiente información.">“Maybe they didn’t see. Maybe they had a bad morning. Maybe it is not about me.” Three maybes before the verdict — then decide if you even have enough information.</span></div>
 </div><div class="q" id="u4-q2">
-  <div class="qt"><span class="qn">2</span> Charitable interpretation is for —</div>
-  <div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">A</span> every situation, no matter what</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">B</span> people you are afraid of</button>
-<button type="button" class="opt" data-ok="1"><span class="ol">C</span> one-time or ambiguous situations</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">D</span> repeated, escalating harm</button></div>
-  <div class="why" hidden><b>C.</b> For repeated, escalating harm it is not charitable to override accurate pattern-recognition. That is the guardrail, said plainly.</div>
+  <div class="qt"><span class="qn">2</span> <span data-en="Charitable interpretation is for —" data-es="La Interpretación Generosa es para —">Charitable interpretation is for —</span></div>
+  <div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">A</span> <span data-en="every situation, no matter what" data-es="toda situación, pase lo que pase">every situation, no matter what</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> <span data-en="people you are afraid of" data-es="las personas que te dan miedo">people you are afraid of</span></button>
+<button type="button" class="opt" data-ok="1"><span class="ol">C</span> <span data-en="one-time or ambiguous situations" data-es="situaciones de una sola vez o que no están claras">one-time or ambiguous situations</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> <span data-en="repeated, escalating harm" data-es="daño que se repite y va empeorando">repeated, escalating harm</span></button></div>
+  <div class="why" hidden><b>C.</b> <span data-en="For repeated, escalating harm it is not charitable to override accurate pattern-recognition. That is the guardrail, said plainly." data-es="Cuando el daño se repite y va empeorando, no es generoso ignorar un patrón que ves con claridad. Ese es el límite, dicho con claridad.">For repeated, escalating harm it is not charitable to override accurate pattern-recognition. That is the guardrail, said plainly.</span></div>
 </div><div class="q" id="u4-q3">
-  <div class="qt"><span class="qn">3</span> The Three-Strike Rule says that the THIRD time the same person does the same kind of hurt —</div>
-  <div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">A</span> you should give one more chance</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">B</span> you are being unforgiving</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">C</span> you should confront them publicly</button>
-<button type="button" class="opt" data-ok="1"><span class="ol">D</span> the pattern is real: trust it — distance is wisdom</button></div>
-  <div class="why" hidden><b>D.</b> First time: charitable interpretation. Second: name the pattern privately. Third: the pattern is real. You are not failing to be charitable — you are pattern-matching. That is data, not bitterness.</div>
+  <div class="qt"><span class="qn">3</span> <span data-en="The Three-Strike Rule says that the THIRD time the same person does the same kind of hurt —" data-es="La Regla de las Tres Veces dice que la TERCERA vez que la misma persona te lastima de la misma forma —">The Three-Strike Rule says that the THIRD time the same person does the same kind of hurt —</span></div>
+  <div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">A</span> <span data-en="you should give one more chance" data-es="deberías dar una oportunidad más">you should give one more chance</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> <span data-en="you are being unforgiving" data-es="estás siendo rencoroso">you are being unforgiving</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> <span data-en="you should confront them publicly" data-es="deberías enfrentarla en público">you should confront them publicly</span></button>
+<button type="button" class="opt" data-ok="1"><span class="ol">D</span> <span data-en="the pattern is real: trust it — distance is wisdom" data-es="el patrón es real: confía en él — tomar distancia es sabio">the pattern is real: trust it — distance is wisdom</span></button></div>
+  <div class="why" hidden><b>D.</b> <span data-en="First time: charitable interpretation. Second: name the pattern privately. Third: the pattern is real. You are not failing to be charitable — you are pattern-matching. That is data, not bitterness." data-es="Primera vez: Interpretación Generosa. Segunda: nombra el patrón en privado. Tercera: el patrón es real. No estás fallando en ser generoso — estás reconociendo un patrón. Eso es información, no amargura.">First time: charitable interpretation. Second: name the pattern privately. Third: the pattern is real. You are not failing to be charitable — you are pattern-matching. That is data, not bitterness.</span></div>
 </div><div class="q" id="u4-q4">
-  <div class="qt"><span class="qn">4</span> A person can be DIFFICULT (annoying, immature, exhausting) and still receive grace. For a person who is UNSAFE, grace looks like —</div>
-  <div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">A</span> more access, so they can improve</button>
-<button type="button" class="opt" data-ok="1"><span class="ol">B</span> distance, plus letting the resentment go</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">C</span> pretending nothing happened</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">D</span> telling everyone what they did</button></div>
-  <div class="why" hidden><b>B.</b> Grace ≠ access. “You do not owe access to people who have shown you they are unsafe. EVER.”</div>
+  <div class="qt"><span class="qn">4</span> <span data-en="A person can be DIFFICULT (annoying, immature, exhausting) and still receive grace. For a person who is UNSAFE, grace looks like —" data-es="Una persona puede ser DIFÍCIL (molesta, inmadura, agotadora) y aun así recibir gracia. Con una persona INSEGURA, la gracia se ve como —">A person can be DIFFICULT (annoying, immature, exhausting) and still receive grace. For a person who is UNSAFE, grace looks like —</span></div>
+  <div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">A</span> <span data-en="more access, so they can improve" data-es="darle más acceso, para que pueda mejorar">more access, so they can improve</span></button>
+<button type="button" class="opt" data-ok="1"><span class="ol">B</span> <span data-en="distance, plus letting the resentment go" data-es="distancia, y además soltar el resentimiento">distance, plus letting the resentment go</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> <span data-en="pretending nothing happened" data-es="fingir que no pasó nada">pretending nothing happened</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> <span data-en="telling everyone what they did" data-es="contarle a todos lo que hizo">telling everyone what they did</span></button></div>
+  <div class="why" hidden><b>B.</b> <span data-en="Grace ≠ access. “You do not owe access to people who have shown you they are unsafe. EVER.”" data-es="Gracia ≠ acceso. “No le debes acceso a la gente que te ha mostrado que es insegura. NUNCA.”">Grace ≠ access. “You do not owe access to people who have shown you they are unsafe. EVER.”</span></div>
 </div><div class="q" id="u4-q5">
-  <div class="qt"><span class="qn">5</span> Which of these is grace under cost?</div>
-  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> saying something in the group chat when an absent classmate is being mocked</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">B</span> disagreeing silently in your head</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">C</span> telling the mocked classmate afterward that you disagreed</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">D</span> leaving the chat and telling no one, while still enjoying the jokes</button></div>
-  <div class="why" hidden><b>A.</b> Speaking up in the moment, when speaking up costs you, is grace. Silent disapproval and after-the-fact sympathy skip the cost — and the cost is the proof.</div>
+  <div class="qt"><span class="qn">5</span> <span data-en="Which of these is grace under cost?" data-es="¿Cuál de estas es gracia que cuesta?">Which of these is grace under cost?</span></div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> <span data-en="saying something in the group chat when an absent classmate is being mocked" data-es="decir algo en el chat del grupo cuando se burlan de un compañero que no está">saying something in the group chat when an absent classmate is being mocked</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> <span data-en="disagreeing silently in your head" data-es="no estar de acuerdo, en silencio, dentro de tu cabeza">disagreeing silently in your head</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> <span data-en="telling the mocked classmate afterward that you disagreed" data-es="decirle después al compañero del que se burlaron que no estabas de acuerdo">telling the mocked classmate afterward that you disagreed</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> <span data-en="leaving the chat and telling no one, while still enjoying the jokes" data-es="salirte del chat sin decirle a nadie, aunque los chistes te seguían dando risa">leaving the chat and telling no one, while still enjoying the jokes</span></button></div>
+  <div class="why" hidden><b>A.</b> <span data-en="Speaking up in the moment, when speaking up costs you, is grace. Silent disapproval and after-the-fact sympathy skip the cost — and the cost is the proof." data-es="Hablar en el momento, cuando hablar te cuesta, es gracia. Desaprobar en silencio o mostrar apoyo después se saltan el costo — y el costo es la prueba.">Speaking up in the moment, when speaking up costs you, is grace. Silent disapproval and after-the-fact sympathy skip the cost — and the cost is the proof.</span></div>
 </div><div class="q" id="u4-q6">
-  <div class="qt"><span class="qn">6</span> Grace across distance is —</div>
-  <div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">A</span> the time between a mistake and an apology</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">B</span> the difference between two friends’ popularity</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">C</span> a level in the Grace Challenge</button>
-<button type="button" class="opt" data-ok="1"><span class="ol">D</span> the gap between what someone has done lately and what you still extend toward them</button></div>
-  <div class="why" hidden><b>D.</b> “The gap is grace. Friendship across distance is maintained by what you decide to keep extending.”</div>
+  <div class="qt"><span class="qn">6</span> <span data-en="Grace across distance is —" data-es="La gracia a la distancia es —">Grace across distance is —</span></div>
+  <div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">A</span> <span data-en="the time between a mistake and an apology" data-es="el tiempo entre un error y una disculpa">the time between a mistake and an apology</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> <span data-en="the difference between two friends’ popularity" data-es="la diferencia de popularidad entre dos amigos">the difference between two friends’ popularity</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> <span data-en="a level in the Grace Challenge" data-es="un nivel del Reto de la Gracia">a level in the Grace Challenge</span></button>
+<button type="button" class="opt" data-ok="1"><span class="ol">D</span> <span data-en="the gap between what someone has done lately and what you still extend toward them" data-es="la distancia entre lo que alguien ha hecho últimamente y lo que tú todavía le ofreces">the gap between what someone has done lately and what you still extend toward them</span></button></div>
+  <div class="why" hidden><b>D.</b> <span data-en="“The gap is grace. Friendship across distance is maintained by what you decide to keep extending.”" data-es="“La distancia es gracia. Una amistad a la distancia se mantiene por lo que decides seguir ofreciendo.”">“The gap is grace. Friendship across distance is maintained by what you decide to keep extending.”</span></div>
 </div><div class="q" id="u4-q7">
-  <div class="qt"><span class="qn">7</span> At this age, grace is detected by —</div>
-  <div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">A</span> warm feelings</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">B</span> good intentions</button>
-<button type="button" class="opt" data-ok="1"><span class="ol">C</span> behavior under cost</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">D</span> public recognition</button></div>
-  <div class="why" hidden><b>C.</b> Grace at this age is not a feeling. It is a choice you make when the easier choice is in your hand. The cost is the proof.</div>
+  <div class="qt"><span class="qn">7</span> <span data-en="At this age, grace is detected by —" data-es="A esta edad, la gracia se nota por —">At this age, grace is detected by —</span></div>
+  <div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">A</span> <span data-en="warm feelings" data-es="sentimientos bonitos">warm feelings</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> <span data-en="good intentions" data-es="buenas intenciones">good intentions</span></button>
+<button type="button" class="opt" data-ok="1"><span class="ol">C</span> <span data-en="behavior under cost" data-es="lo que haces cuando te cuesta">behavior under cost</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> <span data-en="public recognition" data-es="el reconocimiento de los demás">public recognition</span></button></div>
+  <div class="why" hidden><b>C.</b> <span data-en="Grace at this age is not a feeling. It is a choice you make when the easier choice is in your hand. The cost is the proof." data-es="A esta edad, la gracia no es un sentimiento. Es una decisión que tomas cuando tienes a la mano la opción más fácil. El costo es la prueba.">Grace at this age is not a feeling. It is a choice you make when the easier choice is in your hand. The cost is the proof.</span></div>
 </div>
-  <div class="tally" data-total="7">Checked: <b class="tn">0</b> / 7 · Right on the first try: <b class="tr">0</b></div>
-  <h3 class="parth">Part B · In your own words</h3>
+  <div class="tally" data-total="7"><span data-en="Checked:" data-es="Revisadas:">Checked:</span> <b class="tn">0</b> / 7<span class="trw"> · <span data-en="Right on the first try:" data-es="Bien al primer intento:">Right on the first try:</span> <b class="tr">0</b></span></div>
+  <h3 class="parth"><span data-en="Part B · In your own words" data-es="Parte B · Con tus propias palabras">Part B · In your own words</span></h3>
   <div class="ow">
-  <div class="owt"><span class="qn">1</span> Pick a real moment when someone’s behavior stung. Write the three maybes — three explanations that are not about you. Then answer honestly: do you have enough information for a verdict?</div>
-  <textarea rows="4" placeholder="Type here. Your words stay on this device." aria-label="Your answer"></textarea>
+  <div class="owt"><span class="qn">1</span> <span data-en="Pick a real moment when someone’s behavior stung. Write the three maybes — three explanations that are not about you. Then answer honestly: do you have enough information for a verdict?" data-es="Elige un momento real en que lo que alguien hizo te dolió. Escribe los tres “tal vez” — tres explicaciones que no tienen que ver contigo. Luego responde con honestidad: ¿tienes suficiente información para dar un veredicto?">Pick a real moment when someone’s behavior stung. Write the three maybes — three explanations that are not about you. Then answer honestly: do you have enough information for a verdict?</span></div>
+  <textarea rows="4" placeholder="Type here. Your words stay on this device." aria-label="Your answer" data-ph-en="Type here. Your words stay on this device." data-ph-es="Escribe aquí. Tus palabras se quedan en este aparato." data-al-en="Your answer" data-al-es="Tu respuesta"></textarea>
   <div class="plines"><span></span><span></span><span></span><span></span><span></span></div>
 </div><div class="ow">
-  <div class="owt"><span class="qn">2</span> Choose your three acts from the Micro-Moment Menu (or write your own three small acts of grace with a real cost). When will you do the first one?</div>
-  <textarea rows="3" placeholder="Type here. Your words stay on this device." aria-label="Your answer"></textarea>
+  <div class="owt"><span class="qn">2</span> <span data-en="Choose your three acts from the Micro-Moment Menu (or write your own three small acts of grace with a real cost). When will you do the first one?" data-es="Elige tus tres acciones del Menú de Micromomentos (o escribe tus propias tres pequeñas acciones de gracia que de verdad cuesten). ¿Cuándo harás la primera?">Choose your three acts from the Micro-Moment Menu (or write your own three small acts of grace with a real cost). When will you do the first one?</span></div>
+  <textarea rows="3" placeholder="Type here. Your words stay on this device." aria-label="Your answer" data-ph-en="Type here. Your words stay on this device." data-ph-es="Escribe aquí. Tus palabras se quedan en este aparato." data-al-en="Your answer" data-al-es="Tu respuesta"></textarea>
   <div class="plines"><span></span><span></span><span></span><span></span></div>
 </div><div class="ow">
-  <div class="owt"><span class="qn">3</span> Difficult or unsafe? Think of one hard person in your life (initials only). Which list do they belong on, using the chart’s definitions — and what does grace look like at that distance?</div>
-  <textarea rows="3" placeholder="Type here. Your words stay on this device." aria-label="Your answer"></textarea>
+  <div class="owt"><span class="qn">3</span> <span data-en="Difficult or unsafe? Think of one hard person in your life (initials only). Which list do they belong on, using the chart’s definitions — and what does grace look like at that distance?" data-es="¿Difícil o insegura? Piensa en una persona complicada en tu vida (solo sus iniciales). Según las definiciones del cartel, ¿en qué lista va — y cómo se ve la gracia a esa distancia?">Difficult or unsafe? Think of one hard person in your life (initials only). Which list do they belong on, using the chart’s definitions — and what does grace look like at that distance?</span></div>
+  <textarea rows="3" placeholder="Type here. Your words stay on this device." aria-label="Your answer" data-ph-en="Type here. Your words stay on this device." data-ph-es="Escribe aquí. Tus palabras se quedan en este aparato." data-al-en="Your answer" data-al-es="Tu respuesta"></textarea>
   <div class="plines"><span></span><span></span><span></span><span></span></div>
 </div><div class="ow">
-  <div class="owt"><span class="qn">4</span> Where are you extending grace across distance right now — showing up for someone who has not had much to give back lately? What are you deciding to keep extending?</div>
-  <textarea rows="3" placeholder="Type here. Your words stay on this device." aria-label="Your answer"></textarea>
+  <div class="owt"><span class="qn">4</span> <span data-en="Where are you extending grace across distance right now — showing up for someone who has not had much to give back lately? What are you deciding to keep extending?" data-es="¿Dónde estás dando gracia a la distancia ahora mismo — apoyando a alguien que últimamente no ha tenido mucho que darte? ¿Qué decides seguir dando?">Where are you extending grace across distance right now — showing up for someone who has not had much to give back lately? What are you deciding to keep extending?</span></div>
+  <textarea rows="3" placeholder="Type here. Your words stay on this device." aria-label="Your answer" data-ph-en="Type here. Your words stay on this device." data-ph-es="Escribe aquí. Tus palabras se quedan en este aparato." data-al-en="Your answer" data-al-es="Tu respuesta"></textarea>
   <div class="plines"><span></span><span></span><span></span><span></span></div>
 </div>
-  <div class="keyblock"><h3 class="parth">Answer key · Unit 4 · Grace</h3><ol class="key"><li><b>A</b> — “Maybe they didn’t see. Maybe they had a bad morning. Maybe it is not about me.” Three maybes before the verdict — then decide if you even have enough information.</li>
-<li><b>C</b> — For repeated, escalating harm it is not charitable to override accurate pattern-recognition. That is the guardrail, said plainly.</li>
-<li><b>D</b> — First time: charitable interpretation. Second: name the pattern privately. Third: the pattern is real. You are not failing to be charitable — you are pattern-matching. That is data, not bitterness.</li>
-<li><b>B</b> — Grace ≠ access. “You do not owe access to people who have shown you they are unsafe. EVER.”</li>
-<li><b>A</b> — Speaking up in the moment, when speaking up costs you, is grace. Silent disapproval and after-the-fact sympathy skip the cost — and the cost is the proof.</li>
-<li><b>D</b> — “The gap is grace. Friendship across distance is maintained by what you decide to keep extending.”</li>
-<li><b>C</b> — Grace at this age is not a feeling. It is a choice you make when the easier choice is in your hand. The cost is the proof.</li></ol></div>
+  <div class="keyblock"><h3 class="parth"><span data-en="Answer key · Unit 4 · Grace" data-es="Respuestas · Unidad 4 · Gracia">Answer key · Unit 4 · Grace</span></h3><ol class="key"><li><b>A</b> — <span data-en="“Maybe they didn’t see. Maybe they had a bad morning. Maybe it is not about me.” Three maybes before the verdict — then decide if you even have enough information." data-es="“Tal vez no vio. Tal vez tuvo una mala mañana. Tal vez no es por mí”. Tres “tal vez” antes del veredicto — luego decide si de verdad tienes suficiente información.">“Maybe they didn’t see. Maybe they had a bad morning. Maybe it is not about me.” Three maybes before the verdict — then decide if you even have enough information.</span></li>
+<li><b>C</b> — <span data-en="For repeated, escalating harm it is not charitable to override accurate pattern-recognition. That is the guardrail, said plainly." data-es="Cuando el daño se repite y va empeorando, no es generoso ignorar un patrón que ves con claridad. Ese es el límite, dicho con claridad.">For repeated, escalating harm it is not charitable to override accurate pattern-recognition. That is the guardrail, said plainly.</span></li>
+<li><b>D</b> — <span data-en="First time: charitable interpretation. Second: name the pattern privately. Third: the pattern is real. You are not failing to be charitable — you are pattern-matching. That is data, not bitterness." data-es="Primera vez: Interpretación Generosa. Segunda: nombra el patrón en privado. Tercera: el patrón es real. No estás fallando en ser generoso — estás reconociendo un patrón. Eso es información, no amargura.">First time: charitable interpretation. Second: name the pattern privately. Third: the pattern is real. You are not failing to be charitable — you are pattern-matching. That is data, not bitterness.</span></li>
+<li><b>B</b> — <span data-en="Grace ≠ access. “You do not owe access to people who have shown you they are unsafe. EVER.”" data-es="Gracia ≠ acceso. “No le debes acceso a la gente que te ha mostrado que es insegura. NUNCA.”">Grace ≠ access. “You do not owe access to people who have shown you they are unsafe. EVER.”</span></li>
+<li><b>A</b> — <span data-en="Speaking up in the moment, when speaking up costs you, is grace. Silent disapproval and after-the-fact sympathy skip the cost — and the cost is the proof." data-es="Hablar en el momento, cuando hablar te cuesta, es gracia. Desaprobar en silencio o mostrar apoyo después se saltan el costo — y el costo es la prueba.">Speaking up in the moment, when speaking up costs you, is grace. Silent disapproval and after-the-fact sympathy skip the cost — and the cost is the proof.</span></li>
+<li><b>D</b> — <span data-en="“The gap is grace. Friendship across distance is maintained by what you decide to keep extending.”" data-es="“La distancia es gracia. Una amistad a la distancia se mantiene por lo que decides seguir ofreciendo.”">“The gap is grace. Friendship across distance is maintained by what you decide to keep extending.”</span></li>
+<li><b>C</b> — <span data-en="Grace at this age is not a feeling. It is a choice you make when the easier choice is in your hand. The cost is the proof." data-es="A esta edad, la gracia no es un sentimiento. Es una decisión que tomas cuando tienes a la mano la opción más fácil. El costo es la prueba.">Grace at this age is not a feeling. It is a choice you make when the easier choice is in your hand. The cost is the proof.</span></li></ol></div>
 </section><section class="unit u5" id="u5" style="--uc:var(--brass)" hidden>
-  <div class="uhead"><h2>Year-End · Integration</h2></div>
-  <p class="urecap">The four pillars, carried out the door. Room 36 learned: I AM. I CAN BE KIND TO MYSELF. I CAN FORGIVE. I CAN GIVE GRACE.</p>
-  <h3 class="parth">Part A · Choose the answer</h3>
+  <div class="uhead"><h2><span data-en="Year-End · Integration" data-es="Fin de año · Integración">Year-End · Integration</span></h2></div>
+  <p class="urecap"><span data-en="The four pillars, carried out the door. Room 36 learned: I AM. I CAN BE KIND TO MYSELF. I CAN FORGIVE. I CAN GIVE GRACE." data-es="Los cuatro pilares, para llevarlos contigo. El Salón 36 aprendió: YO SOY. PUEDO SER AMABLE CONMIGO. PUEDO PERDONAR. PUEDO DAR GRACIA.">The four pillars, carried out the door. Room 36 learned: I AM. I CAN BE KIND TO MYSELF. I CAN FORGIVE. I CAN GIVE GRACE.</span></p>
+  <h3 class="parth"><span data-en="Part A · Choose the answer" data-es="Parte A · Elige la respuesta">Part A · Choose the answer</span></h3>
   <div class="q" id="u5-q1">
-  <div class="qt"><span class="qn">1</span> The four pillars of Room 36, in adolescent voice, are —</div>
-  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> I AM · I CAN BE KIND TO MYSELF · I CAN FORGIVE · I CAN GIVE GRACE</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">B</span> BE GOOD · BE QUIET · BE CAREFUL · BE NICE</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">C</span> WIN · IMPROVE · COMPETE · REPEAT</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">D</span> MASK · MIRROR · CRITIC · WITNESS</button></div>
-  <div class="why" hidden><b>A.</b> I AM (not the Mask) · I CAN BE KIND TO MYSELF (catch the Critic) · I CAN FORGIVE (release, with limits) · I CAN GIVE GRACE (from strength, not from fear).</div>
+  <div class="qt"><span class="qn">1</span> <span data-en="The four pillars of Room 36, in adolescent voice, are —" data-es="Los cuatro pilares del Salón 36, en voz de adolescente, son —">The four pillars of Room 36, in adolescent voice, are —</span></div>
+  <div class="opts"><button type="button" class="opt" data-ok="1"><span class="ol">A</span> <span data-en="I AM · I CAN BE KIND TO MYSELF · I CAN FORGIVE · I CAN GIVE GRACE" data-es="YO SOY · PUEDO SER AMABLE CONMIGO · PUEDO PERDONAR · PUEDO DAR GRACIA">I AM · I CAN BE KIND TO MYSELF · I CAN FORGIVE · I CAN GIVE GRACE</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> <span data-en="BE GOOD · BE QUIET · BE CAREFUL · BE NICE" data-es="PÓRTATE BIEN · QUÉDATE CALLADO · TEN CUIDADO · SÉ AMABLE">BE GOOD · BE QUIET · BE CAREFUL · BE NICE</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> <span data-en="WIN · IMPROVE · COMPETE · REPEAT" data-es="GANA · MEJORA · COMPITE · REPITE">WIN · IMPROVE · COMPETE · REPEAT</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> <span data-en="MASK · MIRROR · CRITIC · WITNESS" data-es="MÁSCARA · ESPEJO · CRÍTICO · TESTIGO">MASK · MIRROR · CRITIC · WITNESS</span></button></div>
+  <div class="why" hidden><b>A.</b> <span data-en="I AM (not the Mask) · I CAN BE KIND TO MYSELF (catch the Critic) · I CAN FORGIVE (release, with limits) · I CAN GIVE GRACE (from strength, not from fear)." data-es="YO SOY (no la Máscara) · PUEDO SER AMABLE CONMIGO (atrapa al Crítico) · PUEDO PERDONAR (liberar, con límites) · PUEDO DAR GRACIA (desde la fuerza, no desde el miedo).">I AM (not the Mask) · I CAN BE KIND TO MYSELF (catch the Critic) · I CAN FORGIVE (release, with limits) · I CAN GIVE GRACE (from strength, not from fear).</span></div>
 </div><div class="q" id="u5-q2">
-  <div class="qt"><span class="qn">2</span> “I CAN FORGIVE” in the Room 36 charter comes with a reminder —</div>
-  <div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">A</span> forget, completely</button>
-<button type="button" class="opt" data-ok="1"><span class="ol">B</span> release, with limits</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">C</span> trust, immediately</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">D</span> reconcile, always</button></div>
-  <div class="why" hidden><b>B.</b> Forgiveness is release — and it lives beside the limits you learned: forgiveness ≠ trust, grace ≠ access, difficult ≠ unsafe.</div>
+  <div class="qt"><span class="qn">2</span> <span data-en="“I CAN FORGIVE” in the Room 36 charter comes with a reminder —" data-es="“PUEDO PERDONAR”, en el acuerdo del Salón 36, viene con un recordatorio —">“I CAN FORGIVE” in the Room 36 charter comes with a reminder —</span></div>
+  <div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">A</span> <span data-en="forget, completely" data-es="olvidar, por completo">forget, completely</span></button>
+<button type="button" class="opt" data-ok="1"><span class="ol">B</span> <span data-en="release, with limits" data-es="liberar, con límites">release, with limits</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> <span data-en="trust, immediately" data-es="confiar, de inmediato">trust, immediately</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> <span data-en="reconcile, always" data-es="reconciliarse, siempre">reconcile, always</span></button></div>
+  <div class="why" hidden><b>B.</b> <span data-en="Forgiveness is release — and it lives beside the limits you learned: forgiveness ≠ trust, grace ≠ access, difficult ≠ unsafe." data-es="Perdonar es liberar — y vive junto a los límites que aprendiste: perdón ≠ confianza, gracia ≠ acceso, difícil ≠ inseguro.">Forgiveness is release — and it lives beside the limits you learned: forgiveness ≠ trust, grace ≠ access, difficult ≠ unsafe.</span></div>
 </div><div class="q" id="u5-q3">
-  <div class="qt"><span class="qn">3</span> “I CAN GIVE GRACE” is given —</div>
-  <div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">A</span> to earn points</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">B</span> so people will like you</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">C</span> only to friends</button>
-<button type="button" class="opt" data-ok="1"><span class="ol">D</span> from strength, not from fear</button></div>
-  <div class="why" hidden><b>D.</b> Grace from fear is appeasement. Grace from strength is a chosen gift — which is why it counts.</div>
+  <div class="qt"><span class="qn">3</span> <span data-en="“I CAN GIVE GRACE” is given —" data-es="“PUEDO DAR GRACIA” se da —">“I CAN GIVE GRACE” is given —</span></div>
+  <div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">A</span> <span data-en="to earn points" data-es="para ganar puntos">to earn points</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">B</span> <span data-en="so people will like you" data-es="para caerle bien a la gente">so people will like you</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> <span data-en="only to friends" data-es="solo a los amigos">only to friends</span></button>
+<button type="button" class="opt" data-ok="1"><span class="ol">D</span> <span data-en="from strength, not from fear" data-es="desde la fuerza, no desde el miedo">from strength, not from fear</span></button></div>
+  <div class="why" hidden><b>D.</b> <span data-en="Grace from fear is appeasement. Grace from strength is a chosen gift — which is why it counts." data-es="La gracia desde el miedo es solo complacer para evitar problemas. La gracia desde la fuerza es un regalo que eliges — por eso cuenta.">Grace from fear is appeasement. Grace from strength is a chosen gift — which is why it counts.</span></div>
 </div><div class="q" id="u5-q4">
-  <div class="qt"><span class="qn">4</span> “The framework is ______. They are taking it with them.”</div>
-  <div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">A</span> finished</button>
-<button type="button" class="opt" data-ok="1"><span class="ol">B</span> portable</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">C</span> graded</button>
-<button type="button" class="opt" data-ok="0"><span class="ol">D</span> secret</button></div>
-  <div class="why" hidden><b>B.</b> The closing line of the Room 36 curriculum. The four pillars, the vocabulary, the practices — they leave the room with you.</div>
+  <div class="qt"><span class="qn">4</span> <span data-en="“The framework is ______. They are taking it with them.”" data-es="“El marco es ______. Se lo llevan con ellos.”">“The framework is ______. They are taking it with them.”</span></div>
+  <div class="opts"><button type="button" class="opt" data-ok="0"><span class="ol">A</span> <span data-en="finished" data-es="terminado">finished</span></button>
+<button type="button" class="opt" data-ok="1"><span class="ol">B</span> <span data-en="portable" data-es="portátil">portable</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">C</span> <span data-en="graded" data-es="calificado">graded</span></button>
+<button type="button" class="opt" data-ok="0"><span class="ol">D</span> <span data-en="secret" data-es="secreto">secret</span></button></div>
+  <div class="why" hidden><b>B.</b> <span data-en="The closing line of the Room 36 curriculum. The four pillars, the vocabulary, the practices — they leave the room with you." data-es="La última línea del programa del Salón 36. Los cuatro pilares, el vocabulario, las prácticas — salen del salón contigo.">The closing line of the Room 36 curriculum. The four pillars, the vocabulary, the practices — they leave the room with you.</span></div>
 </div>
-  <div class="tally" data-total="4">Checked: <b class="tn">0</b> / 4 · Right on the first try: <b class="tr">0</b></div>
-  <h3 class="parth">Part B · In your own words</h3>
+  <div class="tally" data-total="4"><span data-en="Checked:" data-es="Revisadas:">Checked:</span> <b class="tn">0</b> / 4<span class="trw"> · <span data-en="Right on the first try:" data-es="Bien al primer intento:">Right on the first try:</span> <b class="tr">0</b></span></div>
+  <h3 class="parth"><span data-en="Part B · In your own words" data-es="Parte B · Con tus propias palabras">Part B · In your own words</span></h3>
   <div class="ow">
-  <div class="owt"><span class="qn">1</span> Write the four pillars in YOUR voice — four sentences that mean the same thing but sound like you.</div>
-  <textarea rows="4" placeholder="Type here. Your words stay on this device." aria-label="Your answer"></textarea>
+  <div class="owt"><span class="qn">1</span> <span data-en="Write the four pillars in YOUR voice — four sentences that mean the same thing but sound like you." data-es="Escribe los cuatro pilares con TU voz — cuatro oraciones que digan lo mismo pero que suenen a ti.">Write the four pillars in YOUR voice — four sentences that mean the same thing but sound like you.</span></div>
+  <textarea rows="4" placeholder="Type here. Your words stay on this device." aria-label="Your answer" data-ph-en="Type here. Your words stay on this device." data-ph-es="Escribe aquí. Tus palabras se quedan en este aparato." data-al-en="Your answer" data-al-es="Tu respuesta"></textarea>
   <div class="plines"><span></span><span></span><span></span><span></span><span></span></div>
 </div><div class="ow">
-  <div class="owt"><span class="qn">2</span> A short letter to your high-school self: which Room 36 tool do you most want them to remember to use — the Friend Test, the Pause, the Three-Strike Rule, the Letter of Release, the Micro-Moment Menu — and when will they need it?</div>
-  <textarea rows="5" placeholder="Type here. Your words stay on this device." aria-label="Your answer"></textarea>
+  <div class="owt"><span class="qn">2</span> <span data-en="A short letter to your high-school self: which Room 36 tool do you most want them to remember to use — the Friend Test, the Pause, the Three-Strike Rule, the Letter of Release, the Micro-Moment Menu — and when will they need it?" data-es="Una carta corta para tu yo de la prepa: ¿qué herramienta del Salón 36 quieres que recuerde usar — la Prueba del Amigo, la Pausa, la Regla de las Tres Veces, la Carta de Liberación, el Menú de Micromomentos — y cuándo la va a necesitar?">A short letter to your high-school self: which Room 36 tool do you most want them to remember to use — the Friend Test, the Pause, the Three-Strike Rule, the Letter of Release, the Micro-Moment Menu — and when will they need it?</span></div>
+  <textarea rows="5" placeholder="Type here. Your words stay on this device." aria-label="Your answer" data-ph-en="Type here. Your words stay on this device." data-ph-es="Escribe aquí. Tus palabras se quedan en este aparato." data-al-en="Your answer" data-al-es="Tu respuesta"></textarea>
   <div class="plines"><span></span><span></span><span></span><span></span><span></span><span></span></div>
 </div>
-  <div class="keyblock"><h3 class="parth">Answer key · Year-End · Integration</h3><ol class="key"><li><b>A</b> — I AM (not the Mask) · I CAN BE KIND TO MYSELF (catch the Critic) · I CAN FORGIVE (release, with limits) · I CAN GIVE GRACE (from strength, not from fear).</li>
-<li><b>B</b> — Forgiveness is release — and it lives beside the limits you learned: forgiveness ≠ trust, grace ≠ access, difficult ≠ unsafe.</li>
-<li><b>D</b> — Grace from fear is appeasement. Grace from strength is a chosen gift — which is why it counts.</li>
-<li><b>B</b> — The closing line of the Room 36 curriculum. The four pillars, the vocabulary, the practices — they leave the room with you.</li></ol></div>
+  <div class="keyblock"><h3 class="parth"><span data-en="Answer key · Year-End · Integration" data-es="Respuestas · Fin de año · Integración">Answer key · Year-End · Integration</span></h3><ol class="key"><li><b>A</b> — <span data-en="I AM (not the Mask) · I CAN BE KIND TO MYSELF (catch the Critic) · I CAN FORGIVE (release, with limits) · I CAN GIVE GRACE (from strength, not from fear)." data-es="YO SOY (no la Máscara) · PUEDO SER AMABLE CONMIGO (atrapa al Crítico) · PUEDO PERDONAR (liberar, con límites) · PUEDO DAR GRACIA (desde la fuerza, no desde el miedo).">I AM (not the Mask) · I CAN BE KIND TO MYSELF (catch the Critic) · I CAN FORGIVE (release, with limits) · I CAN GIVE GRACE (from strength, not from fear).</span></li>
+<li><b>B</b> — <span data-en="Forgiveness is release — and it lives beside the limits you learned: forgiveness ≠ trust, grace ≠ access, difficult ≠ unsafe." data-es="Perdonar es liberar — y vive junto a los límites que aprendiste: perdón ≠ confianza, gracia ≠ acceso, difícil ≠ inseguro.">Forgiveness is release — and it lives beside the limits you learned: forgiveness ≠ trust, grace ≠ access, difficult ≠ unsafe.</span></li>
+<li><b>D</b> — <span data-en="Grace from fear is appeasement. Grace from strength is a chosen gift — which is why it counts." data-es="La gracia desde el miedo es solo complacer para evitar problemas. La gracia desde la fuerza es un regalo que eliges — por eso cuenta.">Grace from fear is appeasement. Grace from strength is a chosen gift — which is why it counts.</span></li>
+<li><b>B</b> — <span data-en="The closing line of the Room 36 curriculum. The four pillars, the vocabulary, the practices — they leave the room with you." data-es="La última línea del programa del Salón 36. Los cuatro pilares, el vocabulario, las prácticas — salen del salón contigo.">The closing line of the Room 36 curriculum. The four pillars, the vocabulary, the practices — they leave the room with you.</span></li></ol></div>
 </section>
 </div>
 </div>
+<details class="forteacher">
+  <summary><span data-en="For the teacher" data-es="Para el maestro o la maestra">For the teacher</span></summary>
+  <p><span data-en="The answer key prints on its own pages, one unit to a page. Keep it on your desk." data-es="Las respuestas se imprimen aparte, una unidad por página. Guárdelas en su escritorio.">The answer key prints on its own pages, one unit to a page. Keep it on your desk.</span></p>
+  <button type="button" id="printKey"><span data-en="Print answer key" data-es="Imprimir las respuestas">Print answer key</span></button>
+</details>
 <footer>
-  <a href="room-36-curriculum.html">← The Room 36 curriculum</a>
-  <span>The framework is portable. They are taking it with them.</span>
+  <a href="room-36-curriculum.html"><span data-en="← The Room 36 curriculum" data-es="← El programa del Salón 36">← The Room 36 curriculum</span></a>
+  <span data-en="The framework is portable. They are taking it with them." data-es="El marco es portátil. Se lo llevan con ellos.">The framework is portable. They are taking it with them.</span>
 </footer>
 </div>
 <script>
@@ -709,6 +728,34 @@ html.a11y-dyslexic body{letter-spacing:.02em;word-spacing:.09em;line-height:1.8}
   document.getElementById("printKey").addEventListener("click",function(){
     document.body.classList.add("printkey"); window.print();
   });
+  /* AOG-R36-V1 — Spanish. The top bar swaps every [data-en] leaf and sets <html lang> (this page has no #langBtn);
+     a saved Spanish choice is applied here first so the page does not show English and then change. What the swap
+     cannot reach (placeholders, aria-labels, the unit menu's words) follows <html lang> here. */
+  var H=document.documentElement;
+  function isEs(){ return /^es/i.test(H.lang||""); }
+  function T(en,es){ return isEs()?es:en; }
+  function paintLang(){
+    var es=isEs();
+    document.querySelectorAll("textarea[data-ph-en]").forEach(function(t){
+      var p=t.getAttribute(es?"data-ph-es":"data-ph-en"), a=t.getAttribute(es?"data-al-es":"data-al-en");
+      if(t.placeholder!==p) t.placeholder=p; if(t.getAttribute("aria-label")!==a) t.setAttribute("aria-label",a); });
+    document.querySelectorAll(".ritem").forEach(function(b){
+      var a=b.querySelector(".rl"), n=b.querySelector(".rn");
+      var w=a.getAttribute(es?"data-es":"data-en")+" \u00b7 "+n.getAttribute(es?"data-es":"data-en");
+      if(b.getAttribute("data-aog-label")!==w) b.setAttribute("data-aog-label",w); });
+    var rl=document.getElementById("rail"), rw=T("Workbook units","Unidades del cuaderno");
+    if(rl && rl.getAttribute("aria-label")!==rw) rl.setAttribute("aria-label",rw);
+    var tb=document.getElementById("themeBtn"), tw=T("Toggle dark mode","Cambiar a modo oscuro");
+    if(tb && tb.getAttribute("aria-label")!==tw) tb.setAttribute("aria-label",tw);
+  }
+  try{
+    if(!isEs() && localStorage.getItem("aog.lang")==="es"){
+      document.querySelectorAll("[data-en]").forEach(function(el){ var v=el.getAttribute("data-es"); if(v!=null && el.textContent!==v) el.textContent=v; });
+      H.setAttribute("lang","es");
+    }
+  }catch(e){}
+  paintLang();
+  try{ new MutationObserver(paintLang).observe(H,{attributes:true,attributeFilter:["lang"]}); }catch(e){}
   if(window.matchMedia){window.matchMedia("print").addEventListener("change",function(m){
     if(!m.matches) document.body.classList.remove("printkey");
   });}
@@ -718,7 +765,8 @@ html.a11y-dyslexic body{letter-spacing:.02em;word-spacing:.09em;line-height:1.8}
   function show(id, push){
     if(ORDER.indexOf(id) < 0) id = ORDER[0];
     ORDER.forEach(function(u){ document.getElementById(u).hidden = (u !== id); });
-    items.forEach(function(b){ b.setAttribute("aria-current", String(b.getAttribute("data-u") === id)); });
+    items.forEach(function(b){ var on=b.getAttribute("data-u") === id; b.setAttribute("aria-current", String(on)); b.classList.toggle("on", on); });
+    if(window.AOG_WB_HUSH) window.AOG_WB_HUSH();
     try{
       var q = new URLSearchParams(location.search); q.set("u", id);
       (push ? history.pushState : history.replaceState).call(history, null, "", "?" + q.toString());
@@ -732,7 +780,7 @@ html.a11y-dyslexic body{letter-spacing:.02em;word-spacing:.09em;line-height:1.8}
   var q0 = new URLSearchParams(location.search);
   show(q0.get("u") || ORDER[0], false);
 
-  document.querySelectorAll(".q").forEach(function(q){
+  document.querySelectorAll(".wrap .q").forEach(function(q){
     var first=true;
     q.querySelectorAll(".opt").forEach(function(o){
       o.addEventListener("click",function(){
@@ -744,8 +792,36 @@ html.a11y-dyslexic body{letter-spacing:.02em;word-spacing:.09em;line-height:1.8}
         var tn=t.querySelector(".tn"), tr=t.querySelector(".tr");
         tn.textContent=(+tn.textContent)+1;
         if(o.getAttribute("data-ok")==="1" && first) tr.textContent=(+tr.textContent)+1;
+        /* AOG-R36-V1: which questions are checked, on this device only, for /room-36-students (ids only; no right or wrong) */
+        try{ var wd=JSON.parse(localStorage.getItem(WK)||"{}")||{}, uid=sec.id;
+             wd[uid]=wd[uid]||[]; if(wd[uid].indexOf(q.id)<0) wd[uid].push(q.id); localStorage.setItem(WK, JSON.stringify(wd)); }catch(e){}
       });
     });
+  });
+  /* AOG-R36-V1: checks made earlier on this device come back as checked (the why-note shows again). "Right on the first
+     try" counts only this visit, so it steps aside in a unit whose checks came back. */
+  var WK="aog.interior.wb36.v1";
+  try{
+    var wd0=JSON.parse(localStorage.getItem(WK)||"{}")||{};
+    Object.keys(wd0).forEach(function(uid){
+      var sec=document.getElementById(uid); if(!sec || !(wd0[uid] instanceof Array)) return;
+      var back=0;
+      wd0[uid].forEach(function(id){
+        var q=document.getElementById(String(id)); if(!q || !q.classList.contains("q") || !sec.contains(q) || q.classList.contains("done")) return;
+        q.classList.add("done"); var w=q.querySelector(".why"); if(w) w.hidden=false; back++;
+      });
+      if(back){ var t=sec.querySelector(".tally"); t.querySelector(".tn").textContent=String(back); t.querySelector(".trw").hidden=true; }
+    });
+  }catch(e){}
+  /* Start over: clears this device's checks and words (a shared classroom device is ready for the next person) */
+  document.getElementById("wbErase").addEventListener("click",function(){
+    if(!window.confirm(T("Start over? This clears your checks and what you wrote on this device.","¿Empezar de nuevo? Esto borra tus respuestas y lo que escribiste en este aparato."))) return;
+    try{ localStorage.removeItem(WK); }catch(e){}
+    document.querySelectorAll(".wrap .q").forEach(function(q){
+      q.classList.remove("done"); q.querySelectorAll(".opt.picked").forEach(function(o){ o.classList.remove("picked"); });
+      var w=q.querySelector(".why"); if(w) w.hidden=true; });
+    document.querySelectorAll(".wrap .tally").forEach(function(t){ t.querySelector(".tn").textContent="0"; t.querySelector(".tr").textContent="0"; t.querySelector(".trw").hidden=false; });
+    document.querySelectorAll(".wrap .ow textarea").forEach(function(ta){ ta.value=""; });
   });
 })();
 </script>
@@ -809,6 +885,7 @@ body.wbprev{overflow:hidden}
     }catch(e){}
   }
   if(!DEST) return;
+  function T(en,es){ return /^es/i.test(document.documentElement.lang||"") ? es : en; }
 
   var whoKey = "aog.interior.ws.v1.who";
   function getWho(){ try{ return String(localStorage.getItem(whoKey)||""); }catch(e){ return ""; } }
@@ -835,10 +912,10 @@ body.wbprev{overflow:hidden}
   var card = document.createElement("section");
   card.id = "wbFin"; card.className = "no-print";
   card.innerHTML =
-    '<h2>Finished?</h2>' +
-    '<p>Tap FINISHED and your Part A checks go to the adult who shared this page. What you wrote in Part B stays on this device.</p>' +
+    '<h2>' + T("Finished?","¿Terminaste?") + '</h2>' +
+    '<p>' + T("Tap FINISHED and your Part A checks go to the adult who shared this page. What you wrote in Part B stays on this device.","Toca Enviar a mi maestro/a y tus respuestas de la Parte A le llegan al adulto que compartió esta página. Lo que escribiste en la Parte B se queda en este aparato.") + '</p>' +
     '<div class="row">' +
-    '<input type="text" id="wbWho" autocomplete="off" maxlength="60" placeholder="Enter your name" aria-label="Your code or first name">' +
+    '<input type="text" id="wbWho" autocomplete="off" maxlength="60" placeholder="' + T("Enter your name","Escribe tu nombre") + '" aria-label="' + T("Your code or first name","Tu código o tu primer nombre") + '">' +
     '<button class="btn-fin" type="button" id="wbSendBtn">FINISHED</button>' +
     '<span class="st" id="wbSt" aria-live="polite"></span></div>';
   var foot = document.querySelector(".wrap footer");
@@ -846,32 +923,33 @@ body.wbprev{overflow:hidden}
 
   var prev = document.createElement("div");
   prev.id = "wbPrev"; prev.hidden = true;
-  prev.setAttribute("role","dialog"); prev.setAttribute("aria-label","Preview of your workbook");
+  prev.setAttribute("role","dialog"); prev.setAttribute("aria-label",T("Preview of your workbook","Vista de tu cuaderno"));
   document.body.appendChild(prev);
 
   function buildPreview(who, statusText){
     prev.innerHTML = "";
     var bar = document.createElement("div"); bar.className = "pv-bar";
     var t = document.createElement("span"); t.className = "t";
-    t.textContent = "\u2713 Sent \u2014 " + who + " \u00b7 The Companion Workbook";
+    t.textContent = T("\u2713 Sent \u2014 ","\u2713 Enviado \u2014 ") + who + T(" \u00b7 The Companion Workbook"," \u00b7 El cuaderno de trabajo");
     var pst = document.createElement("span"); pst.className = "pst"; pst.id = "wbPvSt"; pst.textContent = statusText;
-    var pr = document.createElement("button"); pr.type="button"; pr.className="solid"; pr.textContent = "Print my copy";
+    var pr = document.createElement("button"); pr.type="button"; pr.className="solid"; pr.textContent = T("Print my copy","Imprimir mi copia");
     pr.addEventListener("click", function(){ window.print(); });
-    var bk = document.createElement("button"); bk.type="button"; bk.textContent = "Back to my workbook";
+    var bk = document.createElement("button"); bk.type="button"; bk.textContent = T("Back to my workbook","Volver a mi cuaderno");
     bk.addEventListener("click", function(){ prev.hidden = true; document.body.classList.remove("wbprev"); });
     bar.appendChild(t); bar.appendChild(pst); bar.appendChild(pr); bar.appendChild(bk);
     prev.appendChild(bar);
     var body = document.createElement("div"); body.className = "pv-body";
     var lead = document.createElement("p"); lead.className = "pv-lead";
-    lead.textContent = "This is what you built. Your teacher gets your Part A checks; your Part B words stay here.";
+    lead.textContent = T("This is what you built. Your teacher gets your Part A checks; your Part B words stay here.","Esto es lo que hiciste. Tu maestro/a recibe tus respuestas de la Parte A; tus palabras de la Parte B se quedan aquí.");
     body.appendChild(lead);
     [].slice.call(document.querySelectorAll("section.unit")).forEach(function(sec){
       var clone = sec.cloneNode(true);
       clone.hidden = false; clone.removeAttribute("id");
+      [].slice.call(clone.querySelectorAll(".lis")).forEach(function(x){ x.parentNode.removeChild(x); });
       [].slice.call(clone.querySelectorAll("textarea")).forEach(function(ta){
         var d = document.createElement("div");
         var srcTa = null;
-        d.className = "pv-text empty"; d.textContent = "\u2014 left blank \u2014";
+        d.className = "pv-text empty"; d.textContent = T("\u2014 left blank \u2014","\u2014 en blanco \u2014");
         ta.parentNode.replaceChild(d, ta);
       });
       body.appendChild(clone);
@@ -906,7 +984,7 @@ body.wbprev{overflow:hidden}
   btn.addEventListener("click", function(){
     if(busy) return;
     var who = inp.value.trim();
-    if(!who){ st.textContent = "Add your code or first name — the same one you check in with — so this lands with your other work."; inp.focus(); return; }
+    if(!who){ st.textContent = T("Add your code or first name — the same one you check in with — so this lands with your other work.","Escribe tu código o tu primer nombre — el mismo que usas en el check-in — para que esto llegue junto con tu otro trabajo."); inp.focus(); return; }
     setWho(who);
     var payload = {
       action:"checkin", checkinType:"practice", _backendAuth:DEST.key,
@@ -920,10 +998,10 @@ body.wbprev{overflow:hidden}
     if(window.AOG_IEP){AOG_IEP.fill(payload);} /* AOG-IEP-REC-V1 */
     var body = JSON.stringify(payload);
     busy = true;
-    buildPreview(who, "Sending to your teacher\u2026");
+    buildPreview(who, T("Sending to your teacher\u2026","Enviando a tu maestro/a\u2026"));
     prev.hidden = false; document.body.classList.add("wbprev"); prev.scrollTop = 0;
-    function done(){ busy=false; setPvStatus("Turned in \u2713"); st.textContent="Turned in \u2713"; btn.textContent="FINISHED \u2713"; }
-    function fail(){ busy=false; setPvStatus("That didn\u2019t go through \u2014 check the internet, then tap Send to my teacher again."); }
+    function done(){ busy=false; setPvStatus(T("Turned in \u2713","Entregado \u2713")); st.textContent=T("Turned in \u2713","Entregado \u2713"); btn.textContent="FINISHED \u2713"; }
+    function fail(){ busy=false; setPvStatus(T("That didn\u2019t go through \u2014 check the internet, then tap Send to my teacher again.","No se pudo enviar \u2014 revisa el internet y vuelve a tocar Enviar a mi maestro/a.")); }
     fetch(DEST.url, {method:"POST", mode:"cors", redirect:"follow",
         headers:{"Content-Type":"text/plain;charset=utf-8"}, body:body})
       .then(function(res){ return res.json(); })
@@ -938,6 +1016,64 @@ body.wbprev{overflow:hidden}
 </script>
 
 
+
+<script>
+/* AOG-R36-V1 — Listen: each question read aloud in the language on screen (speechSynthesis). Silent until tapped; a
+   second tap stops it. It stops when another Listen starts, the unit or the language changes, on aog-hush, and when the
+   tab is hidden. No timers; nothing runs while nobody listens. */
+(function(){
+  var S = window.speechSynthesis, D = document, H = D.documentElement;
+  if(!S || !window.SpeechSynthesisUtterance) return;
+  var cur = null;
+  function es(){ return /^es/i.test(H.lang || ""); }
+  function words(el){ return el ? el.textContent.replace(/_{2,}/g, " … ").replace(/\s*—\s*$/, "").replace(/\s+/g, " ").trim() : ""; }
+  function textOf(box){
+    var parts = [];
+    var stem = box.querySelector(".qt > [data-en], .owt > [data-en]"); parts.push(words(stem));
+    box.querySelectorAll(".opt").forEach(function(o){
+      var l = o.querySelector(".ol"), t = o.querySelector("[data-en]"); parts.push((l ? l.textContent + ". " : "") + words(t)); });
+    var why = box.querySelector(".why:not([hidden]) > [data-en]"); if(why) parts.push(words(why));
+    return parts.filter(Boolean).join(". ").replace(/([.?!”"])\./g, "$1");
+  }
+  function voice(lang){
+    var vs = []; try{ vs = S.getVoices() || []; }catch(e){}
+    var want = lang === "es" ? ["es-US", "es-MX", "es-419", "es"] : ["en-US", "en"];
+    for(var i = 0; i < want.length; i++){
+      for(var j = 0; j < vs.length; j++) if(String(vs[j].lang).replace("_", "-").indexOf(want[i]) === 0) return vs[j];
+    }
+    return null;
+  }
+  function paint(b, on){
+    b.setAttribute("aria-pressed", on ? "true" : "false");
+    var w = b.querySelector("[data-en]"); if(!w) return;
+    w.setAttribute("data-en", on ? "Stop" : "Listen"); w.setAttribute("data-es", on ? "Parar" : "Escuchar");
+    var v = w.getAttribute(es() ? "data-es" : "data-en"); if(w.textContent !== v) w.textContent = v;
+  }
+  function stop(){ if(cur){ var b = cur; cur = null; paint(b, false); } try{ if(S.speaking || S.pending) S.cancel(); }catch(e){} }
+  function play(b, box){
+    stop();
+    var lang = es() ? "es" : "en", u = new SpeechSynthesisUtterance(textOf(box)), v = voice(lang);
+    u.lang = v ? v.lang : (lang === "es" ? "es-MX" : "en-US"); if(v) u.voice = v; u.rate = 0.95;
+    u.onend = u.onerror = function(){ if(cur === b){ cur = null; paint(b, false); } };
+    cur = b; paint(b, true);
+    try{ S.speak(u); }catch(e){ cur = null; paint(b, false); }
+  }
+  var ICON = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>';
+  D.querySelectorAll(".wrap .q, .wrap .ow").forEach(function(box){
+    var head = box.querySelector(".qt, .owt"); if(!head) return;
+    var b = D.createElement("button"); b.type = "button"; b.className = "lis no-print"; b.setAttribute("aria-pressed", "false");
+    b.innerHTML = ICON + '<span data-en="Listen" data-es="Escuchar">' + (es() ? "Escuchar" : "Listen") + "</span>";
+    b.addEventListener("click", function(){ if(cur === b) stop(); else play(b, box); });
+    head.parentNode.insertBefore(b, head.nextSibling);
+  });
+  window.AOG_WB_HUSH = stop;
+  window.addEventListener("aog-hush", function(e){ if(!e.detail || e.detail.on) stop(); });
+  D.addEventListener("visibilitychange", function(){ if(D.hidden) stop(); });
+  window.addEventListener("pagehide", stop);
+  try{ new MutationObserver(function(){ if(cur) stop(); }).observe(H, { attributes: true, attributeFilter: ["lang"] }); }catch(e){}
+})();
+</script>
+<script src="/aog-dropdowns.js" defer></script>
 <script>
 /* AOG-R36-NAV behavior — back pill + the Explore menu. */
 (function(){

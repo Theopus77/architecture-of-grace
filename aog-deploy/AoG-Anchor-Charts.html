@@ -583,6 +583,63 @@ body{display:block}
 .aogc.compact .cjump label{display:flex; align-items:center; gap:10px; flex-wrap:wrap}
 .aogc.compact .cjump select{min-height:40px; padding:4px 10px; font-size:.9rem}
 .aogc.compact .hubline{display:none}
+
+/* ══ AOG-R36-V1 (2026-10-23) — calm toolbar, one chart menu, 44px targets ══ */
+:root{--tap:44px}
+@media screen and (min-width:700px){:root{--tap:47px}}   /* aog-calm.css shows a tablet at 94%  */
+@media screen and (min-width:1000px){:root{--tap:52px}}  /* and a computer at 85%: 52 × .85 ≈ 44 */
+html{scroll-behavior:auto}
+.btn:hover,.aog-home:hover{transform:none}
+.chip{animation:none}
+.toast{transform:translateX(-50%); transition:opacity .2s}
+.toast.on{transform:translateX(-50%)}
+.kbd-only{display:none}
+@media (hover:hover) and (pointer:fine){.kbd-only{display:inline}}
+.bar [hidden],.menu [hidden]{display:none !important}
+.bar{gap:8px; flex-wrap:wrap}
+.bar .btn,.bar .seg button{min-height:var(--tap); font-size:14px}
+.bar .seg button{padding:6px 16px}
+.menu-wrap{position:relative}
+.menu{min-width:17rem; max-height:calc(100vh - var(--aogbar-h,52px) - 90px); overflow-y:auto; overscroll-behavior:contain}
+.menu button,.menu a{display:flex; flex-direction:column; justify-content:center; align-items:flex-start; width:100%; min-height:var(--tap);
+  text-align:left; border:0; background:transparent; border-radius:9px; padding:8px 12px; font-size:15px; font-weight:700; line-height:1.25;
+  color:var(--ink); text-decoration:none; font-family:inherit; cursor:pointer}
+.menu a:hover,.menu button:hover{background:var(--a-wash)}
+.menu button small{font-size:13px; color:var(--ink-soft); font-weight:500; margin-top:2px}
+.menu button[aria-checked="true"]{background:var(--a-wash); box-shadow:inset 3px 0 0 var(--a)}
+.menu .narrow-only{display:none}
+.bar-name{flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  font:700 16px/1.2 var(--serif); color:var(--ink)}
+@media (max-width:759px){
+  .bar{flex-wrap:nowrap; padding:8px 12px}
+  .bar .wide-only{display:none !important}
+  .bar .spacer{display:none}
+  .menu .narrow-only{display:flex}
+  #revealBtn{flex:1 1 auto; min-width:0; justify-content:center}
+  .menu{right:0; min-width:0; width:min(19rem, calc(100vw - 24px))}
+}
+/* the chart menu above the board (it was a rail of ~30 buttons) */
+.shell{display:block; min-height:70vh}
+.stage{padding-top:14px}
+.stage > [id]{scroll-margin-top:calc(var(--aogbar-h,52px) + 84px)}
+.pick{max-width:1500px; margin:0 auto; padding:14px clamp(14px,2.4vw,40px) 0; display:flex; align-items:center; gap:10px; flex-wrap:wrap}
+.pick label{font:800 12px/1.2 var(--sans); letter-spacing:.13em; text-transform:uppercase; color:var(--ink-soft)}
+.pick select{flex:1 1 240px; max-width:560px; min-width:0; min-height:var(--tap); font:inherit; font-size:16px; font-weight:600;
+  border:1.5px solid var(--rule); border-radius:12px; background:var(--field); color:var(--ink); padding:6px 12px}
+.aogc.compact .cjump select{min-height:var(--tap); font-size:16px}
+.chart-nav{display:flex; gap:10px; justify-content:space-between; flex-wrap:wrap; margin-top:30px}
+.chart-nav button{min-height:var(--tap); max-width:100%; border:1.5px solid var(--rule); background:var(--field); color:var(--ink);
+  border-radius:999px; padding:8px 18px; font-size:15px; font-weight:700; text-align:left}
+.chart-nav button:hover{border-color:var(--a)}
+.chart-nav .nx{margin-left:auto; text-align:right}
+.priv{margin-top:16px; font-size:14px; color:var(--ink-soft); max-width:70ch}
+/* every target 44px or more */
+.spec-note summary{min-height:var(--tap); padding:0 4px; font-size:12px}
+.chip{padding:2px 2px 2px 14px}
+.chip button{min-width:var(--tap); min-height:var(--tap); display:inline-grid; place-items:center; font-size:20px}
+.addrow input{min-height:var(--tap); font-size:clamp(16px,1.2vw,19px)}
+.crisis .cslr input{min-height:var(--tap)}
+@media print{.pick,.chart-nav,.priv{display:none !important}}
 </style>
 <!-- AOG-SEL-V1 — the mast is the course chrome (built by _work/sel/build_sel.py from _work/sel/src/AoG-Anchor-Charts.html); the bar, the rail and every board below are the original, byte for byte. -->
 </head>
@@ -594,65 +651,64 @@ body{display:block}
 <div class="aogc compact">
 <div class="cmast">
   <div>
-    <div class="k"><span data-en="The Interior — SEL · Room 36 ·" data-es="El Interior — SEL · Salón 36 ·">The Interior — SEL · Room 36 ·</span><span class="k" style="margin-left:6px">Book 3 · The Interior · Grades 6–8</span></div>
-    <p class="ttl">Room 36 · Anchor Charts</p>
-    <p class="cdeck"><span data-en="Every anchor chart of the room, built live with the class — skeleton first, then the reveals, then what the room said out loud. Arrow keys step through the boards; R reveals the next line." data-es="Cada cartel de anclaje del salón, construido en vivo con la clase — primero el esqueleto, luego las revelaciones, luego lo que el salón dijo en voz alta.">Every anchor chart of the room, built live with the class — skeleton first, then the reveals, then what the room said out loud. Arrow keys step through the boards; R reveals the next line.</span></p>
+    <div class="k"><span data-en="The Interior — SEL · Room 36 ·" data-es="El Interior — SEL · Salón 36 ·">The Interior — SEL · Room 36 ·</span><span class="k" style="margin-left:6px" data-en="Book 3 · The Interior · Grades 6–8" data-es="Libro 3 · El Interior · Grados 6–8">Book 3 · The Interior · Grades 6–8</span></div>
+    <p class="ttl"><span data-en="Room 36 · Anchor Charts" data-es="Salón 36 · Carteles de anclaje">Room 36 · Anchor Charts</span></p>
+    <p class="cdeck"><span data-en="Every anchor chart for Room 36. Build each one live with the class: the skeleton first, then the reveals, then the class's own words." data-es="Todos los carteles de anclaje del Salón 36. Arma cada uno en vivo con la clase: primero el esqueleto, luego lo que se va mostrando y al final las palabras de la clase.">Every anchor chart for Room 36. Build each one live with the class: the skeleton first, then the reveals, then the class's own words.</span> <span class="kbd-only" data-en="Arrow keys move between charts. R shows the next line." data-es="Las flechas pasan de un cartel a otro. La R muestra la siguiente línea.">Arrow keys move between charts. R shows the next line.</span></p>
     <p class="hubline no-print"><a href="room-36-lessons.html"></a></p>
   </div>
 </div>
-<div class="cjump no-print"><label><span data-en="Jump to another room" data-es="Ir a otro salón">Jump to another room</span><select id="roomSel"><optgroup label="SEL · The rooms">
-<option value="room-12-lessons.html">Room 12 · Grades K–2 · The Lessons</option>
-<option value="room-18-lessons.html">Room 18 · Grades 3–5 · The Lessons</option>
-<option value="room-36-lessons.html">Room 36 · Grades 6–8 · The Lessons</option>
-<option value="room-104-lessons.html">Room 104 · Grades 9–10 · The Lessons</option>
-<option value="room-207-lessons.html">Room 207 · Grades 11–12 · The Lessons</option>
-</optgroup><optgroup label="Room 36">
-<option value="" selected>Anchor charts</option>
-<option value="room-36-curriculum.html">The curriculum</option>
-<option value="room-36-lessons.html">The Lessons</option>
-<option value="room-36-cards.html">Scenario cards</option>
-<option value="room-36-workbook.html">The companion workbook</option>
-<option value="AoG-Anchor-Charts.html">Anchor charts</option>
+<div class="cjump no-print"><label><span data-en="Jump to another room" data-es="Ir a otro salón">Jump to another room</span><select id="roomSel"><optgroup label="SEL · The rooms" data-l-en="SEL · The rooms" data-l-es="SEL · Los salones">
+<option value="room-12-lessons.html" data-en="Room 12 · Grades K–2 · The Lessons" data-es="Salón 12 · Grados K–2 · Las lecciones">Room 12 · Grades K–2 · The Lessons</option>
+<option value="room-18-lessons.html" data-en="Room 18 · Grades 3–5 · The Lessons" data-es="Salón 18 · Grados 3–5 · Las lecciones">Room 18 · Grades 3–5 · The Lessons</option>
+<option value="room-36-lessons.html" data-en="Room 36 · Grades 6–8 · The Lessons" data-es="Salón 36 · Grados 6–8 · Las lecciones">Room 36 · Grades 6–8 · The Lessons</option>
+<option value="room-104-lessons.html" data-en="Room 104 · Grades 9–10 · The Lessons" data-es="Salón 104 · Grados 9–10 · Las lecciones">Room 104 · Grades 9–10 · The Lessons</option>
+<option value="room-207-lessons.html" data-en="Room 207 · Grades 11–12 · The Lessons" data-es="Salón 207 · Grados 11–12 · Las lecciones">Room 207 · Grades 11–12 · The Lessons</option>
+</optgroup><optgroup label="Room 36" data-l-en="Room 36" data-l-es="Salón 36">
+<option value="room-36-curriculum.html" data-en="The curriculum" data-es="El currículo">The curriculum</option>
+<option value="room-36-lessons.html" data-en="The Lessons" data-es="Las lecciones">The Lessons</option>
+<option value="room-36-cards.html" data-en="Scenario cards" data-es="Tarjetas de situaciones">Scenario cards</option>
+<option value="room-36-workbook.html" data-en="The companion workbook" data-es="El cuaderno de trabajo">The companion workbook</option>
+<option value="AoG-Anchor-Charts.html" selected data-en="Anchor charts" data-es="Carteles de anclaje">Anchor charts</option>
 </optgroup></select></label></div>
 
 </div>
-<script>(function(){var rs=document.getElementById("roomSel");if(rs){rs.addEventListener("change",function(){if(rs.value)location.href=rs.value;});}})();</script>
-<header class="bar">
-  <a id="acBackBtn" class="aog-home" href="./index.html" title="Back to Architecture of Grace">
-    <span class="arw" aria-hidden="true">←</span><span>Back to the site</span>
-  </a>
-  <span class="brand">
-    <span class="mk" aria-hidden="true">A</span>
-    <h1 class="ac-title">
-      <span class="nm">Anchor Charts</span>
-      <span class="sb">Book 3 · The Interior · 6–8</span>
-    </h1>
-  </span>
-  <button class="btn rail-toggle" type="button" id="railBtn" aria-expanded="false">Charts</button>
-  <span class="spacer"></span>
-  <div class="seg" role="group" aria-label="How much of the chart to show">
-    <button type="button" id="modeSkeleton" aria-pressed="true">Skeleton</button>
-    <button type="button" id="modeComplete" aria-pressed="false">Complete</button>
+<script>(function(){var rs=document.getElementById("roomSel");if(rs){rs.addEventListener("change",function(){if(rs.value&&rs.value!=="AoG-Anchor-Charts.html")location.href=rs.value;});}})();</script>
+<!-- AOG-R36-V1 (2026-10-23) — the board's toolbar is one short line on a phone: the main action (Reveal next, or the
+     chart's name when there is nothing to reveal) and a "More…" menu for the rest. A computer or iPad also shows
+     Skeleton | Complete and Print. The ~30-chart rail is now one drop-down ("Chart") above the board, with Previous /
+     Next under it for touch screens; the arrow-key hint shows only with a mouse and keyboard. Every chart line has
+     Spanish (ES below), switched by the site bar's EN | ES. Every target is 44px or more (52px at the computer's 85%). -->
+<header class="bar" id="acBar">
+  <div class="seg wide-only" role="group" aria-label="How much of the chart to show">
+    <button type="button" id="modeSkeleton" aria-pressed="true"><span data-en="Skeleton" data-es="Esqueleto">Skeleton</span></button>
+    <button type="button" id="modeComplete" aria-pressed="false"><span data-en="Complete" data-es="Completo">Complete</span></button>
   </div>
+  <span class="bar-name" id="barName" hidden></span>
   <button class="btn" type="button" id="revealBtn">Reveal next</button>
+  <span class="spacer"></span>
+  <button class="btn btn-accent wide-only" type="button" id="printBtn">Print this chart</button>
   <span class="menu-wrap">
-    <button class="btn" type="button" id="resetBtn" aria-haspopup="true" aria-expanded="false">Reset</button>
-    <div class="menu" id="resetMenu" role="menu" hidden>
-      <button type="button" id="resetChart" role="menuitem">Reset this chart
-        <small>Hides the reveals and clears what this class added</small></button>
-      <button type="button" id="resetAll" role="menuitem">Reset every chart
-        <small>A clean set of boards — for a new class, or a new year</small></button>
+    <button class="btn" type="button" id="moreBtn" aria-haspopup="true" aria-expanded="false" aria-controls="moreMenu"><span data-en="More…" data-es="Más…">More…</span></button>
+    <div class="menu" id="moreMenu" role="menu" hidden>
+      <button type="button" class="narrow-only" id="mSkeleton" role="menuitemradio" aria-checked="true"><span data-en="Skeleton" data-es="Esqueleto">Skeleton</span><small data-en="What goes up before class" data-es="Lo que se pone antes de la clase">What goes up before class</small></button>
+      <button type="button" class="narrow-only" id="mComplete" role="menuitemradio" aria-checked="false"><span data-en="Complete" data-es="Completo">Complete</span><small data-en="Every line showing" data-es="Todas las líneas a la vista">Every line showing</small></button>
+      <button type="button" class="narrow-only" id="mPrint" role="menuitem">Print this chart</button>
+      <button type="button" id="resetChart" role="menuitem"><span data-en="Reset this chart" data-es="Reiniciar este cartel">Reset this chart</span><small data-en="Hides the reveals and clears what this class added" data-es="Oculta lo que se mostró y borra lo que agregó esta clase">Hides the reveals and clears what this class added</small></button>
+      <button type="button" id="resetAll" role="menuitem"><span data-en="Reset every chart" data-es="Reiniciar todos los carteles">Reset every chart</span><small data-en="A clean set of boards, for a new class or a new year" data-es="Carteles limpios, para una clase nueva o un año nuevo">A clean set of boards, for a new class or a new year</small></button>
+      <button type="button" id="exportBtn" role="menuitem"><span data-en="Save class work" data-es="Guardar el trabajo de la clase">Save class work</span><small data-en="A file, so another computer can pick it up" data-es="Un archivo, para seguir en otra computadora">A file, so another computer can pick it up</small></button>
+      <button type="button" id="importBtn" role="menuitem"><span data-en="Load class work" data-es="Abrir el trabajo de la clase">Load class work</span><small data-en="Open a file you saved" data-es="Abre un archivo que guardaste">Open a file you saved</small></button>
+      <a id="acBackBtn" href="./index.html" role="menuitem"><span data-en="Back to the site" data-es="Volver al sitio">Back to the site</span></a>
     </div>
   </span>
-  <button class="btn btn-accent" type="button" id="printBtn">Print this chart</button>
-  <button class="btn" type="button" id="exportBtn" title="Save what this class has added, so a different computer can pick it up">Save class work</button>
-  <button class="btn" type="button" id="importBtn">Load</button>
-  <button class="btn btn-ghost" type="button" id="themeBtn">Dark</button>
+  <button class="btn btn-ghost wide-only" type="button" id="themeBtn">Dark</button>
   <input type="file" id="importFile" accept="application/json,.json" hidden>
 </header>
 
+<div class="pick no-print">
+  <label for="chartSel"><span data-en="Chart" data-es="Cartel">Chart</span></label>
+  <select id="chartSel"></select>
+</div>
 <div class="shell">
-  <nav class="rail" id="rail" aria-label="Choose a chart"></nav>
   <main class="stage" id="stage" tabindex="-1"></main>
 </div>
 
