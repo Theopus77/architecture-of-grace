@@ -9,7 +9,13 @@
      • where you left off, remembered per book (aog.novel.<key>.at);
      • text size remembered for every book (aog.novel.size).
 
-   Nothing here changes a word of the book. ═══════════════════════════════ */
+   Nothing here changes a word of the book.
+
+   AOG-R36-NOVEL-V1 (2026-10-23) — a book whose <main> carries data-split (Book 3, Room 36) is read one section at a
+   time from /novels/<key>/index.json and /novels/<key>/s<i>.json (built by _work/sel/r36/build_novel.py), so a phone
+   loads one chapter, not the book. In Spanish it reads /novels/<key>.es/s<i>.json where the chapter exists (else the
+   English, with one line saying so) and follows the page's language as it changes. A heavy chapter opens with a calm
+   note and the crisis lines; a chapter that goes with a lesson names it. Books without data-split are unchanged. ══ */
 (function () {
   "use strict";
   var D = document, H = D.documentElement;
@@ -54,10 +60,14 @@
 
   /* ── labels ───────────────────────────────────────────────────────────── */
   var label = function (s, i) {
-    if (s.kind === "chapter") return T("Chapter", "Capítulo") + " " + s.n + " · " + s.title;
-    if (s.kind === "part") return T("Part", "Parte") + " " + s.n + " · " + s.title;
-    return s.title;
+    var t = s.title;
+    if (SPLIT && book) { var j = book.sections.indexOf(s); if (j > -1) t = secTitle(j).title; }
+    if (s.kind === "chapter") return T("Chapter", "Capítulo") + " " + s.n + " · " + t;
+    if (s.kind === "part") return T("Part", "Parte") + " " + s.n + " · " + t;
+    return t;
   };
+  var bookTitle = function () { return SPLIT && es() && book.es ? book.es.title : book.title; };
+  var bookRoom = function () { return SPLIT && es() && book.es ? book.es.room : book.room; };
   var pretty = function (k) { return String(k || "").toLowerCase().replace(/(^|\s|-)\S/g, function (m) { return m.toUpperCase(); }); };
 
   /* ── render one section ───────────────────────────────────────────────── */
@@ -66,12 +76,13 @@
   var renderToc = function (push) {
     at = -1; stopSay();
     page.className = "nv-page toc";
-    var h = '<p class="kicker">' + esc(book.room) + '</p><h2>' + T("Contents", "Índice") + '</h2><p class="where">' + esc(book.title) + '</p><ol class="toc">';
+    var h = '<p class="kicker">' + esc(bookRoom()) + '</p><h2>' + T("Contents", "Índice") + '</h2><p class="where">' + esc(bookTitle()) + '</p><ol class="toc">';
     for (var i = 0; i < book.sections.length; i++) {
       var s = book.sections[i];
-      if (s.kind === "part") h += '<li class="part"><a href="?ch=' + i + '" data-go="' + i + '"><span class="k">' + esc(pretty(s.kicker) || T("Part", "Parte") + " " + s.n) + '</span><span class="t">' + esc(s.title) + '</span></a></li>';
-      else if (s.kind === "chapter") h += '<li><a href="?ch=' + i + '" data-go="' + i + '"><span class="k">' + esc(pretty(s.kicker) || T("Chapter", "Capítulo") + " " + s.n) + '</span><span class="t">' + esc(s.title) + '</span></a></li>';
-      else h += '<li class="note"><a href="?ch=' + i + '" data-go="' + i + '"><span class="t">' + esc(s.title) + '</span></a></li>';
+      var tt = SPLIT ? secTitle(i) : s;
+      if (s.kind === "part") h += '<li class="part"><a href="?ch=' + i + '" data-go="' + i + '"><span class="k">' + esc(pretty(tt.kicker) || T("Part", "Parte") + " " + s.n) + '</span><span class="t">' + esc(tt.title) + '</span></a></li>';
+      else if (s.kind === "chapter") h += '<li><a href="?ch=' + i + '" data-go="' + i + '"><span class="k">' + esc(pretty(tt.kicker) || T("Chapter", "Capítulo") + " " + s.n) + '</span><span class="t">' + esc(tt.title) + '</span></a></li>';
+      else h += '<li class="note"><a href="?ch=' + i + '" data-go="' + i + '"><span class="t">' + esc(tt.title) + '</span></a></li>';
     }
     h += "</ol>";
     page.innerHTML = h;
@@ -84,15 +95,36 @@
     if (push) window.scrollTo(0, Math.max(0, page.getBoundingClientRect().top + window.pageYOffset - 120));
   };
   var SCENE_ALT = { "12-1": "A pencil drawing of a standing mirror reflecting a window, a small backpack beside it and a leafy plant in a clay pot", "12-2": "A pencil drawing of a watering can, a young sprout in a clay pot and a small garden trowel", "12-3": "A pencil drawing of two small chairs facing each other on a round rug, with a ball between them", "12-4": "A pencil drawing of a picnic blanket with a woven basket of apples and more apples on the cloth", "18-1": "A pencil drawing of a trail stop: a backpack, a compass lying on a rock and a small wooden signpost", "18-2": "A pencil drawing of a lighthouse and a small cottage on a rocky headland above a calm sea", "18-3": "A pencil drawing of a wooden footbridge over a stream, with a lantern post at either end", "18-4": "A pencil drawing of an orchard at harvest: a ladder against an apple tree, a wheelbarrow and a basket of apples", "36-1": "A pencil drawing of a quiet dresser with an oval mirror and a plain calm mask with small eye slits propped up beside it", "36-2": "A pencil drawing of a desk under a window, with a desk lamp, an open notebook and a pencil", "36-3": "A pencil drawing of two chairs facing each other by a tall window, a small lantern on a table between them", "36-4": "A pencil drawing of a garden path between lantern posts, leading to an open gate among trees", "104-1": "A pencil drawing of a dressing-table mirror reflecting a window, a plain half mask resting beside it", "104-2": "A pencil drawing of a backpack set down on a park bench, puddles on the path and a tree behind", "104-3": "A pencil drawing of two empty classroom chairs turned to face each other beside a tall window", "104-4": "A pencil drawing of an arched stone bridge over calm water, with a lantern at each end", "207-1": "A pencil drawing of a brass compass resting on an unrolled map, with a pencil and a star marked in the corner", "207-2": "A pencil drawing of a workbench lamp shining on a mended bowl with seams, tools hung neatly on the wall", "207-3": "A pencil drawing of a lighthouse on a rocky headland above a calm sea, its lamp lit", "207-4": "A pencil drawing of a path between rows of leafy fruit trees hung with fruit, leading toward a low hill" };
+  /* AOG-R36-NOVEL-V1: split books fetch one section at a time (English, or Spanish where it exists) */
+  var SPLIT = main.hasAttribute("data-split"), cache = {}, wantLang = null;
+  var secTitle = function (i) {
+    var s = book.sections[i], x = es() && book.es && book.es.sections && book.es.sections[i];
+    return { title: (x && x.title) || s.title, kicker: (x && x.kicker) || s.kicker };
+  };
+  var loadSec = function (i, cb) {
+    var lang = es() && book.es && book.es.sections && book.es.sections[i] ? "es" : "en", k = lang + i;
+    if (cache[k]) { cb(cache[k], lang); return; }
+    var url = lang === "es" ? "/novels/" + KEY + ".es/s" + i + ".json" : "/novels/" + KEY + "/s" + i + ".json";
+    fetch(url).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function (j) { cache[k] = j.blocks; cb(j.blocks, lang); })
+      .catch(function () { if (lang === "es") { book.es.sections[i] = null; loadSec(i, cb); } else fail(); });
+  };
   var render = function (i, push) {
     if (!book) return;
     if (i < 0) return renderToc(push);
     i = Math.max(0, Math.min(book.sections.length - 1, i | 0));
+    if (SPLIT && !book.sections[i].blocks) {
+      return loadSec(i, function (blocks, lang) { draw(i, push, blocks, lang); });
+    }
+    draw(i, push, null, "en");
+  };
+  var draw = function (i, push, blocks, lang) {
     at = i; stopSay();
     var s = book.sections[i];
+    if (blocks) { var t0 = SPLIT ? secTitle(i) : s; s = { kind: s.kind, n: s.n, part: s.part, title: t0.title, kicker: t0.kicker, blocks: blocks, note: s.note, with: s["with"] }; }
     page.className = "nv-page" + (s.kind === "part" ? " part" : "");
     var h = "";
-    var where = book.room + " · " + book.title;
+    var where = bookRoom() + " · " + bookTitle();
     /* AOG-NOVEL-SCENES-V1 — Jimmy: "enhance what is already there." The lesson pages' drawn
        scene for each unit opens the novel's matching part and heads its chapters. */
     var rm = (KEY.match(/^room-(\d+)$/) || [])[1];
@@ -105,6 +137,10 @@
     else if (s.kind === "note") h += '<p class="kicker">' + esc(book.room) + "</p>";
     h += "<h2>" + esc(s.title) + "</h2>";
     h += '<p class="where">' + esc(where) + "</p>";
+    if (SPLIT && es() && lang !== "es") h += '<p class="nv-aside">' + esc("Este capítulo todavía no está en español. Aquí está en inglés.") + "</p>";
+    if (s.note) h += '<aside class="nv-note" role="note">' + esc(es() ? s.note.es : s.note.en) + "</aside>";
+    if (s["with"] && s["with"].length) h += '<p class="nv-with">' + esc(T("Goes with the lesson", "Va con la lección")) + " " +
+      s["with"].map(function (w) { return '<a href="/room-36-lessons.html#' + esc(w.id) + '">' + esc(w.code + (w.t ? " · " + w.t : "")) + "</a>"; }).join(", ") + "</p>";
     var body = "";
     for (var b = 0; b < s.blocks.length; b++) {
       var k = s.blocks[b];
@@ -115,6 +151,7 @@
     }
     h += '<div class="text">' + body + "</div>";
     page.innerHTML = h;
+    page.setAttribute("data-lang", lang || "en");
     /* the picker */
     var pick = $("#nvPick"); pick.value = String(i);
     /* the pager */
@@ -154,7 +191,7 @@
       p.classList.add("reading");
       try { if (p.getBoundingClientRect().top > window.innerHeight - 80 || p.getBoundingClientRect().top < 100) p.scrollIntoView({ block: "center", behavior: "auto" }); } catch (e) {}
       var u = new SpeechSynthesisUtterance(p.textContent);
-      u.lang = "en-US"; u.rate = 0.95;
+      u.lang = (SPLIT && es() && page.getAttribute("data-lang") === "es") ? "es-US" : "en-US"; u.rate = 0.95;
       u.onend = function () { setTimeout(next, 250); };
       u.onerror = function () { stopSay(); };
       S.speak(u);
@@ -186,6 +223,24 @@
     page.innerHTML = T("This book could not load right now. ", "Este libro no se pudo cargar ahora. ") +
       '<a href="' + esc(main.getAttribute("data-pdf") || "#") + '" target="_blank" rel="noopener">' + T("Open the PDF instead", "Abrir el PDF") + "</a>.";
   };
+  var fillPick = function () {
+    var pick = $("#nvPick"), h = '<option value="-1">' + T("Contents", "Índice") + "</option>", grp = null;
+    for (var j = 0; j < book.sections.length; j++) {
+      var sec = book.sections[j], st = SPLIT ? secTitle(j).title : sec.title;
+      if (sec.kind === "part") { if (grp) h += "</optgroup>"; grp = sec; h += '<optgroup label="' + esc(T("Part", "Parte") + " " + sec.n + " · " + st) + '">'; }
+      h += '<option value="' + j + '">' + esc(sec.kind === "chapter" ? T("Chapter", "Capítulo") + " " + sec.n + " · " + st : (sec.kind === "part" ? T("Part", "Parte") + " " + sec.n + " · " + st : st)) + "</option>";
+    }
+    if (grp) h += "</optgroup>";
+    pick.innerHTML = h; pick.value = String(at);
+  };
+  /* a split book follows the page's language as it changes (the bar's EN | ES) */
+  var relabel = function () {
+    var w = function (sel, en, sp) { var e = tools.querySelector(sel); if (e) e.textContent = T(en, sp); };
+    w(".pick > span", "Chapter", "Capítulo"); w("#nvPrev .lbl", "Previous", "Anterior"); w("#nvNext .lbl", "Next", "Siguiente");
+    w("#nvSay .lbl", "Listen", "Escuchar"); w("#nvPrint .lbl", "Print this chapter", "Imprimir este capítulo");
+    if (book) foot.innerHTML = esc(bookTitle()) + " · " + esc(book.author) + ' · <a href="' + esc(book.pdf) + '" target="_blank" rel="noopener">' + T("The whole book (PDF, English)", "El libro entero (PDF, en inglés)") + "</a>";
+  };
+  if (SPLIT) try { new MutationObserver(function () { if (!book) return; var l = es() ? "es" : "en"; if (l === wantLang) return; wantLang = l; relabel(); fillPick(); render(at, false); }).observe(H, { attributes: true, attributeFilter: ["lang"] }); } catch (e) {}
   var start = function (data) {
     book = data;
     var nc = 0, np = 0;
@@ -196,21 +251,16 @@
       if (s.kind === "part") s.n = ++np;
       s.part = np;                       /* which of the four parts (units) this section sits in */
     }
-    var pick = $("#nvPick"), h = '<option value="-1">' + T("Contents", "Índice") + "</option>", grp = null;
-    for (var j = 0; j < book.sections.length; j++) {
-      var sec = book.sections[j];
-      if (sec.kind === "part") { if (grp) h += "</optgroup>"; grp = sec; h += '<optgroup label="' + esc(T("Part", "Parte") + " " + sec.n + " · " + sec.title) + '">'; }
-      h += '<option value="' + j + '">' + esc(sec.kind === "chapter" ? T("Chapter", "Capítulo") + " " + sec.n + " · " + sec.title : (sec.kind === "part" ? T("Part", "Parte") + " " + sec.n + " · " + sec.title : sec.title)) + "</option>";
-    }
-    if (grp) h += "</optgroup>";
-    pick.innerHTML = h;
+    fillPick();
     foot.innerHTML = esc(book.title) + " · " + esc(book.author) + ' · <a href="' + esc(book.pdf) + '" target="_blank" rel="noopener">' + T("The whole book (PDF)", "El libro entero (PDF)") + "</a>";
     var want = -1;   /* a first visit opens on the Contents */
     try { var q = new URL(location.href).searchParams.get("ch"); if (q === "toc") want = -1; else if (q != null && q !== "") want = parseInt(q, 10); else { var m = parseInt(ls.get("aog.novel." + KEY + ".at"), 10); if (m >= -1) want = m; } } catch (e) {}
     if (!(want >= -1)) want = -1;
+    wantLang = es() ? "es" : "en";
+    if (SPLIT) relabel();
     render(want, false);
   };
   try {
-    fetch("/novels/" + KEY + ".json", { cache: "no-cache" }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }).then(start).catch(fail);
+    fetch(SPLIT ? "/novels/" + KEY + "/index.json" : "/novels/" + KEY + ".json", { cache: "no-cache" }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }).then(start).catch(fail);
   } catch (e) { fail(); }
 })();
