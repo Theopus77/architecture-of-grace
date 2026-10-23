@@ -1,0 +1,353 @@
+{
+ "title": "Exponenciales y logaritmos",
+ "years": "Álgebra",
+ "bigQuestion": "¿Cómo puede un número pequeño en una escala, como un 7 para un terremoto, representar un cambio mil veces más grande?",
+ "story": {
+  "title": "La escala de los terremotos: por qué un 7 es treinta veces un 6",
+  "kicker": "Una mañana de abril, un temblor en el sur de Illinois hizo sonar los platos en Chicago, y el número de las noticias escondía un exponente.",
+  "paragraphs": [
+   "Una madrugada de abril de 2008, las camas se sacudieron en los apartamentos de Chicago. El temblor tuvo su centro cerca de Mount Carmel, en el sur de Illinois, a más de 200 millas de distancia, y las noticias dieron un solo número: magnitud 5.2. La gente lo comparó con los terremotos que conocía, un 6.9 en California, un 9.1 en el océano Índico. En una recta numérica normal esos números están cerca unos de otros. En energía real están en mundos distintos, y la razón es cómo está construida la escala.",
+   "En 1935, el sismólogo Charles Richter quiso una forma de comparar terremotos usando el trazo de una aguja en un sismógrafo. Los temblores pequeños dibujaban trazos de un milímetro de ancho; los grandes, trazos de un metro. Números que van de 1 a 1,000,000 son difíciles de imprimir en un periódico. Por eso Richter anotó el exponente en lugar del número. Un paso de 1 en la magnitud significa que la aguja se mueve 10 veces más lejos. Un 6 sacude la aguja 10 veces más que un 5, y un 7 la sacude 10 × 10 = 100 veces más que un 5.",
+   "La energía crece todavía más rápido que el trazo. Los sismólogos descubrieron que cada paso entero multiplica la energía liberada por unas 10^1.5, que son unas 31.6 veces. De ahí viene el dicho: un 7 libera unas treinta veces la energía de un 6, y unas 1,000 veces la energía de un 5. El temblor de Mount Carmel, de 5.2, se sintió en varios estados; un 7.2 en el mismo lugar liberaría unas 1,000 veces más energía y sería un desastre.",
+   "El truco que hace funcionar esto es una escala que cuenta exponentes. Pregunta: «¿a qué potencia hay que elevar 10 para obtener esta sacudida?» y anota la respuesta. Esa pregunta tiene nombre: un logaritmo. Los niveles de sonido en decibeles, la acidez de un limón en la escala de pH, el brillo de las estrellas y el crecimiento del dinero en un banco usan el mismo truco, en un sentido o en el otro. Este capítulo construye primero las funciones exponenciales, que crecen al multiplicar, y después los logaritmos, que las deshacen."
+  ],
+  "think": "Un terremoto de magnitud 4 apenas se siente. ¿Aproximadamente cuántas veces más energía libera uno de magnitud 6? ¿Y uno de magnitud 8? Explica por qué la segunda respuesta es mucho más grande que la primera."
+ },
+ "review": [
+  {
+   "q": "Un video con 800 vistas crece 50% por día. ¿Cuántas vistas tiene después de 3 días?",
+   "choices": [
+    "2,000",
+    "2,700",
+    "1,200",
+    "3,600"
+   ],
+   "why": "800 × 1.5^3 = 800 × 3.375 = 2,700. Sumar 400 tres veces daría, por error, 2,000."
+  },
+  {
+   "q": "Se depositan $5,000 al 4% capitalizado cada trimestre durante 2 años. ¿Cuánto dinero hay?",
+   "choices": [
+    "$5,400.00",
+    "$5,408.00",
+    "$5,414.28",
+    "$5,200.00"
+   ],
+   "why": "Tasa trimestral de 1%, 8 períodos: 5,000 × 1.01^8 ≈ 5,000 × 1.08286 = $5,414.28. Con capitalización anual daría $5,408."
+  },
+  {
+   "q": "log_6(1/36) = ?",
+   "choices": [
+    "2",
+    "−6",
+    "1/2",
+    "−2"
+   ],
+   "why": "6^(−2) = 1/36, así que el exponente es −2."
+  },
+  {
+   "q": "Resuelve 5^x = 200 con aproximación a la centésima.",
+   "choices": [
+    "3.29",
+    "40",
+    "2.30",
+    "5.30"
+   ],
+   "why": "x = ln(200) ÷ ln(5) ≈ 5.298 ÷ 1.609 ≈ 3.29. Comprobación: 5^3 = 125 y 5^4 = 625, así que 200 necesita un exponente entre 3 y 4."
+  },
+  {
+   "q": "¿Qué expresión es igual a log(a) − log(b)?",
+   "choices": [
+    "log(a − b)",
+    "log(a ÷ b)",
+    "log(a) ÷ log(b)",
+    "log(b ÷ a)"
+   ],
+   "why": "La regla del cociente: la diferencia de dos logaritmos es el logaritmo del cociente, a ÷ b."
+  },
+  {
+   "q": "Una sustancia tiene una vida media de 3 días. Si se parte de 160 mg, ¿cuánto queda después de 12 días?",
+   "choices": [
+    "40 mg",
+    "20 mg",
+    "10 mg",
+    "0 mg"
+   ],
+   "why": "12 ÷ 3 = 4 vidas medias, así que 160 × (1/2)^4 = 160 ÷ 16 = 10 mg."
+  },
+  {
+   "q": "¿Aproximadamente cuántas veces más energía libera un terremoto de magnitud 7.0 que uno de magnitud 4.0?",
+   "choices": [
+    "unas 1,000",
+    "unas 3",
+    "unas 100",
+    "unas 31,600"
+   ],
+   "why": "Razón de energía = 10^(1.5 × 3) = 10^4.5 ≈ 31,600. La razón de sacudida sería 10^3 = 1,000."
+  },
+  {
+   "q": "Resuelve log_2(x) + log_2(x − 6) = 4.",
+   "choices": [
+    "x = 8",
+    "x = −2",
+    "x = 8 y x = −2",
+    "x = 11"
+   ],
+   "why": "x(x − 6) = 16 da x^2 − 6x − 16 = 0, así que (x − 8)(x + 2) = 0. Se descarta −2 porque log_2(−2) no existe. Comprobación con 8: 3 + 1 = 4."
+  }
+ ],
+ "sections": [
+  {
+   "title": "Crecimiento al multiplicar",
+   "lessons": [
+    {
+     "title": "Crecimiento con un factor constante",
+     "mainIdea": "Una función exponencial se multiplica por el mismo factor en cada paso, así que y = a × b^x, con valor inicial a y factor de crecimiento b.",
+     "reading": [
+      "Un video publicado el lunes tiene 200 vistas. Cada día la cantidad se triplica. Martes: 200 × 3 = 600. Miércoles: 600 × 3 = 1,800. Jueves: 1,800 × 3 = 5,400. Después de x días la cantidad es 200 × 3^x, porque has multiplicado por 3 un total de x veces. Después de 4 días son 200 × 81 = 16,200. Esta es una *función exponencial*: un valor inicial multiplicado por un *factor de crecimiento* fijo, elevado al número de pasos. Una función lineal suma la misma cantidad en cada paso; una exponencial multiplica por la misma cantidad. Esa diferencia explica por qué la cantidad salta de cientos a decenas de miles en menos de una semana.",
+      "La mayor parte del crecimiento del mundo se describe con porcentajes, así que necesitas convertir un porcentaje en un factor. Un pueblo de 12,000 habitantes crece 3% cada año. Crecer 3% significa conservar el 100% y sumar 3%, así que el factor es 1.03. Después de 10 años la población es 12,000 × 1.03^10. En una calculadora, 1.03^10 ≈ 1.344, así que el pueblo tiene unos 12,000 × 1.344 ≈ 16,127 habitantes. Disminuir funciona igual, con un factor menor que 1. Un carro que vale $20,000 pierde 20% de su valor cada año: conserva 80%, así que el *factor de decaimiento* es 0.80, y después de 3 años vale 20,000 × 0.8^3 = 20,000 × 0.512 = $10,240.",
+      "El error más común es sumar los porcentajes en lugar de multiplicar los factores. Crecer 3% al año durante 10 años no es 30% en total. Diez pasos de × 1.03 dan × 1.344, que es 34.4% más, porque el 3% de cada año se calcula sobre una cantidad más grande. Otro error es escribir el factor como 0.03 o como 3. La regla: factor = 1 + *tasa* para el crecimiento y 1 − tasa para el decaimiento, con la tasa escrita como decimal. Comprueba cualquier modelo exponencial calculando uno o dos pasos a mano antes de confiar en la fórmula."
+     ],
+     "words": [
+      {
+       "w": "función exponencial",
+       "d": "una función de la forma y = a × b^x que se multiplica por el mismo factor b en cada paso"
+      },
+      {
+       "w": "factor de crecimiento",
+       "d": "el número por el que multiplicas en cada paso; para un crecimiento de 3% es 1.03"
+      },
+      {
+       "w": "factor de decaimiento",
+       "d": "un factor de crecimiento menor que 1; para una pérdida de 20% cada año es 0.80"
+      },
+      {
+       "w": "tasa",
+       "d": "el cambio porcentual por paso, escrito como decimal, como 0.03 para 3%"
+      }
+     ],
+     "look": {
+      "title": "Dos planes de ahorro",
+      "text": "El plan A empieza con $1,000 y suma $200 cada mes. El plan B empieza con $10 y se duplica cada mes. Mes 1: $1,200 contra $20. Mes 5: $2,000 contra $320. Mes 7: $2,400 contra $1,280. Mes 8: $2,600 contra $2,560. El plan A es 1,000 + 200x; el plan B es 10 × 2^x.",
+      "prompt": "¿En qué mes el plan B supera por primera vez al plan A? Calcula los dos planes para el mes 9 y el mes 10 para comprobarlo."
+     },
+     "check": [
+      {
+       "q": "Una colonia de 500 células se duplica cada hora. ¿Cuántas células hay después de 6 horas?",
+       "choices": [
+        "32,000",
+        "3,000",
+        "6,000",
+        "64,000"
+       ],
+       "why": "500 × 2^6 = 500 × 64 = 32,000. Duplicar 6 veces multiplica por 64, no por 6 ni por 12."
+      },
+      {
+       "q": "Una población crece 4% por año. ¿Qué factor va en el modelo exponencial?",
+       "choices": [
+        "0.04",
+        "1.04",
+        "4",
+        "0.96"
+       ],
+       "why": "Crecer 4% es conservar 100% y sumar 4%, así que el factor es 1 + 0.04 = 1.04. Un factor de 0.96 sería una pérdida de 4%."
+      },
+      {
+       "q": "Una laptop de $3,000 pierde 25% de su valor cada año. ¿Cuánto vale después de 2 años?",
+       "choices": [
+        "$1,500.00",
+        "$2,250.00",
+        "$1,687.50",
+        "$187.50"
+       ],
+       "why": "Conserva 75% cada año: 3,000 × 0.75^2 = 3,000 × 0.5625 = $1,687.50. Restar 25% dos veces del valor original daría, por error, $1,500."
+      }
+     ],
+     "short": [
+      "A video has 200 views on Monday, and the count triples each day. After x days it is 200 × 3^x, so after 4 days it is 200 × 81 = 16,200. This is an *exponential function*: a starting value times a fixed *growth factor*, used once for every step. A linear function adds the same amount each step. An exponential one multiplies, so doubling 6 times means multiplying by 2^6.",
+      "To turn a percent into a factor, keep 100% and add the *rate*, or take it away. Growing 3% gives a factor of 1.03. A car that loses 20% a year keeps 80%, so its *decay factor* is 0.80, and after 3 years it is worth 20,000 × 0.8^3 = $10,240. Never add the percents: ten years at 3% is 34.4% more, not 30%. Never use 0.03 or 3 as the factor."
+     ],
+     "more": [
+      "There is an old story about the game of chess. Someone asks a ruler for one grain of rice on the first square of the board, two on the second, four on the third, and so on, doubling each time. The first ten squares look harmless: square 10 holds only 2^9 = 512 grains. But square 64 alone would hold 2^63, which is about 9.2 × 10^18 grains, a pile too big to picture. A plan that adds one grain per square would reach only 64. Doubling looks gentle at the start and then explodes.",
+      "You can spot an exponential pattern in a table without any formula. Divide each value by the one before it. If you get the same number every time, the pattern is exponential, and that number is the growth factor. If you subtract and get the same difference every time, the pattern is linear. For the video views, 600 ÷ 200, 1,800 ÷ 600 and 5,400 ÷ 1,800 are all 3. This gives you a quick test whenever data arrive as a list of numbers."
+     ],
+     "short_es": [
+      "Un video tiene 200 vistas el lunes y la cantidad se triplica cada día. Después de x días son 200 × 3^x, así que después de 4 días son 200 × 81 = 16,200. Esta es una *función exponencial*: un valor inicial multiplicado por un *factor de crecimiento* fijo, usado una vez en cada paso. Una función lineal suma la misma cantidad en cada paso. Una exponencial multiplica, así que duplicar 6 veces es multiplicar por 2^6.",
+      "Para convertir un porcentaje en un factor, conserva el 100% y suma la *tasa*, o réstala. Crecer 3% da un factor de 1.03. Un carro que pierde 20% al año conserva 80%, así que su *factor de decaimiento* es 0.80, y después de 3 años vale 20,000 × 0.8^3 = $10,240. Nunca sumes los porcentajes: diez años al 3% son 34.4% más, no 30%. Nunca uses 0.03 ni 3 como factor."
+     ],
+     "more_es": [
+      "Hay una historia antigua sobre el juego de ajedrez. Alguien le pide a un gobernante un grano de arroz en la primera casilla del tablero, dos en la segunda, cuatro en la tercera, y así sucesivamente, duplicando cada vez. Las primeras diez casillas parecen inofensivas: la casilla 10 tiene solo 2^9 = 512 granos. Pero la casilla 64 sola tendría 2^63, que son unos 9.2 × 10^18 granos, una pila demasiado grande para imaginarla. Un plan que suma un grano por casilla llegaría solo a 64. Duplicar parece suave al principio y después explota.",
+      "Puedes reconocer un patrón exponencial en una tabla sin ninguna fórmula. Divide cada valor entre el anterior. Si obtienes siempre el mismo número, el patrón es exponencial, y ese número es el factor de crecimiento. Si restas y obtienes siempre la misma diferencia, el patrón es lineal. Para las vistas del video, 600 ÷ 200, 1,800 ÷ 600 y 5,400 ÷ 1,800 dan 3. Esto te da una prueba rápida cuando los datos llegan como una lista de números."
+     ]
+    },
+    {
+     "title": "Interés compuesto y el número e",
+     "mainIdea": "Capitalizar con más frecuencia sube el rendimiento solo un poco, y el límite de ese proceso es el número e ≈ 2.71828, la base del crecimiento continuo.",
+     "reading": [
+      "Depositas $1,000 con un interés de 6%. Si el banco paga una vez al año, después de 5 años tienes 1,000 × 1.06^5 ≈ $1,338.23. Muchos bancos pagan en cambio *interés compuesto* cada mes: cada mes pagan 6% ÷ 12 = 0.5%, así que el factor es 1.005 y hay 5 × 12 = 60 pagos. Ahora tienes 1,000 × 1.005^60 ≈ $1,348.85. La fórmula es A = P(1 + r/n)^(nt), donde P es el *capital*, la cantidad inicial, r es la tasa anual como decimal, n es el número de pagos por año y t son los años. La capitalización mensual ganó unos $10.62 más que la anual. La capitalización diaria (n = 365) da unos $1,349.83. Las ganancias son cada vez más pequeñas.",
+      "Sigue aumentando n y la cantidad se acerca a un techo. Toma el caso más sencillo: $1 con 100% de interés durante 1 año, o sea A = (1 + 1/n)^n. Con n = 1 obtienes 2. Con n = 2, (1.5)^2 = 2.25. Con n = 12, unos 2.613. Con n = 365, unos 2.7146. Con n = 10,000, unos 2.7181. Los valores nunca pasan de 2.71828…, *el número e*. Igual que π, e no termina y no se repite. El crecimiento que se capitaliza en cada instante es *crecimiento continuo*, y su fórmula es A = P × e^(rt). Para los $1,000 al 6% durante 5 años, A = 1,000 × e^0.3 ≈ 1,000 × 1.3499 = $1,349.86, solo 3 centavos más que con capitalización diaria.",
+      "El número e aparece dondequiera que el cambio ocurre de forma suave y constante: bacterias, café que se enfría, átomos radiactivos y dinero. La tecla e^x de una calculadora lo calcula. Un error común es escribir la tasa como porcentaje, e^(6 × 5) en lugar de e^(0.06 × 5); la primera forma da una respuesta sin sentido, de billones. Otro es confundir n y t: con capitalización mensual durante 5 años el exponente es 60, no 5. Escribe la fórmula, rotula cada letra con su valor y después calcula."
+     ],
+     "words": [
+      {
+       "w": "interés compuesto",
+       "d": "interés que se paga sobre el capital y también sobre el interés ya ganado"
+      },
+      {
+       "w": "capital",
+       "d": "la cantidad inicial de dinero que se deposita o se pide prestada"
+      },
+      {
+       "w": "el número e",
+       "d": "2.71828…, el límite de (1 + 1/n)^n cuando n crece; la base del crecimiento continuo"
+      },
+      {
+       "w": "crecimiento continuo",
+       "d": "crecimiento que se capitaliza en cada instante, modelado por A = P × e^(rt)"
+      }
+     ],
+     "look": {
+      "title": "Un dólar con 100% de interés, capitalizado n veces al año",
+      "unit": "dólares después de un año",
+      "rows": [
+       "una vez al año (n = 1)",
+       "dos veces al año (n = 2)",
+       "cada trimestre (n = 4)",
+       "cada mes (n = 12)",
+       "cada día (n = 365)",
+       "n = 10,000"
+      ],
+      "prompt": "¿Cuánto añade pasar de capitalizar cada día a hacerlo 10,000 veces al año? ¿Qué te dice eso sobre hacia dónde van los valores?"
+     },
+     "check": [
+      {
+       "q": "Se depositan $2,000 al 5% capitalizado una vez al año. ¿Cuánto dinero hay después de 3 años?",
+       "choices": [
+        "$2,300.00",
+        "$2,100.00",
+        "$2,205.00",
+        "$2,315.25"
+       ],
+       "why": "2,000 × 1.05^3 = 2,000 × 1.157625 = $2,315.25. Un interés simple de $100 al año daría solo $2,300."
+      },
+      {
+       "q": "$500 crecen de forma continua al 4% anual durante 10 años. ¿Qué expresión da la cantidad?",
+       "choices": [
+        "500 × e^(0.4)",
+        "500 × e^(40)",
+        "500 × 1.04^10",
+        "500 × e × 0.4"
+       ],
+       "why": "El crecimiento continuo es P × e^(rt) con r = 0.04 y t = 10, así que el exponente es 0.4 y la cantidad es unos 500 × 1.4918 = $745.91."
+      },
+      {
+       "q": "¿Qué afirmación sobre el número e es verdadera?",
+       "choices": [
+        "e = 2.5 exactamente",
+        "e ≈ 2.718 es el valor al que se acerca (1 + 1/n)^n cuando n crece",
+        "e es la tasa de interés más alta que puede pagar un banco",
+        "e ≈ 3.14 y sirve para medir círculos"
+       ],
+       "why": "Cuando n crece, (1 + 1/n)^n sube hacia 2.71828…; ese límite es e. El número de los círculos es π."
+      }
+     ],
+     "short": [
+      "A bank can pay interest once a year or more often. With $1,000 at 6% for 5 years, yearly pay gives $1,338.23 and monthly pay gives $1,348.85. *Compound interest* means interest is paid on the *principal* and also on the interest already earned. The formula is A = P(1 + r/n)^(nt): r is the yearly rate as a decimal, n is the payments per year and t is the years. More payments earn more, but the gains shrink.",
+      "Keep raising n and the amount reaches a ceiling. For $1 at 100% for a year, (1 + 1/n)^n is 2 at n = 1, about 2.613 at n = 12 and about 2.7181 at n = 10,000. It never passes 2.71828…, *the number e*. Growth that compounds at every instant is *continuous growth*, and its formula is A = P × e^(rt). Write the rate as a decimal. With monthly payments for 5 years, the exponent is 60, not 5."
+     ],
+     "more": [
+      "Where does the number e come from? In 1683 Jacob Bernoulli asked what would happen if a bank paid interest more and more often. He found that the answer settles near 2.718, even though the number of payments grows without end. In the 1700s Leonhard Euler began using the letter e for this number, and the name stuck. Like the other famous number π, it can never be written out completely as a decimal.",
+      "Continuous growth is a good picture for money, but it also fits anything that grows in proportion to its own size. A colony of bacteria with plenty of food grows faster the bigger it gets, because every cell can divide. When the amount added at each moment is a fixed share of what is already there, e^(rt) is the model, and r is that share for each unit of time."
+     ],
+     "short_es": [
+      "Un banco puede pagar intereses una vez al año o con más frecuencia. Con $1,000 al 6% durante 5 años, el pago anual da $1,338.23 y el pago mensual da $1,348.85. El *interés compuesto* es el que se paga sobre el *capital* y también sobre el interés ya ganado. La fórmula es A = P(1 + r/n)^(nt): r es la tasa anual como decimal, n son los pagos por año y t son los años. Más pagos ganan más, pero las ganancias se achican.",
+      "Sigue aumentando n y la cantidad llega a un techo. Para $1 al 100% durante un año, (1 + 1/n)^n es 2 con n = 1, unos 2.613 con n = 12 y unos 2.7181 con n = 10,000. Nunca pasa de 2.71828…, *el número e*. El crecimiento que se capitaliza en cada instante es *crecimiento continuo*, y su fórmula es A = P × e^(rt). Escribe la tasa como decimal. Con pagos mensuales durante 5 años, el exponente es 60, no 5."
+     ],
+     "more_es": [
+      "¿De dónde viene el número e? En 1683, Jacob Bernoulli se preguntó qué pasaría si un banco pagara intereses cada vez con más frecuencia. Descubrió que la respuesta se queda cerca de 2.718, aunque el número de pagos crezca sin fin. En el siglo XVIII, Leonhard Euler empezó a usar la letra e para este número, y el nombre se quedó. Igual que el otro número famoso, π, nunca se puede escribir completo como decimal.",
+      "El crecimiento continuo es una buena imagen para el dinero, pero también sirve para todo lo que crece en proporción a su propio tamaño. Una colonia de bacterias con mucho alimento crece más rápido cuanto más grande es, porque cada célula puede dividirse. Cuando la cantidad que se añade en cada instante es una parte fija de lo que ya hay, el modelo es e^(rt), y r es esa parte por cada unidad de tiempo."
+     ]
+    },
+    {
+     "title": "Decaimiento y vida media",
+     "mainIdea": "La vida media es el tiempo que tarda una cantidad en reducirse a la mitad, y A = A0 × (1/2)^(t/h) cuenta cuántas veces se ha reducido a la mitad.",
+     "reading": [
+      "Un paciente toma 200 mg de un medicamento cuya *vida media* en el cuerpo es de 6 horas. Eso significa que cada 6 horas desaparece la mitad de lo que queda. Después de 6 horas: 100 mg. Después de 12 horas: 50 mg. Después de 18 horas: 25 mg. Después de 24 horas: 12.5 mg. El patrón es 200 × (1/2)^k, donde k es el número de vidas medias. Para obtener k a partir del tiempo del reloj, divide el tiempo entre la vida media: 24 ÷ 6 = 4 vidas medias, y 200 × (1/2)^4 = 200 ÷ 16 = 12.5 mg. En general, A = A0 × (1/2)^(t/h), donde A0 es la cantidad inicial, t el tiempo y h la vida media. El exponente puede ser una fracción: después de 9 horas, t/h = 1.5, y 200 × (1/2)^1.5 ≈ 200 × 0.354 = 70.7 mg.",
+      "La misma regla sirve para datar huesos y madera antiguos. El carbono-14 es una forma radiactiva del carbono con una vida media de unos 5,730 años. Una planta viva mantiene una cantidad constante; cuando muere, el carbono-14 comienza su *decaimiento* sin que nada lo reponga. Un trozo de carbón de una fogata antigua tiene 1/4 del carbono-14 que tendría una planta viva. Un cuarto es (1/2)^2, así que han pasado dos vidas medias: 2 × 5,730 = 11,460 años. Si tuviera 1/8, habrían pasado tres vidas medias, unos 17,190 años. Esto es la *datación por radiocarbono*, y funciona porque el factor de decaimiento nunca cambia: la mitad desaparece cada 5,730 años sin importar con cuánto empieces.",
+      "El decaimiento porcentual y la vida media describen el mismo tipo de curva. Si una cantidad pierde 12% cada año, el factor es 0.88 y el modelo es A = A0 × 0.88^t. Las dos formas son *decaimiento exponencial*, con una base menor que 1. El error clásico es pensar que una vida media de 6 horas significa que todo desaparece en 12 horas. Si reduces a la mitad dos veces, queda un cuarto, nunca cero; la curva se acerca mucho a cero pero nunca lo alcanza. Otro error es dividir la cantidad entre el número de horas. Primero cuenta las vidas medias y después multiplica por 1/2 esa cantidad de veces."
+     ],
+     "words": [
+      {
+       "w": "vida media",
+       "d": "el tiempo que tarda en desaparecer la mitad de una cantidad que decae"
+      },
+      {
+       "w": "decaimiento",
+       "d": "reducirse por el mismo factor en cada paso, como una sustancia radiactiva"
+      },
+      {
+       "w": "datación por radiocarbono",
+       "d": "hallar la edad de material vegetal o animal antiguo a partir de cuánto carbono-14 queda"
+      },
+      {
+       "w": "decaimiento exponencial",
+       "d": "un modelo A = A0 × b^t con un factor b entre 0 y 1"
+      }
+     ],
+     "look": {
+      "title": "Yodo-131 en la clínica",
+      "text": "El yodo-131, que se usa en algunos estudios médicos, tiene una vida media de unos 8 días. Una muestra tiene 80 mg. Después de 8 días: 40 mg. Después de 16 días: 20 mg. Después de 24 días: 10 mg. Después de 32 días: 5 mg. Cada fila es la anterior dividida entre 2.",
+      "prompt": "¿Cuántos días pasan hasta que queda menos de 1 mg? Sigue dividiendo a la mitad, cuenta las vidas medias y multiplica por 8."
+     },
+     "check": [
+      {
+       "q": "Una dosis de 400 mg tiene una vida media de 5 horas. ¿Cuánto queda después de 15 horas?",
+       "choices": [
+        "200 mg",
+        "100 mg",
+        "50 mg",
+        "0 mg"
+       ],
+       "why": "15 ÷ 5 = 3 vidas medias, así que 400 × (1/2)^3 = 400 ÷ 8 = 50 mg. Reducir a la mitad nunca llega a 0."
+      },
+      {
+       "q": "Un hueso conserva 1/8 de su carbono-14 original. La vida media del carbono-14 es de 5,730 años. ¿Más o menos qué edad tiene?",
+       "choices": [
+        "unos 5,730 años",
+        "unos 11,460 años",
+        "unos 45,840 años",
+        "unos 17,190 años"
+       ],
+       "why": "1/8 = (1/2)^3, así que han pasado tres vidas medias: 3 × 5,730 = 17,190 años."
+      },
+      {
+       "q": "Una cantidad pierde 30% de su valor cada año. ¿Qué modelo le corresponde?",
+       "choices": [
+        "A = A0 × 0.7^t",
+        "A = A0 × 0.3^t",
+        "A = A0 × 1.3^t",
+        "A = A0 − 0.3t"
+       ],
+       "why": "Perder 30% es conservar 70%, así que el factor es 0.7 y el modelo es A0 × 0.7^t. Usar 0.3 significaría perder 70% cada año."
+      }
+     ],
+     "short": [
+      "A medicine has a *half-life* of 6 hours in the body. Every 6 hours, half of what is left is gone: 200 mg becomes 100, then 50, then 25. To count the half-lives, divide the time by the half-life. After 24 hours that is 4 half-lives, so 200 × (1/2)^4 = 12.5 mg. In general, A = A0 × (1/2)^(t/h).",
+      "The same rule dates old bones and wood. Carbon-14 has a half-life of about 5,730 years. When a plant dies, its carbon-14 begins to *decay*. If charcoal holds 1/8 of a living plant's carbon-14, three half-lives have passed, about 17,190 years. This is *radiocarbon dating*. Losing 12% a year is *exponential decay* too, with a factor of 0.88. Halving never reaches zero: count the half-lives first, then multiply by 1/2 that many times."
+     ],
+     "more": [
+      "Why can a half-life stay so steady? Radioactive decay is random for one atom: nobody can say when a single atom will change. But in a huge crowd of atoms, about half change during each half-life, and that is why the pattern is so regular. Half-lives vary enormously. Some atoms last only a tiny fraction of a second, and others last billions of years. Uranium-238 has a half-life of about 4.5 billion years, close to the age of the Earth.",
+      "Carbon-14 can look back only so far. After ten half-lives, less than one thousandth of the original is left (1/2^10 = 1/1,024), which is too little to measure well. So radiocarbon dating works for material up to roughly 50,000 years old. For much older rocks, scientists use atoms with much longer half-lives."
+     ],
+     "short_es": [
+      "Un medicamento tiene una *vida media* de 6 horas en el cuerpo. Cada 6 horas desaparece la mitad de lo que queda: 200 mg pasan a 100, luego a 50, luego a 25. Para contar las vidas medias, divide el tiempo entre la vida media. Después de 24 horas son 4 vidas medias, así que 200 × (1/2)^4 = 12.5 mg. En general, A = A0 × (1/2)^(t/h).",
+      "La misma regla sirve para datar huesos y madera antiguos. El carbono-14 tiene una vida media de unos 5,730 años. Cuando una planta muere, su carbono-14 comienza su *decaimiento*. Si un carbón conserva 1/8 del carbono-14 de una planta viva, han pasado tres vidas medias, unos 17,190 años. Esto es la *datación por radiocarbono*. Perder 12% al año también es *decaimiento exponencial*, con un factor de 0.88. Reducir a la mitad nunca llega a cero: primero cuenta las vidas medias y después multiplica por 1/2 esa cantidad de veces."
+     ],
+     "more_es": [
+      "¿Por qué una vida media puede ser tan constante? El decaimiento radiactivo es aleatorio para un solo átomo: nadie puede decir cuándo cambiará un átomo en particular. Pero en una multitud enorme de átomos, cambia más o menos la mitad durante cada vida media, y por eso el patrón es tan regular. Las vidas medias varían muchísimo. Algunos átomos duran solo una pequeña fracción de segundo y otros duran miles de millones de años. El uranio-238 tiene una vida media de unos 4.5 mil millones de años, cercana a la edad de la Tierra.",
+      "El carbono-14 solo puede mirar hacia atrás hasta cierto punto. Después de diez vidas medias queda menos de una milésima parte del original (1/2^10 = 1/1,024), una cantidad demasiado pequeña para medirla bien. Por eso la datación por radiocarbono sirve para material de hasta unos 50,000 años. Para rocas mucho más antiguas, los científicos usan átomos con vidas medias mucho más largas."
+     ]
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,996 @@
+{
+ "title": "Funciones y modelos lineales",
+ "years": "Funciones",
+ "bigQuestion": "Cuando una regla convierte un número en otro, ¿cómo se lee, se escribe y se usa esa regla para predecir?",
+ "story": {
+  "title": "La tarifa del taxi, los datos del celular y el significado de f(3)",
+  "kicker": "La misma entrada, 3, da dos respuestas distintas, y las dos son correctas, porque las reglas son diferentes.",
+  "paragraphs": [
+   "Darnell sale de Union Station, en el centro de Chicago, y sube a un taxi. La calcomanía de la ventana lista las tarifas (para este relato usaremos números de ejemplo redondos): $3 apenas empieza el taxímetro, más $2 por cada milla. Observa el taxímetro. Al empezar marca $3.00. Después de una milla, $5.00. Después de dos millas, $7.00. Se da cuenta de que puede predecir el siguiente número antes de que aparezca: después de tres millas marcará $9.00.",
+   "En su cabeza, Darnell escribe la regla que sigue el taxímetro: tarifa = 3 + 2 × millas. Si llama f a la regla y deja que x sean las millas, entonces f(x) = 2x + 3. El símbolo f(3) significa «pon 3 en la regla f». Resulta ser 2(3) + 3 = 9. Así que f(3) = 9 dice que un viaje de 3 millas cuesta $9. No es f por 3. Es una pregunta y su respuesta: ¿qué da la regla para una entrada de 3?",
+   "Mientras viaja, le llega un mensaje de texto sobre su plan de celular: $20 al mes más $8 por cada gigabyte de datos. Esa es una regla diferente, así que le da un nombre diferente: d(g) = 8g + 20. Ahora d(3) = 8(3) + 20 = 44. La misma entrada, 3, pero una regla diferente, así que una salida diferente: $44 por 3 gigabytes. La letra que va al frente te dice en cuál máquina estás metiendo el número.",
+   "El taxi se detiene después de 4 millas y el taxímetro marca $11.00. Darnell comprueba: f(4) = 2(4) + 3 = 11. Deja la propina y se baja pensando en cuántas cosas de su día funcionan así. Los minutos en la caminadora se convierten en calorías. Las horas trabajadas se convierten en pago. Las semanas de ahorro se convierten en un saldo. Cada una es una regla con un nombre, una entrada y exactamente una salida. Aprender a leer y escribir esas reglas es para lo que sirve este capítulo."
+  ],
+  "think": "La amiga de Darnell dice que f(3) = 9 significa «f por 3 es 9, así que f debe ser 3». ¿Qué no ha entendido ella y cómo se lo explicarías usando el taxímetro?"
+ },
+ "sections": [
+  {
+   "title": "Qué es una función",
+   "lessons": [
+    {
+     "title": "Entradas y salidas",
+     "mainIdea": "Una función es una regla que da exactamente una salida para cada entrada.",
+     "reading": [
+      "Un taxímetro es una máquina: le das un número de millas y te devuelve una tarifa. Si le das 1 milla, devuelve $5. Si le das 2 millas, $7. Si le das 3 millas, $9. No importa cuántas veces le des 3 millas, el taxímetro devuelve $9, nunca $8 y nunca $10. Esa es la propiedad clave de una *función*: cada *entrada* se empareja con exactamente una *salida*. El conjunto de millas es la entrada, el conjunto de tarifas es la salida, y la regla que las conecta es la función.",
+      "Cualquier conjunto de pares emparejados se llama *relación*, pero no toda relación es una función. Supón que una tabla mostrara 2 millas → $5 y también 2 millas → $7. La misma entrada tiene dos salidas distintas, así que la tabla no es una función; el taxímetro estaría descompuesto. En cambio, dos entradas distintas sí pueden compartir una salida. Una regla que cobra $10 por cualquier viaje de menos de una milla, de modo que 0.3 millas → $10 y 0.8 millas → $10, sigue siendo una función, porque cada entrada sigue teniendo una sola respuesta.",
+      "En una gráfica, la entrada va en el eje horizontal y la salida en el eje vertical. Si una recta vertical cruza la gráfica dos veces, entonces una entrada tiene dos salidas y la gráfica no es una función. Esto se llama la prueba de la recta vertical. Una recta inclinada siempre pasa la prueba. Un círculo no la pasa, porque una recta vertical que cruza por su centro toca la parte de arriba y la de abajo."
+     ],
+     "words": [
+      {
+       "w": "función",
+       "d": "una regla que asigna exactamente una salida a cada entrada"
+      },
+      {
+       "w": "entrada",
+       "d": "el número que pones en una regla, como las millas de un viaje en taxi"
+      },
+      {
+       "w": "salida",
+       "d": "el número que la regla devuelve, como la tarifa"
+      },
+      {
+       "w": "relación",
+       "d": "cualquier conjunto de pares de entrada y salida, sea o no una función"
+      }
+     ],
+     "look": {
+      "title": "La tabla del taxímetro",
+      "rows": [
+       "0 millas",
+       "1 milla",
+       "2 millas",
+       "3 millas",
+       "5 millas",
+       "10 millas"
+      ],
+      "unit": "dólares",
+      "prompt": "Cada entrada tiene exactamente una tarifa, así que la tabla es una función. ¿Qué tarifa daría la regla para 7 millas y cómo lo sabes?"
+     },
+     "check": [
+      {
+       "q": "¿Cuál conjunto de pares NO es una función?",
+       "choices": [
+        "(1, 5), (2, 7), (3, 9)",
+        "(1, 10), (2, 10), (3, 10)",
+        "(2, 5), (2, 7), (3, 9)",
+        "(0, 3), (1, 5), (4, 11)"
+       ],
+       "why": "La entrada 2 se empareja con 5 y con 7, así que una entrada tiene dos salidas. Compartir una salida, como en la segunda opción, está permitido."
+      },
+      {
+       "q": "Según la tabla del taxi, ¿cuál es la tarifa de un viaje de 3 millas?",
+       "choices": [
+        "$9",
+        "$6",
+        "$8",
+        "$12"
+       ],
+       "why": "La regla es $3 más $2 por milla: 3 + 2(3) = 9. La fila de 3 millas en la tabla confirma $9."
+      },
+      {
+       "q": "Una gráfica pasa la prueba de la recta vertical cuando…",
+       "choices": [
+        "es una línea recta",
+        "toda recta vertical la toca una vez como máximo",
+        "cruza el eje y una vez",
+        "sube de izquierda a derecha"
+       ],
+       "why": "Una entrada con dos salidas se vería como una recta vertical que toca la gráfica dos veces. Tocarla como máximo una vez significa que cada entrada tiene una salida."
+      }
+     ],
+     "short": [
+      "A taxi meter is a machine: feed in miles and it gives back a fare. For 3 miles it always gives $9, never $8 or $10. That is the key property of a *function*: every *input* is matched with exactly one *output*. Any set of matched pairs is a *relation*, but not every relation is a function. If a table listed 2 miles → $5 and also 2 miles → $7, one input would have two outputs, so it would not be a function. Two different inputs may share an output. On a graph, if any vertical line crosses it twice, it is not a function. This is the vertical line test."
+     ],
+     "more": [
+      "Functions are all around you. Each person has exactly one birth date, so 'person → birth date' is a function. But 'birth date → person' is not, because many people share the same birthday. The direction of the rule matters: one input must never lead to two outputs.",
+      "Mathematicians like functions because they are predictable. If a rule is a function, you can trust it: the same input always gets the same answer. That is what lets you make plans, draw graphs and predict what will happen next."
+     ],
+     "short_es": [
+      "Un taxímetro es una máquina: le das millas y te devuelve una tarifa. Para 3 millas siempre da $9, nunca $8 ni $10. Esa es la propiedad clave de una *función*: cada *entrada* se empareja con exactamente una *salida*. Cualquier conjunto de pares emparejados es una *relación*, pero no toda relación es una función. Si una tabla mostrara 2 millas → $5 y también 2 millas → $7, una entrada tendría dos salidas, así que no sería una función. Dos entradas distintas sí pueden compartir una salida. En una gráfica, si una recta vertical la cruza dos veces, no es una función. Esta es la prueba de la recta vertical."
+     ],
+     "more_es": [
+      "Las funciones están por todas partes. Cada persona tiene exactamente una fecha de nacimiento, así que «persona → fecha de nacimiento» es una función. Pero «fecha de nacimiento → persona» no lo es, porque muchas personas cumplen años el mismo día. La dirección de la regla importa: una entrada nunca debe llevar a dos salidas.",
+      "A los matemáticos les gustan las funciones porque son predecibles. Si una regla es una función, puedes confiar en ella: la misma entrada siempre recibe la misma respuesta. Eso es lo que te permite hacer planes, dibujar gráficas y predecir lo que pasará después."
+     ]
+    },
+    {
+     "title": "Cómo leer f(3)",
+     "mainIdea": "f(3) significa la salida de la regla f cuando la entrada es 3; es una pregunta y su respuesta, no un producto.",
+     "reading": [
+      "La *notación de funciones* le pone nombre a una regla. La regla del taxi es f(x) = 2x + 3. Léela como «f de x es igual a 2x más 3». La letra f es el nombre, x es el *valor de entrada* y 2x + 3 es lo que hace la regla. Para *evaluar* f(3), reemplaza cada x por 3: f(3) = 2(3) + 3 = 9. En el relato, eso significa que un viaje de 3 millas cuesta $9. Aquí los paréntesis no significan multiplicación. f(3) no es f × 3.",
+      "La notación también funciona al revés. Si alguien pregunta: «¿Hasta dónde puedo viajar con $15?», estás resolviendo f(x) = 15. Escribe 2x + 3 = 15, resta 3 para obtener 2x = 12 y divide para obtener x = 6. Un viaje de $15 son 6 millas. Fíjate en la diferencia entre las dos preguntas: f(6) pide la salida cuando la entrada es 6 (respuesta: 15), mientras que f(x) = 15 pregunta qué entrada da una salida de 15 (respuesta: 6).",
+      "Ten cuidado con las expresiones dentro y fuera de los paréntesis. f(x + 1) significa poner x + 1 en la regla: f(3 + 1) = f(4) = 2(4) + 3 = 11. Pero f(x) + 1 significa hallar primero f(x) y luego sumar 1: f(3) + 1 = 9 + 1 = 10. A las reglas distintas se les dan nombres distintos para que no se mezclen: la regla de los datos del celular es d(g) = 8g + 20, y d(3) = 44 mientras que f(3) = 9."
+     ],
+     "words": [
+      {
+       "w": "notación de funciones",
+       "d": "escribir una regla con un nombre y su entrada, como f(x) = 2x + 3"
+      },
+      {
+       "w": "evaluar",
+       "d": "hallar la salida de una función para una entrada específica"
+      },
+      {
+       "w": "valor de entrada",
+       "d": "el número que se pone dentro de los paréntesis, en lugar de la variable"
+      }
+     ],
+     "look": {
+      "title": "Cuatro preguntas sobre g",
+      "text": "Sea g(x) = 5x − 4. Entonces g(2) = 5(2) − 4 = 6. Y g(0) = 0 − 4 = −4. Y g(−1) = −5 − 4 = −9. Ahora resuelve g(x) = 21: 5x − 4 = 21, así que 5x = 25 y x = 5. Tres preguntas pedían salidas; la última pedía una entrada.",
+      "prompt": "Sea h(x) = 3x + 7. Halla h(4), h(−2) y el valor de x que hace que h(x) = 25."
+     },
+     "check": [
+      {
+       "q": "Si f(x) = 3x − 2, ¿cuánto es f(4)?",
+       "choices": [
+        "2",
+        "12",
+        "14",
+        "10"
+       ],
+       "why": "f(4) = 3(4) − 2 = 12 − 2 = 10. Si olvidas el −2, obtienes 12."
+      },
+      {
+       "q": "En la regla del taxi, ¿qué significa f(3) = 9?",
+       "choices": [
+        "Tres viajes cuestan $9 en total",
+        "Un viaje de 3 millas cuesta $9",
+        "f es 3 y la tarifa es 9",
+        "Nueve millas cuestan $3"
+       ],
+       "why": "La entrada 3 son las millas y la salida 9 es la tarifa: viajar 3 millas cuesta $9."
+      },
+      {
+       "q": "Si h(x) = 4x + 1, ¿para cuál x se cumple h(x) = 29?",
+       "choices": [
+        "117",
+        "7",
+        "7.5",
+        "28"
+       ],
+       "why": "4x + 1 = 29, así que 4x = 28 y x = 7. Comprueba: h(7) = 28 + 1 = 29. Si evalúas h(29), obtienes 117."
+      }
+     ],
+     "short": [
+      "*Function notation* gives a rule a name. The taxi rule is f(x) = 2x + 3, read 'f of x equals 2x plus 3.' The letter f is the name, and x is the *input value*. To *evaluate* f(3), replace every x with 3: f(3) = 2(3) + 3 = 9, so a 3-mile ride costs $9. The parentheses do not mean multiplication, and f(3) is not f × 3. The notation also works backward. To find the miles for a $15 ride, solve 2x + 3 = 15, which gives x = 6. Finally, f(x + 1) means put x + 1 into the rule, while f(x) + 1 means add 1 to the answer."
+     ],
+     "more": [
+      "The notation f(x) is not new. The mathematician Leonhard Euler began writing it in the 1700s, and people still use it because it packs a lot into a few symbols: the name of the rule, its input, and, when you write it out, what it does to the input.",
+      "A table of values can be read in the same way. If a table shows an input of 3 and an output of 9, you can write f(3) = 9. You can also mark the point (3, 9) on the graph, because the input is the horizontal number and the output is the vertical one."
+     ],
+     "short_es": [
+      "La *notación de funciones* le pone nombre a una regla. La regla del taxi es f(x) = 2x + 3, que se lee «f de x es igual a 2x más 3». La letra f es el nombre y x es el *valor de entrada*. Para *evaluar* f(3), reemplaza cada x por 3: f(3) = 2(3) + 3 = 9, así que un viaje de 3 millas cuesta $9. Los paréntesis no significan multiplicación, y f(3) no es f × 3. La notación también funciona al revés. Para hallar las millas de un viaje de $15, resuelve 2x + 3 = 15, que da x = 6. Por último, f(x + 1) significa poner x + 1 en la regla, mientras que f(x) + 1 significa sumar 1 a la respuesta."
+     ],
+     "more_es": [
+      "La notación f(x) no es nueva. El matemático Leonhard Euler empezó a escribirla en el siglo XVIII, y la gente todavía la usa porque guarda mucho en pocos símbolos: el nombre de la regla, su entrada y, cuando la escribes completa, lo que hace con la entrada.",
+      "Una tabla de valores se puede leer de la misma manera. Si una tabla muestra una entrada de 3 y una salida de 9, puedes escribir f(3) = 9. También puedes marcar el punto (3, 9) en la gráfica, porque la entrada es el número horizontal y la salida es el vertical."
+     ]
+    },
+    {
+     "title": "Dominio y rango",
+     "mainIdea": "El dominio es toda entrada que una función permite, y el rango es toda salida que puede producir.",
+     "reading": [
+      "La regla del plan de celular d(g) = 8g + 20 funciona bien en el papel para g = 1,000, pero el plan limita los datos a 10 gigabytes. Así que las entradas que de verdad tienen sentido van de 0 a 10. Ese conjunto de entradas permitidas es el *dominio*: 0 ≤ g ≤ 10. Pasa por la regla la entrada más pequeña y la más grande para hallar las salidas: d(0) = 20 y d(10) = 8(10) + 20 = 100. Como la regla sube de forma constante, es posible cualquier costo de $20 a $100. Ese conjunto de salidas es el *rango*: 20 ≤ d ≤ 100.",
+      "Algunas funciones aceptan solo ciertos tipos de números. Los boletos de cine cuestan $12 cada uno, así que c(n) = 12n, pero n debe ser un número entero: no puedes comprar 2.5 boletos. Si el sitio web permite hasta 6 boletos, el dominio es {0, 1, 2, 3, 4, 5, 6} y el rango es {0, 12, 24, 36, 48, 60, 72}. Un dominio formado por valores separados como este es *discreto*, y su gráfica son puntos. El dominio del taxi, millas ≥ 0, es *continuo*, porque un viaje puede ser de 2.37 millas, y su gráfica es una línea sólida.",
+      "El dominio y el rango a menudo se confunden, así que átalos a los ejes: el dominio es el conjunto de valores de x (horizontal), el rango es el conjunto de valores de y (vertical). Cuando un problema da un contexto, úsalo. El tiempo no puede ser negativo, los boletos vienen en números enteros y un plan tiene un límite. El contexto reduce el dominio, y luego la regla decide el rango."
+     ],
+     "words": [
+      {
+       "w": "dominio",
+       "d": "el conjunto de todas las entradas que acepta una función"
+      },
+      {
+       "w": "rango",
+       "d": "el conjunto de todas las salidas que produce una función"
+      },
+      {
+       "w": "discreto",
+       "d": "formado por valores separados, como la cantidad de boletos; se grafica con puntos"
+      },
+      {
+       "w": "continuo",
+       "d": "que incluye todos los valores de un intervalo, como millas o minutos; se grafica con una línea"
+      }
+     ],
+     "look": {
+      "title": "Boletos, hasta seis",
+      "text": "Los boletos cuestan $12 cada uno y el sitio vende como máximo 6 por pedido, así que c(n) = 12n con dominio {0, 1, 2, 3, 4, 5, 6}. Las salidas son 0, 12, 24, 36, 48, 60 y 72 dólares. No hay ningún pedido que cueste $30, porque 30 no es 12 veces un número entero.",
+      "prompt": "Un estacionamiento cobra $4 por hora hasta por 8 horas, y cobra por hora completa. Escribe la función y da su dominio y su rango."
+     },
+     "check": [
+      {
+       "q": "Para d(g) = 8g + 20 con dominio 0 ≤ g ≤ 10, ¿cuál es el rango?",
+       "choices": [
+        "0 ≤ d ≤ 10",
+        "8 ≤ d ≤ 20",
+        "20 ≤ d ≤ 80",
+        "20 ≤ d ≤ 100"
+       ],
+       "why": "d(0) = 20 y d(10) = 100, y la regla sube de forma constante, así que las salidas van de 20 a 100."
+      },
+      {
+       "q": "¿Cuál cantidad tiene un dominio discreto?",
+       "choices": [
+        "Minutos en una caminadora",
+        "Número de boletos de concierto comprados",
+        "Millas en un taxi",
+        "Galones de agua en un tanque"
+       ],
+       "why": "Los boletos vienen solo en números enteros, así que las entradas son valores separados. Los minutos, las millas y los galones pueden tomar cualquier valor de un intervalo."
+      },
+      {
+       "q": "¿Cuál es un dominio razonable para la función de la tarifa del taxi f(x) = 2x + 3?",
+       "choices": [
+        "Todos los números",
+        "x ≥ 0",
+        "x ≥ 3",
+        "Solo números enteros"
+       ],
+       "why": "Las millas no pueden ser negativas, pero un viaje puede tener cualquier largo, como 2.4 millas, así que el dominio es x ≥ 0."
+      }
+     ],
+     "short": [
+      "The cell plan rule d(g) = 8g + 20 has a data cap of 10 gigabytes, so the inputs that make sense run from 0 to 10. The set of allowed inputs is the *domain*: 0 ≤ g ≤ 10. Since d(0) = 20 and d(10) = 100, and the rule rises steadily, the outputs run from $20 to $100. The set of outputs is the *range*. Movie tickets cost $12 each, so c(n) = 12n, and n must be a whole number. A domain of separate values is *discrete*, and its graph is dots. A domain that includes every value, like taxi miles, is *continuous*, and its graph is a solid line. The domain is the x-values and the range is the y-values."
+     ],
+     "more": [
+      "The context chooses the domain, not the rule. The rule c(n) = 12n would work on paper for n = −4 or n = 2.5, but a ticket website cannot sell either one. When you describe a function from a story, first ask which inputs are possible in real life, and then write down the domain.",
+      "Here is a way to keep the two words straight. In the alphabet, D comes before R, just as x comes before y, and just as an input comes before an output. So the domain goes with the inputs and the range goes with the outputs."
+     ],
+     "short_es": [
+      "La regla del plan de celular d(g) = 8g + 20 tiene un límite de datos de 10 gigabytes, así que las entradas que tienen sentido van de 0 a 10. El conjunto de entradas permitidas es el *dominio*: 0 ≤ g ≤ 10. Como d(0) = 20 y d(10) = 100, y la regla sube de forma constante, las salidas van de $20 a $100. El conjunto de salidas es el *rango*. Los boletos de cine cuestan $12 cada uno, así que c(n) = 12n, y n debe ser un número entero. Un dominio de valores separados es *discreto*, y su gráfica son puntos. Un dominio que incluye todos los valores, como las millas del taxi, es *continuo*, y su gráfica es una línea sólida. El dominio son los valores de x y el rango son los valores de y."
+     ],
+     "more_es": [
+      "El contexto elige el dominio, no la regla. La regla c(n) = 12n funcionaría en el papel para n = −4 o n = 2.5, pero un sitio de boletos no puede vender ninguno de los dos. Cuando describas una función a partir de un relato, primero pregunta qué entradas son posibles en la vida real, y luego escribe el dominio.",
+      "Esta es una manera de no confundir las dos palabras. En el abecedario, la D va antes que la R, igual que la x va antes que la y, e igual que una entrada va antes que una salida. Así que el dominio va con las entradas y el rango va con las salidas."
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Funciones lineales",
+   "lessons": [
+    {
+     "title": "La pendiente como tasa de cambio",
+     "mainIdea": "La pendiente es el cambio en la salida dividido entre el cambio en la entrada, y en un relato es una tasa.",
+     "reading": [
+      "En la gráfica del taxi, el punto (1, 5) significa que 1 milla cuesta $5, y (4, 11) significa que 4 millas cuestan $11. Entre ellos la tarifa subió 11 − 5 = 6 dólares mientras que las millas subieron 4 − 1 = 3. La *pendiente* es el cambio vertical dividido entre el cambio horizontal: 6/3 = 2. En el relato son $2 por milla, la *tasa de cambio*. A menudo se llama *subida* al cambio vertical y *avance* al cambio horizontal, así que pendiente = subida/avance.",
+      "La fórmula para dos puntos (x1, y1) y (x2, y2) es pendiente = (y2 − y1)/(x2 − x1). Para (2, 7) y (5, 16): (16 − 7)/(5 − 2) = 9/3 = 3. El orden no importa mientras seas consistente. Si lo haces al revés, (7 − 16)/(2 − 5) = −9/−3 = 3, lo mismo. El error que debes evitar es mezclar los órdenes: (16 − 7)/(2 − 5) = 9/−3 = −3, que es incorrecto.",
+      "La pendiente puede ser negativa. Un tanque empieza con 500 galones y tiene 400 galones después de 4 minutos: (400 − 500)/(4 − 0) = −100/4 = −25. El tanque pierde 25 galones por minuto. En una función lineal, la pendiente es la misma entre dos puntos cualesquiera, y eso es justo lo que la hace lineal. En una curva, el mismo cálculo da la tasa de cambio promedio en ese intervalo, y por eso vale la pena memorizar la fórmula."
+     ],
+     "words": [
+      {
+       "w": "pendiente",
+       "d": "lo empinada que es una recta: el cambio en y dividido entre el cambio en x"
+      },
+      {
+       "w": "tasa de cambio",
+       "d": "cuánto cambia la salida por cada cambio de una unidad en la entrada"
+      },
+      {
+       "w": "subida",
+       "d": "el cambio vertical entre dos puntos de una gráfica"
+      },
+      {
+       "w": "avance",
+       "d": "el cambio horizontal entre dos puntos de una gráfica"
+      }
+     ],
+     "look": {
+      "title": "Un tanque que se vacía",
+      "rows": [
+       "0 minutos",
+       "2 minutos",
+       "4 minutos",
+       "6 minutos",
+       "10 minutos"
+      ],
+      "unit": "galones",
+      "prompt": "Elige dos filas cualesquiera y calcula la pendiente. Luego elige otras dos filas distintas. ¿Por qué obtienes el mismo número cada vez?"
+     },
+     "check": [
+      {
+       "q": "¿Cuál es la pendiente de la recta que pasa por (1, 4) y (3, 10)?",
+       "choices": [
+        "3",
+        "6",
+        "2",
+        "1/3"
+       ],
+       "why": "(10 − 4)/(3 − 1) = 6/2 = 3. Si olvidas dividir entre el avance, obtienes 6."
+      },
+      {
+       "q": "Un tanque tiene 500 galones a los 0 minutos y 350 galones a los 6 minutos. ¿Cuál es la tasa de cambio?",
+       "choices": [
+        "25 galones por minuto",
+        "−150 galones por minuto",
+        "−25 galones por minuto",
+        "−6 galones por minuto"
+       ],
+       "why": "(350 − 500)/(6 − 0) = −150/6 = −25. El tanque pierde 25 galones cada minuto, así que la tasa es negativa."
+      },
+      {
+       "q": "En la función del taxi, la pendiente 2 representa…",
+       "choices": [
+        "la tarifa inicial",
+        "la tarifa total",
+        "el número de millas",
+        "los dólares que se suman por milla"
+       ],
+       "why": "La pendiente es el cambio en la tarifa por cada cambio en las millas: cada milla extra suma $2. La tarifa inicial es el intercepto en y, 3."
+      }
+     ],
+     "short": [
+      "On the taxi graph, (1, 5) and (4, 11) are two points. Between them the fare rose by 6 dollars while the miles rose by 3. The *slope* is the vertical change divided by the horizontal change: 6/3 = 2, or $2 per mile. That is the *rate of change*. The vertical change is the *rise* and the horizontal change is the *run*, so slope = rise/run. For two points, slope = (y2 − y1)/(x2 − x1), and you keep the same order on top and bottom. Slope can be negative. A tank that goes from 500 gallons to 400 gallons in 4 minutes has slope −25, which means it loses 25 gallons a minute."
+     ],
+     "more": [
+      "Slope also tells you how steep a road is. A hill that climbs 1 foot for every 10 feet you go forward has slope 1/10. A steep ramp has a larger slope than a gentle one, and a flat road has slope 0, because it never rises at all.",
+      "The slope formula works on a table, too. Pick two rows and divide the change in the second column by the change in the first column. If you get the same answer for every pair of rows, the rule is linear. If the answers are different, it is not a straight line."
+     ],
+     "short_es": [
+      "En la gráfica del taxi, (1, 5) y (4, 11) son dos puntos. Entre ellos la tarifa subió 6 dólares mientras que las millas subieron 3. La *pendiente* es el cambio vertical dividido entre el cambio horizontal: 6/3 = 2, o sea $2 por milla. Esa es la *tasa de cambio*. El cambio vertical es la *subida* y el cambio horizontal es el *avance*, así que pendiente = subida/avance. Para dos puntos, pendiente = (y2 − y1)/(x2 − x1), y mantienes el mismo orden arriba y abajo. La pendiente puede ser negativa. Un tanque que pasa de 500 galones a 400 galones en 4 minutos tiene pendiente −25, lo que significa que pierde 25 galones por minuto."
+     ],
+     "more_es": [
+      "La pendiente también te dice qué tan empinado es un camino. Una cuesta que sube 1 pie por cada 10 pies que avanzas tiene pendiente 1/10. Una rampa empinada tiene una pendiente mayor que una suave, y un camino plano tiene pendiente 0, porque no sube nada.",
+      "La fórmula de la pendiente también sirve con una tabla. Elige dos filas y divide el cambio de la segunda columna entre el cambio de la primera columna. Si obtienes la misma respuesta con cada par de filas, la regla es lineal. Si las respuestas son distintas, no es una línea recta."
+     ]
+    },
+    {
+     "title": "La forma pendiente-intercepto",
+     "mainIdea": "En y = mx + b, m es la tasa de cambio y b es el valor inicial, donde la recta cruza el eje y.",
+     "reading": [
+      "Toda *función lineal* se puede escribir en *forma pendiente-intercepto*, y = mx + b. El número m es la pendiente, y b es el *intercepto en y*, la salida cuando la entrada es 0. En el plan de celular d = 8g + 20, m = 8 significa $8 por gigabyte y b = 20 significa que la factura es de $20 antes de usar datos. A esa b a menudo se le llama *valor inicial* porque es donde empieza el relato.",
+      "Puedes construir la ecuación a partir de dos puntos. Digamos que una factura fue de $28 por 1 GB y de $52 por 4 GB, así que los puntos son (1, 28) y (4, 52). Pendiente: (52 − 28)/(4 − 1) = 24/3 = 8. Ahora halla b sustituyendo un punto en y = 8x + b: 28 = 8(1) + b, así que b = 20. La función es d = 8g + 20. Comprueba con el otro punto: 8(4) + 20 = 52. Coincide.",
+      "En una gráfica, lee b donde la recta cruza el eje vertical, y luego cuenta subida sobre avance hasta un segundo punto claro. El error común es intercambiar m y b: leer y = 3x + 5 como «empieza en 3 y sube 5 cada vez». Recuerda que el número pegado a la x es el que se repite en cada paso, y el número suelto se paga una sola vez."
+     ],
+     "words": [
+      {
+       "w": "función lineal",
+       "d": "una función cuya gráfica es una línea recta; tiene una tasa de cambio constante"
+      },
+      {
+       "w": "forma pendiente-intercepto",
+       "d": "la ecuación y = mx + b, donde m es la pendiente y b es el intercepto en y"
+      },
+      {
+       "w": "intercepto en y",
+       "d": "la salida cuando la entrada es 0; el punto donde la gráfica cruza el eje y"
+      },
+      {
+       "w": "valor inicial",
+       "d": "la cantidad con que empieza un relato, que aparece como b en y = mx + b"
+      }
+     ],
+     "look": {
+      "title": "Bicicletas junto al lago",
+      "text": "Una renta de bicicletas junto al lago cobra una cuota fija de $8 más $6 por hora. La función de costo es c(h) = 6h + 8. Tres horas: c(3) = 18 + 8 = 26. El 8 se paga una vez (el intercepto); el 6 se paga cada hora (la pendiente).",
+      "prompt": "Una recaudación de fondos con lavado de carros empieza con una donación de $50 y gana $7 por carro. Escribe la función, identifica m y b, y halla el total después de 30 carros."
+     },
+     "check": [
+      {
+       "q": "Para y = −3x + 5, ¿cuáles son la pendiente y el intercepto en y?",
+       "choices": [
+        "pendiente 5, intercepto −3",
+        "pendiente −3, intercepto 5",
+        "pendiente 3, intercepto 5",
+        "pendiente −3, intercepto −5"
+       ],
+       "why": "El coeficiente de x es la pendiente, −3, y el término constante es el intercepto en y, 5."
+      },
+      {
+       "q": "¿Cuál ecuación da la recta que pasa por (2, 11) y (5, 20)?",
+       "choices": [
+        "y = 3x + 5",
+        "y = 9x + 11",
+        "y = 3x + 11",
+        "y = 5x + 1"
+       ],
+       "why": "La pendiente es (20 − 11)/(5 − 2) = 3. Luego 11 = 3(2) + b da b = 5. Comprueba: 3(5) + 5 = 20."
+      },
+      {
+       "q": "En d = 8g + 20, ¿qué representa el 20?",
+       "choices": [
+        "El costo por gigabyte",
+        "El límite de datos",
+        "La factura antes de usar datos",
+        "La factura por 8 gigabytes"
+       ],
+       "why": "Cuando g = 0 la factura es 20, así que 20 es el cargo fijo mensual antes de los datos. El costo por gigabyte es 8."
+      }
+     ],
+     "short": [
+      "Every *linear function* can be written in *slope-intercept form*, y = mx + b. The number m is the slope, and b is the *y-intercept*, the output when the input is 0. In the cell plan d = 8g + 20, m = 8 means $8 per gigabyte, and b = 20 is the bill before any data is used. That b is the *initial value*, where the story starts. To build an equation from two points, find the slope first. Then put one point into y = mx + b to find b. For (1, 28) and (4, 52), m = 8 and b = 20. Do not swap m and b: the number attached to x repeats with every step, and the lone number is paid once."
+     ],
+     "more": [
+      "Bike rentals, phone plans and taxis share one pattern: a fixed charge plus a charge that repeats. That pattern is a linear function. Once you can spot it, you can write an equation for many everyday prices. The fixed charge is b, and the charge that repeats is m.",
+      "Sometimes there is no fixed charge at all. If b = 0, as in y = 3x, the line passes through the point where both numbers are zero. That describes a price like apples at $3 a pound: zero pounds cost zero dollars, and each pound adds the same $3."
+     ],
+     "short_es": [
+      "Toda *función lineal* se puede escribir en *forma pendiente-intercepto*, y = mx + b. El número m es la pendiente, y b es el *intercepto en y*, la salida cuando la entrada es 0. En el plan de celular d = 8g + 20, m = 8 significa $8 por gigabyte, y b = 20 es la factura antes de usar datos. Esa b es el *valor inicial*, donde empieza el relato. Para construir una ecuación a partir de dos puntos, halla primero la pendiente. Luego pon un punto en y = mx + b para hallar b. Con (1, 28) y (4, 52), m = 8 y b = 20. No intercambies m y b: el número pegado a la x se repite en cada paso, y el número suelto se paga una sola vez."
+     ],
+     "more_es": [
+      "Las rentas de bicicletas, los planes de teléfono y los taxis comparten un mismo patrón: un cargo fijo más un cargo que se repite. Ese patrón es una función lineal. Cuando aprendes a verlo, puedes escribir una ecuación para muchos precios de todos los días. El cargo fijo es b, y el cargo que se repite es m.",
+      "A veces no hay ningún cargo fijo. Si b = 0, como en y = 3x, la recta pasa por el punto donde los dos números son cero. Eso describe un precio como el de las manzanas a $3 la libra: cero libras cuestan cero dólares, y cada libra suma los mismos $3."
+     ]
+    },
+    {
+     "title": "Las sucesiones aritméticas como funciones",
+     "mainIdea": "Una sucesión aritmética es una función lineal cuyas entradas son los números naturales 1, 2, 3, y así sucesivamente.",
+     "reading": [
+      "La primera fila de un estadio tiene 20 asientos, y cada fila de atrás tiene 2 más: 20, 22, 24, 26, … Una lista en la que se suma la misma cantidad cada vez es una *sucesión aritmética*, y la cantidad que se suma, aquí 2, es la *diferencia común*. Cada número de la lista es un *término*. La fila 1 es el término 1, la fila 2 es el término 2. Para hallar cualquier término, fíjate en que la fila n ha dado n − 1 pasos de tamaño 2 desde la primera fila: a(n) = 20 + 2(n − 1), que se simplifica a a(n) = 2n + 18. La fila 15 tiene a(15) = 30 + 18 = 48 asientos.",
+      "Mira la sucesión 5, 9, 13, 17, … La diferencia común es 4. La *regla explícita* es a(n) = 5 + 4(n − 1) = 4n + 1. Comprueba: a(1) = 5, a(2) = 9, a(3) = 13. Entonces a(10) = 41. La misma sucesión tiene una *regla recursiva*: a(1) = 5 y a(n) = a(n − 1) + 4, que dice «empieza en 5 y sigue sumando 4». La regla recursiva es fácil de enunciar pero lenta de usar para a(100); la regla explícita llega allí en un solo paso.",
+      "La regla explícita a(n) = 4n + 1 es una función lineal con pendiente 4 e intercepto 1, pero su dominio son solo los enteros positivos, así que su gráfica es una fila de puntos sobre una recta, no la recta misma. La diferencia común es la pendiente. El error usual es escribir a(n) = 5 + 4n, que empieza en 9 en lugar de 5. Prueba siempre tu regla con el primer término antes de confiar en ella."
+     ],
+     "words": [
+      {
+       "w": "sucesión aritmética",
+       "d": "una lista de números en la que se suma la misma cantidad cada vez"
+      },
+      {
+       "w": "diferencia común",
+       "d": "la cantidad fija que se suma para pasar de un término al siguiente"
+      },
+      {
+       "w": "término",
+       "d": "un número de una sucesión; a(3) es el tercer término"
+      },
+      {
+       "w": "regla explícita",
+       "d": "una fórmula que da cualquier término directamente a partir de su posición n"
+      },
+      {
+       "w": "regla recursiva",
+       "d": "una regla que da el primer término y cómo obtener cada término a partir del anterior"
+      }
+     ],
+     "look": {
+      "title": "Halla el vigésimo término",
+      "text": "La sucesión 7, 12, 17, 22, … tiene diferencia común 5. Regla explícita: a(n) = 7 + 5(n − 1) = 5n + 2. Prueba: a(1) = 7, a(2) = 12. Entonces a(20) = 100 + 2 = 102. Contar de 5 en 5 veinte veces daría la misma respuesta, solo que más despacio.",
+      "prompt": "Escribe la regla explícita de 4, 11, 18, 25, … y úsala para hallar el término número 30."
+     },
+     "check": [
+      {
+       "q": "¿Cuál es la diferencia común de 3, 10, 17, 24, …?",
+       "choices": [
+        "3",
+        "7",
+        "10",
+        "21"
+       ],
+       "why": "10 − 3 = 7, 17 − 10 = 7 y 24 − 17 = 7. Se suma el mismo 7 cada vez."
+      },
+      {
+       "q": "En la sucesión 5, 9, 13, 17, …, ¿cuál es el décimo término?",
+       "choices": [
+        "45",
+        "40",
+        "41",
+        "49"
+       ],
+       "why": "a(n) = 4n + 1, así que a(10) = 41. Si usas 5 + 4n por error, obtienes 45."
+      },
+      {
+       "q": "Si a(1) = 6 y a(n) = a(n − 1) − 3, ¿cuánto es a(4)?",
+       "choices": [
+        "3",
+        "0",
+        "−6",
+        "−3"
+       ],
+       "why": "a(2) = 3, a(3) = 0, a(4) = −3. Tres pasos de −3 desde 6 dan 6 − 9 = −3."
+      }
+     ],
+     "short": [
+      "A stadium's first row has 20 seats, and each row behind it has 2 more: 20, 22, 24, … A list where you add the same amount each time is an *arithmetic sequence*. The amount added, here 2, is the *common difference*. Each number in the list is a *term*. Row n has taken n − 1 steps of 2, so a(n) = 20 + 2(n − 1) = 2n + 18. For 5, 9, 13, 17, … the *explicit rule* is a(n) = 4n + 1, so a(10) = 41. The *recursive rule* says 'start at 5 and keep adding 4.' The explicit rule jumps straight to any term, and its slope is the common difference. Always test a rule on the first term."
+     ],
+     "more": [
+      "Saving the same amount every week makes an arithmetic sequence. If you start with $15 and add $5 each week, your balance goes 15, 20, 25, 30, … Each week is one more step of the same size, so the idea of a common difference fits exactly.",
+      "A sequence can also go down. If you owe $100 and pay $10 each week, the amounts left are 100, 90, 80, 70, … and the common difference is −10. A negative common difference gives a line that slopes downward, just like a negative slope."
+     ],
+     "short_es": [
+      "La primera fila de un estadio tiene 20 asientos, y cada fila de atrás tiene 2 más: 20, 22, 24, … Una lista en la que se suma la misma cantidad cada vez es una *sucesión aritmética*. La cantidad que se suma, aquí 2, es la *diferencia común*. Cada número de la lista es un *término*. La fila n ha dado n − 1 pasos de 2, así que a(n) = 20 + 2(n − 1) = 2n + 18. Para 5, 9, 13, 17, … la *regla explícita* es a(n) = 4n + 1, así que a(10) = 41. La *regla recursiva* dice «empieza en 5 y sigue sumando 4». La regla explícita llega directo a cualquier término, y su pendiente es la diferencia común. Prueba siempre una regla con el primer término."
+     ],
+     "more_es": [
+      "Ahorrar la misma cantidad cada semana forma una sucesión aritmética. Si empiezas con $15 y sumas $5 cada semana, tu saldo va 15, 20, 25, 30, … Cada semana es un paso más del mismo tamaño, así que la idea de diferencia común encaja exactamente.",
+      "Una sucesión también puede bajar. Si debes $100 y pagas $10 cada semana, las cantidades que quedan son 100, 90, 80, 70, … y la diferencia común es −10. Una diferencia común negativa da una recta que baja, igual que una pendiente negativa."
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Leer y construir gráficas",
+   "lessons": [
+    {
+     "title": "Rasgos clave de una gráfica",
+     "mainIdea": "Los interceptos, la dirección y los ceros cuentan la historia de una gráfica con unos pocos números.",
+     "reading": [
+      "Un tanque contiene 500 galones y se vacía a 25 galones por minuto, así que y = 500 − 25x. Su gráfica cruza el eje vertical en 500: ese es el *intercepto en y*, la cantidad en el tiempo 0. Cruza el eje horizontal donde y = 0. Resuelve 500 − 25x = 0: 25x = 500, así que x = 20. Ese es el *intercepto en x*, también llamado *cero de una función*, y significa que el tanque queda vacío a los 20 minutos.",
+      "La recta baja de izquierda a derecha, así que la función es *decreciente*: cada minuto extra da menos galones. Una función de ahorro como s(w) = 30w + 120 es *creciente*, porque cada semana suma $30. Su intercepto en y, 120, es el saldo inicial. Su cero estaría en 30w + 120 = 0, o sea w = −4, pero las semanas negativas están fuera del dominio, así que en el relato la gráfica nunca llega a cero.",
+      "Una gráfica también es positiva donde está por encima del eje horizontal y negativa donde está por debajo. En el tanque, y es positiva para 0 ≤ x < 20 y sería negativa después, lo cual es imposible, así que el dominio razonable es 0 ≤ x ≤ 20. Cuando leas cualquier gráfica, hazte cuatro preguntas: ¿dónde empieza (intercepto en y)?, ¿dónde llega a cero (intercepto en x)?, ¿sube o baja (creciente o decreciente)? y ¿qué entradas tienen sentido en realidad (dominio)?"
+     ],
+     "words": [
+      {
+       "w": "intercepto en y",
+       "d": "el punto donde una gráfica cruza el eje vertical; la salida cuando la entrada es 0"
+      },
+      {
+       "w": "intercepto en x",
+       "d": "el punto donde una gráfica cruza el eje horizontal; la entrada que da una salida de 0"
+      },
+      {
+       "w": "cero de una función",
+       "d": "un valor de entrada que hace que la salida sea 0; es lo mismo que un intercepto en x"
+      },
+      {
+       "w": "creciente",
+       "d": "que sube de izquierda a derecha; las salidas crecen cuando crecen las entradas"
+      },
+      {
+       "w": "decreciente",
+       "d": "que baja de izquierda a derecha; las salidas se reducen cuando crecen las entradas"
+      }
+     ],
+     "look": {
+      "title": "Leer una recta de ahorro",
+      "text": "Una estudiante empieza con $120 y ahorra $30 a la semana: s(w) = 30w + 120. El intercepto en y, 120, es el saldo inicial. La recta sube, así que es creciente. Después de 10 semanas, s(10) = 300 + 120 = 420. Si s(w) = 600, se obtiene 30w = 480, así que w = 16 semanas para llegar a $600.",
+      "prompt": "Supón que, en cambio, la estudiante empieza con $500 y gasta $40 a la semana. Escribe la función, halla los dos interceptos y di qué significa cada uno."
+     },
+     "check": [
+      {
+       "q": "¿Cuál es el intercepto en x de y = 500 − 25x?",
+       "choices": [
+        "500",
+        "20",
+        "25",
+        "−20"
+       ],
+       "why": "Haz y = 0: 500 − 25x = 0, así que x = 20. El tanque queda vacío a los 20 minutos."
+      },
+      {
+       "q": "En el tanque, ¿qué significa el intercepto en y, 500?",
+       "choices": [
+        "El tanque se vacía durante 500 minutos",
+        "El tanque pierde 500 galones por minuto",
+        "El tanque contiene 500 galones en el tiempo 0",
+        "El tanque está vacío con 500 galones"
+       ],
+       "why": "El intercepto en y es la salida cuando x = 0, así que al principio el tanque contiene 500 galones."
+      },
+      {
+       "q": "¿Cuál función es decreciente?",
+       "choices": [
+        "y = 2x + 9",
+        "y = x − 9",
+        "y = 9",
+        "y = −2x + 9"
+       ],
+       "why": "Una pendiente negativa significa que la recta baja de izquierda a derecha. La pendiente de y = −2x + 9 es −2."
+      }
+     ],
+     "short": [
+      "A tank holds 500 gallons and drains 25 gallons a minute, so y = 500 − 25x. Its graph crosses the vertical axis at 500. That is the *y-intercept*, the amount at time 0. It crosses the horizontal axis where y = 0, and solving 500 − 25x = 0 gives x = 20. That is the *x-intercept*, also called the *zero of a function*: the tank is empty after 20 minutes. The line falls from left to right, so the function is *decreasing*. A negative slope always means this. A savings function like s(w) = 30w + 120 is *increasing*, because each week adds $30. When you read a graph, ask where it starts, where it hits zero, whether it rises or falls, and which inputs make sense."
+     ],
+     "more": [
+      "The x-intercept answers a question: when does this reach zero? A savings plan can ask a similar question, such as when the balance reaches a goal. You set s(w) equal to the goal and solve. Finding a zero is the very same move, only with the goal set to 0.",
+      "Intercepts are the easiest points to find, which is why they are often the first ones people plot. To find the y-intercept, put 0 in for x. To find the x-intercept, put 0 in for y. With those two points you can draw the whole line, because two points make exactly one straight line."
+     ],
+     "short_es": [
+      "Un tanque contiene 500 galones y se vacía a 25 galones por minuto, así que y = 500 − 25x. Su gráfica cruza el eje vertical en 500. Ese es el *intercepto en y*, la cantidad en el tiempo 0. Cruza el eje horizontal donde y = 0, y al resolver 500 − 25x = 0 se obtiene x = 20. Ese es el *intercepto en x*, también llamado *cero de una función*: el tanque queda vacío a los 20 minutos. La recta baja de izquierda a derecha, así que la función es *decreciente*. Una pendiente negativa siempre significa esto. Una función de ahorro como s(w) = 30w + 120 es *creciente*, porque cada semana suma $30. Cuando leas una gráfica, pregunta dónde empieza, dónde llega a cero, si sube o baja y qué entradas tienen sentido."
+     ],
+     "more_es": [
+      "El intercepto en x responde una pregunta: ¿cuándo llega esto a cero? Un plan de ahorro puede hacer una pregunta parecida, como cuándo el saldo llega a una meta. Haces s(w) igual a la meta y resuelves. Hallar un cero es exactamente el mismo paso, solo que con la meta igual a 0.",
+      "Los interceptos son los puntos más fáciles de hallar, y por eso suelen ser los primeros que se marcan. Para hallar el intercepto en y, pon 0 en lugar de x. Para hallar el intercepto en x, pon 0 en lugar de y. Con esos dos puntos puedes dibujar toda la recta, porque dos puntos forman exactamente una línea recta."
+     ]
+    },
+    {
+     "title": "Construir un modelo a partir de datos",
+     "mainIdea": "Cuando las salidas de una tabla cambian la misma cantidad en cada paso, un modelo lineal encaja y puedes usarlo para predecir.",
+     "reading": [
+      "Una renta de bicicletas publica estos precios: 1 hora $14, 2 horas $20, 3 horas $26, 4 horas $32. Cada hora extra suma 20 − 14 = 6, luego 26 − 20 = 6 y luego 32 − 26 = 6. Las diferencias constantes significan que encaja un *modelo lineal*. La pendiente es de 6 dólares por hora. Para hallar el intercepto, retrocede una hora desde (1, 14): 14 − 6 = 8. El modelo es c = 6h + 8, que significa una cuota fija de $8 más $6 por hora. Comprueba: 6(4) + 8 = 32.",
+      "Un modelo se gana su lugar al hacer una *predicción*. Para 7 horas, c = 6(7) + 8 = 50. Esa predicción queda justo fuera del rango de la tabla, de 1 a 4 horas, y eso se llama *extrapolar*. Predecir un valor dentro del rango de la tabla, como 2.5 horas, que da 6(2.5) + 8 = 23, es *interpolar* y por lo general es más seguro. Extrapolar muy lejos es arriesgado: para 40 horas el modelo da $248, pero la tienda probablemente cambia a una tarifa diaria mucho antes.",
+      "Los datos reales rara vez encajan a la perfección. Si las diferencias fueran 6, 7, 5 y 6, el patrón sigue siendo más o menos lineal y una recta trazada por el medio de los puntos es un modelo razonable. Indica la pendiente con sus unidades, di qué significa el intercepto y explica hasta dónde confías en la predicción. Un modelo es una herramienta para la situación de la que salió, no una ley de la naturaleza."
+     ],
+     "words": [
+      {
+       "w": "modelo lineal",
+       "d": "una función lineal que se usa para describir y predecir una situación real"
+      },
+      {
+       "w": "predicción",
+       "d": "una salida que da el modelo para una entrada que no has medido"
+      },
+      {
+       "w": "interpolar",
+       "d": "predecir para una entrada que está dentro del rango de los datos que tienes"
+      },
+      {
+       "w": "extrapolar",
+       "d": "predecir para una entrada que está fuera del rango de los datos que tienes"
+      }
+     ],
+     "look": {
+      "title": "Precios de renta de bicicletas",
+      "rows": [
+       "1 hora",
+       "2 horas",
+       "3 horas",
+       "4 horas",
+       "5 horas"
+      ],
+      "unit": "dólares",
+      "prompt": "Confirma que el modelo c = 6h + 8 encaja con cada fila. Luego úsalo para predecir el costo de 8 horas y di si es interpolar o extrapolar."
+     },
+     "check": [
+      {
+       "q": "¿Cuál modelo encaja con la tabla de la renta?",
+       "choices": [
+        "c = 8h + 6",
+        "c = 6h + 8",
+        "c = 14h",
+        "c = 6h + 14"
+       ],
+       "why": "Las diferencias son todas 6, así que la pendiente es 6. Luego 14 = 6(1) + b da b = 8."
+      },
+      {
+       "q": "Con c = 6h + 8, ¿cuál es el costo de 7 horas?",
+       "choices": [
+        "$42",
+        "$56",
+        "$50",
+        "$98"
+       ],
+       "why": "6(7) + 8 = 42 + 8 = 50. Si olvidas la cuota fija, obtienes 42."
+      },
+      {
+       "q": "Predecir el costo de 40 horas a partir de esta tabla es…",
+       "choices": [
+        "extrapolar, y es arriesgado porque los precios pueden cambiar",
+        "interpolar, y es muy confiable",
+        "imposible con un modelo lineal",
+        "extrapolar, y siempre es exacto"
+       ],
+       "why": "40 horas está muy fuera de los datos de 1 a 5 horas, así que es extrapolar, y es probable que una tienda cobre otra tarifa diaria."
+      }
+     ],
+     "short": [
+      "A bike rental posts 1 hour $14, 2 hours $20, 3 hours $26 and 4 hours $32. Each extra hour adds 6, so a *linear model* fits, with slope 6 dollars per hour. Stepping back one hour from (1, 14) gives the intercept 14 − 6 = 8, so c = 6h + 8: an $8 flat fee plus $6 per hour. A model earns its keep by making a *prediction*. For 7 hours, c = 6(7) + 8 = 50. Predicting outside the data, like 7 hours, is *extrapolating*. Predicting inside the data, like 2.5 hours, is *interpolating*, and it is usually safer. For 40 hours the model gives $248, but a shop probably changes its rate long before that."
+     ],
+     "more": [
+      "Linear models appear in many jobs. A delivery driver might estimate the gas used from the miles driven, and a baker might estimate the cost from the number of cakes. The habit is the same each time: look for a constant change, find the starting value, and write y = mx + b.",
+      "You can test a model with a point you did not use to build it. The price list also shows that 5 hours cost $38, and the model gives 6(5) + 8 = 38. When a model matches a row it was not built from, you can trust it a little more."
+     ],
+     "short_es": [
+      "Una renta de bicicletas publica 1 hora $14, 2 horas $20, 3 horas $26 y 4 horas $32. Cada hora extra suma 6, así que encaja un *modelo lineal*, con pendiente de 6 dólares por hora. Retroceder una hora desde (1, 14) da el intercepto 14 − 6 = 8, así que c = 6h + 8: una cuota fija de $8 más $6 por hora. Un modelo se gana su lugar al hacer una *predicción*. Para 7 horas, c = 6(7) + 8 = 50. Predecir fuera de los datos, como 7 horas, es *extrapolar*. Predecir dentro de los datos, como 2.5 horas, es *interpolar*, y por lo general es más seguro. Para 40 horas el modelo da $248, pero una tienda probablemente cambia su tarifa mucho antes."
+     ],
+     "more_es": [
+      "Los modelos lineales aparecen en muchos trabajos. Un repartidor puede estimar la gasolina que usa según las millas recorridas, y una panadera puede estimar el costo según el número de pasteles. El hábito es el mismo cada vez: buscar un cambio constante, hallar el valor inicial y escribir y = mx + b.",
+      "Puedes probar un modelo con un punto que no usaste para construirlo. La lista de precios también muestra que 5 horas cuestan $38, y el modelo da 6(5) + 8 = 38. Cuando un modelo coincide con una fila de la que no salió, puedes confiar un poco más en él."
+     ]
+    },
+    {
+     "title": "Funciones definidas por partes y escalonadas",
+     "mainIdea": "Una función definida por partes usa reglas distintas en partes distintas de su dominio; una función escalonada salta entre valores constantes.",
+     "reading": [
+      "Un estacionamiento del centro cobra $5 por la primera hora y $3 por cada hora adicional o parte de una hora. Una hora cuesta $5. Dos horas cuestan $8. Dos horas y media también cuestan $11, porque la media hora cuenta como una hora extra completa. La gráfica es plana en $5 hasta 1 hora, salta a $8, sigue plana, salta a $11, y así sucesivamente. Una gráfica hecha de tramos planos con saltos es una *función escalonada*. Sigue siendo una función: cada tiempo de estacionamiento tiene exactamente un precio.",
+      "En general, una *función definida por partes* tiene una regla distinta en cada *intervalo* de su dominio. El pago por horas extra es un caso clásico: una persona trabajadora gana $15 por hora durante las primeras 40 horas y $22.50 por hora después de eso. Así que p(h) = 15h cuando h ≤ 40, y p(h) = 600 + 22.5(h − 40) cuando h > 40, donde 600 es el pago por las primeras 40 horas. Para una semana de 44 horas, usa la segunda regla: 600 + 22.5(4) = 600 + 90 = 690.",
+      "Para evaluar una función definida por partes, primero halla a cuál intervalo pertenece la entrada y luego aplica solo esa regla. Sea f(x) = 2x para x < 3 y f(x) = x + 3 para x ≥ 3. Entonces f(2) = 4 porque 2 < 3, y f(5) = 8 porque 5 ≥ 3. La frontera importa: f(3) usa la segunda regla porque 3 ≥ 3, así que f(3) = 6. El error común es aplicar las dos reglas, o la regla equivocada, en la frontera."
+     ],
+     "words": [
+      {
+       "w": "función definida por partes",
+       "d": "una función definida por reglas distintas en partes distintas de su dominio"
+      },
+      {
+       "w": "función escalonada",
+       "d": "una función definida por partes cuyos tramos son todos planos, así que la gráfica parece una escalera"
+      },
+      {
+       "w": "intervalo",
+       "d": "un tramo de entradas, como de 0 a 40 horas, donde se aplica una regla"
+      }
+     ],
+     "look": {
+      "title": "Envío según el peso",
+      "text": "Una empresa de envíos cobra $4 por paquetes de hasta 1 libra, $7 por más de 1 libra y hasta 3 libras, y $10 por más de 3 libras y hasta 5 libras. Una caja de 2.4 libras cuesta $7. Una caja de 3 libras cuesta $7, porque el 3 está incluido en el intervalo del medio. Una caja de 3.1 libras cuesta $10.",
+      "prompt": "Dibuja los escalones de esta función. ¿Dónde están los saltos y qué extremo de cada escalón está incluido?"
+     },
+     "check": [
+      {
+       "q": "El estacionamiento cobra $5 por la primera hora y $3 por cada hora adicional o parte de hora. ¿Cuánto cuestan 3.5 horas?",
+       "choices": [
+        "$12.50",
+        "$11",
+        "$14",
+        "$15.50"
+       ],
+       "why": "Después de la primera hora, 2.5 horas más cuentan como 3 horas adicionales: 5 + 3(3) = 14."
+      },
+      {
+       "q": "Con $15 por hora hasta 40 horas y $22.50 por hora después, ¿cuánto se paga por 44 horas?",
+       "choices": [
+        "$660",
+        "$990",
+        "$600",
+        "$690"
+       ],
+       "why": "Las primeras 40 horas ganan 600; las 4 horas extra ganan 22.5(4) = 90; el total es 690."
+      },
+      {
+       "q": "Si f(x) = 2x para x < 3 y f(x) = x + 3 para x ≥ 3, ¿cuánto es f(3)?",
+       "choices": [
+        "6",
+        "9",
+        "3",
+        "12"
+       ],
+       "why": "Como 3 ≥ 3, usa la segunda regla: f(3) = 3 + 3 = 6. La primera regla solo se aplicaría a entradas menores que 3."
+      }
+     ],
+     "short": [
+      "A garage charges $5 for the first hour and $3 for each additional hour or part of an hour. One hour costs $5, two hours cost $8, and two and a half hours cost $11. The graph is flat, then jumps, like stairs. It is a *step function*, and it is still a function because each parking time has one price. A *piecewise function* uses a different rule on each *interval* of its domain. Overtime pay is one example: $15 an hour for the first 40 hours and $22.50 after that, so 44 hours pay 600 + 22.5(4) = 690. To evaluate one, find which interval the input is in and use only that rule. At a boundary, if f(x) = 2x for x < 3 and x + 3 for x ≥ 3, then f(3) = 6."
+     ],
+     "more": [
+      "Step functions show up wherever things are counted in whole units: postage by weight band, bus fares by zone, parking by the hour. When you meet one, look for where the jumps happen. Then ask which side of each jump includes the number.",
+      "A piecewise graph can be drawn one piece at a time. Use a solid dot where an interval includes its end and an open circle where it does not, the same dots you used for inequalities on a number line. Together, the dots tell you exactly what happens at the boundary."
+     ],
+     "short_es": [
+      "Un estacionamiento cobra $5 por la primera hora y $3 por cada hora adicional o parte de una hora. Una hora cuesta $5, dos horas cuestan $8, y dos horas y media cuestan $11. La gráfica es plana, luego salta, como una escalera. Es una *función escalonada*, y sigue siendo una función porque cada tiempo de estacionamiento tiene un precio. Una *función definida por partes* usa una regla distinta en cada *intervalo* de su dominio. El pago por horas extra es un ejemplo: $15 por hora durante las primeras 40 horas y $22.50 después, así que 44 horas pagan 600 + 22.5(4) = 690. Para evaluar una, halla en cuál intervalo está la entrada y usa solo esa regla. En una frontera, si f(x) = 2x para x < 3 y x + 3 para x ≥ 3, entonces f(3) = 6."
+     ],
+     "more_es": [
+      "Las funciones escalonadas aparecen dondequiera que las cosas se cuentan en unidades enteras: el franqueo según la franja de peso, las tarifas de autobús según la zona, el estacionamiento por hora. Cuando encuentres una, fíjate en dónde ocurren los saltos. Luego pregunta qué lado de cada salto incluye el número.",
+      "Una gráfica definida por partes se puede dibujar una parte a la vez. Usa un punto relleno donde un intervalo incluye su extremo y un círculo abierto donde no lo incluye, los mismos puntos que usaste para las desigualdades en una recta numérica. Juntos, los puntos te dicen exactamente qué pasa en la frontera."
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Cambiar y comparar rectas",
+   "lessons": [
+    {
+     "title": "Desplazar y estirar rectas",
+     "mainIdea": "Sumar a la salida desliza una gráfica hacia arriba o hacia abajo, sumar a la entrada la desliza hacia los lados, y multiplicar la salida cambia lo empinada que es.",
+     "reading": [
+      "Empieza con f(x) = 2x, la tarifa del taxi sin cuota inicial. Ahora la compañía agrega una cuota de arranque de $3: g(x) = f(x) + 3 = 2x + 3. Cada salida es 3 más que antes, así que toda la recta se desliza 3 unidades hacia arriba. Esto es un *desplazamiento vertical*, un tipo de *transformación*. En x = 0, 1 y 2, f da 0, 2 y 4, mientras que g da 3, 5 y 7. La misma pendiente, una recta más alta.",
+      "Sumar dentro de los paréntesis cambia la entrada. h(x) = f(x − 1) = 2(x − 1) = 2x − 2. Para obtener la salida que f daba en x = 1, ahora debes poner x = 2. La gráfica se desliza 1 unidad hacia la derecha, un *desplazamiento horizontal*. Fíjate en la dirección: x − 1 mueve hacia la derecha y x + 1 mueve hacia la izquierda, lo contrario de lo que mucha gente supone al principio. Comprueba con un punto: f(1) = 2, y h(2) = 2(2) − 2 = 2, así que el punto se movió de (1, 2) a (2, 2).",
+      "Multiplicar la salida hace la recta más empinada o más plana. k(x) = 3·f(x) = 6x tiene pendiente 6 en lugar de 2, un *estiramiento vertical*. El intercepto sigue en 0, pero cada salida se triplica: en x = 2, f da 4 y k da 12. La manera más rápida de ver una transformación es una tabla pequeña con tres entradas. Si todas las salidas cambiaron la misma cantidad, fue un desplazamiento; si las salidas se multiplicaron, fue un estiramiento."
+     ],
+     "words": [
+      {
+       "w": "transformación",
+       "d": "un cambio que mueve o remodela una gráfica de una manera predecible"
+      },
+      {
+       "w": "desplazamiento vertical",
+       "d": "deslizar una gráfica hacia arriba o hacia abajo sumando un número a cada salida"
+      },
+      {
+       "w": "desplazamiento horizontal",
+       "d": "deslizar una gráfica hacia la izquierda o hacia la derecha sumando un número a la entrada"
+      },
+      {
+       "w": "estiramiento vertical",
+       "d": "multiplicar cada salida por un número, lo que cambia lo empinada que es una recta"
+      }
+     ],
+     "look": {
+      "title": "Tres filas, tres funciones",
+      "text": "Sea f(x) = x + 1. Para x = 0, 1, 2: f da 1, 2, 3. Entonces f(x) + 4 da 5, 6, 7, cada salida 4 más arriba. Y 3·f(x) da 3, 6, 9, cada salida triplicada. El primer cambio desliza la recta; el segundo la inclina.",
+      "prompt": "Haz la misma tabla de tres filas para f(x) = 2x − 1, f(x) − 3 y 2·f(x). ¿Cuál tiene la misma pendiente que f?"
+     },
+     "check": [
+      {
+       "q": "¿Cómo se compara la gráfica de y = 2x + 5 con la de y = 2x?",
+       "choices": [
+        "Desplazada 5 a la derecha",
+        "Desplazada 5 hacia arriba",
+        "Cinco veces más empinada",
+        "Desplazada 5 hacia abajo"
+       ],
+       "why": "Sumar 5 a cada salida desliza la recta 5 unidades hacia arriba; la pendiente 2 no cambia."
+      },
+      {
+       "q": "Si f(x) = 4x − 1, ¿cuál es g(x) = f(x) − 3?",
+       "choices": [
+        "4x − 4",
+        "4x + 2",
+        "4x − 3",
+        "x − 4"
+       ],
+       "why": "Resta 3 a toda la salida: 4x − 1 − 3 = 4x − 4. La pendiente sigue siendo 4."
+      },
+      {
+       "q": "¿Qué cambio altera la pendiente de una recta?",
+       "choices": [
+        "Sumar 2 a cada salida",
+        "Restar 2 a cada salida",
+        "Multiplicar cada salida por 3",
+        "Reemplazar x por x + 2"
+       ],
+       "why": "Multiplicar las salidas por 3 triplica la subida para el mismo avance, así que la pendiente se triplica. Los desplazamientos mueven la recta sin inclinarla."
+      }
+     ],
+     "short": [
+      "Start with f(x) = 2x, the taxi rate with no starting fee. Adding a $3 flag fee gives g(x) = f(x) + 3 = 2x + 3. Every output is 3 more, so the line slides up 3 units. This is a *vertical shift*, one kind of *transformation*. Adding inside the parentheses changes the input. The line h(x) = f(x − 1) = 2x − 2 slides right 1 unit, which is a *horizontal shift*. Multiplying the output makes the line steeper: k(x) = 3·f(x) = 6x has slope 6 instead of 2, a *vertical stretch*. A small table with three inputs shows which one it is. If every output changes by the same amount, it is a shift. If the outputs are multiplied, it is a stretch."
+     ],
+     "more": [
+      "A shift or a stretch changes where a line sits or how steep it is, but a line stays a line. Vertical shifts keep the slope the same, so a shifted line runs parallel to the original. Only a stretch changes the tilt of the line.",
+      "Everyday prices show the difference. A vertical shift is like a fixed delivery fee added to every order. A stretch is like switching to a rate that is three times as high, so every amount you pay is multiplied. Seeing which one a story describes tells you whether the intercept or the slope should change."
+     ],
+     "short_es": [
+      "Empieza con f(x) = 2x, la tarifa del taxi sin cuota inicial. Agregar una cuota de arranque de $3 da g(x) = f(x) + 3 = 2x + 3. Cada salida es 3 más, así que la recta se desliza 3 unidades hacia arriba. Esto es un *desplazamiento vertical*, un tipo de *transformación*. Sumar dentro de los paréntesis cambia la entrada. La recta h(x) = f(x − 1) = 2x − 2 se desliza 1 unidad hacia la derecha, lo que es un *desplazamiento horizontal*. Multiplicar la salida hace la recta más empinada: k(x) = 3·f(x) = 6x tiene pendiente 6 en lugar de 2, un *estiramiento vertical*. Una tabla pequeña con tres entradas muestra cuál es. Si todas las salidas cambian la misma cantidad, es un desplazamiento. Si las salidas se multiplican, es un estiramiento."
+     ],
+     "more_es": [
+      "Un desplazamiento o un estiramiento cambia dónde está una recta o qué tan empinada es, pero una recta sigue siendo una recta. Los desplazamientos verticales mantienen la misma pendiente, así que una recta desplazada corre paralela a la original. Solo un estiramiento cambia la inclinación de la recta.",
+      "Los precios de todos los días muestran la diferencia. Un desplazamiento vertical es como una cuota fija de entrega que se suma a cada pedido. Un estiramiento es como cambiar a una tarifa que es tres veces más alta, de modo que cada cantidad que pagas se multiplica. Ver cuál describe un relato te dice si debe cambiar el intercepto o la pendiente."
+     ]
+    },
+    {
+     "title": "Comparar dos modelos",
+     "mainIdea": "Para comparar dos modelos lineales, halla dónde sus salidas son iguales y luego mira cuál es mejor a cada lado de ese punto.",
+     "reading": [
+      "Dos planes de celular: el Plan A cobra $20 más $8 por gigabyte, así que A(g) = 8g + 20. El Plan B cobra $35 más $5 por gigabyte, así que B(g) = 5g + 35. ¿Cuál es más barato? Prueba con 3 GB: A(3) = 44 y B(3) = 50, así que gana A. Prueba con 8 GB: A(8) = 84 y B(8) = 75, así que gana B. En algún punto entre 3 y 8 los planes deben costar lo mismo. Ese cruce es el *punto de equilibrio*.",
+      "Para hallarlo con exactitud, iguala las salidas: 8g + 20 = 5g + 35. Resta 5g: 3g + 20 = 35. Resta 20: 3g = 15. Divide: g = 5. Comprueba: A(5) = 60 y B(5) = 60. Los dos planes cuestan $60 con 5 GB. En una gráfica, este es el *punto de intersección* (5, 60) donde se cruzan las dos rectas. Por debajo de 5 GB, el plan A, que tiene el intercepto más bajo, es más barato; por encima de 5 GB, el plan B, que tiene la pendiente más baja, es más barato.",
+      "Este es un buen hábito de *comparación*: el plan con el costo inicial más pequeño gana para entradas pequeñas, y el plan con la tasa más pequeña gana para entradas grandes. El punto de cruce te dice dónde cambia la ventaja. Igualar dos reglas y resolver es la puerta al siguiente capítulo, donde dos ecuaciones se resuelven juntas como un sistema."
+     ],
+     "words": [
+      {
+       "w": "punto de equilibrio",
+       "d": "la entrada donde dos modelos dan la misma salida"
+      },
+      {
+       "w": "punto de intersección",
+       "d": "el punto donde se cruzan dos gráficas; ahí las dos ecuaciones son verdaderas"
+      },
+      {
+       "w": "comparación",
+       "d": "revisar dos modelos uno contra otro para ver cuál es mejor para una entrada dada"
+      }
+     ],
+     "look": {
+      "title": "Dos ahorradores",
+      "text": "Ana tiene $200 y ahorra $15 a la semana: 15w + 200. Beto tiene $80 y ahorra $25 a la semana: 25w + 80. Iguálalas: 15w + 200 = 25w + 80. Resta 15w: 200 = 10w + 80. Resta 80: 120 = 10w, así que w = 12. Después de 12 semanas los dos tienen 15(12) + 200 = 380 dólares. Después de eso, Beto se adelanta.",
+      "prompt": "¿Quién tiene más dinero después de 6 semanas? ¿Y después de 20 semanas? Explica usando las pendientes y los interceptos."
+     },
+     "check": [
+      {
+       "q": "¿Con cuántos gigabytes cuestan lo mismo el Plan A (8g + 20) y el Plan B (5g + 35)?",
+       "choices": [
+        "3 GB",
+        "15 GB",
+        "5 GB",
+        "55 GB"
+       ],
+       "why": "8g + 20 = 5g + 35 da 3g = 15, así que g = 5. Los dos cuestan $60 ahí."
+      },
+      {
+       "q": "¿Cuál plan es más barato con 2 GB?",
+       "choices": [
+        "El Plan B, con $45",
+        "El Plan A, con $36",
+        "Cuestan lo mismo",
+        "El Plan B, con $36"
+       ],
+       "why": "A(2) = 16 + 20 = 36 y B(2) = 10 + 35 = 45, así que el Plan A es $9 más barato."
+      },
+      {
+       "q": "Ana tiene $200 y ahorra $15 a la semana; Beto tiene $80 y ahorra $25 a la semana. ¿Cuándo tienen lo mismo?",
+       "choices": [
+        "Después de 8 semanas, con $320",
+        "Después de 10 semanas, con $350",
+        "Después de 15 semanas, con $425",
+        "Después de 12 semanas, con $380"
+       ],
+       "why": "15w + 200 = 25w + 80 da 10w = 120, así que w = 12. Entonces 15(12) + 200 = 380 y 25(12) + 80 = 380."
+      }
+     ],
+     "short": [
+      "Plan A charges $20 plus $8 per gigabyte, so A(g) = 8g + 20. Plan B charges $35 plus $5 per gigabyte, so B(g) = 5g + 35. At 3 GB, A costs $44 and B costs $50. At 8 GB, A costs $84 and B costs $75. So the plans must cost the same somewhere between: the *break-even point*. Set the outputs equal: 8g + 20 = 5g + 35, so 3g = 15 and g = 5, where both cost $60. On a graph, the two lines cross at the *intersection point* (5, 60). The plan with the smaller starting cost wins for small inputs, and the plan with the smaller rate wins for large ones. This *comparison* shows where the advantage flips."
+     ],
+     "more": [
+      "Break-even points matter to anyone who runs a small business. A person who sells bracelets pays a fixed cost to get started and then a cost for each bracelet made. The break-even point is where the money coming in equals the money going out. Past that point, the sales start to earn more than they cost.",
+      "Sometimes two lines never cross. If two plans charge the same rate but have different starting fees, their lines have equal slopes and run side by side, so one plan is always cheaper. You will meet this case again in the next chapter."
+     ],
+     "short_es": [
+      "El Plan A cobra $20 más $8 por gigabyte, así que A(g) = 8g + 20. El Plan B cobra $35 más $5 por gigabyte, así que B(g) = 5g + 35. Con 3 GB, A cuesta $44 y B cuesta $50. Con 8 GB, A cuesta $84 y B cuesta $75. Así que los planes deben costar lo mismo en algún punto entre esos: el *punto de equilibrio*. Iguala las salidas: 8g + 20 = 5g + 35, así que 3g = 15 y g = 5, donde ambos cuestan $60. En una gráfica, las dos rectas se cruzan en el *punto de intersección* (5, 60). El plan con el costo inicial más pequeño gana para entradas pequeñas, y el plan con la tasa más pequeña gana para entradas grandes. Esta *comparación* muestra dónde cambia la ventaja."
+     ],
+     "more_es": [
+      "Los puntos de equilibrio importan a cualquiera que tenga un negocio pequeño. Una persona que vende pulseras paga un costo fijo para empezar y luego un costo por cada pulsera que hace. El punto de equilibrio es donde el dinero que entra es igual al dinero que sale. Pasado ese punto, las ventas empiezan a ganar más de lo que cuestan.",
+      "A veces dos rectas nunca se cruzan. Si dos planes cobran la misma tasa pero tienen cuotas iniciales distintas, sus rectas tienen pendientes iguales y corren una al lado de la otra, así que un plan siempre es más barato. Volverás a encontrar este caso en el siguiente capítulo."
+     ]
+    }
+   ]
+  }
+ ],
+ "review": [
+  {
+   "q": "Si f(x) = 5x − 7, ¿cuánto es f(3)?",
+   "choices": [
+    "8",
+    "15",
+    "1",
+    "−22"
+   ],
+   "why": "f(3) = 5(3) − 7 = 15 − 7 = 8. Si omites el −7, obtienes 15."
+  },
+  {
+   "q": "¿Cuál conjunto de pares es una función?",
+   "choices": [
+    "(1, 2), (1, 3), (2, 4)",
+    "(4, 1), (4, 2), (5, 3)",
+    "(1, 6), (2, 6), (3, 6)",
+    "(0, 1), (0, 2), (0, 3)"
+   ],
+   "why": "Cada entrada aparece una vez, así que cada una tiene una salida. Compartir la salida 6 está bien. Los otros conjuntos repiten una entrada con salidas distintas."
+  },
+  {
+   "q": "¿Cuál es la pendiente de la recta que pasa por (2, 3) y (6, 15)?",
+   "choices": [
+    "4",
+    "12",
+    "1/3",
+    "3"
+   ],
+   "why": "(15 − 3)/(6 − 2) = 12/4 = 3."
+  },
+  {
+   "q": "Un plan cuesta $30 al mes más $4 por gigabyte. ¿Cuál función da el costo?",
+   "choices": [
+    "c(g) = 30g + 4",
+    "c(g) = 4g + 30",
+    "c(g) = 34g",
+    "c(g) = 4g − 30"
+   ],
+   "why": "Los $30 se pagan una vez (intercepto) y los $4 se repiten por gigabyte (pendiente): c(g) = 4g + 30."
+  },
+  {
+   "q": "¿Cuál es el término número 12 de la sucesión 9, 14, 19, 24, …?",
+   "choices": [
+    "69",
+    "60",
+    "64",
+    "74"
+   ],
+   "why": "La diferencia común es 5, así que a(n) = 9 + 5(n − 1) = 5n + 4. Entonces a(12) = 60 + 4 = 64."
+  },
+  {
+   "q": "¿Cuál es el intercepto en x de y = 4x − 12?",
+   "choices": [
+    "−12",
+    "3",
+    "4",
+    "12"
+   ],
+   "why": "Haz y = 0: 4x − 12 = 0, así que 4x = 12 y x = 3."
+  },
+  {
+   "q": "Si f(x) = 3x, ¿cuál función es f desplazada 2 unidades hacia abajo?",
+   "choices": [
+    "3x − 2",
+    "3x + 2",
+    "3(x − 2)",
+    "x − 2"
+   ],
+   "why": "Desplazar hacia abajo resta 2 a cada salida: 3x − 2."
+  },
+  {
+   "q": "Los boletos de cine cuestan $12 cada uno, hasta 6 por pedido. ¿Cuál es el rango de c(n) = 12n?",
+   "choices": [
+    "Todos los números de 0 a 72",
+    "{0, 1, 2, 3, 4, 5, 6}",
+    "Todos los números de 0 a 6",
+    "{0, 12, 24, 36, 48, 60, 72}"
+   ],
+   "why": "El dominio son los números enteros del 0 al 6, así que las salidas son 12 veces cada uno de ellos: 0, 12, 24, 36, 48, 60, 72."
+  }
+ ]
+}

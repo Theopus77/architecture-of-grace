@@ -1,0 +1,847 @@
+{
+ "title": "Sistemas de ecuaciones",
+ "years": "Sistemas",
+ "bigQuestion": "Cuando dos reglas son verdaderas al mismo tiempo, ¿cómo encuentras el único par de números que cumple las dos?",
+ "story": {
+  "title": "¿Cuándo alcanzan a la tortuga?",
+  "kicker": "Una fábula antigua se vuelve un problema de matemáticas en el momento en que dibujas a los dos corredores en la misma gráfica.",
+  "paragraphs": [
+   "Todos conocen la fábula: la tortuga y la liebre acuerdan una carrera, la liebre es mucho más rápida, y aun así pierde porque se detiene a tomar una siesta. La clase de la maestra Okafor, en Chicago, decidió convertir el cuento en números. Le dieron a la tortuga una ventaja de 300 metros y una rapidez constante de 1 metro por segundo. A la liebre le dieron una rapidez de 5 metros por segundo, saliendo desde la línea. La pregunta era sencilla. Si la liebre nunca duerme, ¿cuándo alcanza a la tortuga?",
+   "La clase dibujó una gráfica con los segundos abajo y los metros desde la línea de salida a un lado. La línea de la tortuga empezaba en 300 y subía suavemente, 1 metro por cada segundo. La línea de la liebre empezaba en 0 y subía con mucha inclinación, 5 metros por cada segundo. Dos líneas, dos reglas. Cada línea por sí sola decía dónde estaba un corredor en cada momento. El lugar interesante era donde las líneas se cruzaban.",
+   "En el cruce, los dos corredores están a la misma distancia de la línea al mismo tiempo. Esa es la alcanzada. Los estudiantes leyeron el punto en la gráfica: más o menos 75 segundos, más o menos 375 metros. Luego lo comprobaron con las ecuaciones. Tortuga: 300 + 1 × 75 = 375. Liebre: 5 × 75 = 375. Las dos reglas dieron el mismo número, así que el cruce era exacto. La liebre alcanza a la tortuga a los 75 segundos de carrera, a 375 metros por la pista.",
+   "Entonces alguien agregó la siesta. Supón que la liebre se detiene a los 60 segundos y duerme durante 100 segundos. La línea de la liebre se vuelve plana en 300 metros desde el segundo 60 hasta el segundo 160, mientras la línea de la tortuga sigue subiendo. En el segundo 160, la tortuga está a 300 + 160 = 460 metros, muy adelante. Ahora hay que hallar un nuevo cruce, y hay una nueva pregunta: ¿alcanza todavía la liebre a la tortuga antes de la meta?",
+   "Un par de reglas que deben ser verdaderas al mismo tiempo se llama sistema de ecuaciones. Su solución es el punto donde se encuentran las gráficas. Este capítulo muestra cómo hallar ese punto con una gráfica, por sustitución y por eliminación, cómo saber cuándo no hay tal punto o hay muchos, y cómo usar sistemas para planes de teléfono, boletos y monedas."
+  ],
+  "think": "Sin la siesta, la liebre alcanza a la tortuga a los 75 segundos. Si la ventaja de la tortuga se duplicara a 600 metros, ¿ocurriría la alcanzada al doble del tiempo? Resuélvelo y explica."
+ },
+ "sections": [
+  {
+   "title": "Dos ecuaciones a la vez",
+   "lessons": [
+    {
+     "title": "Qué es un sistema",
+     "mainIdea": "Un sistema de ecuaciones son dos ecuaciones que deben ser verdaderas a la vez, y su solución es el único par (x, y) que funciona en las dos.",
+     "reading": [
+      "Dos números suman 10, y su diferencia es 4. Llama x al número mayor y y al menor. La primera oración dice x + y = 10. La segunda dice x − y = 4. Juntas, las dos ecuaciones forman un *sistema de ecuaciones*. Muchos pares cumplen solo la primera ecuación: (5, 5), (8, 2), (9, 1). Muchos cumplen solo la segunda: (6, 2), (8, 4), (10, 6). La *solución de un sistema* es un par que cumple las dos al mismo tiempo.",
+      "Prueba (8, 2). Primera ecuación: 8 + 2 = 10, verdadero. Segunda: 8 − 2 = 6, no es 4. Así que (8, 2) no es una solución. Prueba (7, 3). Primera: 7 + 3 = 10, verdadero. Segunda: 7 − 3 = 4, verdadero. Se cumplen las dos ecuaciones, así que (7, 3) es la solución. Los dos números son 7 y 3.",
+      "En una gráfica, cada ecuación es una línea, y cada punto de esa línea hace verdadera su ecuación. La solución del sistema es el punto donde las dos líneas se cruzan, porque es el único punto que está en las dos líneas. Para x + y = 10 y x − y = 4, las líneas se cruzan en (7, 3). No hay otro punto en las dos líneas, así que no hay otra solución.",
+      "Para comprobar una solución propuesta, sustitúyela en las dos ecuaciones, no solo en una. Toma y = x − 4 y y = 2x − 9 con el punto (5, 1). Primera: 5 − 4 = 1, verdadero. Segunda: 2 × 5 − 9 = 10 − 9 = 1, verdadero. Así que (5, 1) es una solución. Un punto que pasa una ecuación y falla la otra no es una solución. Deben pasar las dos comprobaciones."
+     ],
+     "words": [
+      {
+       "w": "sistema de ecuaciones",
+       "d": "dos o más ecuaciones que deben ser verdaderas todas al mismo tiempo"
+      },
+      {
+       "w": "solución de un sistema",
+       "d": "un par de valores (x, y) que hace verdadera cada ecuación del sistema"
+      }
+     ],
+     "look": {
+      "title": "Suma 15, diferencia 3",
+      "text": "Dos números tienen una suma de 15 y una diferencia de 3. Con x el mayor y y el menor: x + y = 15 y x − y = 3. Prueba (9, 6). Suma: 9 + 6 = 15, verdadero. Diferencia: 9 − 6 = 3, verdadero. Así que (9, 6) es la solución. Prueba (10, 5): la suma es 15, pero la diferencia es 5, así que falla la segunda ecuación.",
+      "prompt": "Dos números tienen una suma de 20 y una diferencia de 8. Escribe las dos ecuaciones, halla el par que funciona en las dos y muestra las dos comprobaciones."
+     },
+     "check": [
+      {
+       "q": "¿Es (7, 3) una solución del sistema x + y = 10 y x − y = 4?",
+       "choices": [
+        "Sí, porque 7 + 3 = 10 y 7 − 3 = 4",
+        "No, porque 7 − 3 no es 4",
+        "Solo cumple la primera ecuación",
+        "No, porque 7 + 3 no es 10"
+       ],
+       "why": "Sustituye en las dos: 7 + 3 = 10 es verdadero y 7 − 3 = 4 es verdadero. Pasan las dos, así que (7, 3) es la solución."
+      },
+      {
+       "q": "¿Qué es la solución de un sistema de dos ecuaciones?",
+       "choices": [
+        "cualquier punto de cualquiera de las líneas",
+        "un par (x, y) que hace verdaderas las dos ecuaciones",
+        "el intercepto en y de la primera línea",
+        "la pendiente de la segunda línea"
+       ],
+       "why": "Una solución debe cumplir todas las ecuaciones del sistema. En una gráfica, es el punto donde se cruzan las líneas."
+      },
+      {
+       "q": "¿Es (5, 1) una solución de y = x − 4 y y = 2x − 9?",
+       "choices": [
+        "No, falla la segunda ecuación",
+        "No, falla la primera ecuación",
+        "Sí, las dos ecuaciones dan y = 1",
+        "No hay manera de saberlo"
+       ],
+       "why": "Primera: 5 − 4 = 1. Segunda: 2 × 5 − 9 = 1. Las dos son iguales al valor de y, 1, así que (5, 1) cumple las dos."
+      }
+     ],
+     "short": [
+      "Two numbers add up to 10, and their difference is 4. Call the larger x and the smaller y. Then x + y = 10 and x − y = 4. Together the two equations form a *system of equations*. Many pairs fit one equation alone. The *solution of a system* is a pair that fits both at the same time. Test (8, 2): 8 + 2 = 10 is true, but 8 − 2 = 6 is not 4. Test (7, 3): 7 + 3 = 10 and 7 − 3 = 4, so both are true, and (7, 3) is the solution. On a graph, each equation is a line, and the solution is where the lines cross. To check a solution, substitute it into both equations. For y = x − 4 and y = 2x − 9, the point (5, 1) gives 1 in each, so it works. A point that fails one equation is not a solution."
+     ],
+     "more": [
+      "One equation alone has endless solutions. The equation x + y = 10 has a whole line of pairs that work. The second equation narrows the choice. Of all the points on the first line, only one is also on the second line. That is why two equations can pin down one answer.",
+      "Systems come up whenever two facts are true together. Say a coach has 14 players on two teams, and one team has 2 more players than the other. With x and y for the teams, x + y = 14 and x − y = 2. Try (8, 6): 8 + 6 = 14 and 8 − 6 = 2. Both facts fit, so the teams have 8 and 6 players."
+     ],
+     "short_es": [
+      "Dos números suman 10, y su diferencia es 4. Llama x al mayor y y al menor. Entonces x + y = 10 y x − y = 4. Juntas, las dos ecuaciones forman un *sistema de ecuaciones*. Muchos pares cumplen una sola ecuación. La *solución de un sistema* es un par que cumple las dos al mismo tiempo. Prueba (8, 2): 8 + 2 = 10 es verdadero, pero 8 − 2 = 6 no es 4. Prueba (7, 3): 7 + 3 = 10 y 7 − 3 = 4, así que las dos son verdaderas, y (7, 3) es la solución. En una gráfica, cada ecuación es una línea, y la solución es donde se cruzan las líneas. Para comprobar una solución, sustitúyela en las dos ecuaciones. Para y = x − 4 y y = 2x − 9, el punto (5, 1) da 1 en cada una, así que funciona. Un punto que falla una ecuación no es una solución."
+     ],
+     "more_es": [
+      "Una sola ecuación tiene soluciones sin fin. La ecuación x + y = 10 tiene toda una línea de pares que funcionan. La segunda ecuación reduce la elección. De todos los puntos de la primera línea, solo uno está también en la segunda. Por eso dos ecuaciones pueden señalar una sola respuesta.",
+      "Los sistemas aparecen siempre que dos datos son verdaderos juntos. Digamos que un entrenador tiene 14 jugadores en dos equipos, y un equipo tiene 2 jugadores más que el otro. Con x y y para los equipos, x + y = 14 y x − y = 2. Prueba (8, 6): 8 + 6 = 14 y 8 − 6 = 2. Los dos datos encajan, así que los equipos tienen 8 y 6 jugadores."
+     ]
+    },
+    {
+     "title": "Resolver con una gráfica",
+     "mainIdea": "Grafica las dos líneas en una misma cuadrícula; el punto donde se cruzan es la solución, y sustituir lo comprueba.",
+     "reading": [
+      "Resuelve el sistema y = 2x + 1 y y = −x + 7 con una gráfica. Grafica la primera línea: empieza en (0, 1) y usa la pendiente 2 para llegar a (1, 3), (2, 5), (3, 7). Grafica la segunda: empieza en (0, 7) y usa la pendiente −1 para llegar a (1, 6), (2, 5), (3, 4). El punto (2, 5) está en las dos listas. Esa es la *intersección*, donde se cruzan las dos líneas, así que la solución es (2, 5).",
+      "Comprueba siempre el *punto de intersección* en las dos ecuaciones. Primera: 2 × 2 + 1 = 5. Segunda: −2 + 7 = 5. Las dos dan 5, así que (2, 5) es exacto. Si una comprobación falla, la gráfica se dibujó mal o el cruce se leyó mal. Dibuja de nuevo con cuidado y vuelve a mirar.",
+      "Prueba y = x + 3 y y = 3x − 1. Primera línea: (0, 3), (1, 4), (2, 5), (3, 6). Segunda línea: (0, −1), (1, 2), (2, 5), (3, 8). Comparten (2, 5). Comprobación: 2 + 3 = 5 y 3 × 2 − 1 = 5. Fíjate en que la segunda línea empieza más abajo pero sube más rápido, así que alcanza a la primera, igual que la liebre alcanzando a la tortuga.",
+      "Graficar es rápido y muestra la imagen, pero tiene límites. Funciona mejor cuando el cruce cae en un *punto de la cuadrícula* con coordenadas enteras. Si las líneas se cruzan en algo como (1.4, 5.2), leerlo en una cuadrícula da solo una estimación. La próxima lección trata de eso. Cuida también las pendientes descuidadas: una línea dibujada con la pendiente equivocada se cruzará en el lugar equivocado, y la comprobación lo descubrirá."
+     ],
+     "words": [
+      {
+       "w": "intersección",
+       "d": "el lugar donde se cruzan dos líneas"
+      },
+      {
+       "w": "punto de intersección",
+       "d": "las coordenadas (x, y) del punto de cruce; la solución del sistema"
+      },
+      {
+       "w": "punto de la cuadrícula",
+       "d": "un punto de una cuadrícula cuyas dos coordenadas son números enteros"
+      }
+     ],
+     "look": {
+      "title": "Dos líneas, un cruce",
+      "text": "Grafica y = x + 3 y y = 3x − 1 en la misma cuadrícula. La primera pasa por (0, 3), (1, 4), (2, 5) y (3, 6). La segunda pasa por (0, −1), (1, 2), (2, 5) y (3, 8). Las dos listas contienen (2, 5), así que las líneas se cruzan ahí. Comprobación: 2 + 3 = 5 y 3 × 2 − 1 = 5.",
+      "prompt": "Grafica y = 2x y y = −x + 6 en papel cuadriculado. ¿Dónde se cruzan? Sustituye el punto de cruce en las dos ecuaciones para demostrarlo."
+     },
+     "check": [
+      {
+       "q": "¿Dónde se cruzan las líneas y = 2x + 1 y y = −x + 7?",
+       "choices": [
+        "(5, 2)",
+        "(1, 3)",
+        "(3, 7)",
+        "(2, 5)"
+       ],
+       "why": "Con x = 2, la primera da 2 × 2 + 1 = 5 y la segunda da −2 + 7 = 5. Las dos líneas pasan por (2, 5)."
+      },
+      {
+       "q": "¿Dónde se cruzan las líneas y = x + 3 y y = 3x − 1?",
+       "choices": [
+        "(2, 5)",
+        "(1, 4)",
+        "(5, 2)",
+        "(3, 6)"
+       ],
+       "why": "Con x = 2, y = 2 + 3 = 5 y y = 3 × 2 − 1 = 5. El punto (1, 4) está solo en la primera línea, porque 3 × 1 − 1 = 2."
+      },
+      {
+       "q": "Resolver con una gráfica funciona mejor cuando ___.",
+       "choices": [
+        "las líneas son paralelas",
+        "el punto de cruce tiene coordenadas enteras",
+        "las pendientes son fracciones como 7/13",
+        "las dos líneas son verticales"
+       ],
+       "why": "Un cruce en un punto de la cuadrícula se puede leer exactamente en la cuadrícula. Las coordenadas fraccionarias solo se pueden estimar en una gráfica."
+      }
+     ],
+     "short": [
+      "Solve y = 2x + 1 and y = −x + 7 by graphing. Graph the first line from (0, 1) with slope 2: it reaches (1, 3), (2, 5) and (3, 7). Graph the second from (0, 7) with slope −1: it reaches (1, 6), (2, 5) and (3, 4). The point (2, 5) is on both lines. That is the *intersection*, where the lines cross, so the solution is (2, 5). Always check the *point of intersection* in both equations: 2 × 2 + 1 = 5 and −2 + 7 = 5. The lines y = x + 3 and y = 3x − 1 also cross at (2, 5). The second starts lower but climbs faster. Graphing works best when the crossing is a *lattice point* with whole-number coordinates. A crossing like (1.4, 5.2) can only be estimated from a grid."
+     ],
+     "more": [
+      "Two different straight lines can cross only once. A straight line cannot weave back and meet the other line a second time. So a system of two lines has at most one crossing, unless the lines are the same line. You will meet that special case soon.",
+      "Neat work makes graphing better. Use a sharp pencil and a ruler, and write each line's equation beside it so you do not mix them up. A line drawn a little off moves the crossing point, which is why the check in both equations matters so much."
+     ],
+     "short_es": [
+      "Resuelve y = 2x + 1 y y = −x + 7 con una gráfica. Grafica la primera línea desde (0, 1) con pendiente 2: llega a (1, 3), (2, 5) y (3, 7). Grafica la segunda desde (0, 7) con pendiente −1: llega a (1, 6), (2, 5) y (3, 4). El punto (2, 5) está en las dos líneas. Esa es la *intersección*, donde se cruzan las líneas, así que la solución es (2, 5). Comprueba siempre el *punto de intersección* en las dos ecuaciones: 2 × 2 + 1 = 5 y −2 + 7 = 5. Las líneas y = x + 3 y y = 3x − 1 también se cruzan en (2, 5). La segunda empieza más abajo pero sube más rápido. Graficar funciona mejor cuando el cruce es un *punto de la cuadrícula* con coordenadas enteras. Un cruce como (1.4, 5.2) solo se puede estimar en una cuadrícula."
+     ],
+     "more_es": [
+      "Dos líneas rectas distintas solo pueden cruzarse una vez. Una línea recta no puede regresar y encontrarse con la otra por segunda vez. Así que un sistema de dos líneas tiene a lo sumo un cruce, a menos que las líneas sean la misma línea. Pronto conocerás ese caso especial.",
+      "Un trabajo ordenado mejora el graficar. Usa un lápiz con buena punta y una regla, y escribe la ecuación de cada línea a su lado para no confundirlas. Una línea dibujada un poco desviada mueve el punto de cruce, y por eso importa tanto la comprobación en las dos ecuaciones."
+     ]
+    },
+    {
+     "title": "Estimar y comprobar",
+     "mainIdea": "Cuando el cruce no está en una esquina de la cuadrícula, estímalo con la gráfica y luego usa el álgebra para hallar el punto exacto y comprobarlo.",
+     "reading": [
+      "Grafica y = 3x + 1 y y = −2x + 8. La primera línea sube con mucha inclinación desde (0, 1). La segunda baja desde (0, 8). Se cruzan en algún lugar entre x = 1 y x = 2, un poco arriba de y = 5. Por la imagen, una *estimación* razonable es (1.5, 5). ¿Pero es exacta? Para saberlo hay que *comprobar por sustitución*: 3 × 1.5 + 1 = 5.5, y −2 × 1.5 + 8 = 5. Las dos ecuaciones dan valores distintos, así que (1.5, 5) está cerca, pero no es el cruce verdadero.",
+      "Para obtener el punto exacto, iguala las dos expresiones de y, ya que y es la misma en el cruce: 3x + 1 = −2x + 8. Suma 2x a los dos lados: 5x + 1 = 8. Resta 1: 5x = 7. Divide: x = 7/5 = 1.4. Entonces y = 3 × 1.4 + 1 = 4.2 + 1 = 5.2. Comprueba en la segunda ecuación: −2 × 1.4 + 8 = −2.8 + 8 = 5.2. Las dos coinciden, así que la solución exacta es (1.4, 5.2).",
+      "La estimación no fue en vano. Nos dijo que la respuesta debía estar cerca de x = 1.5 y y = 5, así que el resultado algebraico de (1.4, 5.2) tiene sentido. Si el álgebra hubiera dado (14, 52), la gráfica mostraría que algo salió mal. Usa la gráfica para predecir el tamaño de la respuesta, y usa el álgebra para fijarla.",
+      "Aquí son comunes dos errores. Uno es confiar en que la lectura de una gráfica es exacta solo porque se ve bien. Sustituye siempre en las dos ecuaciones. El otro es comprobar solo una ecuación. El punto (2, 5) cumple perfectamente y = 2x + 1, pero en y = −x + 6 da −2 + 6 = 4, no 5. Un punto debe pasar las dos comprobaciones para ser una solución."
+     ],
+     "words": [
+      {
+       "w": "estimación",
+       "d": "una suposición cuidadosa que se acerca al valor exacto, como leer un punto en una gráfica"
+      },
+      {
+       "w": "comprobar por sustitución",
+       "d": "poner los valores de x y y en cada ecuación para ver si los dos lados resultan iguales"
+      }
+     ],
+     "look": {
+      "title": "Cerca, ¿pero es exacto?",
+      "text": "Grafica y = 2x + 1 y y = −x + 6. La primera sube desde (0, 1) pasando por (1, 3) y (2, 5). La segunda baja desde (0, 6) pasando por (1, 5) y (2, 4). Las líneas se cruzan entre x = 1 y x = 2, cerca de y = 4.5. El punto (2, 5) es una suposición tentadora, pero en la segunda ecuación −2 + 6 = 4, no 5. Al igualar 2x + 1 = −x + 6 se obtiene 3x = 5, así que x = 5/3, más o menos 1.67, y y es más o menos 4.33.",
+      "prompt": "Usa la gráfica para estimar el cruce de y = x + 1 y y = −2x + 6. Luego iguala las expresiones, despeja x y compara tu respuesta exacta con tu estimación."
+     },
+     "check": [
+      {
+       "q": "Un estudiante estima (1.5, 5) para el cruce de y = 3x + 1 y y = −2x + 8. ¿Qué muestra la sustitución?",
+       "choices": [
+        "Las dos ecuaciones dan exactamente 5",
+        "La estimación es exacta",
+        "Las ecuaciones dan 5.5 y 5, así que la estimación está cerca pero no es exacta",
+        "La primera da 5 y la segunda da 5.5"
+       ],
+       "why": "3 × 1.5 + 1 = 5.5 y −2 × 1.5 + 8 = 5. Valores distintos significan que (1.5, 5) no está en las dos líneas."
+      },
+      {
+       "q": "¿Cuál es la solución exacta de y = 3x + 1 y y = −2x + 8?",
+       "choices": [
+        "(1.5, 5)",
+        "(7, 22)",
+        "(1.4, 5)",
+        "(1.4, 5.2)"
+       ],
+       "why": "3x + 1 = −2x + 8 da 5x = 7, así que x = 1.4. Entonces y = 3 × 1.4 + 1 = 5.2, y −2 × 1.4 + 8 = 5.2 lo confirma."
+      },
+      {
+       "q": "¿Por qué debes comprobar un punto que lees en una gráfica?",
+       "choices": [
+        "Las lecturas de una gráfica pueden desviarse un poco; la sustitución muestra si el punto es exacto",
+        "Porque las gráficas siempre están mal",
+        "Para hallar la pendiente de la línea",
+        "No hace falta comprobar si la gráfica está ordenada"
+       ],
+       "why": "Una línea de lápiz y una cuadrícula solo pueden mostrar hasta cierto punto. Sustituir en las dos ecuaciones prueba si el punto de verdad encaja."
+      }
+     ],
+     "short": [
+      "Graph y = 3x + 1 and y = −2x + 8. They cross between x = 1 and x = 2, a little above y = 5. A reasonable *estimate* is (1.5, 5). But is it exact? We *check by substitution*: 3 × 1.5 + 1 = 5.5, and −2 × 1.5 + 8 = 5. The values differ, so the estimate is close but not exact. For the exact point, set the two expressions for y equal, because y is the same at the crossing: 3x + 1 = −2x + 8. That gives 5x = 7, so x = 1.4, and y = 3 × 1.4 + 1 = 5.2. The second equation agrees: −2 × 1.4 + 8 = 5.2. The solution is (1.4, 5.2). Use the graph to predict the size of the answer, and use algebra to pin it down. Always check in both equations."
+     ],
+     "more": [
+      "Setting the expressions equal makes sense because of what a crossing is. At the crossing, both lines have the same x and the same y. So the two expressions for y must be equal there. This is really substitution in disguise: you put one expression for y in place of y in the other equation.",
+      "Exact and rounded answers are not the same thing. The exact answer for one crossing might be x = 5/3. The decimal 1.67 is only a rounded version, because 5/3 is 1.666 and the 6s go on forever. Writing the fraction keeps the answer exact, and a rounded decimal is fine when a close answer is enough."
+     ],
+     "short_es": [
+      "Grafica y = 3x + 1 y y = −2x + 8. Se cruzan entre x = 1 y x = 2, un poco arriba de y = 5. Una *estimación* razonable es (1.5, 5). ¿Pero es exacta? Vamos a *comprobar por sustitución*: 3 × 1.5 + 1 = 5.5, y −2 × 1.5 + 8 = 5. Los valores son distintos, así que la estimación está cerca pero no es exacta. Para el punto exacto, iguala las dos expresiones de y, porque y es la misma en el cruce: 3x + 1 = −2x + 8. Eso da 5x = 7, así que x = 1.4, y y = 3 × 1.4 + 1 = 5.2. La segunda ecuación coincide: −2 × 1.4 + 8 = 5.2. La solución es (1.4, 5.2). Usa la gráfica para predecir el tamaño de la respuesta, y usa el álgebra para fijarla. Comprueba siempre en las dos ecuaciones."
+     ],
+     "more_es": [
+      "Igualar las expresiones tiene sentido por lo que es un cruce. En el cruce, las dos líneas tienen la misma x y la misma y. Así que las dos expresiones de y deben ser iguales ahí. En realidad es sustitución disfrazada: pones una expresión de y en lugar de y en la otra ecuación.",
+      "Una respuesta exacta y una redondeada no son lo mismo. La respuesta exacta de un cruce podría ser x = 5/3. El decimal 1.67 es solo una versión redondeada, porque 5/3 es 1.666 y los 6 siguen para siempre. Escribir la fracción mantiene exacta la respuesta, y un decimal redondeado sirve cuando basta una respuesta cercana."
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Resolver con álgebra",
+   "lessons": [
+    {
+     "title": "Sustitución",
+     "mainIdea": "Cuando una ecuación da una variable sola, sustituye esa expresión en la otra ecuación y resuelve.",
+     "reading": [
+      "Resuelve y = 2x − 3 y 3x + y = 12. La primera ecuación ya tiene a y sola: y es igual a 2x − 3. Así que, donde aparezca y en la segunda ecuación, pon 2x − 3 en su lugar. Esto es la *sustitución*. La segunda ecuación queda 3x + (2x − 3) = 12. Combina: 5x − 3 = 12. Suma 3: 5x = 15. Divide: x = 3. Luego vuelve a la primera ecuación: y = 2 × 3 − 3 = 3. La solución es (3, 3). Comprobación: 3 × 3 + 3 = 12, verdadero.",
+      "La sustitución también funciona cuando la variable sola es x. Resuelve x = y + 4 y 2x + 3y = 23. Reemplaza x en la segunda ecuación con (y + 4): 2(y + 4) + 3y = 23. Distribuye el 2: 2y + 8 + 3y = 23. Combina: 5y + 8 = 23. Resta 8: 5y = 15, así que y = 3. Entonces x = 3 + 4 = 7. Comprobación: 2 × 7 + 3 × 3 = 14 + 9 = 23, verdadero. La solución es (7, 3).",
+      "Si ninguna ecuación tiene una variable sola, primero *aísla* una. En x + y = 20 y y = 3x, la segunda ya da y. Sustituye: x + 3x = 20, así que 4x = 20 y x = 5. Entonces y = 3 × 5 = 15. Comprueba la primera: 5 + 15 = 20. La solución es (5, 15). La sustitución es la elección natural siempre que una ecuación empieza con y = o x =.",
+      "El error más común es olvidar los paréntesis. En 2x + 3y = 23 con x = y + 4, escribir 2y + 4 + 3y en lugar de 2(y + 4) + 3y pierde el 8 y da la respuesta equivocada. Pon toda la expresión entre paréntesis y luego distribuye. Otro error es detenerse después de hallar x. Una solución es un par, así que halla también y, y comprueba el par en la ecuación que no usaste para hallarlo."
+     ],
+     "words": [
+      {
+       "w": "sustitución",
+       "d": "reemplazar una variable con una expresión igual a ella, para que una ecuación se quede con una sola variable"
+      },
+      {
+       "w": "aislar",
+       "d": "dejar una variable sola en un lado de una ecuación, como y = 3x"
+      }
+     ],
+     "look": {
+      "title": "Una variable a la vez",
+      "text": "Resuelve y = x + 1 y 4x + y = 21. La primera ecuación da y, así que reemplaza y en la segunda: 4x + (x + 1) = 21. Combina: 5x + 1 = 21. Resta 1: 5x = 20. Divide: x = 4. Entonces y = 4 + 1 = 5. Comprobación en la segunda ecuación: 4 × 4 + 5 = 21, verdadero. La solución es (4, 5).",
+      "prompt": "Resuelve y = 2x y x + y = 18 por sustitución. Muestra la ecuación que solo tiene x, resuélvela, halla y y comprueba tu par en las dos ecuaciones."
+     },
+     "check": [
+      {
+       "q": "Resuelve y = 2x − 3 y 3x + y = 12. ¿Cuánto vale x?",
+       "choices": [
+        "5",
+        "3",
+        "15",
+        "9"
+       ],
+       "why": "Sustituye: 3x + (2x − 3) = 12, así que 5x − 3 = 12, 5x = 15, x = 3."
+      },
+      {
+       "q": "Resuelve x = y + 4 y 2x + 3y = 23. ¿Cuánto vale y?",
+       "choices": [
+        "7",
+        "23",
+        "3",
+        "5"
+       ],
+       "why": "2(y + 4) + 3y = 23 da 2y + 8 + 3y = 23, así que 5y = 15 y y = 3. Entonces x = 7."
+      },
+      {
+       "q": "Resuelve y = 3x y x + y = 20. ¿Cuál es la solución?",
+       "choices": [
+        "(15, 5)",
+        "(4, 12)",
+        "(10, 10)",
+        "(5, 15)"
+       ],
+       "why": "x + 3x = 20 da 4x = 20, así que x = 5 y y = 3 × 5 = 15. El par (15, 5) tiene x y y cambiadas de lugar."
+      }
+     ],
+     "short": [
+      "When one equation gives a variable by itself, put that expression into the other equation. This is *substitution*. Solve y = 2x − 3 and 3x + y = 12. Replace y in the second equation: 3x + (2x − 3) = 12. Then 5x − 3 = 12, so 5x = 15 and x = 3. Go back: y = 2 × 3 − 3 = 3. The solution is (3, 3). It works with x alone too. For x = y + 4 and 2x + 3y = 23, write 2(y + 4) + 3y = 23, so 5y + 8 = 23, y = 3 and x = 7. If neither variable is alone, *isolate* one first. For x + y = 20 and y = 3x, we get 4x = 20, so x = 5 and y = 15. Use parentheses around the whole expression, find both x and y, and check the pair."
+     ],
+     "more": [
+      "Choose the variable that is easiest to isolate. A variable with a coefficient of 1 is the easiest, because you do not have to divide. Take x + y = 9 and 3x − y = 7. Solve the first for y: y = 9 − x. Put it into the second: 3x − (9 − x) = 7.",
+      "Watch the minus sign in front of the parentheses. It changes the sign of everything inside: −(9 − x) is −9 + x. Then 3x − 9 + x = 7, so 4x − 9 = 7, 4x = 16 and x = 4. Back in y = 9 − x, y = 5. Check: 4 + 5 = 9 and 3 × 4 − 5 = 7."
+     ],
+     "short_es": [
+      "Cuando una ecuación da una variable sola, pon esa expresión en la otra ecuación. Esto es la *sustitución*. Resuelve y = 2x − 3 y 3x + y = 12. Reemplaza y en la segunda ecuación: 3x + (2x − 3) = 12. Entonces 5x − 3 = 12, así que 5x = 15 y x = 3. Vuelve atrás: y = 2 × 3 − 3 = 3. La solución es (3, 3). También funciona con x sola. Para x = y + 4 y 2x + 3y = 23, escribe 2(y + 4) + 3y = 23, así que 5y + 8 = 23, y = 3 y x = 7. Si ninguna variable está sola, primero *aísla* una. Para x + y = 20 y y = 3x, obtenemos 4x = 20, así que x = 5 y y = 15. Usa paréntesis alrededor de toda la expresión, halla x y también y, y comprueba el par."
+     ],
+     "more_es": [
+      "Elige la variable que sea más fácil de aislar. Una variable con coeficiente 1 es la más fácil, porque no tienes que dividir. Toma x + y = 9 y 3x − y = 7. Despeja y en la primera: y = 9 − x. Ponla en la segunda: 3x − (9 − x) = 7.",
+      "Cuidado con el signo menos delante de los paréntesis. Cambia el signo de todo lo que está adentro: −(9 − x) es −9 + x. Entonces 3x − 9 + x = 7, así que 4x − 9 = 7, 4x = 16 y x = 4. De vuelta en y = 9 − x, y = 5. Comprobación: 4 + 5 = 9 y 3 × 4 − 5 = 7."
+     ]
+    },
+    {
+     "title": "Eliminación sumando",
+     "mainIdea": "Cuando una variable tiene coeficientes opuestos en las dos ecuaciones, suma las ecuaciones para eliminarla.",
+     "reading": [
+      "Resuelve x + y = 12 y x − y = 2. Mira los términos con y: +y en la primera y −y en la segunda. Son opuestos. Suma las dos ecuaciones, lado izquierdo con lado izquierdo y lado derecho con lado derecho: (x + y) + (x − y) = 12 + 2. Los términos con y se cancelan, y queda 2x = 14, así que x = 7. Pon x = 7 en la primera ecuación: 7 + y = 12, así que y = 5. La solución es (7, 5). Comprueba la segunda: 7 − 5 = 2, verdadero. Este método es la *eliminación*.",
+      "Sumar funciona siempre que los *coeficientes* de una variable sean opuestos. Resuelve 3x + 2y = 16 y 5x − 2y = 0. Los coeficientes de y son +2 y −2. Suma: 8x = 16, así que x = 2. Entonces 3 × 2 + 2y = 16, así que 6 + 2y = 16, 2y = 10, y = 5. Comprueba la segunda: 5 × 2 − 2 × 5 = 10 − 10 = 0, verdadero. La solución es (2, 5).",
+      "Cuando los coeficientes son iguales en lugar de opuestos, resta una ecuación de la otra. Resuelve 4x + y = 14 y 2x + y = 8. Las dos tienen +y. Resta la segunda de la primera: (4x − 2x) + (y − y) = 14 − 8, que es 2x = 6, así que x = 3. Entonces 2 × 3 + y = 8 da y = 2. Comprueba la primera: 4 × 3 + 2 = 14, verdadero. La solución es (3, 2).",
+      "Hay dos descuidos que evitar. Primero, sumar los lados izquierdos pero no los derechos: si sumas x + y y x − y, también debes sumar 12 y 2. Segundo, restar sin cuidado cuando los signos ya son opuestos. Con +y y −y, restar daría 2y, no 0, y no se elimina nada. Elige sumar cuando los signos son distintos y restar cuando son iguales."
+     ],
+     "words": [
+      {
+       "w": "eliminación",
+       "d": "sumar o restar dos ecuaciones para que una variable se cancele"
+      },
+      {
+       "w": "coeficientes",
+       "d": "los números que están delante de las variables; en 5x − 2y, los coeficientes son 5 y −2"
+      }
+     ],
+     "look": {
+      "title": "Cancelar y resolver",
+      "text": "Resuelve 2x + y = 11 y 3x − y = 9. Los coeficientes de y son +1 y −1, opuestos, así que suma las ecuaciones: 5x = 20, lo cual da x = 4. Sustituye en la primera: 2 × 4 + y = 11, así que y = 3. Comprueba la segunda: 3 × 4 − 3 = 12 − 3 = 9, verdadero. La solución es (4, 3).",
+      "prompt": "Resuelve x + y = 9 y x − y = 1 sumando. Luego resuelve 5x + y = 17 y 2x + y = 8 restando. Comprueba cada respuesta en las dos ecuaciones."
+     },
+     "check": [
+      {
+       "q": "Resuelve x + y = 12 y x − y = 2 por eliminación.",
+       "choices": [
+        "(7, 5)",
+        "(5, 7)",
+        "(6, 6)",
+        "(14, 2)"
+       ],
+       "why": "Al sumar se obtiene 2x = 14, así que x = 7. Entonces 7 + y = 12 da y = 5. Comprobación: 7 − 5 = 2."
+      },
+      {
+       "q": "Resuelve 3x + 2y = 16 y 5x − 2y = 0. ¿Cuánto vale x?",
+       "choices": [
+        "16",
+        "2",
+        "8",
+        "5"
+       ],
+       "why": "Sumar elimina y: 8x = 16, así que x = 2. Entonces y = 5, y 5 × 2 − 2 × 5 = 0 lo confirma."
+      },
+      {
+       "q": "En 4x + y = 14 y 2x + y = 8, ¿por qué se restan las ecuaciones en lugar de sumarlas?",
+       "choices": [
+        "Porque los coeficientes de y son opuestos",
+        "Porque los coeficientes de x son iguales",
+        "Porque los coeficientes de y son iguales, así que restar quita y",
+        "Porque sumar nunca funciona"
+       ],
+       "why": "Las dos ecuaciones tienen +y. Restar da y − y = 0, lo cual elimina y y deja 2x = 6."
+      }
+     ],
+     "short": [
+      "Solve x + y = 12 and x − y = 2. The y terms are +y and −y. They are opposites. Add the equations, left side to left side and right side to right side: 2x = 14, so x = 7. Then 7 + y = 12, so y = 5. The solution is (7, 5). This method is *elimination*. Adding works whenever a variable's *coefficients* are opposites. For 3x + 2y = 16 and 5x − 2y = 0, the y coefficients are +2 and −2. Adding gives 8x = 16, so x = 2, and then y = 5. When the coefficients are the same instead, subtract. For 4x + y = 14 and 2x + y = 8, subtracting gives 2x = 6, so x = 3, and then y = 2. Add the right sides too. Add when the signs differ, and subtract when they match."
+     ],
+     "more": [
+      "Adding two equations is allowed because equal things stay equal when you add equal amounts to them. Each equation says that its left side equals its right side. So adding the left sides together and the right sides together gives another true equation.",
+      "People solved systems this way about 2,000 years ago. A Chinese book called The Nine Chapters on the Mathematical Art, from around 100 CE, solves systems of equations by elimination. The idea you are using is old, and it still works on every system of this kind."
+     ],
+     "short_es": [
+      "Resuelve x + y = 12 y x − y = 2. Los términos con y son +y y −y. Son opuestos. Suma las ecuaciones, lado izquierdo con lado izquierdo y lado derecho con lado derecho: 2x = 14, así que x = 7. Entonces 7 + y = 12, así que y = 5. La solución es (7, 5). Este método es la *eliminación*. Sumar funciona siempre que los *coeficientes* de una variable sean opuestos. En 3x + 2y = 16 y 5x − 2y = 0, los coeficientes de y son +2 y −2. Al sumar se obtiene 8x = 16, así que x = 2, y luego y = 5. Cuando los coeficientes son iguales, en cambio, resta. En 4x + y = 14 y 2x + y = 8, al restar se obtiene 2x = 6, así que x = 3, y luego y = 2. Suma también los lados derechos. Suma cuando los signos son distintos, y resta cuando coinciden."
+     ],
+     "more_es": [
+      "Sumar dos ecuaciones está permitido porque las cosas iguales siguen siendo iguales cuando les sumas cantidades iguales. Cada ecuación dice que su lado izquierdo es igual a su lado derecho. Así que sumar los lados izquierdos entre sí y los lados derechos entre sí da otra ecuación verdadera.",
+      "La gente resolvía sistemas de esta manera hace unos 2,000 años. Un libro chino llamado Los nueve capítulos sobre el arte matemático, de alrededor del año 100 d. C., resuelve sistemas de ecuaciones por eliminación. La idea que estás usando es antigua, y todavía funciona con todos los sistemas de este tipo."
+     ]
+    },
+    {
+     "title": "Eliminación con multiplicación",
+     "mainIdea": "Si ningún coeficiente coincide, multiplica una o las dos ecuaciones por un número para que los coeficientes de una variable queden iguales u opuestos, y luego elimina.",
+     "reading": [
+      "Resuelve 2x + 3y = 12 y x + y = 5. Todavía no coincide ningún coeficiente. Pero si *multiplicas* la segunda ecuación por −2 (todos sus términos), queda −2x − 2y = −10, y ahora los coeficientes de x son +2 y −2. Suma: (2x − 2x) + (3y − 2y) = 12 − 10, así que y = 2. Entonces x + 2 = 5, así que x = 3. Comprueba la primera ecuación: 2 × 3 + 3 × 2 = 6 + 6 = 12, verdadero. La solución es (3, 2).",
+      "Multiplicar una ecuación por un número la mantiene verdadera, siempre que multipliques todos los términos, incluido el número de la derecha. Por eso el método funciona. A veces hay que multiplicar las dos ecuaciones. Resuelve 3x + 2y = 7 y 2x + 5y = 12. Para eliminar x, haz que los dos coeficientes de x sean 6, el *mínimo común múltiplo* de 3 y 2. Multiplica la primera por 2: 6x + 4y = 14. Multiplica la segunda por 3: 6x + 15y = 36.",
+      "Ahora resta la primera ecuación nueva de la segunda: (6x − 6x) + (15y − 4y) = 36 − 14, así que 11y = 22 y y = 2. Sustituye en 3x + 2y = 7: 3x + 4 = 7, así que 3x = 3 y x = 1. Comprueba la otra ecuación original: 2 × 1 + 5 × 2 = 2 + 10 = 12, verdadero. La solución es (1, 2).",
+      "El error habitual es multiplicar solo el lado izquierdo. Si 2x + y = 7 se vuelve 4x + 2y = 7 en lugar de 4x + 2y = 14, todo lo que sigue está mal. Multiplica todos los términos. Además, elige qué variable eliminar buscando el multiplicador más pequeño. En 2x + y = 7 y 3x + 2y = 12, duplicar la primera ecuación a 4x + 2y = 14 alinea los términos con y de inmediato, y al restar la segunda se obtiene x = 2, y luego y = 3."
+     ],
+     "words": [
+      {
+       "w": "multiplicar",
+       "d": "multiplicar cada término, de los dos lados de una ecuación, por el mismo número"
+      },
+      {
+       "w": "mínimo común múltiplo",
+       "d": "el número más pequeño en el que caben dos números; para 3 y 2 es 6"
+      }
+     ],
+     "look": {
+      "title": "Alinear los términos",
+      "text": "Resuelve 2x + y = 7 y 3x + 2y = 12. Multiplica la primera ecuación por 2 para obtener 4x + 2y = 14. Ahora las dos ecuaciones tienen 2y. Resta la segunda de la nueva primera: (4x − 3x) + (2y − 2y) = 14 − 12, así que x = 2. Entonces 2 × 2 + y = 7 da y = 3. Comprueba la segunda ecuación original: 3 × 2 + 2 × 3 = 6 + 6 = 12, verdadero.",
+      "prompt": "Resuelve 3x + y = 10 y 2x + 3y = 9. Decide qué ecuación multiplicar y por cuánto, elimina una variable y comprueba tu solución en las dos ecuaciones originales."
+     },
+     "check": [
+      {
+       "q": "Resuelve 2x + 3y = 12 y x + y = 5.",
+       "choices": [
+        "(2, 3)",
+        "(5, 0)",
+        "(6, 0)",
+        "(3, 2)"
+       ],
+       "why": "Multiplica la segunda por −2: −2x − 2y = −10. Súmala a la primera: y = 2. Entonces x = 3. Comprobación: 2 × 3 + 3 × 2 = 12 y 3 + 2 = 5."
+      },
+      {
+       "q": "Para eliminar x en 3x + 2y = 7 y 2x + 5y = 12, multiplicas la primera por 2 y la segunda por 3. ¿Por qué esos números?",
+       "choices": [
+        "Porque 6 es el mínimo común múltiplo de 3 y 2, así que los dos coeficientes de x quedan en 6",
+        "Porque entonces los términos con y se cancelan",
+        "Porque 7 × 2 = 14",
+        "Porque las pendientes coinciden"
+       ],
+       "why": "3 × 2 = 6 y 2 × 3 = 6. Con coeficientes de x iguales, restar las ecuaciones quita x."
+      },
+      {
+       "q": "Resuelve 3x + 2y = 7 y 2x + 5y = 12. ¿Cuánto vale y?",
+       "choices": [
+        "1",
+        "2",
+        "22",
+        "5"
+       ],
+       "why": "6x + 4y = 14 y 6x + 15y = 36. Resta: 11y = 22, así que y = 2. Entonces 3x + 4 = 7 da x = 1."
+      }
+     ],
+     "short": [
+      "Sometimes no coefficients match. Solve 2x + 3y = 12 and x + y = 5. *Multiply through* the second equation by −2, every term: −2x − 2y = −10. Now the x coefficients are +2 and −2. Add the equations: y = 2. Then x = 3. Multiplying keeps an equation true only if you multiply every term, including the number on the right. Sometimes both equations need it. For 3x + 2y = 7 and 2x + 5y = 12, make both x coefficients 6, the *least common multiple* of 3 and 2. Multiply the first by 2 and the second by 3: 6x + 4y = 14 and 6x + 15y = 36. Subtract: 11y = 22, so y = 2, and then x = 1. Pick the variable that needs the smaller multipliers, and check in the original equations."
+     ],
+     "more": [
+      "You can eliminate the other variable instead and still get the same answer. For 2x + 3y = 12 and x + y = 5, multiply the second equation by −3 to get −3x − 3y = −15. Add it to the first: −x = −3, so x = 3, and then y = 2. Two routes, one solution.",
+      "Sometimes the work ends in a strange line, such as 0 = 5 or 0 = 0. That is not a mistake in your algebra. It tells you the system does not have exactly one solution. The next lessons show what those results mean."
+     ],
+     "short_es": [
+      "A veces no coincide ningún coeficiente. Resuelve 2x + 3y = 12 y x + y = 5. *Multiplica* la segunda ecuación por −2, todos los términos: −2x − 2y = −10. Ahora los coeficientes de x son +2 y −2. Suma las ecuaciones: y = 2. Entonces x = 3. Multiplicar mantiene verdadera una ecuación solo si multiplicas todos los términos, incluido el número de la derecha. A veces hay que hacerlo en las dos ecuaciones. En 3x + 2y = 7 y 2x + 5y = 12, haz que los dos coeficientes de x sean 6, el *mínimo común múltiplo* de 3 y 2. Multiplica la primera por 2 y la segunda por 3: 6x + 4y = 14 y 6x + 15y = 36. Resta: 11y = 22, así que y = 2, y luego x = 1. Elige la variable que necesite los multiplicadores más pequeños, y comprueba en las ecuaciones originales."
+     ],
+     "more_es": [
+      "Puedes eliminar la otra variable y obtener la misma respuesta. En 2x + 3y = 12 y x + y = 5, multiplica la segunda ecuación por −3 para obtener −3x − 3y = −15. Súmala a la primera: −x = −3, así que x = 3, y luego y = 2. Dos caminos, una solución.",
+      "A veces el trabajo termina en una línea extraña, como 0 = 5 o 0 = 0. Eso no es un error de tu álgebra. Te dice que el sistema no tiene exactamente una solución. Las próximas lecciones muestran qué significan esos resultados."
+     ]
+    }
+   ]
+  },
+  {
+   "title": "¿Cuántas soluciones?",
+   "lessons": [
+    {
+     "title": "Una, ninguna o infinitas",
+     "mainIdea": "Dos líneas pueden cruzarse una vez, no cruzarse nunca o ser la misma línea, lo que da una solución, ninguna solución o infinitas soluciones.",
+     "reading": [
+      "La mayoría de los sistemas tienen exactamente una solución, porque dos líneas con distinta pendiente se cruzan exactamente una vez. Pero pueden ocurrir otras dos cosas. Toma y = 2x + 1 y y = 2x − 4. Las dos tienen pendiente 2, así que son *líneas paralelas*: van una al lado de la otra y nunca se encuentran. No hay ningún punto en las dos líneas, así que el sistema no tiene solución.",
+      "El álgebra dice lo mismo. Iguala las expresiones: 2x + 1 = 2x − 4. Resta 2x a los dos lados: 1 = −4. Eso es falso sin importar cuánto valga x. Un enunciado falso cuando las variables han desaparecido significa que no hay solución. Compáralo con y = 3x + 2 y 2y = 6x + 4. Divide la segunda entre 2: y = 3x + 2. Es exactamente la misma línea. Iguálalas: 3x + 2 = 3x + 2, lo cual da 2 = 2, verdadero para toda x.",
+      "Cuando las dos variables desaparecen y lo que queda es verdadero, las dos ecuaciones describen una sola línea, y todos los puntos de ella son soluciones. Eso son *infinitas soluciones*. Así que hay tres casos. Pendientes distintas: una solución. La misma pendiente y distintos interceptos en y: ninguna solución. La misma pendiente y el mismo intercepto en y: infinitas soluciones.",
+      "No confundas el caso falso con una solución de 0. Si la sustitución lleva a 0 = 7, la respuesta no es x = 0 ni x = 7. Significa que las líneas nunca se encuentran. Y no leas 0 = 0 como ninguna solución. Significa lo contrario, que sirven todos los puntos de la línea. Di las palabras en voz alta: 0 = 7 es falso, así que ninguna solución; 0 = 0 es verdadero, así que infinitas soluciones."
+     ],
+     "words": [
+      {
+       "w": "líneas paralelas",
+       "d": "líneas con la misma pendiente que nunca se cruzan"
+      },
+      {
+       "w": "infinitas soluciones",
+       "d": "lo que tiene un sistema cuando las dos ecuaciones describen la misma línea, de modo que sirve cada punto de ella"
+      }
+     ],
+     "look": {
+      "title": "Clasifica los sistemas",
+      "text": "Sistema 1: y = 4x + 3 y y = 4x − 2. Sistema 2: y = x + 5 y y = −x + 5. Sistema 3: y = 2x − 6 y 3y = 6x − 18. En el sistema 1 las pendientes coinciden pero los interceptos son distintos, así que las líneas son paralelas y no hay solución. En el sistema 2 las pendientes son distintas, así que hay una solución, en (0, 5). En el sistema 3, al dividir la segunda ecuación entre 3 se obtiene y = 2x − 6, la misma línea, así que hay infinitas soluciones.",
+      "prompt": "Escribe tu propio sistema sin solución y otro con infinitas soluciones. Luego explica cómo un estudiante podría distinguirlos sin graficar."
+     },
+     "check": [
+      {
+       "q": "¿Cuántas soluciones tiene el sistema y = 2x + 1 y y = 2x − 4?",
+       "choices": [
+        "una solución",
+        "infinitas soluciones",
+        "ninguna solución, porque las líneas son paralelas",
+        "una solución en (2, 1)"
+       ],
+       "why": "Las dos líneas tienen pendiente 2 pero distintos interceptos en y, así que nunca se cruzan. Al igualarlas se obtiene 1 = −4, que es falso."
+      },
+      {
+       "q": "¿Cuántas soluciones tiene el sistema y = 3x + 2 y 2y = 6x + 4?",
+       "choices": [
+        "ninguna solución",
+        "una solución en (3, 2)",
+        "una solución en (0, 2)",
+        "infinitas, porque son la misma línea"
+       ],
+       "why": "Al dividir 2y = 6x + 4 entre 2 se obtiene y = 3x + 2, la primera ecuación. Todos los puntos de esa línea cumplen las dos."
+      },
+      {
+       "q": "La sustitución en un sistema lleva al enunciado 0 = 7. ¿Qué significa eso?",
+       "choices": [
+        "El sistema no tiene solución",
+        "La solución es x = 7",
+        "El sistema tiene infinitas soluciones",
+        "La solución es (0, 7)"
+       ],
+       "why": "0 = 7 es falso para cualquier valor de x, así que ningún par (x, y) puede cumplir las dos ecuaciones. Las líneas son paralelas."
+      }
+     ],
+     "short": [
+      "Most systems have exactly one solution, because two lines with different slopes cross once. Two other things can happen. The lines y = 2x + 1 and y = 2x − 4 both have slope 2, so they are *parallel lines*. They never meet, so there is no solution. Algebra agrees. Setting them equal gives 1 = −4, which is false. Now take y = 3x + 2 and 2y = 6x + 4. Dividing the second by 2 gives y = 3x + 2, the very same line. Setting them equal gives 2 = 2, which is true for every x. Every point on the line works, so there are *infinitely many solutions*. Different slopes mean one solution. The same slope with different intercepts means none. The same slope and intercept means infinitely many. A false result like 0 = 7 means no solution."
+     ],
+     "more": [
+      "You can see parallel lines in the world around you. The two rails of a train track run side by side and never meet. Two lines like that have the same slope but sit at different heights, so no point is on both.",
+      "Infinitely many solutions happens when one equation just repeats the other in different clothes. Take x + y = 10 and 2x + 2y = 20. The second equation says exactly what the first says, only doubled. It adds no new information, so it cannot narrow the choices, and every pair that fits the first also fits the second."
+     ],
+     "short_es": [
+      "La mayoría de los sistemas tienen exactamente una solución, porque dos líneas con distinta pendiente se cruzan una vez. Pueden ocurrir otras dos cosas. Las líneas y = 2x + 1 y y = 2x − 4 tienen las dos pendiente 2, así que son *líneas paralelas*. Nunca se encuentran, así que no hay solución. El álgebra coincide. Al igualarlas se obtiene 1 = −4, que es falso. Ahora toma y = 3x + 2 y 2y = 6x + 4. Al dividir la segunda entre 2 se obtiene y = 3x + 2, exactamente la misma línea. Al igualarlas se obtiene 2 = 2, que es verdadero para toda x. Sirven todos los puntos de la línea, así que hay *infinitas soluciones*. Pendientes distintas significan una solución. La misma pendiente con distintos interceptos significa ninguna. La misma pendiente y el mismo intercepto significan infinitas. Un resultado falso como 0 = 7 significa que no hay solución."
+     ],
+     "more_es": [
+      "Puedes ver líneas paralelas en el mundo que te rodea. Los dos rieles de una vía de tren van uno al lado del otro y nunca se encuentran. Dos líneas así tienen la misma pendiente pero están a distinta altura, así que ningún punto está en las dos.",
+      "Las infinitas soluciones ocurren cuando una ecuación solo repite a la otra con otra apariencia. Toma x + y = 10 y 2x + 2y = 20. La segunda ecuación dice exactamente lo que dice la primera, solo que al doble. No agrega información nueva, así que no puede reducir las opciones, y todo par que cumple la primera cumple también la segunda."
+     ]
+    },
+    {
+     "title": "Saber cuántas soluciones por las pendientes",
+     "mainIdea": "Reordena las dos ecuaciones en la forma y = mx + b y compara: distinta m significa una solución, la misma m con distinta b significa ninguna, y la misma m y la misma b significan infinitas.",
+     "reading": [
+      "Las ecuaciones no siempre llegan en *forma pendiente-intercepto*. Resuelve 2x + y = 6 y 4x + 2y = 8 despejando y. *Reordena* la primera: y = −2x + 6. Reordena la segunda: 2y = −4x + 8, así que y = −2x + 4. Las dos tienen pendiente −2, pero los interceptos en y son 6 y 4. La misma pendiente, distinto intercepto: líneas paralelas, ninguna solución.",
+      "Ahora x − y = 1 y 3x − 3y = 3. De la primera: −y = −x + 1, así que y = x − 1. De la segunda: −3y = −3x + 3, así que y = x − 1. La misma pendiente y el mismo intercepto. Las dos líneas *coinciden*, es decir, quedan exactamente una encima de la otra. Infinitas soluciones: cualquier punto de y = x − 1, como (1, 0) o (5, 4).",
+      "Una más: y = 5x + 1 y y = −x + 7. Las pendientes son 5 y −1, distintas, así que hay exactamente una solución. Hállala: 5x + 1 = −x + 7, así que 6x = 6, x = 1, y y = 5 × 1 + 1 = 6. Comprueba la segunda: −1 + 7 = 6, verdadero. Siempre que las pendientes son distintas, las líneas deben cruzarse en algún lugar, aunque el cruce quede muy lejos de la hoja.",
+      "La trampa es comparar las ecuaciones antes de reordenarlas. El par 2x + y = 6 y 4x + 2y = 8 no parece paralelo, porque los coeficientes son distintos. Pero cada término de la segunda es el doble de la primera, excepto el 8, que tendría que ser 12. Reordenar muestra la pendiente que comparten. La otra trampa es comparar solo las pendientes y olvidar los interceptos. La misma pendiente te dice paralelas o idénticas; el intercepto decide cuál."
+     ],
+     "words": [
+      {
+       "w": "forma pendiente-intercepto",
+       "d": "una ecuación escrita como y = mx + b, de modo que se pueden leer directamente la pendiente m y el intercepto en y, b"
+      },
+      {
+       "w": "reordenar",
+       "d": "mover los términos de una ecuación para que tenga otra forma, como despejar y"
+      },
+      {
+       "w": "coincidir",
+       "d": "quedar exactamente una encima de la otra; dos líneas que coinciden son en realidad una sola línea"
+      }
+     ],
+     "look": {
+      "title": "Reordena y luego compara",
+      "text": "Toma x + 2y = 8 y 3x + 6y = 12. Despeja y en cada una. Primera: 2y = −x + 8, así que y = −(1/2)x + 4. Segunda: 6y = −3x + 12, así que y = −(1/2)x + 2. Las dos pendientes son −1/2, pero los interceptos son 4 y 2. Las líneas son paralelas, y el sistema no tiene solución. Si la segunda ecuación hubiera sido 3x + 6y = 24, se habría reordenado a y = −(1/2)x + 4, la misma línea, y habría infinitas soluciones.",
+      "prompt": "Reordena 2x + y = 5 y 6x + 3y = 15 en la forma pendiente-intercepto. ¿Cuántas soluciones tiene el sistema? Cambia un número para que tenga exactamente una solución."
+     },
+     "check": [
+      {
+       "q": "¿Cuántas soluciones tienen 2x + y = 6 y 4x + 2y = 8?",
+       "choices": [
+        "una solución",
+        "ninguna solución",
+        "infinitas soluciones",
+        "una solución en (1, 4)"
+       ],
+       "why": "Reordenadas, las líneas son y = −2x + 6 y y = −2x + 4. La misma pendiente, distintos interceptos, así que son paralelas."
+      },
+      {
+       "q": "¿Cuántas soluciones tienen x − y = 1 y 3x − 3y = 3?",
+       "choices": [
+        "ninguna solución",
+        "una solución",
+        "infinitas soluciones",
+        "una solución en (1, 1)"
+       ],
+       "why": "Las dos se reordenan a y = x − 1. Las líneas coinciden, así que todos los puntos de la línea son soluciones."
+      },
+      {
+       "q": "¿Qué sistema tiene exactamente una solución?",
+       "choices": [
+        "y = x + 2 y y = x − 2",
+        "y = 4x y y = 4x + 1",
+        "y = 2x + 3 y 2y = 4x + 6",
+        "y = 5x + 1 y y = −x + 7"
+       ],
+       "why": "Solo el último par tiene pendientes distintas, 5 y −1. Los dos primeros pares son paralelos, y el tercer par es la misma línea."
+      }
+     ],
+     "short": [
+      "To count the solutions, put both equations in *slope-intercept form* and compare. For 2x + y = 6 and 4x + 2y = 8, *rearrange* the first: y = −2x + 6. The second gives 2y = −4x + 8, so y = −2x + 4. The slopes match but the intercepts, 6 and 4, differ. The lines are parallel, so there is no solution. For x − y = 1 and 3x − 3y = 3, both rearrange to y = x − 1. The lines *coincide*, so there are infinitely many solutions. For y = 5x + 1 and y = −x + 7, the slopes 5 and −1 differ, so there is one solution, (1, 6). Rearrange before you compare, because the pair 2x + y = 6 and 4x + 2y = 8 does not look parallel at first. Same slope means parallel or identical, and the intercept decides."
+     ],
+     "more": [
+      "There is a shortcut that skips the rearranging. For two equations in the form ax + by = c and dx + ey = f, compare the ratios a/d and b/e. If they are different, there is one solution. If they are equal, compare them with c/f. If c/f is different, there is no solution. If c/f is also equal, there are infinitely many. For 2x + y = 6 and 4x + 2y = 8, the ratios 2/4 and 1/2 are equal, but 6/8 is not, so no solution.",
+      "Lines with different slopes always cross, even if the crossing is far away. The lines y = x + 100 and y = 2x have slopes 1 and 2. They cross where 2x = x + 100, so at (100, 100). A small graph of the area near the origin would not show it, but the algebra always finds it."
+     ],
+     "short_es": [
+      "Para contar las soluciones, pon las dos ecuaciones en *forma pendiente-intercepto* y compara. En 2x + y = 6 y 4x + 2y = 8, *reordena* la primera: y = −2x + 6. La segunda da 2y = −4x + 8, así que y = −2x + 4. Las pendientes coinciden pero los interceptos, 6 y 4, son distintos. Las líneas son paralelas, así que no hay solución. En x − y = 1 y 3x − 3y = 3, las dos se reordenan a y = x − 1. Las líneas *coinciden*, así que hay infinitas soluciones. En y = 5x + 1 y y = −x + 7, las pendientes 5 y −1 son distintas, así que hay una solución, (1, 6). Reordena antes de comparar, porque el par 2x + y = 6 y 4x + 2y = 8 no parece paralelo al principio. La misma pendiente significa paralelas o idénticas, y el intercepto decide."
+     ],
+     "more_es": [
+      "Hay un atajo que evita reordenar. Para dos ecuaciones de la forma ax + by = c y dx + ey = f, compara las razones a/d y b/e. Si son distintas, hay una solución. Si son iguales, compáralas con c/f. Si c/f es distinta, no hay solución. Si c/f también es igual, hay infinitas. En 2x + y = 6 y 4x + 2y = 8, las razones 2/4 y 1/2 son iguales, pero 6/8 no lo es, así que no hay solución.",
+      "Las líneas con distinta pendiente siempre se cruzan, aunque el cruce quede muy lejos. Las líneas y = x + 100 y y = 2x tienen pendientes 1 y 2. Se cruzan donde 2x = x + 100, es decir, en (100, 100). Una gráfica pequeña de la zona cercana al origen no lo mostraría, pero el álgebra siempre lo encuentra."
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Sistemas en la vida real",
+   "lessons": [
+    {
+     "title": "Dos planes de teléfono",
+     "mainIdea": "Cuando dos planes tienen distintos costos fijos y distintas tasas, la solución del sistema es el punto de equilibrio donde cuestan lo mismo.",
+     "reading": [
+      "El plan A cuesta $25 al mes más $2 por cada gigabyte de datos. El plan B cuesta $10 al mes más $5 por gigabyte. Cada plan tiene un *costo fijo*, la parte que pagas pase lo que pase, y una tasa. Sea g los gigabytes y c el costo. Plan A: c = 2g + 25. Plan B: c = 5g + 10. Cuál plan es más barato depende de cuántos datos uses.",
+      "Halla dónde cuestan lo mismo los planes. Iguala los costos: 2g + 25 = 5g + 10. Resta 2g: 25 = 3g + 10. Resta 10: 15 = 3g, así que g = 5. Con 5 GB, el plan A cuesta 2 × 5 + 25 = 35 y el plan B cuesta 5 × 5 + 10 = 35. Ese punto, (5, 35), es el *punto de equilibrio*. Con menos de 5 GB, el plan B es más barato porque su costo fijo es menor. Con más de 5 GB, el plan A es más barato porque su tasa es menor.",
+      "Pruébalo. Con 2 GB: A es 4 + 25 = 29, B es 10 + 10 = 20, así que B gana por $9. Con 8 GB: A es 16 + 25 = 41, B es 40 + 10 = 50, así que A gana por $9. En una gráfica, el plan B empieza más abajo pero sube más rápido, y pasa por encima del plan A en 5 GB. La línea más empinada siempre termina arriba a la larga.",
+      "El planteamiento es donde se cometen los errores. El número que multiplica a g es la tasa por gigabyte, y el número que se suma solo es el costo fijo. Escribir c = 25g + 2 para el plan A significaría $25 por gigabyte, que es un plan muy distinto. Lee con cuidado las palabras: por significa que multiplica, y al mes significa que se suma una sola vez."
+     ],
+     "words": [
+      {
+       "w": "costo fijo",
+       "d": "la parte de un precio que pagas sin importar cuánto uses; el intercepto en y de una línea de costo"
+      },
+      {
+       "w": "punto de equilibrio",
+       "d": "el punto donde dos costos son iguales; la solución del sistema de ecuaciones de costo"
+      }
+     ],
+     "look": {
+      "title": "Dos planes lado a lado",
+      "rows": [
+       "Plan A con 0 GB",
+       "Plan B con 0 GB",
+       "Plan A con 5 GB",
+       "Plan B con 5 GB",
+       "Plan A con 10 GB",
+       "Plan B con 10 GB"
+      ],
+      "unit": "dólares",
+      "prompt": "¿Con qué cantidad de datos cuestan lo mismo los planes? ¿Qué plan escogerías si usas 3 GB al mes, y cuál para 12 GB? Explica usando las tasas."
+     },
+     "check": [
+      {
+       "q": "El plan A es c = 2g + 25 y el plan B es c = 5g + 10. ¿Dónde cuestan lo mismo?",
+       "choices": [
+        "5 GB, a $35",
+        "3 GB, a $31",
+        "15 GB, a $55",
+        "Nunca cuestan lo mismo"
+       ],
+       "why": "2g + 25 = 5g + 10 da 15 = 3g, así que g = 5. Entonces c = 2 × 5 + 25 = 35, y 5 × 5 + 10 = 35 también."
+      },
+      {
+       "q": "Con 8 GB, ¿qué plan es más barato y por cuánto?",
+       "choices": [
+        "B, por $9",
+        "A, por $9",
+        "A, por $5",
+        "Cuestan lo mismo"
+       ],
+       "why": "A: 2 × 8 + 25 = 41. B: 5 × 8 + 10 = 50. A es más barato por 50 − 41 = 9 dólares."
+      },
+      {
+       "q": "El plan A es $25 al mes más $2 por GB, y el plan B es $10 al mes más $5 por GB. ¿Qué sistema corresponde?",
+       "choices": [
+        "c = 25g + 2 y c = 10g + 5",
+        "c = 2g y c = 5g",
+        "c = 2g + 25 y c = 5g + 10",
+        "c = 27g y c = 15g"
+       ],
+       "why": "La tasa por GB multiplica a g, y la cuota mensual se suma una sola vez. Así que A es 2g + 25 y B es 5g + 10."
+      }
+     ],
+     "short": [
+      "Plan A costs $25 a month plus $2 for each gigabyte. Plan B costs $10 a month plus $5 per gigabyte. Each plan has a *fixed cost*, which you pay no matter what, and a rate. With g the gigabytes and c the cost, Plan A is c = 2g + 25 and Plan B is c = 5g + 10. To find where they cost the same, set them equal: 2g + 25 = 5g + 10. That gives 15 = 3g, so g = 5. At 5 GB both cost $35. This is the *break-even point*. Below 5 GB, Plan B is cheaper because its fixed cost is lower. At 2 GB, B wins by $9. Above 5 GB, Plan A is cheaper because its rate is lower. At 8 GB, A wins by $9. The per-GB rate multiplies g, and the monthly fee is added once."
+     ],
+     "more": [
+      "Businesses use the break-even idea all the time. A food stand pays $200 to set up and $1 in supplies for each sandwich. It sells each sandwich for $5. The stand breaks even when its income equals its costs: 5x = 200 + x, so 4x = 200 and x = 50. After 50 sandwiches, every sandwich brings in profit.",
+      "The best plan depends on who is using it. A person who uses very little data is helped by the plan with the lower fixed cost. A person who uses a lot is helped by the plan with the lower rate. Before you choose, find out how much you really use, and compare it with the break-even point."
+     ],
+     "short_es": [
+      "El plan A cuesta $25 al mes más $2 por cada gigabyte. El plan B cuesta $10 al mes más $5 por gigabyte. Cada plan tiene un *costo fijo*, que pagas pase lo que pase, y una tasa. Con g los gigabytes y c el costo, el plan A es c = 2g + 25 y el plan B es c = 5g + 10. Para hallar dónde cuestan lo mismo, iguálalos: 2g + 25 = 5g + 10. Eso da 15 = 3g, así que g = 5. Con 5 GB los dos cuestan $35. Este es el *punto de equilibrio*. Con menos de 5 GB, el plan B es más barato porque su costo fijo es menor. Con 2 GB, B gana por $9. Con más de 5 GB, el plan A es más barato porque su tasa es menor. Con 8 GB, A gana por $9. La tasa por GB multiplica a g, y la cuota mensual se suma una sola vez."
+     ],
+     "more_es": [
+      "Los negocios usan la idea del punto de equilibrio todo el tiempo. Un puesto de comida paga $200 por instalarse y $1 en materiales por cada sándwich. Vende cada sándwich a $5. El puesto llega al equilibrio cuando sus ingresos igualan sus costos: 5x = 200 + x, así que 4x = 200 y x = 50. Después de 50 sándwiches, cada sándwich deja ganancia.",
+      "El mejor plan depende de quién lo use. A una persona que usa muy pocos datos la ayuda el plan con el costo fijo menor. A una persona que usa muchos la ayuda el plan con la tasa menor. Antes de elegir, averigua cuánto usas de verdad, y compáralo con el punto de equilibrio."
+     ]
+    },
+    {
+     "title": "Boletos, monedas y mezclas",
+     "mainIdea": "Muchos problemas con palabras dan una cantidad y un total; escribe una ecuación para cada uno y luego resuelve el sistema.",
+     "reading": [
+      "En una obra de teatro escolar, los boletos de adulto se venden a $8 y los de niño a $5. Una noche se vendieron 30 boletos por $195 en total. ¿Cuántos de cada uno? Sea a los boletos de adulto y c los boletos de niño. La cantidad da una ecuación: a + c = 30. El dinero da la otra: 8a + 5c = 195. Este es un *problema de mezclas*: se mezclan dos clases de cosas, y conoces la cantidad total y el valor total.",
+      "Resuelve por eliminación. Multiplica la ecuación de la cantidad por 5: 5a + 5c = 150. Réstala de la ecuación del dinero: (8a − 5a) + (5c − 5c) = 195 − 150, así que 3a = 45 y a = 15. Entonces c = 30 − 15 = 15. Comprueba el dinero: 8 × 15 + 5 × 15 = 120 + 75 = 195, verdadero. Quince boletos de adulto y quince boletos de niño.",
+      "Las monedas funcionan igual. Un frasco tiene 20 monedas, todas de diez centavos y de veinticinco centavos, que valen $3.05. Trabaja en centavos para evitar decimales: d + q = 20 y 10d + 25q = 305. Multiplica la primera por 10: 10d + 10q = 200. Réstala de la segunda: 15q = 105, así que q = 7. Entonces d = 20 − 7 = 13. Comprobación: 10 × 13 + 25 × 7 = 130 + 175 = 305 centavos, que son $3.05. Siete monedas de veinticinco centavos y trece de diez centavos.",
+      "Para *plantear* cualquier problema de este tipo, hazte dos preguntas. ¿Qué se está contando, y cuál es la cantidad total? ¿Cuánto vale cada uno, y cuál es el valor total? La primera respuesta da la ecuación de la cantidad con variables sencillas. La segunda da la ecuación del valor, con cada variable multiplicada por lo que vale. El descuido común es poner el valor total en la ecuación de la cantidad, como d + q = 305. La cantidad de monedas es 20, y el valor en centavos es 305. Mantenlos en ecuaciones separadas."
+     ],
+     "words": [
+      {
+       "w": "problema de mezclas",
+       "d": "un problema con dos clases de cosas en el que conoces la cantidad total y el valor total"
+      },
+      {
+       "w": "plantear",
+       "d": "traducir un problema con palabras a ecuaciones antes de resolverlo"
+      }
+     ],
+     "look": {
+      "title": "Monedas de cinco y de diez centavos",
+      "text": "Un bolsillo tiene 25 monedas, todas de cinco y de diez centavos, que valen $1.85. En centavos: n + d = 25 y 5n + 10d = 185. Multiplica la primera por 5: 5n + 5d = 125. Réstala de la segunda: 5d = 60, así que d = 12. Entonces n = 25 − 12 = 13. Comprobación: 5 × 13 + 10 × 12 = 65 + 120 = 185 centavos. Trece monedas de cinco centavos y doce de diez centavos.",
+      "prompt": "Un frasco tiene 18 monedas de cinco y de veinticinco centavos, que valen $2.50. Escribe las dos ecuaciones en centavos, resuelve el sistema y comprueba que tus monedas suman tanto la cantidad como el valor."
+     },
+     "check": [
+      {
+       "q": "Los boletos de adulto cuestan $8 y los de niño $5. Se vendieron treinta boletos por $195. ¿Cuántos boletos de adulto se vendieron?",
+       "choices": [
+        "10",
+        "20",
+        "30",
+        "15"
+       ],
+       "why": "a + c = 30 y 8a + 5c = 195. Multiplica la primera por 5 y resta: 3a = 45, así que a = 15. Comprobación: 8 × 15 + 5 × 15 = 195."
+      },
+      {
+       "q": "Un frasco tiene 20 monedas de diez y veinticinco centavos que valen $3.05. ¿Cuántas monedas de veinticinco centavos hay?",
+       "choices": [
+        "7",
+        "13",
+        "20",
+        "12"
+       ],
+       "why": "d + q = 20 y 10d + 25q = 305. Al restar 10 veces la primera se obtiene 15q = 105, así que q = 7. Hay 13 monedas de diez centavos."
+      },
+      {
+       "q": "¿Qué par de ecuaciones corresponde a: 25 monedas, de cinco y de diez centavos, que valen $1.85?",
+       "choices": [
+        "n + d = 185 y 5n + 10d = 25",
+        "n + d = 25 y 5n + 10d = 185",
+        "5n + 10d = 25 y n + d = 1.85",
+        "n + d = 25 y n + d = 185"
+       ],
+       "why": "La cantidad de monedas es 25, así que n + d = 25. Cada moneda de cinco centavos vale 5 centavos y cada una de diez vale 10 centavos, y el total es 185 centavos."
+      }
+     ],
+     "short": [
+      "A school play sells adult tickets for $8 and child tickets for $5. One night 30 tickets sold for $195. Let a be the adult tickets and c the child tickets. The count gives a + c = 30. The money gives 8a + 5c = 195. This is a *mixture problem*: two kinds of things, with a known total count and total value. Multiply the first equation by 5 to get 5a + 5c = 150, and subtract it from the second: 3a = 45, so a = 15 and c = 15. Coins work the same way. A jar of 20 dimes and quarters worth $3.05 gives d + q = 20 and 10d + 25q = 305 in cents, so q = 7 and d = 13. To *set up* any such problem, write one equation for the count and one for the value. Do not put the total value in the count equation."
+     ],
+     "more": [
+      "A quick sense check can catch mistakes. If all 30 tickets were child tickets, the total would be 30 × 5 = $150. If all were adult tickets, it would be 30 × 8 = $240. The real total, $195, sits between those two, so the answer has to include both kinds of tickets. It is exactly halfway, which is why the numbers of the two kinds come out equal.",
+      "Mixtures are not only about money. Say a store makes 10 pounds of trail mix from peanuts at $4 a pound and raisins at $6 a pound, and the mix is worth $50 in all. Let p be the pounds of peanuts and r the pounds of raisins. The weight gives p + r = 10, and the value gives 4p + 6r = 50. The setup has the same shape as the tickets and the coins."
+     ],
+     "short_es": [
+      "En una obra de teatro escolar se venden boletos de adulto a $8 y boletos de niño a $5. Una noche se vendieron 30 boletos por $195. Sea a los boletos de adulto y c los boletos de niño. La cantidad da a + c = 30. El dinero da 8a + 5c = 195. Este es un *problema de mezclas*: dos clases de cosas, con una cantidad total y un valor total conocidos. Multiplica la primera ecuación por 5 para obtener 5a + 5c = 150, y réstala de la segunda: 3a = 45, así que a = 15 y c = 15. Las monedas funcionan igual. Un frasco con 20 monedas de diez y veinticinco centavos que valen $3.05 da d + q = 20 y 10d + 25q = 305 en centavos, así que q = 7 y d = 13. Para *plantear* cualquier problema así, escribe una ecuación para la cantidad y una para el valor. No pongas el valor total en la ecuación de la cantidad."
+     ],
+     "more_es": [
+      "Una revisión rápida del sentido común puede atrapar errores. Si los 30 boletos fueran de niño, el total sería 30 × 5 = $150. Si todos fueran de adulto, sería 30 × 8 = $240. El total real, $195, está entre esos dos, así que la respuesta debe incluir las dos clases de boletos. Está justo a la mitad, y por eso las cantidades de las dos clases salen iguales.",
+      "Las mezclas no tratan solo de dinero. Digamos que una tienda hace 10 libras de mezcla de frutos secos con cacahuates a $4 la libra y pasas a $6 la libra, y la mezcla vale $50 en total. Sea p las libras de cacahuates y r las libras de pasas. El peso da p + r = 10, y el valor da 4p + 6r = 50. El planteamiento tiene la misma forma que los boletos y las monedas."
+     ]
+    }
+   ]
+  }
+ ],
+ "review": [
+  {
+   "q": "¿Dónde se cruzan las líneas y = x + 2 y y = 2x − 1?",
+   "choices": [
+    "(1, 3)",
+    "(5, 3)",
+    "(3, 5)",
+    "(2, 4)"
+   ],
+   "why": "x + 2 = 2x − 1 da x = 3, y y = 3 + 2 = 5. Comprobación: 2 × 3 − 1 = 5."
+  },
+  {
+   "q": "Resuelve x + y = 9 y x − y = 1.",
+   "choices": [
+    "(4, 5)",
+    "(9, 1)",
+    "(6, 3)",
+    "(5, 4)"
+   ],
+   "why": "Al sumar se obtiene 2x = 10, así que x = 5. Entonces y = 9 − 5 = 4. Comprobación: 5 − 4 = 1."
+  },
+  {
+   "q": "¿Cuántas soluciones tienen y = 4x + 3 y y = 4x − 2?",
+   "choices": [
+    "ninguna solución",
+    "una solución",
+    "infinitas soluciones",
+    "una solución en (4, 3)"
+   ],
+   "why": "La misma pendiente 4, distintos interceptos 3 y −2. Las líneas son paralelas y nunca se cruzan."
+  },
+  {
+   "q": "Resuelve y = x + 5 y 2x + y = 17 por sustitución.",
+   "choices": [
+    "(9, 4)",
+    "(4, 9)",
+    "(6, 11)",
+    "(12, 17)"
+   ],
+   "why": "2x + (x + 5) = 17 da 3x = 12, así que x = 4 y y = 4 + 5 = 9. Comprobación: 2 × 4 + 9 = 17."
+  },
+  {
+   "q": "La tortuga tiene una ventaja de 300 m y se mueve a 1 m/s. La liebre se mueve a 5 m/s. ¿Cuándo la alcanza la liebre?",
+   "choices": [
+    "60 segundos",
+    "300 segundos",
+    "75 segundos",
+    "50 segundos"
+   ],
+   "why": "300 + t = 5t da 300 = 4t, así que t = 75 segundos. Entonces las dos están a 375 metros."
+  },
+  {
+   "q": "Resuelve 2x + 3y = 13 y 2x + y = 7.",
+   "choices": [
+    "(3, 2)",
+    "(2, 1)",
+    "(1, 3)",
+    "(2, 3)"
+   ],
+   "why": "Al restar la segunda de la primera se obtiene 2y = 6, así que y = 3. Entonces 2x + 3 = 7 da x = 2. Comprobación: 4 + 9 = 13."
+  },
+  {
+   "q": "El punto (1, 4) cumple y = 3x + 1 pero da 1 + 2 = 3, no 4, en y = x + 2. Entonces (1, 4) ___.",
+   "choices": [
+    "no es una solución del sistema",
+    "es una solución del sistema",
+    "es una solución solo de la segunda ecuación",
+    "es el intercepto en y del sistema"
+   ],
+   "why": "Una solución debe cumplir las dos ecuaciones. Si falla una ecuación, no es una solución del sistema."
+  },
+  {
+   "q": "El plan A es c = 2g + 25 y el plan B es c = 5g + 10. Con 2 GB, ¿cuál es más barato?",
+   "choices": [
+    "El plan A",
+    "El plan B",
+    "Cuestan lo mismo",
+    "No se puede determinar"
+   ],
+   "why": "A: 2 × 2 + 25 = 29. B: 5 × 2 + 10 = 20. El plan B es más barato con 2 GB."
+  }
+ ]
+}

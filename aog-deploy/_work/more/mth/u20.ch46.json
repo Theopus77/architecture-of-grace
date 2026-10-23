@@ -1,0 +1,996 @@
+{
+ "title": "Razonamiento y demostración",
+ "years": "Geometría",
+ "bigQuestion": "¿Cómo puede bastar un puñado de reglas aceptadas para demostrar cientos de hechos sobre las figuras?",
+ "story": {
+  "title": "Cinco reglas y dos mil años",
+  "kicker": "Un maestro de la antigua Alejandría escribió cinco reglas sencillas, y la gente todavía discute sobre la última.",
+  "paragraphs": [
+   "Hacia el año 300 a. C., en la ciudad de Alejandría, en Egipto, un matemático llamado Euclides reunió un libro llamado los Elementos. No inventó la mayor parte de la geometría que contiene. Su verdadera invención fue el orden. Empezó con una lista corta de definiciones, cinco postulados y unas pocas nociones comunes, y luego demostró todo lo demás, un enunciado a la vez, cada uno apoyado solo en los anteriores. Trece libros después, había levantado todo un mundo de rectas, triángulos, círculos y sólidos a partir de esa lista diminuta.",
+   "Los cinco postulados parecen casi demasiado simples para importar. Puedes trazar una recta entre dos puntos cualesquiera. Puedes extender un segmento hasta hacerlo una recta más larga. Puedes trazar un círculo con cualquier centro y cualquier radio. Todos los ángulos rectos son iguales entre sí. El quinto era distinto. Era largo y enredado, y describía cuándo dos rectas llegarán a encontrarse. Hoy lo enunciamos así: por un punto que no está en una recta pasa exactamente una recta paralela a la recta dada. Los lectores sentían que una regla tan complicada debía poder demostrarse a partir de las otras cuatro.",
+   "Durante unos dos mil años, los matemáticos lo intentaron. Llenaron cuadernos con intentos de demostración, y cada uno de ellos suponía en silencio justo lo que quería demostrar. Entonces, en el siglo XIX, unas pocas personas se hicieron una pregunta más audaz: ¿y si el quinto postulado es simplemente falso? Lo reemplazaron por otra regla y siguieron la lógica. Nada se rompió. Habían descubierto geometrías nuevas, que describen superficies curvas, y esas geometrías llegaron a ser el lenguaje que usan los físicos para describir la gravedad y la forma del espacio.",
+   "El hábito que empezó Euclides, el de preguntar qué se te permite suponer y luego demostrar todo lo demás, se extendió mucho más allá de la geometría. Abraham Lincoln, que trabajaba como abogado en Springfield, Illinois, llevaba una copia de los Elementos en sus viajes y la estudiaba a la luz de una vela. Decía que quería entender de verdad qué significa demostrar algo, probarlo tan por completo que ninguna persona honesta pudiera estar en desacuerdo. De eso trata este capítulo: no solo de saber que un hecho es verdadero, sino de mostrar exactamente por qué."
+  ],
+  "think": "¿Por qué pasaría la gente siglos intentando demostrar una regla que todos creían verdadera? ¿Qué ganaron cuando el intento fracasó?"
+ },
+ "sections": [
+  {
+   "title": "Los bloques de la geometría",
+   "lessons": [
+    {
+     "title": "Puntos, rectas y planos",
+     "mainIdea": "La geometría empieza con tres términos no definidos, y todas las demás palabras se definen a partir de ellos.",
+     "reading": [
+      "Imagina un mapa de Chicago. Una parada de autobús es un punto en el mapa. Lake Shore Drive es un trazo largo y recto. La superficie plana del lago Míchigan se extiende en todas direcciones. En geometría, estas tres imágenes representan los tres términos no definidos: *punto*, *recta* y *plano*. Los describimos, pero nunca los definimos con otras palabras, porque toda cadena de definiciones tiene que empezar en algún lugar. Un punto no tiene tamaño, solo una posición. Una recta es perfectamente recta, no tiene grosor y continúa para siempre en las dos direcciones. Un plano es una superficie plana sin bordes.",
+      "Todo lo demás se define a partir de esos tres. Un *segmento* es la parte de una recta que está entre dos extremos, como el tramo de la avenida Michigan entre dos calles que la cruzan. Un rayo empieza en un extremo y continúa para siempre en una dirección. Los puntos que están en la misma recta son *colineales*. Los puntos que están en el mismo plano son coplanares. Cuando dos rectas distintas se cruzan, comparten exactamente un punto, llamado su intersección. Lee en voz alta cada definición la primera vez que la encuentres. Una definición es una promesa sobre lo que una palabra significará cada vez que la uses.",
+      "Los nombres importan. La recta que pasa por los puntos A y B se llama recta AB. El segmento AB tiene extremos A y B. En texto sencillo, la longitud de ese segmento también se escribe AB, así que hay que leer con cuidado. Este es un error común: tratar el segmento AB y la longitud AB como si fueran lo mismo. El segmento es un conjunto de puntos que puedes dibujar. La longitud es un número, como 7 cm. Mantén separados en tu mente el objeto y su medida. Las demostraciones que vienen más adelante en este capítulo se vuelven mucho más fáciles cuando sabes si estás hablando de una cosa o de un número."
+     ],
+     "words": [
+      {
+       "w": "punto",
+       "d": "una posición exacta sin tamaño; uno de los términos no definidos de la geometría"
+      },
+      {
+       "w": "recta",
+       "d": "un camino recto, sin grosor, que sigue para siempre en las dos direcciones"
+      },
+      {
+       "w": "plano",
+       "d": "una superficie plana que se extiende para siempre en todas direcciones, como una mesa sin fin"
+      },
+      {
+       "w": "segmento",
+       "d": "la parte de una recta entre dos extremos, incluyendo los extremos"
+      },
+      {
+       "w": "colineales",
+       "d": "que están en la misma recta; tres puntos son colineales si una recta pasa por todos"
+      }
+     ],
+     "look": {
+      "title": "¿Cuántas rectas?",
+      "text": "Dibuja tres puntos A, B y C que no estén todos en una misma recta. Por cada par de puntos puedes dibujar exactamente una recta: AB, BC y AC. Eso hace tres rectas. Ahora agrega un cuarto punto D que no esté en ninguna de esas rectas. Las rectas nuevas son AD, BD y CD, así que hay seis rectas en total. Cada punto nuevo agrega una recta por cada punto que ya estaba.",
+      "prompt": "¿Cuántas rectas formarían cinco puntos si no hay tres que sean colineales? Busca el patrón antes de contarlas todas."
+     },
+     "check": [
+      {
+       "q": "¿Cuál de estos es un término no definido en geometría?",
+       "choices": [
+        "segmento",
+        "punto",
+        "rayo",
+        "ángulo"
+       ],
+       "why": "Punto, recta y plano se describen, pero no se definen. Los segmentos, los rayos y los ángulos se definen usándolos."
+      },
+      {
+       "q": "Los puntos A, B y C están todos en la misma recta. ¿Qué palabra los describe?",
+       "choices": [
+        "coplanares",
+        "congruentes",
+        "colineales",
+        "paralelos"
+       ],
+       "why": "Colineales significa que están en la misma recta. Coplanares significa que están en el mismo plano; eso también es cierto aquí, pero no es la palabra para una sola recta."
+      },
+      {
+       "q": "El segmento PQ tiene extremos P y Q, y PQ = 9 cm. ¿Qué enunciado es verdadero?",
+       "choices": [
+        "El segmento PQ es un conjunto de puntos, y PQ = 9 cm es su longitud",
+        "El segmento PQ sigue para siempre en las dos direcciones",
+        "PQ tiene un solo extremo",
+        "El segmento PQ es un número y 9 cm es un conjunto de puntos"
+       ],
+       "why": "El segmento es el objeto formado por los puntos que hay entre P y Q. Su longitud, 9 cm, es un número que lo mide."
+      }
+     ],
+     "short": [
+      "Picture a map of Chicago. A bus stop is a dot, so it stands for a *point*. Lake Shore Drive is a long straight stroke, so it stands for a *line*. The flat surface of Lake Michigan stands for a *plane*. These three are the undefined terms of geometry. We describe them but never define them with other words, because every chain of definitions has to start somewhere. A point has only a position. A line is straight and goes on forever both ways. Everything else is defined from these three. A *segment* is the part of a line between two endpoints. Points on the same line are *collinear*. Segment AB is a set of points you can draw. The length AB is a number, like 7 cm. Keep the two apart."
+     ],
+     "more": [
+      "Two points are enough to fix one line, but three points do something more. Three points that are not on one line lie in exactly one plane. That is why a three-legged camera tripod never wobbles, even on bumpy ground, while a four-legged chair can rock if one leg is a little short. The three feet always find one flat plane to stand on.",
+      "Euclid himself tried to define a point as \"that which has no part.\" Later mathematicians noticed that a sentence like this does not really explain anything, because it uses other words that need explaining. That is why modern geometry, such as David Hilbert's careful work in 1899, leaves point, line and plane undefined and says only how they behave."
+     ],
+     "short_es": [
+      "Imagina un mapa de Chicago. Una parada de autobús es un puntito, así que representa un *punto*. Lake Shore Drive es un trazo largo y recto, así que representa una *recta*. La superficie plana del lago Míchigan representa un *plano*. Estos tres son los términos no definidos de la geometría. Los describimos, pero nunca los definimos con otras palabras, porque toda cadena de definiciones tiene que empezar en algún lugar. Un punto solo tiene una posición. Una recta es recta y sigue para siempre en las dos direcciones. Todo lo demás se define a partir de estos tres. Un *segmento* es la parte de una recta que está entre dos extremos. Los puntos que están en la misma recta son *colineales*. El segmento AB es un conjunto de puntos que puedes dibujar. La longitud AB es un número, como 7 cm. Mantén separadas las dos cosas."
+     ],
+     "more_es": [
+      "Dos puntos bastan para fijar una recta, pero tres puntos hacen algo más. Tres puntos que no están en una misma recta están en exactamente un plano. Por eso un trípode de cámara de tres patas nunca se tambalea, aun en un suelo desigual, mientras que una silla de cuatro patas puede mecerse si una pata es un poco más corta. Las tres puntas siempre encuentran un único plano liso donde apoyarse.",
+      "El propio Euclides intentó definir un punto como «aquello que no tiene partes». Matemáticos posteriores notaron que una frase así en realidad no explica nada, porque usa otras palabras que también necesitan explicación. Por eso la geometría moderna, como el cuidadoso trabajo de David Hilbert en 1899, deja sin definir el punto, la recta y el plano y dice solamente cómo se comportan."
+     ]
+    },
+    {
+     "title": "Postulados y teoremas",
+     "mainIdea": "Un postulado se acepta sin demostración; un teorema hay que demostrarlo a partir de postulados, definiciones y teoremas anteriores.",
+     "reading": [
+      "Todo juego necesita reglas en las que los jugadores estén de acuerdo antes de empezar. Las reglas con que empieza la geometría se llaman *postulados*, y cada una es un postulado. Algunos libros las llaman axiomas. Un postulado es un enunciado que se acepta como verdadero sin demostración. Euclides usó cinco. Uno dice que por dos puntos cualesquiera pasa exactamente una recta. Otro dice que un segmento se puede extender hasta formar una recta. No puedes demostrar estas reglas a partir de nada más simple. Las aceptas, y luego construyes.",
+      "Un *teorema* es un enunciado que ya fue demostrado. La demostración usa solo definiciones, postulados y teoremas que ya estaban demostrados. Aquí va uno pequeño: si dos rectas distintas se cortan, se cortan en exactamente un punto. Supón que dos rectas distintas compartieran dos puntos, P y Q. Entonces las dos rectas pasarían por P y Q. Pero el postulado dice que por dos puntos dados pasa exactamente una recta, así que las dos rectas tendrían que ser la misma. Eso contradice que eran distintas. Por lo tanto, pueden compartir como máximo un punto. Fíjate en cómo la demostración se apoya en el postulado en el momento clave.",
+      "Algunos postulados tratan de medir. El *postulado de la suma de segmentos* dice que si el punto B está entre A y C, entonces AB + BC = AC. Pruébalo con álgebra. Supón que AB = 3x, BC = 2x + 4 y AC = 29. Entonces 3x + 2x + 4 = 29, así que 5x = 25 y x = 5. Eso da AB = 15 y BC = 14. Comprueba: 15 + 14 = 29. El postulado de la suma de ángulos funciona igual para dos ángulos que comparten un lado. Un error común es despejar x y detenerse. Vuelve a leer la pregunta. Puede que pida AB, no x."
+     ],
+     "words": [
+      {
+       "w": "postulado",
+       "d": "un enunciado que se acepta como verdadero sin demostración; una regla de partida de la geometría"
+      },
+      {
+       "w": "teorema",
+       "d": "un enunciado que se ha demostrado usando definiciones, postulados y teoremas anteriores"
+      },
+      {
+       "w": "postulado de la suma de segmentos",
+       "d": "si B está entre A y C, entonces AB + BC = AC"
+      },
+      {
+       "w": "axioma",
+       "d": "otro nombre para un postulado"
+      }
+     ],
+     "look": {
+      "title": "Las nociones comunes de Euclides",
+      "text": "Las cosas que son iguales a una misma cosa también son iguales entre sí. Si a cosas iguales se les suman cosas iguales, los totales son iguales. Si a cosas iguales se les restan cosas iguales, los restos son iguales. El todo es mayor que la parte.",
+      "prompt": "¿Qué noción común usarías para mostrar que si AB = CD y CD = EF, entonces AB = EF? ¿Cuál te permite sumar BC a los dos lados de una ecuación?"
+     },
+     "check": [
+      {
+       "q": "El punto M está entre L y N. LM = 2x + 1, MN = 3x − 6 y LN = 40. ¿Cuánto mide LM?",
+       "choices": [
+        "9",
+        "21",
+        "19",
+        "15"
+       ],
+       "why": "2x + 1 + 3x − 6 = 40 da 5x − 5 = 40, así que x = 9. Entonces LM = 2(9) + 1 = 19. El 9 es x, no LM, y 21 es MN."
+      },
+      {
+       "q": "¿Qué hace que un enunciado sea un teorema y no un postulado?",
+       "choices": [
+        "Trata de ángulos en vez de segmentos",
+        "Se ha demostrado a partir de postulados, definiciones y teoremas anteriores",
+        "Lo escribió Euclides",
+        "Se acepta sin demostración"
+       ],
+       "why": "Los postulados se aceptan sin demostración. Los teoremas se demuestran a partir de ellos y de resultados anteriores."
+      },
+      {
+       "q": "El punto D está dentro del ángulo ABC. El ángulo ABD mide 35° y el ángulo DBC mide 48°. ¿Cuánto mide el ángulo ABC?",
+       "choices": [
+        "13°",
+        "73°",
+        "93°",
+        "83°"
+       ],
+       "why": "Por el postulado de la suma de ángulos, 35° + 48° = 83°. Restar da 13°, que es la operación equivocada."
+      }
+     ],
+     "short": [
+      "Geometry starts with rules everyone accepts. A *postulate* is a statement accepted as true without proof. Some books call it an axiom. One postulate says that through any two points there is exactly one line. You cannot prove it from anything simpler, so you accept it and build. A *theorem* is a statement that has been proved from definitions, postulates and earlier theorems. Some postulates are about measuring. The *segment addition postulate* says that if point B is between A and C, then AB + BC = AC. Angles work the same way: if point D is inside angle ABC, the two smaller angles add up to the whole angle. When you solve for x, read the question again. It may ask for AB, not for x."
+     ],
+     "more": [
+      "Some statements wait a very long time to become theorems. In the 1600s Pierre de Fermat wrote that x^n + y^n = z^n has no solutions in positive whole numbers when n is greater than 2. People called this Fermat's Last Theorem for more than 300 years, but it was only an unproved guess until Andrew Wiles finished a proof in the 1990s.",
+      "Once a theorem is proved, it joins your toolbox. You can use it as a reason in later proofs without proving it again, the way a builder keeps using a tool that already works. That is how Euclid's thirteen books grew: each theorem became a step for the next one."
+     ],
+     "short_es": [
+      "La geometría empieza con reglas que todos aceptan. Un *postulado* es un enunciado que se acepta como verdadero sin demostración. Algunos libros lo llaman axioma. Un postulado dice que por dos puntos cualesquiera pasa exactamente una recta. No puedes demostrarlo a partir de nada más simple, así que lo aceptas y construyes. Un *teorema* es un enunciado que se demostró a partir de definiciones, postulados y teoremas anteriores. Algunos postulados tratan de medir. El *postulado de la suma de segmentos* dice que si el punto B está entre A y C, entonces AB + BC = AC. Los ángulos funcionan igual: si el punto D está dentro del ángulo ABC, los dos ángulos más pequeños suman el ángulo completo. Cuando despejes x, vuelve a leer la pregunta. Puede que pida AB, no x."
+     ],
+     "more_es": [
+      "Algunos enunciados esperan muchísimo tiempo para llegar a ser teoremas. En el siglo XVII, Pierre de Fermat escribió que x^n + y^n = z^n no tiene soluciones en números enteros positivos cuando n es mayor que 2. Durante más de 300 años la gente lo llamó el Último Teorema de Fermat, pero era solo una suposición sin demostrar hasta que Andrew Wiles terminó una demostración en la década de 1990.",
+      "Cuando un teorema ya está demostrado, pasa a tu caja de herramientas. Puedes usarlo como razón en demostraciones posteriores sin volver a demostrarlo, como un constructor que sigue usando una herramienta que ya funciona. Así crecieron los trece libros de Euclides: cada teorema se volvió un escalón para el siguiente."
+     ]
+    },
+    {
+     "title": "Conjeturas y contraejemplos",
+     "mainIdea": "El razonamiento inductivo detecta un patrón y formula una conjetura; el razonamiento deductivo la demuestra; un solo contraejemplo la refuta.",
+     "reading": [
+      "Ponte en una parada de autobús todas las mañanas y observa. El autobús llega a las 7:05, luego a las 7:20, luego a las 7:35 y luego a las 7:50. Supones que el siguiente llegará a las 8:05. Eso es *razonamiento inductivo*: mirar varios casos, notar un patrón y formular una *conjetura*, que es una suposición bien pensada que podría ser verdadera. El razonamiento inductivo es la forma en que nacen la mayoría de las ideas matemáticas. Pero no es una demostración. El horario del autobús podría cambiar a las 8:00.",
+      "El *razonamiento deductivo* parte de hechos ya aceptados y llega a una conclusión que tiene que cumplirse. Todos los ángulos rectos miden 90°. El ángulo X es un ángulo recto. Por lo tanto, el ángulo X mide 90°. Veamos un ejemplo con números. Conjetura: la suma de dos números impares es par. Comprobación inductiva: 3 + 5 = 8, 7 + 9 = 16, 11 + 1 = 12. Demostración deductiva: cualquier número impar se puede escribir como 2m + 1, y otro como 2n + 1. Su suma es 2m + 2n + 2 = 2(m + n + 1), que es 2 por un número entero, así que es par. La demostración cubre todos los pares de impares a la vez, no solo tres.",
+      "Un *contraejemplo* es un caso en el que el patrón se rompe. Con uno solo basta para hundir una conjetura. Mira la fórmula n^2 + n + 41. Para n = 1 da 43, para n = 2 da 47, para n = 3 da 53 y para n = 4 da 61. Todos son primos. Sigue produciendo primos durante mucho tiempo, así que un estudiante podría conjeturar que siempre lo hace. Pero cuando n = 40, la fórmula da 1600 + 40 + 41 = 1681, y 41 × 41 = 1681. No es primo. Dos errores comunes: creer que muchos ejemplos demuestran una regla, y creer que un solo ejemplo la demuestra. Los ejemplos sugieren. Las demostraciones deciden."
+     ],
+     "words": [
+      {
+       "w": "conjetura",
+       "d": "un enunciado que crees verdadero por un patrón, pero que no has demostrado"
+      },
+      {
+       "w": "razonamiento inductivo",
+       "d": "razonar a partir de ejemplos concretos hasta llegar a un patrón general"
+      },
+      {
+       "w": "razonamiento deductivo",
+       "d": "razonar a partir de hechos aceptados hasta una conclusión que tiene que cumplirse"
+      },
+      {
+       "w": "contraejemplo",
+       "d": "un ejemplo que cumple la hipótesis pero no la conclusión, y que por eso demuestra que una conjetura es falsa"
+      }
+     ],
+     "look": {
+      "title": "Valores de n^2 + n + 41",
+      "rows": [
+       "n = 1",
+       "n = 2",
+       "n = 3",
+       "n = 4",
+       "n = 5",
+       "n = 40"
+      ],
+      "unit": "valor de la fórmula",
+      "prompt": "Los primeros cinco valores son todos primos. ¿Es primo 1681? ¿Qué le hace esa sola fila a la conjetura de que la fórmula siempre da un número primo?"
+     },
+     "check": [
+      {
+       "q": "Un estudiante ve 1, 4, 9, 16, 25 y predice que sigue 36. ¿Qué tipo de razonamiento es este?",
+       "choices": [
+        "un contraejemplo",
+        "un teorema",
+        "razonamiento deductivo",
+        "razonamiento inductivo"
+       ],
+       "why": "El estudiante miró ejemplos y encontró un patrón. Eso es razonamiento inductivo. Una demostración sería deductiva."
+      },
+      {
+       "q": "¿Qué número es un contraejemplo de la afirmación de que todo número divisible entre 4 también es divisible entre 8?",
+       "choices": [
+        "12",
+        "8",
+        "16",
+        "24"
+       ],
+       "why": "12 ÷ 4 = 3, así que 12 es divisible entre 4, pero 12 ÷ 8 no es un número entero. Los demás son divisibles entre ambos."
+      },
+      {
+       "q": "Conjetura: si un número es primo, entonces es impar. ¿Qué enunciado es correcto?",
+       "choices": [
+        "3, 5 y 7 demuestran que la conjetura es verdadera",
+        "El número 2 es un contraejemplo, así que la conjetura es falsa",
+        "No existe ningún contraejemplo",
+        "La conjetura es verdadera porque la mayoría de los primos son impares"
+       ],
+       "why": "2 es primo y es par. Un contraejemplo basta para que la conjetura sea falsa, sin importar cuántos primos sean impares."
+      }
+     ],
+     "short": [
+      "Every morning you watch a bus stop. The bus comes at 7:05, 7:20, 7:35 and 7:50, so you guess the next one comes at 8:05. That is *inductive reasoning*: you look at several cases, notice a pattern and make a *conjecture*, an educated guess that might be true. It is not proof, because the schedule could change. *Deductive reasoning* starts from accepted facts and reaches a conclusion that must follow. A proof about all odd numbers is deductive, because it covers every case at once. A *counterexample* is one case where the pattern breaks, and one is enough to show that a conjecture is false. The formula n^2 + n + 41 gives primes for n = 1, 2, 3 and 4, but at n = 40 it gives 1681, which is 41 × 41. Examples suggest. Proofs settle."
+     ],
+     "more": [
+      "Some conjectures stay open for a very long time. Goldbach's conjecture says that every even number greater than 2 is the sum of two prime numbers: 4 = 2 + 2, 6 = 3 + 3, 8 = 3 + 5, 10 = 5 + 5. Computers have checked it for enormous numbers and have never found a counterexample. Yet no one has found a proof, so it is still only a conjecture.",
+      "Scientists use the same two steps. They notice a pattern in many observations, which is inductive, and then they test it. One careful result that disagrees can make them rethink the idea, just as a counterexample does in math. The difference is that in math, a finished proof is final."
+     ],
+     "short_es": [
+      "Todas las mañanas miras una parada de autobús. El autobús llega a las 7:05, 7:20, 7:35 y 7:50, así que supones que el siguiente llega a las 8:05. Eso es *razonamiento inductivo*: miras varios casos, notas un patrón y formulas una *conjetura*, una suposición bien pensada que podría ser verdadera. No es una demostración, porque el horario podría cambiar. El *razonamiento deductivo* parte de hechos aceptados y llega a una conclusión que tiene que cumplirse. Una demostración sobre todos los números impares es deductiva, porque cubre todos los casos a la vez. Un *contraejemplo* es un caso en el que el patrón se rompe, y con uno solo basta para mostrar que una conjetura es falsa. La fórmula n^2 + n + 41 da primos para n = 1, 2, 3 y 4, pero con n = 40 da 1681, que es 41 × 41. Los ejemplos sugieren. Las demostraciones deciden."
+     ],
+     "more_es": [
+      "Algunas conjeturas siguen abiertas durante muchísimo tiempo. La conjetura de Goldbach dice que todo número par mayor que 2 es la suma de dos números primos: 4 = 2 + 2, 6 = 3 + 3, 8 = 3 + 5, 10 = 5 + 5. Las computadoras la han comprobado con números enormes y nunca han encontrado un contraejemplo. Aun así, nadie ha encontrado una demostración, así que sigue siendo solo una conjetura.",
+      "Los científicos usan los mismos dos pasos. Notan un patrón en muchas observaciones, lo cual es inductivo, y luego lo ponen a prueba. Un resultado cuidadoso que no coincida puede hacerlos replantear la idea, igual que un contraejemplo en matemáticas. La diferencia es que en matemáticas una demostración terminada es definitiva."
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Enunciados si-entonces",
+   "lessons": [
+    {
+     "title": "Enunciados condicionales",
+     "mainIdea": "Un condicional tiene una hipótesis y una conclusión, y solo es falso cuando la hipótesis es verdadera y la conclusión es falsa.",
+     "reading": [
+      "Si llueve el sábado, entonces se cancela el partido. Esa oración es un *enunciado condicional*. La parte que sigue a «si» es la *hipótesis*: llueve el sábado. La parte que sigue a «entonces» es la *conclusión*: se cancela el partido. Los matemáticos escriben un condicional como p → q, que se lee «si p, entonces q». Muchos hechos de la geometría esconden su forma de si-entonces. «Los ángulos opuestos por el vértice son congruentes» en realidad significa: si dos ángulos son opuestos por el vértice, entonces son congruentes. Reescribir un hecho en forma de si-entonces te muestra exactamente qué estás suponiendo y exactamente qué estás afirmando.",
+      "¿Cuándo es falso un condicional? Solo en una situación: ocurre la hipótesis y no ocurre la conclusión. Llueve, y el partido se juega de todos modos. Eso rompe la promesa. Si no llueve, la promesa nunca se puso a prueba, así que el enunciado se cuenta como verdadero. Prueba con un ejemplo numérico. Si x = 3, entonces x^2 = 9. Eso es verdadero, porque 3 × 3 = 9. Ahora al revés: si x^2 = 9, entonces x = 3. Eso es falso, porque x podría ser −3, y (−3) × (−3) = 9 también. El primer enunciado hace una promesa y la cumple. El segundo hace una promesa y la rompe.",
+      "Dos errores comunes. Primero, suponer que la hipótesis siempre va primero en la oración. Aprobarás la clase si sacas 60 por ciento pone la hipótesis al final: sacar 60 por ciento es la parte del «si». Segundo, tratar un condicional como si funcionara en los dos sentidos. Un condicional solo promete un sentido. La *negación* de un enunciado, que se escribe no p, dice lo contrario. La negación de x es mayor que 5 es x no es mayor que 5, lo cual incluye x = 5. Ten cuidado con ese caso del borde."
+     ],
+     "words": [
+      {
+       "w": "enunciado condicional",
+       "d": "un enunciado si-entonces, que se escribe p → q"
+      },
+      {
+       "w": "hipótesis",
+       "d": "la parte del «si» de un enunciado condicional; lo que se supone"
+      },
+      {
+       "w": "conclusión",
+       "d": "la parte del «entonces» de un enunciado condicional; lo que se afirma que se sigue"
+      },
+      {
+       "w": "negación",
+       "d": "lo contrario de un enunciado; la negación de «está lloviendo» es «no está lloviendo»"
+      }
+     ],
+     "look": {
+      "title": "Encuentra el «si» y el «entonces»",
+      "text": "Tres oraciones de la vida diaria: (1) Un estudiante que saca 90 o más obtiene una A. (2) Todos los cuadrados tienen cuatro lados congruentes. (3) Puedes sacar un libro cuando muestras tu tarjeta de la biblioteca. Cada una es un condicional disfrazado.",
+      "prompt": "Reescribe cada oración en forma de si-entonces. ¿Cuál es la hipótesis y cuál es la conclusión? ¿Es verdadero cada enunciado cuando la hipótesis es falsa?"
+     },
+     "check": [
+      {
+       "q": "En el enunciado «Si un polígono tiene tres lados, entonces es un triángulo», ¿cuál es la hipótesis?",
+       "choices": [
+        "es un triángulo",
+        "un polígono tiene tres lados",
+        "un triángulo tiene tres lados",
+        "el polígono es una figura"
+       ],
+       "why": "La hipótesis es la parte del «si»: un polígono tiene tres lados. La conclusión es que es un triángulo."
+      },
+      {
+       "q": "¿Cuándo es falso un enunciado condicional?",
+       "choices": [
+        "cuando la hipótesis es falsa",
+        "cuando las dos partes son falsas",
+        "cuando la hipótesis es verdadera y la conclusión es falsa",
+        "cuando la conclusión es verdadera"
+       ],
+       "why": "Un condicional promete la conclusión siempre que se cumple la hipótesis. Solo falla cuando ocurre la hipótesis y no ocurre la conclusión."
+      },
+      {
+       "q": "¿Qué enunciado condicional es falso?",
+       "choices": [
+        "Si x = −4, entonces x^2 = 16",
+        "Si una figura es un cuadrado, entonces tiene cuatro lados",
+        "Si un ángulo mide 90°, entonces es un ángulo recto",
+        "Si x^2 = 25, entonces x = 5"
+       ],
+       "why": "x = −5 también da x^2 = 25, así que la hipótesis puede ser verdadera mientras la conclusión es falsa. Los otros tres siempre se cumplen."
+      }
+     ],
+     "short": [
+      "If it rains on Saturday, then the game is canceled. That is a *conditional statement*. The part after if is the *hypothesis*: it rains on Saturday. The part after then is the *conclusion*: the game is canceled. A conditional is written p → q. Many geometry facts hide this shape. Vertical angles are congruent really means: if two angles are vertical angles, then they are congruent. A conditional is false in only one case: the hypothesis happens and the conclusion does not. It rains and the game is played anyway. If it does not rain, the promise was never tested, so the statement counts as true. A conditional promises only one direction. If x = 3, then x^2 = 9 is true. If x^2 = 9, then x = 3 is false, because x could be −3. The *negation* of a statement says the opposite."
+     ],
+     "more": [
+      "Computer programs are full of conditionals. A line of code that says if the score is more than 100, show a medal has a hypothesis and a conclusion, just like a geometry statement. When the score is 50, the program simply does nothing special. A pool rule works the same way: if there is lightning, then everyone leaves the water. The rule says nothing about a sunny day, and nobody breaks it by leaving the pool early on a sunny afternoon."
+     ],
+     "short_es": [
+      "Si llueve el sábado, entonces se cancela el partido. Eso es un *enunciado condicional*. La parte que sigue a «si» es la *hipótesis*: llueve el sábado. La parte que sigue a «entonces» es la *conclusión*: se cancela el partido. Un condicional se escribe p → q. Muchos hechos de la geometría esconden esta forma. «Los ángulos opuestos por el vértice son congruentes» en realidad significa: si dos ángulos son opuestos por el vértice, entonces son congruentes. Un condicional es falso en un solo caso: ocurre la hipótesis y no ocurre la conclusión. Llueve y el partido se juega de todos modos. Si no llueve, la promesa nunca se puso a prueba, así que el enunciado cuenta como verdadero. Un condicional solo promete un sentido. «Si x = 3, entonces x^2 = 9» es verdadero. «Si x^2 = 9, entonces x = 3» es falso, porque x podría ser −3. La *negación* de un enunciado dice lo contrario."
+     ],
+     "more_es": [
+      "Los programas de computadora están llenos de condicionales. Una línea de código que dice si el puntaje es mayor que 100, muestra una medalla tiene una hipótesis y una conclusión, igual que un enunciado de geometría. Cuando el puntaje es 50, el programa simplemente no hace nada especial. Una regla de la piscina funciona igual: si hay un rayo, entonces todos salen del agua. La regla no dice nada sobre un día soleado, y nadie la rompe por salir de la piscina temprano en una tarde de sol."
+     ]
+    },
+    {
+     "title": "Recíproco, inverso y contrarrecíproco",
+     "mainIdea": "El contrarrecíproco siempre tiene el mismo valor de verdad que el enunciado original; el recíproco y el inverso pueden ser distintos.",
+     "reading": [
+      "Empecemos con un enunciado verdadero: si un número termina en 0, entonces es divisible entre 5. Ahora construyamos tres parientes. El *recíproco* intercambia las dos partes: si un número es divisible entre 5, entonces termina en 0. Falso, porque 15 es divisible entre 5 y termina en 5. El *inverso* niega las dos partes: si un número no termina en 0, entonces no es divisible entre 5. También falso, y otra vez 15 es el contraejemplo. El *contrarrecíproco* intercambia y niega: si un número no es divisible entre 5, entonces no termina en 0. Verdadero. Todo número que termina en 0 es divisible entre 5, así que un número que no es divisible entre 5 no puede terminar en 0.",
+      "Ese patrón no es una casualidad. Un condicional y su contrarrecíproco son *lógicamente equivalentes*: siempre son los dos verdaderos o los dos falsos. Piensa en la promesa de la lluvia. Si llueve, se cancela el partido. Supón que el partido no se cancela. Entonces no debió de llover, o la promesa se habría roto. Por lo tanto, si el partido no se cancela, entonces no llovió. Es la misma promesa, dicha al revés. El recíproco y el inverso también son equivalentes entre sí, pero ninguno está atado al original.",
+      "En geometría esto importa porque los recíprocos a menudo necesitan sus propias demostraciones, y algunos recíprocos son falsos. Si dos ángulos son opuestos por el vértice, entonces son congruentes: verdadero. El recíproco, si dos ángulos son congruentes, entonces son opuestos por el vértice, es falso, porque dos ángulos separados de 30° son congruentes sin ser opuestos por el vértice. Cuando una demostración parece atascada, prueba demostrar el contrarrecíproco. Mostrar que no q lleva a no p demuestra el original igual de bien. Un error común es suponer que el recíproco de un enunciado verdadero es verdadero automáticamente. Compruébalo por separado, siempre."
+     ],
+     "words": [
+      {
+       "w": "recíproco",
+       "d": "el enunciado que se forma al intercambiar la hipótesis y la conclusión: si q, entonces p"
+      },
+      {
+       "w": "inverso",
+       "d": "el enunciado que se forma al negar las dos partes: si no p, entonces no q"
+      },
+      {
+       "w": "contrarrecíproco",
+       "d": "el enunciado que se forma al intercambiar y negar las dos partes: si no q, entonces no p"
+      },
+      {
+       "w": "lógicamente equivalentes",
+       "d": "dos enunciados que siempre son los dos verdaderos o los dos falsos, como un condicional y su contrarrecíproco"
+      }
+     ],
+     "look": {
+      "title": "Cuatro versiones de un enunciado",
+      "text": "Original: si un cuadrilátero es un cuadrado, entonces tiene cuatro ángulos rectos. Escribe el recíproco, el inverso y el contrarrecíproco. Un rectángulo de 3 cm por 5 cm tiene cuatro ángulos rectos, pero no es un cuadrado. Usa ese rectángulo para probar cada versión.",
+      "prompt": "¿Cuáles de los cuatro enunciados son verdaderos? ¿Qué pares siempre coinciden entre sí, y por qué el rectángulo de 3 por 5 rompe los que rompe?"
+     },
+     "check": [
+      {
+       "q": "¿Cuál es el recíproco de «Si dos ángulos son complementarios, entonces sus medidas suman 90°»?",
+       "choices": [
+        "Si dos ángulos no son complementarios, entonces sus medidas no suman 90°",
+        "Si las medidas de dos ángulos no suman 90°, entonces no son complementarios",
+        "Si las medidas de dos ángulos suman 90°, entonces son complementarios",
+        "Dos ángulos son complementarios si y solo si sus medidas suman 90°"
+       ],
+       "why": "El recíproco intercambia la hipótesis y la conclusión sin negar nada. Aquí resulta ser verdadero, porque esa es la definición."
+      },
+      {
+       "q": "¿Qué enunciado siempre tiene el mismo valor de verdad que el condicional original?",
+       "choices": [
+        "el recíproco",
+        "el inverso",
+        "la negación",
+        "el contrarrecíproco"
+       ],
+       "why": "Un condicional y su contrarrecíproco son lógicamente equivalentes. El recíproco y el inverso coinciden entre sí, no con el original."
+      },
+      {
+       "q": "Original: «Si un número es un número entero no negativo, entonces es un entero.» Esto es verdadero. ¿Cuál es el inverso y es verdadero?",
+       "choices": [
+        "Si un número no es un número entero no negativo, entonces no es un entero; falso, pues −3 es un entero pero no es un número entero no negativo",
+        "Si un número es un entero, entonces es un número entero no negativo; verdadero",
+        "Si un número no es un entero, entonces no es un número entero no negativo; falso",
+        "Si un número no es un número entero no negativo, entonces no es un entero; verdadero"
+       ],
+       "why": "El inverso niega las dos partes. Falla porque −3 no es un número entero no negativo, pero sí es un entero."
+      }
+     ],
+     "short": [
+      "Start with a true statement: if a number ends in 0, then it is divisible by 5. The *converse* swaps the two parts: if a number is divisible by 5, then it ends in 0. That is false, because 15 is a counterexample. The *inverse* negates both parts: if a number does not end in 0, then it is not divisible by 5. Also false, with 15 again. The *contrapositive* swaps and negates: if a number is not divisible by 5, then it does not end in 0. That is true. A conditional and its contrapositive are *logically equivalent*: they are always both true or both false. The converse and the inverse are equivalent to each other, but not to the original. In geometry, never assume that a converse is true. Check it separately, every time."
+     ],
+     "more": [
+      "Here is the contrapositive at work. Suppose you want to prove: if n^2 is even, then n is even. It is hard to start from n^2. So prove the contrapositive instead: if n is odd, then n^2 is odd. An odd whole number is 2k + 1, and (2k + 1)^2 = 4k^2 + 4k + 1 = 2(2k^2 + 2k) + 1, which is odd. Since the contrapositive is true, the original is true too.",
+      "Everyday talk turns statements around all the time. \"If you live in Chicago, then you live in Illinois\" is true. \"If you live in Illinois, then you live in Chicago\" is not, because Springfield is in Illinois too. Whenever you hear a claim, you can ask whether someone has quietly turned it around."
+     ],
+     "short_es": [
+      "Empecemos con un enunciado verdadero: si un número termina en 0, entonces es divisible entre 5. El *recíproco* intercambia las dos partes: si un número es divisible entre 5, entonces termina en 0. Eso es falso, porque 15 es un contraejemplo. El *inverso* niega las dos partes: si un número no termina en 0, entonces no es divisible entre 5. También es falso, otra vez con el 15. El *contrarrecíproco* intercambia y niega: si un número no es divisible entre 5, entonces no termina en 0. Eso es verdadero. Un condicional y su contrarrecíproco son *lógicamente equivalentes*: siempre son los dos verdaderos o los dos falsos. El recíproco y el inverso son equivalentes entre sí, pero no al original. En geometría, nunca supongas que un recíproco es verdadero. Compruébalo por separado, siempre."
+     ],
+     "more_es": [
+      "Veamos el contrarrecíproco en acción. Supón que quieres demostrar: si n^2 es par, entonces n es par. Es difícil empezar desde n^2. Así que demuestra el contrarrecíproco: si n es impar, entonces n^2 es impar. Un número entero impar es 2k + 1, y (2k + 1)^2 = 4k^2 + 4k + 1 = 2(2k^2 + 2k) + 1, que es impar. Como el contrarrecíproco es verdadero, el original también lo es.",
+      "En la conversación diaria se le da la vuelta a los enunciados todo el tiempo. «Si vives en Chicago, entonces vives en Illinois» es verdadero. «Si vives en Illinois, entonces vives en Chicago» no lo es, porque Springfield también está en Illinois. Cuando oigas una afirmación, puedes preguntarte si alguien la dio vuelta sin avisar."
+     ]
+    },
+    {
+     "title": "Bicondicionales y definiciones",
+     "mainIdea": "Un bicondicional es verdadero cuando un condicional y su recíproco son verdaderos, y toda buena definición es un bicondicional.",
+     "reading": [
+      "Dos rectas son *rectas perpendiculares* si y solo si se cortan en un ángulo recto. La frase *si y solo si* significa que el enunciado va en los dos sentidos. Si las rectas son perpendiculares, se cortan en un ángulo recto. Y si se cortan en un ángulo recto, son perpendiculares. Un enunciado con esta forma es un *bicondicional*, y se escribe p ↔ q. Es verdadero solo cuando el condicional y su recíproco son los dos verdaderos. Si falla cualquiera de los dos sentidos, el bicondicional es falso.",
+      "Toda buena *definición* es un bicondicional, aunque no esté escrita así. Un ángulo recto es un ángulo que mide 90°. Léelo hacia adelante: si un ángulo es un ángulo recto, mide 90°. Léelo hacia atrás: si un ángulo mide 90°, es un ángulo recto. Se cumplen los dos, así que la definición funciona. Ahora prueba una mala: un cuadrado es un cuadrilátero con cuatro ángulos rectos. Hacia adelante está bien, porque todo cuadrado tiene cuatro ángulos rectos. Hacia atrás falla: un rectángulo de 3 por 5 tiene cuatro ángulos rectos, pero no es un cuadrado. Por eso esa oración no es una definición de cuadrado. Describe un rectángulo.",
+      "Aquí hay un bicondicional de álgebra: x + 5 = 12 si y solo si x = 7. Hacia adelante: resta 5 de los dos lados y x = 7. Hacia atrás: 7 + 5 = 12. Los dos sentidos funcionan, así que el bicondicional es verdadero. Compáralo con x^2 = 49 si y solo si x = 7. Hacia atrás está bien, porque 7^2 = 49. Hacia adelante falla, porque x = −7 también da 49. Ese bicondicional es falso. El error común es escribir «si y solo si» cuando solo se ha comprobado un sentido. Prueba siempre los dos."
+     ],
+     "words": [
+      {
+       "w": "bicondicional",
+       "d": "un enunciado que combina un condicional y su recíproco, y se escribe p ↔ q"
+      },
+      {
+       "w": "si y solo si",
+       "d": "la frase que muestra que un enunciado es verdadero en los dos sentidos"
+      },
+      {
+       "w": "definición",
+       "d": "un enunciado de exactamente lo que significa una palabra; tiene que funcionar como bicondicional"
+      },
+      {
+       "w": "rectas perpendiculares",
+       "d": "dos rectas que se cortan y forman un ángulo recto"
+      }
+     ],
+     "look": {
+      "title": "Cómo probar una definición",
+      "text": "Un estudiante propone esta definición: un punto medio es un punto que está en un segmento. Hacia adelante: si M es un punto medio del segmento AB, entonces M está en AB. Eso es verdadero. Hacia atrás: si M está en el segmento AB, entonces M es un punto medio de AB. Imagina que AB mide 10 cm y que M está a 2 cm de A.",
+      "prompt": "¿Se cumple el sentido hacia atrás? Corrige la definición propuesta para que se cumplan los dos sentidos, y comprueba tu versión nueva con el segmento de 10 cm."
+     },
+     "check": [
+      {
+       "q": "¿Qué condicional se puede reescribir como un bicondicional verdadero?",
+       "choices": [
+        "Si x = 4, entonces x^2 = 16",
+        "Si un triángulo tiene tres lados congruentes, entonces es equilátero",
+        "Si dos ángulos son opuestos por el vértice, entonces son congruentes",
+        "Si un animal es un perro, entonces tiene cuatro patas"
+       ],
+       "why": "Equilátero significa tres lados congruentes, así que el recíproco también es verdadero. Los demás tienen recíprocos falsos: x = −4, los ángulos congruentes no tienen que ser opuestos por el vértice, y los gatos tienen cuatro patas."
+      },
+      {
+       "q": "El bicondicional «x − 3 = 10 si y solo si x = 13» es:",
+       "choices": [
+        "verdadero, porque se cumplen los dos sentidos",
+        "falso, porque el recíproco falla",
+        "falso, porque x podría ser −13",
+        "verdadero solo hacia adelante"
+       ],
+       "why": "Hacia adelante: suma 3 a los dos lados y x = 13. Hacia atrás: 13 − 3 = 10. Los dos sentidos funcionan."
+      },
+      {
+       "q": "¿Por qué «Un cuadrado es un cuadrilátero con cuatro ángulos rectos» no es una buena definición?",
+       "choices": [
+        "Los cuadrados no tienen ángulos rectos",
+        "Falla el sentido hacia adelante",
+        "Un rectángulo de 2 por 5 tiene cuatro ángulos rectos pero no es un cuadrado, así que el recíproco falla",
+        "Las definiciones no pueden mencionar ángulos"
+       ],
+       "why": "Una definición tiene que funcionar en los dos sentidos. El rectángulo es un contraejemplo del sentido hacia atrás."
+      }
+     ],
+     "short": [
+      "Two lines are *perpendicular lines* if and only if they meet at a right angle. The phrase *if and only if* means the statement runs both ways. If the lines are perpendicular, they meet at a right angle. If they meet at a right angle, they are perpendicular. A statement like this is a *biconditional*. It is true only when the conditional and its converse are both true. Every good *definition* is a biconditional. A right angle measures 90°, and an angle that measures 90° is a right angle. Now test a bad one: a square is a quadrilateral with four right angles. A 3 by 5 rectangle has four right angles but is not a square, so the backward direction fails. Also, x^2 = 49 if and only if x = 7 is false, because x could be −7. Always test both directions."
+     ],
+     "more": [
+      "Many rules about numbers are biconditionals. A whole number is divisible by 3 if and only if the sum of its digits is divisible by 3. Take 123: 1 + 2 + 3 = 6, which is divisible by 3, and 123 = 3 × 41. Now take 124: 1 + 2 + 4 = 7, which is not divisible by 3, and 124 is not a multiple of 3. The rule works in both directions, so you can use it either way.",
+      "A definition in a geometry book is written so that it works as a biconditional. A triangle is a polygon with exactly three sides: every polygon with exactly three sides is a triangle, and every triangle is a polygon with exactly three sides. Everyday dictionaries are sometimes looser, but in math a definition has to be exact, because a proof is allowed to use it in either direction."
+     ],
+     "short_es": [
+      "Dos rectas son *rectas perpendiculares* si y solo si se cortan en un ángulo recto. La frase *si y solo si* significa que el enunciado va en los dos sentidos. Si las rectas son perpendiculares, se cortan en un ángulo recto. Si se cortan en un ángulo recto, son perpendiculares. Un enunciado así es un *bicondicional*. Es verdadero solo cuando el condicional y su recíproco son los dos verdaderos. Toda buena *definición* es un bicondicional. Un ángulo recto mide 90°, y un ángulo que mide 90° es un ángulo recto. Ahora prueba una mala: un cuadrado es un cuadrilátero con cuatro ángulos rectos. Un rectángulo de 3 por 5 tiene cuatro ángulos rectos pero no es un cuadrado, así que el sentido hacia atrás falla. Además, «x^2 = 49 si y solo si x = 7» es falso, porque x podría ser −7. Prueba siempre los dos sentidos."
+     ],
+     "more_es": [
+      "Muchas reglas sobre los números son bicondicionales. Un número entero es divisible entre 3 si y solo si la suma de sus dígitos es divisible entre 3. Toma el 123: 1 + 2 + 3 = 6, que es divisible entre 3, y 123 = 3 × 41. Ahora toma el 124: 1 + 2 + 4 = 7, que no es divisible entre 3, y 124 no es múltiplo de 3. La regla funciona en los dos sentidos, así que puedes usarla de cualquiera de las dos maneras.",
+      "Una definición de un libro de geometría está escrita para que funcione como bicondicional. Un triángulo es un polígono con exactamente tres lados: todo polígono con exactamente tres lados es un triángulo, y todo triángulo es un polígono con exactamente tres lados. Los diccionarios de uso diario a veces son más flexibles, pero en matemáticas una definición tiene que ser exacta, porque una demostración puede usarla en cualquiera de los dos sentidos."
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Cómo escribir demostraciones",
+   "lessons": [
+    {
+     "title": "Demostraciones de dos columnas con segmentos",
+     "mainIdea": "Una demostración de dos columnas pone los enunciados a la izquierda y una razón para cada uno a la derecha, desde el dato hasta lo que quieres demostrar.",
+     "reading": [
+      "Ya escribes demostraciones cuando resuelves ecuaciones; solo que no rotulas las razones. Resuelve 3x + 7 = 22. Enunciado 1: 3x + 7 = 22. Razón: *dato*. Enunciado 2: 3x = 15. Razón: propiedad de la resta de la igualdad, porque restar 7 de los dos lados mantiene la ecuación verdadera. Enunciado 3: x = 5. Razón: propiedad de la división de la igualdad. Eso es una *demostración de dos columnas*. Cada línea de la izquierda tiene una razón a la derecha, y cada razón es una definición, un postulado, una propiedad o un teorema. Otras propiedades que usarás: la *propiedad reflexiva* (a = a), la propiedad simétrica (si a = b, entonces b = a), la *propiedad transitiva* (si a = b y b = c, entonces a = c) y la *propiedad de sustitución* (si a = b, puedes reemplazar a por b en cualquier parte).",
+      "Ahora una demostración con segmentos. Los puntos A, B, C y D están en una recta, en ese orden. Dato: AB = CD. Demostrar: AC = BD. Línea 1: AB = CD, dato. Línea 2: BC = BC, propiedad reflexiva. Línea 3: AB + BC = CD + BC, propiedad de la suma de la igualdad, porque sumamos la misma longitud a los dos lados. Línea 4: AB + BC = AC y CD + BC = BD, postulado de la suma de segmentos. Línea 5: AC = BD, sustitución. Compruébalo con números: pon A en 0, B en 2, C en 5 y D en 7. Entonces AB = 2 y CD = 2, mientras que AC = 5 y BD = 5. La demostración dice que funciona para cualquier posición, no solo para estas.",
+      "Tres hábitos mantienen honestas las demostraciones. Todo enunciado necesita una razón, incluso los obvios. La palabra dato solo se puede usar para hechos que el problema te dio. Y nunca puedes usar como razón, a mitad del camino, el enunciado que intentas demostrar, porque eso es circular. Un error común es saltarse la línea reflexiva, BC = BC. Parece tonta, pero sin ella no hay nada que justifique sumar BC a los dos lados."
+     ],
+     "words": [
+      {
+       "w": "demostración de dos columnas",
+       "d": "una demostración escrita con enunciados numerados a la izquierda y una razón para cada uno a la derecha"
+      },
+      {
+       "w": "dato",
+       "d": "un hecho que el problema declara verdadero; el punto de partida de una demostración"
+      },
+      {
+       "w": "propiedad reflexiva",
+       "d": "toda cantidad es igual a sí misma: AB = AB"
+      },
+      {
+       "w": "propiedad transitiva",
+       "d": "si a = b y b = c, entonces a = c"
+      },
+      {
+       "w": "propiedad de sustitución",
+       "d": "si dos cantidades son iguales, una puede reemplazar a la otra en cualquier enunciado"
+      }
+     ],
+     "look": {
+      "title": "La demostración con números",
+      "text": "Los puntos A, B, C y D están, en ese orden, en una recta. AB = 4, BC = 6 y CD = 4. Calcula AC sumando AB + BC, y calcula BD sumando BC + CD. Luego mueve los puntos: haz AB = 9, BC = 1 y CD = 9, y calcula los dos otra vez.",
+      "prompt": "¿AC y BD salen iguales las dos veces? ¿Qué línea de la demostración de dos columnas explica por qué tienen que ser iguales siempre que AB = CD?"
+     },
+     "check": [
+      {
+       "q": "¿Qué propiedad justifica este paso: si AB = CD y CD = EF, entonces AB = EF?",
+       "choices": [
+        "propiedad reflexiva",
+        "propiedad transitiva",
+        "propiedad de sustitución",
+        "propiedad de la suma"
+       ],
+       "why": "La propiedad transitiva une dos igualdades que comparten un término del medio. La sustitución también serviría, pero la transitiva nombra justo este patrón."
+      },
+      {
+       "q": "En una demostración de dos columnas de que si 2x − 5 = 11 entonces x = 8, ¿cuál es la razón del paso 2x = 16?",
+       "choices": [
+        "propiedad de la división de la igualdad",
+        "dato",
+        "propiedad de la suma de la igualdad",
+        "sustitución"
+       ],
+       "why": "Sumar 5 a los dos lados de 2x − 5 = 11 da 2x = 16. Esa es la propiedad de la suma de la igualdad."
+      },
+      {
+       "q": "Los puntos P, Q, R y S están, en ese orden, en una recta, y PQ = RS. ¿Qué enunciado se demuestra sumando QR a los dos lados?",
+       "choices": [
+        "PS = QR",
+        "PQ = QR",
+        "PR = RS",
+        "PR = QS"
+       ],
+       "why": "PQ + QR = PR y QR + RS = QS por el postulado de la suma de segmentos, así que PR = QS."
+      }
+     ],
+     "short": [
+      "You already write proofs when you solve equations, but you do not label the reasons. Solve 3x + 7 = 22. Line 1 is 3x + 7 = 22, and the reason is *given*. Line 2 is 3x = 15, because subtracting 7 from both sides keeps the equation true. Line 3 is x = 5, by the division property of equality. That is a *two-column proof*: statements on the left, and a reason for each on the right. A reason is a definition, a postulate, a property or a theorem. The *reflexive property* says a quantity equals itself, AB = AB. The *transitive property* says that if a = b and b = c, then a = c. The *substitution property* lets you replace a quantity with an equal one. Adding the same length to both sides is the addition property of equality, and the segment addition postulate then turns each sum into one whole segment. Never use the statement you want to prove as one of its own reasons."
+     ],
+     "more": [
+      "The letters Q.E.D. at the end of many old proofs stand for the Latin words quod erat demonstrandum, which mean \"which was to be shown.\" They tell the reader that the proof has reached the very thing it promised to prove. Euclid wrote his proofs as paragraphs. The two-column layout is a modern way to make every reason easy to find and to check.",
+      "A proof is only as strong as its weakest reason. If one line has a reason that is not accepted, the lines below it are not yet proved. That is why a careful reader checks a proof from the top, one line at a time, and asks of each line: what makes this true?"
+     ],
+     "short_es": [
+      "Ya escribes demostraciones cuando resuelves ecuaciones, pero no rotulas las razones. Resuelve 3x + 7 = 22. La línea 1 es 3x + 7 = 22, y la razón es *dato*. La línea 2 es 3x = 15, porque restar 7 de los dos lados mantiene la ecuación verdadera. La línea 3 es x = 5, por la propiedad de la división de la igualdad. Eso es una *demostración de dos columnas*: los enunciados a la izquierda y una razón para cada uno a la derecha. Una razón es una definición, un postulado, una propiedad o un teorema. La *propiedad reflexiva* dice que una cantidad es igual a sí misma, AB = AB. La *propiedad transitiva* dice que si a = b y b = c, entonces a = c. La *propiedad de sustitución* te deja reemplazar una cantidad por otra igual. Sumar la misma longitud a los dos lados es la propiedad de la suma de la igualdad, y luego el postulado de la suma de segmentos convierte cada suma en un segmento completo. Nunca uses como razón el enunciado que quieres demostrar."
+     ],
+     "more_es": [
+      "Las letras Q. E. D. al final de muchas demostraciones antiguas vienen de las palabras latinas quod erat demonstrandum, que significan «lo que se quería demostrar». Le dicen al lector que la demostración llegó justo a lo que prometió demostrar. Euclides escribió sus demostraciones en párrafos. El formato de dos columnas es una manera moderna de que cada razón sea fácil de encontrar y de revisar.",
+      "Una demostración es tan fuerte como su razón más débil. Si una línea tiene una razón que no se acepta, las líneas que siguen todavía no están demostradas. Por eso un lector cuidadoso revisa una demostración desde arriba, una línea a la vez, y se pregunta de cada una: ¿qué hace que esto sea verdadero?"
+     ]
+    },
+    {
+     "title": "Demostraciones con ángulos",
+     "mainIdea": "Las demostraciones con ángulos se apoyan en dos hechos: un par lineal suma 180° y los ángulos opuestos por el vértice son congruentes.",
+     "reading": [
+      "Dos calles se cruzan, y en la esquina aparecen cuatro ángulos. Dos ángulos que comparten un lado y cuyos otros lados forman una recta son un *par lineal*. El postulado del par lineal dice que sus medidas suman 180°, así que son *suplementarios*. Los ángulos que suman 90° son *complementarios*. Los dos ángulos que quedan uno frente al otro en el cruce son *ángulos opuestos por el vértice*. Numera los cuatro ángulos 1, 2, 3, 4 dando la vuelta. Los ángulos 1 y 3 son opuestos por el vértice, y también lo son 2 y 4.",
+      "Esta es la demostración de que los ángulos opuestos por el vértice son congruentes, y usa solo el postulado del par lineal. Los ángulos 1 y 2 forman un par lineal, así que m∠1 + m∠2 = 180°. Los ángulos 3 y 2 también forman un par lineal, así que m∠3 + m∠2 = 180°. Las dos sumas son iguales a 180°, así que m∠1 + m∠2 = m∠3 + m∠2 por sustitución. Resta m∠2 de los dos lados: m∠1 = m∠3. Esa es la propiedad de la resta de la igualdad. Pruébalo con números. Si los ángulos opuestos por el vértice miden (3x + 10)° y (5x − 30)°, iguálalos: 3x + 10 = 5x − 30, así que 40 = 2x y x = 20. Cada ángulo mide 70°. Su pareja en el par lineal mide 180° − 70° = 110°.",
+      "El mismo truco de la resta demuestra dos teoremas más. Si dos ángulos son suplementarios de un mismo ángulo, son congruentes, porque cada uno es igual a 180° menos ese ángulo. Si dos ángulos son complementarios de un mismo ángulo, son congruentes por la misma razón, con 90°. Dos errores comunes: igualar los ángulos opuestos por el vértice a 180° en vez de igualarlos entre sí, y suponer que dos ángulos son congruentes porque se ven parecidos en un dibujo. En una demostración, un dibujo es una pista, no una razón."
+     ],
+     "words": [
+      {
+       "w": "ángulos opuestos por el vértice",
+       "d": "los dos ángulos opuestos que se forman cuando dos rectas se cruzan; siempre son congruentes"
+      },
+      {
+       "w": "par lineal",
+       "d": "dos ángulos adyacentes cuyos lados exteriores forman una recta; sus medidas suman 180°"
+      },
+      {
+       "w": "suplementarios",
+       "d": "dos ángulos cuyas medidas suman 180°"
+      },
+      {
+       "w": "complementarios",
+       "d": "dos ángulos cuyas medidas suman 90°"
+      }
+     ],
+     "look": {
+      "title": "Un ángulo da los cuatro",
+      "text": "Dos rectas se cruzan y forman los ángulos 1, 2, 3 y 4, en orden alrededor del punto. El ángulo 1 mide 52°. El ángulo 2 es su pareja en el par lineal, así que mide 180° − 52° = 128°. El ángulo 3 es opuesto por el vértice al ángulo 1, y el ángulo 4 es opuesto por el vértice al ángulo 2.",
+      "prompt": "Halla los ángulos 3 y 4, y luego suma las cuatro medidas. ¿Por qué el total debería ser 360° sin importar cuánto mida el ángulo 1?"
+     },
+     "check": [
+      {
+       "q": "Dos ángulos opuestos por el vértice miden (4x + 6)° y (6x − 20)°. ¿Cuánto vale x?",
+       "choices": [
+        "19.4",
+        "13",
+        "7",
+        "58"
+       ],
+       "why": "Los ángulos opuestos por el vértice son iguales: 4x + 6 = 6x − 20, así que 26 = 2x y x = 13. Igualar la suma a 180° da 19.4, un error común; 58 es la medida del ángulo."
+      },
+      {
+       "q": "Los ángulos 1 y 2 forman un par lineal. El ángulo 1 mide 115°. ¿Cuánto mide el ángulo 2?",
+       "choices": [
+        "115°",
+        "25°",
+        "75°",
+        "65°"
+       ],
+       "why": "Un par lineal suma 180°, así que 180° − 115° = 65°. El 25° sale de usar 90° por error."
+      },
+      {
+       "q": "El ángulo A es suplementario del ángulo C, y el ángulo B también es suplementario del ángulo C. ¿Qué puedes concluir?",
+       "choices": [
+        "el ángulo A es congruente con el ángulo B",
+        "el ángulo A y el ángulo B son suplementarios",
+        "el ángulo A es congruente con el ángulo C",
+        "el ángulo B mide 90°"
+       ],
+       "why": "A y B son iguales a 180° menos el ángulo C, así que son congruentes. Ese es el teorema de los suplementos congruentes."
+      }
+     ],
+     "short": [
+      "Two streets cross, and four angles appear at the corner. Two angles that share a side and whose other sides form a straight line are a *linear pair*. Their measures add to 180°, so they are *supplementary*. Angles that add to 90° are *complementary*. The two angles across from each other at the crossing are *vertical angles*, and they are always congruent. Here is why. Angles 1 and 2 are a linear pair, and angles 3 and 2 are a linear pair. Both sums are 180°, so m∠1 + m∠2 = m∠3 + m∠2. Subtract m∠2 from both sides: m∠1 = m∠3. To find x, set vertical angles equal to each other, not equal to 180°. For example, 3x + 10 = 5x − 30 gives x = 20. If two angles are supplementary to the same angle, they are congruent, because each one is 180° minus that angle. A drawing is a hint, not a reason."
+     ],
+     "more": [
+      "You can see vertical angles in everyday things. When you open a pair of scissors, the angle between the handles and the angle between the blades are vertical angles, so they stay equal as the scissors open and close. The X on a railroad crossing sign shows two pairs of vertical angles in the same way.",
+      "Ancient writers credit Thales of Miletus with noticing that vertical angles are equal. Whoever saw it first, the lesson is old: more than two thousand years ago, people already understood that a fact like this needs a reason, and that a look at a drawing is not enough."
+     ],
+     "short_es": [
+      "Dos calles se cruzan, y en la esquina aparecen cuatro ángulos. Dos ángulos que comparten un lado y cuyos otros lados forman una recta son un *par lineal*. Sus medidas suman 180°, así que son *suplementarios*. Los ángulos que suman 90° son *complementarios*. Los dos ángulos que quedan uno frente al otro en el cruce son *ángulos opuestos por el vértice*, y siempre son congruentes. Esta es la razón. Los ángulos 1 y 2 son un par lineal, y los ángulos 3 y 2 son un par lineal. Las dos sumas son 180°, así que m∠1 + m∠2 = m∠3 + m∠2. Resta m∠2 de los dos lados: m∠1 = m∠3. Para hallar x, iguala los ángulos opuestos por el vértice entre sí, no a 180°. Por ejemplo, 3x + 10 = 5x − 30 da x = 20. Si dos ángulos son suplementarios de un mismo ángulo, son congruentes, porque cada uno es 180° menos ese ángulo. Un dibujo es una pista, no una razón."
+     ],
+     "more_es": [
+      "Puedes ver ángulos opuestos por el vértice en cosas de todos los días. Cuando abres unas tijeras, el ángulo entre los mangos y el ángulo entre las hojas son ángulos opuestos por el vértice, así que se mantienen iguales mientras las tijeras se abren y se cierran. La X de una señal de cruce de ferrocarril muestra dos pares de ángulos opuestos por el vértice de la misma manera.",
+      "Escritores antiguos le atribuyen a Tales de Mileto haber notado que los ángulos opuestos por el vértice son iguales. Quien lo viera primero, la lección es antigua: hace más de dos mil años la gente ya entendía que un hecho así necesita una razón, y que mirar un dibujo no basta."
+     ]
+    },
+    {
+     "title": "Demostraciones en párrafo y de flujo",
+     "mainIdea": "Las demostraciones en párrafo, de flujo y de dos columnas llevan los mismos enunciados y razones con distinta presentación.",
+     "reading": [
+      "Un *punto medio* es el punto que divide un segmento en dos segmentos congruentes. Afirmación: si M es el punto medio de AB, entonces AM = 1/2 AB. Aquí está como *demostración en párrafo*, que es una demostración escrita en oraciones. Como M es el punto medio de AB, AM = MB por la definición de punto medio. Por el postulado de la suma de segmentos, AM + MB = AB. Al sustituir MB por AM se obtiene AM + AM = AB, así que 2 AM = AB. Al dividir los dos lados entre 2 se obtiene AM = 1/2 AB. Cada oración nombra su razón, exactamente como lo haría una demostración de dos columnas.",
+      "Una *demostración de flujo* muestra la misma lógica como cajas conectadas por flechas, para que veas qué hechos alimentan a cuáles. Una caja dice M es el punto medio de AB (dato). Una flecha lleva a AM = MB (definición de punto medio). Una segunda caja de inicio dice AM + MB = AB (postulado de la suma de segmentos). Las dos flechas se juntan en 2 AM = AB (sustitución), que lleva a AM = 1/2 AB (propiedad de la división). Las demostraciones de flujo sirven cuando dos cadenas de razonamiento separadas se unen en una conclusión, porque las flechas muestran la unión.",
+      "Comprueba el resultado con números. Si AB = 18, entonces AM debe ser 9, y 9 + 9 = 18. Ahora úsalo en álgebra: M es el punto medio de AB, con AM = 3x + 2 y MB = 5x − 8. Como AM = MB, 3x + 2 = 5x − 8, así que 10 = 2x y x = 5. Entonces AM = 17, MB = 17 y AB = 34. El error más común en las demostraciones en párrafo es omitir las razones porque las oraciones fluyen con suavidad. Una demostración en párrafo sigue siendo una demostración. Cada afirmación tiene que decir por qué."
+     ],
+     "words": [
+      {
+       "w": "demostración en párrafo",
+       "d": "una demostración escrita en oraciones, donde cada enunciado sigue nombrando su razón"
+      },
+      {
+       "w": "demostración de flujo",
+       "d": "una demostración dibujada como cajas unidas por flechas que muestran qué enunciados llevan a cuáles"
+      },
+      {
+       "w": "punto medio",
+       "d": "el punto de un segmento que lo divide en dos segmentos congruentes"
+      }
+     ],
+     "look": {
+      "title": "Tres presentaciones, una demostración",
+      "text": "Dato: M es el punto medio del segmento AB, AM = 2x + 7 y MB = 4x − 5. Demostrar: AB = 38. Empieza igualando 2x + 7 = 4x − 5, porque un punto medio hace que AM = MB. Despeja x, halla AM y luego usa el postulado de la suma de segmentos para llegar a AB.",
+      "prompt": "Escribe el argumento primero como demostración en párrafo y luego como demostración de flujo. ¿Las dos versiones necesitan razones distintas?"
+     },
+     "check": [
+      {
+       "q": "M es el punto medio de AB. AM = 2x + 3 y MB = 4x − 9. ¿Cuánto mide AB?",
+       "choices": [
+        "6",
+        "15",
+        "12",
+        "30"
+       ],
+       "why": "2x + 3 = 4x − 9 da x = 6, así que AM = 15. AB = AM + MB = 15 + 15 = 30. El 6 es x y el 15 es solo la mitad."
+      },
+      {
+       "q": "¿Qué usa una demostración de flujo en lugar de filas numeradas?",
+       "choices": [
+        "cajas unidas por flechas que muestran qué enunciados llevan a cuáles",
+        "un párrafo sin razones",
+        "una tabla de valores",
+        "un dibujo con medidas"
+       ],
+       "why": "Una demostración de flujo acomoda los enunciados en cajas y usa flechas para mostrar el camino lógico desde los datos hasta la conclusión."
+      },
+      {
+       "q": "¿Qué enunciado sobre las demostraciones en párrafo es verdadero?",
+       "choices": [
+        "No necesitan razones porque están escritas en oraciones",
+        "Solo pueden demostrar hechos sobre segmentos",
+        "Cada enunciado sigue necesitando una razón, escrita dentro de las oraciones",
+        "Son menos válidas que las demostraciones de dos columnas"
+       ],
+       "why": "Cambia la presentación, pero no la lógica. Cada afirmación de una demostración en párrafo tiene que decir la definición, el postulado o el teorema en que se apoya."
+      }
+     ],
+     "short": [
+      "A *midpoint* is the point that divides a segment into two congruent segments. Claim: if M is the midpoint of AB, then AM = 1/2 AB. A *paragraph proof* writes the argument in sentences. M is the midpoint, so AM = MB by the definition of midpoint. The segment addition postulate gives AM + MB = AB. Substituting AM for MB gives 2 AM = AB, and dividing by 2 gives AM = 1/2 AB. Every sentence names its reason, just like a two-column proof. A *flow proof* shows the same logic as boxes joined by arrows, so you can see which facts lead to which. Check with numbers: if AB = 18, then AM = 9. In algebra, since AM = MB, set 3x + 2 = 5x − 8 to get x = 5. Never drop the reasons because the sentences flow smoothly."
+     ],
+     "more": [
+      "The midpoint idea works on a map, too. If two friends live at (0, 0) and (8, 6) on a grid where each unit is one block, the spot exactly halfway between them is (4, 3). You find it by taking half of each coordinate. You will use this idea later in the unit, when you prove things on the coordinate plane.",
+      "People think in different ways, and the three proof layouts let you choose. Some learners like to see each step in its own row. Some like to explain in sentences, as if talking to a friend. Some think best in pictures and arrows. All three are equally correct, as long as every claim has a reason."
+     ],
+     "short_es": [
+      "Un *punto medio* es el punto que divide un segmento en dos segmentos congruentes. Afirmación: si M es el punto medio de AB, entonces AM = 1/2 AB. Una *demostración en párrafo* escribe el argumento en oraciones. M es el punto medio, así que AM = MB por la definición de punto medio. El postulado de la suma de segmentos da AM + MB = AB. Al sustituir MB por AM se obtiene 2 AM = AB, y al dividir entre 2 se obtiene AM = 1/2 AB. Cada oración nombra su razón, igual que una demostración de dos columnas. Una *demostración de flujo* muestra la misma lógica como cajas unidas por flechas, para que veas qué hechos llevan a cuáles. Compruébalo con números: si AB = 18, entonces AM = 9. En álgebra, como AM = MB, iguala 3x + 2 = 5x − 8 para obtener x = 5. Nunca omitas las razones porque las oraciones fluyan con suavidad."
+     ],
+     "more_es": [
+      "La idea del punto medio también funciona en un mapa. Si dos amigos viven en (0, 0) y en (8, 6) en una cuadrícula donde cada unidad es una cuadra, el lugar que queda exactamente a la mitad entre ellos es (4, 3). Lo encuentras tomando la mitad de cada coordenada. Usarás esta idea más adelante en la unidad, cuando demuestres cosas en el plano de coordenadas.",
+      "Las personas piensan de maneras distintas, y las tres presentaciones de una demostración te dejan elegir. A algunos les gusta ver cada paso en su propia fila. A otros les gusta explicar en oraciones, como si hablaran con un amigo. Otros piensan mejor con dibujos y flechas. Las tres son igual de correctas, siempre que cada afirmación tenga una razón."
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Rectas paralelas y construcciones",
+   "lessons": [
+    {
+     "title": "Rectas paralelas y transversales",
+     "mainIdea": "Cuando una transversal cruza rectas paralelas, los ángulos correspondientes son congruentes, y ese solo hecho demuestra los demás pares de ángulos.",
+     "reading": [
+      "Las calles de Chicago corren en su mayoría en una cuadrícula, con las calles de este a oeste paralelas entre sí. Unas pocas calles diagonales, como Milwaukee Avenue, cortan la cuadrícula. Una recta que cruza dos o más rectas es una *transversal*. Donde una transversal cruza dos rectas aparecen ocho ángulos, cuatro en cada cruce. Numéralos del 1 al 4 en el cruce de arriba y del 5 al 8 en el de abajo, en el mismo orden. Los ángulos que están en la misma posición en cada cruce, como 1 y 5, son *ángulos correspondientes*. Los ángulos que están entre las dos rectas, en lados opuestos de la transversal, como 3 y 6, son *ángulos alternos internos*. Los ángulos que están entre las rectas, en el mismo lado, como 3 y 5, son *ángulos consecutivos internos*.",
+      "El postulado de los ángulos correspondientes dice: si las dos rectas son *rectas paralelas*, entonces los ángulos correspondientes son congruentes. A partir de esa sola regla podemos demostrar el resto. Afirmación: los ángulos alternos internos 3 y 6 son congruentes. El ángulo 2 corresponde al ángulo 6, así que ∠2 ≅ ∠6. Los ángulos 2 y 3 son opuestos por el vértice, así que ∠2 ≅ ∠3. Por la propiedad transitiva, ∠3 ≅ ∠6. Los ángulos consecutivos internos son suplementarios por una cadena parecida: ∠3 ≅ ∠6 como acabamos de mostrar, y los ángulos 6 y 5 forman un par lineal, así que m∠3 + m∠5 = m∠6 + m∠5 = 180°.",
+      "Ahora algunos números. Unos ángulos alternos internos miden (2x + 15)° y (3x − 20)°. Son congruentes, así que 2x + 15 = 3x − 20 y x = 35. Cada ángulo mide 85°. Un ángulo consecutivo interno junto a uno de ellos mide 180° − 85° = 95°. Los recíprocos también se cumplen y son la forma de demostrar que unas rectas son paralelas: si los ángulos correspondientes son congruentes, o los ángulos alternos internos son congruentes, o los ángulos consecutivos internos son suplementarios, entonces las rectas son paralelas. Dos errores que debes evitar: suponer que las rectas son paralelas porque se ven paralelas en un dibujo, e igualar los ángulos consecutivos internos cuando deberían sumar 180°."
+     ],
+     "words": [
+      {
+       "w": "transversal",
+       "d": "una recta que cruza dos o más rectas"
+      },
+      {
+       "w": "ángulos correspondientes",
+       "d": "ángulos que están en la misma posición en cada cruce de una transversal; son congruentes cuando las rectas son paralelas"
+      },
+      {
+       "w": "ángulos alternos internos",
+       "d": "ángulos que están entre las dos rectas, en lados opuestos de la transversal; son congruentes cuando las rectas son paralelas"
+      },
+      {
+       "w": "ángulos consecutivos internos",
+       "d": "ángulos que están entre las dos rectas, en el mismo lado de la transversal; son suplementarios cuando las rectas son paralelas"
+      },
+      {
+       "w": "rectas paralelas",
+       "d": "dos rectas del mismo plano que nunca se encuentran"
+      }
+     ],
+     "look": {
+      "title": "Una diagonal que cruza la cuadrícula",
+      "text": "Una avenida diagonal cruza dos calles paralelas de este a oeste. En el cruce del norte, el ángulo del lado noreste mide 118°. Rotula los ocho ángulos y usa ángulos opuestos por el vértice, pares lineales y ángulos correspondientes para completar el resto.",
+      "prompt": "¿Cuánto miden los ocho ángulos? ¿Cuántas medidas distintas aparecen, y por qué solo esa cantidad?"
+     },
+     "check": [
+      {
+       "q": "Dos rectas paralelas son cortadas por una transversal. Un par de ángulos consecutivos internos miden (2x)° y (x + 30)°. ¿Cuánto vale x?",
+       "choices": [
+        "30",
+        "50",
+        "60",
+        "75"
+       ],
+       "why": "Los ángulos consecutivos internos son suplementarios: 2x + x + 30 = 180, así que 3x = 150 y x = 50. Igualarlos da 30, un error común."
+      },
+      {
+       "q": "Dos rectas paralelas son cortadas por una transversal. Uno de un par de ángulos alternos internos mide 74°. ¿Cuánto mide el otro?",
+       "choices": [
+        "106°",
+        "16°",
+        "74°",
+        "148°"
+       ],
+       "why": "Los ángulos alternos internos entre rectas paralelas son congruentes, así que el otro también mide 74°. El 106° sería un ángulo consecutivo interno."
+      },
+      {
+       "q": "¿Qué hecho te permite concluir que dos rectas cortadas por una transversal son paralelas?",
+       "choices": [
+        "un par de ángulos opuestos por el vértice son congruentes",
+        "un par de ángulos consecutivos internos son congruentes",
+        "un par de ángulos alternos internos son suplementarios",
+        "un par de ángulos correspondientes son congruentes"
+       ],
+       "why": "El recíproco del postulado de los ángulos correspondientes demuestra que unas rectas son paralelas. Los ángulos opuestos por el vértice siempre son congruentes, así que no dicen nada sobre el paralelismo."
+      }
+     ],
+     "short": [
+      "Chicago's streets mostly form a grid, so the east-west streets are *parallel lines*. A diagonal street like Milwaukee Avenue cuts across them. A line that crosses two or more other lines is a *transversal*. It makes eight angles, four at each crossing. Angles in the same position at each crossing are *corresponding angles*. Angles between the two lines on opposite sides of the transversal are *alternate interior angles*. Angles between the lines on the same side are *consecutive interior angles*. If the lines are parallel, corresponding angles are congruent. From that one rule, alternate interior angles are congruent too, and consecutive interior angles are supplementary. For example, if alternate interior angles measure (2x + 15)° and (3x − 20)°, then x = 35 and each is 85°. The converses also hold: congruent corresponding angles prove that lines are parallel. A sketch that looks parallel proves nothing."
+     ],
+     "more": [
+      "The idea of parallel depends on the kind of surface. On a flat sheet of paper, two lines that stay the same distance apart never meet. On a globe, the north-south lines of longitude all cross the equator at right angles, yet they all meet at the North Pole. So on a sphere, straight paths like these are not parallel the way they are on a plane. This is one reason mathematicians later began to wonder about Euclid's fifth postulate.",
+      "Railroad tracks are a real pair of parallel lines. In a photograph they seem to meet far away, but that is only how a camera and an eye show distance. The tracks themselves stay the same distance apart. It is one more reason geometry asks for reasons and not just looks: a view can fool you."
+     ],
+     "short_es": [
+      "Las calles de Chicago forman en su mayoría una cuadrícula, así que las calles de este a oeste son *rectas paralelas*. Una calle diagonal como Milwaukee Avenue las cruza. Una recta que cruza dos o más rectas es una *transversal*. Forma ocho ángulos, cuatro en cada cruce. Los ángulos que están en la misma posición en cada cruce son *ángulos correspondientes*. Los ángulos que están entre las dos rectas, en lados opuestos de la transversal, son *ángulos alternos internos*. Los ángulos que están entre las rectas, en el mismo lado, son *ángulos consecutivos internos*. Si las rectas son paralelas, los ángulos correspondientes son congruentes. A partir de esa sola regla, los ángulos alternos internos también son congruentes y los ángulos consecutivos internos son suplementarios. Por ejemplo, si unos ángulos alternos internos miden (2x + 15)° y (3x − 20)°, entonces x = 35 y cada uno mide 85°. Los recíprocos también se cumplen: unos ángulos correspondientes congruentes demuestran que las rectas son paralelas. Un dibujo que parece paralelo no demuestra nada."
+     ],
+     "more_es": [
+      "La idea de paralelas depende del tipo de superficie. En una hoja de papel plana, dos rectas que se mantienen a la misma distancia nunca se encuentran. En un globo terráqueo, las líneas de longitud, que van de norte a sur, cruzan todas el ecuador en ángulos rectos, y sin embargo todas se encuentran en el Polo Norte. Así que en una esfera, caminos rectos como estos no son paralelos como lo son en un plano. Esta es una razón por la que más tarde los matemáticos empezaron a preguntarse por el quinto postulado de Euclides.",
+      "Las vías del tren son un par real de rectas paralelas. En una fotografía parecen juntarse a lo lejos, pero eso es solo la forma en que una cámara y el ojo muestran la distancia. Las vías mismas se mantienen a la misma distancia. Es otra razón por la que la geometría pide razones y no solo apariencias: una vista puede engañarte."
+     ]
+    },
+    {
+     "title": "Regla sin marcas y compás",
+     "mainIdea": "Una construcción usa solo un compás y una regla sin marcas, y cada paso se apoya en un postulado o un teorema.",
+     "reading": [
+      "Los tres primeros postulados de Euclides describen dos herramientas. Una *regla sin marcas* traza una recta que pasa por dos puntos; no tiene marcas, así que no puede medir. Un *compás* traza un círculo o un arco con un centro y un radio elegidos. Una *construcción* es un dibujo hecho solo con esas dos herramientas. Empecemos copiando un segmento: traza un rayo, abre el compás a la longitud del segmento original y marca un arco desde el extremo del rayo. Donde el arco corta el rayo está el otro extremo de la copia. No hace falta una regla para medir.",
+      "Luego, la *mediatriz* del segmento AB. Abre el compás más de la mitad de AB. Traza un arco desde A y luego un arco con el mismo radio desde B. Los arcos se cruzan en dos puntos, uno arriba del segmento y uno abajo. Traza la recta que pasa por esos dos puntos. ¿Por qué funciona? Cada punto de cruce está a la misma distancia de A que de B, porque los dos arcos usaron el mismo radio. Un punto que está a la misma distancia de A y de B está en la mediatriz, así que la recta que pasa por dos de esos puntos es la mediatriz. Corta AB en su punto medio y lo cruza formando 90°.",
+      "Para trazar la *bisectriz de un ángulo*, marca un arco desde el vértice V de modo que corte los dos lados en los puntos P y Q. Luego traza arcos iguales desde P y desde Q que se encuentren en un punto R dentro del ángulo. El rayo VR divide el ángulo por la mitad. Los triángulos VPR y VQR tienen tres pares de lados iguales, lo cual, como demostrará el próximo capítulo, los hace congruentes y hace iguales sus ángulos en V. Para trazar una recta que pase por un punto y sea paralela a una recta dada, copia un ángulo de modo que los ángulos correspondientes sean congruentes. No todo es posible: en el siglo XIX los matemáticos demostraron que ninguna construcción con regla sin marcas y compás puede cortar un ángulo cualquiera en tres partes iguales. El error más común en las construcciones es cambiar la abertura del compás entre dos arcos que deben coincidir."
+     ],
+     "words": [
+      {
+       "w": "construcción",
+       "d": "un dibujo geométrico hecho usando solo un compás y una regla sin marcas"
+      },
+      {
+       "w": "regla sin marcas",
+       "d": "una herramienta para trazar rectas; no tiene marcas para medir"
+      },
+      {
+       "w": "compás",
+       "d": "una herramienta para trazar círculos y arcos con un centro y un radio elegidos"
+      },
+      {
+       "w": "mediatriz",
+       "d": "la recta que pasa por el punto medio de un segmento formando un ángulo recto"
+      },
+      {
+       "w": "bisectriz de un ángulo",
+       "d": "un rayo que divide un ángulo en dos ángulos congruentes"
+      }
+     ],
+     "look": {
+      "title": "Por qué los arcos tienen que llegar",
+      "text": "El segmento AB mide 6 cm. Abre el compás a 2 cm e intenta la construcción de la mediatriz: el arco desde A llega solo 2 cm hacia afuera, y el arco desde B llega solo 2 cm hacia afuera, así que nunca se tocan. Abre el compás exactamente a 3 cm y los arcos se tocan solo en el punto medio, y dan un punto en vez de dos. Ahora ábrelo a 4 cm.",
+      "prompt": "¿Por qué la construcción necesita el compás abierto más de la mitad de AB? ¿Qué sale mal con un solo punto de cruce en vez de dos?"
+     },
+     "check": [
+      {
+       "q": "Al trazar la mediatriz del segmento AB con arcos, ¿por qué los arcos desde A y desde B deben tener el mismo radio?",
+       "choices": [
+        "para que el dibujo se vea ordenado",
+        "para que los puntos de cruce estén a la misma distancia de A y de B, lo que los pone en la mediatriz",
+        "para que los arcos sean del mismo color",
+        "para que el segmento quede más largo"
+       ],
+       "why": "Radios iguales hacen que cada punto de cruce esté a la misma distancia de los dos extremos. Esos puntos están exactamente en la mediatriz."
+      },
+      {
+       "q": "¿Qué herramientas se permiten en una construcción clásica?",
+       "choices": [
+        "una regla con marcas en pulgadas y un transportador",
+        "un transportador y un compás",
+        "una regla sin marcas y un compás",
+        "una calculadora y una regla"
+       ],
+       "why": "Los postulados de Euclides solo permiten trazar rectas que pasan por puntos y círculos con un centro y un radio dados: regla sin marcas y compás."
+      },
+      {
+       "q": "Para construir una recta que pase por el punto P y sea paralela a la recta m, debes:",
+       "choices": [
+        "medir 90° con un transportador en P",
+        "trazar un círculo con centro en P",
+        "copiar un ángulo de modo que los ángulos correspondientes sean congruentes",
+        "doblar el papel a lo largo de la recta m"
+       ],
+       "why": "Los ángulos correspondientes congruentes garantizan rectas paralelas por el recíproco del postulado de los ángulos correspondientes. Copiar un ángulo usa solo compás y regla sin marcas."
+      }
+     ],
+     "short": [
+      "Euclid's first postulates describe two tools. A *straightedge* draws a line through two points, but it has no marks, so it cannot measure. A *compass* draws a circle or an arc with a chosen center and radius. A *construction* is a drawing made with only those two tools. To bisect segment AB, open the compass wider than half of AB. Draw an arc from A, then an arc of the same radius from B. The arcs cross at two points, and the line through them is the *perpendicular bisector*. It works because both crossing points are the same distance from A as from B. It cuts AB at its midpoint and meets it at 90°. To draw an *angle bisector*, swing an arc from the vertex across both sides, then draw equal arcs from those two points. The ray to where they meet splits the angle in half. For a parallel line, copy an angle so that corresponding angles are congruent."
+     ],
+     "more": [
+      "The Greeks asked three famous questions that compass and straightedge could not answer: how to cut any angle into three equal parts, how to double the volume of a cube, and how to make a square with the same area as a circle. People kept trying for many centuries. In the 1800s mathematicians proved that all three are impossible with these two tools. Knowing that something is impossible, and why, is also a discovery.",
+      "What is possible can be surprising. A regular hexagon is easy: draw a circle, keep the compass at the same radius, and step it around the circle. After six steps you are back at the start, because the radius of the circle equals the side of the hexagon. In 1796 the young Carl Friedrich Gauss showed that a regular polygon with 17 sides can be constructed this way as well."
+     ],
+     "short_es": [
+      "Los primeros postulados de Euclides describen dos herramientas. Una *regla sin marcas* traza una recta que pasa por dos puntos, pero no tiene marcas, así que no puede medir. Un *compás* traza un círculo o un arco con un centro y un radio elegidos. Una *construcción* es un dibujo hecho solo con esas dos herramientas. Para dividir el segmento AB por la mitad, abre el compás más de la mitad de AB. Traza un arco desde A y luego un arco con el mismo radio desde B. Los arcos se cruzan en dos puntos, y la recta que pasa por ellos es la *mediatriz*. Funciona porque los dos puntos de cruce están a la misma distancia de A que de B. Corta AB en su punto medio y lo cruza formando 90°. Para trazar la *bisectriz de un ángulo*, marca un arco desde el vértice que corte los dos lados, y luego traza arcos iguales desde esos dos puntos. El rayo hasta el lugar donde se encuentran divide el ángulo por la mitad. Para una recta paralela, copia un ángulo de modo que los ángulos correspondientes sean congruentes."
+     ],
+     "more_es": [
+      "Los griegos hicieron tres preguntas famosas que el compás y la regla sin marcas no podían responder: cómo cortar cualquier ángulo en tres partes iguales, cómo duplicar el volumen de un cubo y cómo hacer un cuadrado con la misma área que un círculo. La gente siguió intentándolo durante muchos siglos. En el siglo XIX los matemáticos demostraron que las tres cosas son imposibles con estas dos herramientas. Saber que algo es imposible, y por qué, también es un descubrimiento.",
+      "Lo que sí es posible puede sorprender. Un hexágono regular es fácil: traza un círculo, deja el compás con el mismo radio y recórrelo alrededor del círculo. Después de seis pasos vuelves al punto de partida, porque el radio del círculo es igual al lado del hexágono. En 1796, el joven Carl Friedrich Gauss mostró que también se puede construir de esta manera un polígono regular de 17 lados."
+     ]
+    }
+   ]
+  }
+ ],
+ "review": [
+  {
+   "q": "El punto B está entre A y C. AB = 4x − 3, BC = 2x + 5 y AC = 38. ¿Cuánto mide BC?",
+   "choices": [
+    "6",
+    "17",
+    "21",
+    "38"
+   ],
+   "why": "4x − 3 + 2x + 5 = 38 da 6x + 2 = 38, así que x = 6. BC = 2(6) + 5 = 17, y AB = 21. Comprobación: 21 + 17 = 38."
+  },
+  {
+   "q": "¿Cuál es el contrarrecíproco de «Si una figura es un cuadrado, entonces es un rectángulo»?",
+   "choices": [
+    "Si una figura es un rectángulo, entonces es un cuadrado",
+    "Si una figura no es un cuadrado, entonces no es un rectángulo",
+    "Si una figura no es un rectángulo, entonces no es un cuadrado",
+    "Una figura es un cuadrado si y solo si es un rectángulo"
+   ],
+   "why": "El contrarrecíproco intercambia y niega las dos partes. Es verdadero, igual que el original."
+  },
+  {
+   "q": "¿Qué valor de x es un contraejemplo de «Si x^2 > x, entonces x > 1»?",
+   "choices": [
+    "2",
+    "3",
+    "1/2",
+    "−2"
+   ],
+   "why": "(−2)^2 = 4, y 4 > −2, así que la hipótesis se cumple, pero −2 > 1 es falso. Con 1/2 la hipótesis no se cumple, así que no es un contraejemplo."
+  },
+  {
+   "q": "Dos ángulos forman un par lineal y miden (3x + 12)° y (2x − 7)°. ¿Cuánto vale x?",
+   "choices": [
+    "35",
+    "19",
+    "37",
+    "63"
+   ],
+   "why": "Un par lineal suma 180°: 5x + 5 = 180, así que x = 35. Igualarlos da 19, que es la relación equivocada."
+  },
+  {
+   "q": "Dos rectas paralelas son cortadas por una transversal. Los ángulos correspondientes miden (3x)° y (x + 80)°. ¿Cuánto mide cada ángulo?",
+   "choices": [
+    "40°",
+    "120°",
+    "60°",
+    "25°"
+   ],
+   "why": "Los ángulos correspondientes son congruentes: 3x = x + 80, así que x = 40 y cada ángulo mide 3(40) = 120°. El 40 es solo x."
+  },
+  {
+   "q": "En una demostración, ¿cuál es la razón del enunciado AB + BC = AC cuando B está entre A y C?",
+   "choices": [
+    "definición de punto medio",
+    "propiedad de la suma de la igualdad",
+    "postulado de la suma de segmentos",
+    "propiedad transitiva"
+   ],
+   "why": "El postulado de la suma de segmentos dice que las dos partes suman el segmento completo."
+  },
+  {
+   "q": "¿Qué enunciado es un bicondicional verdadero?",
+   "choices": [
+    "Un número es par si y solo si es divisible entre 2",
+    "x^2 = 16 si y solo si x = 4",
+    "Dos ángulos son congruentes si y solo si son ángulos opuestos por el vértice",
+    "Un cuadrilátero es un cuadrado si y solo si tiene cuatro ángulos rectos"
+   ],
+   "why": "Par significa divisible entre 2, y se cumple en los dos sentidos. En los demás, un sentido es falso: x = −4, ángulos congruentes que no son opuestos por el vértice, y los rectángulos."
+  },
+  {
+   "q": "Una demostración de que los ángulos opuestos por el vértice son congruentes, construida con el postulado del par lineal, es un ejemplo de:",
+   "choices": [
+    "razonamiento inductivo",
+    "una conjetura",
+    "un contraejemplo",
+    "razonamiento deductivo"
+   ],
+   "why": "La demostración parte de un postulado aceptado y llega a una conclusión que tiene que cumplirse. Eso es razonamiento deductivo."
+  }
+ ]
+}
