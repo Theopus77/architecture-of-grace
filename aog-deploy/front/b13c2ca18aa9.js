@@ -876,10 +876,12 @@ function bindPads(){
   box.addEventListener("pointerdown",(e)=>{
     const el=e.target.closest && e.target.closest(".pad"); if(!el || e.button>0) return;
     e.preventDefault(); try{ el.setPointerCapture(e.pointerId); }catch(x){}
-    const r=el.getBoundingClientRect();   /* read before anything is written: velAt's own read, free a second time */
+    /* read before anything is written: velAt's own read, free a second time. At full strength velAt reads nothing, so
+       neither does this: the pad lights from its middle (a read there laid the page out inside every tap) */
+    const r=S.full ? null : el.getBoundingClientRect();
     press("p"+e.pointerId, +el.getAttribute("data-p"), velAt(el, e.clientX, e.clientY));
     /* AOG-PADS-STAGE-V1: after the sound is on its way, the pad lights from under the finger while it is held */
-    if(r.width){ el.style.setProperty("--px", Math.round((e.clientX-r.left)/r.width*100)+"%"); el.style.setProperty("--py", Math.round((e.clientY-r.top)/r.height*100)+"%"); }
+    if(r && r.width){ el.style.setProperty("--px", Math.round((e.clientX-r.left)/r.width*100)+"%"); el.style.setProperty("--py", Math.round((e.clientY-r.top)/r.height*100)+"%"); }
     clearTimeout(el.__upT); el.__downAt=performance.now(); el.classList.add("down"); HELD.set("p"+e.pointerId, el);
   });
   const HELD=new Map();
@@ -1287,6 +1289,19 @@ function padFam(d){
   if(d.kind!=="drum") return "note";
   return (window.AOGDrumKit && AOGDrumKit.family) ? AOGDrumKit.family(d.kit, d.id) : "snap";
 }
+/* AOG-PADS-KEY-V1 (2026-10-23) — Jimmy: "a showstopper for my teenager children and my 60 year plus parents and everyone
+   in between". The colours say what they mean, in plain words, under the pads: only the kinds of sound this kit has, in
+   the pads' order. A bank of notes or a song's pieces is one colour, so it needs no key. Written only when it changes. */
+const FAM_WORD={low:["Kick and bass","Bombo y graves"], snap:["Snare and clap","Caja y palmas"], shimmer:["Hi-hats and shakers","Hi-hat y maracas"],
+  metal:["Cymbals and bells","Platillos y campanas"], skin:["Toms and hand drums","Toms y tambores de mano"], wood:["Wood","Madera"]};
+function paintFamKey(defs){
+  const box=$("pads"); let k=$("padKey");
+  if(!k){ k=document.createElement("p"); k.id="padKey"; k.className="pm-key"; }
+  if(PV.back ? k.parentNode!==PV.back.parentNode : k.previousElementSibling!==box){ const at=PV.back||box; at.parentNode.insertBefore(k, at.nextSibling); }
+  const seen=[]; if(S.banks[S.bank].type==="drums") ["low","snap","shimmer","metal","skin","wood"].forEach(f=>{ if(defs.some(d=>padFam(d)===f)) seen.push(f); });
+  const h=seen.map(f=>`<span class="pm-k" data-fam="${f}"><i aria-hidden="true"></i>${FAM_WORD[f][S0.lang==="es"?1:0]}</span>`).join("");
+  if(k.__h!==h){ k.innerHTML=h; k.__h=h; } k.hidden=!seen.length;
+}
 function paintPads(){
   const box=$("pads"), bk=S.bank;
   const defs=padDefs(bk), fine=matchMedia("(pointer: fine)").matches;
@@ -1296,6 +1311,7 @@ function paintPads(){
   box.innerHTML=order.map(i=>{ const d=defs[i];
     return `<button type="button" class="pad${i===S.sel?" sel":""}${PO[i]?" inpat":""}" data-p="${i}" data-kind="${d.kind}" data-fam="${padFam(d)}" aria-label="${esc((i+1)+": "+d.name+(PO[i]?" · "+t("patStep",{n:PO[i]}):""))}"><span class="pi">${i+1}</span>${PO[i]?`<span class="po">${PO[i]}</span>`:""}<span class="pn${d.name.length>12?" long":""}">${esc(d.name)}</span>${fine?`<span class="pk keyonly">${KEYCAP[i]}</span>`:""}</button>`; }).join("");
   box.classList.toggle("waiting", !isReady(bk));
+  paintFamKey(defs);
   paintTubes(box, bk, defs);   /* AOG-PADS-CLASSROOM-V1 */
   box.setAttribute("aria-label", t("padsLab"));
   pvPaint();

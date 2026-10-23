@@ -7,7 +7,7 @@ Mixing Desk), Mix ›, Send it out (the Mixing Desk's). A phone turned sideways 
 AOG-STUDIO-SHELL-V1 (2026-10-09) — the Studio is one house (STUDIO-HANDOFF.md §04–§06, Jimmy's second pick).
 
 The page is a frame, not a list of links:
-  - the eight rooms as picture doors, in song order (CLAUDE.md, aog-labdoors.js);
+  - the nine rooms as picture doors, in song order (CLAUDE.md, aog-labdoors.js);
   - the room you are in, playing inside the frame (an iframe of the room's own page). The room knows it is inside the
     Studio (aog-labdoors.js, AOG-STUDIO-SHELL-V1): it hides its own site bar and doors, and a link to another room
     changes the room here instead of opening a page inside the page. A link to a room's own address (/drum-machine,
@@ -19,8 +19,11 @@ The page is a frame, not a list of links:
     comes into the Studio, in that room (each room's head script, ?at=). The "own tab" link is gone. Two Studio tabs
     still hear each other (aog-handoff.js, BroadcastChannel "aog-music").
 The address says the room (/the-studio#bass), so Back, a bookmark and a shared link all land in the right room.
-AOG-STUDIO-SUPREME-V1 (2026-10-17): the frame is one control room in one order (the meter bridge, the eight doors, the room,
+AOG-STUDIO-SUPREME-V1 (2026-10-17): the frame is one control room in one order (the meter bridge, the doors, the room,
 the desk); see the CSS below and STUDIO-HANDOFF.md §33. Test: music-handoff/tests/studio/supreme.js.
+AOG-VOCAL-V1 (2026-10-23) — Jimmy: "a vocal studio to record our voice with various effects and eq … better than the SING OR
+RAP icon door". The Vocal Booth (music-vocal.html, /vocal-booth) is the ninth door, just before the Mixing Desk, and the
+Voice layer of My Track is its room. The red 🎤 Sing or rap key on the top line is gone (aog-micbooth.js is gone; the Vocal Booth, aog-vocal.js, took its place).
 The page draws at full size on a computer (no 85% zoom): the rooms inside have canvases, and a pen must land under the
 finger (CLAUDE.md).
 
@@ -38,11 +41,13 @@ ROOMS = [
     ("bass", "/bass", "music-bass.html", "music-bass", ("The Bass", "El bajo"), ("Bass", "Bajo"), "bass", "bassbench"),
     ("band", "/band", "music-band.html", "music-band", ("The Band", "La banda"), ("Band", "Banda"), "band", "bandbench"),
     ("decks", "/turntables", "music-decks.html", "music-decks", ("The Turntables", "Los tocadiscos"), ("Turntables", "Tocadiscos"), "decks", ""),
+    ("vocal", "/vocal-booth", "music-vocal.html", "music-vocal", ("The Vocal Booth", "La cabina de voz"), ("Vocal Booth", "Cabina de voz"), "voice", ""),   # AOG-VOCAL-V1
     ("studio", "/mixing-desk", "music-studio.html", "music-mixdesk", ("The Mixing Desk", "La mesa de mezclas"), ("Mixing Desk", "Mesa de mezclas"), "", ""),
 ]
-# My Track: the layers, in song order, then Voice (STUDIO-HANDOFF §05). Voice has no room yet: it stays "nothing yet".
+# My Track: the layers, in song order (STUDIO-HANDOFF §05). A layer whose id is not its room's names the room third:
+# AOG-VOCAL-V1: Voice is the Vocal Booth's (its take is on the Mixing Desk's track 8).
 LAYERS = [("pads", ("Drums", "Ritmos")), ("kit", ("Kit", "Batería")), ("piano", ("Piano", "Piano")), ("guitar", ("Guitar", "Guitarra")),
-          ("bass", ("Bass", "Bajo")), ("band", ("Band", "Banda")), ("decks", ("Turntables", "Tocadiscos")), ("voice", ("Voice", "Voz")),
+          ("bass", ("Bass", "Bajo")), ("band", ("Band", "Banda")), ("decks", ("Turntables", "Tocadiscos")), ("voice", ("Voice", "Voz"), "vocal"),
           ("liveguitar", ("Live guitar", "Guitarra en vivo")), ("livebass", ("Live bass", "Bajo en vivo"))]   # AOG-LIVEINPUT-V1: the one in your hands
 def esc(t): return html.escape(t, quote=True)
 def sp(pair): return '<span data-en="%s" data-es="%s">%s</span>' % (esc(pair[0]), esc(pair[1]), esc(pair[0]))
@@ -51,7 +56,7 @@ CSS = """
    supreme in its presentation and excellence in its structure and handling." The Recording Studio is one control room made
    of one set of parts, in one order, so you always know where you are:
      1. the meter bridge along the top: Back, the Studio's name, the room's meters and room sound, EN | ES;
-     2. the eight doors, in song order, every one a single tap (two rows of four on a phone; one row of eight on an upright
+     2. the nine doors, in song order, every one a single tap (three rows of three on a phone; one row of nine on an upright
         iPad; a column down the left on an iPad on its side and a computer, where the width is spare and the height is not).
         The room you are in is lit; the Mixing Desk stands a step apart, because it is the control room;
      3. the room's window, as large as the screen allows;
@@ -108,7 +113,7 @@ html:root:root body { --room:#17110c; background-color:#17110c !important; color
 
 /* 2 · the doors: dark keys, each with its drawing on a paper insert; the room you are in is lit */
 .sh-doors { grid-area:doors; padding:8px 0; }
-.sh-doors ul { list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:6px; }
+.sh-doors ul { list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:6px; }
 .sh-doors li { min-width:0; display:flex; }
 .sh-doors a { position:relative; flex:1 1 auto; min-width:0; display:flex; align-items:center; justify-content:center; gap:8px; min-height:44px; padding:4px 6px;
   border-radius:10px; border:1px solid var(--st-edge); background:linear-gradient(#302a24, #221d18); color:var(--st-ink); text-decoration:none; text-align:center;
@@ -217,7 +222,7 @@ main.sh-main { grid-area:room; min-width:0; margin:0; }
   .mt ul.more { -webkit-mask-image:none; mask-image:none; }
   .mt .lay { height:30px; font-size:.95rem; padding:0 .6rem; }
 }
-/* a phone held upright: one slim top line, the doors in two rows of four, the transport in one row */
+/* a phone held upright: one slim top line, the doors in three rows of three, the transport in one row */
 @media (max-width:699px) {
   .sh-top { min-height:50px; gap:8px; padding:3px 0; }
   .sh-top h1 { font-size:1.08rem !important; line-height:1.1; }
@@ -250,16 +255,16 @@ main.sh-main { grid-area:room; min-width:0; margin:0; }
   .sh-lang button { min-width:38px; padding:0 .45rem; }
   .sh-qs { padding:0 .45rem; font-size:.8rem; }
 }
-/* an upright iPad: the doors in one row of eight, each with its drawing above its name; the desk in one row */
+/* an upright iPad: the doors in one row of nine, each with its drawing above its name; the desk in one row */
 @media (min-width:700px) {
-  .sh-doors ul { grid-template-columns:repeat(8,minmax(0,1fr)); }
+  .sh-doors ul { grid-template-columns:repeat(9,minmax(0,1fr)); }
   .sh-doors a { flex-direction:column; gap:3px; padding:4px 4px 5px; font-size:.8rem; }
   .sh-doors .pic { display:block; width:48px; height:32px; }
   .sh-doors li:last-child { margin-left:8px; }
   .sh-doors li:last-child::before { content:""; position:absolute; left:-8px; top:6px; bottom:6px; width:1px; background:rgba(255,236,200,.14); }
 }
 @media (min-width:700px) and (max-width:1099px) { .sh-doors { padding:6px 0 7px; } .mt { flex-wrap:nowrap; } .tp { flex:1 1 auto; } }
-/* a wide screen that is short: one row of eight, each drawing beside its name */
+/* a wide screen that is short: one row of nine, each drawing beside its name */
 @media (min-width:1100px) {
   .sh-doors a { flex-direction:row; justify-content:flex-start; gap:9px; padding:4px 10px 4px 4px; text-align:left; font-size:.88rem; }
   .sh-doors .pic { width:48px; height:36px; }
@@ -280,6 +285,14 @@ main.sh-main { grid-area:room; min-width:0; margin:0; }
   .mtrow { padding-left:16px; border-left:1px solid var(--st-edge); box-shadow:inset 1px 0 0 rgba(255,236,200,.06); }
 }
 @media (min-width:1100px) and (min-height:700px) and (max-width:1279px) { .tp-b, .mt a.tp-b { padding:0 .75rem; } .tp-rec { min-width:6.6rem; } #mtAdd { max-width:10rem; } }
+/* AOG-VOCAL-V1: a short wide screen (700–759 px high): nine doors down the left, each a little slimmer, so the column still fits beside the room */
+@media (min-width:1100px) and (min-height:700px) and (max-height:759px) {
+  .sh-doors ul { grid-auto-rows:minmax(48px, auto); gap:5px; }
+  .sh-doors a { padding:3px 10px 3px 4px; }
+  .sh-doors .pic { width:56px; height:40px; }
+  .sh-doors li:last-child { margin-top:8px; }
+  .sh-doors li:last-child::before { top:-7px; }
+}
 /* a phone on its side: the room gets the whole screen, as its own sideways play view expects (LANDSCAPE-HANDOFF.md) */
 @media (orientation:landscape) and (max-height:500px) {
   .aogtop, .aogtop-spacer, .sh-top, .sh-doors, .mt { display:none !important; }
@@ -287,23 +300,6 @@ main.sh-main { grid-area:room; min-width:0; margin:0; }
   main.sh-main { padding:0; }
   .sh-room { border:0; border-radius:0; box-shadow:none; }
 }
-/* AOG-MICBOOTH-V1 (2026-10-22): 🎤 Sing or rap, in the top line of every room, one tap from anywhere in the Studio. It opens the
-   booth (aog-micbooth.js, fetched on the first tap). A red key, the colour of a recording lamp, so it is easy to find. */
-.sh-mic { flex:0 0 auto; min-height:44px; display:inline-flex; align-items:center; justify-content:center; gap:.35rem; padding:0 1rem; border-radius:22px;
-  border:1px solid #3b0d05; background:linear-gradient(#b4472d, #8e321f); color:#fff6f2; font:800 .95rem/1.1 Inter, var(--sans); white-space:nowrap;
-  cursor:pointer; touch-action:manipulation; -webkit-tap-highlight-color:transparent; box-shadow:inset 0 1px 0 rgba(255,220,200,.22), 0 2px 0 var(--st-edge); }
-.sh-mic:active { transform:translateY(1px); box-shadow:inset 0 1px 0 rgba(255,220,200,.12), 0 1px 0 var(--st-edge); }
-.sh-mic:focus-visible { outline:3px solid var(--st-gold); outline-offset:2px; }
-.sh-mic .ic { font-size:1.1rem; line-height:1; }
-@media (max-width:699px) {
-  .sh-top h1 { font-size:1rem !important; }
-  /* two keys and a title will not share a phone's width: Back · Studio · EN ES on top, then ✦ Start a song and 🎤 Sing or rap, side by side */
-  .sh-top { flex-wrap:wrap; row-gap:6px; padding-bottom:6px; }
-  .sh-top h1 { flex:1 1 auto; }
-  .sh-qs, .sh-mic { order:2; flex:1 1 45%; max-width:none; min-width:0; padding:0 .6rem; font-size:.95rem; line-height:1.1; white-space:normal; text-align:center; }
-  .sh-mic { gap:.35rem; }
-}
-@media (max-width:349px) { .sh-qs, .sh-mic { font-size:.86rem; padding:0 .4rem; } }
 /* a phone in Safari (the browser's own bars take the rest): a little less air above the room, so the room keeps most of the screen */
 @media (max-width:699px) and (max-height:760px) {
   .sh-top { padding:1px 0 2px; row-gap:3px; }
@@ -345,6 +341,7 @@ JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></scrip
   var fr = D.getElementById("room"), cur = "", KEY = "aog.studio.room";
   function es() { return (D.documentElement.getAttribute("lang") || "en").indexOf("es") === 0; }
   function room(id) { for (var i = 0; i < ROOMS.length; i++) if (ROOMS[i].id === id) return ROOMS[i]; return null; }
+  function lroom(l) { return room(l.room || l.id); }   /* AOG-VOCAL-V1: a layer's room (Voice is the Vocal Booth's) */
   /* AOG-STUDIO-ONLY-V1 (Jimmy, 2026-10-10: "one location for all the instruments … and that is the studio"): a room
      opened on its own address comes here as ?at=/music-piano.html#lessons (its head script). The frame opens that exact
      address once, so a lesson, a take or a locker link still lands, and the address bar goes back to /the-studio#room. */
@@ -484,7 +481,7 @@ JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></scrip
   function paint() {
     var r = room(cur), e = es(); if (!r) return;
     var vb = D.getElementById("tpVu"); if (vb) vb.hidden = cur === "studio";   /* AOG-ROOM-VU-V1: the desk has its own, large */
-    var rk = D.querySelector("#tpVu .aogroom"); if (rk) rk.hidden = cur === "decks";
+    var rk = D.querySelector("#tpVu .aogroom"); if (rk) rk.hidden = cur === "decks" || cur === "vocal";   /* AOG-VOCAL-V1: the booth has its own Room */
     TP.line = ""; if (typeof paintTp === "function") try { paintTp(); } catch (err) {}
     var name = e ? r.name[1] : r.name[0];
     fr.title = name;
@@ -512,8 +509,8 @@ JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></scrip
     edge();
     /* + Add a layer: the rooms in song order; a layer already there says so */
     var sel = D.getElementById("mtAdd");
-    sel.innerHTML = '<option value="">' + (e ? "+ Añadir una capa" : "+ Add a layer") + "</option>" + LAYERS.filter(function (l) { return room(l.id); }).map(function (l) {
-      var R = room(l.id); return '<option value="' + l.id + '">' + (e ? R.name[1] : R.name[0]) + (HAVE[l.id] ? " ✓" : "") + "</option>"; }).join("");
+    sel.innerHTML = '<option value="">' + (e ? "+ Añadir una capa" : "+ Add a layer") + "</option>" + LAYERS.filter(function (l) { return lroom(l); }).map(function (l) {
+      var R = lroom(l); return '<option value="' + R.id + '">' + (e ? R.name[1] : R.name[0]) + (HAVE[l.id] ? " ✓" : "") + "</option>"; }).join("");
     sel.setAttribute("aria-label", e ? "Añadir una capa: elige una sala" : "Add a layer: pick a room");
     /* AOG-STUDIO-SUPREME-V1: the My Track key (a phone, an upright iPad) says how many layers are there */
     var k = D.getElementById("mtOpen"), have = LAYERS.filter(function (l) { return HAVE[l.id]; }).length, kt = e ? "Mi pista" : "My Track", kn = have ? String(have) : "";
@@ -533,7 +530,7 @@ JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></scrip
     var items = [];
     try { var r = await A.list(A.INBOX); items = (r && r.items) || []; } catch (e) {}
     for (var i = 0; i < LAYERS.length; i++) {
-      var l = LAYERS[i], R = room(l.id), live = /^live/.test(l.id), from = R ? R.from : live ? l.id.slice(4) : l.id, shelf = R ? R.shelf : "";
+      var l = LAYERS[i], R = lroom(l), live = /^live/.test(l.id), from = R ? R.from : live ? l.id.slice(4) : l.id, shelf = R ? R.shelf : "";
       /* a take from the real instrument (aog-liveinput.js, "live") marks Live guitar or Live bass, not the on-screen one */
       var got = items.some(function (x) { return x && x.from === from && x.sec > 0 && !!x.live === live; });
       /* Voice: the take on the Mixing Desk's track 8 (AOG-STUDIO-VOICE-V1), read from the desk's own save */
@@ -939,10 +936,9 @@ JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></scrip
         TP.back = id === "studio" ? (cur !== "studio" ? cur : TP.back) : ""; cur = id; try { history.replaceState(null, "", "#" + id); } catch (e) {} paint(); }
       size(); }
   };
-  /* AOG-MICBOOTH-V1 (2026-10-22) — Jimmy wants the Studio to be a showstopper: hearing yourself on your own beat. 🎤 Sing or
-     rap opens the booth over the room you are in (aog-micbooth.js, fetched on the first tap; nothing is loaded before). The
-     booth records on the Studio's own sound, with My Track put together by the desk out of sight (as ♫ Play along), and hands
-     the take to the desk's track 8. Here: the desk, ready (desk()); the room quiet while the booth is open (quiet()). */
+  /* AOG-MICBOOTH-V1 (2026-10-22): the desk, ready (desk()), and the room quiet while a voice is recorded (quiet()), for a room
+     that records a voice over My Track and hands the take to the desk's track 8. AOG-VOCAL-V1 (2026-10-23): the Vocal Booth
+     (a room of its own) took the place of the 🎤 Sing or rap key; the key and its loader (aog-micbooth.js) are gone. */
   function deskReady() {
     var f = deskFrame();
     return new Promise(function (ok, no) {
@@ -959,12 +955,6 @@ JS = r"""<script src="/aog-vu.js"></script><script src="/aog-handoff.js"></scrip
     if (on) { alongStop(); var w = deskOf(); if (w && w.__aogStudio.PLAY.on) w.__aogStudio.stop(); }
     hush(fr, !!on); if (!on) paintTp();
   };
-  var micLoad = null;
-  D.getElementById("shMic").addEventListener("click", function () {
-    var b = this;
-    if (!micLoad) micLoad = new Promise(function (ok, no) { var s = D.createElement("script"); s.src = "/aog-micbooth.js"; s.onload = ok; s.onerror = function () { micLoad = null; no(); }; D.head.appendChild(s); });
-    micLoad.then(function () { if (window.AOGMicBooth) AOGMicBooth.open(b); }, function () { say("fail"); });
-  });
   D.addEventListener("click", function (e) {
     var a = e.target.closest && e.target.closest("a[data-room]"); if (!a || e.metaKey || e.ctrlKey || e.shiftKey || e.button) return;
     e.preventDefault(); go(a.getAttribute("data-room"), true);
@@ -1106,7 +1096,7 @@ def build():
     src = open(os.path.join(ROOT, "drums-guide.html"), encoding="utf-8").read()
     head = src.split("</head>", 1)[0]
     head = re.sub(r"<title>.*?</title>", "<title>The Recording Studio &mdash; Architecture of Grace</title>", head, count=1, flags=re.S)
-    head = re.sub(r'<meta name="description" content="[^"]*">', '<meta name="description" content="Every music room in one studio: the drum machine, drum kit, piano, guitar, bass, band, turntables and mixing desk. Play, make, mix and send it out. No account.">', head, count=1)
+    head = re.sub(r'<meta name="description" content="[^"]*">', '<meta name="description" content="Every music room in one studio: the drum machine, drum kit, piano, guitar, bass, band, turntables, vocal booth and mixing desk. Play, make, mix and send it out. No account.">', head, count=1)
     head = head.replace('<meta name="robots" content="noindex">\n', "")
     head = re.sub(r"<!-- AOG-DRUMPIC-V1 .*?-->", "<!-- AOG-STUDIO-PAGE-V1 (2026-10-06) · AOG-STUDIO-SHELL-V1 (2026-10-09) — The Studio. MADE BY _work/music/make_studio_page.py: edit there, then run it. -->", head, count=1, flags=re.S)
     i = head.rfind("</style>"); head = head[:i] + CSS + head[i:]
@@ -1127,8 +1117,6 @@ def build():
            '  <p class="sh-tag">%s</p>' % sp(("Play · Record · Listen · Mix · Send it out", "Toca · Graba · Escucha · Mezcla · Compártela")),
            # AOG-STUDIO-SUPREME-V1: the meter bridge (AOG-ROOM-VU-V1: the room's small VU meters and its room sound)
            '  <div class="sh-bridge"><span class="tp-vu" id="tpVu"></span></div>',
-           # AOG-MICBOOTH-V1: 🎤 Sing or rap (the booth, aog-micbooth.js, fetched on the first tap)
-           '  <button type="button" class="sh-mic" id="shMic" aria-haspopup="dialog"><span class="ic" aria-hidden="true">🎤</span>%s</button>' % sp(("Sing or rap", "Canta o rapea")),
            '  <div class="sh-lang" role="group" aria-label="Language · Idioma"><button type="button" data-lang="en" lang="en">EN</button><button type="button" data-lang="es" lang="es">ES</button></div>',
            "</div>",
            '<nav class="sh-doors" aria-label="Rooms · Salas"><ul>']
@@ -1161,7 +1149,7 @@ def build():
             '<button type="button" class="tp-b tp-ms" id="msOpen" aria-haspopup="dialog" aria-expanded="false"></button></div></section>' % sp(("My Track", "Mi pista")),   # AOG-MISSIONS-V1
             "</div>"]
     rooms = [{"id": r[0], "href": r[1], "file": r[2], "name": list(r[4]), "short": list(r[5]), "from": r[6], "shelf": r[7]} for r in ROOMS]
-    layers = [{"id": l[0], "name": list(l[1])} for l in LAYERS]
+    layers = [dict({"id": l[0], "name": list(l[1])}, **({"room": l[2]} if len(l) > 2 else {})) for l in LAYERS]
     js = JS.replace("__ROOMS__", json.dumps(rooms, ensure_ascii=False)).replace("__LAYERS__", json.dumps(layers, ensure_ascii=False))
     # AOG-STUDIO-SW-V1 (2026-10-10, Jimmy: the Studio was "lagging … a horrific experience"): the Studio is its own Home
     # Screen app, so it starts the site's helper (sw.js) itself, as the front page does. Without it, a Studio opened only

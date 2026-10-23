@@ -16,7 +16,7 @@
    A beat link opening: the code is read and CLEANED first (a link is never trusted: whitelisted names, clamped numbers,
    capped sizes, anything unknown dropped; the Drum Machine checks every name again against what it has), the song takes the
    tempo and key (AOGSong), the Drum Machine (in sight) takes the beat and puts its loop on My Track (AOGPadsSetup.load), so
-   🎤 Sing or rap has it to rap over, and one warm line says what to do. Nothing plays until a key is pressed. A broken link
+   the Vocal Booth has it to rap over (AOG-VOCAL-V1), and one warm line says what to do. Nothing plays until a key is pressed. A broken link
    gets one kind line, and the Studio opens as usual.
    The Studio is told: window "aog-studio-did" {what:"shared"} when a send is handed off, {what:"remixopened"} when a beat
    link has opened. Test: music-handoff/tests/studio/share.js. */
@@ -49,8 +49,8 @@
     myBeat: ["My beat", "Mi ritmo"],
     /* a beat link opening */
     getting: ["Getting your friend's beat ready…", "Preparando el ritmo de tu amigo…"],
-    welcome: ["A friend sent you a beat. Press Play to hear it, or tap 🎤 Sing or rap to rap over it.",
-      "Un amigo te mandó un ritmo. Pulsa ▶ Tocar para oírlo, o toca 🎤 Canta o rapea para rapear encima."],
+    welcome: ["A friend sent you a beat. Press Play to hear it, or open the Vocal Booth to rap over it.",
+      "Un amigo te mandó un ritmo. Pulsa ▶ Tocar para oírlo, o abre la cabina de voz para rapear encima."],
     bad: ["That beat link did not open. Ask your friend to send it again.", "Ese enlace de ritmo no se abrió. Pídele a tu amigo que lo mande otra vez."],
     badLoad: ["Your friend's beat did not load. Open the link again.", "El ritmo de tu amigo no cargó. Abre el enlace otra vez."]
   };
