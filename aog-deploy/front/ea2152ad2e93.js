@@ -30,7 +30,8 @@ const TOOLS={
   band:{from:{en:"From the band",es:"De la banda"}, take:{en:"Band take",es:"Toma de la banda"}},
   decks:{from:{en:"From the turntables",es:"De los tocadiscos"}, take:{en:"Turntables take",es:"Toma de los tocadiscos"}},
   waves:{from:{en:"From the oscilloscope",es:"Del osciloscopio"}, take:{en:"Oscilloscope take",es:"Toma del osciloscopio"}},   /* AOG-SEND-TO-PADS-V1 */
-  pads:{from:{en:"From the drum machine",es:"De la caja de ritmos"}, take:{en:"Drum machine take",es:"Toma de la caja de ritmos"}}   /* AOG-PADS-V1 */
+  pads:{from:{en:"From the drum machine",es:"De la caja de ritmos"}, take:{en:"Drum machine take",es:"Toma de la caja de ritmos"}},   /* AOG-PADS-V1 */
+  vocal:{from:{en:"From the Vocal Booth",es:"De la cabina de voz"}, take:{en:"Voice",es:"Voz"}}   /* AOG-LOCKER-V2: a voice take passed from another device */
 };
 
 const STR={
@@ -213,15 +214,15 @@ const STR={
   openAsk:{en:"Open {name}? It takes the place of the song on the desk now. Save that one first if you want to keep it.",es:"¿Abrir {name}? Toma el lugar de la canción que está en la mesa. Guarda esa primero si quieres conservarla."},
   openYes:{en:"Yes, open it",es:"Sí, abrirla"}, openNo:{en:"Not now",es:"Ahora no"},
   lockH:{en:"With your locker in Google Drive",es:"Con tu casillero en Google Drive"},
-  lockAbout:{en:"Your locker keeps your songs in your own Google Drive. Set it up once, then every device you connect sees the same songs. Nobody signs in on the devices.",es:"Tu casillero guarda tus canciones en tu propio Google Drive. Prepáralo una vez y cada aparato que conectes verá las mismas canciones. Nadie inicia sesión en los aparatos."},
+  lockAbout:{en:"Your locker keeps your songs in your own Google Drive. Set it up once, then open one link on each device. Nobody signs in.",es:"Tu casillero guarda tus canciones en tu propio Google Drive. Prepáralo una vez y abre un enlace en cada aparato. Nadie inicia sesión."},
   lockSteps:{en:"Show me how to set it up (5 minutes)",es:"Muéstrame cómo prepararlo (5 minutos)"},
   lockS1:{en:"Open script.google.com and press New project.",es:"Abre script.google.com y pulsa Nuevo proyecto."},
   lockS2:{en:"Paste in the locker script and press Save.",es:"Pega el script del casillero y pulsa Guardar."},
   lockScript:{en:"the locker script",es:"el script del casillero"},
-  lockS3:{en:"Pick setup and press Run. Allow it to use your Drive. Copy the key it shows.",es:"Elige setup y pulsa Ejecutar. Permite que use tu Drive. Copia la clave que muestra."},
-  lockS4:{en:"Press Deploy, then New deployment, then Web app. Execute as: Me. Who has access: Anyone. Copy the web address.",es:"Pulsa Implementar, luego Nueva implementación, luego Aplicación web. Ejecutar como: Yo. Quién tiene acceso: Cualquier persona. Copia la dirección web."},
-  lockS5:{en:"Paste both here and press Connect.",es:"Pega las dos aquí y pulsa Conectar."},
-  lockUrl:{en:"Web address",es:"Dirección web"}, lockKey:{en:"Locker key",es:"Clave del casillero"},
+  lockS3:{en:"Pick setup and press Run. Allow it to use your Drive.",es:"Elige setup y pulsa Ejecutar. Permite que use tu Drive."},
+  lockS4:{en:"Press Deploy, then New deployment, then Web app. Execute as: Me. Who has access: Anyone. Press Deploy.",es:"Pulsa Implementar, luego Nueva implementación, luego Aplicación web. Ejecutar como: Yo. Quién tiene acceso: Cualquier persona. Pulsa Implementar."},
+  lockS5:{en:"Pick link and press Run. Open the link it shows on each device, or paste it here.",es:"Elige link y pulsa Ejecutar. Abre el enlace que muestra en cada aparato, o pégalo aquí."},
+  lockUrl:{en:"Web address or device link",es:"Dirección web o enlace del aparato"}, lockKey:{en:"Locker key",es:"Clave del casillero"},
   connect:{en:"Connect",es:"Conectar"}, connecting:{en:"Connecting…",es:"Conectando…"},
   lockBadUrl:{en:"The web address should start with https://script.google.com and end with /exec.",es:"La dirección web debe empezar con https://script.google.com y terminar en /exec."},
   lockNoKey:{en:"Paste the locker key too.",es:"Pega también la clave del casillero."},
@@ -232,13 +233,18 @@ const STR={
   ltWait:{en:"Checking your locker…",es:"Revisando tu casillero…"}, ltWaitS:{en:"Asking your Google Drive if the locker answers.",es:"Preguntando a tu Google Drive si el casillero responde."},
   ltOk:{en:"Locker connected",es:"Casillero conectado"}, ltOkS:{en:"Locker script v{v}. Songs in it: {n}. Checked at {at}.",es:"Script del casillero v{v}. Canciones: {n}. Revisado a las {at}."},
   ltSheet:{en:"That is your Sheet's address",es:"Esa es la dirección de tu Hoja"}, ltSheetS:{en:"This web address belongs to your IEP Sheet script, not the locker. The locker needs its own new project at script.google.com. Follow the steps below, then paste the new web address here.",es:"Esta dirección web es del script de tu Hoja del IEP, no del casillero. El casillero necesita su propio proyecto nuevo en script.google.com. Sigue los pasos de abajo y pega aquí la nueva dirección web."},
-  ltKey:{en:"The key did not match",es:"La clave no coincide"}, ltKeyS:{en:"Copy the key again from the locker script (Run setup shows it), then press Connect.",es:"Copia otra vez la clave del script del casillero (Ejecutar setup la muestra) y pulsa Conectar."},
+  ltKey:{en:"The key did not match",es:"La clave no coincide"}, ltKeyS:{en:"Run link in the locker script and paste its link here, then press Connect.",es:"Ejecuta link en el script del casillero, pega aquí su enlace y pulsa Conectar."},
   ltReach:{en:"Can't reach your locker",es:"No se llega a tu casillero"}, ltReachS:{en:"Check the internet and the web address. Then press Check again.",es:"Revisa el internet y la dirección web. Luego pulsa Revisar otra vez."},
   ltAgain:{en:"Check again",es:"Revisar otra vez"},
   lockSave:{en:"Save to my locker",es:"Guardar en mi casillero"},
-  lockSaving:{en:"Saving to your locker… {a} of {b}",es:"Guardando en tu casillero… {a} de {b}"},
+  lockSaving:{en:"Saving to your locker… {a} of {b} MB",es:"Guardando en tu casillero… {a} de {b} MB"},   /* AOG-LOCKER-V3: in MB, not pieces */
   lockSaved:{en:"{name} is in your locker.",es:"{name} está en tu casillero."},
-  lockLoading:{en:"Getting your song… {a} of {b}",es:"Trayendo tu canción… {a} de {b}"},
+  lockLoading:{en:"Getting your song… {a} of {b} MB",es:"Trayendo tu canción… {a} de {b} MB"},
+  /* AOG-LOCKER-V3 (2026-10-23): only what changed is sent; a big save carries on where it stopped */
+  bigHint:{en:"Keep this screen open until it says it is saved. If it stops, press Save again: it carries on.",es:"Mantén esta pantalla abierta hasta que diga que se guardó. Si se detiene, pulsa Guardar otra vez: sigue donde iba."},
+  lockStopped:{en:"It stopped at {a} of {b} MB. Press Save to my locker again: it carries on.",es:"Se detuvo en {a} de {b} MB. Pulsa Guardar en mi casillero otra vez: sigue donde iba."},
+  lockOpenStopped:{en:"That song did not come through. Press Open again: it carries on.",es:"Esa canción no llegó entera. Pulsa Abrir otra vez: sigue donde iba."},
+  oldBig:{en:"This song is big, so it is not kept in your locker on its own. Update your locker script: then only what changed is sent. Your songs and key stay the same.",es:"Esta canción es grande, así que no se guarda sola en tu casillero. Actualiza el script de tu casillero: así solo se envía lo que cambió. Tus canciones y tu clave se quedan igual."},
   lockList:{en:"Songs in your locker",es:"Canciones en tu casillero"},
   lockEmpty:{en:"No songs in your locker yet.",es:"Aún no hay canciones en tu casillero."},
   lockRefresh:{en:"Check for new songs",es:"Buscar canciones nuevas"},
@@ -249,12 +255,35 @@ const STR={
   lockPair:{en:"Send the link to my other devices",es:"Enviar el enlace a mis otros aparatos"},
   lockQr:{en:"Show a QR code",es:"Mostrar un código QR"}, lockQrHide:{en:"Hide the QR code",es:"Ocultar el código QR"},
   lockQrAlt:{en:"QR code that connects another device to your locker",es:"Código QR que conecta otro aparato a tu casillero"},
-  lockPairLine:{en:"Open the link on your other device, or scan the code with its camera. Keep the link private: it opens your locker.",es:"Abre el enlace en tu otro aparato o escanea el código con su cámara. No compartas el enlace: abre tu casillero."},
+  lockPairLine:{en:"Open the link on your other device, or scan the code with its camera. Keep the link private: send it only to your own or your family's devices.",es:"Abre el enlace en tu otro aparato o escanea el código con su cámara. No compartas el enlace: envíalo solo a tus aparatos o a los de tu familia."},
   lockCopied:{en:"Link copied. Paste it into a message to yourself.",es:"Enlace copiado. Pégalo en un mensaje para ti."},
   lockJoined:{en:"Your locker is connected on this device.",es:"Tu casillero está conectado en este aparato."},
   lockOff:{en:"Disconnect this device",es:"Desconectar este aparato"},
   lockOffDone:{en:"This device is not connected any more. Your songs stay in your Google Drive.",es:"Este aparato ya no está conectado. Tus canciones se quedan en tu Google Drive."},
   mbN:{en:"{n} MB",es:"{n} MB"},
+  /* AOG-LOCKER-V2 (2026-10-23): the song follows you, a take between devices, the last 3 saves */
+  keepSw:{en:"Keep this song in my locker",es:"Guardar esta canción en mi casillero"},
+  keepAt:{en:"Saved to your locker · {d} · {t}",es:"Guardada en tu casillero · {d} · {t}"},
+  keepNot:{en:"Not in your locker yet.",es:"Aún no está en tu casillero."},
+  keepGoing:{en:"Saving to your locker…",es:"Guardando en tu casillero…"},
+  keepFail:{en:"It could not save just now. It tries again after your next change.",es:"No se pudo guardar ahora. Lo intenta otra vez después de tu próximo cambio."},
+  newerOne:{en:"A newer version from your {d} ({t}) is in your locker.",es:"Hay una versión más nueva de tu {d} ({t}) en tu casillero."},
+  newerOpen:{en:"Open it",es:"Abrirla"}, newerKeep:{en:"Keep this one",es:"Quedarme con esta"},
+  newerBoth:{en:"This song changed here and on your {d} ({t}).",es:"Esta canción cambió aquí y en tu {d} ({t})."},
+  bothOpen:{en:"Open the locker's",es:"Abrir la del casillero"}, bothKeep:{en:"Keep mine",es:"Quedarme con la mía"},
+  takeSend:{en:"Send to my locker",es:"Enviar a mi casillero"},
+  takeSendAria:{en:"Send {name} to my locker",es:"Enviar {name} a mi casillero"},
+  takeSending:{en:"Sending {name}…",es:"Enviando {name}…"},
+  takeSent:{en:"{name} is in your locker for your other devices.",es:"{name} está en tu casillero para tus otros aparatos."},
+  takeFrom:{en:"from your {d}",es:"de tu {d}"},
+  earlierH:{en:"Earlier saves",es:"Guardados anteriores"},
+  earlierAria:{en:"Open the save from your {d}, {t}",es:"Abrir lo guardado en tu {d}, {t}"},
+  oldScript:{en:"Update your locker script to use this. Your songs and key stay the same.",es:"Actualiza el script de tu casillero para usar esto. Tus canciones y tu clave se quedan igual."},
+  oldScriptW:{en:"new locker script",es:"nuevo script del casillero"},
+  oldHow:{en:"How to update it (2 minutes)",es:"Cómo actualizarlo (2 minutos)"},
+  oldS1:{en:"Open your locker's project at script.google.com.",es:"Abre el proyecto de tu casillero en script.google.com."},
+  oldS2:{en:"Paste the new locker script in place of the old one, and press Save.",es:"Pega el nuevo script del casillero en lugar del viejo y pulsa Guardar."},
+  oldS3:{en:"Press Deploy, then Manage deployments, then Edit (the pencil). Pick New version and press Deploy.",es:"Pulsa Implementar, luego Gestionar implementaciones, luego Editar (el lápiz). Elige Nueva versión y pulsa Implementar."},
   foot:{en:"Your song and your takes stay on this device, unless you save a song file or save to your own locker. The microphone opens only when you press Record your voice.",es:"Tu canción y tus tomas se quedan en este aparato, a menos que guardes un archivo de canción o guardes en tu propio casillero. El micrófono solo se abre cuando pulsas Grabar tu voz."},
   /* AOG-STUDIO-INBOX-V1 */
   grpTakes:{en:"Takes sent here",es:"Tomas enviadas aquí"}, grpShelves:{en:"Sent to the turntables",es:"Enviado a los platos"},
@@ -343,7 +372,9 @@ function num(v, lo, hi, d){ v=+v; return isFinite(v) ? Math.max(lo, Math.min(hi,
 function blankTrack(){ return {clip:null, vol:80, pan:0, mute:false, solo:false, low:0, mid:0, high:0, punch:0, room:0, echo:0}; }
 const DESK_ROOMS=["made","small","studio","hall","church"];   /* AOG-REAL-ROOMS-V1: the Room return's choices */
 function blankSong(){ return {v:1, tracks:Array.from({length:NT}, blankTrack), master:{low:0, mid:0, high:0, glue:30, vol:80, room:"hall"},
-  sel:0, startBar:1, loopOn:false, loopFrom:1, loopTo:4, countIn:false, name:""}; }
+  sel:0, startBar:1, loopOn:false, loopFrom:1, loopTo:4, countIn:false, name:"", sid:newSid()}; }
+/* AOG-LOCKER-V2: each song has its own id, so the locker knows a newer save of the same song from another device */
+function newSid(){ let s=""; while(s.length<12) s+=Math.random().toString(36).slice(2); return s.slice(0,12); }
 let SONG=blankSong();
 /* ══ AOG-LESSONS-V1 (2026-10-05) — the Mixing Desk's lessons: each step ticks itself as it happens (the words:
    _work/music/lessons_studio.py, built by make_lab_lessons.py into aog-lessons-studio.js and mixing-desk-lessons.html).
@@ -443,10 +474,11 @@ function cleanSong(r){
   if(s.loopTo<s.loopFrom) s.loopTo=s.loopFrom;
   s.countIn=!!r.countIn;
   s.name=String(typeof r.name==="string" ? r.name : "").replace(/[\u0000-\u001f]/g,"").slice(0,80);   /* AOG-STUDIO-CARRY-V1 */
+  if(typeof r.sid==="string" && /^[a-z0-9]{12}$/.test(r.sid)) s.sid=r.sid;   /* AOG-LOCKER-V2: a song from before gets its id here */
   return s;
 }
-function load(){ try{ const r=JSON.parse(localStorage.getItem(LKEY)||"null"); if(r && r.v===1) SONG=cleanSong(r); }catch(e){} }
-function save(){ if(dmNoSave()) return; try{ localStorage.setItem(LKEY, JSON.stringify(SONG)); }catch(e){} }   /* AOG-DESK-VERSIONS-V1: not while a saved version is being compared */
+function load(){ try{ const r=JSON.parse(localStorage.getItem(LKEY)||"null"); if(r && r.v===1){ SONG=cleanSong(r); if(r.sid!==SONG.sid) localStorage.setItem(LKEY, JSON.stringify(SONG)); } }catch(e){} }   /* AOG-LOCKER-V2: its id kept */
+function save(){ if(dmNoSave()) return; try{ localStorage.setItem(LKEY, JSON.stringify(SONG)); }catch(e){} try{ keepSoon(); }catch(e){} }   /* AOG-LOCKER-V2: a change, saved to the locker a little later */   /* AOG-DESK-VERSIONS-V1: not while a saved version is being compared */
 let saveT=0; function saveSoon(){ clearTimeout(saveT); saveT=setTimeout(save, 200); }
 
 /* ══ a copy of every recording on a track, in this browser (IndexedDB "aog-studio"), so a new bounce on an
@@ -469,7 +501,8 @@ function idbDo(mode, fn){
     tx.oncomplete=()=>ok(res); tx.onerror=()=>no(tx.error); tx.onabort=()=>no(tx.error);
   }));
 }
-function sput(k,v){ return idbDo("readwrite", st=>st.put(v,k)).then(()=>{ IDB.mem.delete(k); }, ()=>{ IDB.mem.set(k,v); }); }
+function sput(k,v){ const drop=typeof k==="string" && k.indexOf("rid|")!==0;   /* AOG-LOCKER-V3: a new sound under an id drops its content id ("rid|<id>") */
+  return idbDo("readwrite", st=>{ if(drop) st.delete("rid|"+k); return st.put(v,k); }).then(()=>{ IDB.mem.delete(k); if(drop) IDB.mem.delete("rid|"+k); }, ()=>{ IDB.mem.set(k,v); if(drop) IDB.mem.delete("rid|"+k); }); }
 function sget(k){ return idbDo("readonly", st=>st.get(k)).then(v=>v||IDB.mem.get(k)||null, ()=>IDB.mem.get(k)||null); }
 function sdel(k){ IDB.mem.delete(k); return idbDo("readwrite", st=>st.delete(k)).catch(()=>{}); }
 function skeys(){ return idbDo("readonly", st=>st.getAllKeys ? st.getAllKeys() : null).then(v=>v||[], ()=>[]); }
@@ -1205,6 +1238,7 @@ function stop(){
 function finish(){ end(); LES.mark("end1"); }
 function end(){
   PLAY.on=false; clearInterval(PLAY.timer); PLAY.timer=0;
+  try{ keepAfter(); }catch(e){}   /* AOG-LOCKER-V2: a save that waited for the song to stop */
   if(PLAY.raf) cancelAnimationFrame(PLAY.raf); PLAY.raf=0;
   PLAY.srcs=[]; PLAY.clicks=[]; PLAY.wins=[];
   meterStill(); paintPlay(); paintNowBar(-1);
@@ -1586,7 +1620,7 @@ function srcLabel(o){
 function srcInfo(o){
   if(!o) return "";
   if(o.kind==="take"){ const x=o.x, T=TOOLS[x.from];
-    return [T ? L(T.from) : "", clockLen(x.sec), x.bpm>0 ? t("bpmN",{n:Math.round(x.bpm)}) : "", madeWords(x.at||x.sent)].filter(Boolean).join(" · "); }
+    return [T ? L(T.from) : "", x.dev ? t("takeFrom",{d:devWord(x.dev)}) : "", clockLen(x.sec), x.bpm>0 ? t("bpmN",{n:Math.round(x.bpm)}) : "", madeWords(x.at||x.sent)].filter(Boolean).join(" · "); }
   const nm=bareName(o.v.rec.name);
   return [shelfWhat(o), nm, clockLen(o.v.info.sec)].filter(Boolean).join(" · ");
 }
@@ -1609,13 +1643,19 @@ async function putOn(srcId, ti){
       rec=(it.passSec>0 && it.loops>0) ? {bpm:it.bpm, bars:it.bars||0, passSec:it.passSec, loops:it.loops, offset:it.offset||0} : {take:true, bpm:it.bpm, bars:0, place:placeOf(it)};
       from={src:INBOX_KEY, from:it.from, tn:it.n, tid:it.id, name:takeLabel(it).slice(0,200), at:it.at||it.sent||Date.now(), layer:LAYER_FROM.indexOf(it.from)>=0 ? it.from+(it.live?":live":"")+(placeOf(it)?":over":"") : ""};
       if(it.notes) from.notes=it.notes;   /* AOG-PIANOROLL-V1: the notes it was played with */
+      /* AOG-LOCKER-V2: a voice take from another device comes with its dry recording and its sound, as on the device it was made on */
+      if(it.voice){ from.voice=true; from.vn=1+Math.max(0, ...dmAllClips().map(y=>y.voice ? y.vn||0 : 0)); from.name=(S.lang==="es" ? "Voz " : "Voice ")+from.vn;
+        if(typeof it.snd==="string") from.snd=it.snd;
+        if(it.dry && it.dry.size>44){ from.dry=id+"d"; await sput(from.dry, {wav:it.dry}); } }
     }
     const meta=analyse(rec, info);
+    if(src.kind==="take" && src.x.voice && src.x.vbody>0 && src.x.vbody<=meta.sec){   /* AOG-LOCKER-V2: where the voice starts, as it was measured */
+      meta.head=Math.max(0, Math.min(10, +src.x.vhead||0, meta.sec-src.x.vbody)); meta.body=src.x.vbody; meta.tail=Math.max(0, meta.sec-meta.head-meta.body); }
     const buf=await decodeWav(blob, info.sr);
     await sput(id, {wav:blob});
     BUF.set(id, buf);
     const x=SONG.tracks[ti], old=x.clip;
-    const pl=rec.place;
+    const pl=rec.place || (src.kind==="take" && src.x.voice && src.x.vbar>=1 ? {bar:Math.min(MAX_BARS, Math.round(src.x.vbar))} : null);   /* AOG-LOCKER-V2: a voice take, at its bar */
     x.clip=Object.assign({id:id}, from, {startBar:pl ? pl.bar : old ? old.startBar : 1, trimIn:0, trimOut:0, loops:1}, meta, {peakDb:peakDbOf(buf)});
     x.clip=cleanClip(x.clip);
     if(old) dropClip(old.id);
@@ -1690,6 +1730,7 @@ async function fillNow(since){
   LISTEN_LEFT=[];
   const best={}, fresh=since!=null;
   sources().forEach(o=>{ const k=layerOfSrc(o); if(!k) return; if(fresh && !(o.kind==="take" && (o.x.sent||0)>since)) return;
+    if(o.kind==="take" && o.x.dev) return;   /* AOG-LOCKER-V2: a take from another device waits in Takes sent here; it is never put on a track by itself */
     const at=o.kind==="take" ? (o.x.at||o.x.sent||0) : (o.v.rec.at||0);
     if(!best[k] || at>best[k].at) best[k]={o:o, at:at}; });
   let n=0, missed=0; const placed=[];
@@ -1866,7 +1907,7 @@ async function restore(){
   if(lost){ save(); $("recLine").textContent=t("gone"); }
   /* tidy: copies no track uses any more (AOG-DESK-MORE-V1: the takes', and those a saved version needs, stay) */
   try{ const keep=new Set(clips().map(x=>x.c.id)); keep.add("mix"); dmKeepIds(keep); dmAllClips().forEach(c=>{ if(c.dry) keep.add(c.dry); });   /* AOG-MICBOOTH-V1: a voice take's dry copy */
-    (await skeys()).forEach(k=>{ if(!keep.has(k)) sdel(k); }); }catch(e){}
+    (await skeys()).forEach(k=>{ if(!keep.has(k) && !(typeof k==="string" && k.indexOf("rid|")===0 && keep.has(k.slice(4))) && !(typeof k==="string" && k.indexOf("lkp|")===0 && Date.now()-parseInt(k.split("|")[3]||"0", 36)<3*864e5)) sdel(k); }); }catch(e){}   /* AOG-LOCKER-V3: and their content ids, and pieces of a song still coming down */
   liveApply(applyAll);
   paintTransport(); paintTimeline(); paintTrack(); paintMixer(); paintFinish();
   stretchAll();                    /* AOG-STUDIO-EDIT-V1: a track slowed or sped up, keeping its pitch, is made again */
@@ -2097,6 +2138,7 @@ async function applySong(r){
   stop(); dmCmpEnd();
   const old=dmAllClips().map(c=>c.id), mine=dmSongClips(r.song);   /* AOG-DESK-TAKES-V1: the takes come too */
   for(const c of mine){
+    if(r.local && r.local.has(c.id)) continue;               /* AOG-LOCKER-V3: already on this device, the same to the byte */
     const ab=await blobAB(r.wavs.get(c.id));                 /* the browser's own copy, not a piece of the file */
     await sput(c.id, {wav:new Blob([ab], {type:"audio/wav"})}); }
   const keep=new Set(mine.map(c=>c.id));
@@ -2147,8 +2189,12 @@ async function openFile(file){
 /* ── your locker ── */
 const LOCK_URL_RE=/^https:\/\/script\.google\.com\/(?:a\/macros\/[A-Za-z0-9.-]+|macros)\/s\/[A-Za-z0-9_-]{10,200}\/exec$/;
 const LOCK_KEY_RE=/^[A-Za-z0-9_-]{8,100}$/;
-function lockGet(){ try{ const o=JSON.parse(localStorage.getItem(LOCK_KEY)||"null"); if(o && LOCK_URL_RE.test(o.url) && LOCK_KEY_RE.test(o.key)) return {url:o.url, key:o.key}; }catch(e){} return null; }
-function lockSet(o){ try{ if(o) localStorage.setItem(LOCK_KEY, JSON.stringify({url:o.url, key:o.key})); else localStorage.removeItem(LOCK_KEY); }catch(e){} CARRY.lock=o; if(o) lockKeep(); }
+const LOCK_DID_RE=/^[a-z0-9]{8,40}$/;   /* AOG-LOCKER-V2: this device's own id, kept beside the address and key (so it is kept as they are) */
+function lockGet(){ try{ const o=JSON.parse(localStorage.getItem(LOCK_KEY)||"null"); if(o && LOCK_URL_RE.test(o.url) && LOCK_KEY_RE.test(o.key)) return {url:o.url, key:o.key, did:LOCK_DID_RE.test(o.did||"") ? o.did : ""}; }catch(e){} return null; }
+function lockSet(o){
+  LKN.has.clear();   /* AOG-LOCKER-V3: what this device knows the locker has, for this locker only */
+  if(o && !LOCK_DID_RE.test(o.did||"")){ const was=CARRY.lock || lockGet(); o={url:o.url, key:o.key, did:was && LOCK_DID_RE.test(was.did||"") ? was.did : newSid()+newSid()}; }
+  try{ if(o) localStorage.setItem(LOCK_KEY, JSON.stringify({url:o.url, key:o.key, did:o.did})); else localStorage.removeItem(LOCK_KEY); }catch(e){} CARRY.lock=o; if(o) lockKeep(); }
 /* AOG-STUDIO-LOCKER-KEEP-V1: ask the browser to keep this site's storage, so Safari does not clear the locker after a week away.
    Only Disconnect removes it here; the front page's clear and reset buttons and the dashboard's Delete everything keep it, and the
    dashboard's backup file leaves the key out. */
@@ -2158,14 +2204,49 @@ async function lockPost(body, lk){
   let r;
   try{ r=await fetch(lk.url, {method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"}, body:JSON.stringify(Object.assign({key:lk.key}, body))}).then(x=>x.json()); }
   catch(e){ const err=new Error("reach"); err.reach=true; throw err; }
-  if(!r || !r.ok){ const err=new Error(r && r.error || "fail"); err.key=r && r.error==="key"; throw err; }
+  if(!r || !r.ok){ const err=new Error(r && typeof r.error==="string" ? r.error.slice(0,200) : "fail"); err.key=r && r.error==="key"; err.locker=!!(r && typeof r.error==="string"); throw err; }
   return r;
 }
 function lockState(e, hello){ return e && e.key ? "key" : e && e.reach ? "reach" : (e && e.sheet) || hello ? "sheet" : "reach"; }
-function lockErr(e){ return e && e.key ? t("lockWrongKey") : e && e.reach ? t("lockNoReach") : (e && e.message && !/^(fail|none)$/.test(e.message) ? e.message : t("fail")); }
+function lockErr(e){ return e && e.key ? t("lockWrongKey") : e && e.reach ? t("lockNoReach") : (e && e.locker && e.message && !/^(fail|none)$/.test(e.message) ? e.message : t("fail")); }   /* AOG-LOCKER-V3: only the locker's own words, never a browser's */
 function b64Of(blob){ return new Promise((ok,no)=>{ const fr=new FileReader(); fr.onload=()=>{ const s=String(fr.result); ok(s.slice(s.indexOf(",")+1)); }; fr.onerror=()=>no(fr.error); fr.readAsDataURL(blob); }); }
-function blobOfB64(b64){ const bin=atob(b64), u=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++) u[i]=bin.charCodeAt(i); return new Blob([u]); }
-function pairLink(){ const lk=CARRY.lock; return lk ? location.origin+location.pathname+"#locker="+encodeURIComponent(lk.url)+"&k="+encodeURIComponent(lk.key) : ""; }
+/* a megabyte of text at a time (AOG-LOCKER-V3), so no one step needs a 4 MB string on a phone */
+function blobOfB64(b64){ const out=[];
+  for(let o=0;o<b64.length;o+=1048576){ const bin=atob(b64.slice(o, o+1048576)), u=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++) u[i]=bin.charCodeAt(i); out.push(u); }
+  return new Blob(out); }
+/* AOG-LOCKER-V3 (Jimmy's iPad, 2026-10-23: "The string contains invalid characters." under the locker): WebKit's words when
+   atob is handed something that is not base64, here an answer's "data" that was missing. Every piece that comes down is
+   checked now: the answer says ok and carries base64 (spaces and line breaks taken out); if not, it is asked for once more,
+   and then the open stops with a plain line and carries on next time. */
+function cleanB64(d){ const s=typeof d==="string" ? d.replace(/\s+/g,"").replace(/-/g,"+").replace(/_/g,"/") : "";
+  return s && s.length%4===0 && /^[A-Za-z0-9+/]+={0,2}$/.test(s) ? s : ""; }
+async function lockPiece(body){
+  let last=null;
+  for(let k=0;k<2;k++){
+    try{ const r=await lockPost(body), b=cleanB64(r.data); if(b){ try{ return blobOfB64(b); }catch(e){ last=e; } } else last=new Error("piece"); }
+    catch(e){ if(e && e.key) throw e; last=e; }
+  }
+  const err=new Error("piece"); err.piece=true; err.reach=!!(last && last.reach); throw err;
+}
+/* pieces that came down are kept on this device ("lkp|<song or recording>|<n>|<when>") until the song is open, so pressing
+   Open again carries on; the tidy keeps them 3 days */
+const LKP="lkp|";
+async function lkpHave(){ const m=new Map(); for(const k of await skeys()) if(typeof k==="string" && k.indexOf(LKP)===0){ const q=k.split("|"); m.set(q[1]+"|"+q[2], k); } return m; }
+async function lkpGet(m, src, n){ const k=m.get(src+"|"+n); if(!k) return null; const v=await sget(k); return v && v.b && typeof v.b.size==="number" ? v.b : null; }
+function lkpPut(src, n, b){ const k=LKP+src+"|"+n+"|"+Date.now().toString(36); return sput(k, {b:b}).then(()=>k); }
+async function lkpDrop(src){ for(const k of await skeys()) if(typeof k==="string" && k.indexOf(LKP)===0 && (!src || k.split("|")[1]===src)) await sdel(k); }
+/* n pieces of one thing, those kept here first, the rest 3 at once */
+async function lockPieces(src, n, ask, got){
+  const m=await lkpHave(), out=new Array(n), todo=[];
+  for(let i=0;i<n;i++){ const b=await lkpGet(m, src, i); if(b){ out[i]=b; got(b.size); } else todo.push(i); }
+  await lockPool(todo, async i=>{ let b=await lockPiece(ask(i));
+    try{ const v=await sget(await lkpPut(src, i, b)); if(v && v.b && v.b.size===b.size) b=v.b; }catch(e){}   /* the stored copy: kept on the device, not in memory */
+    out[i]=b; got(b.size); });
+  return out;
+}
+/* AOG-LOCKER-V2: the device link opens the Studio at the Mixing Desk (the-studio.html passes it on); the same link the locker
+   script's "link" prints. The part after # never reaches a server. A link to the desk's own address still works. */
+function pairLink(){ const lk=CARRY.lock; return lk ? location.origin+"/the-studio#locker="+encodeURIComponent(lk.url)+"&k="+encodeURIComponent(lk.key) : ""; }
 /* a link from another device: #locker=<address>&k=<key> */
 function lockFromHash(){
   const h=location.hash||""; if(h.indexOf("#locker=")!==0) return false;
@@ -2174,7 +2255,15 @@ function lockFromHash(){
   if(!LOCK_URL_RE.test(url) || !LOCK_KEY_RE.test(key)) return false;
   lockSet({url:url, key:key}); return true;
 }
+/* AOG-LOCKER-V2: the whole device link pasted into the web address box: its address and key go in their boxes */
+function lockPasted(){
+  const box=$("lkUrl"), v=(box && box.value||"").trim(), m=/#locker=([^&\s#]+)&k=([^&\s#]+)/.exec(v); if(!m) return false;
+  let url="", key=""; try{ url=decodeURIComponent(m[1]); key=decodeURIComponent(m[2]); }catch(e){ return false; }
+  if(!LOCK_URL_RE.test(url) || !LOCK_KEY_RE.test(key)) return false;
+  box.value=url; $("lkKey").value=key; return true;
+}
 async function lockConnect(){
+  lockPasted();
   const line=$("lockLine"), url=($("lkUrl").value||"").trim(), key=($("lkKey").value||"").trim();
   if(!LOCK_URL_RE.test(url)){ line.textContent=t("lockBadUrl"); $("lkUrl").focus(); return; }
   if(!LOCK_KEY_RE.test(key)){ line.textContent=t("lockNoKey"); $("lkKey").focus(); return; }
@@ -2185,7 +2274,7 @@ async function lockConnect(){
   try{
     const r=await lockPost({action:"hello"}, {url:url, key:key});
     if(!r.locker){ const err=new Error("sheet"); err.sheet=true; throw err; }
-    lockSet({url:url, key:key}); CARRY.ver=r.locker; line.textContent=""; CARRY.busy=false; await lockList(true);
+    lockSet({url:url, key:key}); CARRY.ver=r.locker; line.textContent=t("lockOn"); CARRY.busy=false; await lockList(true); lockCheck(true);   /* AOG-LOCKER-V2: one kind line: connected */
   }
   catch(e){ CARRY.st=lockState(e, true); line.textContent=""; CARRY.busy=false; }
   paintLocker();
@@ -2194,49 +2283,419 @@ async function lockList(quiet){
   const line=$("lockLine");
   if(!quiet) line.textContent=t("lockChecking");
   if(CARRY.st!=="ok"){ CARRY.st="wait"; paintLocker(); }
-  try{ const r=await lockPost({action:"list"}); CARRY.songs=Array.isArray(r.songs) ? r.songs : []; CARRY.st="ok"; CARRY.at=Date.now(); if(!quiet) line.textContent=""; }
+  try{ const r=await lockPost({action:"list", v:3}); CARRY.songs=Array.isArray(r.songs) ? r.songs : []; CARRY.st="ok"; CARRY.at=Date.now(); CARRY.ver=Math.max(1, +r.locker||1); CARRY.stale=false; if(!quiet) line.textContent=""; }
   catch(e){ CARRY.st=lockState(e); if(!quiet) line.textContent=""; }
   paintLocker();
 }
-async function lockSave(){
-  const line=$("lockLine");
-  if(!hasClips()){ line.textContent=t("fileNeed"); return; }
-  CARRY.busy=true; paintLocker(); line.textContent=t("fileMaking");
+/* o.auto: the keep-in-locker switch (or Keep mine): quiet, the locker's panel is not drawn again */
+async function lockSave(o){
+  o=o||{}; const auto=!!o.auto, line=$("lockLine");
+  if(!hasClips()){ if(!auto) line.textContent=t("fileNeed"); return; }
+  if(CARRY.busy || KEEP.busy){ if(auto) KEEP.wait=true; else line.textContent=t("keepGoing"); return; }
+  if(auto){ KEEP.busy=true; KEEP.fail=false; KEEP.failW=""; keepLine(); } else { CARRY.busy=true; paintLocker(); line.textContent=t(lockV3() ? "keepGoing" : "fileMaking"); }   /* AOG-LOCKER-V3: no song file is made for a v3 locker */
+  /* AOG-LOCKER-V3: an old script is sent the whole song each time, so the switch never sends a big one there: it says once
+     to update the script */
+  if(auto && !lockV3()){
+    let big=false; try{ big=await songBytes()>OLD_KEEP_MAX; }catch(e){}
+    if(big){ KEEP.busy=false; if(!KEEP.old){ KEEP.old=true; paintLocker(); } keepLine(); if(o.mine){ KEEP.note=t("oldBig"); paintNewer(); } return; }   /* Keep mine says why */
+    if(KEEP.old){ KEEP.old=false; paintLocker(); }
+  }
+  const sig=songSig(), sid=SONG.sid, dev=lockDev(), v3=lockV3();   /* AOG-LOCKER-V2: the song as it is now, which song, and this device */
+  const P={a:0, b:0, big:false};
+  /* the MB words, where they are seen: the locker's line, or under the switch (and, for a big save, on the console) */
+  const say=(a,b)=>{ P.a=a; P.b=b; const w=t("lockSaving", mbPair(a,b));
+    if(v3 && b>=LOCK_BIG && !P.big){ P.big=true; bigLine(true, auto); }
+    if(auto){ KEEP.prog=w; keepLine(); if(P.big){ KEEP.note=w; paintNewer(); } } else line.textContent=w; };
+  let ok=false;
   try{
-    const blob=await songFile(); if(!blob) throw new Error("fail");
-    const n=Math.ceil(blob.size/LOCK_PART), name=songTitle();
-    const b=await lockPost({action:"begin", name:name, size:blob.size, parts:n});
-    for(let i=0;i<n;i++){
-      line.textContent=t("lockSaving",{a:i+1, b:n});
-      await lockPost({action:"part", id:b.id, n:i, data:await b64Of(blob.slice(i*LOCK_PART, (i+1)*LOCK_PART))});
+    const name=songTitle(); let r;
+    if(v3) r=await lockSave3(name, sid, dev, say);
+    else {
+      const blob=await songFile(); if(!blob) throw new Error("fail");
+      const n=Math.ceil(blob.size/LOCK_PART);
+      const b=await lockPost({action:"begin", name:name, size:blob.size, parts:n, sid:sid, dev:dev});
+      let done=0; if(n>1) say(0, blob.size);
+      await lockPool(Array.from({length:n}, (x,i)=>i), async i=>{ const piece=blob.slice(i*LOCK_PART, (i+1)*LOCK_PART);
+        await lockPost({action:"part", id:b.id, n:i, data:await b64Of(piece)}); done+=piece.size; if(n>1) say(done, blob.size); });
+      const f=await lockPost({action:"finish", id:b.id});
+      r={id:b.id, at:+f.at||Date.now()};
     }
-    await lockPost({action:"finish", id:b.id});
-    line.textContent=t("lockSaved",{name:name});
-    CARRY.busy=false; await lockList(true);
-  }catch(e){ line.textContent=lockErr(e); CARRY.busy=false; }
-  paintLocker();
+    LK={sid:sid, id:r.id, at:r.at, dev:dev, sig:sig, skip:""}; keepPut(); ok=true;
+    if(KEEP.newer && KEEP.newer.sid===sid){ KEEP.newer=null; KEEP.both=false; }
+    if(o.mine || (auto && P.big)) KEEP.note=t("keepAt",{d:devWord(dev), t:whenWords(LK.at)});   /* it says it is saved where it said to wait */
+    if(!auto){ line.textContent=t("lockSaved",{name:name}); CARRY.busy=false; await lockList(true); }
+    else CARRY.stale=true;
+  }catch(e){
+    /* AOG-LOCKER-V3: a big save cut off (the screen locked, another app, no connection) carries on the next time */
+    const w=v3 && e && e.reach && P.b>0 ? t("lockStopped", mbPair(P.a, P.b)) : lockErr(e);
+    if(auto){ KEEP.fail=true; KEEP.failW=v3 && e && e.reach && P.b>0 ? w : ""; if(o.mine || P.big) KEEP.note=w; }
+    else { line.textContent=w; CARRY.busy=false; }
+  }
+  if(P.big) bigLine(false, auto);
+  if(auto){ KEEP.busy=false; KEEP.prog=""; keepLine(); paintNewer(); } else paintLocker();
+  try{ paintInbox(); paintVoice(); }catch(e){}
+  if(ok && keepOK() && keepDirty()) keepSoon();   /* it changed while it went up: once more, a little later */
+}
+/* ══════════════════════════════════════════════════════════════════════════
+   AOG-LOCKER-V3 (2026-10-23) — Jimmy's song on his iPhone went up as "4 of 27": 27 pieces of 4 MB, one after another, and
+   the switch sent all of it again after every change. Now each recording goes to the locker once, under its content id
+   (clip id, size, CRC32 of its bytes: "<id>-<size>-<crc>"), into the locker's Recordings folder; a save is the song itself
+   and the list of recordings it uses (songPut). The desk sends only what the locker lacks (have, with begin: it also says
+   which pieces of a half-sent recording arrived, so a stopped save carries on), 3 pieces at once, in MB words. What this
+   device knows the locker has (LKN) is kept for the session, so moving a fader is one request of a few KB; songPut checks
+   it, and names any recording it no longer has. Opening a v3 save fetches only the recordings this device lacks (its own
+   content ids are worked out once and kept at "rid|<id>"; any new sound under that id drops it). An old (v1, v2) script
+   gets the whole song as before, but the switch never sends a song over 15 MB there: it says once to update the script.
+   ══════════════════════════════════════════════════════════════════════════ */
+const LOCK_PAR=3, LOCK_BIG=8*1048576, OLD_KEEP_MAX=15*1048576, LOCK_RID_RE=/^c[a-z0-9]{4,40}-[1-9][0-9]{0,9}-[0-9a-f]{8}$/;
+const LKN={has:new Set()};
+function lockV3(){ return !!CARRY.lock && CARRY.ver>=3; }
+function lockKnown(){ return LKN.has; }
+/* "34 of 108 MB": whole MB, or tenths under 10 MB */
+function mbPair(a, b){ const d=b<10*1048576 ? 1 : 0, f=x=>(Math.max(0, x)/1048576).toFixed(d); return {a:f(Math.min(a, b)), b:f(b)}; }
+/* the line to keep the screen open, only while a big save goes up: under the locker's line, and on the console for the switch */
+function bigLine(on, auto){
+  const el=$("lkBig"); if(el){ const w=on ? t("bigHint") : ""; if(el.textContent!==w) el.textContent=w; el.hidden=!on; }
+  if(auto){ KEEP.hint=on; paintNewer(); }
+}
+/* up to 3 requests at once; the first that fails stops the rest from starting, and is thrown once those running settle */
+async function lockPool(jobs, fn){
+  let i=0, err=null;
+  const lane=async ()=>{ while(!err && i<jobs.length){ const j=jobs[i++]; try{ await fn(j); }catch(e){ if(!err) err=e; } } };
+  await Promise.all(Array.from({length:Math.min(LOCK_PAR, jobs.length)}, lane));
+  if(err) throw err;
+}
+/* the song's recordings, in bytes, without reading them */
+async function songBytes(){ let n=0; const seen=new Set();
+  for(const c of dmAllClips()){ if(seen.has(c.id)) continue; seen.add(c.id); const v=await sget(c.id); if(v && v.wav) n+=v.wav.size; }
+  return n; }
+/* a recording's content id, worked out once */
+async function ridOf(id){
+  const v=await sget(id); if(!v || !v.wav || !(v.wav.size>44)) return null;
+  const k=await sget("rid|"+id), size=v.wav.size;
+  if(k && k.size===size && typeof k.rid==="string" && LOCK_RID_RE.test(k.rid) && k.rid.indexOf(id+"-")===0) return {id:id, rid:k.rid, size:size, wav:v.wav};
+  const rid=id+"-"+size+"-"+(await crcBlob(v.wav)).toString(16).padStart(8,"0");
+  if(!LOCK_RID_RE.test(rid)) return null;
+  await sput("rid|"+id, {rid:rid, size:size});
+  return {id:id, rid:rid, size:size, wav:v.wav};
+}
+/* the recordings the song file would carry: each clip and take once */
+async function lockRecs(){ const out=[], seen=new Set();
+  for(const c of dmAllClips()){ if(seen.has(c.id)) continue; seen.add(c.id); const r=await ridOf(c.id); if(r) out.push(r); }
+  return out; }
+/* the recordings the locker lacks, up: it says which it has whole and which pieces of the rest arrived; the rest go, 3 at once */
+async function recsUp(list, say){
+  if(!list.length) return;
+  const h=await lockPost({action:"have", begin:true, recs:list.map(r=>({rid:r.rid, size:r.size, parts:Math.ceil(r.size/LOCK_PART), piece:LOCK_PART}))});
+  const have=new Set(Array.isArray(h.have) ? h.have : []), part=h.part && typeof h.part==="object" ? h.part : {}, jobs=[];
+  let total=0, done=0;
+  for(const r of list){
+    if(have.has(r.rid)){ lockKnown().add(r.rid); continue; }
+    const n=Math.ceil(r.size/LOCK_PART), got=new Set(Array.isArray(part[r.rid]) ? part[r.rid] : []);
+    total+=r.size;
+    for(let k=0;k<n;k++){ const len=Math.min(LOCK_PART, r.size-k*LOCK_PART); if(got.has(k)) done+=len; else jobs.push({r:r, k:k, len:len}); }
+  }
+  if(!jobs.length) return;
+  say(done, total);
+  await lockPool(jobs, async j=>{
+    await lockPost({action:"recPart", rid:j.r.rid, n:j.k, data:await b64Of(j.r.wav.slice(j.k*LOCK_PART, j.k*LOCK_PART+j.len))});
+    done+=j.len; say(done, total); });
+}
+/* a v3 save: the recordings the locker lacks, then the song */
+async function lockSave3(name, sid, dev, say){
+  const recs=await lockRecs(); if(!recs.length) throw new Error("fail");
+  const man=JSON.stringify({kind:"aog-song", v:3, at:Date.now(), app:"The Mixing Desk", song:SONG, clips:recs.map(r=>({id:r.id, size:r.size, rid:r.rid}))});
+  const body={action:"songPut", name:name, sid:sid, dev:dev, song:man, recs:recs.map(r=>r.rid)};
+  await recsUp(recs.filter(r=>!lockKnown().has(r.rid)), say);
+  let p=await lockPost(body);
+  if(Array.isArray(p.missing) && p.missing.length){   /* the locker no longer has some (tidied, or the song was removed on another device): once more */
+    const miss=new Set(p.missing); miss.forEach(x=>lockKnown().delete(x));
+    await recsUp(recs.filter(r=>miss.has(r.rid)), say);
+    p=await lockPost(body);
+  }
+  if(!p.id) throw new Error("fail");
+  recs.forEach(r=>lockKnown().add(r.rid));
+  return {id:p.id, at:+p.at||Date.now()};
+}
+/* a v3 save, down: the song, the recordings this device already has (the same to the byte) taken from here, the rest
+   fetched 3 pieces at once and checked against their content id; null when it is not a song */
+async function lockGet3(sg, say){
+  const m=await lockPost({action:"songGet", id:sg.id});
+  let h=null; try{ h=JSON.parse(m.song); }catch(e){ return null; }
+  if(!h || h.kind!=="aog-song" || h.v!==3 || !Array.isArray(h.clips) || !h.clips.length || h.clips.length>NT*(DM_MAX_TAKES+1)) return null;
+  const info=m.recs && typeof m.recs==="object" ? m.recs : {}, wavs=new Map(), local=new Set(), rids=new Map(), need=[];
+  for(const c of h.clips){
+    if(!c || typeof c.id!=="string" || !/^c[a-z0-9]{4,40}$/.test(c.id) || typeof c.rid!=="string" || !LOCK_RID_RE.test(c.rid) || c.rid.indexOf(c.id+"-")!==0) return null;
+    if(wavs.has(c.id) || need.some(x=>x.id===c.id)) continue;
+    const size=+c.rid.split("-")[1], mine=await ridOf(c.id);
+    if(mine && mine.rid===c.rid){ wavs.set(c.id, mine.wav); local.add(c.id); lockKnown().add(c.rid); continue; }
+    const x=Object.prototype.hasOwnProperty.call(info, c.rid) ? info[c.rid] : null, parts=Math.floor(+(x && x.parts)), piece=Math.floor(+(x && x.piece));
+    if(!x || +x.size!==size || !(parts>=1 && parts<=200) || !(piece>=1) || Math.ceil(size/piece)!==parts) return null;
+    need.push({id:c.id, rid:c.rid, size:size, parts:parts, ps:new Array(parts)});
+  }
+  const total=need.reduce((a,x)=>a+x.size, 0), jobs=[], kept=need.length ? await lkpHave() : new Map(); let done=0;
+  for(const x of need) for(let k=0;k<x.parts;k++){ const b=await lkpGet(kept, x.rid, k); if(b){ x.ps[k]=b; done+=b.size; } else jobs.push({x:x, k:k}); }   /* pieces that came down last time */
+  if(total) say(done, total);
+  await lockPool(jobs, async j=>{ let b=await lockPiece({action:"recGet", rid:j.x.rid, n:j.k});
+    try{ const v=await sget(await lkpPut(j.x.rid, j.k, b)); if(v && v.b && v.b.size===b.size) b=v.b; }catch(e){}
+    j.x.ps[j.k]=b; done+=b.size; say(done, total); });
+  for(const x of need){
+    const blob=new Blob(x.ps, {type:"audio/wav"});
+    if(blob.size!==x.size || (await crcBlob(blob)).toString(16).padStart(8,"0")!==x.rid.slice(-8)){ await lkpDrop(x.rid); return null; }   /* every byte as it was saved */
+    wavs.set(x.id, blob); rids.set(x.id, {rid:x.rid, size:x.size});
+  }
+  const song=cleanSong(h.song);
+  song.tracks.forEach(x=>{ if(x.clip && !wavs.has(x.clip.id)) x.clip=null; dmTakesHave(x, wavs); });
+  if(!song.tracks.some(x=>x.clip)) return null;
+  return {song:song, wavs:wavs, local:local, rids:rids};
+}
+
+/* a song in the list, or one of its earlier saves */
+function lockFind(id){
+  for(const s of CARRY.songs||[]){
+    if(s.id===id) return {id:s.id, name:s.name, parts:s.parts, size:+s.size||0, v:s.v===3 ? 3 : 0, at:s.at, dev:s.dev, sid:s.sid, top:s.id};
+    for(const e of (Array.isArray(s.earlier) ? s.earlier : [])) if(e && e.id===id) return {id:e.id, name:s.name, parts:e.parts, size:+e.size||0, v:e.v===3 ? 3 : 0, at:e.at, dev:e.dev, sid:s.sid, top:s.id};
+  }
+  return null;
 }
 async function lockOpen(id){
-  const line=$("lockLine"), sg=(CARRY.songs||[]).find(x=>x.id===id); if(!sg) return;
-  askOpen(sg.name, async ()=>{
-    CARRY.busy=true; paintLocker();
-    try{
-      const parts=[];
-      for(let i=0;i<sg.parts;i++){ line.textContent=t("lockLoading",{a:i+1, b:sg.parts}); parts.push(blobOfB64((await lockPost({action:"get", id:id, n:i})).data)); }
-      const r=await readSongFile(new Blob(parts));
-      if(!r){ line.textContent=t("fileBad"); }
-      else { line.textContent=t("reading"); await applySong(r); line.textContent=t("opened",{name:sg.name}); }
-    }catch(e){ line.textContent=lockErr(e); }
-    CARRY.busy=false; paintLocker();
-  });
+  const sg=lockFind(id); if(!sg) return;
+  askOpen(sg.name, ()=>lockFetch(sg));
+}
+/* the song's pieces, down, onto the desk; this device now knows it as that save */
+async function lockFetch(sg, top){
+  const line=$("lockLine");
+  CARRY.busy=true; paintLocker();
+  try{
+    const say=(a,b)=>{ line.textContent=t("lockLoading", mbPair(a,b)); };
+    let r=null;
+    if(sg.v===3) r=await lockGet3(sg, say);   /* AOG-LOCKER-V3: the song, and only the recordings this device lacks */
+    else {
+      const n=Math.floor(+sg.parts); let done=0, tot=+sg.size||0;
+      if(!(n>=1 && n<=200)) throw new Error("fail");
+      if(!(tot>0)) tot=n*LOCK_PART;
+      say(0, tot);
+      const ps=await lockPieces(sg.id, n, i=>({action:"get", id:sg.id, n:i}), b=>{ done+=b; say(Math.min(done, tot), tot); });
+      r=await readSongFile(new Blob(ps));
+      if(!r) await lkpDrop(sg.id);   /* not a song after all: fetched afresh next time */
+    }
+    if(!r){ line.textContent=t("fileBad"); }
+    else {
+      line.textContent=t("reading"); await applySong(r); lkpDrop();
+      if(r.rids) for(const [id, x] of r.rids){ await sput("rid|"+id, x); lockKnown().add(x.rid); }   /* checked as it came: its content id is known */
+      line.textContent=t("opened",{name:sg.name});
+      /* AOG-LOCKER-V2: an earlier save opened on purpose: the newest is not offered again */
+      LK={sid:SONG.sid, id:sg.id, at:+sg.at||0, dev:DEVS.includes(sg.dev) ? sg.dev : "", sig:songSig(), skip:sg.top && sg.top!==sg.id ? sg.top : ""}; keepPut();
+      KEEP.newer=null; KEEP.both=false; if(top) KEEP.note=t("opened",{name:sg.name});
+    }
+  }catch(e){   /* AOG-LOCKER-V3: a plain line, never a browser's words; pressing Open again carries on */
+    const w=e && e.key ? t("lockWrongKey") : e && e.locker && !e.piece && !/^(fail|none|bad part|bad song|bad id)$/.test(e.message) ? e.message : t("lockOpenStopped");
+    line.textContent=w; if(top) KEEP.note=w; }
+  CARRY.busy=false; paintLocker(); paintNewer(); keepLine();
 }
 async function lockRemove(id){
   const line=$("lockLine"), sg=(CARRY.songs||[]).find(x=>x.id===id); CARRY.rmAsk="";
   if(!sg){ paintLocker(); return; }
   CARRY.busy=true; paintLocker();
-  try{ await lockPost({action:"remove", id:id}); CARRY.songs=CARRY.songs.filter(x=>x.id!==id); line.textContent=t("lockRemoved",{name:sg.name}); }
+  try{ await lockPost({action:"remove", id:id}); CARRY.songs=CARRY.songs.filter(x=>x.id!==id); line.textContent=t("lockRemoved",{name:sg.name});
+    if(sg.sid && sg.sid===LK.sid){ LK.id=""; LK.at=0; LK.sig=""; keepPut(); } }   /* AOG-LOCKER-V2: v2 takes every save of it */
   catch(e){ line.textContent=lockErr(e); }
   CARRY.busy=false; paintLocker();
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   AOG-LOCKER-V2 (2026-10-23) — Jimmy has an iPhone, an iPad, computers and his family's; the locker, his no-account way to
+   move songs between them, made a showstopper. Needs the v2 locker script (AoG-Studio-Locker.gs); with a v1 script the
+   locker says once, plainly, to update it, and works as before.
+   - one link: the script's "link" (and Send the link here) opens /the-studio#locker=<address>&k=<key>; the whole link pasted
+     into the web address box works too (lockPasted).
+   - the song follows you: "Keep this song in my locker" saves quietly about 20 s after the last change (one timer, reset by
+     each change; none at rest), and when the page is hidden, if anything changed since the last save. Never while it plays
+     or records, or while the desk is out of sight in the Studio; never polls. Each save carries its device and time.
+   - when the desk opens or comes back into view, it asks the locker once (check) whether this song (SONG.sid) has a newer save
+     from another device: one calm line at the top, Open it / Keep this one, or, when both changed, Open the locker's / Keep
+     mine. Nothing is replaced on its own.
+   - a single take: Send to my locker on a take in Takes sent here (or the voice take on track 8) → the other device's Takes
+     sent here, "from your iPhone". Fetched by the same check, and when Add a recording is opened; removed from the locker
+     once received (the script drops it after 7 days). Sent as it is kept: take.json, take.wav and, for a voice, dry.wav.
+   - the locker keeps the last 3 saves of a song; Earlier saves opens one.
+   This device's own id (did) rides in aog.studio.locker.v1 beside the address and key, so it is kept as they are and is never
+   in a backup or a song file. What this device knows of the song in the locker (its last save's id and time, the song as it
+   was then) and the switch are in aog.studio.lockkeep.v1.
+   ══════════════════════════════════════════════════════════════════════════ */
+const KEEP_KEY="aog.studio.lockkeep.v1", KEEP_WAIT=20000, DEVS=["iPhone","iPad","Mac","Windows","Android","computer"];
+const DEVW={iPhone:{en:"iPhone",es:"iPhone"}, iPad:{en:"iPad",es:"iPad"}, Mac:{en:"Mac",es:"Mac"}, Windows:{en:"Windows computer",es:"computadora con Windows"},
+  Android:{en:"Android",es:"Android"}, computer:{en:"computer",es:"computadora"}};
+const VOICE_SNDS=/^(clean|warm|radio|rap|echo|hall|tuned|robot|phone|deep|high|harmony|wide|slap|mega|old|ghost|chop|custom)$/;
+const KEEP={on:false, ready:false, timer:0, wait:false, busy:false, fail:false, hushed:false, checking:false, checked:0, newer:null, both:false, note:"", got:new Set(), sending:"", earl:"",
+  prog:"", failW:"", hint:false, old:false};   /* AOG-LOCKER-V3: the MB words while it goes up; where a big save stopped; the line to keep the screen open; an old script and a big song */
+let LK={sid:"", id:"", at:0, dev:"", sig:"", skip:""};
+function keepGet(){ try{ const o=JSON.parse(localStorage.getItem(KEEP_KEY)||"null"); if(!o || typeof o!=="object") return; KEEP.on=o.on===true; const l=o.lk||{};
+  LK={sid:typeof l.sid==="string" ? l.sid : "", id:typeof l.id==="string" ? l.id : "", at:+l.at||0, dev:DEVS.includes(l.dev) ? l.dev : "", sig:typeof l.sig==="string" ? l.sig : "", skip:typeof l.skip==="string" ? l.skip : ""}; }catch(e){} }
+function keepPut(){ try{ localStorage.setItem(KEEP_KEY, JSON.stringify({on:KEEP.on, lk:LK})); }catch(e){} }
+/* the device, from what the browser says it is (an iPad asking for the computer's pages says Macintosh, with a touch screen) */
+function lockDev(){ const u=navigator.userAgent||"", tp=navigator.maxTouchPoints||0;
+  if(/iPhone|iPod/.test(u)) return "iPhone";
+  if(/iPad/.test(u) || (/Macintosh/.test(u) && tp>1)) return "iPad";
+  if(/Android/.test(u)) return "Android";
+  if(/Windows/.test(u)) return "Windows";
+  if(/Macintosh|Mac OS X/.test(u)) return "Mac";
+  return "computer"; }
+function devWord(d){ return L(DEVW[d]||DEVW.computer); }
+function whenWords(at){ const d=new Date(at); return sameDay(d) ? timeOf(d) : dayOf(d)+", "+timeOf(d); }
+function lockV2(){ return !!CARRY.lock && CARRY.ver>=2; }
+function lockDid(){ const lk=CARRY.lock; if(!lk) return ""; if(!LOCK_DID_RE.test(lk.did||"")) lockSet({url:lk.url, key:lk.key}); return CARRY.lock.did; }
+/* the song as it is, short: what is on the tracks and the mix (not which track is picked, nor a level measured later) */
+function songSig(){ const s=JSON.stringify(SONG, (k,v)=>k==="sel" || k==="peakDb" ? undefined : v); let h=2166136261>>>0;
+  for(let i=0;i<s.length;i++){ h^=s.charCodeAt(i); h=Math.imul(h, 16777619)>>>0; } return s.length.toString(36)+"."+h.toString(36); }
+function lockMine(){ return !!LK.sid && LK.sid===SONG.sid; }
+function keepDirty(){ return hasClips() && songSig()!==(lockMine() && LK.id ? LK.sig : ""); }
+function keepHeld(){ return PLAY.on || VOICE.rec || VOICE.busy || CARRY.busy || KEEP.busy || S.busy || dmNoSave(); }
+function keepOK(){ return KEEP.on && lockV2(); }
+/* a change: save about 20 s after the last one */
+function keepSoon(){
+  if(!KEEP.ready || !keepOK()) return;
+  clearTimeout(KEEP.timer); KEEP.timer=0;
+  if(KEEP.hushed){ KEEP.wait=true; return; }
+  KEEP.timer=setTimeout(()=>{ KEEP.timer=0; keepNow(); }, KEEP_WAIT);
+}
+function keepNow(){
+  if(!keepOK()) return;
+  if(keepHeld()){ KEEP.wait=true; return; }   /* never while it plays or records: once it stops */
+  KEEP.wait=false;
+  if(keepDirty()) lockSave({auto:true});
+}
+function keepAfter(){ if(KEEP.wait && !KEEP.timer) keepSoon(); }
+/* the page is hidden: if anything changed, it goes now */
+function keepHide(){ clearTimeout(KEEP.timer); KEEP.timer=0; if(KEEP.ready && keepOK() && !keepHeld() && keepDirty()){ KEEP.wait=false; lockSave({auto:true}); } }
+function keepLine(){
+  const el=$("lkKeepAt"); if(!el) return;
+  const n=KEEP.newer && KEEP.newer.sid===SONG.sid ? KEEP.newer : lockMine() && LK.at ? LK : null;
+  /* AOG-LOCKER-V3: while recordings go up, the MB words; when only the song changed it is saved at once, so the line simply
+     moves on to the new time */
+  const w=KEEP.prog ? KEEP.prog : KEEP.fail ? (KEEP.failW || t("keepFail")) : n ? t("keepAt",{d:devWord(n.dev), t:whenWords(n.at)}) : t("keepNot");
+  if(el.textContent!==w) el.textContent=w;
+}
+function keepSwitch(on){
+  KEEP.on=!!on; keepPut();
+  if(on){ KEEP.ready=true; if(!keepHeld() && keepDirty()) lockSave({auto:true}); }
+  else { clearTimeout(KEEP.timer); KEEP.timer=0; KEEP.wait=false; }
+  keepLine();
+}
+/* one question when the desk opens, comes back into view, or Add a recording is opened: is there a newer save of this song
+   from another device, and are there takes for this device */
+async function lockCheck(force){
+  if(!lockV2() || KEEP.checking || KEEP.hushed || CARRY.busy || document.hidden) return;   /* not while a song comes down or goes up */
+  const now=Date.now(); if(!force && now-KEEP.checked<15000) return;
+  KEEP.checking=true; KEEP.checked=now;
+  try{
+    const r=await lockPost({action:"check", sid:SONG.sid, did:lockDid(), v:3}), s=r.song;
+    KEEP.note="";
+    if(s && typeof s.id==="string" && s.id!==LK.id && s.id!==LK.skip && s.sid===SONG.sid && (+s.at||0)>(lockMine() ? LK.at : 0)){
+      KEEP.newer={id:s.id, at:+s.at||0, dev:DEVS.includes(s.dev) ? s.dev : "computer", name:String(s.name||"").slice(0,120), parts:+s.parts, size:+s.size||0, v:s.v===3 ? 3 : 0, sid:SONG.sid};
+      KEEP.both=lockMine() && !!LK.id && keepDirty();
+    } else { KEEP.newer=null; KEEP.both=false; }
+    paintNewer(); keepLine();
+    if(Array.isArray(r.takes) && r.takes.length) await takesIn(r.takes);
+  }catch(e){}
+  KEEP.checking=false;
+}
+function paintNewer(){
+  const box=$("lkNew"); if(!box) return;
+  const n=KEEP.newer && KEEP.newer.sid===SONG.sid ? KEEP.newer : null;
+  if(!n && !KEEP.note){ if(!box.hidden) box.hidden=true; return; }
+  const w=n ? t(KEEP.both ? "newerBoth" : "newerOne",{d:devWord(n.dev), t:whenWords(n.at)}) : KEEP.note;
+  if($("lkNewT").textContent!==w) $("lkNewT").textContent=w;
+  const hh=$("lkNewH"), hw=!n && KEEP.hint ? t("bigHint") : "";   /* AOG-LOCKER-V3: only while a big save goes up */
+  if(hh.textContent!==hw) hh.textContent=hw; hh.hidden=!hw;
+  const a=$("lkNewOpen"), b=$("lkNewKeep");
+  a.hidden=b.hidden=!n; $("lkNewRow").hidden=!n;
+  if(n){ a.textContent=t(KEEP.both ? "bothOpen" : "newerOpen"); b.textContent=t(KEEP.both ? "bothKeep" : "newerKeep"); }
+  box.hidden=false;
+}
+function newerOpen(){ const n=KEEP.newer; if(!n) return; KEEP.newer=null; KEEP.both=false; KEEP.note=""; paintNewer(); lockFetch(n, true); }
+function newerKeep(){
+  const n=KEEP.newer; if(!n) return; const both=KEEP.both; KEEP.newer=null; KEEP.both=false;
+  if(both){ KEEP.note=t("keepGoing"); paintNewer(); lockSave({auto:true, mine:true}); }   /* Keep mine: it goes up as the newest */
+  else { LK.skip=n.id; keepPut(); KEEP.note=""; paintNewer(); keepLine(); }
+}
+
+/* ── a single take between devices ── */
+async function takeUp(meta, wav, dry, say){
+  const files=[{name:"take.json", data:new TextEncoder().encode(JSON.stringify(Object.assign({kind:"aog-take", v:1}, meta)))},
+    {name:"take.wav", data:new Uint8Array(await blobAB(wav))}];
+  if(dry) files.push({name:"dry.wav", data:new Uint8Array(await blobAB(dry))});
+  const blob=new Blob([zipStore(files)]), n=Math.ceil(blob.size/LOCK_PART);
+  const label=typeof meta.name==="string" ? meta.name : L(meta.name)||"";
+  const b=await lockPost({action:"takeBegin", size:blob.size, parts:n, dev:lockDev(), did:lockDid(), meta:{name:label.slice(0,120), from:meta.from||"", sec:meta.sec}});
+  let done=0; if(n>1) say(t("lockSaving", mbPair(0, blob.size)));   /* AOG-LOCKER-V3: in MB, 3 pieces at once */
+  await lockPool(Array.from({length:n}, (x,i)=>i), async i=>{ const piece=blob.slice(i*LOCK_PART, (i+1)*LOCK_PART);
+    await lockPost({action:"takePart", id:b.id, n:i, data:await b64Of(piece)}); done+=piece.size; if(n>1) say(t("lockSaving", mbPair(done, blob.size))); });
+  await lockPost({action:"takeFinish", id:b.id});
+}
+async function takeSendInbox(id){
+  const x=INBOX.items.find(y=>y.id===id); if(!x || KEEP.sending || !lockV2()) return;
+  const line=$("inboxLine"), name=takeLabel(x), say=w=>{ line.textContent=w; };
+  KEEP.sending=id; say(t("takeSending",{name:name})); paintInbox();
+  try{
+    const it=await AOGHandoff.item(INBOX_KEY, id); if(!it || !it.wav || !(it.wav.size>44)) throw new Error("gone");
+    const meta={}; ["from","n","name","sec","bpm","at","place","passSec","loops","bars","offset","live","notes","voice","snd","vhead","vbody","vbar"].forEach(k=>{ if(it[k]!=null) meta[k]=it[k]; });
+    await takeUp(meta, it.wav, it.voice && it.dry && it.dry.size>44 ? it.dry : null, say);
+    say(t("takeSent",{name:name}));
+  }catch(e){ say(lockErr(e)); }
+  KEEP.sending=""; paintInbox();
+}
+async function takeSendVoice(){
+  const c=SONG.tracks[VOICE_T].clip; if(!c || !c.voice || KEEP.sending || !lockV2()) return;
+  const line=$("recLine"), name=c.name||t("voiceH"), say=w=>{ line.textContent=w; };
+  KEEP.sending="voice"; say(t("takeSending",{name:name})); paintVoice();
+  try{
+    const v=await sget(c.id); if(!v || !v.wav) throw new Error("gone");
+    const d=c.dry ? await sget(c.dry) : null;
+    const meta={from:"vocal", n:c.vn||1, name:{en:"Voice "+(c.vn||1), es:"Voz "+(c.vn||1)}, sec:c.sec, bpm:c.bpm||0, at:c.at||Date.now(), voice:true,
+      vhead:c.head, vbody:c.body, vbar:c.startBar};
+    if(c.snd) meta.snd=c.snd;
+    await takeUp(meta, v.wav, d && d.wav ? d.wav : null, say);
+    say(t("takeSent",{name:name}));
+  }catch(e){ say(lockErr(e)); }
+  KEEP.sending=""; paintVoice();
+}
+/* a take from the locker, read back and checked: only what a take sent here may hold */
+async function takeRead(blob, x){
+  const Z=await zipRead(blob); if(!Z || !Z.has("take.json") || !Z.has("take.wav")) return null;
+  let h=null; try{ h=JSON.parse(new TextDecoder().decode(await blobAB(Z.get("take.json")))); }catch(e){ return null; }
+  if(!h || h.kind!=="aog-take" || h.v!==1) return null;
+  const wav=Z.get("take.wav"); if(!(wav.size>44)) return null;
+  const it={take:true, from:TOOLS[h.from] ? h.from : "", sec:num(h.sec,0,36000,0), bpm:num(h.bpm,0,400,0), at:num(h.at,0,1e15,Date.now()),
+    dev:DEVS.includes(x.dev) ? x.dev : "computer", wav:new Blob([await blobAB(wav)], {type:"audio/wav"})};
+  if(!(it.sec>0)) return null;
+  if(h.n>0) it.n=Math.round(num(h.n,1,1e6,1));
+  const nm=v=>String(v||"").replace(/[\u0000-\u001f]/g,"").slice(0,120);
+  if(typeof h.name==="string") it.name=nm(h.name); else if(h.name && typeof h.name==="object") it.name={en:nm(h.name.en), es:nm(h.name.es||h.name.en)};
+  const pl=placeOf(h); if(pl) it.place=pl;
+  if(h.passSec>0 && h.loops>0){ it.passSec=num(h.passSec,0.01,600,1); it.loops=Math.round(num(h.loops,1,64,1)); it.bars=Math.round(num(h.bars,0,512,0)); it.offset=num(h.offset,0,60,0); }
+  if(h.live===true) it.live=true;
+  if(h.notes && window.AOGPianoRoll){ const n=AOGPianoRoll.clean(h.notes); if(n) it.notes=n; }
+  if(h.voice===true){ it.voice=true; if(VOICE_SNDS.test(h.snd)) it.snd=h.snd;
+    it.vhead=num(h.vhead,0,10,0); it.vbody=num(h.vbody,0,36000,0); it.vbar=Math.round(num(h.vbar,1,MAX_BARS,1));
+    const d=Z.get("dry.wav"); if(d && d.size>44) it.dry=new Blob([await blobAB(d)], {type:"audio/wav"}); }
+  return it;
+}
+async function takesIn(list){
+  let n=0;
+  for(const x of list.slice(0,8)){
+    if(!x || typeof x.id!=="string" || !/^k[a-z0-9]{6,40}$/.test(x.id) || KEEP.got.has(x.id)) continue;
+    const parts=Math.floor(+x.parts); if(!(parts>=1 && parts<=40) || !(+x.size>0 && +x.size<=120*1048576)) continue;
+    KEEP.got.add(x.id);
+    try{
+      const ps=[]; for(let i=0;i<parts;i++) ps.push(await lockPiece({action:"takeGet", id:x.id, n:i}));   /* AOG-LOCKER-V3: checked, asked once more */
+      const it=await takeRead(new Blob(ps), x); if(!it) continue;   /* not a take: left for the locker to clear after 7 days */
+      await AOGHandoff.add(INBOX_KEY, it, {key:"locker|"+x.id});   /* fetched twice, it is still one take */
+      n++;
+      await lockPost({action:"takeDone", id:x.id});
+    }catch(e){ KEEP.got.delete(x.id); }
+  }
+  if(n) await refreshInbox();
 }
 async function lockPair(){
   const line=$("lockLine"), url=pairLink(); if(!url) return;
@@ -2258,7 +2717,9 @@ function drawQr(){
   sc.onerror=()=>{ drawQr.loading=false; $("lockLine").textContent=t("lockNoReach"); CARRY.qr=false; paintLocker(); };
   document.head.appendChild(sc);
 }
-function lockOff(){ lockSet(null); CARRY.songs=null; CARRY.st=""; CARRY.ver=0; CARRY.qr=false; CARRY.rmAsk=""; $("lockLine").textContent=t("lockOffDone"); paintLocker(); }
+function lockOff(){ lockSet(null); CARRY.songs=null; CARRY.st=""; CARRY.ver=0; CARRY.qr=false; CARRY.rmAsk=""; $("lockLine").textContent=t("lockOffDone");
+  clearTimeout(KEEP.timer); KEEP.timer=0; KEEP.wait=false; KEEP.newer=null; KEEP.both=false; KEEP.note=""; paintNewer();   /* AOG-LOCKER-V2 */
+  paintLocker(); try{ paintInbox(); paintVoice(); }catch(e){} }
 function sizeWords(n){ return t("mbN",{n:(Math.max(0.1, n/1048576)).toFixed(1)}); }
 /* AOG-DESK-SONGS-BTN-V1: the console's Your songs button goes straight to saving and opening, the locker's light shows it is on */
 function paintSongsBtn(){ const l=$("songsLed"), y=$("songsSay"); if(!l||!y) return; l.classList.toggle("on", !!CARRY.lock); const t2=t(CARRY.lock?"songsOn":"songsOff"); if(y.textContent!==t2) y.textContent=t2; }
@@ -2298,14 +2759,23 @@ function paintLocker(){
   }
   const songs=CARRY.songs;
   const list=songs==null ? "" : !songs.length ? `<p class="st-info">${esc(t("lockEmpty"))}</p>` : songs.map(x=>{
-    const sub=[esc(madeWords(x.at)), esc(sizeWords(x.size))].join(" · ");
+    /* AOG-LOCKER-V2: which device saved it, and when; its earlier saves one tap away */
+    const sub=(DEVS.includes(x.dev) ? [esc(devWord(x.dev)), esc(whenWords(x.at)), esc(sizeWords(x.size))] : [esc(madeWords(x.at)), esc(sizeWords(x.size))]).join(" · ");
+    const earl=Array.isArray(x.earlier) ? x.earlier.filter(e=>e && typeof e.id==="string") : [];
+    const ear=earl.length && CARRY.rmAsk!==x.id ? `<details class="st-earl" data-earl="${esc(x.id)}"${KEEP.earl===x.id ? " open" : ""}><summary>${esc(t("earlierH"))} (${earl.length})</summary>`+
+      earl.map(e=>{ const d=devWord(DEVS.includes(e.dev) ? e.dev : "computer"), w=whenWords(e.at);
+        return `<div class="st-erow"><span>${esc(DEVS.includes(e.dev) ? d+" · "+w : madeWords(e.at))}</span><button type="button" class="st-btn" data-lkopen="${esc(e.id)}" aria-label="${esc(t("earlierAria",{d:d, t:w}))}"${dis}>${esc(t("open"))}</button></div>`; }).join("")+`</details>` : "";
     const ask=CARRY.rmAsk===x.id ? `<div class="st-q" role="group" aria-label="${esc(t("lockRemoveAsk",{name:x.name}))}"><p>${esc(t("lockRemoveAsk",{name:x.name}))}</p>`+
       `<button type="button" class="st-btn st-clear" data-lkrmyes="${esc(x.id)}"${dis}>${esc(t("removeYes"))}</button><button type="button" class="st-btn" data-lkrmno="${esc(x.id)}">${esc(t("removeNo"))}</button></div>` : "";
     return `<div class="st-rec"><div class="st-rtx"><b>${esc(x.name)}</b><span class="st-cn">${sub}</span></div>`+
       `<button type="button" class="st-btn st-go" data-lkopen="${esc(x.id)}" aria-label="${esc(t("openAria",{name:x.name}))}"${dis}>${esc(t("open"))}</button>`+
-      (CARRY.rmAsk===x.id ? "" : `<button type="button" class="st-btn st-clear" data-lkrm="${esc(x.id)}" aria-label="${esc(t("removeAria",{name:x.name}))}"${dis}>${esc(t("remove"))}</button>`)+ask+`</div>`;
+      (CARRY.rmAsk===x.id ? "" : `<button type="button" class="st-btn st-clear" data-lkrm="${esc(x.id)}" aria-label="${esc(t("removeAria",{name:x.name}))}"${dis}>${esc(t("remove"))}</button>`)+ask+ear+`</div>`;
   }).join("");
-  box.innerHTML=`<div class="st-lk">${lockLight()}
+  /* AOG-LOCKER-V2: the switch, and the last save under it; an old script says once to update it */
+  const how=w=>`<div class="st-old"><p class="st-info">${esc(t(w))}</p><details><summary class="st-steps">${esc(t("oldHow"))}</summary><ol class="st-help"><li>${esc(t("oldS1"))}</li><li>${esc(t("oldS2")).replace(esc(t("oldScriptW")), m=>`<a href="/AoG-Studio-Locker.gs" target="_blank" rel="noopener">${m}</a>`)}</li><li>${esc(t("oldS3"))}</li></ol></details></div>`;
+  const keep=CARRY.st!=="ok" ? "" : lockV2() ? `<div class="st-keep"><label class="st-ksw"><input type="checkbox" role="switch" id="lkKeep"${KEEP.on ? " checked" : ""}><span>${esc(t("keepSw"))}</span></label><p class="st-info" id="lkKeepAt" aria-live="polite"></p>${KEEP.old && !lockV3() ? how("oldBig") : ""}</div>` :
+    how("oldScript");   /* AOG-LOCKER-V3: a v2 script and a big song: the same three steps, said once, under the switch */
+  box.innerHTML=`<div class="st-lk">${lockLight()}${keep}
     <div class="st-row"><button type="button" class="st-btn st-go" id="lkSave"${dis}>${esc(t("lockSave"))}</button><button type="button" class="st-btn" id="lkRefresh"${dis}>${esc(t(CARRY.st==="ok" ? "lockRefresh" : "ltAgain"))}</button></div>
     <h3 class="st-h3" style="margin:.4rem 0 0">${esc(t("lockList"))}</h3>
     <div class="st-inb">${list}</div>
@@ -2314,13 +2784,14 @@ function paintLocker(){
     ${CARRY.qr ? `<p class="st-info">${esc(t("lockPairLine"))}</p>` : ""}
     <div class="st-row"><button type="button" class="st-btn st-clear" id="lkOff">${esc(t("lockOff"))}</button></div></div>`;
   if(CARRY.qr) drawQr();
+  keepLine();
 }
 function paintCarry(){
   const nm=$("songName"); if(document.activeElement!==nm) nm.value=SONG.name||"";
   nm.placeholder=t("myName");
   $("fileSave").textContent=t("fileSave"); $("fileOpen").textContent=t("fileOpen");
   $("openYes").textContent=t("openYes"); $("openNo").textContent=t("openNo");
-  paintLocker();
+  paintLocker(); paintNewer();   /* AOG-LOCKER-V2 */
 }
 function bindCarry(){
   $("songName").addEventListener("input", e=>{ SONG.name=String(e.target.value||"").slice(0,80); saveSoon(); });
@@ -2351,6 +2822,13 @@ function bindCarry(){
     else if(el.hasAttribute("data-lkrmyes")) lockRemove(el.getAttribute("data-lkrmyes"));
   });
   $("locker").addEventListener("keydown", e=>{ if(e.key==="Enter" && (e.target.id==="lkUrl" || e.target.id==="lkKey")){ e.preventDefault(); lockConnect(); } });
+  /* AOG-LOCKER-V2: a whole device link pasted into the web address box connects at once; the switch; Earlier saves stays open */
+  $("locker").addEventListener("input", e=>{ if(e.target.id==="lkUrl" && !CARRY.busy && lockPasted()) lockConnect(); });
+  $("locker").addEventListener("change", e=>{ if(e.target.id==="lkKeep") keepSwitch(e.target.checked); });
+  $("locker").addEventListener("toggle", e=>{ const d=e.target; if(d.matches && d.matches(".st-earl")) KEEP.earl=d.open ? d.getAttribute("data-earl") : (KEEP.earl===d.getAttribute("data-earl") ? "" : KEEP.earl); }, true);
+  $("lkNewOpen").onclick=newerOpen; $("lkNewKeep").onclick=newerKeep;
+  $("foldAdd").addEventListener("toggle", ()=>{ if($("foldAdd").open) lockCheck(true); });   /* Takes sent here: anything from your other devices */
+  $("foldSave").addEventListener("toggle", ()=>{ if($("foldSave").open && CARRY.stale && CARRY.lock && !CARRY.busy) lockList(true); });
 }
 
 
@@ -2572,9 +3050,11 @@ function paintVoice(){
     <p class="st-info">${esc(t("voiceHow"))}${c && !VOICE.rec ? " "+esc(t("voiceReplace")) : ""}</p>
     <div class="st-row">${btn}</div>
     <p class="st-line" id="voiceLine" aria-live="polite">${esc(line)}</p>
-    ${VOICE.gone && !c ? `<div class="st-row"><span class="st-line" style="margin:0">${esc(t("voiceGone"))}</span><button type="button" class="st-btn" id="voiceBack">${esc(t("voiceBack"))}</button></div>` : ""}</div>`;
-  const r=$("voiceRec"), s=$("voiceStop"), b=$("voiceBack");
+    ${VOICE.gone && !c ? `<div class="st-row"><span class="st-line" style="margin:0">${esc(t("voiceGone"))}</span><button type="button" class="st-btn" id="voiceBack">${esc(t("voiceBack"))}</button></div>` : ""}
+    ${c && c.voice && !VOICE.rec && lockV2() ? `<div class="st-row"><button type="button" class="st-btn" id="voiceLock" aria-label="${esc(t("takeSendAria",{name:c.name||""}))}"${KEEP.sending ? " disabled" : ""}>${esc(t("takeSend"))}</button></div>` : ""}</div>`;
+  const r=$("voiceRec"), s=$("voiceStop"), b=$("voiceBack"), lk=$("voiceLock");
   if(r) r.onclick=voiceStart; if(s){ s.onclick=voiceStop; } if(b) b.onclick=voiceBack;
+  if(lk) lk.onclick=takeSendVoice;   /* AOG-LOCKER-V2: the voice take on track 8, to your other devices */
 }
 /* ══════════════════════════════════════════════════════════════════════════
    AOG-STUDIO-SENDOUT-V1 (2026-10-09) — STUDIO-HANDOFF §12, Jimmy's first pick: "Send it out … leaves the Studio as a
@@ -2717,7 +3197,12 @@ async function sendChops(){
 }
 /* a .zip that stores each file as it is (no squeezing: a .wav hardly shrinks), so any phone or computer opens it */
 const CRC=(()=>{ const T=new Uint32Array(256); for(let n=0;n<256;n++){ let c=n; for(let k=0;k<8;k++) c=c&1 ? 0xEDB88320^(c>>>1) : c>>>1; T[n]=c>>>0; } return T; })();
-function crc32(u){ let c=0xFFFFFFFF; for(let i=0;i<u.length;i++) c=CRC[(c^u[i])&255]^(c>>>8); return (c^0xFFFFFFFF)>>>0; }
+function crcStep(c, u){ for(let i=0;i<u.length;i++) c=CRC[(c^u[i])&255]^(c>>>8); return c; }
+function crc32(u){ return (crcStep(0xFFFFFFFF, u)^0xFFFFFFFF)>>>0; }
+/* AOG-LOCKER-V3: a recording's CRC32, read half a megabyte at a time (a few ms of work each, the page free between) */
+async function crcBlob(blob){ let c=0xFFFFFFFF; const step=512*1024;
+  for(let o=0;o<blob.size;o+=step) c=crcStep(c, new Uint8Array(await blobAB(blob.slice(o, o+step))));
+  return (c^0xFFFFFFFF)>>>0; }
 function zipStore(files){
   const parts=[], cen=[], d=new Date(), enc=new TextEncoder();
   const dt=((d.getHours()<<11)|(d.getMinutes()<<5)|(d.getSeconds()>>1))&0xFFFF, dd=(((d.getFullYear()-1980)<<9)|((d.getMonth()+1)<<5)|d.getDate())&0xFFFF;
@@ -3524,12 +4009,13 @@ function paintInbox(){
   if(!INBOX.items.length){ box.innerHTML=`<p class="st-line" style="margin:0">${esc(t("inboxNone"))}</p>`; return; }
   box.innerHTML=`<p class="st-line" style="margin:0">${esc(t("inboxCount",{n:INBOX.items.length, max:INBOX_MAX}))}</p>`+INBOX.items.map(x=>{
     const name=takeLabel(x), T=TOOLS[x.from], on=tracksOf(x.id);
-    const sub=[T ? esc(L(T.from)) : "", `<span class="st-len">${clockLen(x.sec)}</span>`, esc(madeWords(x.at||x.sent))].filter(Boolean).join(" · ");
+    const sub=[T ? esc(L(T.from)) : "", x.dev ? esc(t("takeFrom",{d:devWord(x.dev)})) : "", `<span class="st-len">${clockLen(x.sec)}</span>`, esc(madeWords(x.at||x.sent))].filter(Boolean).join(" · ");   /* AOG-LOCKER-V2: from your iPhone */
+    const send=S.ask!==x.id && lockV2() ? `<button type="button" class="st-btn" data-lksend="${esc(x.id)}" aria-label="${esc(t("takeSendAria",{name:name}))}"${KEEP.sending ? " disabled" : ""}>${esc(t("takeSend"))}</button>` : "";
     const onTxt=on.length ? t(on.length===1 ? "onTrack1" : "onTrackN",{list:andList(on.map(String))}) : "";
     const ask=S.ask===x.id ? `<div class="st-q" role="group" aria-label="${esc(t("removeAsk",{name:name}))}"><p>${esc(t("removeAsk",{name:name}))}${on.length ? " "+esc(t(on.length===1 ? "stays1" : "staysN",{list:andList(on.map(String))})) : ""}</p>`+
       `<button type="button" class="st-btn st-clear" data-dropyes="${esc(x.id)}">${esc(t("removeYes"))}</button><button type="button" class="st-btn" data-dropno="${esc(x.id)}">${esc(t("removeNo"))}</button></div>` : "";
     return `<div class="st-rec" data-take="${esc(x.id)}"><div class="st-rtx"><b>${esc(name)}</b><span class="st-cn">${sub}</span>${onTxt ? `<span class="st-on">${esc(onTxt)}</span>` : ""}</div>`+
-      (S.ask===x.id ? "" : `<button type="button" class="st-btn st-clear" data-drop="${esc(x.id)}" aria-label="${esc(t("removeAria",{name:name}))}">${esc(t("remove"))}</button>`)+ask+`</div>`;
+      send+(S.ask===x.id ? "" : `<button type="button" class="st-btn st-clear" data-drop="${esc(x.id)}" aria-label="${esc(t("removeAria",{name:name}))}">${esc(t("remove"))}</button>`)+ask+`</div>`;
   }).join("");
 }
 
@@ -3969,6 +4455,7 @@ function bind(){
   $("recs").addEventListener("change", e=>{ const el=e.target; if(el && el.id==="srcSel"){ S.pick=el.value; S.picked=true; paintRecs(); if(el._ptr){ el._ptr=false; setTimeout(()=>el.blur(),0); } } });
   $("recs").addEventListener("pointerdown", e=>{ const el=e.target; if(el && el.id==="srcSel") el._ptr=true; });
   $("inbox").addEventListener("click", e=>{
+    const ls=e.target.closest("[data-lksend]"); if(ls){ if(!ls.disabled) takeSendInbox(ls.getAttribute("data-lksend")); return; }   /* AOG-LOCKER-V2 */
     const d=e.target.closest("[data-drop]"), y=e.target.closest("[data-dropyes]"), n=e.target.closest("[data-dropno]");
     if(d){ S.ask=d.getAttribute("data-drop"); $("inboxLine").textContent=""; paintInbox(); const k=$("inbox").querySelector("[data-dropno]"); if(k) k.focus(); }
     else if(n){ const id=n.getAttribute("data-dropno"); S.ask=""; paintInbox(); const b=[...$("inbox").querySelectorAll("[data-drop]")].find(x=>x.getAttribute("data-drop")===id); if(b) b.focus(); }
@@ -4072,6 +4559,7 @@ function bind(){
 }
 
 load();
+keepGet();   /* AOG-LOCKER-V2 */
 CARRY.lock=lockGet();
 const lockJoined=lockFromHash();   /* AOG-STUDIO-CARRY-V1: a link from another device */
 bind();
@@ -4080,12 +4568,16 @@ dmInit();   /* AOG-DESK-MORE-V1 */
 foldsInit();   /* AOG-DESK-FOLDS-V1 */
 paintAll();
 if(lockJoined){ $("lockLine").textContent=t("lockJoined"); foldOpen($("locker")); }
-if(CARRY.lock){ lockKeep(); lockList(true); }
+if(CARRY.lock){ lockKeep(); lockList(true).then(()=>lockCheck(true)); }   /* AOG-LOCKER-V2: and one question: a newer save, a take for this device */
 meterStill();
 /* AOG-DESK-VU-V1: the meters are drawn again when their size changes and once the serif type has come */
 try{ new ResizeObserver(()=>{ if(!PLAY.on) meterStill(); }).observe($("vuBridge")); }catch(e){}
 try{ document.fonts && document.fonts.ready.then(()=>{ if(!PLAY.on) meterStill(); }); }catch(e){}
-document.addEventListener("visibilitychange", ()=>{ if(document.hidden) stop(); });
+document.addEventListener("visibilitychange", ()=>{ if(document.hidden){ stop(); keepHide(); } else { lockCheck(); if(KEEP.fail && keepOK() && keepDirty()) keepSoon(); } });   /* AOG-LOCKER-V3: a save that stopped carries on a little later */   /* AOG-LOCKER-V2: hidden, a change goes to the locker; back, one question */
+/* AOG-LOCKER-V2: out of sight in the Studio, the locker's timer rests; back in sight, one question */
+window.addEventListener("aog-hush", e=>{ const on=!!(e.detail && e.detail.on); KEEP.hushed=on;
+  if(on){ if(KEEP.timer){ clearTimeout(KEEP.timer); KEEP.timer=0; KEEP.wait=true; } }
+  else { keepAfter(); lockCheck(); } });
 window.addEventListener("pagehide", ()=>{ stop(); });
 /* wake Safari's audio on the first touch, every time it sleeps (AOG-MUSIC-TOUCH-V1) */
 ["touchstart","touchend","pointerdown","click","keydown"].forEach(ev=>document.addEventListener(ev,()=>{ try{ if(ac && ac.state!=="running") ac.resume(); }catch(e){} },{capture:true,passive:true}));
@@ -4094,10 +4586,11 @@ window.addEventListener("pagehide", ()=>{ stop(); });
   try{ const m=await sget("mix"); if(m && m.wav) setMix({wav:m.wav, sec:m.sec, bars:m.bars, bpm:m.bpm, body:m.body, at:m.at}); }catch(e){}
   await refreshShelves();
   await refreshInbox();
+  KEEP.ready=true;   /* AOG-LOCKER-V2: from here on, a change is saved to the locker when the switch is on */
   await arrive();   /* AOG-DESK-ARRIVE-V1 */
 })();
 try{ AOGHandoff.listen(function(key){ if(SHELF_KEYS.indexOf(key)>=0) refreshShelves(); else if(key===INBOX_KEY) refreshInbox(); }); }catch(e){}
-window.addEventListener("focus", ()=>{ refreshShelves(); refreshInbox().then(arrive); });
+window.addEventListener("focus", ()=>{ refreshShelves(); refreshInbox().then(arrive); lockCheck(); });   /* AOG-LOCKER-V2: at most once in 15 s */
 /* AOG-SONG-V1: the song's tempo changed (here, in a room, or in the Studio): the bars follow at once */
 if(window.AOGSong) AOGSong.on(s=>{ try{
   /* a tempo set elsewhere (the Song panel, a room) is the song's now: the desk's first track no longer leads it */
@@ -4115,6 +4608,8 @@ Object.assign(window.__aogStudio, { DESK_ROOMS:DESK_ROOMS, roomBuf:roomBuf, appl
 Object.assign(window.__aogStudio, { kCoef:kCoef, loudOf:loudOf, truePeak:truePeak, lufsTap:lufsTap, lufsStart:lufsStart, lufsStep:lufsStep, LU:LU, outLevel:outLevel,
   wavBuf:wavBuf, bits:()=>BITS, chopsLook:chopsLook, chopCuts:chopCuts, sendChops:sendChops });
 Object.assign(window.__aogStudio, { splitIn:splitIn, SPL:SPL });   /* AOG-STEMS-V1: for stems/split.js */
+Object.assign(window.__aogStudio, { KEEP:KEEP, lockCheck:lockCheck, lockDev:lockDev, songSig:songSig, keepDirty:keepDirty }); Object.defineProperty(window.__aogStudio, "LK", {get(){ return LK; }});   /* AOG-LOCKER-V2: for music-handoff/tests/studio/locker2.js */
+Object.assign(window.__aogStudio, { LKN:LKN, ridOf:ridOf, bigLine:bigLine, mbPair:mbPair, lockSave:lockSave, t:t });   /* AOG-LOCKER-V3: for studio/locker3.js */
 Object.assign(window.__aogStudio, { voiceBacking:voiceBacking, voicePut:voicePut, vbLoopable:vbLoopable, dmTune:dmTune });   /* AOG-VOCAL-V1: the Studio's Vocal Booth (aog-vocal.js) */
 Object.assign(window.__aogStudio, { openNotes:openNotes, keepNotes:keepNotes, cleanClip:cleanClip, beatOf:beatOf });   /* AOG-PIANOROLL-V1 */
 /* AOG-DESK-AUTO-V1: for the tests (music-handoff/tests/studio/auto.js) */
