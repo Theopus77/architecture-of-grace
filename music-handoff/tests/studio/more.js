@@ -389,6 +389,7 @@ const setRange = (p, sel, v) => p.evaluate(([sel, v]) => { const r = document.qu
 
   /* 10 · versions: saved without copying any recording, opened, and A/B while it plays */
   await p.evaluate(() => { const st = __aogStudio; st.SONG.tracks.forEach((x, j) => { x.mute = j > 1; }); st.songChanged(); });
+  await p.click("#foldSave > summary");   /* AOG-DESK-FOLDS-V1: versions sit in the Save your song fold, closed at first */
   await p.fill("#verName", "First mix"); await p.click("#verSave"); await p.waitForTimeout(150);
   await p.evaluate(() => { const st = __aogStudio; st.SONG.tracks[0].mute = true; st.songChanged(); });
   await p.click("#verSave"); await p.waitForTimeout(150);
@@ -447,6 +448,7 @@ const setRange = (p, sel, v) => p.evaluate(([sel, v]) => { const r = document.qu
     await m.click("#putBtn"); await m.waitForFunction(() => __aogStudio.SONG.tracks[0].clip && !__aogStudio.S.busy, null, { timeout: 15000 });
     await m.evaluate(HELP);
     await m.selectOption("#mtSel", "fx"); await m.selectOption("#fxt0", "comp"); await m.selectOption("#fxt1", "eq"); await m.waitForTimeout(100);
+    await m.click("#foldSave > summary");   /* AOG-DESK-FOLDS-V1 */
     await m.fill("#verName", "Phone mix"); await m.click("#verSave"); await m.waitForTimeout(150);
     await m.evaluate(() => { __aogStudio.SONG.tracks[0].name = "Lead"; __aogStudio.SONG.tracks[0].col = "ice"; __aogStudio.songChanged(); document.getElementById("moreBox").scrollIntoView({ block: "start" }); }); await m.waitForTimeout(150);
     const f = await m.evaluate(() => { const r = el => el.getBoundingClientRect(), btn = [...document.querySelectorAll("#moreBox button, #verBlk button, #master select")].filter(x => x.offsetParent);
