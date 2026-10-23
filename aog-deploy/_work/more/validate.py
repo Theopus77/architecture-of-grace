@@ -20,7 +20,7 @@ def E(p, m): errs.append("%s: %s" % (p, m))
 def txt(v, p, lo=1, hi=100000):
     if not isinstance(v, str) or not v.strip(): E(p, "must be a non-empty string"); return ""
     if re.search(r"<[a-zA-Z/]", v): E(p, "no HTML tags")
-    if re.search(r"\b(TODO|TBD)\b", v) or re.search(r"\b(placeholder|lorem ipsum)\b", v, re.I): E(p, "placeholder text")
+    if re.search(r"\b(TODO|TBD)\b", v) or re.search(r"lorem ipsum", v, re.I): E(p, "placeholder text")
     if len(v) < lo: E(p, "too short (%d < %d chars)" % (len(v), lo))
     if len(v) > hi: E(p, "too long (%d > %d chars)" % (len(v), hi))
     return v

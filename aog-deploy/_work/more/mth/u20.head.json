@@ -1,0 +1,147 @@
+{
+ "title": "Geometría: razonamiento, congruencia y triángulos",
+ "years": "Geometría",
+ "intro": [
+  "Un carpintero comprueba que una pared está a escuadra midiendo 3 pies a lo largo de un borde, 4 pies a lo largo del otro, y asegurándose de que la diagonal mida exactamente 5 pies. Un ingeniero de puentes atornilla el acero formando triángulos porque un triángulo no puede cambiar de forma sin que se rompa una barra. La junta de un condado quiere una estación de bomberos a la misma distancia de tres pueblos. Cada una de estas personas confía en un hecho sobre las formas que no es solo cierto casi siempre, sino siempre. Esta unidad trata de cómo sabemos eso.",
+  "La unidad empieza con las reglas del razonamiento: qué es una definición, qué puedes suponer y cómo una cadena de enunciados si-entonces se convierte en una demostración que nadie puede discutir. Después usa esas reglas en preguntas reales. ¿Cuándo son dos figuras realmente iguales? ¿Qué tres medidas determinan un triángulo y cuáles tres no? ¿Dónde se cruzan las rectas especiales de un triángulo y por qué se cruzan?",
+  "Al final podrás escribir una demostración en dos columnas, en un párrafo o como un diagrama de flujo, mover una figura en una cuadrícula de coordenadas con una regla, demostrar que dos triángulos son congruentes con LLL, LAL, ALA o AAL, y ubicar el circuncentro, el incentro y el baricentro de cualquier triángulo. Además, en cada caso podrás decir exactamente por qué la respuesta es correcta."
+ ],
+ "bigQuestion": "¿Cómo pueden unas pocas reglas aceptadas y un razonamiento cuidadoso demostrar hechos sobre las figuras que son verdaderos siempre y en todas partes?",
+ "timeline": [
+  {"t": "A Tales de Mileto se le atribuyen las primeras demostraciones geométricas, entre ellas que los ángulos de la base de un triángulo isósceles son iguales"},
+  {"t": "Los Elementos de Euclides organizan la geometría en definiciones, postulados y demostraciones, donde cada teorema se apoya en el anterior"},
+  {"t": "Aparece en Venecia la primera edición impresa de los Elementos, y el libro se vuelve un texto escolar habitual durante siglos"},
+  {"t": "René Descartes une el álgebra y la geometría con las coordenadas, y hace posibles las demostraciones con coordenadas"},
+  {"t": "Giovanni Saccheri intenta demostrar por contradicción el quinto postulado de Euclides y, sin saberlo, explora una geometría nueva"},
+  {"t": "Nikolái Lobachevski publica una geometría en la que el postulado de las paralelas es falso, y nada se contradice"},
+  {"t": "Pierre Wantzel demuestra que es imposible trisecar un ángulo cualquiera con regla y compás"},
+  {"t": "Abraham Lincoln, de Springfield, Illinois, escribe que casi dominó seis libros de Euclides para aprender lo que significa demostrar"},
+  {"t": "Felix Klein describe la geometría como el estudio de lo que las transformaciones dejan sin cambiar, la idea detrás de los movimientos rígidos"},
+  {"t": "David Hilbert publica un conjunto completo y cuidadoso de axiomas para la geometría euclidiana, que llena los vacíos que dejó Euclides"},
+  {"t": "La relatividad general de Albert Einstein describe la gravedad con una geometría curva, no euclidiana"},
+  {"t": "Los estándares Common Core, adoptados en Illinois, definen la congruencia mediante movimientos rígidos, el enfoque que sigue esta unidad"}
+ ],
+ "wrap": {
+  "words": [
+   {"w": "postulado", "d": "un enunciado que se acepta como verdadero sin demostración; una regla de partida de la geometría"},
+   {"w": "teorema", "d": "un enunciado que se ha demostrado a partir de postulados, definiciones y teoremas anteriores"},
+   {"w": "contraejemplo", "d": "un ejemplo que cumple la hipótesis pero no la conclusión, y que por eso demuestra que una conjetura es falsa"},
+   {"w": "contrarrecíproco", "d": "el enunciado que se forma al intercambiar y negar las dos partes de un condicional; siempre tiene el mismo valor de verdad que el original"},
+   {"w": "transversal", "d": "una recta que cruza dos o más rectas y forma ángulos correspondientes y alternos internos"},
+   {"w": "movimiento rígido", "d": "una traslación, una reflexión o una rotación; una transformación que conserva las distancias y los ángulos"},
+   {"w": "congruente", "d": "dos figuras son congruentes si una sucesión de movimientos rígidos lleva una exactamente sobre la otra"},
+   {"w": "ángulo comprendido", "d": "el ángulo que queda entre dos lados dados de un triángulo; hace falta para el criterio LAL"},
+   {"w": "PCTCC", "d": "las partes correspondientes de triángulos congruentes son congruentes; se usa después de demostrar que los triángulos son congruentes"},
+   {"w": "circuncentro", "d": "el punto donde se cortan las mediatrices de un triángulo; está a la misma distancia de los tres vértices"},
+   {"w": "incentro", "d": "el punto donde se cortan las bisectrices de los ángulos de un triángulo; está a la misma distancia de los tres lados"},
+   {"w": "baricentro", "d": "el punto donde se cortan las medianas de un triángulo; está a dos tercios de la distancia desde cada vértice y es el punto de equilibrio"}
+  ],
+  "test": [
+   {
+    "q": "El punto B está entre A y C. AB = x + 4, BC = 2x − 1 y AC = 21. ¿Cuánto mide AB?",
+    "choices": ["6", "10", "11", "21"],
+    "why": "x + 4 + 2x − 1 = 21 da 3x + 3 = 21, así que x = 6 y AB = 6 + 4 = 10. BC = 11, y 10 + 11 = 21."
+   },
+   {
+    "q": "¿Cuál es el recíproco de «Si dos rectas son perpendiculares, entonces forman ángulos rectos»?",
+    "choices": [
+     "Si dos rectas no son perpendiculares, entonces no forman ángulos rectos",
+     "Si dos rectas no forman ángulos rectos, entonces no son perpendiculares",
+     "Si dos rectas forman ángulos rectos, entonces son perpendiculares",
+     "Dos rectas son perpendiculares solo si son paralelas"
+    ],
+    "why": "El recíproco intercambia la hipótesis y la conclusión sin negar ninguna de las dos."
+   },
+   {
+    "q": "¿Qué figura es un contraejemplo de «Todo cuadrilátero con cuatro lados congruentes es un cuadrado»?",
+    "choices": [
+     "un rectángulo de 3 por 5",
+     "un trapecio",
+     "un cuadrado de lado 4",
+     "un rombo con un ángulo de 60°"
+    ],
+    "why": "Un rombo tiene cuatro lados congruentes, pero con un ángulo de 60° no es un cuadrado. El rectángulo ni siquiera tiene cuatro lados congruentes."
+   },
+   {
+    "q": "Dos rectas paralelas son cortadas por una transversal. Los ángulos alternos internos miden (4x − 5)° y (2x + 31)°. ¿Cuánto mide cada ángulo?",
+    "choices": ["18°", "113°", "67°", "36°"],
+    "why": "Los ángulos alternos internos son congruentes: 4x − 5 = 2x + 31, así que x = 18 y cada ángulo mide 4(18) − 5 = 67°. El 18 es solo x."
+   },
+   {
+    "q": "La demostración de que los ángulos opuestos por el vértice son congruentes depende sobre todo de ¿qué hecho?",
+    "choices": [
+     "los ángulos de un par lineal son suplementarios",
+     "los ángulos correspondientes son congruentes",
+     "los ángulos de un triángulo suman 180°",
+     "todos los ángulos rectos son congruentes"
+    ],
+    "why": "Cada ángulo opuesto por el vértice forma un par lineal con el mismo ángulo, así que los dos son iguales a 180° menos ese ángulo."
+   },
+   {
+    "q": "¿Cuál es la imagen de (−3, 7) después de una rotación de 180° alrededor del origen?",
+    "choices": ["(3, 7)", "(−7, −3)", "(7, 3)", "(3, −7)"],
+    "why": "Una rotación de 180° cambia el signo de las dos coordenadas: (−3, 7) pasa a ser (3, −7)."
+   },
+   {
+    "q": "¿Cuál es la imagen de (5, 2) después de una reflexión sobre el eje y?",
+    "choices": ["(−5, 2)", "(5, −2)", "(2, 5)", "(−5, −2)"],
+    "why": "Reflejar sobre el eje y cambia el signo de x y deja y igual: (5, 2) pasa a ser (−5, 2)."
+   },
+   {
+    "q": "Dos triángulos tienen dos pares de ángulos congruentes y un par de lados congruentes que no están entre esos ángulos. ¿Qué criterio se aplica?",
+    "choices": ["ALA", "AAL", "LAL", "LLA"],
+    "why": "Dos ángulos y un lado no comprendido es AAL. Funciona porque la suma de los ángulos obliga a que el tercer ángulo sea el mismo."
+   },
+   {
+    "q": "¿Por qué LLA no es un criterio de congruencia válido?",
+    "choices": [
+     "Porque usa muy pocas partes",
+     "Porque los ángulos no se pueden medir con exactitud",
+     "Porque el lado opuesto al ángulo dado puede girar hasta dos posiciones distintas y formar dos triángulos",
+     "Porque solo sirve para triángulos equiláteros"
+    ],
+    "why": "Con dos lados y un ángulo no comprendido, el segundo lado puede cortar el rayo opuesto en dos lugares, así que dos triángulos distintos pueden tener esas mismas medidas."
+   },
+   {
+    "q": "En el paralelogramo ABCD, el ángulo A = (3x + 10)° y el ángulo C = (5x − 30)°. ¿Cuánto mide el ángulo B?",
+    "choices": ["70°", "20°", "90°", "110°"],
+    "why": "Los ángulos opuestos son congruentes: 3x + 10 = 5x − 30, así que x = 20 y el ángulo A = 70°. El ángulo B es consecutivo a A, así que mide 180 − 70 = 110°."
+   },
+   {
+    "q": "Los ángulos de un triángulo miden 3x, 4x y 5x. ¿Cuál es el ángulo mayor?",
+    "choices": ["15°", "75°", "60°", "45°"],
+    "why": "3x + 4x + 5x = 12x = 180, así que x = 15. El ángulo mayor es 5(15) = 75°."
+   },
+   {
+    "q": "Los ángulos de la base de un triángulo isósceles miden (3x + 8)° y (5x − 14)°. ¿Cuánto mide el ángulo del vértice?",
+    "choices": ["41°", "11°", "98°", "82°"],
+    "why": "Los ángulos de la base son congruentes: 3x + 8 = 5x − 14, así que x = 11 y cada ángulo de la base mide 41°. El ángulo del vértice mide 180 − 41 − 41 = 98°."
+   },
+   {
+    "q": "G es el baricentro de un triángulo y AD es una mediana. Si GD = 7, ¿cuánto mide AD?",
+    "choices": ["21", "14", "10.5", "28"],
+    "why": "GD es un tercio de la mediana, así que AD = 3 × 7 = 21. AG mediría 14."
+   },
+   {
+    "q": "Dos lados de un triángulo miden 6 y 13. ¿Cuál de estos podría ser el tercer lado?",
+    "choices": ["7", "19", "8", "20"],
+    "why": "El tercer lado debe ser mayor que 13 − 6 = 7 y menor que 13 + 6 = 19, sin incluir los extremos. Solo el 8 cumple."
+   },
+   {
+    "q": "Un triángulo rectángulo tiene vértices en (0, 0), (0, 8) y (6, 0), con el ángulo recto en el origen. ¿Dónde está su circuncentro?",
+    "choices": ["(0, 0)", "(2, 8/3)", "(6, 8)", "(3, 4)"],
+    "why": "El circuncentro de un triángulo rectángulo es el punto medio de la hipotenusa que va de (0, 8) a (6, 0): (3, 4). Está a 5 unidades de cada vértice. El punto (2, 8/3) es el baricentro."
+   }
+  ],
+  "write": {
+   "prompt": "Tres pueblos están en (0, 0), (12, 0) y (0, 10) en un mapa con unidades en millas. Halla el punto que está a la misma distancia de los tres pueblos, muestra todos los cálculos y explica por qué las tres mediatrices tienen que cortarse en un solo punto. Luego explica, usando un centro del triángulo, dónde pondrías una estación que esté igual de cerca de las tres carreteras que unen los pueblos.",
+   "tips": [
+    "Escribe con claridad tu punto final y di de qué centro del triángulo se trata.",
+    "Muestra cada paso: el punto medio de cada lado, la ecuación de cada mediatriz y dónde se cruzan.",
+    "Comprueba tu respuesta con la fórmula de la distancia a los tres pueblos.",
+    "Explica en una oración por qué cualquier punto de una mediatriz está a la misma distancia de los extremos del segmento.",
+    "Nombra el segundo centro, di qué segmentos lo ubican y explica por qué siempre queda dentro del triángulo."
+   ]
+  }
+ }
+}

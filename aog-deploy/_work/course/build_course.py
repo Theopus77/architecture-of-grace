@@ -621,6 +621,18 @@ def try_link(l):
     if not t: return ""
     return '<a class="lbtn try" href="%s">%s ›</a>' % (E(t["href"]), span(t["en"], t["es"]))
 
+_TRY = {}
+def picked_try(u, lid):
+    """AOG-TRY-V1: a Try it chosen for this lesson in _work/more/try/<course>.json (same markup as inject_try.py)."""
+    cid = C.get("id", "")
+    if cid not in _TRY:
+        f = Path(__file__).resolve().parent.parent / "more" / "try" / ("%s.json" % cid)
+        try: _TRY[cid] = json.load(open(f, encoding="utf-8"))
+        except Exception: _TRY[cid] = {}
+    v = _TRY[cid].get("%d:%s" % (u["n"], lid))
+    if not v: return ""
+    return '<a class="lbtn try" data-aog-try href="%s"><span data-en="%s" data-es="%s">%s</span> ›</a>' % (E(v["href"]), E(v["en"]), E(v["es"]), E(v["en"]))
+
 def lesson_html(u, c, li, sec_i, l, num):
     lid = "l%d-%d" % (c["n"], num)
     words = l.get("words", [])
@@ -635,7 +647,7 @@ def lesson_html(u, c, li, sec_i, l, num):
       <div class="main-idea"><span class="k">{span("Main idea","Idea principal")}</span>{E(l["mainIdea"])}</div>
       <div class="reading">{reading}</div>
       <div class="lbtns no-print">
-        <button type="button" class="lbtn listen" data-for="{lid}" aria-pressed="false">{ICO["speak"]}{span("Listen","Escuchar")}</button>{try_link(l)}
+        <button type="button" class="lbtn listen" data-for="{lid}" aria-pressed="false">{ICO["speak"]}{span("Listen","Escuchar")}</button>{try_link(l) or picked_try(u, lid)}
       </div>
     </div>
     <div>
