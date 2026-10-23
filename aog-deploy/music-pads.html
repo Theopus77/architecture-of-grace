@@ -226,6 +226,16 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
 #steps[data-fam="low"]{--lit:#ff8466} #steps[data-fam="snap"]{--lit:#ffd36b} #steps[data-fam="shimmer"]{--lit:#8fe6d4} #steps[data-fam="metal"]{--lit:#b6cbff}
 #steps[data-fam="skin"]{--lit:#ffb27a} #steps[data-fam="wood"]{--lit:#d7b8ff} #steps[data-fam="note"]{--lit:#86d9ff} #steps[data-fam="chop"]{--lit:#ffa3dc}
 #steps .st[aria-pressed="true"]{background:var(--lit);border-color:var(--lit);color:#1a1206}
+.pm-key{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 14px;margin:10px auto 0;max-width:780px;color:#e9dfcc;font:600 14px/1.3 var(--sans)}
+.pm-key[hidden]{display:none}
+.pm-k{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.pm-k i{width:10px;height:10px;border-radius:50%;background:var(--lit);flex:0 0 auto}
+.pm-k[data-fam="low"]{--lit:#ff8466} .pm-k[data-fam="snap"]{--lit:#ffd36b} .pm-k[data-fam="shimmer"]{--lit:#8fe6d4}
+.pm-k[data-fam="metal"]{--lit:#b6cbff} .pm-k[data-fam="skin"]{--lit:#ffb27a} .pm-k[data-fam="wood"]{--lit:#d7b8ff}
+/* the pad numbers, easier to read for every age; a name too long for its pad breaks where the language hyphenates it
+   ("Char-les", "Pal-mas"), not anywhere (it read "Palma / s") */
+#pads .pad .pi{font-size:12px;color:#e2d8c6}
+#pads .pad .pn{overflow-wrap:break-word;-webkit-hyphens:auto;hyphens:auto}
 #pads .pad::after{content:"";position:absolute;top:7px;right:7px;width:7px;height:7px;border-radius:50%;pointer-events:none;
   background:var(--lit);opacity:.55;box-shadow:inset 0 1px 0 rgba(0,0,0,.35)}
 #pads .pad.tube::after{display:none}
@@ -1669,6 +1679,19 @@ function padFam(d){
   if(d.kind!=="drum") return "note";
   return (window.AOGDrumKit && AOGDrumKit.family) ? AOGDrumKit.family(d.kit, d.id) : "snap";
 }
+/* AOG-PADS-KEY-V1 (2026-10-23) — Jimmy: "a showstopper for my teenager children and my 60 year plus parents and everyone
+   in between". The colours say what they mean, in plain words, under the pads: only the kinds of sound this kit has, in
+   the pads' order. A bank of notes or a song's pieces is one colour, so it needs no key. Written only when it changes. */
+const FAM_WORD={low:["Kick and bass","Bombo y graves"], snap:["Snare and clap","Caja y palmas"], shimmer:["Hi-hats and shakers","Hi-hat y maracas"],
+  metal:["Cymbals and bells","Platillos y campanas"], skin:["Toms and hand drums","Toms y tambores de mano"], wood:["Wood","Madera"]};
+function paintFamKey(defs){
+  const box=$("pads"); let k=$("padKey");
+  if(!k){ k=document.createElement("p"); k.id="padKey"; k.className="pm-key"; }
+  if(PV.back ? k.parentNode!==PV.back.parentNode : k.previousElementSibling!==box){ const at=PV.back||box; at.parentNode.insertBefore(k, at.nextSibling); }
+  const seen=[]; if(S.banks[S.bank].type==="drums") ["low","snap","shimmer","metal","skin","wood"].forEach(f=>{ if(defs.some(d=>padFam(d)===f)) seen.push(f); });
+  const h=seen.map(f=>`<span class="pm-k" data-fam="${f}"><i aria-hidden="true"></i>${FAM_WORD[f][S0.lang==="es"?1:0]}</span>`).join("");
+  if(k.__h!==h){ k.innerHTML=h; k.__h=h; } k.hidden=!seen.length;
+}
 function paintPads(){
   const box=$("pads"), bk=S.bank;
   const defs=padDefs(bk), fine=matchMedia("(pointer: fine)").matches;
@@ -1678,6 +1701,7 @@ function paintPads(){
   box.innerHTML=order.map(i=>{ const d=defs[i];
     return `<button type="button" class="pad${i===S.sel?" sel":""}${PO[i]?" inpat":""}" data-p="${i}" data-kind="${d.kind}" data-fam="${padFam(d)}" aria-label="${esc((i+1)+": "+d.name+(PO[i]?" · "+t("patStep",{n:PO[i]}):""))}"><span class="pi">${i+1}</span>${PO[i]?`<span class="po">${PO[i]}</span>`:""}<span class="pn${d.name.length>12?" long":""}">${esc(d.name)}</span>${fine?`<span class="pk keyonly">${KEYCAP[i]}</span>`:""}</button>`; }).join("");
   box.classList.toggle("waiting", !isReady(bk));
+  paintFamKey(defs);
   paintTubes(box, bk, defs);   /* AOG-PADS-CLASSROOM-V1 */
   box.setAttribute("aria-label", t("padsLab"));
   pvPaint();

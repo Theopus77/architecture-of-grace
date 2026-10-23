@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- AOG-FAST-BUILD-V1 source:5b9014194b4e5f31 · MADE BY tools/build-fast.py from music-pads.html: edit music-pads.html, then run it. -->
+<!-- AOG-FAST-BUILD-V1 source:66beb2c654ecdaa0 · MADE BY tools/build-fast.py from music-pads.html: edit music-pads.html, then run it. -->
 <html lang="en">
 <head>
 <script>/* AOG-STUDIO-ONLY-V1 (Jimmy, 2026-10-10: "one location for all the instruments … and that is the studio"): opened on its own address, this room opens inside the Studio instead, at this exact address (its lesson, take or link). Inside the Studio's frame, and for the site's own checks, it stays. */(function(){try{if(window.top!==window||navigator.webdriver)return;var M={"music-pads":"pads","drum-machine":"pads","beat-lab":"pads","music-kit":"kit","drum-kit":"kit","music-piano":"piano","piano":"piano","keys":"piano","music-guitar":"guitar","guitar":"guitar","music-bass":"bass","bass":"bass","music-band":"band","band":"band","music-decks":"decks","decks":"decks","turntables":"decks","music-studio":"studio","studio":"studio","mixing-desk":"studio"},f=(location.pathname.split("/").pop()||"").replace(/\.html$/,""),r=M[f];if(!r)return;var F={pads:"music-pads",kit:"music-kit",piano:"music-piano",guitar:"music-guitar",bass:"music-bass",band:"music-band",decks:"music-decks",studio:"music-studio"};location.replace("/the-studio.html?at="+encodeURIComponent("/"+F[r]+".html"+location.search+location.hash)+"#"+r);}catch(e){}})();</script>
@@ -227,6 +227,16 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
 #steps[data-fam="low"]{--lit:#ff8466} #steps[data-fam="snap"]{--lit:#ffd36b} #steps[data-fam="shimmer"]{--lit:#8fe6d4} #steps[data-fam="metal"]{--lit:#b6cbff}
 #steps[data-fam="skin"]{--lit:#ffb27a} #steps[data-fam="wood"]{--lit:#d7b8ff} #steps[data-fam="note"]{--lit:#86d9ff} #steps[data-fam="chop"]{--lit:#ffa3dc}
 #steps .st[aria-pressed="true"]{background:var(--lit);border-color:var(--lit);color:#1a1206}
+.pm-key{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 14px;margin:10px auto 0;max-width:780px;color:#e9dfcc;font:600 14px/1.3 var(--sans)}
+.pm-key[hidden]{display:none}
+.pm-k{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.pm-k i{width:10px;height:10px;border-radius:50%;background:var(--lit);flex:0 0 auto}
+.pm-k[data-fam="low"]{--lit:#ff8466} .pm-k[data-fam="snap"]{--lit:#ffd36b} .pm-k[data-fam="shimmer"]{--lit:#8fe6d4}
+.pm-k[data-fam="metal"]{--lit:#b6cbff} .pm-k[data-fam="skin"]{--lit:#ffb27a} .pm-k[data-fam="wood"]{--lit:#d7b8ff}
+/* the pad numbers, easier to read for every age; a name too long for its pad breaks where the language hyphenates it
+   ("Char-les", "Pal-mas"), not anywhere (it read "Palma / s") */
+#pads .pad .pi{font-size:12px;color:#e2d8c6}
+#pads .pad .pn{overflow-wrap:break-word;-webkit-hyphens:auto;hyphens:auto}
 #pads .pad::after{content:"";position:absolute;top:7px;right:7px;width:7px;height:7px;border-radius:50%;pointer-events:none;
   background:var(--lit);opacity:.55;box-shadow:inset 0 1px 0 rgba(0,0,0,.35)}
 #pads .pad.tube::after{display:none}
@@ -381,6 +391,6 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
   </div>
   <div class="pv-grids" id="pvGrid"></div>
 </div>
-<script src="/front/1bca8fdd69c2.js"></script>
+<script src="/front/7a2159d4ae69.js"></script>
 </body>
 </html>
