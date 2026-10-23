@@ -118,7 +118,17 @@ const STR={
   punch:{en:"Punch",es:"Pegada"}, room:{en:"Room",es:"Sala"}, echo:{en:"Echo",es:"Eco"},
   masterH:{en:"The whole song",es:"Toda la canción"},
   roomPick:{en:"Room sound",es:"Sonido de sala"}, rm_made:{en:"Smooth",es:"Suave"}, rm_small:{en:"Small room",es:"Sala pequeña"}, rm_studio:{en:"Studio",es:"Estudio"}, rm_hall:{en:"Hall",es:"Sala grande"}, rm_church:{en:"Church",es:"Iglesia"}, roomFrom:{en:"Where the rooms come from",es:"De dónde vienen las salas"},   /* AOG-REAL-ROOMS-V1 */ glue:{en:"Glue",es:"Unión"}, songVol:{en:"Song volume",es:"Volumen de la canción"},
-  finishH:{en:"Finish your song",es:"Termina tu canción"},
+  /* AOG-DESK-FOLDS-V1: the five folds under the mixer, a heading and one short line each */
+  fAddH:{en:"Add a recording",es:"Añade una grabación"},
+  fAddL:{en:"Put a take from any instrument on a track.",es:"Pon en una pista una toma de cualquier instrumento."},
+  fTrkH:{en:"This track",es:"Esta pista"},
+  fTrkL:{en:"Change its recording, effects, name and colour.",es:"Cambia su grabación, sus efectos, su nombre y su color."},
+  fFinH:{en:"Finish and share",es:"Termina y comparte"},
+  fFinL:{en:"Name it, then make the mix or send it out.",es:"Ponle nombre. Luego haz la mezcla o compártela."},
+  fSaveH:{en:"Save your song",es:"Guarda tu canción"},
+  fSaveL:{en:"Save versions, or take the song to your other devices.",es:"Guarda versiones o lleva la canción a tus otros aparatos."},
+  fNewL:{en:"Clears all eight tracks. Save first to keep your song.",es:"Borra las ocho pistas. Guarda antes para conservar tu canción."},
+  newGo:{en:"Clear the desk",es:"Limpiar la mesa"},
   mixBtn:{en:"Make the mix",es:"Hacer la mezcla"}, mixing:{en:"Making the mix…",es:"Haciendo la mezcla…"},
   mixNeed:{en:"Put a recording on a track first.",es:"Primero pon una grabación en una pista."},
   mixQuiet:{en:"Every track is muted, so the mix would be silent.",es:"Todas las pistas están silenciadas, así que la mezcla quedaría en silencio."},
@@ -190,11 +200,10 @@ const STR={
   /* AOG-STUDIO-CARRY-V1 (Jimmy, 2026-10-07: go back and forth between the iPhone, the iPad and the computer, with no account) */
   carryH:{en:"Your song on your other devices",es:"Tu canción en tus otros aparatos"},
   songsBtn:{en:"Your songs",es:"Tus canciones"}, songsOn:{en:"Locker on",es:"Casillero activo"}, songsOff:{en:"Save or open",es:"Guardar o abrir"},
-  carryLine:{en:"Take this song to your iPhone, iPad or computer and keep working on it there.",es:"Lleva esta canción a tu iPhone, iPad o computadora y sigue trabajando en ella allí."},
   songName:{en:"Song name",es:"Nombre de la canción"}, myName:{en:"My song",es:"Mi canción"},
   fileH:{en:"With a song file",es:"Con un archivo de canción"},
   fileSave:{en:"Save my song",es:"Guardar mi canción"}, fileOpen:{en:"Open my song",es:"Abrir mi canción"},   /* AOG-DESK-PROJECT-V1 */
-  fileWhat:{en:"One file holds the whole desk and its sound. It stays on your device. Move it with AirDrop or Files.",es:"Un archivo guarda toda la mesa y su sonido. Se queda en tu aparato. Muévelo con AirDrop o Archivos."},
+  fileWhat:{en:"One file holds the whole song. It stays on your device; move it with AirDrop or Files.",es:"Un archivo guarda toda la canción. Se queda en tu aparato; muévelo con AirDrop o Archivos."},
   fileMaking:{en:"Making your song file…",es:"Haciendo tu archivo de canción…"},
   fileSaved:{en:"Saved: {name}. On an iPhone or iPad it is in the Files app, under Downloads. Open it on your other device with Open my song.",es:"Guardado: {name}. En un iPhone o iPad está en la app Archivos, en Descargas. Ábrelo en tu otro aparato con Abrir mi canción."},
   fileNeed:{en:"Put a recording on a track first.",es:"Primero pon una grabación en una pista."},
@@ -390,7 +399,7 @@ function cleanClip(c){
   if(c.lp===true) o.lp=true;   /* AOG-DESK-CLIPLOOP-V1: its end was dragged to repeat it */
   /* AOG-MICBOOTH-V1: a voice take keeps its dry recording beside it, and the sound chosen, so it can be made again (AOG-VOCAL-V1: the Vocal Booth's sounds too) */
   if(o.voice && typeof c.dry==="string" && /^c[a-z0-9]{4,41}$/.test(c.dry)) o.dry=c.dry;
-  if(o.voice && /^(clean|warm|radio|rap|echo|hall|tuned|robot|phone|custom)$/.test(c.snd)) o.snd=c.snd;
+  if(o.voice && /^(clean|warm|radio|rap|echo|hall|tuned|robot|phone|deep|high|harmony|wide|slap|mega|old|ghost|chop|custom)$/.test(c.snd)) o.snd=c.snd;   /* AOG-VOCAL-FX-V2: the booth's More sounds too */
   /* AOG-PIANOROLL-V1: a take from the Piano, Guitar, Bass or Band keeps the notes it was played with (checked by aog-pianoroll.js) */
   if(c.notes){ const n=window.AOGPianoRoll ? AOGPianoRoll.clean(c.notes) : (Array.isArray(c.notes.ev) ? c.notes : null); if(n) o.notes=n; }
   /* AOG-STUDIO-INBOX-V1: a take from the list remembers its tool, its number and which take in the list it was */
@@ -1532,6 +1541,7 @@ async function refreshShelves(){
   }
   paintRecs();
   if(sources().length) LES.mark("inbox1");   /* AOG-LESSONS-V1 */
+  foldArrived();   /* AOG-DESK-FOLDS-V1 */
 }
 /* AOG-STUDIO-INBOX-V1 — the takes sent here: the list's index (no audio), newest first; the audio is read when a take
    goes on a track */
@@ -1544,6 +1554,7 @@ async function refreshInbox(){
   if(S.ask && !INBOX.items.some(x=>x.id===S.ask)) S.ask="";
   paintInbox(); paintRecs();
   if(sources().length) LES.mark("inbox1");   /* AOG-LESSONS-V1 */
+  foldArrived();   /* AOG-DESK-FOLDS-V1 */
 }
 /* every recording that can go on a track: the takes sent here, then the newest thing each tool sent to the turntables */
 function sources(){
@@ -1928,6 +1939,7 @@ async function chainLatency(){
 function leftOut(){ return SONG.tracks.map((x,i)=>i).filter(i=>SONG.tracks[i].clip && !audible(i)); }
 async function makeMix(){
   const line=$("mixLine"), btn=$("mixBtn");
+  foldOpen(btn);   /* AOG-DESK-FOLDS-V1: what it says is in Finish and share */
   $("sendLine").textContent="";
   if(!hasClips()){ line.textContent=t("mixNeed"); return; }
   if(!SONG.tracks.some((x,i)=>x.clip && audible(i))){ line.textContent=t("mixQuiet"); return; }
@@ -2102,6 +2114,7 @@ async function applySong(r){
 function askOpen(name, go){
   if(!hasClips()){ go(); return; }
   CARRY.ask=go;
+  foldOpen($("openAsk"));   /* AOG-DESK-FOLDS-V1 */
   $("openAskT").textContent=t("openAsk",{name:name});
   $("openAsk").hidden=false; $("openNo").focus();
 }
@@ -2250,7 +2263,7 @@ function sizeWords(n){ return t("mbN",{n:(Math.max(0.1, n/1048576)).toFixed(1)})
 /* AOG-DESK-SONGS-BTN-V1: the console's Your songs button goes straight to saving and opening, the locker's light shows it is on */
 function paintSongsBtn(){ const l=$("songsLed"), y=$("songsSay"); if(!l||!y) return; l.classList.toggle("on", !!CARRY.lock); const t2=t(CARRY.lock?"songsOn":"songsOff"); if(y.textContent!==t2) y.textContent=t2; }
 function goSongs(){
-  const b=$("carryBlk"); if(!b) return; b.scrollIntoView({block:"start"});
+  const b=$("carryBlk"); if(!b) return; foldOpen(b); b.scrollIntoView({block:"start"});
   const h=b.querySelector("h2"); if(h){ h.setAttribute("tabindex","-1"); try{ h.focus({preventScroll:true}); }catch(e){} }
   if(CARRY.lock){ try{ lockList(true); }catch(e){} }
   else { const d=b.querySelector("#locker details"); if(d) d.open=true; }
@@ -2597,6 +2610,7 @@ function outItem(o){ o.url=o.url||URL.createObjectURL(o.file); return o; }
 function dropOut(k){ if(OUT[k] && OUT[k].url) URL.revokeObjectURL(OUT[k].url); OUT[k]=null; }
 async function sendOut(){
   const line=$("outLine"), btn=$("outBtn");
+  foldOpen(btn);   /* AOG-DESK-FOLDS-V1: the Studio's Send it out lands here too */
   if(OUT.busy) return;
   if(!hasClips()){ line.textContent=t("mixNeed"); return; }
   if(!SONG.tracks.some((x,i)=>x.clip && audible(i))){ line.textContent=t("outSilent"); return; }
@@ -2847,7 +2861,7 @@ function paintText(){
   const kl=$("keysList"); if(kl) kl.innerHTML=((STR.keysList||{})[S.lang]||STR.keysList.en).map(r=>{ const [k,w]=r.split("|"); return `<li><kbd>${esc(k)}</kbd><span>${esc(w)}</span></li>`; }).join("");   /* AOG-DESK-KEYS-V2 */
   $("foot").innerHTML=`<p>${esc(t("foot"))}</p>`;
   $("newAskT").textContent=t("newAsk"); $("newYes").textContent=t("newYes"); $("newNo").textContent=t("newNo");
-  $("newBtn").textContent=t("newSong"); $("mixBtn").textContent=t("mixBtn");
+  $("newBtn").textContent=t("newGo"); $("mixBtn").textContent=t("mixBtn");
 }
 function paintAll(){ try{ paintSongsBtn(); }catch(e){} paintText(); paintTransport(); paintTimeline(); paintTrack(); paintMixer(true); paintFinish(); paintInbox(); paintCarry(); paintSlip(); dmPaintVer(); paintSplit(); }
 
@@ -3505,6 +3519,8 @@ function paintInbox(){
   const note=gone.length ? t(gone.length===1 ? "goneOne" : "goneMany",{max:INBOX_MAX, list:andList(gone.map(x=>takeLabel(x)+" ("+madeWords(x.at||x.sent)+")"))})+
     (gone.some(x=>tracksOf(x.id).length) ? " "+t("goneKept") : "") : "";
   if(gl.textContent!==note) gl.textContent=note;   /* a live line: said once, not again at every repaint */
+  const blk=$("inboxBlk"), none=!INBOX.items.length && !note && !$("inboxLine").textContent;   /* AOG-DESK-FOLDS-V1: an empty list says nothing; the empty menu above already says how */
+  if(blk.hidden!==none) blk.hidden=none;
   if(!INBOX.items.length){ box.innerHTML=`<p class="st-line" style="margin:0">${esc(t("inboxNone"))}</p>`; return; }
   box.innerHTML=`<p class="st-line" style="margin:0">${esc(t("inboxCount",{n:INBOX.items.length, max:INBOX_MAX}))}</p>`+INBOX.items.map(x=>{
     const name=takeLabel(x), T=TOOLS[x.from], on=tracksOf(x.id);
@@ -3882,11 +3898,37 @@ function bindAuto(){
     else if(b.id==="lnClear"){ autoClear(); const s=$("drawSel"); if(s) s.focus(); } });
 }
 
+/* ══ AOG-DESK-FOLDS-V1 — the folds under the mixer ══
+   Each fold remembers on this device whether it is open (aog.studio.folds.v1); Start a new song never does, so it is
+   always closed when the desk opens. The desk opens a fold itself when it sends someone to what is inside. */
+const FOLDS_KEY="aog.studio.folds.v1", FOLDS=["foldAdd","foldTrack","foldFinish","foldSave","foldNew"];
+function foldsGet(){ try{ const o=JSON.parse(localStorage.getItem(FOLDS_KEY)||"null"); return o && typeof o==="object" ? o : {}; }catch(e){ return {}; } }
+function foldsPut(o){ try{ localStorage.setItem(FOLDS_KEY, JSON.stringify(o)); }catch(e){} }
+function foldsInit(){
+  const o=foldsGet();
+  FOLDS.forEach(id=>{ const d=$(id); if(!d) return;
+    if(id!=="foldNew" && typeof o[id]==="boolean" && d.open!==o[id]) d.open=o[id];
+    d.addEventListener("toggle", ()=>{ if(id==="foldNew") return; const s=foldsGet(); if(s[id]===d.open) return; s[id]=d.open; foldsPut(s); });
+  });
+  /* the Studio's Send it out brings the button into view first: the fold opens so there is something to see */
+  const ob=$("outBtn"), own=ob.scrollIntoView;
+  ob.scrollIntoView=function(a){ foldOpen(ob); return own.call(ob, a); };
+}
+function foldOpen(el){ const d=el && el.closest ? el.closest("details.st-fold") : null; if(d && !d.open) d.open=true; }
+/* a track picked: an empty one opens Add a recording, one with a recording opens This track */
+function foldForTrack(){ foldOpen(SONG.tracks[SONG.sel].clip ? $("clipBox") : $("recs")); }
+/* a take or a recording newer than any this desk has shown opens Add a recording */
+function foldArrived(){
+  let top=0; sources().forEach(o=>{ const ts=o.kind==="take" ? (o.x.sent||o.x.at||0) : ((o.v && o.v.rec && o.v.rec.at)||0); if(ts>top) top=ts; });
+  const s=foldsGet(); if(top>(+s.seen||0)){ s.seen=top; foldsPut(s); foldOpen($("recs")); }
+}
+
 /* ══ wiring ══ */
 function selectTrack(i){ try{ setTimeout(paintSplit, 0); }catch(e){}
   i=Math.max(0, Math.min(NT-1, i|0)); if(i===SONG.sel) return;
   SONG.sel=i; saveSoon(); $("recLine").textContent=""; LES.mark("track2");
   paintTimeline(); paintTrack(); paintMixer();
+  if(SONG.tracks[i].clip) foldOpen($("clipBox"));   /* AOG-DESK-FOLDS-V1: picking a track with a recording opens This track */
 }
 function bind(){
   $("playBtn").onclick=playStop;
@@ -3897,7 +3939,7 @@ function bind(){
   $("loopTo").onchange=()=>{ SONG.loopTo=+$("loopTo").value; LES.mark("loopSet"); if(SONG.loopFrom>SONG.loopTo) SONG.loopFrom=SONG.loopTo; save(); reschedule(); paintTransport(); paintTimeline(); };
   $("songsBtn").onclick=goSongs;   /* AOG-DESK-SONGS-BTN-V1 */
   $("countBtn").onclick=()=>{ SONG.countIn=!SONG.countIn; save(); paintTransport(); };
-  $("trackSel").onchange=()=>selectTrack(+$("trackSel").value);
+  $("trackSel").onchange=()=>{ selectTrack(+$("trackSel").value); foldForTrack(); };
   $("timeline").addEventListener("click", e=>{
     const tl=$("timeline"); if(tl._noClick && Date.now()-tl._noClick<500) return;   /* AOG-DESK-DRAG-V1: the click a drag ends with */
     const b=e.target.closest("[data-sel]"); if(!b) return; const i=+b.getAttribute("data-sel");
@@ -3921,7 +3963,8 @@ function bind(){
     else if(el.id==="atSel"){ if(el.value!=="") clipAct("at:"+el.value); }
     else if(el.id==="untilSel") clipAct("n:"+el.value);
     else if(el.id==="pieceSel"){ const c=SONG.tracks[SONG.sel].clip; if(c){ c.psel=+el.value; LES.mark("piece1"); S.edMsg=""; saveSoon(); paintTimeline(); paintTrack(); } } });
-  $("recs").addEventListener("click", e=>{ const b=e.target.closest("[data-put]"); if(b && !b.disabled) putOn(b.getAttribute("data-put"), SONG.sel); });
+  $("recs").addEventListener("click", e=>{ const b=e.target.closest("[data-put]"); if(b && !b.disabled){ const ti=SONG.sel;
+    putOn(b.getAttribute("data-put"), ti).then(()=>{ if(SONG.sel===ti && SONG.tracks[ti].clip) foldOpen($("clipBox")); }); } });   /* AOG-DESK-FOLDS-V1: then This track, to shape it */
   /* AOG-STUDIO-INBOX-V1: the menu of recordings, and the takes sent here */
   $("recs").addEventListener("change", e=>{ const el=e.target; if(el && el.id==="srcSel"){ S.pick=el.value; S.picked=true; paintRecs(); if(el._ptr){ el._ptr=false; setTimeout(()=>el.blur(),0); } } });
   $("recs").addEventListener("pointerdown", e=>{ const el=e.target; if(el && el.id==="srcSel") el._ptr=true; });
@@ -3934,7 +3977,7 @@ function bind(){
   $("mixer").addEventListener("click", e=>{
     const sh=e.target.closest("[data-sel]"); if(sh){ selectTrack(+sh.getAttribute("data-sel")); return; }
     /* AOG-STUDIO-EDIT-V1: Edit opens that track's pieces, speed and fades, just above the mixer */
-    const ed=e.target.closest("[data-edit]"); if(ed){ selectTrack(+ed.getAttribute("data-edit")); const tb=$("trackBlk"); if(tb) tb.scrollIntoView({block:"start"});
+    const ed=e.target.closest("[data-edit]"); if(ed){ selectTrack(+ed.getAttribute("data-edit")); foldOpen($("clipBox")); const tb=$("trackBlk"); if(tb) tb.scrollIntoView({block:"start"});
       try{ $("trackSel").focus({preventScroll:true}); }catch(err){} return; }
     const ms=e.target.closest("[data-ms]"); if(!ms) return;
     const i=+ms.closest(".st-strip").getAttribute("data-tr"), k=ms.getAttribute("data-ms");
@@ -4034,8 +4077,9 @@ const lockJoined=lockFromHash();   /* AOG-STUDIO-CARRY-V1: a link from another d
 bind();
 bindConsole();   /* AOG-DESK-FACE-V1 */
 dmInit();   /* AOG-DESK-MORE-V1 */
+foldsInit();   /* AOG-DESK-FOLDS-V1 */
 paintAll();
-if(lockJoined) $("lockLine").textContent=t("lockJoined");
+if(lockJoined){ $("lockLine").textContent=t("lockJoined"); foldOpen($("locker")); }
 if(CARRY.lock){ lockKeep(); lockList(true); }
 meterStill();
 /* AOG-DESK-VU-V1: the meters are drawn again when their size changes and once the serif type has come */

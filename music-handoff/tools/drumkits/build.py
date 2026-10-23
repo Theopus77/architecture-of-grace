@@ -206,6 +206,10 @@ def shape(pad, x):
     if pad.get("comp"):
         t, r, a, rl = pad["comp"]
         x = dsp.comp(x, dsp.peak_db(x) + t + 6, r, a, rl, 6.0)
+    if pad.get("punch"):                       # AOG-DRUM-BARKER-V1: (dB, ms) the first moments of the hit lifted
+        x = dsp.attack_boost(x, *pad["punch"])
+    if pad.get("squash"):                      # AOG-DRUM-BARKER-V1: (threshold re peak, ratio, wet dB) parallel squash
+        x = dsp.squash(x, *pad["squash"])
     if pad.get("sat"):
         x = x / (np.max(np.abs(x)) + 1e-9) * 0.9
         x = dsp.sat(x, pad["sat"])

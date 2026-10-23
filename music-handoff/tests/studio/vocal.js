@@ -10,6 +10,12 @@
    · the sounds, measured: Phone has little energy below 250 Hz; Echo has delayed copies in the gaps; Tuned pulls the
      226 Hz voice toward A (220 Hz); Robot pulls it harder; Air adds highs; Low cut takes lows away; Double spreads the voice
      left and right; Big hall rings on after the voice; nothing past −1 dB;
+   · AOG-VOCAL-FX-V2, the More sounds, measured the same way: Deep and High move the fundamental 5 semitones down and up (and
+     Pitch +3 three), steady, the same length and timing; Harmony adds power a third up in the song's key (C, not C♯, over the
+     voice's A) or a fifth; Megaphone narrows the band and adds harmonics the voice did not have (so does Grit on Clean);
+     Slapback adds one echo about 108 ms late and no second; Chop is shut between the song's sixteenths from the take's bar;
+     Ghost swells before each line; Old record is band-limited with a soft wow and a quiet crackle; Wide is wider than Double;
+     the fold (closed on a phone), each new sound tapped as it plays, 44 px keys; take 2 goes to My Track with its new name;
    · ▶ Hear it plays with the beat; a control moved while it plays changes the sound (the sound becomes Custom) and it plays on;
    · + Add to My Track puts it on the desk's track 8 at the right bar (From bar 1; bar 3 on the iPad), called Voz 1 / Voice 1,
      its sound named, its dry take kept, and My Track marks Voice; a take longer than the loop makes the beat repeat to fit;
@@ -39,21 +45,26 @@ const REFUSE = () => { const md = navigator.mediaDevices; if (!md) return; md.ge
 /* the sounds, measured in the booth */
 const MEASURE = async () => {
   const OC = window.OfflineAudioContext, V = AOGVocal, dry = V.dry(), sr = V.state().take.sr;
-  const band = async (x, type, f) => { const oc = new OC(1, x.length, sr), b = oc.createBuffer(1, x.length, sr); b.copyToChannel(x, 0); const s = oc.createBufferSource(); s.buffer = b;
+  const filt = async (x, type, f) => { const oc = new OC(1, x.length, sr), b = oc.createBuffer(1, x.length, sr); b.copyToChannel(x, 0); const s = oc.createBufferSource(); s.buffer = b;
     let n = s; for (let i = 0; i < 4; i++) { const z = oc.createBiquadFilter(); z.type = type; z.frequency.value = f; z.Q.value = -3.01; n.connect(z); n = z; } n.connect(oc.destination); s.start(0);
-    const y = (await oc.startRendering()).getChannelData(0); let a = 0, t = 0; for (let i = 0; i < x.length; i++) { a += y[i] * y[i]; t += x[i] * x[i]; } return t > 0 ? a / t : 0; };
+    return (await oc.startRendering()).getChannelData(0); };
+  const band = async (x, type, f) => { const y = await filt(x, type, f); let a = 0, t = 0; for (let i = 0; i < x.length; i++) { a += y[i] * y[i]; t += x[i] * x[i]; } return t > 0 ? a / t : 0; };
   const F = Math.round(0.02 * sr), fr = x => { const o = []; for (let i = 0; i + F <= x.length; i += F) { let e = 0; for (let j = 0; j < F; j++) e += x[i + j] * x[i + j]; o.push(e); } return o; };
   const dF = fr(dry); let mx = 0; dF.forEach(e => { if (e > mx) mx = e; });
   const gap = x => { const f = fr(x); let g = 0, t = 0; f.forEach((e, i) => { t += e; if (i < dF.length && dF[i] < mx * 1e-4) g += e; }); return t > 0 ? g / t : 0; };
   /* after the voice: the share of the sound that rings on past the take's end */
   const after = x => { let a = 0, t = 0; for (let i = 0; i < x.length; i++) { const e = x[i] * x[i]; t += e; if (i >= dry.length) a += e; } return t > 0 ? a / t : 0; };
   const side = m => { let d = 0, t = 0; for (let i = 0; i < m.L.length; i++) { const s = m.L[i] - m.R[i], q = m.L[i] + m.R[i]; d += s * s; t += q * q; } return t > 0 ? d / t : 0; };
-  const pitch = x => { const N = Math.round(0.04 * sr), H = Math.round(0.02 * sr), lo = Math.floor(sr / 400), hi = Math.ceil(sr / 150), out = [];
+  const pitches = x => { const N = Math.round(0.04 * sr), H = Math.round(0.02 * sr), lo = Math.floor(sr / 400), hi = Math.ceil(sr / 150), out = [];
     const ef = []; for (let i = 0; i + N <= x.length; i += H) { let e = 0; for (let j = 0; j < N; j++) e += x[i + j] * x[i + j]; ef.push(e); } let em = 0; ef.forEach(e => { if (e > em) em = e; });
     ef.forEach((e, k) => { if (e < em * 0.4) return; const i = k * H; let best = -1, bl = 0; const r = [];
       for (let L = lo - 1; L <= hi + 1; L++) { let s = 0; for (let j = 0; j < N; j++) s += x[i + j] * x[i + j + L]; r[L] = s; if (L >= lo && L <= hi && s > best) { best = s; bl = L; } }
+      for (let L = lo; L < bl; L++) if (r[L] >= 0.9 * best && r[L] >= r[L - 1] && r[L] >= r[L + 1]) { bl = L; break; }   /* the shortest period that fits as well: not an octave low */
       const a = r[bl - 1], b = r[bl], c = r[bl + 1], d = a - 2 * b + c, p = bl + (d < 0 ? 0.5 * (a - c) / d : 0); out.push(sr / p); });
-    out.sort((a, b) => a - b); return out.length ? out[Math.floor(out.length / 2)] : 0; };
+    return out.sort((a, b) => a - b); };
+  const pitch = x => { const o = pitches(x); return o.length ? o[Math.floor(o.length / 2)] : 0; };
+  /* how far the pitch wanders, in cents (from a tenth of the way up the frames to nine tenths) */
+  const spread = x => { const o = pitches(x); return o.length > 4 ? 1200 * Math.log2(o[Math.floor(o.length * 0.9)] / o[Math.floor(o.length * 0.1)]) : 0; };
   const pk = m => { let p = 0; for (let i = 0; i < m.L.length; i++) { const a = Math.max(Math.abs(m.L[i]), Math.abs(m.R[i])); if (a > p) p = a; } return p; };
   const r = { dryHz: pitch(dry) }, peaks = [];
   const one = async (name, k, ch) => { const m = await V.make(k, ch); peaks.push(pk(m)); return m; };
@@ -68,6 +79,44 @@ const MEASURE = async () => {
   const s0 = await one("s0", "clean", { ss: 0 }), s1 = await one("s1", "clean", { ss: 100 }); r.ss = { off: await band(s0.L, "highpass", 5000), on: await band(s1.L, "highpass", 5000) };
   const lc = await one("lc", "clean", { lc: 300 }); r.lc = { low: await band(lc.L, "lowpass", 250) };
   const dbl = await one("dbl", "clean", { dbl: 80, room: 0 }); r.dbl = { side: side(dbl) };
+  /* AOG-VOCAL-FX-V2: the More sounds. The dry take's bursts start at on0 (the tone starts there, its s 0.42 s later) */
+  const F5 = Math.round(0.005 * sr), onsets = x => { const e = []; for (let i = 0; i + F5 <= x.length; i += F5) { let s = 0; for (let j = 0; j < F5; j++) s += x[i + j] * x[i + j]; e.push(s); }
+    let m = 0; e.forEach(v => { if (v > m) m = v; }); const o = []; for (let i = 1; i < e.length; i++) if (e[i] > 0.3 * m && e[i - 1] <= 0.3 * m && (!o.length || i * F5 - o[o.length - 1] > 0.8 * sr)) o.push(i * F5); return o; };
+  const on0 = onsets(dry), win = (x, a, b) => { let s = 0; for (let i = Math.max(0, Math.round(a)); i < Math.min(x.length, Math.round(b)); i++) s += x[i] * x[i]; return s; };
+  /* the power at one frequency, in 0.2 s inside each burst (Goertzel, Hann window) */
+  const gz = (x, f, a, N) => { const w = 2 * Math.cos(2 * Math.PI * f / sr); let s1 = 0, s2 = 0; for (let i = 0; i < N; i++) { const s = x[a + i] * (0.5 - 0.5 * Math.cos(2 * Math.PI * i / N)) + w * s1 - s2; s2 = s1; s1 = s; } return s1 * s1 + s2 * s2 - w * s1 * s2; };
+  const tonal = (x, f) => { let p = 0; const N = Math.round(0.2 * sr); on0.forEach(o => { const a = o + Math.round(0.08 * sr); if (a + N < x.length) p += gz(x, f, a, N); }); return p; };
+  /* the share of the tone's sound above f (the pretend voice has nothing above 3.84 kHz: anything there is new) */
+  const toneShare = async (x, f) => { const y = await filt(x, "highpass", f); let a = 0, t = 0; on0.forEach(o => { a += win(y, o + 0.06 * sr, o + 0.34 * sr); t += win(x, o + 0.06 * sr, o + 0.34 * sr); }); return t > 0 ? a / t : 0; };
+  r.on0 = on0.length; r.clean.len = clean.L.length; r.clean.on = onsets(clean.L).map(o => o / sr);
+  const deep = await one("deep", "deep"), high = await one("high", "high"), p3 = await one("p3", "clean", { pitch: 3 });
+  r.deep = { hz: pitch(deep.L), wob: spread(deep.L), len: deep.L.length, on: onsets(deep.L).map(o => o / sr) };
+  r.high = { hz: pitch(high.L), wob: spread(high.L), len: high.L.length, on: onsets(high.L).map(o => o / sr) };
+  r.p3 = { hz: pitch(p3.L) };
+  const harm = await one("harmony", "harmony"), harm5 = await one("harm5", "harmony", { hiv: 5 }), f0 = r.dryHz;
+  r.harm = { third: tonal(harm.L, f0 * 2 ** (3 / 12)) / tonal(harm.L, f0), major: tonal(harm.L, f0 * 2 ** (4 / 12)) / tonal(harm.L, f0),
+    fifth: tonal(harm5.L, f0 * 2 ** (7 / 12)) / tonal(harm5.L, f0), clean: tonal(clean.L, f0 * 2 ** (3 / 12)) / tonal(clean.L, f0) };
+  const mega = await one("mega", "mega"), mega0 = await one("mega0", "mega", { grit: 0 }), grit = await one("grit", "clean", { grit: 80 });
+  r.mega = { low: await band(mega.L, "lowpass", 250), high: await band(mega.L, "highpass", 6000), adds: await toneShare(mega.L, 4600), adds0: await toneShare(mega0.L, 4600) };
+  r.grit = { adds: await toneShare(grit.L, 4600), clean: await toneShare(clean.L, 4600) };
+  /* Slapback: what it adds (the same sound with and without it, quiet enough that neither is turned down), lined up with the voice */
+  const sl0 = await one("sl0", "clean", { vol: -12 }), sl1 = await one("sl1", "clean", { slap: 60, vol: -12 }), res = sl1.L.map((v, i) => v - sl0.L[i]);
+  /* how late: where each burst of what it adds starts, against where the voice's own burst starts */
+  const oR = onsets(res), oD = onsets(sl0.L), lags = oR.map(t => { const d = oD.filter(u => u <= t + F5); return d.length ? (t - d[d.length - 1]) / sr : 1; }).filter(x => x > 0.03 && x < 0.5).sort((x, y) => x - y);
+  const lag = lags.length ? lags[lags.length >> 1] : 0; let one1 = 0, two = 0; on0.forEach(o => { one1 += win(res, o + (lag + 0.05) * sr, o + (lag + 0.35) * sr); two += win(res, o + (lag + 0.5) * sr, o + (lag + 0.6) * sr); });
+  r.slap = { lag: lag, after: one1 > 0 ? two / one1 : 1, share: win(res, 0, res.length) / win(sl0.L, 0, sl0.L.length) };
+  /* Chop: inside each burst, the sound where the gate is open and where it is shut, on the song's sixteenths from the take's bar */
+  const chop = await one("chop", "chop"), tk = V.state().take, step = 60 / tk.bpm / 4;
+  const gate = st => { let a = 0, b = 0; on0.forEach(o => { const t0 = o / sr + 0.03, t1 = o / sr + 0.37;
+    for (let k = Math.ceil((t0 - tk.head) / st); tk.head + (k + 1) * st <= t1; k++) { const s = tk.head + k * st; a += win(chop.L, (s + 0.12 * st) * sr, (s + 0.45 * st) * sr); b += win(chop.L, (s + 0.64 * st) * sr, (s + 0.95 * st) * sr); } });
+    return a > 0 ? b / a : 1; };
+  r.chop = { shut: gate(step), other: gate(60 / (tk.bpm + 12) / 4), step: step, bpm: tk.bpm };   /* the same look at a tempo 12 bpm faster finds no such pattern */
+  /* Ghost: the sound in the 0.3 s before each line, against the line itself */
+  const gh = await one("ghost", "ghost"), pre = x => { let a = 0, b = 0; on0.forEach(o => { if (o < 0.6 * sr) return; a += win(x, o - 0.3 * sr, o - 0.02 * sr); b += win(x, o + 0.05 * sr, o + 0.35 * sr); }); return b > 0 ? a / b : 0; };
+  r.ghost = { pre: pre(gh.L), clean: pre(clean.L) };
+  const old = await one("old", "old");
+  r.old = { high: await band(old.L, "highpass", 6000), low: await band(old.L, "lowpass", 120), cleanLow: await band(clean.L, "lowpass", 120), gap: gap(old.L), wow: spread(old.L), cleanWow: spread(clean.L) };
+  const wide = await one("wide", "wide", { room: 0 }); r.wide = { side: side(wide) };
   r.peak = Math.max(...peaks);
   return r;
 };
@@ -145,6 +194,25 @@ const ST = f => f.evaluate(() => AOGVocal.state());
     ok(R.lc.low < R.clean.low / 2, `${nm}: Low cut takes lows away (${(R.lc.low * 100).toFixed(1)}% below 250 Hz against ${(R.clean.low * 100).toFixed(1)}%)`);
     ok(R.dbl.side > 4 * R.clean.side + 0.005, `${nm}: Double spreads the voice left and right (side ${(R.dbl.side * 100).toFixed(2)}% against ${(R.clean.side * 100).toFixed(2)}%)`);
     ok(R.hall.after > 2 * R.clean.after, `${nm}: Big hall rings on after the voice (${(R.hall.after * 100).toFixed(2)}% against ${(R.clean.after * 100).toFixed(2)}%)`);
+    /* AOG-VOCAL-FX-V2: the More sounds, measured on the same pretend voice */
+    const semi = hz => 12 * Math.log2(hz / R.dryHz), sameOn = (a, b) => { a = a.filter(t => t > 0.1); b = b.filter(t => t > 0.1); return a.length === b.length && a.length >= 2 && a.every((t, i) => Math.abs(t - b[i]) < 0.02); };   /* a line cut by the take's start is left out */
+    ok(Math.abs(semi(R.deep.hz) + 5) < 0.15 && R.deep.wob < 5 && R.deep.len === R.clean.len && sameOn(R.deep.on, R.clean.on),
+      `${nm}: Deep moves the voice 5 notes down (${R.dryHz.toFixed(1)} Hz → ${R.deep.hz.toFixed(1)} Hz, ${semi(R.deep.hz).toFixed(2)} semitones, steady: ${R.deep.wob.toFixed(1)} cents) and keeps its length and timing (${R.deep.len} samples, lines at ${R.deep.on.map(t => t.toFixed(2)).join(" ")} s)`);
+    ok(Math.abs(semi(R.high.hz) - 5) < 0.15 && R.high.wob < 5 && R.high.len === R.clean.len && sameOn(R.high.on, R.clean.on),
+      `${nm}: High moves it 5 notes up (${R.high.hz.toFixed(1)} Hz, ${semi(R.high.hz).toFixed(2)} semitones, steady: ${R.high.wob.toFixed(1)} cents), the same length and timing`);
+    ok(Math.abs(semi(R.p3.hz) - 3) < 0.15, `${nm}: the Pitch control at +3 moves it 3 notes up (${R.p3.hz.toFixed(1)} Hz, ${semi(R.p3.hz).toFixed(2)} semitones)`);
+    ok(R.harm.third > 0.05 && R.harm.third > 20 * R.harm.clean && R.harm.third > 4 * R.harm.major && R.harm.fifth > 0.05,
+      `${nm}: Harmony adds a voice a third up in C major (A → C: ${(R.harm.third * 100).toFixed(1)}% of the lead at ${(R.dryHz * 2 ** 0.25).toFixed(1)} Hz, the major third ${(R.harm.major * 100).toFixed(2)}%, Clean ${(R.harm.clean * 100).toFixed(3)}%); a fifth up when chosen (${(R.harm.fifth * 100).toFixed(1)}%)`);
+    ok(R.mega.low < R.clean.low / 3 && R.mega.high < R.clean.high / 3 && R.mega.adds > 10 * R.mega.adds0 && R.mega.adds > 0.0005,
+      `${nm}: Megaphone limits the band (below 250 Hz ${(R.mega.low * 100).toFixed(2)}%, above 6 kHz ${(R.mega.high * 100).toFixed(2)}%) and adds harmonics the voice did not have (above 4.6 kHz ${(R.mega.adds * 100).toFixed(3)}% against ${(R.mega.adds0 * 100).toFixed(4)}% without Grit)`);
+    ok(R.grit.adds > 10 * R.grit.clean && R.grit.adds > 0.0005, `${nm}: Grit adds harmonics on any sound (Clean with Grit 80: ${(R.grit.adds * 100).toFixed(3)}% above 4.6 kHz against ${(R.grit.clean * 100).toFixed(4)}%)`);
+    ok(R.slap.lag >= 0.09 && R.slap.lag <= 0.12 && R.slap.after < 0.02 && R.slap.share > 0.05,
+      `${nm}: Slapback adds one echo ${(R.slap.lag * 1000).toFixed(0)} ms late (${(R.slap.share * 100).toFixed(1)}% as loud as the voice) and no second one (${(R.slap.after * 100).toFixed(2)}% after it)`);
+    ok(R.chop.shut < 0.03 && R.chop.other > 0.2, `${nm}: Chop opens and shuts on the song's sixteenths (${R.chop.bpm} bpm, every ${(R.chop.step * 1000).toFixed(0)} ms from the take's bar): the shut parts ${(R.chop.shut * 100).toFixed(2)}% of the open ones; on a grid 12 bpm faster, ${(R.chop.other * 100).toFixed(0)}%`);
+    ok(R.ghost.pre > 0.02 && R.ghost.pre > 8 * R.ghost.clean, `${nm}: Ghost swells in before each line (the 0.3 s before: ${(R.ghost.pre * 100).toFixed(1)}% of the line, against Clean's ${(R.ghost.clean * 100).toFixed(2)}%)`);
+    ok(R.old.high < R.clean.high / 4 && R.old.low < R.clean.low / 2 + 1e-4 && R.old.wow > 3 && R.old.wow < 40 && R.old.wow > 3 * R.old.cleanWow + 1 && R.old.gap < 0.03,
+      `${nm}: Old record is band-limited (above 6 kHz ${(R.old.high * 100).toFixed(2)}% against ${(R.clean.high * 100).toFixed(2)}%), with a soft wow (${R.old.wow.toFixed(1)} cents against ${R.old.cleanWow.toFixed(1)}) and a quiet crackle (${(R.old.gap * 100).toFixed(2)}% in the gaps)`);
+    ok(R.wide.side > 1.5 * R.dbl.side, `${nm}: Wide spreads the voice wider than Double (side ${(R.wide.side * 100).toFixed(1)}% against ${(R.dbl.side * 100).toFixed(1)}%)`);
     /* 4 · Hear it; a control moved while it plays; every ready-made sound tapped */
     await f.click("#vbHear"); await W(900); s = await ST(f);
     ok(s.hear && s.ac === "running" && s.raf, `${nm}: ▶ Hear it plays the take with the beat, and its meter moves`);
@@ -155,6 +223,20 @@ const ST = f => f.evaluate(() => AOGVocal.state());
     await f.waitForFunction(() => !AOGVocal.state().making, null, { timeout: 30000 }).catch(() => {});
     await f.click('.vb-snd[data-snd="radio"]'); await W(600); s = await ST(f);
     ok(s.snd === "radio" && s.hear, `${nm}: each of the nine sounds can be tapped as it plays; Radio picked, still playing`);
+    /* AOG-VOCAL-FX-V2: More sounds, a fold (closed on a phone, open on an iPad); each one tapped as it plays */
+    const fold = await f.evaluate(() => ({ open: document.getElementById("vbMore").open, h: document.getElementById("vbMoreH").textContent }));
+    ok(fold.open === (nm !== "iPhone") && (lang === "es" ? /Más sonidos/ : /More sounds/).test(fold.h), `${nm}: the newer sounds wait in a fold, "${fold.h}", ${fold.open ? "open on a wide screen" : "closed on a phone"}`);
+    if (!fold.open) { await f.click("#vbMoreH"); await W(300); }
+    const more = await f.evaluate(() => AOGVocal.more);
+    for (const k of more) { await f.click(`.vb-snd[data-snd="${k}"]`); await W(300); }
+    await f.waitForFunction(() => !AOGVocal.state().making, null, { timeout: 30000 }).catch(() => {});
+    await W(700); s = await ST(f);
+    const words = await f.evaluate(() => [...document.querySelectorAll("#vbMore .vb-snd")].map(b => b.querySelector("b").textContent + " · " + b.querySelector("span").textContent));
+    ok(s.snd === "chop" && s.hear && words.length === 9 && words.every(w => w.length > 8), `${nm}: each of the nine More sounds can be tapped as it plays; Chop picked, still playing: ${words.join(" | ")}`);
+    const lay2 = await f.evaluate(() => { const r = e => e.getBoundingClientRect(), bs = [...document.querySelectorAll("button,select,summary,input[type=range]")].filter(x => x.offsetParent);
+      return { sw: document.scrollingElement.scrollWidth, iw: innerWidth, small: bs.filter(x => r(x).height < 44).map(x => x.getAttribute("data-snd") || x.getAttribute("data-k") || x.id || x.className), out: bs.filter(x => r(x).right > innerWidth + 1).map(x => x.id || x.className) }; });
+    ok(lay2.sw <= lay2.iw && !lay2.small.length && !lay2.out.length, `${nm}: with More sounds open, the booth still fits and every key is 44px+: ${JSON.stringify(lay2)}`);
+    await f.click('.vb-snd[data-snd="radio"]'); await W(600); s = await ST(f);
     pc = await f.evaluate(`(${PROBE})()`); pk = await f.evaluate(`(${CALM})()`);
     ok(!pc.length && !pk.length, `${nm}: with a take, its sounds and controls, the booth reads (${pc.length} ${JSON.stringify(pc.slice(0, 2))}) and is calm (${pk.join("; ") || "ok"})`);
     await f.click("#vbHear"); await W(500); s = await ST(f);
@@ -179,6 +261,16 @@ const ST = f => f.evaluate(() => AOGVocal.state());
     const goneLine = s.line;
     await f.click("#vbBack"); await W(300); const s2 = await ST(f);
     ok(s.takes === 1 && s.gone && s2.takes === 2 && !s2.gone, `${nm}: ✕ lets a take go ("${goneLine}"); Bring it back returns it`);
+    /* AOG-VOCAL-FX-V2: the second take in one of the More sounds, onto My Track with its name; the desk keeps every new name */
+    const nk = nm === "iPhone" ? "harmony" : "ghost";
+    if (!(await f.evaluate(() => document.getElementById("vbMore").open))) { await f.click("#vbMoreH"); await W(300); }
+    await f.click(`.vb-snd[data-snd="${nk}"]`); await W(300); const pickLine = (await ST(f)).line;
+    await f.click("#vbAdd");
+    await f.waitForFunction(() => /Voice 2|Voz 2/.test(AOGVocal.state().line), null, { timeout: 40000 }).catch(() => {});
+    s = await ST(f); await W(800);
+    const dk2 = await desk(p).evaluate(names => { const c = __aogStudio.SONG.tracks[7].clip; return c ? { name: c.name, snd: c.snd, kept: typeof cleanClip === "function" ? names.filter(k => (cleanClip(Object.assign({}, c, { snd: k })) || {}).snd === k) : null } : null; }, more);
+    ok(dk2 && dk2.snd === nk && dk2.name === (lang === "es" ? "Voz 2" : "Voice 2") && dk2.kept && dk2.kept.length === more.length && s.take.added,
+      `${nm}: take 2 in ${nk} goes to My Track as ${dk2 && dk2.name}, its sound named "${dk2 && dk2.snd}"; the desk keeps every new sound's name (${dk2 && dk2.kept && dk2.kept.length} of ${more.length}); "${pickLine}"`);
     /* 7 · a phone on its side */
     if (nm === "iPhone") {
       await p.setViewportSize({ width: 844, height: 390 }); await W(800);

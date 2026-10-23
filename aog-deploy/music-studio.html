@@ -622,6 +622,31 @@ html.aog-keys .st-cp .st-keys{display:block}
 .st-rest>.st-blk:first-of-type{padding-top:4px;margin-top:0}
 .st-rest>.st-blk+.st-blk::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:linear-gradient(90deg,transparent,rgba(208,168,82,.5) 18%,rgba(208,168,82,.5) 82%,transparent)}
 .st-rest>.st-blk+.st-blk::after{content:"\25C6";position:absolute;left:50%;top:-6px;transform:translateX(-50%);font-size:9px;line-height:12px;color:#d0a852;background:#1b1c20;padding:0 6px}
+/* AOG-DESK-FOLDS-V1 (Jimmy, 2026-10-23: "a lot of words and noise"): under the mixer, five quiet folds, one plain heading and
+   one short line each. The labels inside read as ordinary words, not engraved capitals; a fold's parts are told apart by a
+   small heading, never by a gold diamond rule. */
+.st-fold{margin:10px 0 0;border:1px solid #2c2e33;border-radius:12px;background:#17181c;box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
+#trackBlk>.st-pick+.st-fold{margin-top:14px}
+.st-fold>summary{display:flex;flex-direction:column;justify-content:center;gap:2px;min-height:60px;padding:10px 14px 10px 40px;position:relative;cursor:pointer;list-style:none;border-radius:11px}
+.st-fold>summary::-webkit-details-marker{display:none}
+.st-fold>summary::before{content:"\25B8";position:absolute;left:15px;top:50%;transform:translateY(-50%);font-size:1rem;line-height:1;color:#e0b25a}
+.st-fold[open]>summary::before{content:"\25BE"}
+.st-fold>summary:focus-visible{outline:3px solid #c9a24b;outline-offset:2px}
+.st-fold .st-fh{font:400 1.14rem/1.25 "Fraunces",var(--serif,Georgia,serif);color:#efe5cf}
+.st-fold .st-fl{font:400 .95rem/1.4 var(--sans);color:#cfc5b3}
+.st-fold[open]>summary{border-bottom:1px solid #26282d;border-radius:11px 11px 0 0}
+.st-fold>.st-fb{padding:12px 14px 14px}
+.st-fold>.st-fb>:first-child{margin-top:0}
+.st-fold .st-blk{border-top:0;padding:0;margin:0}
+.st-fold .st-fb>.st-field{display:block;margin:0 0 .9rem}
+.st-fold .st-blk+.st-blk{margin-top:1.4rem}
+.st-fold #inboxBlk{margin-top:1.2rem}
+.st-fold #inboxBlk[hidden]{display:none}
+#desk .st-rest .st-fold h2.st-h,#desk .st-rest .st-fold h3.st-h3{font-size:1rem!important;margin:1.1rem 0 .5rem}
+#desk .st-rest .st-fold .st-blk>h2.st-h:first-child,#desk .st-rest .st-fold .st-sr+h3.st-h3{margin-top:0}
+#trackBlk>.st-pick>.st-lab,.st-fold .st-field>.st-lab,.st-fold .st-stp>.st-lab{font:600 .95rem/1.3 var(--sans);letter-spacing:0;text-transform:none;color:#ddd3c1;margin:0 0 .35rem}
+.st-fnew{margin-top:22px}
+@media (max-width:520px){ .st-fold>summary{padding:10px 12px 10px 36px} .st-fold>summary::before{left:13px} .st-fold>.st-fb{padding:12px 10px 12px} }
 /* trays: the open recording, each take, each mixer strip */
 .st-cc,.st-rec,.st-strip{background-color:#15161a;background-image:linear-gradient(#111215,#191a1e);border:1px solid #0a0a0c;
   box-shadow:inset 0 2px 6px rgba(0,0,0,.7),0 1px 0 rgba(255,255,255,.06)}
@@ -954,21 +979,36 @@ html.in-studio .st-chassis{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 
         <div id="proMaster"></div><!-- AOG-DESK-MASTER-V1: more for the whole song (aog-desk-pro.js) -->
       </div>
 
+      <!-- AOG-DESK-FOLDS-V1 (Jimmy, 2026-10-23, on an iPad: "the bottom half of the mixer is hard to follow as it is a lot of
+           words and noise. It makes me confused."): under the mixer, the track picker, then five folds, each with one plain
+           heading and one short line: This track, Add a recording, Finish and share, Save your song, Start a new song (last,
+           apart). Add a recording and Finish and share start open; a fold someone opens or closes stays so on this device
+           (aog.studio.folds.v1), except Start a new song, which always starts closed. The desk opens a fold itself when it
+           sends someone there: a take arrives, a track is picked, Edit, Your songs, Send it out, a locker link, a song to open. -->
       <div class="st-blk" id="trackBlk">
         <label class="st-field st-pick"><span class="st-lab" data-t="trackPick"></span><select id="trackSel"></select></label>
-        <div id="clipBox"></div>
-        <div id="moreBox"></div><!-- AOG-DESK-MORE-V1: more for this track: effects, takes, name and colour, and the clipboard -->
-        <h3 class="st-h3" data-t="recsH" id="recsH"></h3>
-        <div class="st-recs" id="recs"></div>
-        <div id="voiceBox"></div><!-- AOG-STUDIO-VOICE-V1: track 8 is your voice -->
-        <p class="st-line" id="recLine" aria-live="polite"></p>
-      </div>
-
-      <div class="st-blk" id="inboxBlk">
-        <h2 class="st-h" data-t="inboxH"></h2>
-        <p class="st-line note" id="goneLine" aria-live="polite" style="margin:0 0 .6rem"></p>
-        <div class="st-inb" id="inbox"></div>
-        <p class="st-line" id="inboxLine" aria-live="polite"></p>
+        <details class="st-fold" id="foldTrack">
+          <summary><span class="st-fh" data-t="fTrkH"></span><span class="st-fl" data-t="fTrkL"></span></summary>
+          <div class="st-fb">
+            <div id="clipBox"></div>
+            <div id="moreBox"></div><!-- AOG-DESK-MORE-V1: more for this track: effects, takes, name and colour, and the clipboard -->
+          </div>
+        </details>
+        <details class="st-fold" id="foldAdd" open>
+          <summary><span class="st-fh" data-t="fAddH"></span><span class="st-fl" data-t="fAddL"></span></summary>
+          <div class="st-fb">
+            <h3 class="st-h3 st-sr" data-t="recsH" id="recsH"></h3>
+            <div class="st-recs" id="recs"></div>
+            <div id="voiceBox"></div><!-- AOG-STUDIO-VOICE-V1: track 8 is your voice -->
+            <p class="st-line" id="recLine" aria-live="polite"></p>
+            <div class="st-blk" id="inboxBlk">
+              <h2 class="st-h" data-t="inboxH"></h2>
+              <p class="st-line note" id="goneLine" aria-live="polite" style="margin:0 0 .6rem"></p>
+              <div class="st-inb" id="inbox"></div>
+              <p class="st-line" id="inboxLine" aria-live="polite"></p>
+            </div>
+          </div>
+        </details>
       </div>
 
       <!-- AOG-STEMS-V1: Split a song into parts (aog-stems.js, loaded on the press): Drums, Bass, Voice, The rest on four empty tracks -->
@@ -981,48 +1021,58 @@ html.in-studio .st-chassis{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 
         <p class="st-line" id="splitMsg" aria-live="polite"></p>
       </div>
 
-      <div class="st-blk">
-        <h2 class="st-h" data-t="finishH"></h2>
-        <label class="st-field st-bits"><span class="st-lab" data-t="bitsLab"></span><select id="bitsSel"></select></label><!-- AOG-DESK-BITS-V1 -->
-        <div class="st-row"><button type="button" class="st-btn st-go" id="mixBtn"></button><button type="button" class="st-btn st-go" id="outBtn"></button></div><!-- AOG-STUDIO-SENDOUT-V1 -->
-        <p class="st-line" id="mixLine" aria-live="polite"></p>
-        <div id="mixOut"></div>
-        <p class="st-line" id="outLine" aria-live="polite"></p>
-        <div id="outBox"></div>
-        <p class="st-line" id="sendLine" aria-live="polite"></p>
-        <div class="st-row st-new"><button type="button" class="st-btn st-clear" id="newBtn"></button></div>
-        <div class="st-ask" id="newAsk" hidden>
-          <p id="newAskT"></p>
-          <div class="st-row"><button type="button" class="st-btn st-clear" id="newYes"></button><button type="button" class="st-btn" id="newNo"></button></div>
+      <details class="st-fold" id="foldFinish" open>
+        <summary><span class="st-fh" data-t="fFinH"></span><span class="st-fl" data-t="fFinL"></span></summary>
+        <div class="st-fb">
+          <label class="st-field st-name"><span class="st-lab" data-t="songName"></span><input type="text" id="songName" maxlength="80" autocomplete="off" enterkeyhint="done"></label>
+          <label class="st-field st-bits"><span class="st-lab" data-t="bitsLab"></span><select id="bitsSel"></select></label><!-- AOG-DESK-BITS-V1 -->
+          <div class="st-row"><button type="button" class="st-btn st-go" id="mixBtn"></button><button type="button" class="st-btn st-go" id="outBtn"></button></div><!-- AOG-STUDIO-SENDOUT-V1 -->
+          <p class="st-line" id="mixLine" aria-live="polite"></p>
+          <div id="mixOut"></div>
+          <p class="st-line" id="outLine" aria-live="polite"></p>
+          <div id="outBox"></div>
+          <p class="st-line" id="sendLine" aria-live="polite"></p>
         </div>
-      </div>
+      </details>
 
-      <div class="st-blk" id="verBlk"><!-- AOG-DESK-VERSIONS-V1: versions of this song, on this device, and A/B -->
-        <h2 class="st-h" data-t="verH"></h2>
-        <p class="st-line" data-t="verLine" style="margin:0 0 .7rem"></p>
-        <div class="st-row"><label class="st-field st-name"><span class="st-lab" data-t="verName"></span><input type="text" id="verName" maxlength="40" autocomplete="off" enterkeyhint="done"></label><button type="button" class="st-btn st-go" id="verSave"></button></div>
-        <div id="verList"></div>
-        <div class="st-ask" id="verAsk" hidden><p id="verAskT"></p><div class="st-row"><button type="button" class="st-btn st-clear" id="verYes"></button><button type="button" class="st-btn" id="verNo"></button></div></div>
-        <p class="st-line" id="verMsg" aria-live="polite"></p>
-      </div>
-
-      <div class="st-blk" id="carryBlk"><!-- AOG-STUDIO-CARRY-V1: the same song on the iPhone, the iPad and the computer -->
-        <h2 class="st-h" data-t="carryH"></h2>
-        <p class="st-line" data-t="carryLine" style="margin:0 0 .7rem"></p>
-        <label class="st-field st-name"><span class="st-lab" data-t="songName"></span><input type="text" id="songName" maxlength="80" autocomplete="off" enterkeyhint="done"></label>
-        <h3 class="st-h3" data-t="fileH"></h3>
-        <p class="st-line" data-t="fileWhat" style="margin:0 0 .6rem"></p><!-- AOG-DESK-PROJECT-V1 -->
-        <div class="st-row"><button type="button" class="st-btn st-go" id="fileSave"></button><button type="button" class="st-btn" id="fileOpen"></button></div>
-        <input type="file" id="fileIn" hidden>
-        <p class="st-line" id="fileLine" aria-live="polite"></p>
-        <h3 class="st-h3" data-t="lockH"></h3>
-        <div id="locker"></div>
-        <p class="st-line" id="lockLine" aria-live="polite"></p>
-        <div class="st-ask" id="openAsk" hidden>
-          <p id="openAskT"></p>
-          <div class="st-row"><button type="button" class="st-btn st-clear" id="openYes"></button><button type="button" class="st-btn" id="openNo"></button></div>
+      <details class="st-fold" id="foldSave">
+        <summary><span class="st-fh" data-t="fSaveH"></span><span class="st-fl" data-t="fSaveL"></span></summary>
+        <div class="st-fb">
+          <div class="st-blk" id="verBlk"><!-- AOG-DESK-VERSIONS-V1: versions of this song, on this device, and A/B -->
+            <h2 class="st-h" data-t="verH"></h2>
+            <div class="st-row"><label class="st-field st-name"><span class="st-lab" data-t="verName"></span><input type="text" id="verName" maxlength="40" autocomplete="off" enterkeyhint="done"></label><button type="button" class="st-btn st-go" id="verSave"></button></div>
+            <div id="verList"></div>
+            <div class="st-ask" id="verAsk" hidden><p id="verAskT"></p><div class="st-row"><button type="button" class="st-btn st-clear" id="verYes"></button><button type="button" class="st-btn" id="verNo"></button></div></div>
+            <p class="st-line" id="verMsg" aria-live="polite"></p>
+          </div>
+          <div class="st-blk" id="carryBlk"><!-- AOG-STUDIO-CARRY-V1: the same song on the iPhone, the iPad and the computer -->
+            <h2 class="st-h st-sr" data-t="carryH"></h2><!-- the fold's line says it; kept for a screen reader -->
+            <h3 class="st-h3" data-t="fileH"></h3>
+            <p class="st-line" data-t="fileWhat" style="margin:0 0 .6rem"></p><!-- AOG-DESK-PROJECT-V1 -->
+            <div class="st-row"><button type="button" class="st-btn st-go" id="fileSave"></button><button type="button" class="st-btn" id="fileOpen"></button></div>
+            <input type="file" id="fileIn" hidden>
+            <p class="st-line" id="fileLine" aria-live="polite"></p>
+            <h3 class="st-h3" data-t="lockH"></h3>
+            <div id="locker"></div>
+            <p class="st-line" id="lockLine" aria-live="polite"></p>
+            <div class="st-ask" id="openAsk" hidden>
+              <p id="openAskT"></p>
+              <div class="st-row"><button type="button" class="st-btn st-clear" id="openYes"></button><button type="button" class="st-btn" id="openNo"></button></div>
+            </div>
+          </div>
         </div>
-      </div>
+      </details>
+
+      <details class="st-fold st-fnew" id="foldNew"><!-- last and apart, so nobody clears a song by mistake -->
+        <summary><span class="st-fh" data-t="newSong"></span><span class="st-fl" data-t="fNewL"></span></summary>
+        <div class="st-fb">
+          <div class="st-row st-new"><button type="button" class="st-btn st-clear" id="newBtn"></button></div>
+          <div class="st-ask" id="newAsk" hidden>
+            <p id="newAskT"></p>
+            <div class="st-row"><button type="button" class="st-btn st-clear" id="newYes"></button><button type="button" class="st-btn" id="newNo"></button></div>
+          </div>
+        </div>
+      </details>
       </div>
     </section>
     <section id="lessons" aria-label="Lessons"></section><!-- AOG-LESSONS-V1: the Mixing Desk's lessons (aog-lessons.js), under the instrument (Jimmy, 2026-10-05: "units and worksheets should go underneath the instruments") -->
@@ -1151,7 +1201,17 @@ const STR={
   punch:{en:"Punch",es:"Pegada"}, room:{en:"Room",es:"Sala"}, echo:{en:"Echo",es:"Eco"},
   masterH:{en:"The whole song",es:"Toda la canción"},
   roomPick:{en:"Room sound",es:"Sonido de sala"}, rm_made:{en:"Smooth",es:"Suave"}, rm_small:{en:"Small room",es:"Sala pequeña"}, rm_studio:{en:"Studio",es:"Estudio"}, rm_hall:{en:"Hall",es:"Sala grande"}, rm_church:{en:"Church",es:"Iglesia"}, roomFrom:{en:"Where the rooms come from",es:"De dónde vienen las salas"},   /* AOG-REAL-ROOMS-V1 */ glue:{en:"Glue",es:"Unión"}, songVol:{en:"Song volume",es:"Volumen de la canción"},
-  finishH:{en:"Finish your song",es:"Termina tu canción"},
+  /* AOG-DESK-FOLDS-V1: the five folds under the mixer, a heading and one short line each */
+  fAddH:{en:"Add a recording",es:"Añade una grabación"},
+  fAddL:{en:"Put a take from any instrument on a track.",es:"Pon en una pista una toma de cualquier instrumento."},
+  fTrkH:{en:"This track",es:"Esta pista"},
+  fTrkL:{en:"Change its recording, effects, name and colour.",es:"Cambia su grabación, sus efectos, su nombre y su color."},
+  fFinH:{en:"Finish and share",es:"Termina y comparte"},
+  fFinL:{en:"Name it, then make the mix or send it out.",es:"Ponle nombre. Luego haz la mezcla o compártela."},
+  fSaveH:{en:"Save your song",es:"Guarda tu canción"},
+  fSaveL:{en:"Save versions, or take the song to your other devices.",es:"Guarda versiones o lleva la canción a tus otros aparatos."},
+  fNewL:{en:"Clears all eight tracks. Save first to keep your song.",es:"Borra las ocho pistas. Guarda antes para conservar tu canción."},
+  newGo:{en:"Clear the desk",es:"Limpiar la mesa"},
   mixBtn:{en:"Make the mix",es:"Hacer la mezcla"}, mixing:{en:"Making the mix…",es:"Haciendo la mezcla…"},
   mixNeed:{en:"Put a recording on a track first.",es:"Primero pon una grabación en una pista."},
   mixQuiet:{en:"Every track is muted, so the mix would be silent.",es:"Todas las pistas están silenciadas, así que la mezcla quedaría en silencio."},
@@ -1223,11 +1283,10 @@ const STR={
   /* AOG-STUDIO-CARRY-V1 (Jimmy, 2026-10-07: go back and forth between the iPhone, the iPad and the computer, with no account) */
   carryH:{en:"Your song on your other devices",es:"Tu canción en tus otros aparatos"},
   songsBtn:{en:"Your songs",es:"Tus canciones"}, songsOn:{en:"Locker on",es:"Casillero activo"}, songsOff:{en:"Save or open",es:"Guardar o abrir"},
-  carryLine:{en:"Take this song to your iPhone, iPad or computer and keep working on it there.",es:"Lleva esta canción a tu iPhone, iPad o computadora y sigue trabajando en ella allí."},
   songName:{en:"Song name",es:"Nombre de la canción"}, myName:{en:"My song",es:"Mi canción"},
   fileH:{en:"With a song file",es:"Con un archivo de canción"},
   fileSave:{en:"Save my song",es:"Guardar mi canción"}, fileOpen:{en:"Open my song",es:"Abrir mi canción"},   /* AOG-DESK-PROJECT-V1 */
-  fileWhat:{en:"One file holds the whole desk and its sound. It stays on your device. Move it with AirDrop or Files.",es:"Un archivo guarda toda la mesa y su sonido. Se queda en tu aparato. Muévelo con AirDrop o Archivos."},
+  fileWhat:{en:"One file holds the whole song. It stays on your device; move it with AirDrop or Files.",es:"Un archivo guarda toda la canción. Se queda en tu aparato; muévelo con AirDrop o Archivos."},
   fileMaking:{en:"Making your song file…",es:"Haciendo tu archivo de canción…"},
   fileSaved:{en:"Saved: {name}. On an iPhone or iPad it is in the Files app, under Downloads. Open it on your other device with Open my song.",es:"Guardado: {name}. En un iPhone o iPad está en la app Archivos, en Descargas. Ábrelo en tu otro aparato con Abrir mi canción."},
   fileNeed:{en:"Put a recording on a track first.",es:"Primero pon una grabación en una pista."},
@@ -1423,7 +1482,7 @@ function cleanClip(c){
   if(c.lp===true) o.lp=true;   /* AOG-DESK-CLIPLOOP-V1: its end was dragged to repeat it */
   /* AOG-MICBOOTH-V1: a voice take keeps its dry recording beside it, and the sound chosen, so it can be made again (AOG-VOCAL-V1: the Vocal Booth's sounds too) */
   if(o.voice && typeof c.dry==="string" && /^c[a-z0-9]{4,41}$/.test(c.dry)) o.dry=c.dry;
-  if(o.voice && /^(clean|warm|radio|rap|echo|hall|tuned|robot|phone|custom)$/.test(c.snd)) o.snd=c.snd;
+  if(o.voice && /^(clean|warm|radio|rap|echo|hall|tuned|robot|phone|deep|high|harmony|wide|slap|mega|old|ghost|chop|custom)$/.test(c.snd)) o.snd=c.snd;   /* AOG-VOCAL-FX-V2: the booth's More sounds too */
   /* AOG-PIANOROLL-V1: a take from the Piano, Guitar, Bass or Band keeps the notes it was played with (checked by aog-pianoroll.js) */
   if(c.notes){ const n=window.AOGPianoRoll ? AOGPianoRoll.clean(c.notes) : (Array.isArray(c.notes.ev) ? c.notes : null); if(n) o.notes=n; }
   /* AOG-STUDIO-INBOX-V1: a take from the list remembers its tool, its number and which take in the list it was */
@@ -2565,6 +2624,7 @@ async function refreshShelves(){
   }
   paintRecs();
   if(sources().length) LES.mark("inbox1");   /* AOG-LESSONS-V1 */
+  foldArrived();   /* AOG-DESK-FOLDS-V1 */
 }
 /* AOG-STUDIO-INBOX-V1 — the takes sent here: the list's index (no audio), newest first; the audio is read when a take
    goes on a track */
@@ -2577,6 +2637,7 @@ async function refreshInbox(){
   if(S.ask && !INBOX.items.some(x=>x.id===S.ask)) S.ask="";
   paintInbox(); paintRecs();
   if(sources().length) LES.mark("inbox1");   /* AOG-LESSONS-V1 */
+  foldArrived();   /* AOG-DESK-FOLDS-V1 */
 }
 /* every recording that can go on a track: the takes sent here, then the newest thing each tool sent to the turntables */
 function sources(){
@@ -2961,6 +3022,7 @@ async function chainLatency(){
 function leftOut(){ return SONG.tracks.map((x,i)=>i).filter(i=>SONG.tracks[i].clip && !audible(i)); }
 async function makeMix(){
   const line=$("mixLine"), btn=$("mixBtn");
+  foldOpen(btn);   /* AOG-DESK-FOLDS-V1: what it says is in Finish and share */
   $("sendLine").textContent="";
   if(!hasClips()){ line.textContent=t("mixNeed"); return; }
   if(!SONG.tracks.some((x,i)=>x.clip && audible(i))){ line.textContent=t("mixQuiet"); return; }
@@ -3135,6 +3197,7 @@ async function applySong(r){
 function askOpen(name, go){
   if(!hasClips()){ go(); return; }
   CARRY.ask=go;
+  foldOpen($("openAsk"));   /* AOG-DESK-FOLDS-V1 */
   $("openAskT").textContent=t("openAsk",{name:name});
   $("openAsk").hidden=false; $("openNo").focus();
 }
@@ -3283,7 +3346,7 @@ function sizeWords(n){ return t("mbN",{n:(Math.max(0.1, n/1048576)).toFixed(1)})
 /* AOG-DESK-SONGS-BTN-V1: the console's Your songs button goes straight to saving and opening, the locker's light shows it is on */
 function paintSongsBtn(){ const l=$("songsLed"), y=$("songsSay"); if(!l||!y) return; l.classList.toggle("on", !!CARRY.lock); const t2=t(CARRY.lock?"songsOn":"songsOff"); if(y.textContent!==t2) y.textContent=t2; }
 function goSongs(){
-  const b=$("carryBlk"); if(!b) return; b.scrollIntoView({block:"start"});
+  const b=$("carryBlk"); if(!b) return; foldOpen(b); b.scrollIntoView({block:"start"});
   const h=b.querySelector("h2"); if(h){ h.setAttribute("tabindex","-1"); try{ h.focus({preventScroll:true}); }catch(e){} }
   if(CARRY.lock){ try{ lockList(true); }catch(e){} }
   else { const d=b.querySelector("#locker details"); if(d) d.open=true; }
@@ -3630,6 +3693,7 @@ function outItem(o){ o.url=o.url||URL.createObjectURL(o.file); return o; }
 function dropOut(k){ if(OUT[k] && OUT[k].url) URL.revokeObjectURL(OUT[k].url); OUT[k]=null; }
 async function sendOut(){
   const line=$("outLine"), btn=$("outBtn");
+  foldOpen(btn);   /* AOG-DESK-FOLDS-V1: the Studio's Send it out lands here too */
   if(OUT.busy) return;
   if(!hasClips()){ line.textContent=t("mixNeed"); return; }
   if(!SONG.tracks.some((x,i)=>x.clip && audible(i))){ line.textContent=t("outSilent"); return; }
@@ -3880,7 +3944,7 @@ function paintText(){
   const kl=$("keysList"); if(kl) kl.innerHTML=((STR.keysList||{})[S.lang]||STR.keysList.en).map(r=>{ const [k,w]=r.split("|"); return `<li><kbd>${esc(k)}</kbd><span>${esc(w)}</span></li>`; }).join("");   /* AOG-DESK-KEYS-V2 */
   $("foot").innerHTML=`<p>${esc(t("foot"))}</p>`;
   $("newAskT").textContent=t("newAsk"); $("newYes").textContent=t("newYes"); $("newNo").textContent=t("newNo");
-  $("newBtn").textContent=t("newSong"); $("mixBtn").textContent=t("mixBtn");
+  $("newBtn").textContent=t("newGo"); $("mixBtn").textContent=t("mixBtn");
 }
 function paintAll(){ try{ paintSongsBtn(); }catch(e){} paintText(); paintTransport(); paintTimeline(); paintTrack(); paintMixer(true); paintFinish(); paintInbox(); paintCarry(); paintSlip(); dmPaintVer(); paintSplit(); }
 
@@ -4538,6 +4602,8 @@ function paintInbox(){
   const note=gone.length ? t(gone.length===1 ? "goneOne" : "goneMany",{max:INBOX_MAX, list:andList(gone.map(x=>takeLabel(x)+" ("+madeWords(x.at||x.sent)+")"))})+
     (gone.some(x=>tracksOf(x.id).length) ? " "+t("goneKept") : "") : "";
   if(gl.textContent!==note) gl.textContent=note;   /* a live line: said once, not again at every repaint */
+  const blk=$("inboxBlk"), none=!INBOX.items.length && !note && !$("inboxLine").textContent;   /* AOG-DESK-FOLDS-V1: an empty list says nothing; the empty menu above already says how */
+  if(blk.hidden!==none) blk.hidden=none;
   if(!INBOX.items.length){ box.innerHTML=`<p class="st-line" style="margin:0">${esc(t("inboxNone"))}</p>`; return; }
   box.innerHTML=`<p class="st-line" style="margin:0">${esc(t("inboxCount",{n:INBOX.items.length, max:INBOX_MAX}))}</p>`+INBOX.items.map(x=>{
     const name=takeLabel(x), T=TOOLS[x.from], on=tracksOf(x.id);
@@ -4915,11 +4981,37 @@ function bindAuto(){
     else if(b.id==="lnClear"){ autoClear(); const s=$("drawSel"); if(s) s.focus(); } });
 }
 
+/* ══ AOG-DESK-FOLDS-V1 — the folds under the mixer ══
+   Each fold remembers on this device whether it is open (aog.studio.folds.v1); Start a new song never does, so it is
+   always closed when the desk opens. The desk opens a fold itself when it sends someone to what is inside. */
+const FOLDS_KEY="aog.studio.folds.v1", FOLDS=["foldAdd","foldTrack","foldFinish","foldSave","foldNew"];
+function foldsGet(){ try{ const o=JSON.parse(localStorage.getItem(FOLDS_KEY)||"null"); return o && typeof o==="object" ? o : {}; }catch(e){ return {}; } }
+function foldsPut(o){ try{ localStorage.setItem(FOLDS_KEY, JSON.stringify(o)); }catch(e){} }
+function foldsInit(){
+  const o=foldsGet();
+  FOLDS.forEach(id=>{ const d=$(id); if(!d) return;
+    if(id!=="foldNew" && typeof o[id]==="boolean" && d.open!==o[id]) d.open=o[id];
+    d.addEventListener("toggle", ()=>{ if(id==="foldNew") return; const s=foldsGet(); if(s[id]===d.open) return; s[id]=d.open; foldsPut(s); });
+  });
+  /* the Studio's Send it out brings the button into view first: the fold opens so there is something to see */
+  const ob=$("outBtn"), own=ob.scrollIntoView;
+  ob.scrollIntoView=function(a){ foldOpen(ob); return own.call(ob, a); };
+}
+function foldOpen(el){ const d=el && el.closest ? el.closest("details.st-fold") : null; if(d && !d.open) d.open=true; }
+/* a track picked: an empty one opens Add a recording, one with a recording opens This track */
+function foldForTrack(){ foldOpen(SONG.tracks[SONG.sel].clip ? $("clipBox") : $("recs")); }
+/* a take or a recording newer than any this desk has shown opens Add a recording */
+function foldArrived(){
+  let top=0; sources().forEach(o=>{ const ts=o.kind==="take" ? (o.x.sent||o.x.at||0) : ((o.v && o.v.rec && o.v.rec.at)||0); if(ts>top) top=ts; });
+  const s=foldsGet(); if(top>(+s.seen||0)){ s.seen=top; foldsPut(s); foldOpen($("recs")); }
+}
+
 /* ══ wiring ══ */
 function selectTrack(i){ try{ setTimeout(paintSplit, 0); }catch(e){}
   i=Math.max(0, Math.min(NT-1, i|0)); if(i===SONG.sel) return;
   SONG.sel=i; saveSoon(); $("recLine").textContent=""; LES.mark("track2");
   paintTimeline(); paintTrack(); paintMixer();
+  if(SONG.tracks[i].clip) foldOpen($("clipBox"));   /* AOG-DESK-FOLDS-V1: picking a track with a recording opens This track */
 }
 function bind(){
   $("playBtn").onclick=playStop;
@@ -4930,7 +5022,7 @@ function bind(){
   $("loopTo").onchange=()=>{ SONG.loopTo=+$("loopTo").value; LES.mark("loopSet"); if(SONG.loopFrom>SONG.loopTo) SONG.loopFrom=SONG.loopTo; save(); reschedule(); paintTransport(); paintTimeline(); };
   $("songsBtn").onclick=goSongs;   /* AOG-DESK-SONGS-BTN-V1 */
   $("countBtn").onclick=()=>{ SONG.countIn=!SONG.countIn; save(); paintTransport(); };
-  $("trackSel").onchange=()=>selectTrack(+$("trackSel").value);
+  $("trackSel").onchange=()=>{ selectTrack(+$("trackSel").value); foldForTrack(); };
   $("timeline").addEventListener("click", e=>{
     const tl=$("timeline"); if(tl._noClick && Date.now()-tl._noClick<500) return;   /* AOG-DESK-DRAG-V1: the click a drag ends with */
     const b=e.target.closest("[data-sel]"); if(!b) return; const i=+b.getAttribute("data-sel");
@@ -4954,7 +5046,8 @@ function bind(){
     else if(el.id==="atSel"){ if(el.value!=="") clipAct("at:"+el.value); }
     else if(el.id==="untilSel") clipAct("n:"+el.value);
     else if(el.id==="pieceSel"){ const c=SONG.tracks[SONG.sel].clip; if(c){ c.psel=+el.value; LES.mark("piece1"); S.edMsg=""; saveSoon(); paintTimeline(); paintTrack(); } } });
-  $("recs").addEventListener("click", e=>{ const b=e.target.closest("[data-put]"); if(b && !b.disabled) putOn(b.getAttribute("data-put"), SONG.sel); });
+  $("recs").addEventListener("click", e=>{ const b=e.target.closest("[data-put]"); if(b && !b.disabled){ const ti=SONG.sel;
+    putOn(b.getAttribute("data-put"), ti).then(()=>{ if(SONG.sel===ti && SONG.tracks[ti].clip) foldOpen($("clipBox")); }); } });   /* AOG-DESK-FOLDS-V1: then This track, to shape it */
   /* AOG-STUDIO-INBOX-V1: the menu of recordings, and the takes sent here */
   $("recs").addEventListener("change", e=>{ const el=e.target; if(el && el.id==="srcSel"){ S.pick=el.value; S.picked=true; paintRecs(); if(el._ptr){ el._ptr=false; setTimeout(()=>el.blur(),0); } } });
   $("recs").addEventListener("pointerdown", e=>{ const el=e.target; if(el && el.id==="srcSel") el._ptr=true; });
@@ -4967,7 +5060,7 @@ function bind(){
   $("mixer").addEventListener("click", e=>{
     const sh=e.target.closest("[data-sel]"); if(sh){ selectTrack(+sh.getAttribute("data-sel")); return; }
     /* AOG-STUDIO-EDIT-V1: Edit opens that track's pieces, speed and fades, just above the mixer */
-    const ed=e.target.closest("[data-edit]"); if(ed){ selectTrack(+ed.getAttribute("data-edit")); const tb=$("trackBlk"); if(tb) tb.scrollIntoView({block:"start"});
+    const ed=e.target.closest("[data-edit]"); if(ed){ selectTrack(+ed.getAttribute("data-edit")); foldOpen($("clipBox")); const tb=$("trackBlk"); if(tb) tb.scrollIntoView({block:"start"});
       try{ $("trackSel").focus({preventScroll:true}); }catch(err){} return; }
     const ms=e.target.closest("[data-ms]"); if(!ms) return;
     const i=+ms.closest(".st-strip").getAttribute("data-tr"), k=ms.getAttribute("data-ms");
@@ -5067,8 +5160,9 @@ const lockJoined=lockFromHash();   /* AOG-STUDIO-CARRY-V1: a link from another d
 bind();
 bindConsole();   /* AOG-DESK-FACE-V1 */
 dmInit();   /* AOG-DESK-MORE-V1 */
+foldsInit();   /* AOG-DESK-FOLDS-V1 */
 paintAll();
-if(lockJoined) $("lockLine").textContent=t("lockJoined");
+if(lockJoined){ $("lockLine").textContent=t("lockJoined"); foldOpen($("locker")); }
 if(CARRY.lock){ lockKeep(); lockList(true); }
 meterStill();
 /* AOG-DESK-VU-V1: the meters are drawn again when their size changes and once the serif type has come */
