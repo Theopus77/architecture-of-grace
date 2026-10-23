@@ -69,6 +69,11 @@ select{width:100%;min-height:52px;font-size:17px;padding:8px 12px;border:1.5px s
 .none{color:var(--soft);font-size:15px;margin:0;padding:10px 12px;border:1.5px dashed var(--line);border-radius:14px}
 @media (min-width:640px) and (max-width:979px){#wsList{grid-template-columns:1fr 1fr}}
 
+.wsall summary{cursor:pointer;list-style:none;display:flex;align-items:center;min-height:48px;font:600 clamp(21px,4.4vw,25px)/1.25 Fraunces,Georgia,serif;color:var(--ink)}
+.wsall summary::-webkit-details-marker{display:none}
+.wsall summary::before{content:"+";flex:none;display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;margin-right:10px;border:1.5px solid var(--gold);border-radius:50%;font:700 18px/1 Inter,sans-serif}
+.wsall[open] summary::before{content:"−"}
+.wsall[open] summary{margin-bottom:6px}
 /* My Room 36 */
 .mine .stat{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;padding:12px 0;border-top:1px solid var(--line)}
 .mine .stat:first-of-type{border-top:0}
@@ -77,7 +82,7 @@ select{width:100%;min-height:52px;font-size:17px;padding:8px 12px;border:1.5px s
 .mine .stat .what span.v{display:block;font-weight:700}
 .mine .units{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;flex-basis:100%}
 .mine .units span{font-size:14px;color:var(--ink);background:var(--chip);border-radius:999px;padding:4px 10px}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:46px;padding:0 16px;border-radius:999px;border:1.5px solid var(--gold);background:var(--card);color:var(--ink);font:700 15px/1.2 inherit;text-decoration:none;cursor:pointer}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:52px;padding:0 16px;border-radius:999px;border:1.5px solid var(--gold);background:var(--card);color:var(--ink);font:700 15px/1.2 inherit;text-decoration:none;cursor:pointer}
 .btn.main{background:var(--navy);border-color:var(--navy);color:#F4EEE2}
 [data-theme="dark"] .btn.main{background:#F2C964;border-color:#F2C964;color:#0A1E33}
 @media (hover:hover){.btn:not(.main):hover{background:var(--chip)}}
@@ -89,7 +94,7 @@ select{width:100%;min-height:52px;font-size:17px;padding:8px 12px;border:1.5px s
 .heavy ul{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:8px}
 .heavy li{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px}
 .heavy li .t{flex:1 1 220px}
-.heavy .btn{border-color:var(--rose);min-height:44px}
+.heavy .btn{border-color:var(--rose)}
 
 /* the line that is always there */
 .keep{position:sticky;bottom:0;z-index:5;background:var(--card);border-top:1.5px solid var(--line);padding:10px 16px calc(10px + env(safe-area-inset-bottom))}
@@ -108,6 +113,7 @@ select{width:100%;min-height:52px;font-size:17px;padding:8px 12px;border:1.5px s
   .card,.card *{color:#111 !important;box-shadow:none !important}
   .rows a,.rows .row,.tag,.rows .k{background:#fff !important;border-color:#bbb !important}
   .layout{display:block}
+  .wsall summary::before{display:none}
 }
 </style>
 </head>
@@ -150,7 +156,7 @@ select{width:100%;min-height:52px;font-size:17px;padding:8px 12px;border:1.5px s
         <li><span class="t"><span data-en="988 Suicide &amp; Crisis Lifeline: call or text 988." data-es="988 Línea de Prevención del Suicidio y Crisis: llama o envía un texto al 988.">988 Suicide &amp; Crisis Lifeline: call or text 988.</span></span><a class="btn" href="tel:988"><span data-en="Call 988" data-es="Llamar al 988">Call 988</span></a><a class="btn" href="sms:988"><span data-en="Text 988" data-es="Texto al 988">Text 988</span></a></li>
         <li><span class="t"><span data-en="Crisis Text Line: text HOME to 741741." data-es="Crisis Text Line: envía HOME al 741741.">Crisis Text Line: text HOME to 741741.</span></span><a class="btn" href="sms:741741"><span data-en="Text 741741" data-es="Texto al 741741">Text 741741</span></a></li>
       </ul>
-      <p class="quiet" style="margin-top:12px"><a class="btn" href="/calm"><span data-en="Calm tools: breathe, settle, reset" data-es="Herramientas para calmarte: respira, cálmate, vuelve a empezar">Calm tools: breathe, settle, reset</span></a></p>
+      <p style="margin:12px 0 0"><a class="btn" href="/calm"><span data-en="Calm tools: breathe, settle, reset" data-es="Herramientas para calmarte: respira, cálmate, vuelve a empezar">Calm tools: breathe, settle, reset</span></a></p>
     </section>
 
     <section class="card" aria-labelledby="h-all">
@@ -164,18 +170,18 @@ select{width:100%;min-height:52px;font-size:17px;padding:8px 12px;border:1.5px s
     </section>
   </div>
 
-  <section class="card" aria-labelledby="h-ws">
-    <h2 id="h-ws"><span data-en="Your seven worksheets" data-es="Tus siete hojas de trabajo">Your seven worksheets</span></h2>
+  <details class="card wsall" id="wsAll">
+    <summary><span class="sm"><span data-en="All seven worksheets" data-es="Las siete hojas de trabajo">All seven worksheets</span></span></summary>
     <p class="sub"><span data-en="Type in them or print them. They save as you go." data-es="Escribe en ellas o imprímelas. Se guardan mientras escribes.">Type in them or print them. They save as you go.</span></p>
     <ul class="rows" id="wsList"></ul>
-  </section>
+  </details>
 
 </div>
 <p class="foot"><span data-en="Room 36 · Architecture of Grace · architectureofgrace.com" data-es="Salón 36 · Architecture of Grace · architectureofgrace.com">Room 36 · Architecture of Grace · architectureofgrace.com</span></p>
 </main>
 
 <div class="keep" role="note">
-  <p><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg><span data-en="What you write here stays on this device. No one else can read it." data-es="Lo que escribes aquí se queda en este dispositivo. Nadie más lo puede leer.">What you write here stays on this device. No one else can read it.</span></p>
+  <p><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg><span data-en="What you write here stays on this device. It is never sent to anyone." data-es="Lo que escribes aquí se queda en este dispositivo. Nunca se le envía a nadie.">What you write here stays on this device. It is never sent to anyone.</span></p>
 </div>
 
 <script>
@@ -348,6 +354,7 @@ pick.addEventListener("change",function(){ put("aog.r36.students.unit",pick.valu
 drawUnit(); drawMine(); drawWs();
 
 /* read again only when something may have changed: coming back to this page, the tab shown, another tab saving */
+window.addEventListener("beforeprint",function(){ D.getElementById("wsAll").open=true; });
 window.addEventListener("pageshow",function(e){ if(e.persisted) drawAll(); });
 D.addEventListener("visibilitychange",function(){ if(D.visibilityState==="visible") drawAll(); });
 window.addEventListener("storage",function(e){ if(!e.key||/^aog\.(novel\.room-36|interior\.ws\.v1|interior\.wb36)/.test(e.key)) drawAll(); });

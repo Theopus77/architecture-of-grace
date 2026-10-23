@@ -162,6 +162,8 @@
       (next ? '<button class="nv-btn next primary" type="button" data-go="' + (i + 1) + '"><small>' + T("Next", "Siguiente") + '</small><span class="t">' + esc(label(next)) + "</span></button>" : "<span></span>");
     $("#nvPrev").disabled = false; $("#nvNext").disabled = !next;
     ls.set("aog.novel." + KEY + ".at", i);
+    /* AOG-R36-V1: the sections opened, for the students' own progress card (/room-36-students). On this device only. */
+    try { var rd = JSON.parse(ls.get("aog.novel." + KEY + ".read") || "[]"); if (!(rd instanceof Array)) rd = []; if (rd.indexOf(i) < 0) { rd.push(i); ls.set("aog.novel." + KEY + ".read", JSON.stringify(rd)); } } catch (e) {}
     try {
       var u = new URL(location.href); u.searchParams.set("ch", i);
       if (push) history.pushState({ ch: i }, "", u); else history.replaceState({ ch: i }, "", u);

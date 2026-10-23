@@ -472,7 +472,7 @@ def region_glance(data, bs, ds, rs):
     rows = [
         ("academic", ("Academic courses", "Cursos académicos"), ("%d courses · %d units · %d standards" % (len(ac), au, acodes), "%d cursos · %d unidades · %d estándares" % (len(ac), au, acodes)),
          ("NGSS, Illinois ELA, Math and Social Science, C3, NHES, ACTFL, CEE, FCS", "NGSS, Illinois ELA, Matemáticas y Ciencias Sociales, C3, NHES, ACTFL, CEE, FCS")),
-        ("sel", ("SEL lessons", "Lecciones SEL"), ("140 lessons · 75 Illinois SEL benchmarks", "140 lecciones · 75 estándares SEL de Illinois"), ("CASEL, Illinois SEL", "CASEL, SEL de Illinois")),
+        ("sel", ("SEL lessons", "Lecciones SEL"), ("140 lessons · 79 Illinois SEL benchmarks", "140 lecciones · 79 estándares SEL de Illinois"), ("CASEL, Illinois SEL", "CASEL, SEL de Illinois")),
         ("faith", ("Faith & texts", "Fe y textos"), ("%d courses · %d units · %d standards" % (len(fc), fu, fcodes), "%d cursos · %d unidades · %d estándares" % (len(fc), fu, fcodes)),
          ("Common Core reading, C3, Illinois SS 9–12, teaching about religion", "Lectura Common Core, C3, Illinois SS 9–12, enseñar sobre religión")),
         ("drafts", ("Daily Practice", "Práctica diaria"), ("%d subjects · K–12" % len(ds), "%d materias · K–12" % len(ds)), ("The standards of each subject's course", "Los estándares del curso de cada materia")),
