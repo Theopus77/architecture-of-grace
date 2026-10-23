@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><style id="aog-first-paint">/* AOG-ONE-PAINT-V1 (2026-09-27) — Jimmy: moving between units was "very choppy, makes me sick". The page now shows once, fully built: it waits on its paper colour until the shared scripts and fonts are in (aog-sketch.js adds .aog-ready), and never longer than ~1 s even if a script fails. No fade, no motion. */html{background:#F7F2E6}html[data-theme="dark"]{background:#0A1E33}html:not(.aog-ready) body{visibility:hidden;animation:aogOnePaint 0s linear 1.1s forwards}@keyframes aogOnePaint{to{visibility:visible}}@media print{html:not(.aog-ready) body{visibility:visible;animation:none}}</style>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>(function(){var t="light";try{if(localStorage.getItem("aog.theme.lightstart.v1")==="1"&&localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);})();</script>
+<title>Room 36 — Year A, B and C · Architecture of Grace</title>
+<meta name="description" content="Room 36 (SEL, grades 6–8) in three years: grade 6 is Year A, grade 7 is Year B, grade 8 is Year C. Every lesson keeps its goal, standards and safety steps; the stories and roles are new each year. English and Spanish, printable.">
+<link rel="canonical" href="https://architectureofgrace.com/room-36-years">
+<meta property="og:title" content="Room 36 — Year A, B and C · Architecture of Grace">
+<meta property="og:description" content="Grades 6, 7 and 8 in Room 36, so a student never repeats the same year. Same goals and safety steps; new stories and new roles.">
+<meta property="og:url" content="https://architectureofgrace.com/room-36-years">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#0A1E33">
+<!-- ═══ AOG-R36-V1 (2026-10-23) · /room-36-years — Room 36 in three years. Before this page, one 28-lesson year served
+     grades 6, 7 and 8 (the novel is set in seventh grade; lessons carry "Grade 6: / Grades 7–8:" tips), so a student who
+     had Room 36 three years running met the same lessons three times. Here every lesson has three versions: Year A
+     (grade 6) is the lesson as written, in one line; Year B (grade 7) is a new story set at Lincoln Park Middle School,
+     the novel's school, with a different chapter or scene to anchor it; Year C (grade 8) gives students a leading role
+     (part of the lesson for younger students, or something for the whole school) and a new story. Each lesson's goal,
+     Illinois standards and safety steps are the same in every year, and no year raises a lesson's risk: the ★★ lessons
+     (U2·L6, U3·L6) keep their whole protocol every year, and in ★ and ★★ lessons Year C never leads the private work.
+     A drop-down picks the lesson (#u1l1 … #u4l7 in the address); Print gives one lesson's three years on one page, or
+     all 28. This page saves nothing. Teachers and reviewers read it; nothing here is for students to fill in. ═══ -->
+<style>
+:root{--navy:#0A1E33;--ink:#1f2a36;--soft:#4f5b69;--gold:#8A6116;--cream:#FBF6EA;--card:#fff;--line:#E6DCC6;--chip:#F3ECDC;--sage:#2F6B52;
+  --ya:#2F6B52;--yb:#8A6116;--yc:#2D4F7C;--risk:#8A2B17;--riskbg:#FBEAE5}
+[data-theme="dark"]{--ink:#EDEAE2;--soft:#B6C0CC;--gold:#F2C964;--cream:#101820;--card:#18222E;--line:#2E3A48;--chip:#223042;--sage:#8FD1B0;
+  --ya:#8FD1B0;--yb:#F2C964;--yc:#9DBBE8;--risk:#F5B7A8;--riskbg:#3A221D}
+*{box-sizing:border-box}
+html{background:var(--cream)}
+body{margin:0;color:var(--ink);background:var(--cream);font:17px/1.55 -apple-system,"Segoe UI",Inter,Roboto,Arial,sans-serif}
+header.hero{background:linear-gradient(180deg,#12314F,#0A1E33);color:#F4EEE2;padding:26px 16px 30px}
+.hero-in{max-width:1180px;margin:0 auto}
+.ey{font:800 12px/1.3 Inter,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:#F2C964;margin:0 0 6px}
+h1{font:600 clamp(30px,6vw,44px)/1.1 Fraunces,Georgia,serif;margin:0 0 8px;color:#F4EEE2}
+.lede{color:#D5DEE8;margin:0;max-width:680px}
+main{max-width:1180px;margin:0 auto;padding:18px 16px 70px}
+.card{background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:18px;margin:0 0 14px}
+.card h2{font:600 clamp(21px,4.4vw,25px)/1.25 Fraunces,Georgia,serif;margin:0 0 8px;color:var(--ink)}
+.card p{margin:0 0 10px}
+.sub{color:var(--soft);font-size:15px}
+.abc{display:grid;grid-template-columns:1fr;gap:8px;margin:4px 0 12px;padding:0;list-style:none}
+@media (min-width:720px){.abc{grid-template-columns:1fr 1fr 1fr}}
+.abc li{display:flex;gap:10px;align-items:flex-start;background:var(--chip);border-radius:12px;padding:10px 12px}
+.abc b{display:block}
+.ltr{flex:none;display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;font:800 16px/1 Inter,sans-serif;background:var(--card);border:2.5px solid currentColor}
+.ltr.a{color:var(--ya)}.ltr.b{color:var(--yb)}.ltr.c{color:var(--yc)}
+.abc .t{color:var(--ink)}
+.how{margin:4px 0 0;padding-left:1.3em}
+.how li{margin:0 0 6px}
+details.fold{border-top:1px solid var(--line);margin-top:10px;padding-top:4px}
+details.fold summary{cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:center;list-style:none;color:var(--ink)}
+details.fold summary::-webkit-details-marker{display:none}
+details.fold summary::before{content:"+";flex:none;display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;margin-right:10px;border:1.5px solid var(--gold);border-radius:50%;font-size:15px;line-height:1}
+details.fold[open] summary::before{content:"−"}
+details.fold ul{margin:2px 0 10px;padding-left:1.2em}
+details.fold li{margin:0 0 6px}
+a{color:var(--ink)}
+.lk{font-weight:700;text-underline-offset:3px}
+.tools{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;margin:0 0 14px}
+.tools label{display:block;font-weight:700;font-size:15px;margin:0 0 6px}
+.tools .pickwrap{flex:1 1 320px;min-width:0}
+.tools .acts{display:flex;flex-wrap:wrap;gap:8px}
+select{width:100%;min-height:48px;font-size:17px;padding:8px 12px;border:1.5px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);font-weight:600}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:46px;padding:0 16px;border-radius:999px;border:1.5px solid var(--gold);background:var(--card);color:var(--ink);font:700 15px/1.2 inherit;text-decoration:none;cursor:pointer}
+.btn.main{background:var(--navy);border-color:var(--navy);color:#F4EEE2}
+[data-theme="dark"] .btn.main{background:#F2C964;border-color:#F2C964;color:#0A1E33}
+.btn:focus-visible,select:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+@media (hover:hover){.btn:not(.main):hover{background:var(--chip)}}
+/* ── one lesson ── */
+.lhead{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;margin:0 0 4px}
+.code{font:800 12.5px/1.3 Inter,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--ink);background:var(--chip);border-radius:999px;padding:5px 11px}
+.when{color:var(--soft);font-size:15px}
+.star{display:inline-block;font:800 12.5px/1.3 Inter,sans-serif;letter-spacing:.04em;color:var(--risk);background:var(--riskbg);border:1.5px solid var(--risk);border-radius:999px;padding:4px 10px}
+#lesson h2{font:600 clamp(24px,5vw,32px)/1.2 Fraunces,Georgia,serif;margin:4px 0 12px;color:var(--ink);scroll-margin-top:90px}
+.keep{background:var(--chip);border-radius:14px;padding:12px 14px;margin:0 0 12px}
+.keep h3{font:800 12px/1.3 Inter,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--soft);margin:0 0 8px}
+.kr{display:grid;grid-template-columns:1fr;gap:2px;margin:0 0 8px}
+.kr:last-child{margin-bottom:0}
+@media (min-width:720px){.kr{grid-template-columns:150px 1fr;gap:12px}}
+.kr b{font-size:14.5px;color:var(--soft)}
+.kr.risk span{color:var(--ink)}
+.kr.risk b{color:var(--risk)}
+.llinks{display:flex;flex-wrap:wrap;gap:8px 18px;margin:0 0 14px}
+.yrs{display:grid;grid-template-columns:1fr;gap:14px}
+@media (min-width:980px){.yrs{grid-template-columns:1fr 1fr 1fr}}
+.yr{margin:0;border-top:6px solid var(--ya)}
+.yr.b{border-top-color:var(--yb)}.yr.c{border-top-color:var(--yc)}
+.yr h3{display:flex;gap:10px;align-items:center;font:600 21px/1.2 Fraunces,Georgia,serif;margin:0 0 2px;color:var(--ink)}
+.yr .ysub{color:var(--soft);font-size:15px;margin:0 0 10px}
+.fl{margin:0 0 10px}
+.fl b{display:block;font:800 11.5px/1.3 Inter,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--soft);margin:0 0 2px}
+.fl ol{margin:0;padding-left:1.25em}
+.fl ol li{margin:0 0 4px}
+.nov{border-top:1px solid var(--line);padding-top:8px;margin-top:4px}
+.nov a{font-weight:700}
+.foot{color:var(--soft);font-size:14px;text-align:center;margin-top:18px}
+.more{max-width:420px;margin:18px auto 0}
+.more label{display:block;font-weight:700;font-size:15px;margin:0 0 6px;text-align:center}
+/* ── paper: drawn into #paper only to print, one lesson's three years per page ── */
+#paper{display:none}
+@media print{
+  @page{size:letter;margin:.5in}
+  html,body{background:#fff !important;color:#111}
+  body > :not(#paper){display:none !important}
+  #paper{display:block}
+  .sheet + .sheet{break-before:page;page-break-before:always}
+}
+#paper.measure{display:block;position:absolute;left:-10000px;top:0;width:7.5in;visibility:hidden}
+.sheet{color:#111;font:10.5pt/1.36 -apple-system,"Segoe UI",Inter,Arial,sans-serif}
+.sheet,.sheet *{box-shadow:none !important;outline:0 !important;background-image:none !important}
+.sheet .sk{font:800 8.5pt/1.3 Inter,Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#6B4E12;margin:0 0 2pt}
+.sheet h2{font:600 20pt/1.1 Fraunces,Georgia,serif;margin:0 0 3pt;color:#111}
+.sheet .mt{margin:0 0 7pt;color:#333}
+.sheet .kp{border:1pt solid #bbb;border-radius:7pt;padding:6pt 9pt;margin:0 0 7pt;background:#F6F2E8 !important}
+.sheet .kp p{margin:0 0 3pt}
+.sheet .kp p:last-child{margin:0}
+.sheet .kp b{color:#333}
+.sheet .ys{border:1pt solid #bbb;border-left:4pt solid #2F6B52;border-radius:7pt;padding:6pt 9pt;margin:0 0 7pt;break-inside:avoid;background:#fff !important}
+.sheet .ys.b{border-left-color:#8A6116}.sheet .ys.c{border-left-color:#2D4F7C}
+.sheet .ys h3{font:700 12.5pt/1.25 Fraunces,Georgia,serif;margin:0 0 3pt;color:#111}
+.sheet .ys p{margin:0 0 3pt}
+.sheet .ys p:last-child{margin:0}
+.sheet .ys b{font:800 7.5pt/1.3 Inter,Arial,sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#555;margin-right:4pt}
+.sheet .ys ol{margin:0 0 3pt;padding-left:1.3em}
+.sheet .ft{margin-top:6pt;font-size:8pt;color:#555;display:flex;justify-content:space-between;gap:10pt}
+.sheet.dense{font-size:9.5pt;line-height:1.3}
+.sheet.dense h2{font-size:17pt}
+.sheet.dense .ys,.sheet.dense .kp{padding:4pt 7pt;margin-bottom:5pt}
+.sheet.dense .ys h3{font-size:11pt}
+</style>
+</head>
+<body>
+<script src="/aog-topbar.js"></script>
+<header class="hero"><div class="hero-in">
+  <p class="ey"><span data-en="For teachers · Room 36 · Grades 6–8" data-es="Para docentes · Salón 36 · Grados 6–8">For teachers · Room 36 · Grades 6–8</span></p>
+  <h1><span data-en="Three years in Room 36" data-es="Tres años en el Salón 36">Three years in Room 36</span></h1>
+  <p class="lede"><span data-en="Grade 6 is Year A. Grade 7 is Year B. Grade 8 is Year C. A student can have Room 36 three years running and never repeat a year." data-es="Sexto grado es el Año A. Séptimo es el Año B. Octavo es el Año C. Un estudiante puede estar tres años seguidos en el Salón 36 sin repetir nunca un año.">Grade 6 is Year A. Grade 7 is Year B. Grade 8 is Year C. A student can have Room 36 three years running and never repeat a year.</span></p>
+</div></header>
+<main id="main">
+  <section class="card" aria-labelledby="h-how">
+    <h2 id="h-how"><span data-en="How the three years work" data-es="Cómo funcionan los tres años">How the three years work</span></h2>
+    <ul class="abc">
+      <li><span class="ltr a" aria-hidden="true">A</span><span class="t"><b><span data-en="Year A · Grade 6" data-es="Año A · 6.º grado">Year A · Grade 6</span></b><span data-en="The lesson as written." data-es="La lección tal como está.">The lesson as written.</span></span></li>
+      <li><span class="ltr b" aria-hidden="true">B</span><span class="t"><b><span data-en="Year B · Grade 7" data-es="Año B · 7.º grado">Year B · Grade 7</span></b><span data-en="A new story and a different part of the novel." data-es="Una historia nueva y otra parte de la novela.">A new story and a different part of the novel.</span></span></li>
+      <li><span class="ltr c" aria-hidden="true">C</span><span class="t"><b><span data-en="Year C · Grade 8" data-es="Año C · 8.º grado">Year C · Grade 8</span></b><span data-en="A leading role and a new story." data-es="Un papel de líder y una historia nueva.">A leading role and a new story.</span></span></li>
+    </ul>
+    <ul class="how">
+      <li><span data-en="Every year keeps each lesson’s goal, standards and safety steps." data-es="Cada año conserva el objetivo, los estándares y los pasos de seguridad de cada lección.">Every year keeps each lesson’s goal, standards and safety steps.</span></li>
+      <li><span data-en="No year raises a lesson’s risk. The ★★ lessons keep their whole protocol every year." data-es="Ningún año sube el riesgo de una lección. Las lecciones ★★ conservan todo su protocolo cada año.">No year raises a lesson’s risk. The ★★ lessons keep their whole protocol every year.</span></li>
+      <li><span data-en="Year B stories happen at Lincoln Park, the novel’s school. They are new; they do not retell the book." data-es="Las historias del Año B pasan en Lincoln Park, la escuela de la novela. Son nuevas; no vuelven a contar el libro.">Year B stories happen at Lincoln Park, the novel’s school. They are new; they do not retell the book.</span></li>
+      <li><span data-en="New to Room 36 in grade 7 or 8? Use that grade’s year. Every year teaches every idea." data-es="¿Llega al Salón 36 en séptimo u octavo? Usa el año de su grado. Cada año enseña todas las ideas.">New to Room 36 in grade 7 or 8? Use that grade’s year. Every year teaches every idea.</span></li>
+    </ul>
+    <details class="fold">
+      <summary><span data-en="Year C: rules for leading" data-es="Año C: reglas para dirigir">Year C: rules for leading</span></summary>
+      <ul>
+        <li><span data-en="Leaders use made-up examples only." data-es="Quienes dirigen usan solo ejemplos inventados.">Leaders use made-up examples only.</span></li>
+        <li><span data-en="Younger students never share personal stories. Leaders never read anyone’s private writing." data-es="Los más pequeños nunca comparten historias personales. Quienes dirigen nunca leen lo que otros escriben en privado.">Younger students never share personal stories. Leaders never read anyone’s private writing.</span></li>
+        <li><span data-en="An adult stays in the room: you, or the younger class’s teacher." data-es="Un adulto se queda en el salón: tú o el maestro de la clase más pequeña.">An adult stays in the room: you, or the younger class’s teacher.</span></li>
+        <li><span data-en="Leaders are not counselors. If anything worries them, they tell an adult right away." data-es="Quienes dirigen no son consejeros. Si algo les preocupa, avisan a un adulto de inmediato.">Leaders are not counselors. If anything worries them, they tell an adult right away.</span></li>
+        <li><span data-en="An adult reads anything made for the school (a poster, a guide, a card) before it goes up." data-es="Un adulto lee todo lo que se hace para la escuela (un cartel, una guía, una tarjeta) antes de publicarlo.">An adult reads anything made for the school (a poster, a guide, a card) before it goes up.</span></li>
+        <li><span data-en="In the ★ and ★★ lessons, Year C makes something for the school or helps plan a calm part of the lesson. It never leads the private work." data-es="En las lecciones ★ y ★★, el Año C hace algo para la escuela o ayuda a planear una parte tranquila de la lección. Nunca dirige el trabajo privado.">In the ★ and ★★ lessons, Year C makes something for the school or helps plan a calm part of the lesson. It never leads the private work.</span></li>
+      </ul>
+    </details>
+    <details class="fold">
+      <summary><span data-en="If a student tells you something serious" data-es="Si un estudiante te cuenta algo serio">If a student tells you something serious</span></summary>
+      <ul>
+        <li><span data-en="988 Suicide &amp; Crisis Lifeline: call or text 988. Crisis Text Line: text HOME to 741741." data-es="988 Suicide &amp; Crisis Lifeline: llama o envía un mensaje al 988. Crisis Text Line: envía HOME al 741741.">988 Suicide &amp; Crisis Lifeline: call or text 988. Crisis Text Line: text HOME to 741741.</span></li>
+        <li><span data-en="Every school employee in Illinois is a mandated reporter. If you have reasonable cause to believe a child is abused or neglected, call the DCFS Hotline yourself: 1-800-25-ABUSE (1-800-252-2873). Do not investigate first, and do not hand the call to someone else." data-es="En Illinois, todo empleado escolar es informante obligatorio. Si tienes motivos razonables para creer que un niño sufre abuso o negligencia, llama tú a la línea de DCFS: 1-800-25-ABUSE (1-800-252-2873). No investigues primero ni le pases la llamada a otra persona.">Every school employee in Illinois is a mandated reporter. If you have reasonable cause to believe a child is abused or neglected, call the DCFS Hotline yourself: 1-800-25-ABUSE (1-800-252-2873). Do not investigate first, and do not hand the call to someone else.</span></li>
+        <li><a class="lk" href="/room-36-safety"><span data-en="The full safety guide →" data-es="La guía de seguridad completa →">The full safety guide →</span></a></li>
+      </ul>
+    </details>
+  </section>
+
+  <div class="tools">
+    <div class="pickwrap">
+      <label for="pick"><span data-en="Pick a lesson" data-es="Elige una lección">Pick a lesson</span></label>
+      <select id="pick"></select>
+    </div>
+    <div class="acts">
+      <button type="button" class="btn" id="prev"><span data-en="← Previous" data-es="← Anterior">← Previous</span></button>
+      <button type="button" class="btn" id="next"><span data-en="Next →" data-es="Siguiente →">Next →</span></button>
+      <button type="button" class="btn main" id="printOne"><span data-en="Print this lesson" data-es="Imprimir esta lección">Print this lesson</span></button>
+      <button type="button" class="btn" id="printAll"><span data-en="Print all 28" data-es="Imprimir las 28">Print all 28</span></button>
+    </div>
+  </div>
+
+  <article class="card" id="lesson" aria-live="polite"></article>
+  <div class="yrs" id="years"></div>
+
+  <div class="more">
+    <label for="moreSel"><span data-en="Other Room 36 pages" data-es="Otras páginas del Salón 36">Other Room 36 pages</span></label>
+    <select id="moreSel">
+      <option value="" data-en="Choose a page…" data-es="Elige una página…">Choose a page…</option>
+      <option value="room-36-lessons.html" data-en="The lessons" data-es="Las lecciones">The lessons</option>
+      <option value="room-36-curriculum.html" data-en="The curriculum" data-es="El currículo">The curriculum</option>
+      <option value="room-36-cards.html" data-en="Scenario cards" data-es="Tarjetas de escenario">Scenario cards</option>
+      <option value="room-36-novel.html" data-en="The novel" data-es="La novela">The novel</option>
+      <option value="/room-36-calendar" data-en="The year, week by week" data-es="El año, semana por semana">The year, week by week</option>
+      <option value="/room-36-safety" data-en="Safety and reporting" data-es="Seguridad y reportes">Safety and reporting</option>
+      <option value="/room-36-families" data-en="For families and boards" data-es="Para familias y juntas escolares">For families and boards</option>
+      <option value="/room-36-consent" data-en="Letters and consent" data-es="Cartas y consentimiento">Letters and consent</option>
+    </select>
+  </div>
+  <p class="foot"><span data-en="This page saves nothing. It is for teachers; students never type here." data-es="Esta página no guarda nada. Es para docentes; los estudiantes nunca escriben aquí.">This page saves nothing. It is for teachers; students never type here.</span></p>
+</main>
+<div id="paper" aria-hidden="true"></div>
+<script>
+(function(){
+"use strict";
+var D=document, H=D.documentElement;
+function ES(){ return String(H.getAttribute("lang")||"en").toLowerCase().indexOf("es")===0; }
+function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];}); }
+function tx(p){ return p?(ES()?p[1]:p[0]):""; }
+/* one leaf span the top bar can swap: never an element inside it */
+function sp(p,cls){ return '<span'+(cls?' class="'+cls+'"':'')+' data-en="'+esc(p[0])+'" data-es="'+esc(p[1])+'">'+esc(tx(p))+'</span>'; }
+
+/* the novel's chapters: section index (room-36-novel.html?ch=N) → [chapter, English, Spanish, stars] */
+var CH={2:[1,"The Mask & the Mirror","La Máscara y el Espejo"],3:[2,"The Funny Mask, Now in Middle School","La Máscara divertida, ahora en la escuela intermedia"],4:[3,"The Digital Backpack","La Mochila Digital"],5:[4,"The Volume of Integrity","El Volumen de la Integridad"],6:[5,"Label & Author","Etiqueta y Autor"],7:[6,"Guilt & Shame","Culpa y Vergüenza"],8:[7,"What Room 36 Has Built So Far","Lo que el Salón 36 ha construido hasta ahora"],10:[8,"The Voice in Your Head","La voz en tu cabeza"],11:[9,"The Three Tactics","Las tres tácticas"],12:[10,"The Comparison Trap","La Trampa de la Comparación"],13:[11,"The Friend Test","La Prueba del Amigo"],14:[12,"Rewriting the Script","Reescribir el guion","★★"],15:[13,"What Room 36 Has Built So Far (Part Two)","Lo que el Salón 36 ha construido hasta ahora (Segunda Parte)"],17:[14,"Impact vs. Intent","Impacto vs. Intención"],18:[15,"Forgiveness ≠ Trust","Perdón ≠ Confianza","★"],19:[16,"The Letter of Release","La Carta de Liberación","★★"],20:[17,"What Room 36 Has Built So Far (Part Three)","Lo que ha construido el Salón 36 hasta ahora (Parte Tres)"],22:[18,"Charitable Interpretation","La Interpretación Generosa"],23:[19,"Small Acts (The Grace Challenge)","Pequeños actos (El Reto de la Gracia)"],24:[20,"Grace With Hard People","La gracia con las personas difíciles"],25:[21,"Mia Comes Home","Mia vuelve a casa"],26:[22,"The Last Day","El último día"]};
+var UNITS={1:["Unit 1 · Identity","Unidad 1 · Identidad"],2:["Unit 2 · Self-compassion and the Internal Critic","Unidad 2 · Autocompasión y el Crítico Interior"],3:["Unit 3 · Empathy and forgiving others","Unidad 3 · Empatía y perdonar a otros"],4:["Unit 4 · Grace","Unidad 4 · La gracia"]};
+
+/* ── the 28 lessons. star: 0 none · 1 ★ elevated · 2 ★★ highest. a = Year A (as written); b = Year B; c = Year C.
+   s story · q two questions · d what changes · l what they lead · ch novel section · n the scene ── */
+var L=[
+{id:"u1l1",star:0,cards:1,when:["September · week 1","Septiembre · semana 1"],t:["The Mask vs. the Mirror","La Máscara vs. el Espejo"],std:"1B.3a · 1A.3a",
+ goal:["Students tell the Mask (what they show) from the Mirror (who they are) and find two gaps with the private Identity Audit.","Los estudiantes distinguen la Máscara (lo que muestran) del Espejo (quiénes son) y encuentran dos diferencias con la Auditoría de Identidad privada."],
+ safe:["Post 988 and the Crisis Text Line (text HOME to 741741). Know the counselor’s same-day contact. The audit is never collected.","Publica el 988 y la Crisis Text Line (envía HOME al 741741). Ten a mano el contacto de consejería para el mismo día. La auditoría nunca se recoge."],
+ a:["As written. Cards 1·A (Amara) and 1·B (Jordan). Begin the audit with concrete examples: tryouts, the lunch table, what you post vs. what you feel.","Tal como está. Tarjetas 1·A (Amara) y 1·B (Jordan). Empieza la auditoría con ejemplos concretos: las pruebas de un equipo, la mesa del almuerzo, lo que publicas vs. lo que sientes."],ach:2,
+ b:{s:["Nico is new to Lincoln Park in October and lands in Mr. Patel’s sixth period. In band he is careful and serious. In the hallway he laughs at whatever the loudest kids laugh at. A classmate asks, “Which one is the real you?”","Nico llega nuevo a Lincoln Park en octubre y queda en la sexta hora del señor Patel. En la banda es cuidadoso y serio. En el pasillo se ríe de lo que se ríen los más ruidosos. Un compañero le pregunta: “¿Cuál de los dos eres tú de verdad?”."],
+  q:[["Is Nico’s hallway Mask a lie, or a way of reading a new room?","¿La Máscara de Nico en el pasillo es una mentira o una forma de leer un lugar nuevo?"],["What would one small Mirror moment look like for Nico this week?","¿Cómo sería un pequeño momento de Espejo para Nico esta semana?"]],
+  d:["Use Nico in place of the cards. Add a third column to the private audit: “Where I am already the Mirror.”","Usa a Nico en lugar de las tarjetas. Agrega una tercera columna a la auditoría privada: “Donde ya soy el Espejo”."],
+  ch:3,n:["Jordan wears the funny Mask on purpose in Mrs. Tomlin’s room, and not in Room 36.","Jordan se pone la Máscara divertida a propósito en la clase de la señora Tomlin, y no en el Salón 36."]},
+ c:{l:["Pairs of eighth graders plan and lead Steps 1 and 2 (the Mask, the Mirror) for a sixth-grade class, with an example they write. The younger students’ audit stays private; leaders never read it.","Parejas de octavo planean y dirigen los pasos 1 y 2 (la Máscara, el Espejo) para una clase de sexto, con un ejemplo que ellos escriben. La auditoría de los más pequeños es privada; quienes dirigen nunca la leen."],
+  s:["Tess starts high school next fall. Everyone tells her, “You can be anyone there.” She wonders if a brand-new Mask would be a fresh start, or just more work.","Tess empieza la preparatoria el próximo otoño. Todos le dicen: “Allá puedes ser quien quieras”. Ella se pregunta si una Máscara nueva sería un nuevo comienzo o solo más trabajo."],
+  q:[["When is a fresh start a Mask, and when is it the Mirror?","¿Cuándo un nuevo comienzo es una Máscara, y cuándo es el Espejo?"],["What took you two years to learn about Masks that a sixth grader could use now?","¿Qué te tomó dos años aprender sobre las Máscaras que alguien de sexto podría usar ya?"]],
+  ch:26,n:["On the last day, Mr. Patel tells Amara he has watched her slowly stop performing.","El último día, el señor Patel le dice a Amara que la ha visto dejar de actuar poco a poco."]}},
+
+{id:"u1l2",star:0,cards:1,when:["September · week 2","Septiembre · semana 2"],t:["The Anatomy of a Mistake","La anatomía de un error"],std:"1A.3a · 3A.3a",
+ goal:["Students tell shame (“I am a bad person”) from guilt (“I made a choice that did not fit my integrity”) and explain why guilt is more useful for growing.","Los estudiantes distinguen la vergüenza (“soy una mala persona”) de la culpa (“tomé una decisión que no va con mi integridad”) y explican por qué la culpa sirve más para crecer."],
+ safe:["Journal entries stay private and are never collected. Crisis lines stay posted.","Lo que escriben en el diario es privado y nunca se recoge. Las líneas de crisis siguen publicadas."],
+ a:["As written. A T-chart with Card 1·C (Maya) as a whole class. Keep it concrete; the difference itself is the lesson.","Tal como está. Una tabla en T con la Tarjeta 1·C (Maya) con toda la clase. Mantenlo concreto; la diferencia misma es la lección."],ach:7,
+ b:{s:["Ari promised to feed a neighbor’s cat all weekend and forgot on Saturday. The cat is fine. Ari keeps thinking, “I’m the kind of person nobody can count on.”","Ari prometió darle de comer al gato de un vecino todo el fin de semana y el sábado se le olvidó. El gato está bien. Ari sigue pensando: “Soy de las personas con las que nadie puede contar”."],
+  q:[["Which of Ari’s words are shame? What would the guilt version say?","¿Qué palabras de Ari son vergüenza? ¿Qué diría la versión de culpa?"],["What fix is the right size for what happened?","¿Qué arreglo tiene el tamaño justo para lo que pasó?"]],
+  d:["Run the T-chart with Ari, then Card 1·D (Darius). Each student turns one shame sentence into a guilt sentence, in the journal.","Haz la tabla en T con Ari y luego con la Tarjeta 1·D (Darius). Cada estudiante convierte una frase de vergüenza en una de culpa, en su diario."],
+  ch:6,n:["Maya pins her C-minus card on the Wall: “It is just a math quiz.”","Maya pone en el Muro su tarjeta del C-menos: “Es solo un examen de matemáticas”."]},
+ c:{l:["Eighth graders write ten made-up sentences and run a “shame or guilt?” sort with a sixth-grade class. They explain each answer in one short sentence.","Los de octavo escriben diez frases inventadas y dirigen con una clase de sexto un juego de “¿vergüenza o culpa?”. Explican cada respuesta en una frase corta."],
+  s:["Jun misses an easy shot in the last minute of a game. Nobody on the team blames him. On the bus home he keeps thinking, “I always fail when it matters.”","Jun falla un tiro fácil en el último minuto de un partido. Nadie del equipo lo culpa. En el autobús de regreso sigue pensando: “Siempre fallo cuando importa”."],
+  q:[["Is “I always fail when it matters” about an action or about a person?","¿“Siempre fallo cuando importa” habla de una acción o de una persona?"],["What could Jun tell himself that is honest and fair?","¿Qué podría decirse Jun que sea honesto y justo?"]],
+  ch:15,n:["By December, Darius has quietly been back at the dinner table for two months.","Para diciembre, Darius lleva dos meses de vuelta en la mesa de la cena, sin anunciarlo."]}},
+
+{id:"u1l3",star:0,cards:1,when:["September · week 3","Septiembre · semana 3"],t:["The Digital Backpack","La Mochila Digital"],std:"1B.3a · 3B.3b",
+ goal:["Students see what they post as part of who they are, and find one way their online self differs from their real self.","Los estudiantes ven lo que publican como parte de quiénes son y encuentran una forma en que su yo en línea es distinto de su yo real."],
+ safe:["Patterns only, never specific posts. The audit is never collected.","Solo patrones, nunca publicaciones específicas. La auditoría nunca se recoge."],
+ a:["As written. Cards 1·E (Kezia) and 1·F (Marcus). Keep the audit broad: general patterns, no specific posts.","Tal como está. Tarjetas 1·E (Kezia) y 1·F (Marcus). Mantén la auditoría amplia: patrones generales, sin publicaciones específicas."],ach:4,
+ b:{s:["Lena runs a small gaming channel. On camera she is bright and funny, and people love it. Off camera she is tired and quiet. A friend asks why she “acts different” in real life.","Lena tiene un pequeño canal de videojuegos. Frente a la cámara es alegre y graciosa, y a la gente le encanta. Fuera de cámara está cansada y callada. Una amiga le pregunta por qué “actúa distinto” en la vida real."],
+  q:[["Which Lena carries the heavier backpack, and why?","¿Cuál Lena carga la mochila más pesada, y por qué?"],["What could Lena put down without giving up what she loves?","¿Qué podría soltar Lena sin dejar lo que le gusta?"]],
+  d:["Use Lena with Card 1·F. Add one private audit line: “Online I sound like ___. In person I sound like ___.”","Usa a Lena con la Tarjeta 1·F. Agrega una línea privada a la auditoría: “En línea sueno como ___. En persona sueno como ___”."],
+  ch:12,n:["Kezia texts Sofia one small true thing instead of scrolling, and the gap gets a little smaller.","Kezia le manda a Sofia una pequeña verdad en vez de seguir deslizando la pantalla, y la distancia se hace un poco más pequeña."]},
+ c:{l:["Eighth graders design a one-page “Before you post” card for sixth graders: three questions, plain words, no scare stories. They try it with one sixth-grade class and fix what was unclear.","Los de octavo diseñan una tarjeta de una página, “Antes de publicar”, para los de sexto: tres preguntas, palabras sencillas, sin historias de miedo. La prueban con una clase de sexto y corrigen lo que no se entendió."],
+  s:["The eighth-grade group chat is making a “best of middle school” slideshow. Someone adds an old photo of a classmate that she never liked.","El chat de grupo de octavo está armando una presentación de “lo mejor de la secundaria”. Alguien agrega una foto vieja de una compañera que a ella nunca le gustó."],
+  q:[["Who gets a say in what goes into someone else’s backpack?","¿Quién tiene voz sobre lo que entra en la mochila de otra persona?"],["What could you write in the chat that is kind and clear?","¿Qué podrías escribir en el chat que sea amable y claro?"]],
+  ch:23,n:["During the Grace Challenge, Marcus writes an apology to the two kids whose private text he screenshotted in June.","Durante el Reto de la Gracia, Marcus les escribe una disculpa a los dos chicos cuyo mensaje privado capturó en junio."]}},
+
+{id:"u1l4",star:0,cards:1,when:["September · week 4","Septiembre · semana 4"],t:["Peer Pressure & the Volume of Integrity","La presión de grupo y el Volumen de la Integridad"],std:"2D.3b · 3B.3b",
+ goal:["Students name two ways peer pressure works and one way to keep their integrity when the pressure is high.","Los estudiantes nombran dos formas en que funciona la presión de grupo y una forma de mantener su integridad cuando la presión es fuerte."],
+ safe:["If a student goes very still during “fear of exclusion,” check in quietly after class. Never single anyone out.","Si un estudiante se queda muy quieto durante “miedo a quedar fuera”, habla con él en privado después de clase. Nunca señales a nadie."],
+ a:["As written. Card 1·G (Sofia) as a class, then 1·H (the lunch table vote). Start with noticing the pressure; that is the first skill.","Tal como está. Tarjeta 1·G (Sofia) con toda la clase y luego 1·H (la votación de la mesa). Empieza por notar la presión; esa es la primera habilidad."],ach:5,
+ b:{s:["On the bus home from Lincoln Park, kids start a chant about a sixth grader’s backpack. It is the kind of thing “everyone” does on Fridays. Rafi’s best friend is chanting the loudest.","En el autobús de regreso de Lincoln Park, unos chicos empiezan a corear algo sobre la mochila de un estudiante de sexto. Es de esas cosas que “todos” hacen los viernes. El mejor amigo de Rafi es el que corea más fuerte."],
+  q:[["Which pressure is loudest here: social proof, fear of exclusion, or identity merger?","¿Qué presión suena más fuerte aquí: la prueba social, el miedo a quedar fuera o fundirse con el grupo?"],["What is a Volume Five move for Rafi: small, low-risk, and still real?","¿Cuál sería un movimiento de Volumen Cinco para Rafi: pequeño, de poco riesgo y aun así real?"]],
+  d:["Use Rafi in place of Card 1·H. Teach “preference falsification”: saying one thing out loud while believing another.","Usa a Rafi en lugar de la Tarjeta 1·H. Enseña la “falsificación de preferencias”: decir una cosa en voz alta mientras crees otra."],
+  ch:15,n:["In December, Sofia uses her script at the science table. Volume Five, not Volume Ten.","En diciembre, Sofia usa su guion en la mesa de ciencias. Volumen Cinco, no Volumen Diez."]},
+ c:{l:["Eighth graders teach the One-Ally Strategy to a sixth-grade class with a short skit they write and act out. No real names; the skit ends with the ally, not the unkindness.","Los de octavo enseñan la estrategia de Un Aliado a una clase de sexto con una escena corta que escriben y actúan. Sin nombres reales; la escena termina con el aliado, no con la crueldad."],
+  s:["The eighth grade is planning the spring dance. A popular group wants a “couples only” rule. Many kids dislike the idea, but nobody wants to be the one who says so.","Octavo grado está planeando el baile de primavera. Un grupo popular quiere una regla de “solo parejas”. A muchos no les gusta la idea, pero nadie quiere ser quien lo diga."],
+  q:[["How does preference falsification keep a rule that nobody wants?","¿Cómo hace la falsificación de preferencias que se quede una regla que nadie quiere?"],["How could one ally change the next planning meeting?","¿Cómo podría un aliado cambiar la próxima reunión?"]],
+  ch:23,n:["Sofia sits with Megan, who has been new since January and is still looking for a lunch table.","Sofia se sienta con Megan, que llegó nueva en enero y todavía busca una mesa para almorzar."]}},
+
+{id:"u1l5",star:0,cards:0,when:["October · week 1","Octubre · semana 1"],t:["Owning Your Narrative","Ser dueño de tu historia"],std:"1B.3a · 1A.3a",
+ goal:["Students write an Integrity Statement that claims their own story over the labels others give them.","Los estudiantes escriben una Declaración de Integridad que reclama su propia historia frente a las etiquetas que otros les ponen."],
+ safe:["Some students may become emotional. Say quietly, “I will check in with you after class.” Never in front of the class.","Algunos estudiantes pueden emocionarse. Di en voz baja: “Hablo contigo después de clase”. Nunca frente a la clase."],
+ a:["As written. The Integrity Statement with sentence frames, one or two values, and the anti-label frame.","Tal como está. La Declaración de Integridad con frases de apoyo, uno o dos valores y el marco contra las etiquetas."],ach:6,
+ b:{s:["Since fourth grade, Iris has been “the responsible one.” Teachers give her the class pet, the hall pass, the new kid to show around. This year she wants to try out for the school play, and a friend laughs: “You? You’re not a drama person.”","Desde cuarto grado, Iris es “la responsable”. Los maestros le dan la mascota del salón, el pase del pasillo, al alumno nuevo para que lo guíe. Este año quiere hacer la audición para la obra escolar, y una amiga se ríe: “¿Tú? Tú no eres de teatro”."],
+  q:[["Which part of “the responsible one” might Iris keep, and which might she put down?","¿Qué parte de “la responsable” podría guardar Iris, y qué parte podría soltar?"],["What is the difference between a label and a prediction?","¿Cuál es la diferencia entre una etiqueta y una predicción?"]],
+  d:["Before the statement, students make two columns for Iris: Label and Author. Then they write their own statement with one value and one “I choose.”","Antes de la declaración, los estudiantes hacen dos columnas para Iris: Etiqueta y Autor. Luego escriben su propia declaración con un valor y un “Yo elijo”."],
+  ch:8,n:["Maya’s October letter is a drawing: a coat with LABEL on the outside and AUTHOR inside.","La carta de octubre de Maya es un dibujo: un abrigo con ETIQUETA por fuera y AUTOR por dentro."]},
+ c:{l:["Eighth graders who want to write anonymous notes for the sixth-grade hallway: “A label I outgrew” and “What I chose instead.” An adult reads every note before it goes up.","Los de octavo que quieran escriben notas anónimas para el pasillo de sexto: “Una etiqueta que dejé atrás” y “Lo que elegí en su lugar”. Un adulto lee cada nota antes de ponerla."],
+  s:["Omar is known as “the athlete.” A knee injury keeps him off the team for his whole last season. A teacher asks what he will do with his free afternoons, and he has no answer.","A Omar lo conocen como “el atleta”. Una lesión de rodilla lo deja fuera del equipo toda su última temporada. Una maestra le pregunta qué hará con sus tardes libres, y él no sabe qué responder."],
+  q:[["What happens to a label when the thing it names is taken away?","¿Qué pasa con una etiqueta cuando le quitan lo que nombraba?"],["What could Omar write as Author while he waits to find out?","¿Qué podría escribir Omar como Autor mientras espera descubrirlo?"]],
+  ch:26,n:["On the last day, Mr. Patel tells Maya he watched her walk into the art room after school and ask for studio time.","El último día, el señor Patel le dice a Maya que la vio entrar al salón de arte después de clases y pedir tiempo de estudio."]}},
+
+{id:"u1l6",star:0,cards:0,when:["October · week 2","Octubre · semana 2"],t:["The Agency of Choice","El poder de elegir"],std:"1A.3b · 3B.3a",
+ goal:["Students complete a Choice-Agency Map and name one place in their life where they have more say over their response than they thought.","Los estudiantes completan un Mapa de Elección y nombran un lugar de su vida donde tienen más control sobre su respuesta de lo que creían."],
+ safe:["Say first: some circumstances really do limit choices, and that is unfair, not a personal failure. The map is never collected.","Di primero: algunas circunstancias de verdad limitan las opciones, y eso es injusto, no una falla personal. El mapa nunca se recoge."],
+ a:["As written. The Frankl principle, then the three-circle map with school examples filled in first.","Tal como está. El principio de Frankl y luego el mapa de tres círculos, con ejemplos escolares ya escritos."],ach:0,
+ b:{s:["Dev’s family is moving across town in March, and he will change schools. He did not choose it and cannot stop it. He has stopped doing his homework: “What’s the point?”","La familia de Dev se muda al otro lado de la ciudad en marzo, y él cambiará de escuela. No lo eligió y no puede impedirlo. Dejó de hacer la tarea: “¿Para qué?”."],
+  q:[["Where do the move, the new school and Dev’s homework go in the three circles?","¿En qué círculo va la mudanza, la escuela nueva y la tarea de Dev?"],["What is one response still in Dev’s inner circle?","¿Qué respuesta sigue en el círculo interior de Dev?"]],
+  d:["Map Dev’s situation together before students make their own. Add: what would it take to move your response inward once a day?","Hagan juntos el mapa de Dev antes de que cada uno haga el suyo. Agrega: ¿qué haría falta para mover tu respuesta hacia adentro una vez al día?"],
+  ch:5,n:["Mia did not choose Pittsburgh. She and Sofia choose to add Wednesday calls when something is up.","Mia no eligió Pittsburgh. Ella y Sofia eligen agregar llamadas los miércoles cuando algo pasa."]},
+ c:{l:["Eighth graders lead the first part of the map for a sixth-grade class: they model the three circles with a made-up school problem and fill the outer ring with the class. Sixth graders make their own map privately.","Los de octavo dirigen la primera parte del mapa con una clase de sexto: modelan los tres círculos con un problema escolar inventado y llenan el anillo exterior con la clase. Los de sexto hacen su mapa en privado."],
+  s:["The eighth grade learns the end-of-year trip is canceled because of the budget. Some students want to quit the planning club. Others want to raise the money themselves.","Octavo grado se entera de que el viaje de fin de año se canceló por el presupuesto. Algunos quieren dejar el club que lo planeaba. Otros quieren reunir el dinero ellos mismos."],
+  q:[["Which parts are outside the students’ control, and which can they influence?","¿Qué partes están fuera del control de los estudiantes, y en cuáles pueden influir?"],["What makes a response wise, not just hopeful?","¿Qué hace que una respuesta sea sabia, y no solo esperanzada?"]],
+  ch:24,n:["Priya cannot stop Owen’s eye-rolls. She chooses to keep raising her hand.","Priya no puede impedir que Owen ponga los ojos en blanco. Ella elige seguir levantando la mano."]}},
+
+{id:"u1l7",star:0,cards:0,when:["October · week 3","Octubre · semana 3"],t:["Unit 1 Wrap-Up & Bridge to Unit 2","Cierre de la Unidad 1 y puente a la Unidad 2"],std:"1C.3a · 1C.3b",
+ goal:["Students pull Unit 1 together, write a sealed Future-Self Letter, and get ready for Unit 2’s self-compassion work.","Los estudiantes reúnen lo aprendido en la Unidad 1, escriben una Carta a su Yo Futuro, sellada, y se preparan para el trabajo de autocompasión de la Unidad 2."],
+ safe:["Watch the sealing and note heavy moments for the counselor. Send the Unit 2 family letter. Confirm the counselor for U2·L6 before Unit 2 begins. Store the sealed letters safely; they come back at U4·L7.","Observa el sellado y anota para consejería los momentos difíciles. Envía la carta a las familias de la Unidad 2. Confirma a consejería para U2·L6 antes de empezar la Unidad 2. Guarda las cartas selladas en un lugar seguro; se devuelven en U4·L7."],
+ a:["As written. Reread the Lesson 1 journal, write the Future-Self Letter with three sentence starters, and seal it.","Tal como está. Releer el diario de la Lección 1, escribir la Carta al Yo Futuro con tres inicios de frase y sellarla."],ach:8,
+ b:{s:["Before sealing, Mr. Patel’s sixth period finds an old time-capsule box from a past class on a high shelf. One card says only: “I hope I stopped pretending.” Nobody knows who wrote it.","Antes de sellar, la sexta hora del señor Patel encuentra en un estante alto una vieja caja de cápsula del tiempo de una clase anterior. Una tarjeta dice solamente: “Ojalá haya dejado de fingir”. Nadie sabe quién la escribió."],
+  q:[["What do you think that writer was carrying in October?","¿Qué crees que cargaba esa persona en octubre?"],["What would you want to find in your own letter in June?","¿Qué te gustaría encontrar en tu propia carta en junio?"]],
+  d:["Add a fourth sentence starter to the letter: “Last year I thought ___. Now I think ___.” Sealing and storage stay as written.","Agrega un cuarto inicio de frase a la carta: “El año pasado pensaba ___. Ahora pienso ___”. El sellado y la forma de guardarlas no cambian."],
+  ch:2,n:["On the first day, Mr. Patel writes WHO ARE YOU GOING TO BE THIS YEAR? and Amara writes one private sentence.","El primer día, el señor Patel escribe ¿QUIÉN VAS A SER ESTE AÑO? y Amara escribe una frase privada."]},
+ c:{l:["Eighth graders write a short “Welcome to Room 36” letter for next year’s sixth graders: three things Unit 1 taught them, with no names and no private stories. The teacher keeps it for September.","Los de octavo escriben una breve carta de “Bienvenidos al Salón 36” para los de sexto del próximo año: tres cosas que les enseñó la Unidad 1, sin nombres ni historias privadas. El maestro la guarda para septiembre."],
+  s:["Malia still has the letter she got back at the end of sixth grade. It says, “I hope I have a best friend by June.” She did. In seventh grade they drifted apart. She is not sure what to hope for this time.","Malia todavía tiene la carta que le devolvieron al final de sexto. Dice: “Ojalá tenga una mejor amiga para junio”. La tuvo. En séptimo se distanciaron. No sabe qué desear esta vez."],
+  q:[["Is a hope that did not last a failure?","¿Una esperanza que no duró es un fracaso?"],["What kind of hope depends more on you?","¿Qué tipo de esperanza depende más de ti?"]],
+  ch:26,n:["The October letters come back on the next-to-last day. Each student reads what October-them wrote.","Las cartas de octubre vuelven el penúltimo día. Cada quien lee lo que escribió en octubre."]}},
+
+{id:"u2l1",star:0,cards:0,when:["November · week 1","Noviembre · semana 1"],t:["The Internal Critic","El Crítico Interior"],std:"1A.3a · 1A.3b",
+ goal:["Students name their Internal Critic, spot its three tactics, and write their first Compassionate Witness sentence.","Los estudiantes nombran a su Crítico Interior, reconocen sus tres tácticas y escriben su primera frase del Testigo Compasivo."],
+ safe:["Never share the Critic’s words with the whole class. Journal first; pairs only by choice. A Critic that sounds like a real person: note it privately for the counselor.","Nunca se comparten con toda la clase las palabras del Crítico. Primero el diario; en parejas solo si quieren. Si el Crítico suena como una persona real, anótalo en privado para consejería."],
+ a:["As written. The Internal Critic Profile. Stay at the surface: what the Critic says, and what the Witness says instead.","Tal como está. El Perfil del Crítico Interior. Quédense en la superficie: lo que dice el Crítico y lo que dice el Testigo en su lugar."],ach:10,
+ b:{s:["Quinn gets back a science lab with one wrong unit. Within an hour her Critic says: “You’ll fail the class. You always mess up science. The teacher thinks you’re careless.”","A Quinn le devuelven un laboratorio de ciencias con una sola unidad mal. En menos de una hora, su Crítico le dice: “Vas a reprobar la materia. Siempre te equivocas en ciencias. El maestro cree que eres descuidada”."],
+  q:[["Find all three tactics in Quinn’s Critic. Which sentence is which?","Encuentra las tres tácticas en el Crítico de Quinn. ¿Qué frase es cada una?"],["Write the Witness reply: honest, fair, kind, without punishment.","Escribe la respuesta del Testigo: honesta, justa, amable, sin castigo."]],
+  d:["Students label Quinn’s made-up Critic before their own profile. Talk about where Critics learn their words only in general, never personally.","Los estudiantes analizan el Crítico inventado de Quinn antes de hacer su propio perfil. Hablen de dónde aprenden sus palabras los Críticos solo en general, nunca de forma personal."],
+  ch:11,n:["The Witness voice in Chapter 9: “That was hard. You are allowed to be upset about it.”","La voz del Testigo en el Capítulo 9: “Eso fue difícil. Tienes derecho a sentirte mal por eso”."]},
+ c:{l:["Eighth graders make a “Spot the tactic” card game with twelve made-up Critic lines and play it with a sixth-grade class. They teach the Witness reply and never ask what anyone’s own Critic says.","Los de octavo hacen un juego de cartas, “Encuentra la táctica”, con doce frases inventadas del Crítico, y lo juegan con una clase de sexto. Enseñan la respuesta del Testigo y nunca preguntan qué dice el Crítico de cada quien."],
+  s:["Elle is class president. After a messy assembly, her Critic says, “Everyone is laughing at you. You ruin every event. It’s your fault the mic broke.”","Elle es presidenta de la clase. Después de una asamblea desordenada, su Crítico le dice: “Todos se ríen de ti. Arruinas cada evento. Es tu culpa que el micrófono se descompusiera”."],
+  q:[["Why might the Critic get louder when someone leads?","¿Por qué el Crítico podría sonar más fuerte cuando alguien dirige?"],["What would Elle’s Witness say to her the next morning?","¿Qué le diría a Elle su Testigo a la mañana siguiente?"]],
+  ch:26,n:["Mr. Patel tells Priya she catches the Critic faster every month, even though it is no quieter.","El señor Patel le dice a Priya que atrapa al Crítico más rápido cada mes, aunque no suene más bajo."]}},
+
+{id:"u2l2",star:0,cards:0,when:["November · week 2","Noviembre · semana 2"],t:["Highlight Reels & the Comparison Trap","El resumen de lo mejor y la Trampa de la Comparación"],std:"1A.3a · 2A.3a",
+ goal:["Students explain how comparison works online and name one way to measure themselves by their own yardstick.","Los estudiantes explican cómo funciona la comparación en línea y nombran una forma de medirse con su propia vara."],
+ safe:["Use general, class-made examples. The Comparison Audit is never collected.","Usen ejemplos generales hechos en clase. La Auditoría de Comparación nunca se recoge."],
+ a:["As written. Class-made comparison examples, the private Comparison Audit, and the own-yardstick idea.","Tal como está. Ejemplos de comparación hechos por la clase, la Auditoría de Comparación privada y la idea de la propia vara."],ach:12,
+ b:{s:["Wren practices guitar every day. She watches a video of a kid her age playing a song perfectly, and does not touch her guitar for a week. Later she learns the video took forty tries.","Wren practica guitarra todos los días. Ve un video de alguien de su edad tocando una canción perfecta, y no toca su guitarra en una semana. Después se entera de que el video tomó cuarenta intentos."],
+  q:[["What was Wren comparing herself to: a person, or a highlight reel?","¿Con qué se estaba comparando Wren: con una persona o con un resumen de lo mejor?"],["What would Wren’s own yardstick measure?","¿Qué mediría la propia vara de Wren?"]],
+  d:["Add an “after” line to the audit: one comparison that helped you, and why. Not every comparison is a trap.","Agrega a la auditoría una línea de “después”: una comparación que te ayudó, y por qué. No toda comparación es una trampa."],
+  ch:15,n:["In December, Amara checks her progress against her own October hope, not against anyone else.","En diciembre, Amara mide su avance con su propia esperanza de octubre, no con nadie más."]},
+ c:{l:["Eighth graders build a “Behind the highlight” display for the school. Volunteers share one behind-the-scenes fact about a skill (“This drawing was my ninth try”). An adult approves each card.","Los de octavo arman para la escuela una exhibición “Detrás de lo mejor”. Voluntarios cuentan un dato de detrás de escena sobre una habilidad (“Este dibujo fue mi noveno intento”). Un adulto aprueba cada tarjeta."],
+  s:["Eighth graders get their high school course letters. Hugo sees friends post “Accepted to honors!” He was not placed in honors, and he deletes his own post about making the jazz band.","Los de octavo reciben sus cartas de cursos de la preparatoria. Hugo ve que sus amigos publican “¡Me aceptaron en honores!”. A él no lo pusieron en honores, y borra su propia publicación sobre entrar a la banda de jazz."],
+  q:[["Why did Hugo’s good news suddenly feel small?","¿Por qué la buena noticia de Hugo de pronto se sintió pequeña?"],["What does Hugo’s own yardstick say about this spring?","¿Qué dice la propia vara de Hugo sobre esta primavera?"]],
+  ch:10,n:["Priya’s Critic compares her to Hannah, a girl in the year above.","El Crítico de Priya la compara con Hannah, una chica del grado de arriba."]}},
+
+{id:"u2l3",star:0,cards:0,when:["November · week 3","Noviembre · semana 3"],t:["Perfectionism: the Critic in Disguise","El perfeccionismo: el Crítico disfrazado"],std:"1A.3a · 1A.3b",
+ goal:["Students tell perfectionism (fear of failure) from healthy striving (a commitment to growth), and find one way their Critic uses perfectionism to stop them.","Los estudiantes distinguen el perfeccionismo (miedo a fallar) del esfuerzo sano (compromiso con crecer) y encuentran una forma en que su Crítico usa el perfeccionismo para frenarlos."],
+ safe:["Marks on the spectrum stay private. Before U2·L6, note for the counselor any student who marks the far left in every area.","Las marcas en el espectro son privadas. Antes de U2·L6, anota para consejería a quien marque el extremo izquierdo en todas las áreas."],
+ a:["As written. The spectrum, the Witness reply and one imperfect step. Land the key line: this is not laziness.","Tal como está. El espectro, la respuesta del Testigo y un paso imperfecto. Que quede clara la idea central: esto no es flojera."],ach:0,
+ b:{s:["Tomás has a history poster due Friday. He has started it four times and thrown each one away because the lettering was not perfect. It is Thursday night, and the poster is blank.","Tomás tiene que entregar un cartel de historia el viernes. Lo ha empezado cuatro veces y ha tirado cada intento porque las letras no quedaron perfectas. Es jueves en la noche y el cartel está en blanco."],
+  q:[["Is Tomás lazy? What is underneath the blank poster?","¿Tomás es flojo? ¿Qué hay debajo del cartel en blanco?"],["Which Critic tactic says “If it isn’t perfect, I always fail”?","¿Qué táctica del Crítico dice “Si no queda perfecto, siempre fallo”?"]],
+  d:["Connect to U2·L1: name the tactic behind each freeze. The imperfect step must be about what you do, not the result.","Conéctalo con U2·L1: nombra la táctica detrás de cada parálisis. El paso imperfecto tiene que ser sobre lo que haces, no sobre el resultado."],
+  ch:6,n:["By seventh grade, Maya studies to defend her label, not to learn, and has a stomachache before every test.","En séptimo, Maya estudia para defender su etiqueta, no para aprender, y le duele el estómago antes de cada examen."]},
+ c:{l:["Eighth graders run a “first draft fair” for a sixth-grade class. Each leader shows a real, messy first draft of their own work beside the finished one, and says what changed.","Los de octavo organizan una “feria del primer borrador” para una clase de sexto. Cada líder muestra un primer borrador real y desordenado de un trabajo suyo junto al terminado, y cuenta qué cambió."],
+  s:["Asha gets top grades and is afraid to join the robotics team because she has never built anything. “If I’m bad at it, people will see.”","Asha saca las mejores calificaciones y le da miedo unirse al equipo de robótica porque nunca ha construido nada. “Si soy mala, la gente lo va a ver”."],
+  q:[["What does never trying something new cost?","¿Qué cuesta no intentar nunca algo nuevo?"],["What would healthy striving look like in Asha’s first month?","¿Cómo se vería el esfuerzo sano en el primer mes de Asha?"]],
+  ch:13,n:["“The writing is the prerequisite to the believing.” You write the new sentence badly, then again.","“Escribir es un requisito para creer”. Escribes la frase nueva mal, y luego otra vez."]}},
+
+{id:"u2l4",star:0,cards:1,when:["November · week 4","Noviembre · semana 4"],t:["Accountability Without Self-Punishment","Responsabilidad sin autocastigo"],std:"1A.3b · 3A.3a",
+ goal:["Students tell accountability (honest repair) from self-punishment (suffering that fixes nothing), and use the Friend Test on a real situation.","Los estudiantes distinguen la responsabilidad (reparar con honestidad) del autocastigo (sufrir sin arreglar nada) y usan la Prueba del Amigo en una situación real."],
+ safe:["The reflection is PPRA-designated: the usual opt-out applies. Pairs share only what they would tell a friend, never their own mistake.","La reflexión está designada por la PPRA: aplica la opción habitual de no participar. En parejas comparten solo lo que le dirían a un amigo, nunca su propio error."],
+ a:["As written. Friend Test Card 1 (Priya, the essay) as a class, then Card 2 (Marcus). Four steps: acknowledge, repair, commit, move on.","Tal como está. Tarjeta 1 de la Prueba del Amigo (Priya, el ensayo) con toda la clase y luego la Tarjeta 2 (Marcus). Cuatro pasos: reconocer, reparar, comprometerse, seguir adelante."],ach:7,
+ b:{s:["Ben borrowed his cousin’s earbuds and lost one. He apologized. She said, “It’s fine, really.” Ben has skipped two family dinners so he won’t have to see her.","Ben le pidió prestados los audífonos a su prima y perdió uno. Se disculpó. Ella le dijo: “De verdad, está bien”. Ben ha faltado a dos cenas familiares para no verla."],
+  q:[["Which of the four steps has Ben done, and which is he skipping?","¿Cuáles de los cuatro pasos ya hizo Ben, y cuál se está saltando?"],["How is avoiding his cousin a kind of self-punishment?","¿Por qué evitar a su prima es una forma de autocastigo?"]],
+  d:["Use Ben in place of Card 2. Then each student writes, privately, one repair step they could still take.","Usa a Ben en lugar de la Tarjeta 2. Luego cada estudiante escribe, en privado, un paso de reparación que todavía podría dar."],
+  ch:13,n:["Marcus apologizes to Aaliyah, and she says, “I forgive you. Can you leave my room now.”","Marcus se disculpa con Aaliyah, y ella le dice: “Te perdono. ¿Ya te puedes salir de mi cuarto?”."]},
+ c:{l:["Eighth graders write and act out a two-minute skit for a sixth-grade class: one version with self-punishment, one with the four steps. The sixth graders spot the difference.","Los de octavo escriben y actúan para una clase de sexto una escena de dos minutos: una versión con autocastigo y otra con los cuatro pasos. Los de sexto encuentran la diferencia."],
+  s:["Team captain Kai snapped at a teammate during a loss and said he would never pass to her again. He apologized the next day. Now he wants to quit as captain: “I don’t deserve it.”","Kai, capitán del equipo, le gritó a una compañera durante una derrota y dijo que nunca más le pasaría la pelota. Se disculpó al día siguiente. Ahora quiere dejar de ser capitán: “No me lo merezco”."],
+  q:[["Is quitting accountability, or self-punishment dressed up as accountability?","¿Renunciar es responsabilidad, o es autocastigo disfrazado de responsabilidad?"],["What would “commit to a different choice” look like for a captain?","¿Cómo se vería “comprometerse a elegir distinto” para un capitán?"]],
+  ch:23,n:["Darius does the dishes without being asked, even though it is not his night.","Darius lava los platos sin que se lo pidan, aunque no le toca."]}},
+
+{id:"u2l5",star:0,cards:1,when:["December · week 1","Diciembre · semana 1"],t:["The Friend Test","La Prueba del Amigo"],std:"1A.3a · 1B.3a",
+ goal:["Students deepen the Compassionate Witness through the Friend Test and use it where they have been less fair to themselves than they would be to a friend.","Los estudiantes profundizan en el Testigo Compasivo con la Prueba del Amigo y la usan donde han sido menos justos consigo mismos de lo que serían con un amigo."],
+ safe:["Partner sharing is light and optional; the journal is where the real work happens. Pair B (being left out) needs care.","Compartir en pareja es ligero y opcional; el trabajo de verdad se hace en el diario. La Pareja B (quedar fuera) requiere cuidado."],
+ a:["As written. Students choose their partners. Friend Test Pairs A (Jamie, the tryout) and B (Theo, the party).","Tal como está. Los estudiantes eligen pareja. Parejas A (Jamie, la prueba del equipo) y B (Theo, la fiesta)."],ach:13,
+ b:{s:["Pablo forgot his lines in the class play and froze for ten seconds. His friends say nobody noticed. Pablo tells himself, “Everyone saw. I looked ridiculous. I should never perform again.”","A Pablo se le olvidó su parte en la obra de la clase y se quedó congelado diez segundos. Sus amigos dicen que nadie se dio cuenta. Pablo se dice: “Todos lo vieron. Me veía ridículo. No debería volver a actuar nunca”."],
+  q:[["If your best friend froze on stage, what would you tell them?","Si tu mejor amigo se congelara en el escenario, ¿qué le dirías?"],["Catch the “but”: what does the Critic sneak into Pablo’s kind sentence?","Atrapa el “pero”: ¿qué mete el Crítico en la frase amable de Pablo?"]],
+  d:["Add “catch the but”: students write a kind sentence for Pablo, find any “but,” and finish the sentence without it.","Agrega “atrapa el pero”: los estudiantes escriben una frase amable para Pablo, buscan cualquier “pero” y terminan la frase sin él."],
+  ch:10,n:["Mr. Patel asks the class to imagine a best friend beside them: you would never talk to a friend the way you talk to yourself.","El señor Patel le pide a la clase que imagine a su mejor amigo al lado: nunca le hablarías a un amigo como te hablas a ti."]},
+ c:{l:["Eighth graders lead the Friend Test Foundation for a sixth-grade class with a two-column chart and one made-up story. Sixth graders write their own columns privately; nobody shares them.","Los de octavo dirigen la base de la Prueba del Amigo con una clase de sexto, con una tabla de dos columnas y una historia inventada. Los de sexto escriben sus columnas en privado; nadie las comparte."],
+  s:["Ruby did not get into the high school program she wanted. Her friend Ivy did. Ruby tells everyone, “It’s fine.” In her head: “I wasn’t good enough, and I never will be.”","A Ruby no la aceptaron en el programa de preparatoria que quería. A su amiga Ivy sí. Ruby les dice a todos: “Está bien”. En su cabeza: “No fui suficiente, y nunca lo seré”."],
+  q:[["What would Ruby say to Ivy if their places were switched?","¿Qué le diría Ruby a Ivy si estuvieran al revés?"],["How can Ivy be a good friend without hiding her own good news?","¿Cómo puede Ivy ser buena amiga sin esconder su propia buena noticia?"]],
+  ch:12,n:["Sofia texts Kezia back: “The cohort can hold it. I can hold it. We are right here.”","Sofia le responde a Kezia: “El grupo puede sostenerlo. Yo puedo sostenerlo. Aquí estamos”."]}},
+
+{id:"u2l6",star:2,cards:0,when:["December · week 2","Diciembre · semana 2"],t:["Rewriting the Script","Reescribir el guion"],std:"1A.3a · 1B.3a",
+ goal:["Students look at the scripts they have inherited about their worth, ability and belonging, and practice the Compassionate Witness to rewrite the ones that do not serve them.","Los estudiantes examinan los guiones que han heredado sobre su valor, su capacidad y su pertenencia, y practican el Testigo Compasivo para reescribir los que no les sirven."],
+ safe:["★★ every year. The counselor is physically in the room for the whole lesson. Crisis lines posted (988; text HOME to 741741). Not before a holiday, weekend, break or fire-drill day. No substitute. Brief the counselor on L1–L5. Settle yourself first. Work only from the worksheet; it is never collected.","★★ todos los años. Consejería presente en el salón toda la lección. Líneas de crisis publicadas (988; envía HOME al 741741). No antes de un feriado, fin de semana, vacaciones ni día de simulacro. Sin suplente. Informa a consejería sobre L1–L5. Primero cálmate tú. Se trabaja solo con la hoja; nunca se recoge."],
+ a:["As written: every step of the protocol, and the five-section Script Analysis, private, from the worksheet only.","Tal como está: cada paso del protocolo y el Análisis del Guion en cinco secciones, privado, solo con la hoja."],ach:14,
+ b:{s:["Only the teaching example in Step 1 is new. Since second grade, Leo has believed “I’m not a math person.” He says it as a joke. He also never raises his hand in math, even when he knows the answer.","Solo cambia el ejemplo de enseñanza del paso 1. Desde segundo grado, Leo cree que “no es bueno para las matemáticas”. Lo dice en broma. Tampoco levanta la mano en matemáticas, aunque sepa la respuesta."],
+  q:[["Where might a script like Leo’s get written? Talk in general, never about yourself.","¿Dónde se escribe un guion como el de Leo? Hablen en general, nunca de ustedes mismos."],["What evidence does Leo have that the script is not the whole truth?","¿Qué evidencia tiene Leo de que el guion no es toda la verdad?"]],
+  d:["Model the five sections with Leo’s script before students turn to their own. The private work, the protocol and the four-minute close do not change.","Modela las cinco secciones con el guion de Leo antes de que cada quien pase al suyo. El trabajo privado, el protocolo y el cierre de cuatro minutos no cambian."],
+  ch:13,n:["A lighter anchor than Chapter 12: Marcus learns to finish a kind sentence without the “but.”","Un ancla más ligera que el Capítulo 12: Marcus aprende a terminar una frase amable sin el “pero”."]},
+ c:{l:["Nobody leads younger students in this lesson. With the counselor, eighth graders write the class’s “After a heavy lesson” card: three general things that help (water, a quiet corner, a walk to the counselor). Nobody writes about their own script.","En esta lección nadie dirige a estudiantes más pequeños. Con consejería, los de octavo escriben la tarjeta de la clase “Después de una lección difícil”: tres cosas generales que ayudan (agua, un rincón tranquilo, ir con consejería). Nadie escribe sobre su propio guion."],
+  s:["A new teaching example for Step 1: Zara believes “I have to be the easy friend.” She never says no and laughs off things that bother her. Her friends like her a lot and don’t know she is tired.","Un nuevo ejemplo de enseñanza para el paso 1: Zara cree que “tiene que ser la amiga fácil”. Nunca dice que no y se ríe de cosas que le molestan. Sus amigos la quieren mucho y no saben que está cansada."],
+  q:[["What does Zara’s script cost her, and what does it protect her from?","¿Qué le cuesta a Zara su guion, y de qué la protege?"],["What would a fair, more accurate version sound like?","¿Cómo sonaría una versión justa y más precisa?"]],
+  ch:23,n:["A lighter anchor than Chapter 12: in April, Theo tells the whole cohort he has been tired this year.","Un ancla más ligera que el Capítulo 12: en abril, Theo le cuenta a todo el grupo que ha estado cansado este año."]}},
+
+{id:"u2l7",star:0,cards:0,when:["December · week 3","Diciembre · semana 3"],t:["Unit 2 Reflection & Bridge to Unit 3","Reflexión de la Unidad 2 y puente a la Unidad 3"],std:"1C.3a · 1C.3b",
+ goal:["Students pull Unit 2 together, write a final Compassionate Witness statement, and get ready to turn self-compassion toward others in Unit 3.","Los estudiantes reúnen lo aprendido en la Unidad 2, escriben una declaración final del Testigo Compasivo y se preparan para dirigir la autocompasión hacia los demás en la Unidad 3."],
+ safe:["Send the Family Mid-Year Survey and the Unit 3 family letter. Brief the counselor on who carries the most into Unit 3, and plan the monitoring together.","Envía la Encuesta de Mitad de Año para Familias y la carta de la Unidad 3. Informa a consejería quién lleva más peso a la Unidad 3, y planeen juntos el seguimiento."],
+ a:["As written. The Compassionate Witness Statement, the Transfer Question, and one intention for Unit 3.","Tal como está. La Declaración del Testigo Compasivo, la Pregunta de Transferencia y una intención para la Unidad 3."],ach:15,
+ b:{s:["At home, Noor’s little brother breaks her favorite mug and starts crying before she can say a word. Noor notices she wants to tell him exactly what her Witness has been learning to tell her.","En casa, el hermanito de Noor rompe su taza favorita y empieza a llorar antes de que ella diga una palabra. Noor se da cuenta de que quiere decirle exactamente lo que su Testigo ha aprendido a decirle a ella."],
+  q:[["How is talking kindly to yourself practice for talking kindly to others?","¿Por qué hablarte con amabilidad es práctica para hablarles con amabilidad a otros?"],["What would Noor’s Witness say to her brother?","¿Qué le diría el Testigo de Noor a su hermano?"]],
+  d:["Students write the Witness statement twice: once for themselves, once for a made-up friend in Noor’s place. The second one is the bridge to Unit 3.","Los estudiantes escriben la declaración del Testigo dos veces: una para sí mismos y otra para un amigo inventado en el lugar de Noor. La segunda es el puente hacia la Unidad 3."],
+  ch:11,n:["Each cohort kid writes one private Witness sentence about their own hard thing; the book does not show them.","Cada chico del grupo escribe una frase privada del Testigo sobre lo difícil que carga; el libro no las muestra."]},
+ c:{l:["Eighth graders design a winter “Witness card” for the school: one kind, honest sentence anyone can use on a hard day, in English and Spanish. The counselor approves it.","Los de octavo diseñan una “tarjeta del Testigo” de invierno para la escuela: una frase amable y honesta que cualquiera pueda usar en un día difícil, en inglés y en español. Consejería la aprueba."],
+  s:["Eli has gotten good at the Witness voice. Lately he notices he is quick to forgive himself, but slow to forgive his younger sister when she messes up.","Eli ya es bueno con la voz del Testigo. Últimamente nota que se perdona rápido a sí mismo, pero le cuesta perdonar a su hermana menor cuando se equivoca."],
+  q:[["Why might it be easier to be fair to yourself than to someone close?","¿Por qué podría ser más fácil ser justo contigo que con alguien cercano?"],["What would change if Eli used the Friend Test on his sister?","¿Qué cambiaría si Eli usara la Prueba del Amigo con su hermana?"]],
+  ch:17,n:["Mia’s short repair text to Sofia after New Year’s Eve opens Part Three.","El breve mensaje de reparación de Mia a Sofia después de Año Nuevo abre la Tercera Parte."]}},
+
+{id:"u3l1",star:0,cards:1,when:["January · week 2","Enero · semana 2"],t:["Impact vs. Intent","Impacto vs. Intención"],std:"2A.3b · 2A.3a",
+ goal:["Students explain the difference between impact and intent and show that repair addresses the impact, whatever the intent.","Los estudiantes explican la diferencia entre impacto e intención y muestran que la reparación atiende el impacto, sea cual sea la intención."],
+ safe:["Unit 3 note: forgiveness is never required where harm is ongoing. If a student may be in ongoing harm, pause and follow the Disclosure Protocol. Card B: use with care and its equity alert.","Nota de la Unidad 3: el perdón nunca es obligatorio donde el daño continúa. Si un estudiante podría estar sufriendo un daño continuo, haz una pausa y sigue el Protocolo de Revelación. Tarjeta B: con cuidado y con su alerta de equidad."],
+ a:["As written. Card A (the missed invitation) as the class model, then Cards B and C.","Tal como está. Tarjeta A (la invitación olvidada) como modelo con toda la clase y luego las Tarjetas B y C."],ach:17,
+ b:{s:["Sam tags friends in a group photo from the science fair and leaves out Maren by accident. She is in the photo. She sees it and says nothing for two days.","Sam etiqueta a sus amigos en una foto grupal de la feria de ciencias y deja fuera a Maren sin querer. Ella sale en la foto. La ve y no dice nada por dos días."],
+  q:[["What did Sam intend, and what was the impact on Maren?","¿Qué quería hacer Sam, y qué impacto tuvo en Maren?"],["Write Sam’s repair: one mention of intent, then the impact, then sorry.","Escribe la reparación de Sam: una sola mención de la intención, luego el impacto, luego la disculpa."]],
+  d:["Use Sam in place of Card A. Teach the repair shape: one line of intent, then the impact, then the apology.","Usa a Sam en lugar de la Tarjeta A. Enseña la forma de reparar: una línea de intención, luego el impacto, luego la disculpa."],
+  ch:7,n:["Darius’s words to Imani took thirty seconds. Their impact lasted three weeks.","Las palabras de Darius a Imani duraron treinta segundos. Su impacto duró tres semanas."]},
+ c:{l:["Eighth graders teach Impact vs. Intent to a sixth-grade class with a “two thought bubbles” drawing: what was meant, and what landed. Made-up school examples only.","Los de octavo enseñan Impacto vs. Intención a una clase de sexto con un dibujo de “dos globos de pensamiento”: lo que se quiso decir y lo que llegó. Solo ejemplos escolares inventados."],
+  s:["The eighth-grade council announces a Spirit Week theme: “Dress like your favorite decade.” Some students say they cannot afford costumes and feel left out. The council meant it to be fun for everyone.","El consejo estudiantil de octavo anuncia el tema de la Semana del Espíritu Escolar: “Vístete como tu década favorita”. Algunos estudiantes dicen que no pueden pagar disfraces y se sienten excluidos. El consejo lo pensó como algo divertido para todos."],
+  q:[["How can a group repair impact, not just one person?","¿Cómo puede un grupo reparar el impacto, y no solo una persona?"],["What would a good council announcement say now?","¿Qué diría ahora un buen anuncio del consejo?"]],
+  ch:23,n:["Months later, Marcus apologizes for the June screenshot, even though it never spread.","Meses después, Marcus se disculpa por la captura de junio, aunque nunca se difundió."]}},
+
+{id:"u3l2",star:0,cards:1,when:["January · week 3","Enero · semana 3"],t:["Three Sides of Every Story","Los tres lados de cada historia"],std:"2A.3a · 2A.3b",
+ goal:["Students practice seeing three views of a conflict and explain how the Compassionate Observer differs from both sides.","Los estudiantes practican ver tres puntos de vista de un conflicto y explican en qué se diferencia el Observador Compasivo de ambas partes."],
+ safe:["The Unit 3 note applies. Never ask students whether a card matches their own friendships.","Aplica la nota de la Unidad 3. Nunca preguntes si una tarjeta se parece a sus propias amistades."],
+ a:["As written. A teacher-provided scenario only. Model all three columns, and protect time for the Observer column.","Tal como está. Solo la situación que da el maestro. Modela las tres columnas y protege el tiempo de la columna del Observador."],ach:0,
+ b:{s:["Gabe and his lab partner Ines split a project. The night before it was due, Ines redid Gabe’s part without asking. Gabe says she doesn’t trust him. Ines says he left it too late.","Gabe y su compañera de laboratorio Ines se repartieron un proyecto. La noche antes de entregarlo, Ines rehízo la parte de Gabe sin preguntarle. Gabe dice que ella no confía en él. Ines dice que él lo dejó para muy tarde."],
+  q:[["What is true in Gabe’s side, and what is true in Ines’s?","¿Qué hay de cierto en el lado de Gabe, y qué en el de Ines?"],["What does the Compassionate Observer see that neither of them can?","¿Qué ve el Observador Compasivo que ninguno de los dos puede ver?"]],
+  d:["Use Gabe and Ines with Card A. Applying it to their own life is optional, in the journal only.","Usa a Gabe e Ines junto con la Tarjeta A. Aplicarlo a su propia vida es opcional, solo en el diario."],
+  ch:22,n:["Theo holds two readings of Cole’s “looking good today, buddy” before he answers.","Theo considera dos lecturas del “Qué bien te ves hoy, amigo” de Cole antes de responder."]},
+ c:{l:["Eighth graders run a “three chairs” activity for a sixth-grade class: one chair for each side and one for the Observer, with a made-up scenario. Volunteers sit and speak as that person.","Los de octavo dirigen con una clase de sexto la actividad de “tres sillas”: una silla para cada lado y otra para el Observador, con una situación inventada. Voluntarios se sientan y hablan como esa persona."],
+  s:["The eighth grade argues about a new rule: no phones at lunch. Students say it treats them like little kids. The principal says lunch has become unkind and lonely.","Octavo grado discute una regla nueva: no usar el celular en el almuerzo. Los estudiantes dicen que los tratan como niños pequeños. La directora dice que el almuerzo se ha vuelto poco amable y solitario."],
+  q:[["What is each side trying to protect?","¿Qué está tratando de proteger cada lado?"],["What could a student proposal say that both sides could live with?","¿Qué podría decir una propuesta estudiantil con la que ambos lados pudieran vivir?"]],
+  ch:17,n:["Mia’s side and Sofia’s side of the New Year’s Eve call are both true.","El lado de Mia y el lado de Sofia sobre la llamada de Año Nuevo son verdad los dos."]}},
+
+{id:"u3l3",star:1,cards:1,when:["February · week 1","Febrero · semana 1"],t:["Forgiveness vs. Reconciliation","Perdón vs. reconciliación"],std:"2D.3a · 2A.3a",
+ goal:["Students tell forgiveness (something that happens inside you) from reconciliation (rebuilding a relationship), and say that forgiveness is never required where harm is ongoing.","Los estudiantes distinguen el perdón (algo que pasa dentro de ti) de la reconciliación (reconstruir una relación) y dicen que el perdón nunca es obligatorio donde el daño continúa."],
+ safe:["★ every year. The counselor is on site and reachable within 60 seconds for the whole lesson. Crisis lines posted. No substitute. Not within 24 hours of a school-wide safety incident. Never ask for personal forgiveness stories.","★ todos los años. Consejería en la escuela y localizable en 60 segundos toda la lección. Líneas de crisis publicadas. Sin suplente. No dentro de las 24 horas siguientes a un incidente de seguridad en la escuela. Nunca pidas historias personales de perdón."],
+ a:["As written. Build the T-chart together; Card A (Darius, the betrayal) as a class; Card B only with caution.","Tal como está. Construyan juntos la tabla en T; Tarjeta A (Darius, la traición) con toda la clase; la Tarjeta B solo con cuidado."],ach:18,
+ b:{s:["Last year Mateo’s best friend told the team a secret Mateo had trusted him with. The friend apologized in the fall. Mateo has stopped replaying it, but he does not want to be close again. His mom asks, “So are you two friends now?”","El año pasado, el mejor amigo de Mateo le contó al equipo un secreto que Mateo le había confiado. El amigo se disculpó en el otoño. Mateo ya no le da vueltas, pero no quiere volver a ser tan cercano. Su mamá le pregunta: “¿Entonces ya son amigos otra vez?”."],
+  q:[["Has Mateo forgiven? Has he reconciled? How do you know?","¿Mateo ya perdonó? ¿Ya se reconcilió? ¿Cómo lo sabes?"],["What could Mateo tell his mom that is true and kind?","¿Qué le podría decir Mateo a su mamá que sea cierto y amable?"]],
+  d:["Use Mateo in place of Card A. Card B stays optional and is used with caution. No personal stories, in any year.","Usa a Mateo en lugar de la Tarjeta A. La Tarjeta B sigue siendo opcional y se usa con cuidado. Sin historias personales, en ningún año."],
+  ch:24,n:["“I want good things for you without wanting to be close to you again.”","“Quiero cosas buenas para ti sin querer volver a estar cerca de ti”."]},
+ c:{l:["Nobody leads younger students in this ★ lesson. Eighth graders write a short “Forgiveness is not trust” guide for the student newsletter, with made-up examples. The counselor reads it before it is printed. Nobody writes about their own life.","En esta lección ★ nadie dirige a estudiantes más pequeños. Los de octavo escriben una breve guía, “Perdonar no es confiar”, para el boletín estudiantil, con ejemplos inventados. Consejería la lee antes de imprimirla. Nadie escribe sobre su propia vida."],
+  s:["Two eighth graders on the yearbook team fell out in seventh grade, and both have moved on. Now they share a page. A teacher says, “Just make up already.”","Dos estudiantes de octavo del equipo del anuario se pelearon en séptimo, y los dos ya lo superaron. Ahora les toca la misma página. Un maestro les dice: “Ya, reconcíliense de una vez”."],
+  q:[["Can two people work together well without reconciling?","¿Pueden dos personas trabajar bien juntas sin reconciliarse?"],["What would you want the teacher to understand?","¿Qué te gustaría que entendiera el maestro?"]],
+  ch:17,n:["When the repair is real, Sofia and Mia talk for an hour and it is resolved: here forgiveness and closeness go together.","Cuando la reparación es real, Sofia y Mia hablan una hora y queda resuelto: aquí el perdón y la cercanía van juntos."]}},
+
+{id:"u3l4",star:0,cards:1,when:["February · week 2","Febrero · semana 2"],t:["The Digital Echo","El eco digital"],std:"2A.3b · 3B.3b",
+ goal:["Students tell reacting from responding in online conflict, name what makes it spread, and choose one way to step back.","Los estudiantes distinguen reaccionar de responder en un conflicto en línea, nombran lo que lo hace crecer y eligen una forma de retirarse."],
+ safe:["The Unit 3 note applies. Give the equity alert before the debrief, every year: not everyone carries the same risk online.","Aplica la nota de la Unidad 3. Da la alerta de equidad antes de la discusión, todos los años: no todos corren el mismo riesgo en línea."],
+ a:["As written. Flame vs. Pause as a daily tool, with Cards A and B in school settings.","Tal como está. Llama vs. Pausa como herramienta diaria, con las Tarjetas A y B en situaciones escolares."],ach:0,
+ b:{s:["Someone makes a meme of a teacher’s typo on the board, and in an hour it is in three grades’ chats. Jade’s friends tag her: “You have that class. Get a better picture!”","Alguien hace un meme con un error de escritura de un maestro en el pizarrón, y en una hora está en los chats de tres grados. Las amigas de Jade la etiquetan: “Tú tienes esa clase. ¡Toma una foto mejor!”."],
+  q:[["Where is the echo coming from, and what feeds it?","¿De dónde viene el eco, y qué lo alimenta?"],["What is Jade’s minimum effective response? Or should she step out?","¿Cuál es la respuesta mínima eficaz de Jade? ¿O debería salirse?"]],
+  d:["Teach the minimum effective response with Card A, then use Jade in place of Card B.","Enseña la respuesta mínima eficaz con la Tarjeta A y luego usa a Jade en lugar de la Tarjeta B."],
+  ch:4,n:["The cohort tells Marcus to delete the June screenshot, and they delete it too. The echo dies when no one feeds it.","El grupo le dice a Marcus que borre la captura de junio, y ellos también la borran. El eco se apaga cuando nadie lo alimenta."]},
+ c:{l:["Eighth graders make a one-minute Flame vs. Pause video or poster for the sixth grade, with a made-up chat. An adult approves it before it is shown.","Los de octavo hacen para sexto un video o cartel de un minuto sobre Llama vs. Pausa, con un chat inventado. Un adulto lo aprueba antes de mostrarlo."],
+  s:["Card C (the callout post) is eighth-grade work. A new one: an eighth grader posts a callout about a classmate’s comment at a game. Part of it is true and part is not, and 200 people have shared it.","La Tarjeta C (la publicación de denuncia) es trabajo de octavo. Una nueva: un estudiante de octavo publica una denuncia sobre el comentario de un compañero en un partido. Parte es verdad y parte no, y 200 personas la han compartido."],
+  q:[["What is the difference between public accountability and a public attack?","¿Cuál es la diferencia entre pedir cuentas en público y atacar en público?"],["What could the poster do now that responds instead of reacts?","¿Qué podría hacer ahora quien publicó para responder en vez de reaccionar?"]],
+  ch:17,n:["Sofia types three replies to Mia, deletes all three, and then sends an honest one.","Sofia escribe tres respuestas a Mia, borra las tres y luego manda una honesta."]}},
+
+{id:"u3l5",star:0,cards:0,when:["February · week 3","Febrero · semana 3"],t:["The Rumor & Narrative Hijack","El rumor y la historia secuestrada"],std:"2B.3a · 2B.3b",
+ goal:["Students see how rumors take over a person’s story and practice ways to take their story back.","Los estudiantes ven cómo los rumores se adueñan de la historia de una persona y practican formas de recuperar su historia."],
+ safe:["Give the equity alert before the worksheet. Narrative Reclaim is never collected or shared. Signs of ongoing targeting: follow the Disclosure Protocol after class.","Da la alerta de equidad antes de la hoja. La hoja para recuperar tu historia nunca se recoge ni se comparte. Si hay señales de acoso continuo: sigue el Protocolo de Revelación después de clase."],
+ a:["As written. How rumors work, the hijack, the private Narrative Reclaim, and “character is the counter-narrative.”","Tal como está. Cómo funcionan los rumores, el secuestro de la historia, la hoja privada para recuperarla y “el carácter es la otra historia”."],ach:0,
+ b:{s:["A rumor spreads that Pia cheated to win the spelling bee. She didn’t. Her friends believe her, but she notices she has started to doubt herself: “Maybe I didn’t deserve it.”","Se corre el rumor de que Pía hizo trampa para ganar el concurso de ortografía. No es cierto. Sus amigas le creen, pero ella nota que empieza a dudar de sí misma: “Quizás no me lo merecía”."],
+  q:[["Why do people pass on a rumor like this? Is any reason about the truth?","¿Por qué la gente pasa un rumor así? ¿Alguna razón tiene que ver con la verdad?"],["How is the rumor now taking over Pia’s story inside her own head?","¿Cómo se está adueñando ahora el rumor de la historia de Pía dentro de su propia cabeza?"]],
+  d:["Walk through the five Narrative Reclaim sections for Pia together, then students work privately. They may use a general label instead of a rumor.","Recorran juntos las cinco secciones para Pía y luego cada estudiante trabaja en privado. Pueden usar una etiqueta general en vez de un rumor."],
+  ch:6,n:["Mr. Patel calls a label “a prediction”: a short guess from a tiny slice of evidence.","El señor Patel dice que una etiqueta es “una predicción”: una suposición corta hecha con muy poca evidencia."]},
+ c:{l:["Eighth graders design a “Stop the story” bookmark for sixth graders: three things to do when you hear a rumor (don’t pass it on; check on the person; tell an adult if it is unsafe). The counselor approves the words.","Los de octavo diseñan para sexto un separador de libros, “Detén la historia”: tres cosas que hacer cuando oyes un rumor (no lo pases; pregúntale a la persona cómo está; avisa a un adulto si no es seguro). Consejería aprueba las palabras."],
+  s:["In the last month of eighth grade, a story starts that a quiet student is “moving away because of something she did.” Really, her family is moving for a job. People who barely know her are retelling it.","En el último mes de octavo empieza a correr la historia de que una estudiante callada “se va por algo que hizo”. En realidad, su familia se muda por un trabajo. Gente que casi no la conoce la repite."],
+  q:[["Who knows the true version, and what can they do?","¿Quién conoce la versión verdadera, y qué puede hacer?"],["How can bystanders help without spreading the story further?","¿Cómo pueden ayudar los testigos sin difundir más la historia?"]],
+  ch:26,n:["Mr. Patel names one thing he watched each student grow in this year: character shown over time.","El señor Patel nombra algo en lo que vio crecer a cada estudiante este año: el carácter que se muestra con el tiempo."]}},
+
+{id:"u3l6",star:2,cards:0,when:["March · week 1","Marzo · semana 1"],t:["The Agency of Release: the Letter of Release","El poder de soltar: la Carta de Liberación"],std:"1A.3b · 2D.3a",
+ goal:["Students practice choosing to release resentment, for their own sake and not the other person’s, and say how releasing it differs from excusing the harm.","Los estudiantes practican elegir soltar el resentimiento, por su propio bien y no por la otra persona, y dicen en qué se diferencia soltarlo de excusar el daño."],
+ safe:["★★ every year. The counselor is physically in the room before the first student enters. Crisis lines and the counselor’s contact posted. Not before a holiday, weekend, break or fire-drill day. Templates face-down at every seat. Enough time to reach the Release Ritual, or do not start the Letter. Settle yourself first. The letter is voluntary and never collected or read.","★★ todos los años. Consejería presente en el salón antes de que entre el primer estudiante. Líneas de crisis y contacto de consejería publicados. No antes de un feriado, fin de semana, vacaciones ni día de simulacro. Plantillas boca abajo en cada lugar. Tiempo suficiente para llegar al Ritual de Liberación; si no, no empieces la Carta. Primero cálmate tú. La carta es voluntaria; nunca se recoge ni se lee."],
+ a:["As written: every step of the protocol, the cost of resentment, what release is and is not, the voluntary Letter and the Release Ritual.","Tal como está: cada paso del protocolo, el costo del resentimiento, lo que es y no es soltar, la Carta voluntaria y el Ritual de Liberación."],ach:19,
+ b:{s:["Only the teaching example in Step 1 is new. In fifth grade, a classmate laughed at Lia’s science project in front of everyone. That classmate has moved away. Lia still replays it before every presentation.","Solo cambia el ejemplo de enseñanza del paso 1. En quinto grado, un compañero se rió del proyecto de ciencias de Lía delante de todos. Ese compañero ya se mudó. Lía todavía lo revive antes de cada presentación."],
+  q:[["Who is paying for the replay now?","¿Quién está pagando ahora por revivirlo?"],["What would releasing it give Lia, and what would it not mean?","¿Qué le daría a Lía soltarlo, y qué no significaría?"]],
+  d:["Use Lia to model the cost of resentment: a small hurt from someone who is not unsafe. The Letter, the face-down templates and the Ritual do not change.","Usa a Lía para modelar el costo del resentimiento: una herida pequeña de alguien que no es peligroso. La Carta, las plantillas boca abajo y el Ritual no cambian."],
+  ch:18,n:["Chapter 15 calls forgiveness “the eviction notice you sign for somebody who has been living in your head without paying rent.”","El Capítulo 15 llama al perdón “el aviso de desalojo que firmas para alguien que ha estado viviendo en tu cabeza sin pagar renta”."]},
+ c:{l:["Nobody leads younger students in this lesson. With the counselor, eighth graders plan the calm close of the Release Ritual: silence or soft sound, the breathing count, the words on the board. Nobody shares a letter.","En esta lección nadie dirige a estudiantes más pequeños. Con consejería, los de octavo planean el cierre tranquilo del Ritual de Liberación: silencio o un sonido suave, la cuenta de respiración, las palabras del pizarrón. Nadie comparte su carta."],
+  s:["A new teaching example for Step 1: in seventh grade, Isaac’s old friend posted something unkind about him and never apologized. They will go to the same high school. Isaac wants to start ninth grade without carrying it.","Un nuevo ejemplo de enseñanza para el paso 1: en séptimo, un antiguo amigo de Isaac publicó algo cruel sobre él y nunca se disculpó. Irán a la misma preparatoria. Isaac quiere empezar noveno grado sin cargar con eso."],
+  q:[["Can Isaac release this without the friend ever apologizing?","¿Puede Isaac soltar esto sin que el amigo se disculpe nunca?"],["What might Isaac keep from what happened?","¿Qué podría guardar Isaac de lo que pasó?"]],
+  ch:24,n:["A lighter anchor: “I want good things for you without wanting to be close to you again.”","Un ancla más ligera: “Quiero cosas buenas para ti sin querer volver a estar cerca de ti”."]}},
+
+{id:"u3l7",star:0,cards:1,when:["March · weeks 2–3","Marzo · semanas 2–3"],t:["Limits from Self-Respect + Unit 3 Wrap-Up","Límites desde el respeto propio y cierre de la Unidad 3"],std:"2D.3a · 2C.3a",
+ goal:["Students see setting limits as self-respect, practice limit words rooted in their values, pull Unit 3 together, and get ready for Unit 4.","Los estudiantes ven poner límites como respeto propio, practican palabras para poner límites desde sus valores, reúnen lo aprendido en la Unidad 3 y se preparan para la Unidad 4."],
+ safe:["The boundary scripts are for uncomfortable situations, not unsafe ones. If a situation sounds like active harm, do not offer the framework; note it privately for the counselor.","Los guiones de límites son para situaciones incómodas, no peligrosas. Si una situación suena a daño activo, no ofrezcas este marco; anótalo en privado para consejería."],
+ a:["As written. Cards A (the pressure loop) and B (the oversharer), Boundary Scripts with school scenarios, and the Collective Wisdom display.","Tal como está. Tarjetas A (el ciclo de presión) y B (el que cuenta de más), Guiones de Límites con situaciones escolares y la exhibición de Sabiduría Colectiva."],ach:24,
+ b:{s:["Dani’s friend borrows her homework every morning “to check answers” and copies it. Dani has hinted twice. Today the friend asks again in front of others.","Una amiga de Dani le pide la tarea todas las mañanas “para revisar respuestas” y la copia. Dani ya se lo insinuó dos veces. Hoy se la pide otra vez delante de otros."],
+  q:[["What value does a limit protect for Dani?","¿Qué valor protege un límite para Dani?"],["Draft her limit. Does it come from self-respect, or from getting even?","Escribe su límite. ¿Viene del respeto propio o de querer desquitarse?"]],
+  d:["Use Dani in place of Card A. Students move from hinting to one direct, kind sentence, and say it aloud once in pairs.","Usa a Dani en lugar de la Tarjeta A. Los estudiantes pasan de insinuar a una frase directa y amable, y la dicen en voz alta una vez en parejas."],
+  ch:20,n:["Jordan ends his letter with one clear, kind request: come find me and ask what I am writing now.","Jordan termina su carta con una petición clara y amable: ven a buscarme y pregúntame qué estoy escribiendo ahora."]},
+ c:{l:["Eighth graders teach “hint vs. say it” to a sixth-grade class with two short skits: in one, a friend only hints; in the other, she says a kind, clear limit.","Los de octavo enseñan “insinuar vs. decirlo” a una clase de sexto con dos escenas cortas: en una, una amiga solo insinúa; en la otra, pone un límite claro y amable."],
+  s:["Luca is in a group chat that never sleeps. Messages arrive at midnight, and some friends get upset if he doesn’t answer. He wants a “no phone after 10” limit without losing his friends.","Luca está en un chat de grupo que nunca duerme. Llegan mensajes a medianoche, y algunos amigos se molestan si no contesta. Quiere el límite de “nada de celular después de las 10” sin perder a sus amigos."],
+  q:[["How can Luca say it so it is about him, not about blaming them?","¿Cómo puede decirlo Luca para que hable de él, y no de culparlos?"],["What could the group agree on that would help everyone?","¿En qué podría ponerse de acuerdo el grupo que ayude a todos?"]],
+  ch:12,n:["Kezia texts Sofia instead of scrolling, puts the phone down, and is asleep by 11:20.","Kezia le escribe a Sofia en vez de seguir en la pantalla, deja el teléfono y a las 11:20 ya está dormida."]}},
+
+{id:"u4l1",star:0,cards:1,when:["April · week 1","Abril · semana 1"],t:["What Is Grace?","¿Qué es la gracia?"],std:"3A.3a · 2A.3a",
+ goal:["Students define grace in the curriculum’s secular sense and name three acts of grace at different levels of difficulty.","Los estudiantes definen la gracia en el sentido laico del currículo y nombran tres actos de gracia con distintos niveles de dificultad."],
+ safe:["Students give examples without personal disclosure. Crisis lines stay posted.","Los estudiantes dan ejemplos sin revelar nada personal. Las líneas de crisis siguen publicadas."],
+ a:["As written. Address the religious meaning directly; easy, medium and hard grace; Cards A and B; the sticky-note gallery.","Tal como está. Habla directamente del sentido religioso; gracia fácil, media y difícil; Tarjetas A y B; la galería de notas adhesivas."],ach:0,
+ b:{s:["At the class bake sale, a sixth grader drops a whole tray of cupcakes. Joss, who baked them, says, “It’s okay. Floor cupcakes are a tradition now,” and helps clean up.","En la venta de pasteles de la clase, a un estudiante de sexto se le cae una bandeja entera de pastelitos. Joss, que los horneó, dice: “Tranquilo. Los pastelitos del piso ya son una tradición”, y ayuda a limpiar."],
+  q:[["Is this easy, medium or hard grace? What did it cost Joss?","¿Es gracia fácil, media o difícil? ¿Qué le costó a Joss?"],["What makes grace different from just being nice?","¿Qué hace que la gracia sea distinta de simplemente ser amable?"]],
+  d:["Add Joss beside Card A. Gallery notes name the kind of grace, never a person.","Agrega a Joss junto a la Tarjeta A. Las notas de la galería nombran el tipo de gracia, nunca a una persona."],
+  ch:22,n:["Grace is “extending something generous to somebody who has not earned it.”","La gracia es “ofrecer algo generoso a alguien que no se lo ha ganado”."]},
+ c:{l:["Eighth graders lead the three-levels sort for a sixth-grade class: twelve made-up acts on cards, sorted into easy, medium and hard grace. They explain what “cost” means.","Los de octavo dirigen con una clase de sexto la clasificación de los tres niveles: doce actos inventados en tarjetas, clasificados en gracia fácil, media y difícil. Explican qué quiere decir “costo”."],
+  s:["Before the eighth-grade awards night, the student who usually wins everything quietly asks the teacher to give the “most improved” award a real speech, not just a name.","Antes de la noche de premios de octavo, el estudiante que suele ganarlo todo le pide en voz baja al maestro que el premio a “quien más mejoró” tenga un discurso de verdad, no solo un nombre."],
+  q:[["Why is grace from someone with status sometimes harder, and sometimes easier?","¿Por qué la gracia de alguien con prestigio a veces es más difícil, y a veces más fácil?"],["Where could your school use more hard grace?","¿Dónde le haría falta a tu escuela más gracia difícil?"]],
+  ch:23,n:["Priya invites Hannah to the cohort’s basement gathering.","Priya invita a Hannah a la reunión del grupo en el sótano."]}},
+
+{id:"u4l2",star:0,cards:1,when:["April · week 2","Abril · semana 2"],t:["What Does Mercy Look Like?","¿Cómo se ve la misericordia?"],std:"3A.3a · 2A.3a",
+ goal:["Students define mercy as choosing to hold back power, connect mercy to growth, and stay with the real tension between mercy and justice.","Los estudiantes definen la misericordia como elegir no usar todo el poder que se tiene, la relacionan con el crecimiento y se quedan con la tensión real entre misericordia y justicia."],
+ safe:["Card C (the power difference): give the equity alert first. No clean answer is expected.","Tarjeta C (la diferencia de poder): da primero la alerta de equidad. No se espera una respuesta perfecta."],
+ a:["As written. Card A (the overdue apology) as a class, then Cards B and C; sit with the tension.","Tal como está. Tarjeta A (la disculpa tardía) con toda la clase y luego las Tarjetas B y C; quédense con la tensión."],ach:0,
+ b:{s:["Paz is the referee for a sixth-grade soccer game. A player shoves another, then says sorry right away. The rule says yellow card. Paz could give a warning instead.","Paz es árbitra de un partido de fútbol de sexto. Una jugadora empuja a otra y luego pide perdón de inmediato. La regla dice tarjeta amarilla. Paz podría dar solo una advertencia."],
+  q:[["What power does Paz hold, and who is affected by how she uses it?","¿Qué poder tiene Paz, y a quién afecta cómo lo use?"],["When does mercy help someone grow, and when does it let harm continue?","¿Cuándo la misericordia ayuda a alguien a crecer, y cuándo deja que el daño continúe?"]],
+  d:["Use Paz before Card B. Students write one sentence for mercy and one for justice, then decide.","Usa a Paz antes de la Tarjeta B. Los estudiantes escriben una frase a favor de la misericordia y otra a favor de la justicia, y luego deciden."],
+  ch:24,n:["Priya chooses not to retaliate against Owen, report him, or make him a project.","Priya elige no vengarse de Owen, no reportarlo y no convertirlo en un proyecto."]},
+ c:{l:["Eighth graders who coach or help younger kids plan a short talk for a sixth-grade class: “When I chose mercy, and when I chose a consequence.” Small, real examples they choose to share; no names.","Los de octavo que entrenan o ayudan a niños más pequeños preparan una charla corta para una clase de sexto: “Cuándo elegí la misericordia, y cuándo una consecuencia”. Ejemplos pequeños y reales que ellos eligen compartir; sin nombres."],
+  s:["An eighth-grade hall helper sees a sixth grader running and crying. The rule is to write a slip for running.","Un ayudante de pasillo de octavo ve a un estudiante de sexto corriendo y llorando. La regla es hacerle un reporte por correr."],
+  q:[["What does mercy look like here, and what does the sixth grader need?","¿Cómo se ve aquí la misericordia, y qué necesita el estudiante de sexto?"],["Which adult should the helper tell, and why?","¿A qué adulto debería avisar el ayudante, y por qué?"]],
+  ch:4,n:["The cohort does not let Marcus get away with the screenshot, and does not turn on him either.","El grupo no deja que Marcus se salga con la suya con la captura, y tampoco se pone en su contra."]}},
+
+{id:"u4l3",star:0,cards:1,when:["April · week 3","Abril · semana 3"],t:["Giving the Benefit of the Doubt","Dar el beneficio de la duda"],std:"2A.3a · 1A.3b",
+ goal:["Students practice charitable interpretation as a daily skill and learn the Pause as a four-step tool.","Los estudiantes practican la Interpretación Generosa como habilidad diaria y aprenden la Pausa como herramienta de cuatro pasos."],
+ safe:["Charitable interpretation is the kindest reading the evidence allows. It never means ignoring real harm.","La Interpretación Generosa es la lectura más amable que permite la evidencia. Nunca significa ignorar un daño real."],
+ a:["As written. Two interpretations and the Pause; Cards A (the ignored message) and B (the short answer).","Tal como está. Dos interpretaciones y la Pausa; Tarjetas A (el mensaje sin respuesta) y B (la respuesta cortante)."],ach:22,
+ b:{s:["Mr. Patel writes “See me after class” on Vera’s paper, with no other note. Vera spends the whole period sure she is in trouble. (He wants to invite her to the writing contest. Tell the class only after they choose.)","El señor Patel escribe “Habla conmigo después de clase” en la hoja de Vera, sin otra nota. Vera pasa toda la hora segura de que está en problemas. (Quiere invitarla al concurso de escritura. Díselo a la clase solo después de que elijan.)"],
+  q:[["Write two interpretations. Which keeps Vera steady while she finds out?","Escribe dos interpretaciones. ¿Cuál mantiene a Vera tranquila mientras averigua?"],["Use the Pause: what does Vera actually know?","Usa la Pausa: ¿qué sabe Vera en realidad?"]],
+  d:["Use Vera with Card A and reveal the ending after the class has chosen. Add three maybes before the verdict.","Usa a Vera con la Tarjeta A y revela el final después de que la clase elija. Agrega tres “quizás” antes del veredicto."],
+  ch:12,n:["Ms. Calloway asks Kezia whether she knows the people she compares herself to. The jury is not real.","La señora Calloway le pregunta a Kezia si conoce a las personas con las que se compara. El jurado no es real."]},
+ c:{l:["Eighth graders teach the Pause to a sixth-grade class as a hand signal they invent, one finger for each of the four steps. They practice with made-up texts.","Los de octavo enseñan la Pausa a una clase de sexto como una seña con la mano que ellos inventan, un dedo por cada uno de los cuatro pasos. Practican con mensajes inventados."],
+  s:["Tavi joins the eighth grade in March. He sits alone and answers in one word when people say hi. Some kids decide he is stuck-up. (Share after the class chooses: he is new to the city and to English.)","Tavi llega a octavo en marzo. Se sienta solo y contesta con una palabra cuando lo saludan. Algunos deciden que es creído. (Cuéntalo después de que la clase elija: es nuevo en la ciudad y en el inglés.)"],
+  q:[["What other readings fit the evidence?","¿Qué otras lecturas encajan con la evidencia?"],["What small act could get you real information?","¿Qué pequeño acto te daría información real?"]],
+  ch:24,n:["Priya decides Owen’s face is “information about him, not information about me.”","Priya decide que la cara de Owen es “información sobre él, no información sobre mí”."]}},
+
+{id:"u4l4",star:0,cards:0,when:["May · week 1","Mayo · semana 1"],t:["Small Acts, Big Difference: the Grace Challenge","Actos pequeños, gran diferencia: el Reto de la Gracia"],std:"2C.3a · 3C.3a",
+ goal:["Students commit to three specific, daily small acts of grace and see how small acts add up.","Los estudiantes se comprometen con tres pequeños actos de gracia, específicos y diarios, y ven cómo se suman los actos pequeños."],
+ safe:["Talk about the acts without naming who received them. The tracker stays with the student.","Hablen de los actos sin nombrar a quién los recibió. El registro se queda con el estudiante."],
+ a:["As written. Choose from the small-acts menu first; three specific, observable acts; the tracker.","Tal como está. Primero eligen del menú de actos pequeños; tres actos específicos y observables; el registro."],ach:23,
+ b:{s:["Simone decides her three acts are “be nicer, help more, smile.” Her partner says none of them pass the test: small, specific, and costs something.","Simone decide que sus tres actos son “ser más amable, ayudar más, sonreír”. Su compañero le dice que ninguno pasa la prueba: pequeño, específico y que cueste algo."],
+  q:[["Rewrite Simone’s three so you could tell whether she did them.","Reescribe los tres de Simone para que se pueda saber si los hizo."],["Why can a small act that costs something change more than a big, easy one?","¿Por qué un acto pequeño que cuesta algo puede cambiar más que uno grande y fácil?"]],
+  d:["Pairs fix Simone’s list before writing their own. Students build their own menu instead of choosing from the given one.","En parejas corrigen la lista de Simone antes de escribir la suya. Los estudiantes arman su propio menú en vez de elegir del que se les da."],
+  ch:24,n:["Grace is not a performance. It is not done so other people will say you are a good person.","La gracia no es una actuación. No se hace para que otros digan que eres buena persona."]},
+ c:{l:["With the student council, eighth graders run a one-week small-acts challenge for the whole school: a menu poster, no prizes, no names, and one closing line on the morning announcements.","Con el consejo estudiantil, los de octavo organizan un reto de actos pequeños de una semana para toda la escuela: un cartel con el menú, sin premios, sin nombres y una frase de cierre en los anuncios de la mañana."],
+  s:["Halfway through the week, Caleb notices the school challenge turning into a contest: some kids post their good deeds for likes.","A mitad de semana, Caleb nota que el reto de la escuela se está volviendo una competencia: algunos publican sus buenas acciones para recibir “me gusta”."],
+  q:[["What happens to grace when it is done for credit?","¿Qué le pasa a la gracia cuando se hace para recibir crédito?"],["How could the leaders change the challenge without shaming anyone?","¿Cómo podrían los líderes cambiar el reto sin avergonzar a nadie?"]],
+  ch:25,n:["In Sofia’s basement, the cohort plans small acts for the rest of the year. “The acts are small.”","En el sótano de Sofia, el grupo planea actos pequeños para el resto del año. “Los actos son pequeños”."]}},
+
+{id:"u4l5",star:0,cards:1,when:["May · week 2","Mayo · semana 2"],t:["Grace With Hard People","La gracia con las personas difíciles"],std:"2D.3a · 3A.3a",
+ goal:["Students tell difficult people from unsafe people, and practice grace toward the first while protecting themselves from the second.","Los estudiantes distinguen a las personas difíciles de las personas peligrosas, y practican la gracia con las primeras mientras se protegen de las segundas."],
+ safe:["Say it plainly: grace is not accepting mistreatment. If a “hard person” sounds unsafe, safety comes first, not grace; note it for the counselor.","Dilo claramente: la gracia no es aceptar maltrato. Si una “persona difícil” suena peligrosa, primero la seguridad, no la gracia; anótalo para consejería."],
+ a:["As written. Card A (the persistent critic) as a class, then Card B (the complicated history). School examples only.","Tal como está. Tarjeta A (el crítico persistente) con toda la clase y luego la Tarjeta B (la historia complicada). Solo ejemplos escolares."],ach:24,
+ b:{s:["In art class, Felix comments on every project Ana shares: “Interesting choice.” Nothing cruel, nothing you could report, every single class.","En la clase de arte, Félix comenta cada proyecto que Ana muestra: “Qué elección tan interesante”. Nada cruel, nada que se pueda reportar, todas las clases."],
+  q:[["Difficult or unsafe? What makes you sure?","¿Difícil o peligroso? ¿Qué te hace estar seguro?"],["What would grace from self-respect look like for Ana?","¿Cómo se vería para Ana la gracia desde el respeto propio?"]],
+  d:["Use Ana beside Card A. Then students sort six made-up people into difficult or unsafe, and say what each one calls for: grace, or help.","Usa a Ana junto a la Tarjeta A. Luego los estudiantes clasifican a seis personas inventadas en difíciles o peligrosas, y dicen qué pide cada caso: gracia, o ayuda."],
+  ch:22,n:["“Not about being a doormat”: the kind reading is for unclear moments, not for clear harm.","“No se trata de dejarse pisar”: la lectura amable es para momentos poco claros, no para un daño claro."]},
+ c:{l:["With the counselor, eighth graders make a “Difficult or unsafe?” poster for the sixth-grade hallway: what each looks like, and which adults to tell. The counselor approves every word.","Con consejería, los de octavo hacen para el pasillo de sexto un cartel “¿Difícil o peligroso?”: cómo se ve cada uno y a qué adultos avisar. Consejería aprueba cada palabra."],
+  s:["Selma will be in a summer program with a girl who has been difficult with her all year. Not dangerous, just cold. Selma wants a plan for the first day.","Selma estará en un programa de verano con una chica que ha sido difícil con ella todo el año. No es peligrosa, solo fría. Selma quiere un plan para el primer día."],
+  q:[["What is grace at a distance for Selma?","¿Qué es para Selma la gracia a distancia?"],["What is Selma not being asked to accept?","¿Qué no se le pide a Selma que acepte?"]],
+  ch:5,n:["Sofia does not fully leave the science table, because she has a real friendship there. She stays, with a plan.","Sofia no deja del todo la mesa de ciencias, porque ahí tiene una amistad de verdad. Se queda, con un plan."]}},
+
+{id:"u4l6",star:1,cards:0,when:["June · week 1","Junio · semana 1"],t:["Grace Audit: the Final Project","La Auditoría de Gracia: el proyecto final"],std:"3C.3a · 3C.3b",
+ goal:["Students find a specific Grace Gap at school, design a small act to address it, and carry it out.","Los estudiantes encuentran una Brecha de Gracia específica en la escuela, diseñan un pequeño acto para atenderla y lo llevan a cabo."],
+ safe:["★ every year. The counselor is on standby and reachable the same day. Monday to Wednesday is best. Brief the counselor first on students carrying heavy things from Units 2–3.","★ todos los años. Consejería disponible y localizable el mismo día. De preferencia de lunes a miércoles. Antes, informa a consejería sobre quién lleva temas pesados de las Unidades 2–3."],
+ a:["As written. The Grace Audit checklist, in-class observation practice, and a small act designed and done that week.","Tal como está. La lista de la Auditoría de Gracia, práctica de observación en clase y un pequeño acto diseñado y hecho esa semana."],ach:25,
+ b:{s:["A sample gap to model: Lincoln Park’s front office has a long bench where students wait to be picked up early. Most are sick or worried. Nobody talks to them, and there is nothing to do.","Una brecha de ejemplo: la oficina de Lincoln Park tiene una banca larga donde esperan los estudiantes que salen temprano. Casi todos están enfermos o preocupados. Nadie les habla y no hay nada que hacer."],
+  q:[["Who does this gap affect, and how do you know?","¿A quién afecta esta brecha, y cómo lo sabes?"],["What is one small act that fits a seventh grader’s day?","¿Qué pequeño acto cabe en el día de alguien de séptimo?"]],
+  d:["Model the checklist with the bench. Students audit in pairs and give one piece of evidence for their gap.","Modela la lista con la banca. Los estudiantes hacen la auditoría en parejas y dan una prueba de su brecha."],
+  ch:15,n:["The Mistake Wall grows from 8 cards on the first day to 84 by December: one small thing that changes a hallway.","El Muro de los Errores pasa de 8 tarjetas el primer día a 84 en diciembre: una cosa pequeña que cambia un pasillo."]},
+ c:{l:["Eighth graders turn their Grace Gap into a proposal for the principal or the student council, with an adult sponsor: the gap, the evidence, the small fix, and who keeps it going next year.","Los de octavo convierten su Brecha de Gracia en una propuesta para la dirección o el consejo estudiantil, con un adulto que los apoye: la brecha, la evidencia, el pequeño arreglo y quién lo continuará el próximo año."],
+  s:["An eighth-grade group notices that students who arrive mid-year get a map and a schedule, and nothing else. Their first lunch is often alone.","Un grupo de octavo nota que los estudiantes que llegan a mitad de año reciben un mapa y un horario, y nada más. Su primer almuerzo suele ser a solas."],
+  q:[["What small, lasting fix would not depend on you being there?","¿Qué arreglo pequeño y duradero no dependería de que ustedes estén ahí?"],["Who has to say yes, and what will they want to know?","¿Quién tiene que decir que sí, y qué querrá saber?"]],
+  ch:23,n:["Sofia eats lunch with Megan, new since January, who had been struggling to find a table.","Sofia almuerza con Megan, nueva desde enero, a quien le costaba encontrar una mesa."]}},
+
+{id:"u4l7",star:1,cards:0,when:["June · week 2","Junio · semana 2"],t:["Community Charter & Year-End Celebration","El Pacto de la Comunidad y la celebración de fin de año"],std:"3C.3a · 2C.3b",
+ goal:["Students pull the whole year together in a Community Charter, see each person’s growth, and close the year with a shared commitment.","Los estudiantes reúnen todo el año en un Pacto de la Comunidad, reconocen el crecimiento de cada persona y cierran el año con un compromiso compartido."],
+ safe:["★ every year. The post-assessment comes before the celebration. The sealed Future-Self Letters are back from storage. One specific, evidence-based growth note is ready for every student; check the class list so no one is overlooked.","★ todos los años. La evaluación final va antes de la celebración. Las Cartas al Yo Futuro selladas ya están recuperadas. Hay una nota de crecimiento específica y con evidencia para cada estudiante; revisa la lista para que nadie quede fuera."],
+ a:["As written. Post-assessment, letters returned, the Charter and its signing, one growth note for every student, and the closing script.","Tal como está. Evaluación final, devolución de cartas, el Pacto y su firma, una nota de crecimiento para cada estudiante y el cierre."],ach:26,
+ b:{s:["A student says last year’s charter was “just words on a poster.” Another says she reread it every time the class got loud.","Un estudiante dice que el pacto del año pasado eran “solo palabras en un cartel”. Otra dice que lo releía cada vez que la clase se ponía ruidosa."],
+  q:[["What makes a charter a living thing and not a poster?","¿Qué hace que un pacto sea algo vivo y no un cartel?"],["Which line from this year should still be true in eighth grade?","¿Qué línea de este año debería seguir siendo cierta en octavo?"]],
+  d:["Write each Charter line as “We noticed ___. We will ___.” The growth notes, the letters and the closing script stay as written.","Escriban cada línea del Pacto como “Notamos ___. Vamos a ___”. Las notas de crecimiento, las cartas y el cierre se quedan como están."],
+  ch:8,n:["Mr. Patel keeps the October letters safe: “May will come fast. Take a breath. The room will hold them.”","El señor Patel guarda las cartas de octubre: “Mayo llegará pronto. Respiren. El salón las va a cuidar”."]},
+ c:{l:["Eighth graders turn their Charter into a one-page handoff for next year’s sixth graders. The teacher shares it with them in September. The individual growth notes stay the teacher’s job.","Los de octavo convierten su Pacto en una entrega de una página para los de sexto del próximo año. El maestro se la comparte en septiembre. Las notas de crecimiento individuales siguen siendo tarea del maestro."],
+  s:["It is the last Room 36 day for these students. Some are excited about high school, some are scared, and a few say this room is what they will miss most.","Es el último día del Salón 36 para estos estudiantes. Algunos están emocionados por la preparatoria, otros tienen miedo, y unos pocos dicen que este salón es lo que más van a extrañar."],
+  q:[["What from three years of Room 36 will you carry into ninth grade?","¿Qué de tres años en el Salón 36 vas a llevar a noveno grado?"],["What do you want sixth graders to know on their first day?","¿Qué quieres que sepan los de sexto en su primer día?"]],
+  ch:2,n:["Each summer the Mistake Wall moves up a hallway with its class. Ms. Calloway moved it in August.","Cada verano el Muro de los Errores sube un pasillo con su grupo. La señora Calloway lo movió en agosto."]}}
+];
+
+var IDS=L.map(function(x){ return x.id; });
+var cur=IDS[0], painted="";
+function byId(id){ for(var i=0;i<L.length;i++) if(L[i].id===id) return L[i]; return null; }
+function code(x){ return "U"+x.id.charAt(1)+"·L"+x.id.charAt(3); }
+function starTag(x){
+  if(x.star===2) return ["★★ Highest: counselor in the room, every year","★★ Máxima: consejería en el salón, todos los años"];
+  if(x.star===1) return ["★ Elevated: safety steps apply, every year","★ Elevada: aplican pasos de seguridad, todos los años"];
+  return null; }
+function chLabel(i){ var c=CH[i]; if(!c) return null;
+  return ["Chapter "+c[0]+" · "+c[1]+(c[3]?" "+c[3]:""),"Capítulo "+c[0]+" · "+c[2]+(c[3]?" "+c[3]:"")]; }
+function chLink(i){ var c=chLabel(i); if(!c) return "";
+  return '<a href="room-36-novel.html?ch='+i+'">'+sp(c)+'</a>'; }
+
+function paintPick(){
+  var h="", u=0;
+  L.forEach(function(x){
+    var n=+x.id.charAt(1);
+    if(n!==u){ if(u) h+="</optgroup>"; u=n; h+='<optgroup label="'+esc(tx(UNITS[n]))+'">'; }
+    var lab=[code(x)+" · "+x.t[0]+(x.star===2?" ★★":x.star===1?" ★":""), code(x)+" · "+x.t[1]+(x.star===2?" ★★":x.star===1?" ★":"")];
+    h+='<option value="'+x.id+'" data-en="'+esc(lab[0])+'" data-es="'+esc(lab[1])+'"'+(x.id===cur?" selected":"")+'>'+esc(tx(lab))+'</option>';
+  });
+  D.getElementById("pick").innerHTML=h+"</optgroup>";
+}
+function fl(lab,html){ return '<div class="fl"><b>'+sp(lab)+'</b>'+html+'</div>'; }
+function qs(q){ return '<ol>'+q.map(function(p){ return '<li>'+sp(p)+'</li>'; }).join("")+'</ol>'; }
+var W={story:["The story","La historia"],talk:["Talk about it","Para conversar"],change:["What changes","Qué cambia"],lead:["They lead","Dirigen"],novel:["From the novel","De la novela"],
+  goal:["Goal","Objetivo"],std:["Illinois SEL","SEL de Illinois"],safe:["Safety","Seguridad"],keep:["The same every year","Igual todos los años"]};
+function paintLesson(){
+  var x=byId(cur); if(!x) return;
+  var st=starTag(x);
+  var h='<div class="lhead"><span class="code">'+esc(code(x))+'</span><span class="when">'+sp(x.when)+'</span>'+(st?'<span class="star">'+sp(st)+'</span>':'')+'</div>'
+    +'<h2 id="lt" tabindex="-1">'+sp(x.t)+'</h2>'
+    +'<div class="keep"><h3>'+sp(W.keep)+'</h3>'
+    +'<div class="kr"><b>'+sp(W.goal)+'</b>'+sp(x.goal)+'</div>'
+    +'<div class="kr"><b>'+sp(W.std)+'</b><span>'+esc(x.std)+'</span></div>'
+    +'<div class="kr'+(x.star?' risk':'')+'"><b>'+sp(W.safe)+'</b>'+sp(x.safe)+'</div></div>'
+    +'<div class="llinks"><a class="lk" href="room-36-lessons.html?l='+x.id+'">'+sp(["Open the full lesson →","Abrir la lección completa →"])+'</a>'
+    +(x.cards?'<a class="lk" href="room-36-cards.html#'+x.id+'">'+sp(["This lesson’s scenario cards →","Las tarjetas de esta lección →"])+'</a>':'')+'</div>';
+  D.getElementById("lesson").innerHTML=h;
+  var y='<article class="card yr a" aria-labelledby="ya"><h3 id="ya"><span class="ltr a" aria-hidden="true">A</span>'+sp(["Year A · Grade 6","Año A · 6.º grado"])+'</h3>'
+    +'<p class="ysub">'+sp(["As written","Tal como está"])+'</p>'
+    +'<p>'+sp(x.a)+'</p>'
+    +(x.ach?'<div class="fl nov"><b>'+sp(W.novel)+'</b>'+chLink(x.ach)+'</div>':'')+'</article>';
+  y+='<article class="card yr b" aria-labelledby="yb"><h3 id="yb"><span class="ltr b" aria-hidden="true">B</span>'+sp(["Year B · Grade 7","Año B · 7.º grado"])+'</h3>'
+    +'<p class="ysub">'+sp(["A new story","Una historia nueva"])+'</p>'
+    +fl(W.story,'<p style="margin:0">'+sp(x.b.s)+'</p>')+fl(W.talk,qs(x.b.q))+fl(W.change,'<p style="margin:0">'+sp(x.b.d)+'</p>')
+    +'<div class="fl nov"><b>'+sp(W.novel)+'</b>'+chLink(x.b.ch)+'<br>'+sp(x.b.n)+'</div></article>';
+  y+='<article class="card yr c" aria-labelledby="yc"><h3 id="yc"><span class="ltr c" aria-hidden="true">C</span>'+sp(["Year C · Grade 8","Año C · 8.º grado"])+'</h3>'
+    +'<p class="ysub">'+sp(["A leading role","Un papel de líder"])+'</p>'
+    +fl(W.lead,'<p style="margin:0">'+sp(x.c.l)+'</p>')+fl(W.story,'<p style="margin:0">'+sp(x.c.s)+'</p>')+fl(W.talk,qs(x.c.q))
+    +'<div class="fl nov"><b>'+sp(W.novel)+'</b>'+chLink(x.c.ch)+'<br>'+sp(x.c.n)+'</div></article>';
+  D.getElementById("years").innerHTML=y;
+}
+function paint(){ var k=cur+"|"+(ES()?"es":"en"); if(k===painted) return; painted=k; paintPick(); paintLesson(); }
+function go(id,focus){
+  if(IDS.indexOf(id)<0) id=IDS[0];
+  cur=id; painted=""; paint();
+  try{ history.replaceState(null,"","#"+id); }catch(e){}
+  if(focus){ var t=D.getElementById("lt"); if(t) t.focus({preventScroll:true}); }
+}
+/* the paper copy: one lesson's three years on one page */
+function sheet(x){
+  var st=starTag(x), ca=chLabel(x.ach), cb=chLabel(x.b.ch), cc=chLabel(x.c.ch);
+  function p(lab,v){ return '<p><b>'+esc(tx(lab))+'</b>'+esc(tx(v))+'</p>'; }
+  function q(arr){ return '<p><b>'+esc(tx(W.talk))+'</b></p><ol>'+arr.map(function(z){ return '<li>'+esc(tx(z))+'</li>'; }).join("")+'</ol>'; }
+  return '<section class="sheet">'
+    +'<p class="sk">'+esc(tx(["Room 36 · ","Salón 36 · "]))+esc(code(x))+esc(tx([" · Year A, B and C"," · Año A, B y C"]))+'</p>'
+    +'<h2>'+esc(tx(x.t))+'</h2>'
+    +'<p class="mt">'+esc(tx(x.when))+' · '+esc(tx(W.std))+' '+esc(x.std)+(st?' · '+esc(tx(st)):'')+'</p>'
+    +'<div class="kp">'+p(W.goal,x.goal)+p(W.safe,x.safe)+'</div>'
+    +'<div class="ys a"><h3>'+esc(tx(["Year A · Grade 6 · As written","Año A · 6.º grado · Tal como está"]))+'</h3><p>'+esc(tx(x.a))+'</p>'+(ca?p(W.novel,ca):'')+'</div>'
+    +'<div class="ys b"><h3>'+esc(tx(["Year B · Grade 7 · A new story","Año B · 7.º grado · Una historia nueva"]))+'</h3>'+p(W.story,x.b.s)+q(x.b.q)+p(W.change,x.b.d)+'<p><b>'+esc(tx(W.novel))+'</b>'+esc(tx(cb))+'. '+esc(tx(x.b.n))+'</p></div>'
+    +'<div class="ys c"><h3>'+esc(tx(["Year C · Grade 8 · A leading role","Año C · 8.º grado · Un papel de líder"]))+'</h3>'+p(W.lead,x.c.l)+p(W.story,x.c.s)+q(x.c.q)+'<p><b>'+esc(tx(W.novel))+'</b>'+esc(tx(cc))+'. '+esc(tx(x.c.n))+'</p></div>'
+    +'<div class="ft"><span>architectureofgrace.com/room-36-years</span><span>'+esc(tx(["Goal, standards and safety steps are the same every year.","El objetivo, los estándares y los pasos de seguridad son iguales todos los años."]))+'</span></div>'
+    +'</section>';
+}
+var paper=D.getElementById("paper"), printing=false;
+function fill(list){
+  paper.innerHTML=list.map(sheet).join("");
+  /* measured first; a sheet that would run past one page is drawn a little smaller */
+  paper.className="measure";
+  var lim=9.6*96;
+  Array.prototype.forEach.call(paper.querySelectorAll(".sheet"),function(s){ if(s.offsetHeight>lim) s.classList.add("dense"); });
+  paper.className="";
+}
+function printThese(list){ printing=true; fill(list); try{ window.print(); }finally{ setTimeout(function(){ printing=false; },0); } }
+/* the browser's own Print gets this lesson too */
+window.addEventListener("beforeprint",function(){ if(!printing) fill([byId(cur)]); });
+window.addEventListener("afterprint",function(){ paper.innerHTML=""; });
+
+D.getElementById("pick").addEventListener("change",function(){ go(this.value,false); });
+D.getElementById("prev").addEventListener("click",function(){ go(IDS[(IDS.indexOf(cur)-1+IDS.length)%IDS.length],true); });
+D.getElementById("next").addEventListener("click",function(){ go(IDS[(IDS.indexOf(cur)+1)%IDS.length],true); });
+D.getElementById("printOne").addEventListener("click",function(){ printThese([byId(cur)]); });
+D.getElementById("printAll").addEventListener("click",function(){ printThese(L); });
+D.getElementById("moreSel").addEventListener("change",function(){ if(this.value) location.href=this.value; });
+window.addEventListener("hashchange",function(){ var h=location.hash.replace("#",""); if(h&&h!==cur&&IDS.indexOf(h)>-1){ cur=h; painted=""; paint(); } });
+
+var start=(location.hash||"").replace("#","");
+if(IDS.indexOf(start)<0){ try{ var q=new URLSearchParams(location.search).get("l"); if(q) start=q; }catch(e){} }
+cur=IDS.indexOf(start)>-1?start:IDS[0];
+paint();
+/* the bar's EN | ES sets <html lang>; the menu's group names are attributes, so the page draws again in the new language */
+new MutationObserver(paint).observe(H,{attributes:true,attributeFilter:["lang"]});
+})();
+</script>
+<script src="/aog-grace.js" defer></script>
+</body>
+</html>
