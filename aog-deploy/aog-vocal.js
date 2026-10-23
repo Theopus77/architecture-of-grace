@@ -187,7 +187,7 @@
     txt($("vbInL"), tw("inLvl")); txt($("vbOutL"), tw("outLvl"));
     var ln = B.line ? tw(B.line, B.lineF) : ""; if (B.line === "added" && B.fit) ln += " " + tw("fit"); txt($("vbLine"), ln);
     var al = $("vbAllow"); al.hidden = !B.allow;
-    if (B.allow) { var h = '<p>' + tw("denied") + '</p><p>' + tw("allowI") + '</p><p>' + tw("allowC") + '</p><p>' + tw("allowThen") + '</p>'; if (al.__h !== h) { al.innerHTML = h; al.__h = h; } }
+    if (B.allow) { var h = '<p>' + tw("denied") + '</p><p>' + tw("allowI") + '</p><p>' + tw("allowC") + '</p><p>' + tw("allowThen") + '</p>' + (B.err ? '<p class="vb-code">(' + B.err.replace(/[^A-Za-z]/g, "") + ')</p>' : ''); if (al.__h !== h) { al.innerHTML = h; al.__h = h; } }
     txt($("vbMonT"), tw("mon")); $("vbMonW").hidden = !$("vbMon").checked; txt($("vbMonW"), tw("monWarn")); $("vbMon").disabled = rec;
     /* the takes */
     $("vbTakesBox").hidden = !B.takes.length && !B.gone; txt($("vbTakesH"), tw("takesH"));
@@ -265,14 +265,26 @@
     B.allow = false; B.state = "asking"; say("asking");
     var mon = $("vbMon").checked, md = navigator.mediaDevices;
     /* with headphones and Hear myself, the browser's echo cancelling would fight your own voice in your ears */
-    var ask = md && md.getUserMedia ? md.getUserMedia({ audio: { echoCancellation: !mon, noiseSuppression: false, autoGainControl: false } })
-      : Promise.reject(Object.assign(new Error("none"), { name: "NotFoundError" }));
+    var ask = getMic({ audio: { echoCancellation: !mon, noiseSuppression: false, autoGainControl: false } });
     ask.then(function (stream) { return (B.bkP || getBacking(false)).then(function (bk) { return startRec(stream, bk, mon); }); },
       function (e) {
         B.state = "idle"; var n = e && e.name;
+        B.err = n || "";
         if (n === "NotFoundError" || n === "OverconstrainedError" || n === "NotReadableError") { B.allow = false; say("nomic"); } else { B.allow = true; say(""); }
         sleepSoon();
       }).catch(function () { release(); B.state = "idle"; say("fail"); sleepSoon(); });
+  }
+  /* AOG-VOCAL-MIC-V2 (Jimmy, 2026-10-23, iPad: "I HAVE Allowed the microphone but it still says I can't"): Safari can refuse
+     the microphone to the room's frame even when the site is allowed. So ask the room first (with the booth's settings, then
+     plain), then the Studio around it (same site, the way the old Sing or rap key asked); "off" only when every way says no. */
+  function getMic(want) {
+    var ways = [], own = navigator.mediaDevices, top = null;
+    try { if (window.parent !== window && window.parent.navigator.mediaDevices) top = window.parent.navigator.mediaDevices; } catch (e) {}
+    [own, top].forEach(function (md) { if (md && md.getUserMedia) { ways.push(function () { return md.getUserMedia(want); }); ways.push(function () { return md.getUserMedia({ audio: true }); }); } });
+    if (!ways.length) return Promise.reject(Object.assign(new Error("none"), { name: "NotFoundError" }));
+    var first = null;
+    return ways.reduce(function (p, w) { return p.catch(function (e) { if (!first) first = e; return w(); }); }, Promise.reject(null))
+      .catch(function (e) { throw first || e; });
   }
   function startRec(stream, bk, mon) {
     var c = B.ac;

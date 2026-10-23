@@ -11,7 +11,7 @@
  * Bump by REPLACING the CACHE line. Don't keep the old one as a comment: every byte here is
  * downloaded again on each update check. Old lines live in tools/sw-cache-history.txt and git log.
  */
-const CACHE = 'aog-cache-2026.10.23.m7564'   // THE VOCAL BOOTH (aog-vocal.js, music-vocal.html: nine sounds, plain-word EQ, Air, Soft S, Tune, Double, Echo, Room, takes; the ninth Studio door before the Mixing Desk, the Sing or rap key gone) + THE DRUM MACHINE'S PADS LIGHT BY FAMILY WITH A COLOUR KEY (music-pads.html AOG-PADS-STAGE-V1, AOG-PADS-KEY-V1; music-kit.html)
+const CACHE = 'aog-cache-2026.10.23.m7565'   // THE VOCAL BOOTH GETS THE MICROPHONE ON AN IPAD: WHEN SAFARI REFUSES THE ROOM'S FRAME, IT ASKS THROUGH THE STUDIO (aog-vocal.js AOG-VOCAL-MIC-V2, music-vocal.html)
 
 // Same-origin essentials — reliable to precache at install.
 /* AOG-SW-LIGHT-V1 (2026-10-01) — Jimmy: "Why is it taking so long for the website to load on my phone now?"

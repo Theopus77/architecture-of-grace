@@ -208,5 +208,23 @@ const ST = f => f.evaluate(() => AOGVocal.state());
     ok(errs.length === 0, "refused: no page errors " + errs.slice(0, 3).join(" | "));
     await ctx.close();
   }
+  /* 10 · AOG-VOCAL-MIC-V2: Safari on an iPad refused the room's frame though the site was allowed; the booth asks the Studio */
+  { const ctx = await b.newContext({ viewport: { width: 1180, height: 820 }, isMobile: true, hasTouch: true, serviceWorkers: "block" }); const errs = [];
+    ctx.on("page", x => x.on("pageerror", e => errs.push(e.message)));
+    await routes(ctx, "en"); await ctx.addInitScript(COUNT);
+    await ctx.addInitScript(() => { if (window.parent === window) return; const md = navigator.mediaDevices; if (!md) return;
+      md.getUserMedia = async () => { window.__frameAsked = (window.__frameAsked || 0) + 1; throw new DOMException("refused", "NotAllowedError"); }; });
+    const p = await ctx.newPage(); await p.goto(U + "the-studio#vocal"); await W(3500);
+    const f = await booth(p);
+    await f.click("#vbRec"); await f.waitForFunction(() => AOGVocal.state().state === "rec", null, { timeout: 15000 }).catch(() => {}); await W(2000);
+    let s = await ST(f); const rec = s.state === "rec", asked = await f.evaluate(() => window.__frameAsked || 0);
+    await f.click("#vbRec"); await f.waitForFunction(() => AOGVocal.state().takes === 1, null, { timeout: 15000 }).catch(() => {});
+    s = await ST(f);
+    ok(rec && asked >= 1 && (await gums(p)) >= 1 && s.takes === 1 && !s.allow, `the room's frame refused, the Studio's microphone records instead: ${JSON.stringify({ rec, asked, studio: await gums(p), takes: s.takes, allow: s.allow })}`);
+    await W(1500); s = await ST(f);
+    ok(!s.mic, "the Studio's microphone is let go after the take");
+    ok(errs.length === 0, "frame refused: no page errors " + errs.slice(0, 3).join(" | "));
+    await ctx.close();
+  }
   console.log(fails ? fails + " FAILED" : "ALL PASS"); await b.close(); srv.close(); process.exit(fails ? 1 : 0);
 })().catch(e => { console.log("CRASH", e.stack); process.exit(1); });
