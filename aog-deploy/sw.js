@@ -11,7 +11,7 @@
  * Bump by REPLACING the CACHE line. Don't keep the old one as a comment: every byte here is
  * downloaded again on each update check. Old lines live in tools/sw-cache-history.txt and git log.
  */
-const CACHE = 'aog-cache-2026.10.23.m7570'   // THE VOCAL BOOTH SETS THE PAGE'S SOUND TO PLAY-AND-RECORD WHILE IT RECORDS (the other rooms' playback setting made an iPhone refuse the microphone: InvalidStateError), AND GIVES IT BACK AFTER (aog-vocal.js AOG-VOCAL-MIC-V5)
+const CACHE = 'aog-cache-2026.10.23.m7571'   // THE LOCKER, V2: ONE DEVICE LINK, THE SONG FOLLOWS YOU (KEEP THIS SONG IN MY LOCKER; A NEWER VERSION FROM YOUR IPAD), TAKES BETWEEN DEVICES, THE DEVICE AND TIME, THREE SAVES KEPT (music-studio.html, the-studio.html, AoG-Studio-Locker.gs AOG-LOCKER-V2)
 
 // Same-origin essentials — reliable to precache at install.
 /* AOG-SW-LIGHT-V1 (2026-10-01) — Jimmy: "Why is it taking so long for the website to load on my phone now?"
