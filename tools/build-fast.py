@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """AOG-FAST-BUILD-V1 (2026-10-11) — Jimmy: "make this website FLASH SPEED, LIGHTING BOLT SPEED!"
 
-The front page (index.html) and the eight Studio rooms (music-*.html) carry their code written into the page. Every
+The front page (index.html) and the nine Studio rooms (music-*.html) carry their code written into the page. Every
 visit read it again on the phone's main thread, and every update to the site sent all of it again. This makes the
 pages visitors get: the same page, word for word, with each larger block of code moved into a file of its own in
 aog-deploy/front/, named after what is in it. A phone keeps those files (aog-deploy/_headers, sw.js), fetches only the
@@ -25,7 +25,7 @@ DIR = os.path.join(ROOT, "front")
 MARK = "AOG-FAST-BUILD-V1"
 MIN = 2048   # bytes: a smaller block stays in the page (it gains nothing, and the first paint would wait on it)
 PAGES = [("index.html", "front.html")] + [("music-%s.html" % r, "fast/music-%s.html" % r)
-         for r in ("pads", "kit", "piano", "guitar", "bass", "band", "decks", "studio")] + [
+         for r in ("pads", "kit", "piano", "guitar", "bass", "band", "decks", "vocal", "studio")] + [   # AOG-VOCAL-V1: the Vocal Booth
          ("daily-drops.html", "fast/daily-drops.html")]   # Daily Practice: its 2.7 MB of banks, kept by a phone between visits
 
 SCRIPT = re.compile(r"<script\b([^>]*)>(.*?)</script>", re.S | re.I)

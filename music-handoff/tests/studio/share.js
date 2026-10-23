@@ -138,7 +138,7 @@ const lbView = p => p.evaluate(() => { const d = document.getElementById("lbDlg"
     const r = await p.evaluate(() => ({ at: AOGShare.state().at, url: location.pathname + location.search + location.hash, room: document.getElementById("room").getAttribute("data-file"),
       vis: !!document.getElementById("room").offsetParent, line: SAY(document.getElementById("tpLine")), did: window.__did.slice(), song: AOGSong.get(), along: AOGStudioShell.along() }));
     ok(r.at === "welcome" && r.url === "/the-studio#pads" && r.room === "/music-pads.html" && r.vis, `iPad: the link opens the Studio on the Drum Machine, the address clean (${((Date.now() - t0) / 1000).toFixed(1)} s): ` + JSON.stringify({ at: r.at, url: r.url, room: r.room }));
-    ok(r.line === "A friend sent you a beat. Press Play to hear it, or tap 🎤 Sing or rap to rap over it." && r.did.filter(x => x === "remixopened").length === 1,
+    ok(r.line === "A friend sent you a beat. Press Play to hear it, or open the Vocal Booth to rap over it." && r.did.filter(x => x === "remixopened").length === 1,
       `iPad: one warm line, and "remixopened" fired: "${r.line}" ${JSON.stringify(r.did)}`);
     ok(r.song && r.song.bpm === 96 && r.song.key === 9 && r.song.minor === true, `iPad: the song's tempo and key are the sender's: ` + JSON.stringify(r.song));
     const f = pads(p);
@@ -148,16 +148,17 @@ const lbView = p => p.evaluate(() => { const d = document.getElementById("lbDlg"
       && got.rec.bars === SENT.bars && got.rec.bpm === SENT.bpm && got.rec.swing === SENT.swing && got.rec.pads["1:0"] && got.rec.pads["1:0"].vol === 80,
       `iPad: the same beat: ${got.rec.ev.length} hits, kits ${got.rec.kits.join(" ")}, chords ${got.rec.chords.inst} ${got.rec.chords.pat}, bass ${got.rec.bass.inst}, ${got.rec.bars} bars at ${got.rec.bpm}, swing ${got.rec.swing}`);
     ok(!got.on && got.ac !== "running" && !r.along.on, `iPad: nothing plays until Play: ` + JSON.stringify({ seq: got.on, ac: got.ac, along: r.along.on }));
-    /* the loop is on My Track, and the mic booth has it to rap over */
+    /* the loop is on My Track, and the Vocal Booth has it to rap over */
     const sec = SENT.bars * 4 * 60 / SENT.bpm;
     const mt = await p.evaluate(async () => { const r = await AOGHandoff.list(AOGHandoff.INBOX); return ((r && r.items) || []).filter(x => x.from === "pads").map(x => ({ bars: x.bars, bpm: x.bpm, sec: x.sec, loop: !!x.loop })); });
     ok(mt.length === 1 && mt[0].loop && mt[0].bpm === SENT.bpm && Math.abs(mt[0].sec - sec) < 0.02, `iPad: the loop is on My Track: ` + JSON.stringify(mt));
-    await p.click("#shMic");
-    await p.waitForFunction(() => window.AOGMicBooth && AOGMicBooth.state().open, null, { timeout: 15000 }).catch(() => {});
-    await p.waitForFunction(() => AOGMicBooth.state().bk, null, { timeout: 40000 }).catch(() => {});
-    const mb = await p.evaluate(() => AOGMicBooth.state());
-    ok(mb.open && mb.bk && mb.bk.loop && Math.abs(mb.bk.sec - sec) < 0.05 && !mb.mic, `iPad: 🎤 Sing or rap opens with the friend's loop as its backing (${sec.toFixed(2)} s): ` + JSON.stringify(mb.bk));
-    await p.keyboard.press("Escape"); await W(500);
+    /* AOG-VOCAL-V1: the Vocal Booth (the room that took the place of 🎤 Sing or rap) has it to rap over */
+    await p.evaluate(() => AOGStudioShell.go("vocal"));
+    const vf = async () => { for (let i = 0; i < 60; i++) { const f = p.frames().find(x => /music-vocal/.test(x.url())); if (f && await f.evaluate(() => !!window.AOGVocal).catch(() => false)) return f; await W(250); } return null; };
+    const vfr = await vf();
+    if (vfr) await vfr.waitForFunction(() => AOGVocal.state().bk, null, { timeout: 40000 }).catch(() => {});
+    const mb = vfr ? await vfr.evaluate(() => AOGVocal.state()) : {};
+    ok(mb.bk && mb.bk.loop && Math.abs(mb.bk.sec - sec) < 0.05 && !mb.mic, `iPad: the Vocal Booth opens with the friend's loop as its backing (${sec.toFixed(2)} s): ` + JSON.stringify(mb.bk));
     const pc = await p.evaluate(`(${PROBE})()`), pk = await p.evaluate(`(${CALM})()`);
     ok(!pc.length && !pk.length, `iPad: readable (${pc.length} ${JSON.stringify(pc.slice(0, 2))}) and calm (${pk.join("; ") || "ok"})`);
     await f.evaluate(() => document.getElementById("playBtn").click()); await W(900);

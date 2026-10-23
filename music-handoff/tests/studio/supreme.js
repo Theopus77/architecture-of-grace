@@ -1,7 +1,7 @@
 /* AOG-STUDIO-SUPREME-V1 (2026-10-17) — Jimmy: "I want the 'presentation or the room' of the studio / mixing board to be
    supreme in its presentation and excellence in its structure and handling." The Recording Studio's frame, in one order:
-   the meter bridge (Back, the name, the room's meters and room sound, EN | ES), the eight doors, the room, the desk.
-   1 · An iPhone upright, an iPad upright and on its side, and a computer, light and dark: all eight doors are on the
+   the meter bridge (Back, the name, the room's meters and room sound, EN | ES), the nine doors, the room, the desk.
+   1 · An iPhone upright, an iPad upright and on its side, and a computer, light and dark: all nine doors are on the
        screen at once, in song order, each one a single tap (44 px or more), the room you are in lit; Back, the name and
        EN | ES share one line; the meters sit on the bridge (not on a phone); nothing sideways, no page scroll, the room
        takes what is left; on an iPad on its side and a computer the doors run down the left beside the room. Readable
@@ -32,7 +32,7 @@ async function arrived(p, id) {
     return fr.getAttribute("data-file") === "/" + f && d && d.readyState === "complete" && d.documentElement.classList.contains("in-studio") && d.location.pathname.endsWith(f); }, FILE[id], { timeout: 30000 });
   await p.waitForTimeout(600);
 }
-const SONG = "Drum Machine | Drum Kit | Piano | Guitar | Bass | Band | Turntables | Mixing Desk";
+const SONG = "Drum Machine | Drum Kit | Piano | Guitar | Bass | Band | Turntables | Vocal Booth | Mixing Desk";   // AOG-VOCAL-V1
 const init = ([th, es]) => { try { localStorage.setItem("aog.grace.navy.v1", "1"); localStorage.setItem("aog.theme", th); localStorage.setItem("aog.interior.ws.v1.theme", th); localStorage.setItem("aog.theme.lightstart.v1", "1"); if (es) localStorage.setItem("aog.lang", "es"); } catch (e) {} };
 
 (async () => {
@@ -57,16 +57,16 @@ const init = ([th, es]) => { try { localStorage.setItem("aog.grace.navy.v1", "1"
         inView: doors.every(a => { const x = R(a); return x.width > 0 && x.left >= -1 && x.right <= innerWidth + 1 && x.top >= -1 && x.bottom <= innerHeight + 1; }),
         minDoor: Math.min(...doors.map(a => Math.round(Math.min(R(a).height, R(a).width)))),
         cur: cur && cur.getAttribute("data-room"), oneLine: Math.max(...top.map(x => x.top + x.height / 2)) - Math.min(...top.map(x => x.top + x.height / 2)) < 6,
-        rail: doors.length === 8 && R(doors[7]).top > R(doors[0]).bottom && R(doors[0]).right <= R(fr).left + 1, frame: Math.round(R(fr).height), frameBottom: Math.round(R(fr).bottom),
+        rail: doors.length === 9 && R(doors[8]).top > R(doors[0]).bottom && R(doors[0]).right <= R(fr).left + 1, frame: Math.round(R(fr).height), frameBottom: Math.round(R(fr).bottom),
         mtTop: Math.round(R(document.getElementById("mt")).top), vuTop: vb ? Math.round(vb.top) : -1, vuShown: !!vb && vb.width > 0,
         notes: !!document.querySelector(".aog-mkdrawer, .aog-mkbtn, link[href*='aog-markup']") || !!window.__aogMarkup };
     });
-    const wantNames = es ? "Caja de ritmos | Batería | Piano | Guitarra | Bajo | Banda | Tocadiscos | Mesa de mezclas" : SONG;
+    const wantNames = es ? "Caja de ritmos | Batería | Piano | Guitarra | Bajo | Banda | Tocadiscos | Cabina de voz | Mesa de mezclas" : SONG;
     const pc = await m.evaluate(`(${PROBE})()`), pk = await m.evaluate(`(${CALM})()`);
     const vuOk = kind === "phone" ? !r.vuShown : room === "studio" ? !r.vuShown : r.vuShown && r.vuTop < 70;
     ok(r.names === wantNames && r.inView && r.minDoor >= 44 && r.cur === room && r.oneLine && (kind === "rail") === r.rail && r.sw <= r.iw && r.sh <= r.ih + 1 &&
       r.frameBottom <= r.mtTop + 1 && r.frame >= (kind === "phone" ? 380 : 500) && vuOk && !r.notes && !pc.length && !pk.length,
-      `${name}, ${theme}${es ? ", Spanish" : ""}, ${room}: eight doors in song order, all on the screen, one tap each, the room lit; one top line; meters ${kind === "phone" ? "off" : "on the bridge"}; it fits; readable and calm ` +
+      `${name}, ${theme}${es ? ", Spanish" : ""}, ${room}: nine doors in song order, all on the screen, one tap each, the room lit; one top line; meters ${kind === "phone" ? "off" : "on the bridge"}; it fits; readable and calm ` +
       JSON.stringify({ ...r, names: r.names === wantNames ? "ok" : r.names, pc: pc.slice(0, 2), pk }));
     await cx.close();
   }

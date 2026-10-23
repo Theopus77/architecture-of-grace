@@ -84,7 +84,8 @@ function drawKit(o){   /* the drum machine's drawing (music-drums.html, AOG-KIT-
     const kk=KIT_KEYS[id];   /* AOG-KIT-KEYS-V1: the computer key that plays it, shown once a keyboard is in use */
     return `<text class="${cls||"ink"}" x="${f1(x)}" y="${f1(y)}" style="font-size:${fs.toFixed(1)}px">${w}</text>`+
       (kk ? `<text class="${cls||"ink"} kkey" x="${f1(x)}" y="${f1(y+fs*1.05)}" style="font-size:${(fs*0.7).toFixed(1)}px" aria-hidden="true">${kk}</text>` : ""); };
-  const piece=(id, body, glow)=>`<g class="drum" data-pad="${id}" role="button" tabindex="0" aria-label="${nm(id)}">${body}<g class="glow">${glow}</g></g>`;
+  const fam=id=>window.AOGDrumKit && AOGDrumKit.family ? AOGDrumKit.family(o.bank, id) : "snap";   /* AOG-PADS-STAGE-V1 */
+  const piece=(id, body, glow)=>`<g class="drum" data-pad="${id}" data-fam="${fam(id)}" role="button" tabindex="0" aria-label="${nm(id)}">${body}<g class="glow">${glow}</g></g>`;
   /* a drum seen from above and in front: the shell's side under the head, lugs on it, the hoop, the head */
   const drumAt=(id, cx, cy, rx, ry, d, shell, rim)=>{
     let s=`<ellipse cx="${f1(cx)}" cy="${f1(cy+d+4)}" rx="${f1(rx+6)}" ry="${f1(ry+4)}" fill="rgba(0,0,0,.45)"/>`;

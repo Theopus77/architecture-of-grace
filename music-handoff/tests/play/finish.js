@@ -2,7 +2,7 @@
    1 · AOG-ROOMS-ROOM-V1: inside the Recording Studio every room sits in the dim control room (its page takes the room's
        colour), and a menu on a dark panel is the desk's dark window with gold type (class aog-hw), on a room's own page too.
    2 · AOG-FINISH-*-V1: the piano's lacquer, gold name, velvet and keys that go down; the guitar's and bass's rosewood, pearl,
-       bone and wound strings; the Drum Machine's rubber pads that glow when hit; the Band's keys like the piano's.
+       bone and wound strings; the Drum Machine's rubber pads that light in the colour of their sound when hit; the Band's keys like the piano's.
    4 · AOG-STUDIO-FIRST-V2: in the Studio the piano, guitar, bass and band open on the instrument, its line on a paper slip.
    3 · AOG-STUDIO-ROOM-SOUND-V1: one Room knob (Dry, Small room, Studio, Hall), beside Record and in the Studio's bar; the
        room adds a tail to what you hear and to your takes; it starts Dry; the turntables stay dry.
@@ -79,8 +79,12 @@ async function inRoom(m, room) {
     ok(/aogRose/.test(nf.wood) && /aogPearl/.test(nf.pearl) && /aogBone/.test(nf.nut) && /aogWound/.test(nf.wound), `${g}: a rosewood board, pearl dots, a bone nut, wound strings: ${JSON.stringify(nf)}`);
   }
   await fp.goto(U + "music-pads.html"); await fp.waitForTimeout(1500);
-  const pd = await fp.evaluate(async () => { const p = document.querySelector("#pads .pad"); const a = getComputedStyle(p).backgroundImage; p.classList.add("hit"); await new Promise(r => setTimeout(r, 400)); const h = getComputedStyle(p).boxShadow; p.classList.remove("hit"); return { rubber: /radial-gradient/.test(a), glow: /255, 200, 90/.test(h) }; });
-  ok(pd.rubber && pd.glow, "the Drum Machine: rubber pads that glow gold from underneath when hit: " + JSON.stringify(pd));
+  /* AOG-PADS-STAGE-V1 (2026-10-23): a hit lights a pad from underneath in the colour of its kind of sound (it was gold for all) */
+  const pd = await fp.evaluate(async () => { const p = document.querySelector('#pads .pad[data-fam="low"]'), q = document.querySelector('#pads .pad[data-fam="shimmer"]'); if (!p || !q) return { missing: true };
+    const a = getComputedStyle(p).backgroundImage; p.classList.add("hit"); q.classList.add("hit"); await new Promise(r => setTimeout(r, 400));
+    const A = getComputedStyle(p), B = getComputedStyle(q), o = { rubber: /radial-gradient/.test(a), lit: /radial-gradient/.test(A.backgroundImage), kick: A.backgroundColor, hats: B.backgroundColor, ink: A.color };
+    p.classList.remove("hit"); q.classList.remove("hit"); return o; });
+  ok(pd.rubber && pd.lit && pd.kick === "rgb(255, 132, 102)" && pd.hats === "rgb(143, 230, 212)" && pd.ink === "rgb(26, 18, 6)", "the Drum Machine: rubber pads that light from underneath in the colour of their sound when hit: " + JSON.stringify(pd));
   await fp.goto(U + "music-band.html"); await fp.waitForTimeout(1500);
   const bd = await fp.evaluate(() => { const o = document.querySelector("#kbd .wk.out"), w = document.querySelector("#kbd .wk:not(.out):not(.lit)"); return { ivory: getComputedStyle(w).backgroundColor, grey: o ? getComputedStyle(o).backgroundImage : "" }; });
   ok(bd.ivory === "rgb(246, 240, 226)" && /207, 202, 192/.test(bd.grey), "the Band: ivory keys like the piano's, out-of-range keys still grey: " + JSON.stringify(bd));

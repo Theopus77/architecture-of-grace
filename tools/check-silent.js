@@ -27,9 +27,9 @@ const PAGES = [
   ["fcs-shop.html", false], ["fc2-knife-skills.html", false], ["fc4-hand-sewing.html", false], ["fcs-u10.html", false], ["facs-course.html", false],
   ["mar-u1.html", false], ["mar-u15.html", false], ["martial-arts-hub.html", false], ["martial-arts-course.html", false],
   ["dojo.html", true], ["dojo.html#front-kick", true], ["kitchen.html", true], ["kitchen.html#pancakes", true], ["sewing.html", true], ["sewing.html#backstitch", true],
-  // AOG-WARM-QUIET-V1: the Studio and its eight rooms, in song order (each room's engine may be ready, but paused)
+  // AOG-WARM-QUIET-V1: the Studio and its nine rooms, in song order (each room's engine may be ready, but paused; AOG-VOCAL-V1: the Vocal Booth)
   ["the-studio.html", false], ["music-pads.html", false], ["music-kit.html", false], ["music-piano.html", false], ["music-guitar.html", false],
-  ["music-bass.html", false], ["music-band.html", false], ["music-decks.html", false], ["music-studio.html", false],
+  ["music-bass.html", false], ["music-band.html", false], ["music-decks.html", false], ["music-vocal.html", false], ["music-studio.html", false],
   // AOG-SLOW-LISTEN-V1: the slow-listening tool (no media until a song is opened and played)
   ["slow-listening.html", false]
 ];

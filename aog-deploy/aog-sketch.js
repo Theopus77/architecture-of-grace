@@ -268,7 +268,7 @@
     "english-hub": "page-english-hub", "math-hub": "page-math-hub", "science-hub": "page-science-hub", "social-studies-hub": "page-social-studies-hub",
     "spanish-hub": "page-spanish-hub", "facs-hub": "page-facs-hub", "dashboard": "page-dashboard", "turn-ins": "page-turn-ins",
     "daily-drops": "page-daily-drops", "quiet-space": "page-quiet-space",
-    "music-drums": "music-drums", "drums-lessons": "music-drums", "music-decks": "music-decks", "decks-lessons": "music-decks", "music-piano": "music-piano", "piano-lessons": "music-piano", "music-guitar": "music-guitar", "music-bass": "music-bass", "music-band": "music-band", "music-studio": "music-mixdesk", "music-kit": "music-kit", "music-pads": "music-pads",   /* AOG-SKETCH-MUSIC-V1: their own drawings */
+    "music-drums": "music-drums", "drums-lessons": "music-drums", "music-decks": "music-decks", "decks-lessons": "music-decks", "music-piano": "music-piano", "piano-lessons": "music-piano", "music-guitar": "music-guitar", "music-bass": "music-bass", "music-band": "music-band", "music-studio": "music-mixdesk", "music-kit": "music-kit", "music-pads": "music-pads", "music-vocal": "music-vocal",   /* AOG-SKETCH-MUSIC-V1: their own drawings */
     "science-waves": "science-waves", "waves-lessons": "science-waves", "word-foundry": "word-foundry",
     /* the ten crosswalks, each with its own drawing (2026-09-28) */
     "xw-casel": "page-xw-casel", "xw-danielson": "page-xw-danielson", "xw-divine-master": "page-xw-divine-master", "xw-idea-legal": "page-xw-idea-legal",

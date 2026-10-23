@@ -1,5 +1,5 @@
 /* AOG-MISSIONS-V1 (2026-10-22) — Missions, remix challenges and "Why it works" in the Recording Studio (aog-missions.js; the
-   ticks and the listening in the-studio.html; the events from aog-recorder.js, aog-song.js, aog-micbooth.js, aog-listenback.js,
+   ticks and the listening in the-studio.html; the events from aog-recorder.js, aog-song.js, aog-vocal.js, aog-listenback.js,
    aog-quickstart.js). Jimmy wants a reason for his 13-year-old to come back. Nothing is ever locked.
    · nothing of aog-missions.js loads before it is needed (still after a quiet wait, and with ✦ Start a song's sheet open);
    · missions tick from the real thing: ✦ Start a song (a vibe), a tap in the room while ♫ Play along plays, ● Record and
@@ -229,16 +229,15 @@ async function sheetMT(p) { if (await p.evaluate(() => !!document.getElementById
     ok(!pc.length && !pk.length, `iPad, light: the sheet reads (${pc.length} ${JSON.stringify(pc.slice(0, 2))}) and is calm (${pk.join("; ") || "ok"})`);
     await p.click("#msClose"); await W(200);
     ok(!(await ST(p)).open, "iPad: Done puts the sheet away");
-    /* inside the vocal booth: the line is in the booth */
-    await p.click("#shMic"); await p.waitForFunction(() => window.AOGMicBooth && AOGMicBooth.state().open, null, { timeout: 10000 }); await W(800);
+    /* AOG-VOCAL-V1: in the Vocal Booth (a room of its own now), the line sits at the top of the room, as in every room */
+    await p.evaluate(() => AOGStudioShell.go("vocal")); await W(1500);
     await p.evaluate(() => window.dispatchEvent(new CustomEvent("aog-studio-did", { detail: { what: "sang" } }))); await W(400);
     v = await slipView(p);
-    const vb = await p.evaluate(() => { const s = document.getElementById("msDone"), r = s.getBoundingClientRect(), bs = [...document.querySelectorAll("#aogMicBooth button")].filter(x => x.offsetParent);
-      return { inBooth: !!s.closest("#aogMicBooth"), vis: r.height > 20 && r.bottom <= innerHeight + 400, small: bs.filter(x => x.getBoundingClientRect().height < 44).map(x => x.id || x.textContent) }; });
-    ok(v && vb.inBooth && !vb.small.length && /you recorded your voice/.test(v.text), `iPad: with the booth open, the line is inside the booth: ${JSON.stringify({ ...vb, text: v && v.text })}`);
+    const vb = await p.evaluate(() => { const s = document.getElementById("msDone"), r = s.getBoundingClientRect();
+      return { inRoom: !!s.closest("main.sh-main"), vis: r.height > 20 && r.bottom <= innerHeight + 400, room: location.hash }; });
+    ok(v && vb.inRoom && vb.vis && /you recorded your voice/.test(v.text), `iPad: in the Vocal Booth, the line is at the top of the room: ${JSON.stringify({ ...vb, text: v && v.text })}`);
     pc = await p.evaluate(`(${PROBE})()`);
     ok(!pc.length, `iPad: the booth with the line reads (${pc.length} ${JSON.stringify(pc.slice(0, 2))})`);
-    await p.keyboard.press("Escape"); await W(500);
     /* an iPad on its side: My Track is in the bar, the key with it */
     await p.setViewportSize({ width: 1180, height: 820 }); await W(800);
     let bar = await p.evaluate(() => { const k = document.getElementById("msTop"), r = k.getBoundingClientRect(), row = document.getElementById("mtRow").getBoundingClientRect(), top = document.querySelector(".sh-top"), h1 = document.querySelector(".sh-top h1").getBoundingClientRect();
