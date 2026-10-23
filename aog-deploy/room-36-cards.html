@@ -483,6 +483,18 @@ html.aog-sel body .aog-cardpager{top:calc(var(--aogbar-h,55px) + 8px)}
 .board .bnote{margin:24px 0 0; max-width:60ch}
 .board .bnote summary{cursor:pointer; min-height:44px; display:inline-flex; align-items:center; gap:8px; font:700 .92rem var(--sans); color:var(--ink-soft)}
 .board .bnote .note{margin:6px 0 0}
+/* aog-sketch.js draws the ✓ as a pencil mark; it shows only on a card marked used */
+.card .tick img{visibility:hidden}
+.card.used .tick img{visibility:visible}
+/* the site shows pages at 94% / 85% from 700px up (aog-calm.css); on a touch screen the targets grow to stay 44px */
+@media screen and (pointer:coarse) and (min-width:700px){
+  html body :is(.fchip,.lbtn,.btn,.chipbtn,.aog-more,.nv-btn,.hubline a,.mats a,.teach summary,.bnote summary,#bClose,#roomSel,.aogdd-sel,.aog-cardpager select){min-height:47px!important}
+  html body .card .tick{width:47px!important; height:47px!important}
+}
+@media screen and (pointer:coarse) and (min-width:1000px){
+  html body :is(.fchip,.lbtn,.btn,.chipbtn,.aog-more,.nv-btn,.hubline a,.mats a,.teach summary,.bnote summary,#bClose,#roomSel,.aogdd-sel,.aog-cardpager select){min-height:52px!important}
+  html body .card .tick{width:52px!important; height:52px!important}
+}
 .mats{display:flex; gap:8px; flex-wrap:wrap}
 .mats a{display:inline-flex; align-items:center; min-height:44px; padding:0 14px; border-radius:999px; border:1px solid var(--rule); background:var(--field-2); color:var(--ink); text-decoration:none; font:600 .9rem var(--sans)}
 @media print{

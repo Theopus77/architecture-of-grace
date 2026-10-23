@@ -150,9 +150,53 @@ select{width:100%;min-height:48px;font-size:17px;padding:8px 12px;border:1.5px s
   .scale.ans thead th:not(:first-child),.scale.ans td.o{display:none}
 }
 #paper{display:none}
+/* the paper styles live outside @media print so a sheet can be measured before printing; #paper is hidden on screen */
+#paper.measure{display:block;position:absolute;left:-10000px;top:0;width:7.5in;visibility:hidden}
+#paper .sheet{border:0;border-radius:0;padding:0;background:#fff !important;color:#111 !important;font:11pt/1.32 -apple-system,"Segoe UI",Inter,Arial,sans-serif}
+#paper .sheet + .sheet{break-before:page;page-break-before:always}
+#paper .sheet *{color:#111 !important;border-color:#999 !important;background:transparent !important}
+#paper .sheet .sk{color:#6B4E12 !important;font-size:8.5pt}
+#paper .sheet .sh{font-size:20pt}
+#paper .sheet .scale{font-size:10.5pt}
+#paper .sheet .scale th,#paper .sheet .scale td{padding:2.5pt 4pt}
+#paper .sheet .scale.ans td.o{width:8.5%}
+#paper .sheet .who .fld{padding-bottom:8pt}
+#paper .sheet .sh{margin-bottom:5pt}
+#paper .sheet .scale tr.grp th{background:#F3ECDC !important}
+#paper .sheet .scale thead th{font-size:8.5pt}
+#paper .sheet .bxl i,#paper .sheet .scale td.o i{border-color:#222 !important;width:12pt;height:12pt}
+#paper .sheet tr{break-inside:avoid}
+#paper .sheet .sft{font-size:9pt;color:#444 !important}
+#paper .glance-print{font-size:8.5pt}
+#paper .glance-print .glance{font-size:8.5pt}
+#paper .glance-print .glance th,#paper .glance-print .glance td{padding:3pt 3pt;border-top:1px solid #bbb}
+#paper .glance-print .lt{background:#fff !important;color:#111 !important;border:1px solid #111;width:16pt;height:16pt}
+#paper .glance-print .lab{display:none}
+#paper .glance-print{page:wide}
+#paper .glance-print .glance{table-layout:fixed;width:100%}
+#paper .glance-print .glance th,#paper .glance-print .glance td{overflow-wrap:break-word;hyphens:auto}
+#paper .glance-print .glance tr > :nth-child(1){width:14%}
+#paper .glance-print .glance tr > :nth-child(2){width:16%}
+#paper .glance-print .glance tr > :nth-child(3){width:10%}
+#paper .glance-print .glance tr > :nth-child(4){width:16%}
+#paper .glance-print .glance tr > :nth-child(5){width:7%}
+#paper .glance-print .glance tr > :nth-child(6){width:13%}
+#paper .glance-print .glance tr > :nth-child(7){width:12%}
+#paper .glance-print .glance tr > :nth-child(8){width:12%}
+#paper .glance-print .glance tbody th{min-width:0}
+#paper .glance-print .newtag{font-size:6.5pt;padding:1pt 4pt;letter-spacing:.04em}
+#paper .glance-print .rowlink{min-height:0;gap:4pt}
+#paper .sheet.tight{font-size:10pt;line-height:1.22}
+#paper .sheet.tight .scale{font-size:9.5pt}
+#paper .sheet.tight .scale th,#paper .sheet.tight .scale td{padding:1.2pt 3pt}
+#paper .sheet.tight .sh{font-size:17pt}
+#paper .sheet.tight .bxl i,#paper .sheet.tight .scale td.o i{width:10pt;height:10pt}
+#paper .sheet.tight .wl{height:22px}
+#paper .sheet.tight .sq{margin:7px 0 4px}
 /* ── paper ── */
 @media print{
   @page{size:letter;margin:.5in}
+  @page wide{size:letter landscape;margin:.45in}
   html,body{background:#fff !important;color:#111 !important}
   body.printing > :not(#paper){display:none !important}
   body.printing #paper{display:block}
@@ -160,23 +204,6 @@ select{width:100%;min-height:48px;font-size:17px;padding:8px 12px;border:1.5px s
   header.hero{background:#fff !important;color:#111 !important;padding:0 0 10px}
   header.hero h1,header.hero .lede,header.hero .ey{color:#111 !important}
   .card{border:1px solid #bbb;break-inside:auto}
-  #paper .sheet{border:0;border-radius:0;padding:0;background:#fff !important;color:#111 !important;font:11.5pt/1.38 -apple-system,"Segoe UI",Inter,Arial,sans-serif}
-  #paper .sheet + .sheet{break-before:page;page-break-before:always}
-  #paper .sheet *{color:#111 !important;border-color:#999 !important;background:transparent !important}
-  #paper .sheet .sk{color:#6B4E12 !important;font-size:8.5pt}
-  #paper .sheet .sh{font-size:20pt}
-  #paper .sheet .scale{font-size:10.5pt}
-  #paper .sheet .scale th,#paper .sheet .scale td{padding:3.5pt 4pt}
-  #paper .sheet .scale tr.grp th{background:#F3ECDC !important}
-  #paper .sheet .scale thead th{font-size:8.5pt}
-  #paper .sheet .bxl i,#paper .sheet .scale td.o i{border-color:#222 !important;width:12pt;height:12pt}
-  #paper .sheet tr{break-inside:avoid}
-  #paper .sheet .sft{font-size:9pt;color:#444 !important}
-  #paper .glance-print{font-size:8.5pt}
-  #paper .glance-print .glance{font-size:8.5pt}
-  #paper .glance-print .glance th,#paper .glance-print .glance td{padding:3pt 3pt;border-top:1px solid #bbb}
-  #paper .glance-print .lt{background:#fff !important;color:#111 !important;border:1px solid #111;width:16pt;height:16pt}
-  #paper .glance-print .lab{display:none}
 }
 </style>
 </head>
@@ -259,11 +286,14 @@ function copyIn(node,l,P){
     for(var j=0;j<n.length;j++){ var s=n[j].getAttribute("data-"+l); if(s!=null&&n[j].textContent!==s) n[j].textContent=s; } }
   P.appendChild(c);
 }
+/* a sheet that would run past one Letter page (10 in inside its margins) is drawn tight */
+function fit(P){ P.classList.add("measure"); var ss=P.querySelectorAll(".sheet"); for(var i=0;i<ss.length;i++){ if(ss[i].offsetHeight>940) ss[i].classList.add("tight"); } P.classList.remove("measure"); }
 function printThese(ids,both){
   var P=D.getElementById("paper"); P.innerHTML="";
   ids.forEach(function(id){ var s=D.getElementById("sheet-"+id); if(!s) return;
     if(both){ copyIn(s,"en",P); copyIn(s,"es",P); } else copyIn(s,lang(),P); });
   if(!P.children.length) return;
+  fit(P);
   D.body.classList.add("printing"); window.print();
 }
 window.addEventListener("afterprint",function(){ D.body.classList.remove("printing"); D.getElementById("paper").innerHTML=""; });

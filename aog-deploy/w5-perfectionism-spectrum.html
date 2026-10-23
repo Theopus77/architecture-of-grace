@@ -1269,8 +1269,8 @@ body.wsprev{overflow:hidden}
   try {
     [].slice.call(document.querySelectorAll("[data-en]")).some(function (fp) {
       if ((fp.getAttribute("data-en") || "").indexOf("sends nothing out") < 0) return false;
-      var en = "This page loads no fonts, scripts, or images from the internet. Your writing is stored in this browser and never sent. FINISHED tells your teacher only that you are done.";
-      var es = "Esta página no carga fuentes, programas ni imágenes de internet. Lo que escribes se guarda en este navegador y nunca se envía. TERMINÉ solo le avisa a tu maestro o maestra que acabaste.";
+      var en = "This page loads no fonts, scripts, or images from the internet. Your writing is stored in this browser and never sent. I’m finished tells your teacher only that you are done.";
+      var es = "Esta página no carga fuentes, programas ni imágenes de internet. Lo que escribes se guarda en este navegador y nunca se envía. Terminé solo le avisa a tu maestro o maestra que acabaste.";
       fp.setAttribute("data-en", en); fp.setAttribute("data-es", es); fp.textContent = R36T(en, es);
       return true;
     });
@@ -1302,7 +1302,7 @@ body.wsprev{overflow:hidden}
   card.id = "wsTurnin"; card.className = "no-print";
   card.innerHTML =
     '<h2 data-en="Finished?" data-es="\u00bfTerminaste?">' + R36T("Finished?", "\u00bfTerminaste?") + '</h2>' +
-    '<p data-en="Your writing stays on this device. Tap FINISHED to tell your teacher you are done: only your name and this sheet\u2019s name are sent, never your words." data-es="Lo que escribes se queda en este aparato. Toca TERMIN\u00c9 para avisarle a tu maestro o maestra que acabaste: solo se env\u00edan tu nombre y el nombre de esta hoja, nunca tus palabras.">' + R36T("Your writing stays on this device. Tap FINISHED to tell your teacher you are done: only your name and this sheet\u2019s name are sent, never your words.", "Lo que escribes se queda en este aparato. Toca TERMIN\u00c9 para avisarle a tu maestro o maestra que acabaste: solo se env\u00edan tu nombre y el nombre de esta hoja, nunca tus palabras.") + '</p>' +
+    '<p data-en="Your writing stays on this device. Tap FINISHED to tell your teacher you are done: only your name and this sheet\u2019s name are sent, never your words." data-es="Lo que escribes se queda en este aparato. Toca Termin\u00e9 para avisarle a tu maestro o maestra que acabaste: solo se env\u00edan tu nombre y el nombre de esta hoja, nunca tus palabras.">' + R36T("Your writing stays on this device. Tap FINISHED to tell your teacher you are done: only your name and this sheet\u2019s name are sent, never your words.", "Lo que escribes se queda en este aparato. Toca Termin\u00e9 para avisarle a tu maestro o maestra que acabaste: solo se env\u00edan tu nombre y el nombre de esta hoja, nunca tus palabras.") + '</p>' +
     '<div class="row">' +
     '<input type="text" id="wsWho" autocomplete="off" maxlength="60" placeholder="Enter your name" aria-label="Your code or first name" data-ph-es="Escribe tu nombre" data-al-es="Tu c\u00f3digo o tu nombre">' +
     '<button class="btn-fin" type="button" id="wsSendBtn" data-aog-private>' + R36T("FINISHED", "TERMIN\u00c9") + '</button>' + /* aog-worksheet.js owns this button's words */
@@ -1394,7 +1394,7 @@ body.wsprev{overflow:hidden}
     prev.hidden = false; document.body.classList.add("wsprev");
     prev.scrollTop = 0;
     function done(){ busy = false; setPvStatus(R36T("Done \u2713 Your words stayed here.", "Listo \u2713 Tus palabras se quedaron aqu\u00ed.")); st.textContent = R36T("Done \u2713", "Listo \u2713"); btn.textContent = R36T("FINISHED \u2713", "TERMIN\u00c9 \u2713"); }
-    function fail(){ busy = false; setPvStatus(R36T("That didn\u2019t go through \u2014 check the internet, then tap FINISHED again.", "No se pudo enviar. Revisa el internet y toca TERMIN\u00c9 otra vez.")); }
+    function fail(){ busy = false; setPvStatus(R36T("That didn\u2019t go through \u2014 check the internet, then tap FINISHED again.", "No se pudo enviar. Revisa el internet y toca Termin\u00e9 otra vez.")); }
     fetch(DEST.url, {method:"POST", mode:"cors", redirect:"follow",
         headers:{"Content-Type":"text/plain;charset=utf-8"}, body:body})
       .then(function(res){ return res.json(); })

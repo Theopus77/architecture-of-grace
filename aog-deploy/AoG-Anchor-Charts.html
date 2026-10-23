@@ -2194,14 +2194,30 @@ document.addEventListener("keydown", function(e){
 
 /* ══ language: the site bar's EN | ES sets <html lang>; the board, its menus and the room menu follow ══ */
 var lastLang = null;
+/* the room menu: its two group labels, and the two doors aog-sel.js adds after load (the Adult Edition, the novel) */
+var ROOMX = {"/adult/lessons":["The Adult Edition · The Lessons","La Edición para Adultos · Las lecciones"],
+  "room-36-novel.html":["The novel · The Year of Two Voices","La novela del Salón 36"]};
+function paintRoomSel(){
+  var v = LG(), rs = document.getElementById("roomSel"); if(!rs) return;
+  var gs = rs.querySelectorAll("optgroup[data-l-en]");
+  for(var i=0;i<gs.length;i++){ var lab = gs[i].getAttribute(v === "es" ? "data-l-es" : "data-l-en"); if(gs[i].label !== lab) gs[i].label = lab; }
+  var g36 = rs.querySelector('optgroup[data-l-en="Room 36"]'), nv = rs.querySelector('option[value="room-36-novel.html"]');
+  if(g36 && nv && nv.parentNode !== g36) g36.appendChild(nv);
+  for(var k in ROOMX){ var o = rs.querySelector('option[value="' + k + '"]'); if(o){ var t = ROOMX[k][v === "es" ? 1 : 0]; if(o.textContent !== t) o.textContent = t; } }
+}
+window.addEventListener("load", paintRoomSel);
+/* a crosswalk link to another chart on this same page (#id) */
+window.addEventListener("hashchange", function(){
+  var h = (location.hash || "").replace(/^#/,"").trim();
+  if(h && h !== current && order().indexOf(h) > -1) go(h, {jump:true});
+});
 function paintLang(){
   var v = LG();
   if(v === lastLang) return;
   var first = lastLang === null;
   lastLang = v;
   document.title = T("Anchor Charts — The Interior","Carteles de anclaje — El Interior");
-  var gs = document.querySelectorAll("#roomSel optgroup[data-l-en]");
-  for(var i=0;i<gs.length;i++){ var lab = gs[i].getAttribute(v === "es" ? "data-l-es" : "data-l-en"); if(gs[i].label !== lab) gs[i].label = lab; }
+  paintRoomSel();
   var seg = document.querySelector(".seg"); if(seg) seg.setAttribute("aria-label", T("How much of the chart to show","Cuánto del cartel mostrar"));
   paintTheme();
   if(!first) go(current);
