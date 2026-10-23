@@ -518,6 +518,15 @@ main.sh-main { grid-area:room; min-width:0; margin:0; }
       history.replaceState(null, "", location.pathname + (AT ? "#" + AT.id : location.hash));
     }
   } catch (e) { AT = null; }
+  /* AOG-LOCKER-V2 (2026-10-23): a device link (/the-studio#locker=<address>&k=<key>, made by the locker script or the desk's
+     Send the link) opens the Mixing Desk with it. It stays after #, so it never reaches a server, and the address bar goes
+     back to /the-studio#studio at once. */
+  try {
+    if (!AT && BEAT === null && (location.hash || "").indexOf("#locker=") === 0) {
+      AT = { id: "studio", url: "/music-studio.html" + location.hash };
+      history.replaceState(null, "", location.pathname + "#studio");
+    }
+  } catch (e) { AT = null; }
   function first() {
     if (BEAT !== null) return "pads";   /* AOG-SHARE-V1 */
     if (AT) return AT.id;

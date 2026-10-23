@@ -153,8 +153,10 @@ const waitLine = (p, id, re) => p.waitForFunction(([i, s]) => new RegExp(s).test
   await p.fill("#lkUrl", "https://example.com/exec"); await p.fill("#lkKey", LOCK_KEY); await p.click("#lkConnect");
   ok(await line(p, "lockLine") === "The web address should start with https://script.google.com and end with /exec.", "a wrong web address is told plainly");
   await p.fill("#lkUrl", LOCK_URL); await p.fill("#lkKey", "wrongwrongwrong"); await p.click("#lkConnect");
-  await waitLine(p, "lockLine", /said no/);
-  ok(await p.evaluate(() => !localStorage.getItem("aog.studio.locker.v1")), "a wrong key is told plainly and not kept");
+  /* AOG-STUDIO-LOCKER-LIGHTS-V1: a wrong key is told by the locker's light now, not by the line under it */
+  await p.waitForFunction(() => { const l = document.querySelector("#locker .st-lkl.warn"); return !!l && /The key did not match/.test(l.textContent); }, null, { timeout: 60000 });
+  ok(await p.evaluate(() => !localStorage.getItem("aog.studio.locker.v1")) && (await p.textContent("#locker .st-lkl.warn b")).trim() === "The key did not match",
+    "a wrong key is told plainly and not kept: " + (await p.textContent("#locker .st-lkl.warn")).trim());
   await p.fill("#lkKey", LOCK_KEY); await p.click("#lkConnect");
   await p.waitForSelector("#lkSave", { timeout: 10000 });
   ok(await line(p, "lockLine") === "This device is connected to your locker." && (await p.textContent("#locker")).includes("No songs in your locker yet."), "Connect: " + await line(p, "lockLine"));
@@ -169,13 +171,14 @@ const waitLine = (p, id, re) => p.waitForFunction(([i, s]) => new RegExp(s).test
   /* 7 · the link for other devices; an iPad opens it */
   await p.click("#lkPair");
   const link = await p.evaluate(() => navigator.clipboard.readText());
-  ok(link.startsWith(U + "music-studio.html#locker=") && link.includes("&k=" + LOCK_KEY) && await line(p, "lockLine") === "Link copied. Paste it into a message to yourself.", "the link is copied: " + await line(p, "lockLine"));
+  /* AOG-LOCKER-V2: the link opens the Studio at the desk (the-studio.html passes it on; studio/locker2.js follows it there) */
+  ok(link.startsWith(U + "the-studio#locker=") && link.includes("&k=" + LOCK_KEY) && await line(p, "lockLine") === "Link copied. Paste it into a message to yourself.", "the link is copied: " + await line(p, "lockLine"));
   await p.click("#lkQrBtn"); await p.waitForSelector("#lkQr canvas", { timeout: 5000 });
   ok((await p.textContent("#lkQrBtn")) === "Hide the QR code" && (await line(p, "locker")).includes("Keep the link private"), "Show a QR code draws one, with a line to keep it private");
   await p.click("#lkQrBtn"); ok(await p.isHidden("#lkQr"), "Hide the QR code hides it");
 
   const pad = await b.newContext({ ...pw.devices["iPad (gen 7)"] }); watch(pad); await routes(pad);
-  const r = await pad.newPage(); await r.goto(link); await r.waitForTimeout(500);
+  const r = await pad.newPage(); await r.goto(U + "music-studio.html" + link.slice(link.indexOf("#"))); await r.waitForTimeout(500);   /* the same link, on the desk's own address */
   await r.waitForFunction(() => /Rainy day/.test(document.getElementById("locker").textContent), null, { timeout: 10000 });
   ok(!(await r.evaluate(() => location.hash)) && await line(r, "lockLine") === "Your locker is connected on this device.", "the iPad: connected, and the link left the address bar");
   await r.click("[data-lkopen]");
