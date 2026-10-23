@@ -1,0 +1,131 @@
+{
+ "title": "Valor posicional y aritmética con muchos dígitos",
+ "years": "Números",
+ "intro": [
+  "Algunos números son demasiado grandes para contarlos. Las personas de Chicago, los segundos de un año, los pupitres de todo un distrito escolar. Y aun así, puedes escribir cada uno con los mismos diez dígitos, del 0 al 9. El truco está en el lugar donde se ubica cada dígito. Un 4 en un lugar significa cuatro; dos lugares más a la izquierda significa cuatrocientos. Esta unidad trata de ese truco, llamado valor posicional, y de usarlo para sumar, restar, multiplicar y dividir números con muchos dígitos.",
+  "Leerás y escribirás números de hasta millones, los compararás, los pondrás en orden y los redondearás cuando una respuesta aproximada sea suficiente. Luego sumarás y restarás números grandes y revisarás tu trabajo. En el segundo capítulo multiplicarás números de dos y tres dígitos con un modelo de área, productos parciales y el algoritmo estándar, y dividirás con cocientes parciales y con la división larga. Por el camino decidirás qué hacer cuando una división no sale exacta.",
+  "Al final podrás tomar un problema como \"27 salones con 34 pupitres cada uno\" y obtener una respuesta exacta que puedas defender, paso a paso. También sabrás estimar primero, para detectar una respuesta equivocada antes que nadie. Esas dos habilidades, el trabajo exacto y una buena estimación, son las que la gente usa todos los días en tiendas, oficinas y obras de construcción en todo Illinois."
+ ],
+ "bigQuestion": "¿Cómo nos permiten diez dígitos y sus lugares contar, comparar y calcular con números demasiado grandes para imaginarlos?",
+ "timeline": [
+  {"t": "Los egipcios escriben los números con símbolos distintos para 1, 10, 100 y 1,000"},
+  {"t": "Los babilonios usan un sistema de valor posicional basado en el 60, origen de nuestra hora de 60 minutos"},
+  {"t": "Los Elementos de Euclides establecen reglas para los números enteros, la división y los residuos"},
+  {"t": "Matemáticos de la India usan diez dígitos, incluido el cero, en un sistema de valor posicional"},
+  {"t": "Al-Juarismi escribe un libro que explica cómo calcular con los diez dígitos"},
+  {"t": "El Liber Abaci de Fibonacci enseña los dígitos y el valor posicional a los comerciantes de Europa"},
+  {"t": "Blaise Pascal construye una máquina mecánica que suma y resta con engranajes"},
+  {"t": "El primer censo de Estados Unidos cuenta cerca de 3.9 millones de personas"},
+  {"t": "Máquinas de tarjetas perforadas tabulan el censo de Estados Unidos mucho más rápido que los empleados a mano"},
+  {"t": "ENIAC, una de las primeras computadoras electrónicas, multiplica miles de veces más rápido que una persona"},
+  {"t": "El censo de Estados Unidos de 2020 cuenta cerca de 331 millones de personas, unas 2.7 millones en Chicago"}
+ ],
+ "wrap": {
+  "words": [
+   {"w": "valor posicional", "d": "lo que vale un dígito por el lugar que ocupa, como un 4 en el lugar de las decenas, que vale 40"},
+   {"w": "dígito", "d": "uno de los diez símbolos, del 0 al 9, que se usan para escribir todos los números"},
+   {"w": "período", "d": "un grupo de tres dígitos de un número, como el período de las unidades, de los miles o de los millones"},
+   {"w": "forma desarrollada", "d": "un número escrito como la suma de los valores de sus dígitos, como 4,000 + 300 + 6"},
+   {"w": "redondear", "d": "reemplazar un número por otro cercano que termina en ceros y es más fácil de usar"},
+   {"w": "estimación", "d": "una respuesta rápida y cercana que se halla redondeando o usando números compatibles"},
+   {"w": "reagrupar", "d": "cambiar diez de un lugar por uno del lugar siguiente, o uno de un lugar por diez del lugar a su derecha"},
+   {"w": "suma", "d": "la respuesta de un problema de suma"},
+   {"w": "diferencia", "d": "la respuesta de un problema de resta"},
+   {"w": "producto", "d": "la respuesta de un problema de multiplicación; 27 × 34 = 918, así que 918 es el producto"},
+   {"w": "cociente", "d": "la respuesta de un problema de división; 372 ÷ 12 = 31, así que 31 es el cociente"},
+   {"w": "residuo", "d": "la cantidad que sobra después de dividir en grupos iguales"}
+  ],
+  "test": [
+   {
+    "q": "¿Cuánto vale el dígito 4 en 4,250,000?",
+    "choices": ["400,000", "4,000,000", "40,000", "4,000"],
+    "why": "El 4 es el séptimo dígito de derecha a izquierda, el lugar de los millones, así que vale 4,000,000."
+   },
+   {
+    "q": "¿Cómo se lee 2,006,050?",
+    "choices": [
+     "dos millones, seis mil, cincuenta",
+     "dos millones, sesenta mil, cincuenta",
+     "dos millones, seiscientos mil, cincuenta",
+     "doscientos seis mil, cincuenta"
+    ],
+    "why": "Los períodos son 2 | 006 | 050. Eso es dos millones, seis mil, cincuenta."
+   },
+   {
+    "q": "¿Cuál es 90,000 + 300 + 5 en forma estándar?",
+    "choices": ["9,305", "90,350", "93,005", "90,305"],
+    "why": "9 decenas de millar, 0 millares, 3 centenas, 0 decenas, 5 unidades. El número es 90,305."
+   },
+   {
+    "q": "¿Qué número es el menor?",
+    "choices": ["87,650", "87,506", "87,605", "87,560"],
+    "why": "Todos empiezan con 87. Compara las centenas: 6, 5, 6, 5. Entre 87,506 y 87,560, el dígito 0 de las decenas es menor que 6. Así que 87,506 es el menor."
+   },
+   {
+    "q": "Redondea 5,478,912 a la decena de millar más cercana.",
+    "choices": ["5,470,000", "5,500,000", "5,480,000", "5,479,000"],
+    "why": "El dígito de las decenas de millar es 7. El dígito de los millares es 8, así que se redondea hacia arriba a 5,480,000."
+   },
+   {
+    "q": "¿Cuánto es 275,846 + 186,379?",
+    "choices": ["462,225", "461,225", "462,215", "461,115"],
+    "why": "275,000 + 186,000 = 461,000 y 846 + 379 = 1,225. La suma es 462,225."
+   },
+   {
+    "q": "¿Cuánto es 600,000 − 248,317?",
+    "choices": ["352,683", "351,693", "351,683", "448,317"],
+    "why": "Comprueba sumando: 248,317 + 351,683 = 600,000, porque 317 + 683 = 1,000 y 248,000 + 351,000 + 1,000 = 600,000."
+   },
+   {
+    "q": "¿Cuánto es 80 × 40?",
+    "choices": ["320", "3,200", "32,000", "120"],
+    "why": "8 × 4 = 32, y los factores tienen dos ceros, así que el producto es 3,200."
+   },
+   {
+    "q": "¿Cuánto es 63 × 24?",
+    "choices": ["1,412", "378", "1,522", "1,512"],
+    "why": "63 × 4 = 252 y 63 × 20 = 1,260. Entonces 252 + 1,260 = 1,512."
+   },
+   {
+    "q": "¿Cuánto es 409 × 6?",
+    "choices": ["2,454", "2,404", "294", "2,464"],
+    "why": "400 × 6 = 2,400, 0 × 6 = 0, 9 × 6 = 54. La suma es 2,454."
+   },
+   {
+    "q": "¿Cuánto es 2,835 ÷ 5?",
+    "choices": ["557", "507", "567", "5,670"],
+    "why": "5 en 28 es 5 y sobran 3; 5 en 33 es 6 y sobran 3; 5 en 35 es 7. El cociente es 567. Comprueba: 5 × 567 = 2,835."
+   },
+   {
+    "q": "¿Cuánto es 1,296 ÷ 36?",
+    "choices": ["36", "34", "306", "46"],
+    "why": "36 en 129 es 3, porque 36 × 3 = 108, y sobran 21. Baja el 6 para formar 216, y 36 × 6 = 216. El cociente es 36."
+   },
+   {
+    "q": "150 personas se sientan en mesas con capacidad para 8 cada una. ¿Cuántas mesas se necesitan?",
+    "choices": ["18", "18 R 6", "6", "19"],
+    "why": "150 ÷ 8 = 18 y sobran 6. Esas 6 personas necesitan una mesa más, así que son 19 mesas."
+   },
+   {
+    "q": "¿Cuál es la mejor estimación de 4,182 ÷ 7?",
+    "choices": ["500", "60", "600", "700"],
+    "why": "4,200 es compatible con 7 porque 42 ÷ 7 = 6. Así que 4,200 ÷ 7 = 600. El cociente exacto es 597 R 3."
+   },
+   {
+    "q": "Una escuela tiene 27 salones con 34 pupitres cada uno. En total necesita 1,000 pupitres. ¿Cuántos pupitres más debe comprar?",
+    "choices": ["918", "1,918", "92", "82"],
+    "why": "27 × 34 = 918 pupitres ahora. Entonces 1,000 − 918 = 82 pupitres más."
+   }
+  ],
+  "write": {
+   "prompt": "Un campamento tiene 1,000 botellas de agua para empacar en cajas de 24. Halla cuántas cajas llenas hay y cuántas botellas sobran. Luego explica cada paso que diste, muestra cómo comprobaste tu respuesta con una multiplicación y di qué significan las botellas que sobran para el campamento.",
+   "tips": [
+    "Escribe primero tu respuesta: el número de cajas llenas y el número de botellas que sobran.",
+    "Muestra cada paso de la división, incluida cada resta.",
+    "Explica por qué multiplicar el cociente por 24 y sumar el residuo debería dar 1,000.",
+    "Di si las botellas que sobran necesitan otra caja, y por qué.",
+    "Lee el problema una vez más y asegúrate de que tu última oración responda la pregunta que se hizo."
+   ]
+  }
+ }
+}

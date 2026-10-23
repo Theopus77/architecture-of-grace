@@ -684,6 +684,14 @@ def chapter_html(u, c):
   </section>
 </section>'''
 
+def more_tag(n):
+    """AOG-MORE-V1: keep the Spanish / three-ways-in script tag _work/more/build.py put on this page."""
+    try:
+        m = re.search(r'<script src="/aog-course-more\.js[^>]*></script><!-- AOG-MORE-V1 -->\n?', (DEPLOY / page_name(n)).read_text(encoding="utf-8"))
+        return m.group(0) if m else ""
+    except Exception:
+        return ""
+
 def unit_page(u, all_units):
     n = u["n"]
     title = "Unit %d · %s" % (n, u["title"])
@@ -840,6 +848,7 @@ def unit_page(u, all_units):
 window.AOG_COURSE = {{id:{json.dumps(C.get("id",""))}, unit:{n}, title:{json.dumps(u["title"])}}};
 {JS_UNIT.replace("__KEY__", store_key(n))}
 </script>
+{more_tag(n)}<script src="/aog-course-plus.js" defer></script><!-- AOG-COURSE-PLUS-V1 -->
 <script src="/aog-jump.js" defer></script>
 </body>
 </html>
@@ -1206,6 +1215,7 @@ def contents_page(units):
     <h1 data-en="{E(C["h1"][0])}" data-es="{E(C["h1"][1])}">{E(C["h1"][0])}</h1>
     <p class="deck">{span(*C["contents_deck"])}</p>
     <p class="hubline no-print"><a id="hubLink" href="{C["hub"]}">{span(*C["hub_back"])}</a></p>
+    <p class="hubline no-print"><a href="/my-learning"><span data-en="My learning: pick up where you left off ›" data-es="Mi aprendizaje: sigue donde te quedaste ›">My learning: pick up where you left off ›</span></a></p><!-- AOG-MY-LEARNING-V1 -->
   </div>
   <div class="row no-print">
     <button class="chipbtn" id="langBtn" type="button">Español</button>

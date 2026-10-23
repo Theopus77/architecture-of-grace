@@ -73,7 +73,10 @@
   (D.head || D.documentElement).appendChild(st);
   var bar = D.createElement("nav"); bar.className = "aogpg-bar no-print"; bar.setAttribute("aria-label", "Pages");
   var cur = -1;
-  function label(p) { return es() ? p.es : p.en; }
+  /* AOG-MORE-V1 (2026-10-23): a unit in Spanish (aog-course-more.js) names its chapters and sections in Spanish:
+     data-aog-es-label on a page's first element wins, and "aog-words" repaints the bar once the words arrive. */
+  function label(p) { var x = es() && p.els[0].getAttribute("data-aog-es-label"); return x || (es() ? p.es : p.en); }
+  D.addEventListener("aog-words", function () { if (cur >= 0) show(cur, false); });
   function show(i, scroll) {
     i = Math.max(0, Math.min(pages.length - 1, i)); cur = i;
     all.forEach(function (e) { e.classList.toggle("aogpg-off", e.__pg !== i); });
