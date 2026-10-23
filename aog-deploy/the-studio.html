@@ -196,7 +196,7 @@ html:root:root body { --room:#17110c; background-color:#17110c !important; color
   background-image:linear-gradient(180deg, #211a13 0, #17110c 160px) !important; background-attachment:fixed; }
 .aogtop, .aogtop-spacer { display:none !important; }   /* AOG-STUDIO-APP-V1: the site bar steps aside (its code stays: language, theme) */
 .sh-tag { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; margin:0; }   /* said by the transport itself */
-.shell { max-width:1680px; margin:0 auto; padding:0 max(12px, env(safe-area-inset-right)) 0 max(12px, env(safe-area-inset-left));
+.shell { max-width:1680px; margin:0 auto; padding:env(safe-area-inset-top) max(12px, env(safe-area-inset-right)) 0 max(12px, env(safe-area-inset-left));   /* AOG-STUDIO-SAFE-V1: from the Home Screen an iPhone draws the page under its clock and battery; the top line starts below them */
   display:grid; grid-template-columns:minmax(0,1fr); grid-template-areas:"top" "doors" "room" "mt"; }
 
 /* the keys: one shape for every control in the Studio */
@@ -364,6 +364,7 @@ main.sh-main { grid-area:room; min-width:0; margin:0; }
   .tp { gap:5px; }
   .tp .tp-b, .mt .tp a.tp-b { flex:1 1 0; min-width:0; padding:0 .25rem; gap:.3rem; font-size:.85rem; letter-spacing:0; }
   .tp .tp-b, .mt .tp a.tp-b { white-space:normal; line-height:1.1; text-align:center; }   /* AOG-PLAY-ALONG-V1: five buttons share a phone's width; a long name takes two lines */
+  .tp { flex-wrap:wrap; }   /* AOG-STUDIO-SAFE-V1: + Add to My Track takes a line of its own above the five keys, never squeezing them (Jimmy, iPhone, 2026-10-23) */
   .tp .tp-add { flex:1 1 100%; order:-1; }
   .tp-rec { min-width:0; }
   /* Mix › and ‹ back to a room say what the doors above already say: on a phone the doors do it */
