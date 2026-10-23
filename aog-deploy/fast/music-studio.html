@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- AOG-FAST-BUILD-V1 source:fb9cc731f85af093 · MADE BY tools/build-fast.py from music-studio.html: edit music-studio.html, then run it. -->
+<!-- AOG-FAST-BUILD-V1 source:50fc2f8844114031 · MADE BY tools/build-fast.py from music-studio.html: edit music-studio.html, then run it. -->
 <html lang="en">
 <head>
 <script>/* AOG-STUDIO-ONLY-V1 (Jimmy, 2026-10-10: "one location for all the instruments … and that is the studio"): opened on its own address, this room opens inside the Studio instead, at this exact address (its lesson, take or link). Inside the Studio's frame, and for the site's own checks, it stays. */(function(){try{if(window.top!==window||navigator.webdriver)return;var M={"music-pads":"pads","drum-machine":"pads","beat-lab":"pads","music-kit":"kit","drum-kit":"kit","music-piano":"piano","piano":"piano","keys":"piano","music-guitar":"guitar","guitar":"guitar","music-bass":"bass","bass":"bass","music-band":"band","band":"band","music-decks":"decks","decks":"decks","turntables":"decks","music-vocal":"vocal","vocal-booth":"vocal","vocal":"vocal","booth":"vocal","music-studio":"studio","studio":"studio","mixing-desk":"studio"},f=(location.pathname.split("/").pop()||"").replace(/\.html$/,""),r=M[f];if(!r)return;var F={pads:"music-pads",kit:"music-kit",piano:"music-piano",guitar:"music-guitar",bass:"music-bass",band:"music-band",decks:"music-decks",vocal:"music-vocal",studio:"music-studio"};location.replace("/the-studio.html?at="+encodeURIComponent("/"+F[r]+".html"+location.search+location.hash)+"#"+r);}catch(e){}})();</script>
@@ -281,6 +281,10 @@ details[open]>.st-steps{margin-bottom:.5rem}
 .st-lknew{margin-top:.7rem;padding:.75rem .85rem;border:1px solid #C9A24A;border-radius:12px;background:#181a1e;max-width:44rem}
 .st-lknew[hidden],.st-lknew .st-row[hidden]{display:none}
 .st-lknew p{margin:0;color:#f1ebdf;font-weight:700;line-height:1.4}
+/* AOG-LOCKER-V3: the line for a big save: keep the screen open */
+.st-lknew p.st-lkh{margin-top:.35rem;color:#d7cbb8;font-weight:400;font-size:.95rem}
+.st-lkh[hidden],.st-big[hidden]{display:none}
+.st-big{color:#ffe2a8}
 .st-lknew .st-row{margin-top:.6rem}
 .st-lknew .st-row .st-btn{flex:0 1 auto}
 .st-keep,.st-old{display:grid;gap:.35rem}
@@ -931,7 +935,7 @@ html.in-studio .st-chassis{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 
         </div>
         <p class="st-line" id="playLine" aria-live="polite"></p>
         <!-- AOG-LOCKER-V2: the one line that may appear by itself: a newer save of this song is in your locker. Nothing changes until a button is pressed. -->
-        <div class="st-lknew" id="lkNew" role="status" hidden><p id="lkNewT"></p><div class="st-row" id="lkNewRow"><button type="button" class="st-btn st-go" id="lkNewOpen"></button><button type="button" class="st-btn" id="lkNewKeep"></button></div></div>
+        <div class="st-lknew" id="lkNew" role="status" hidden><p id="lkNewT"></p><p class="st-lkh" id="lkNewH" hidden></p><div class="st-row" id="lkNewRow"><button type="button" class="st-btn st-go" id="lkNewOpen"></button><button type="button" class="st-btn" id="lkNewKeep"></button></div></div>
       </div>
 
       <div class="st-blk st-song">
@@ -1071,6 +1075,7 @@ html.in-studio .st-chassis{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 
             <h3 class="st-h3" data-t="lockH"></h3>
             <div id="locker"></div>
             <p class="st-line" id="lockLine" aria-live="polite"></p>
+            <p class="st-line st-big" id="lkBig" hidden></p><!-- AOG-LOCKER-V3: only while a big save goes up -->
             <div class="st-ask" id="openAsk" hidden>
               <p id="openAskT"></p>
               <div class="st-row"><button type="button" class="st-btn st-clear" id="openYes"></button><button type="button" class="st-btn" id="openNo"></button></div>
@@ -1097,6 +1102,6 @@ html.in-studio .st-chassis{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 
 </div>
 <script src="/aog-desk-more.js"></script><!-- AOG-DESK-MORE-V1: effect slots, takes, sections, the clipboard, versions (loaded first: the desk's code below calls it) -->
 <script src="/aog-desk-pro.js" defer></script><script src="/aog-desk-rec.js" defer></script><script src="/aog-desk-arrange.js" defer></script><!-- AOG-DESK-PRO-V1: the master strip's panel, groups, loop recording, markers, keys (runs after the desk's code) -->
-<script src="/front/32c5692a342e.js"></script>
+<script src="/front/ea2152ad2e93.js"></script>
 </body>
 </html>

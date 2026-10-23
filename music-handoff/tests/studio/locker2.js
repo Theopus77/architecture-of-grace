@@ -1,6 +1,8 @@
 /* AOG-LOCKER-V2 (2026-10-23) — Jimmy has an iPhone, an iPad, computers and his family's; the locker, his no-account way to move
-   songs between them, made a showstopper. The locker here is the real AoG-Studio-Locker.gs, run in node against a pretend
-   Google (../lib/fakegas.js); the v1 script is kept as it was (fixtures/AoG-Studio-Locker-v1.gs). Port 9283.
+   songs between them, made a showstopper. The locker here is the v2 locker script, run in node against a pretend Google
+   (../lib/fakegas.js): since AOG-LOCKER-V3 it is kept as it was (fixtures/AoG-Studio-Locker-v2.gs), so this suite is also
+   today's desk on a v2 script (the whole song each save, as before; studio/locker3.js drives the v3 script). The v1 script
+   is kept as it was too (fixtures/AoG-Studio-Locker-v1.gs). Port 9283.
    · one link: the script's "link" prints /the-studio#locker=…&k=…; an iPad opens it in the Studio, which opens the Mixing Desk
      connected, says so in one line, and takes the link out of both address bars; a whole link pasted into the web address box
      on a Mac connects at once;
@@ -37,7 +39,7 @@ const W = ms => new Promise(r => setTimeout(r, ms));
 /* the two lockers: the real v2 script, and v1 as it was */
 const fakeGas = require("../lib/fakegas.js");
 const URL2 = "https://script.google.com/macros/s/AKfycbLOCKERtwo_123456/exec", URL1 = "https://script.google.com/macros/s/AKfycbLOCKERone_123456/exec";
-const G = fakeGas(fs.readFileSync(path.join(ROOT, "AoG-Studio-Locker.gs"), "utf8"), { url: URL2, now: Date.now() });
+const G = fakeGas(fs.readFileSync(path.join(__dirname, "fixtures/AoG-Studio-Locker-v2.gs"), "utf8"), { url: URL2, now: Date.now() });   /* AOG-LOCKER-V3: the v2 script, as it was */
 const G1 = fakeGas(fs.readFileSync(path.join(__dirname, "fixtures/AoG-Studio-Locker-v1.gs"), "utf8"), { now: Date.now() });
 G.run("setup"); G1.run("setup");
 const KEY = G.props.LOCKER_KEY, KEY1 = G1.props.LOCKER_KEY;
