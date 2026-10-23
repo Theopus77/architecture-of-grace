@@ -61,6 +61,7 @@
     allowC: ["Computer: click the icon to the left of the web address, and allow the microphone.", "Computadora: haz clic en el icono a la izquierda de la dirección web y permite el micrófono."],
     allowThen: ["Then press Record again.", "Luego pulsa Grabar otra vez."],
     nomic: ["No microphone was found. Plug one in, or use a phone or tablet.", "No se encontró un micrófono. Conecta uno, o usa un teléfono o una tableta."],
+    again: ["That take heard nothing. Tap Record again.", "Esa toma no oyó nada. Pulsa Grabar otra vez."],
     fail: ["That did not work. Please try again.", "Eso no funcionó. Inténtalo otra vez."],
     inLvl: ["Your level", "Tu nivel"], outLvl: ["What you hear", "Lo que oyes"],
     off: ["Off", "No"], small: ["Small room", "Sala pequeña"], big: ["Big hall", "Sala grande"], size: ["Room size", "Tamaño de la sala"]
@@ -94,7 +95,7 @@
     phone: { t: ["Phone", "Teléfono"], s: ["Like an old radio", "Como una radio vieja"], p: P_({ lc: 300, sq: 65, ss: 0, room: 6, phone: 1 }) }
   };
   var ORDER = ["clean", "warm", "radio", "rap", "echo", "hall", "tuned", "robot", "phone"];
-  var KEY = "aog.vocal.v1", MAX_SEC = 240, MAX_TAKES = 8;
+  var KEY = "aog.vocal.v1", MAX_SEC = 240, MAX_TAKES = 8, MIC_KEEP = 120000;
   var CAP_WK = 'class AogVocalCap extends AudioWorkletProcessor{constructor(){super();this.on=true;this.b=[];this.n=0;this.t=-1;' +
     'this.port.onmessage=e=>{if(e.data==="stop"){this.flush();this.on=false;this.port.postMessage({end:true});}};}' +
     'flush(){if(!this.n)return;const o=new Float32Array(this.n);let k=0;for(const x of this.b){o.set(x,k);k+=x.length;}this.port.postMessage({t:this.t,d:o},[o.buffer]);this.b=[];this.n=0;this.t=-1;}' +
@@ -254,18 +255,20 @@
     return B.ac;
   }
   function sleepSoon() { setTimeout(function () { try { if (B.ac && B.ac.state === "running" && B.state !== "rec" && !B.hear) B.ac.suspend(); } catch (e) {} }, 250); }
-  function rest() { if (B.state === "rec") stopRec(); hearStop(); sleepSoon(); }
+  function rest() { if (B.state === "rec") stopRec(); hearStop(); sleepSoon(); setTimeout(drop, 700); }
 
   /* ── ● Record / ■ Stop ── */
   function recPress() {
     if (B.state === "rec") { stopRec(); return; }
     if (B.state === "asking" || B.state === "stopping" || B.busy) return;
     hearStop();
+    fresh();
     var c = wake(); if (!c) { say("fail"); return; }
     B.allow = false; B.state = "asking"; say("asking");
-    var mon = $("vbMon").checked, md = navigator.mediaDevices;
+    var mon = $("vbMon").checked;
     /* with headphones and Hear myself, the browser's echo cancelling would fight your own voice in your ears */
-    var ask = getMic({ audio: { echoCancellation: !mon, noiseSuppression: false, autoGainControl: false } });
+    var ask = armed(mon) ? Promise.resolve(B.mic) : getMic({ audio: { echoCancellation: !mon, noiseSuppression: false, autoGainControl: false } })
+      .then(function (st) { B.mic = st; B.micMon = mon; return st; });
     ask.then(function (stream) { return (B.bkP || getBacking(false)).then(function (bk) { return startRec(stream, bk, mon); }); },
       function (e) {
         B.state = "idle"; var n = e && e.name;
@@ -280,7 +283,10 @@
   function getMic(want) {
     var ways = [], own = navigator.mediaDevices, top = null;
     try { if (window.parent !== window && window.parent.navigator.mediaDevices) top = window.parent.navigator.mediaDevices; } catch (e) {}
-    [own, top].forEach(function (md) { if (md && md.getUserMedia) { ways.push(function () { return md.getUserMedia(want); }); ways.push(function () { return md.getUserMedia({ audio: true }); }); } });
+    (B.way === "top" ? [top, own] : [own, top]).forEach(function (md) { if (md && md.getUserMedia) {
+      var w = md === top ? "top" : "own";
+      ways.push(function () { return md.getUserMedia(want).then(function (st) { B.way = w; return st; }); });
+      ways.push(function () { return md.getUserMedia({ audio: true }).then(function (st) { B.way = w; return st; }); }); } });
     if (!ways.length) return Promise.reject(Object.assign(new Error("none"), { name: "NotFoundError" }));
     var first = null;
     return ways.reduce(function (p, w) { return p.catch(function (e) { if (!first) first = e; return w(); }); }, Promise.reject(null))
@@ -321,7 +327,7 @@
         if (!B.loop) B.play.s.onended = function () { if (B.state === "rec") stopRec("ended"); };
       } else { B.Tb = 0; B.play = null; }
       B.state = "rec"; B.shownSec = -1; say("recOn"); keep({ seen: true });
-      meterIn();
+      meterIn(); watch();
     });
   }
   function meterIn() {
@@ -341,8 +347,33 @@
   }
   function release() {
     [B.src, B.node, B.sink, B.an].concat(B.monG || []).forEach(function (n) { try { if (n) n.disconnect(); } catch (e) {} });
-    if (B.stream) B.stream.getTracks().forEach(function (t) { try { t.stop(); } catch (e) {} });   /* the microphone is let go at once */
     B.src = B.node = B.sink = B.an = B.stream = B.monG = null;
+    clearTimeout(B.micT); B.micT = setTimeout(drop, MIC_KEEP);   /* the microphone stays ready for the next take, then is let go */
+  }
+  /* AOG-VOCAL-MIC-V3 (Jimmy, 2026-10-23, iPad: "everytime I want to record, I have to close the website then reopen it"):
+     Safari can refuse or go quiet on a second ask for the microphone in one visit. So the microphone stays ready between
+     takes (MIC_KEEP, 2 minutes), and is let go when the booth rests: the tab hidden, the Studio's hush, or 2 minutes idle.
+     An engine Safari interrupted is made again, and a take that hears nothing at all in its first 1.5 s stops and says
+     "Tap Record again" (a new engine has to be made inside a tap on an iPad). */
+  function drop() { clearTimeout(B.micT); B.micT = 0; if (B.state === "rec" || B.state === "asking") return;
+    if (B.mic) B.mic.getTracks().forEach(function (t) { try { t.stop(); } catch (e) {} }); B.mic = null; }
+  function armed(mon) {
+    var ok = B.mic && B.micMon === mon && B.mic.getAudioTracks().some(function (t) { return t.readyState === "live" && t.enabled && !t.muted; });
+    if (!ok && B.mic) drop(); return !!ok;
+  }
+  function fresh() {   /* an engine Safari closed or interrupted is let go, and a new one is made in this tap */
+    var st = B.ac && B.ac.state;
+    if (B.ac && (st === "closed" || st === "interrupted" || B.stuck)) { try { B.ac.close(); } catch (e) {} B.ac = null; B.wk = null; B.stuck = false; }
+  }
+  function watch() {
+    clearTimeout(B.wT); var t0 = B.recAt;
+    B.wT = setTimeout(function () {
+      if (B.state !== "rec" || B.recAt !== t0 || B.t0 >= 0) return;
+      /* nothing came in: let it all go, and say so */
+      B.state = "stopping"; cancelAnimationFrame(B.raf); B.raf = 0; fade(B.play); B.play = null; release(); B.state = "idle"; drop(); B.chunks = [];
+      B.stuck = true;   /* the next tap on Record makes a new engine, inside the tap, as an iPad needs */
+      say("again");
+    }, 1500);
   }
   function stopRec(why) {
     if (B.state !== "rec") return;
@@ -586,7 +617,7 @@
     /* for the Studio's own tests (music-handoff/tests/studio/vocal.js), read only */
     state: function () { var t = cur(); return { state: B.state, snd: B.snd, P: B.P, takes: B.takes.length, cur: B.cur, hear: !!B.hear, busy: B.busy, making: B.making,
       take: t ? { n: t.n, sec: t.dry.length / t.sr, head: t.head, body: t.body, from: t.from, loop: t.loop, sr: t.sr, added: !!t.added } : null,
-      ac: B.ac && B.ac.state, mic: !!B.stream, raf: !!(B.raf || B.oraf), line: $("vbLine") ? $("vbLine").textContent : "", allow: B.allow, gone: !!B.gone,
+      ac: B.ac && B.ac.state, mic: !!B.stream, armed: !!B.mic, raf: !!(B.raf || B.oraf), line: $("vbLine") ? $("vbLine").textContent : "", allow: B.allow, gone: !!B.gone,
       bk: B.bk ? { sec: B.bk.sec, loop: B.bk.loop, bpm: B.bk.bpm } : null }; },
     render: function () { var t = cur(); return t ? prepared().then(function (x) { return render(x, t, B.P); }) : Promise.reject(new Error("no take")); },
     /* a sound as it would be added, without changing the screen: a ready-made one by name, or its settings with changes */

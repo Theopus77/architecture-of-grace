@@ -11,7 +11,7 @@
  * Bump by REPLACING the CACHE line. Don't keep the old one as a comment: every byte here is
  * downloaded again on each update check. Old lines live in tools/sw-cache-history.txt and git log.
  */
-const CACHE = 'aog-cache-2026.10.23.m7565'   // THE VOCAL BOOTH GETS THE MICROPHONE ON AN IPAD: WHEN SAFARI REFUSES THE ROOM'S FRAME, IT ASKS THROUGH THE STUDIO (aog-vocal.js AOG-VOCAL-MIC-V2, music-vocal.html)
+const CACHE = 'aog-cache-2026.10.23.m7566'   // THE VOCAL BOOTH KEEPS THE MICROPHONE READY BETWEEN TAKES (no closing the site to record again on an iPad), REMEMBERS WHICH WAY GOT IT, AND MAKES A NEW ENGINE WHEN SAFARI INTERRUPTS ONE (aog-vocal.js AOG-VOCAL-MIC-V3)
 
 // Same-origin essentials — reliable to precache at install.
 /* AOG-SW-LIGHT-V1 (2026-10-01) — Jimmy: "Why is it taking so long for the website to load on my phone now?"

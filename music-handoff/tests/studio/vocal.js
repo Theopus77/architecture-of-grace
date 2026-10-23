@@ -4,7 +4,8 @@
    · the Vocal Booth is a door, the eighth of nine, just before the Mixing Desk; the room fetches nothing and asks for no
      microphone until ● Record; it fits an iPhone upright and on its side, and an iPad; every key is 44 px or more;
    · with a Drum Machine loop on My Track, ● Record asks once, plays My Track and records; the meter moves only while
-     recording; ■ Stop lets the microphone go and makes a take of the right length; a second take is kept beside the first;
+     recording; ■ Stop makes a take of the right length; the microphone stays ready, so a second take (kept beside the first)
+     asks for nothing again; the Studio's hush or a hidden tab lets it go (AOG-VOCAL-MIC-V3);
      ✕ lets one go and Bring it back returns it;
    · the sounds, measured: Phone has little energy below 250 Hz; Echo has delayed copies in the gaps; Tuned pulls the
      226 Hz voice toward A (220 Hz); Robot pulls it harder; Air adds highs; Low cut takes lows away; Double spreads the voice
@@ -130,8 +131,8 @@ const ST = f => f.evaluate(() => AOGVocal.state());
     s = await ST(f);
     const ended = await f.evaluate(() => window.__streams.every(x => x.getTracks().every(t => t.readyState === "ended")));
     const still = await f.evaluate(() => document.getElementById("vbIn").style.transform);
-    ok(s.take && Math.abs(s.take.body - wall) < 1.3 && s.take.head >= 0 && s.take.head <= 0.26 && s.take.from === from && !s.mic && ended && !s.raf && /scaleX\(0\)/.test(still),
-      `${nm}: ■ Stop lets the microphone go and makes a take of the right length (${wall.toFixed(2)} s recorded): ${JSON.stringify(s.take)}`);
+    ok(s.take && Math.abs(s.take.body - wall) < 1.3 && s.take.head >= 0 && s.take.head <= 0.26 && s.take.from === from && !s.mic && !ended && s.armed && !s.raf && /scaleX\(0\)/.test(still),
+      `${nm}: ■ Stop ends the recording (the microphone stays ready for the next take) and makes a take of the right length (${wall.toFixed(2)} s recorded): ${JSON.stringify(s.take)}`);
     /* 3 · the sounds, measured */
     const R = await f.evaluate(MEASURE);
     ok(R.peak > 0.05 && R.peak <= 0.892, `${nm}: every sound renders, none past −1 dB (loudest peak ${R.peak.toFixed(3)})`);
@@ -173,7 +174,7 @@ const ST = f => f.evaluate(() => AOGVocal.state());
     await f.click("#vbRec"); await f.waitForFunction(() => AOGVocal.state().state === "rec", null, { timeout: 15000 }); await W(2500);
     await f.click("#vbRec"); await f.waitForFunction(() => AOGVocal.state().takes === 2, null, { timeout: 15000 }).catch(() => {});
     s = await ST(f);
-    ok(s.takes === 2 && s.cur === 1 && !s.take.added && (await gums(p)) === 2, `${nm}: a second take is kept beside the first and picked: ${JSON.stringify({ takes: s.takes, cur: s.cur })}`);
+    ok(s.takes === 2 && s.cur === 1 && !s.take.added && (await gums(p)) === 1, `${nm}: a second take is kept beside the first and picked, the microphone kept ready, not asked for again (AOG-VOCAL-MIC-V3): ${JSON.stringify({ takes: s.takes, cur: s.cur, asks: await gums(p) })}`);
     await f.click('.vb-tx[data-i="1"]'); await W(300); s = await ST(f);
     const goneLine = s.line;
     await f.click("#vbBack"); await W(300); const s2 = await ST(f);
@@ -188,7 +189,11 @@ const ST = f => f.evaluate(() => AOGVocal.state());
     }
     /* 8 · rests */
     await W(1500); s = await ST(f);
-    ok(!s.hear && !s.mic && !s.raf && s.ac === "suspended", `${nm}: at rest: no sound, no microphone, no frames, the engine paused: ${JSON.stringify({ ac: s.ac })}`);
+    ok(!s.hear && !s.mic && !s.raf && s.ac === "suspended", `${nm}: at rest: no sound, nothing recording, no frames, the engine paused: ${JSON.stringify({ ac: s.ac })}`);
+    await f.evaluate(() => window.dispatchEvent(new CustomEvent("aog-hush", { detail: { on: true } }))); await W(1200); s = await ST(f);
+    const live = await p.evaluate(() => [...document.querySelectorAll("iframe")].concat([window]).reduce((n, w) => { try { const ww = w.contentWindow || w; return n + (ww.__streams || []).filter(x => x.getTracks().some(t => t.readyState === "live")).length; } catch (e) { return n; } }, 0));
+    ok(!s.armed && live === 0, `${nm}: the Studio's hush lets the microphone go: ${JSON.stringify({ armed: s.armed, live })}`);
+    await f.evaluate(() => window.dispatchEvent(new CustomEvent("aog-hush", { detail: { on: false } })));
     ok(errs.length === 0, `${nm}: no page errors ` + errs.slice(0, 3).join(" | "));
     await ctx.close();
   }
@@ -222,7 +227,8 @@ const ST = f => f.evaluate(() => AOGVocal.state());
     s = await ST(f);
     ok(rec && asked >= 1 && (await gums(p)) >= 1 && s.takes === 1 && !s.allow, `the room's frame refused, the Studio's microphone records instead: ${JSON.stringify({ rec, asked, studio: await gums(p), takes: s.takes, allow: s.allow })}`);
     await W(1500); s = await ST(f);
-    ok(!s.mic, "the Studio's microphone is let go after the take");
+    await f.evaluate(() => { Object.defineProperty(document, "hidden", { configurable: true, get: () => true }); document.dispatchEvent(new Event("visibilitychange")); }); await W(1200); s = await ST(f);
+    ok(!s.mic && !s.armed, "the Studio's microphone is let go when the tab is hidden");
     ok(errs.length === 0, "frame refused: no page errors " + errs.slice(0, 3).join(" | "));
     await ctx.close();
   }
