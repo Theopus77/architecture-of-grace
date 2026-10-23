@@ -1,0 +1,1012 @@
+{
+ "title": "Funciones polinomiales",
+ "years": "Álgebra",
+ "bigQuestion": "¿Cómo podemos hallar todos los ceros de un polinomio, y qué nos dicen esos ceros sobre su gráfica y las situaciones que modela?",
+ "story": {
+  "title": "La caja sin tapa",
+  "kicker": "Un cuadrado de cartulina, cuatro cortes y una pregunta con más de una respuesta tentadora.",
+  "paragraphs": [
+   "El club de robótica de Dani, en una escuela preparatoria del noroeste de Chicago, necesitaba cajas para llevar piezas pequeñas a una competencia. Tenían una pila de cartulina cuadrada, y cada hoja medía 20 pulgadas por lado. El plan era sencillo. Recortar un cuadrado en cada esquina, doblar los cuatro lados hacia arriba y pegar los bordes con cinta. La caja no tendría tapa. Lo único que había que decidir era el tamaño del corte en las esquinas.",
+   "Marcus cortó cuadrados de 1 pulgada. Su caja quedó ancha y baja, de 18 pulgadas por 18 pulgadas y de solo 1 pulgada de profundidad. Le cabían 18 × 18 × 1 = 324 pulgadas cúbicas. Priya cortó cuadrados de 6 pulgadas. Su caja quedó honda pero angosta, de 8 pulgadas por 8 pulgadas y 6 pulgadas de alto. Le cabían 8 × 8 × 6 = 384 pulgadas cúbicas. Eso era más que la caja de Marcus, pero no mucho más. Alguien hizo la pregunta obvia: ¿qué corte guarda más?",
+   "El club llenó una mesa. Corte de 2 pulgadas: 16 × 16 × 2 = 512. Corte de 3 pulgadas: 14 × 14 × 3 = 588. Corte de 4 pulgadas: 12 × 12 × 4 = 576. El volumen subió, llegó a su punto más alto cerca de las 3 pulgadas y luego bajó. Dani escribió el patrón como una sola regla. Si el corte es de x pulgadas, la base mide 20 − 2x por lado y la altura es x, así que el volumen es V = x(20 − 2x)(20 − 2x). Al desarrollarlo, queda 4x^3 − 80x^2 + 400x, un polinomio de grado 3.",
+   "Un polinomio es una función construida solo con sumas, restas y multiplicaciones de una variable y de constantes. La regla de la caja es una *cúbica*, el mismo tipo de curva que modela una temperatura que baja, una colina de una montaña rusa o el volumen de un contenedor de carga. Para hallar el mejor corte, el mejor precio o la mejor dosis, necesitas saber dónde un polinomio sube, dónde da la vuelta y dónde cruza el cero. Este capítulo construye esas herramientas, empezando con un número que alguna vez pareció imposible."
+  ],
+  "think": "La tabla de volúmenes llegó a su punto más alto entre un corte de 3 pulgadas y uno de 4. ¿Cómo podrías acercarte al mejor corte sin recortar cien cajas de prueba?"
+ },
+ "sections": [
+  {
+   "title": "Números complejos",
+   "lessons": [
+    {
+     "title": "El número i",
+     "mainIdea": "La unidad imaginaria i se define con i^2 = −1, así que toda raíz cuadrada de un número negativo se puede escribir como un número real por i.",
+     "reading": [
+      "Intenta resolver x^2 + 4 = 0. Resta 4 de ambos lados: x^2 = −4. Ningún número real sirve, porque un número real elevado al cuadrado nunca es negativo. Durante siglos, ahí terminaba la historia. Entonces los matemáticos inventaron un número nuevo. La *unidad imaginaria*, que se escribe i, es el número cuyo cuadrado es −1. Con ella, √(−4) = √4 × √(−1) = 2i. Comprueba: (2i)^2 = 4 × i^2 = 4 × (−1) = −4. Así que x = 2i y x = −2i resuelven la ecuación.",
+      "Cualquier raíz cuadrada de un número negativo sigue el mismo patrón. Saca el −1 como i y luego toma la raíz cuadrada normal de lo que queda. √(−25) = 5i. √(−49) = 7i. √(−12) = √12 × i = 2√3 i. Un número como 5i se llama *número imaginario*, mientras que los números que ya conoces, como −3, 0.75 y π, son *números reales*. Se necesitan los dos tipos para resolver toda ecuación polinomial.",
+      "Las potencias de i se repiten en un ciclo de cuatro. i^1 = i, i^2 = −1, i^3 = i^2 × i = −i, e i^4 = i^2 × i^2 = (−1)(−1) = 1. Después, el ciclo empieza de nuevo: i^5 = i, i^6 = −1. Para hallar una potencia grande, divide el exponente entre 4 y usa el residuo. Para i^10, 10 = 4 × 2 + 2, así que i^10 = i^2 = −1. Para i^15, el residuo es 3, así que i^15 = −i.",
+      "Hay un error que atrapa a casi todos. La regla √a × √b = √(ab) solo funciona con números no negativos. Un estudiante escribe √(−9) × √(−4) = √36 = 6. Eso está mal. Primero convierte a i: √(−9) = 3i y √(−4) = 2i, así que el producto es 3i × 2i = 6i^2 = 6 × (−1) = −6. Antes de multiplicar, reescribe siempre como i los negativos que estén bajo una raíz."
+     ],
+     "words": [
+      {
+       "w": "unidad imaginaria",
+       "d": "el número i, definido de modo que i^2 = −1"
+      },
+      {
+       "w": "número imaginario",
+       "d": "un número real multiplicado por i, como 5i o −2i"
+      },
+      {
+       "w": "números reales",
+       "d": "cualquier número de la recta numérica, como −3, 0, 1/2, √2 o π"
+      }
+     ],
+     "look": {
+      "title": "Potencias pares de i",
+      "rows": [
+       "i^2",
+       "i^4",
+       "i^6",
+       "i^8",
+       "i^10",
+       "i^12"
+      ],
+      "unit": "valor",
+      "prompt": "La tabla muestra solo potencias pares. ¿Cuánto valen i^3, i^5 e i^7, y por qué las potencias impares nunca son iguales a 1 ni a −1?"
+     },
+     "check": [
+      {
+       "q": "Escribe √(−25) usando i.",
+       "choices": [
+        "5i",
+        "−5",
+        "25i",
+        "5"
+       ],
+       "why": "√(−25) = √25 × √(−1) = 5i. Comprobación: (5i)^2 = 25 × (−1) = −25."
+      },
+      {
+       "q": "¿Cuánto es i^7?",
+       "choices": [
+        "i",
+        "−1",
+        "−i",
+        "1"
+       ],
+       "why": "7 = 4 × 1 + 3, así que i^7 = i^3 = −i. El ciclo es i, −1, −i, 1."
+      },
+      {
+       "q": "Simplifica √(−9) × √(−16).",
+       "choices": [
+        "12",
+        "−12",
+        "12i",
+        "−12i"
+       ],
+       "why": "Convierte primero: 3i × 4i = 12 i^2 = −12. Multiplicar bajo la raíz para obtener √144 = 12 es el error común."
+      }
+     ],
+     "short": [
+      "Try to solve x^2 + 4 = 0. That gives x^2 = −4, and no real number squared is negative. So mathematicians invented the *imaginary unit*, written i, with i^2 = −1. With it, √(−4) = √4 × √(−1) = 2i, and √(−25) = 5i. A number like 5i is an *imaginary number*. Numbers such as −3, 0.75 and π are *real numbers*.",
+      "Powers of i repeat in a cycle of four: i, −1, −i, 1. To find i^7, divide 7 by 4 and use the remainder 3, so i^7 = i^3 = −i. Be careful with products. The rule √a × √b = √(ab) only works for nonnegative numbers, so change roots of negatives to i first: √(−9) × √(−16) = 3i × 4i = 12i^2 = −12."
+     ],
+     "more": [
+      "The word imaginary was never meant as a compliment. Descartes used it in 1637 as a put-down for roots of negative numbers, and the name stuck even though these numbers are as useful as any other. Engineers who study electric circuits and sound waves use them every day. Because they already use the letter i for electric current, they write j for the square root of −1.",
+      "There is also a picture of i. Draw a plane with a horizontal line for the real numbers and a vertical line for the imaginary numbers. Then 1 sits one step to the right of the center and i sits one step straight up. Multiplying by i turns a point a quarter turn around the center, so four of these turns bring you back where you started. That is the cycle i, −1, −i, 1 as a picture."
+     ],
+     "short_es": [
+      "Intenta resolver x^2 + 4 = 0. Eso da x^2 = −4, y ningún número real elevado al cuadrado es negativo. Por eso los matemáticos inventaron la *unidad imaginaria*, que se escribe i y cumple i^2 = −1. Con ella, √(−4) = √4 × √(−1) = 2i, y √(−25) = 5i. Un número como 5i es un *número imaginario*. Los números como −3, 0.75 y π son *números reales*.",
+      "Las potencias de i se repiten en un ciclo de cuatro: i, −1, −i, 1. Para hallar i^7, divide 7 entre 4 y usa el residuo 3, así que i^7 = i^3 = −i. Ten cuidado con los productos. La regla √a × √b = √(ab) solo funciona con números no negativos, así que primero convierte a i las raíces de negativos: √(−9) × √(−16) = 3i × 4i = 12i^2 = −12."
+     ],
+     "more_es": [
+      "La palabra imaginario nunca quiso ser un cumplido. Descartes la usó en 1637 como desprecio para las raíces de números negativos, y el nombre se quedó aunque estos números son tan útiles como cualquier otro. Los ingenieros que estudian los circuitos eléctricos y las ondas de sonido los usan todos los días. Como ya usan la letra i para la corriente eléctrica, escriben j para la raíz cuadrada de −1.",
+      "También existe una imagen de i. Dibuja un plano con una recta horizontal para los números reales y una recta vertical para los números imaginarios. Entonces el 1 queda un paso a la derecha del centro y la i queda un paso recto hacia arriba. Multiplicar por i hace girar un punto un cuarto de vuelta alrededor del centro, así que cuatro giros como ese te devuelven al punto de partida. Esa es la imagen del ciclo i, −1, −i, 1."
+     ]
+    },
+    {
+     "title": "Aritmética con números complejos",
+     "mainIdea": "Un número complejo a + bi se suma como los binomios, se multiplica usando i^2 = −1 y se divide multiplicando arriba y abajo por el conjugado.",
+     "reading": [
+      "Un *número complejo* tiene la forma a + bi, donde a es la *parte real* y b es la *parte imaginaria*. En 3 + 2i, la parte real es 3 y la parte imaginaria es 2. Para sumar o restar, combina las partes reales con las reales y las partes imaginarias con las imaginarias. (3 + 2i) + (1 − 5i) = (3 + 1) + (2 − 5)i = 4 − 3i. La resta funciona igual: (3 + 2i) − (1 − 5i) = 2 + 7i. Fíjate en el signo de la segunda parte imaginaria.",
+      "Para multiplicar, distribuye cada término como con los binomios y luego cambia i^2 por −1. Toma (2 + 3i)(4 − i). Primeros: 2 × 4 = 8. Externos: 2 × (−i) = −2i. Internos: 3i × 4 = 12i. Últimos: 3i × (−i) = −3i^2 = −3(−1) = 3. Súmalos: 8 − 2i + 12i + 3 = 11 + 10i. El paso que casi todos se saltan es el último: convertir −3i^2 en +3. Sin él, la parte real sale mal.",
+      "El *conjugado* de a + bi es a − bi, el mismo número con el signo de la parte imaginaria cambiado. Si multiplicas un número complejo por su conjugado, la i desaparece: (3 + 2i)(3 − 2i) = 9 − 6i + 6i − 4i^2 = 9 + 4 = 13. Ese truco te permite dividir. Para calcular (5 + i) ÷ (2 − i), multiplica arriba y abajo por 2 + i. Arriba: (5 + i)(2 + i) = 10 + 5i + 2i + i^2 = 9 + 7i. Abajo: (2 − i)(2 + i) = 4 + 1 = 5. La respuesta es 9/5 + (7/5)i."
+     ],
+     "words": [
+      {
+       "w": "número complejo",
+       "d": "un número de la forma a + bi, donde a y b son números reales"
+      },
+      {
+       "w": "parte real",
+       "d": "la a en a + bi; en 3 + 2i la parte real es 3"
+      },
+      {
+       "w": "parte imaginaria",
+       "d": "la b en a + bi; en 3 + 2i la parte imaginaria es 2"
+      },
+      {
+       "w": "conjugado",
+       "d": "el número a − bi que acompaña a a + bi; su producto es el número real a^2 + b^2"
+      }
+     ],
+     "look": {
+      "title": "El cuadrado de 1 + i",
+      "text": "Calcula (1 + i)^2 multiplicando (1 + i)(1 + i). Primeros: 1. Externos: i. Internos: i. Últimos: i^2 = −1. Suma: 1 + i + i − 1 = 2i. Así que (1 + i)^2 = 2i, un número puramente imaginario. Ahora usa ese resultado para ir más lejos sin multiplicar cuatro factores.",
+      "prompt": "Halla (1 + i)^4 elevando 2i al cuadrado. Luego explica por qué (1 + i)^8 tiene que ser un número real positivo."
+     },
+     "check": [
+      {
+       "q": "Simplifica (4 + 3i) − (1 − 2i).",
+       "choices": [
+        "3 + i",
+        "5 + 5i",
+        "3 + 5i",
+        "3 − 5i"
+       ],
+       "why": "Partes reales: 4 − 1 = 3. Partes imaginarias: 3 − (−2) = 5. El resultado es 3 + 5i."
+      },
+      {
+       "q": "Multiplica (2 + i)(3 + 2i).",
+       "choices": [
+        "6 + 7i",
+        "4 + 7i",
+        "8 + 7i",
+        "4 + 5i"
+       ],
+       "why": "6 + 4i + 3i + 2i^2 = 6 + 7i − 2 = 4 + 7i. Olvidar que 2i^2 = −2 da 6 + 7i."
+      },
+      {
+       "q": "¿Cuánto es (5 + 2i)(5 − 2i)?",
+       "choices": [
+        "21",
+        "25",
+        "25 − 4i",
+        "29"
+       ],
+       "why": "25 − 10i + 10i − 4i^2 = 25 + 4 = 29. El producto de un número por su conjugado siempre es a^2 + b^2."
+      }
+     ],
+     "short": [
+      "A *complex number* has the form a + bi, with a the *real part* and b the *imaginary part*. To add or subtract, combine real parts with real parts and imaginary parts with imaginary parts, and watch the sign when you subtract: (3 + 2i) − (1 − 5i) = 2 + 7i. To multiply, distribute every term and change i^2 to −1: (2 + 3i)(4 − i) = 8 − 2i + 12i + 3 = 11 + 10i.",
+      "The *conjugate* of a + bi is a − bi. Multiplying by it makes the i disappear: (3 + 2i)(3 − 2i) = 9 + 4 = 13, and in general the product is a^2 + b^2. To divide, multiply top and bottom by the conjugate of the bottom: (5 + i) ÷ (2 − i) = 9/5 + (7/5)i."
+     ],
+     "more": [
+      "Real numbers are not left out. Any real number, such as 7, is also the complex number 7 + 0i, with imaginary part 0. And a number such as 4i is 0 + 4i, with real part 0. So the complex numbers include every number you have used so far, and every sum, difference and product of two complex numbers is again a complex number.",
+      "The conjugate product has a meaning you can see. Plot a + bi as a point a steps to the right and b steps up. The distance from the center to that point is √(a^2 + b^2). So the product a^2 + b^2 is the square of that distance. For 3 + 4i the distance is 5, and the product (3 + 4i)(3 − 4i) = 9 + 16 = 25 is its square."
+     ],
+     "short_es": [
+      "Un *número complejo* tiene la forma a + bi, con a la *parte real* y b la *parte imaginaria*. Para sumar o restar, combina las partes reales entre sí y las imaginarias entre sí; ten cuidado con el signo al restar: (3 + 2i) − (1 − 5i) = 2 + 7i. Para multiplicar, distribuye todos los términos y cambia i^2 por −1: (2 + 3i)(4 − i) = 8 − 2i + 12i + 3 = 11 + 10i.",
+      "El *conjugado* de a + bi es a − bi. Al multiplicar por él desaparece la i: (3 + 2i)(3 − 2i) = 9 + 4 = 13, y en general da a^2 + b^2. Para dividir, multiplica arriba y abajo por el conjugado del denominador: (5 + i) ÷ (2 − i) = 9/5 + (7/5)i."
+     ],
+     "more_es": [
+      "Los números reales no quedan fuera. Cualquier número real, como el 7, es también el número complejo 7 + 0i, con parte imaginaria 0. Y un número como 4i es 0 + 4i, con parte real 0. Así que los números complejos incluyen todos los números que has usado hasta ahora, y toda suma, resta y multiplicación de dos números complejos da de nuevo un número complejo.",
+      "El producto de un número por su conjugado tiene un significado que puedes ver. Marca a + bi como un punto a pasos a la derecha y b pasos hacia arriba. La distancia del centro a ese punto es √(a^2 + b^2). Así que el producto a^2 + b^2 es el cuadrado de esa distancia. Para 3 + 4i la distancia es 5, y el producto (3 + 4i)(3 − 4i) = 9 + 16 = 25 es su cuadrado."
+     ]
+    },
+    {
+     "title": "Ecuaciones cuadráticas con soluciones complejas",
+     "mainIdea": "Cuando el discriminante b^2 − 4ac es negativo, la fórmula cuadrática da dos soluciones complejas que son conjugadas una de la otra.",
+     "reading": [
+      "La altura de una pelota lanzada hacia arriba desde un balcón sigue una ecuación cuadrática. Si preguntas cuándo llega a una altura que nunca alcanza, el álgebra responde con números complejos. Toma x^2 − 4x + 13 = 0. La *fórmula cuadrática* dice que x = (−b ± √(b^2 − 4ac)) / (2a), con a = 1, b = −4, c = 13. El *discriminante* es b^2 − 4ac = 16 − 52 = −36. Es negativo, así que no hay soluciones reales.",
+      "De todos modos, sigue adelante. √(−36) = 6i, así que x = (4 ± 6i) / 2 = 2 ± 3i. Las dos soluciones son 2 + 3i y 2 − 3i, un *par conjugado*. Comprueba una de ellas: (2 + 3i)^2 = 4 + 12i + 9i^2 = −5 + 12i. Luego −4(2 + 3i) = −8 − 12i. Suma 13: (−5 + 12i) + (−8 − 12i) + 13 = 0. Funciona. Divide todos los términos entre 2a, no solo la parte real; escribir 4 ± 6i es un descuido frecuente.",
+      "El discriminante te cuenta la historia antes de resolver. Si es positivo, hay dos soluciones reales; si es cero, hay una solución real repetida; y si es negativo, hay dos soluciones complejas conjugadas. Para x^2 + 9 = 0 el atajo es más rápido: x^2 = −9, así que x = ±3i. De cualquier manera, ahora toda ecuación cuadrática con coeficientes reales tiene exactamente dos soluciones si cuentas también las complejas."
+     ],
+     "words": [
+      {
+       "w": "discriminante",
+       "d": "el valor b^2 − 4ac que está dentro de la raíz cuadrada de la fórmula cuadrática"
+      },
+      {
+       "w": "fórmula cuadrática",
+       "d": "x = (−b ± √(b^2 − 4ac)) / (2a), la solución de ax^2 + bx + c = 0"
+      },
+      {
+       "w": "par conjugado",
+       "d": "dos números complejos a + bi y a − bi; las soluciones complejas de una cuadrática con coeficientes reales siempre vienen en pares así"
+      }
+     ],
+     "look": {
+      "title": "Dos pasos después de la raíz cuadrada",
+      "text": "Resuelve x^2 + 2x + 5 = 0. Aquí a = 1, b = 2, c = 5, así que el discriminante es 4 − 20 = −16 y √(−16) = 4i. La fórmula da x = (−2 ± 4i) / 2. Divide las dos partes entre 2: x = −1 ± 2i. Las soluciones son −1 + 2i y −1 − 2i.",
+      "prompt": "Resuelve x^2 − 6x + 10 = 0 de la misma manera. ¿Cuál es el discriminante y cuáles son las dos soluciones?"
+     },
+     "check": [
+      {
+       "q": "¿Cuál es el discriminante de x^2 + 4x + 8 = 0?",
+       "choices": [
+        "−16",
+        "16",
+        "48",
+        "−48"
+       ],
+       "why": "b^2 − 4ac = 16 − 32 = −16. Sumar en lugar de restar da 48."
+      },
+      {
+       "q": "Resuelve x^2 + 16 = 0.",
+       "choices": [
+        "x = 4 y x = −4",
+        "Solo x = 4i",
+        "x = 4i y x = −4i",
+        "x = 16i y x = −16i"
+       ],
+       "why": "x^2 = −16, así que x = ±√(−16) = ±4i. Los dos signos son soluciones."
+      },
+      {
+       "q": "Resuelve x^2 − 2x + 10 = 0.",
+       "choices": [
+        "1 ± 3i",
+        "−1 ± 3i",
+        "2 ± 6i",
+        "1 ± 6i"
+       ],
+       "why": "El discriminante es 4 − 40 = −36, así que x = (2 ± 6i) / 2 = 1 ± 3i. Olvidar dividir 6i entre 2 da 1 ± 6i."
+      }
+     ],
+     "short": [
+      "The *quadratic formula* gives x = (−b ± √(b^2 − 4ac)) / (2a). The part under the root, b^2 − 4ac, is the *discriminant*. For x^2 − 4x + 13 = 0 it is 16 − 52 = −36. That is negative, so there are no real solutions.",
+      "Keep going anyway: √(−36) = 6i, so x = (4 ± 6i) / 2 = 2 ± 3i. Divide both parts by 2. These two answers are a *conjugate pair*. A positive discriminant gives two real solutions, zero gives one repeated real solution, and a negative one gives two complex conjugate solutions. For x^2 + 9 = 0, x^2 = −9, so x = ±3i."
+     ],
+     "more": [
+      "The pair of solutions also gives the factors. Since x^2 − 4x + 13 = 0 has solutions 2 + 3i and 2 − 3i, you can write x^2 − 4x + 13 = (x − (2 + 3i))(x − (2 − 3i)). Multiply them out, and the i terms cancel and leave the original quadratic. So complex numbers let every quadratic split into two linear factors.",
+      "You can also see the answer on a graph. The parabola y = x^2 − 4x + 13 has its lowest point at (2, 9), which is 9 units above the x-axis, so it never touches the axis. Look at the solutions 2 ± 3i again. The real part, 2, is the x-coordinate of that lowest point, and 3^2 = 9 is its height."
+     ],
+     "short_es": [
+      "La *fórmula cuadrática* da x = (−b ± √(b^2 − 4ac)) / (2a). La parte que está bajo la raíz, b^2 − 4ac, es el *discriminante*. Para x^2 − 4x + 13 = 0 es 16 − 52 = −36. Es negativo, así que no hay soluciones reales.",
+      "De todos modos, sigue adelante: √(−36) = 6i, así que x = (4 ± 6i) / 2 = 2 ± 3i. Divide las dos partes entre 2. Estas dos respuestas son un *par conjugado*. Un discriminante positivo da dos soluciones reales, cero da una solución real repetida y uno negativo da dos soluciones complejas conjugadas. Para x^2 + 9 = 0, x^2 = −9, así que x = ±3i."
+     ],
+     "more_es": [
+      "El par de soluciones también te da los factores. Como x^2 − 4x + 13 = 0 tiene soluciones 2 + 3i y 2 − 3i, puedes escribir x^2 − 4x + 13 = (x − (2 + 3i))(x − (2 − 3i)). Si los multiplicas, los términos con i se cancelan y queda la ecuación cuadrática original. Así, los números complejos permiten que toda expresión cuadrática se separe en dos factores lineales.",
+      "También puedes ver la respuesta en una gráfica. La parábola y = x^2 − 4x + 13 tiene su punto más bajo en (2, 9), que está 9 unidades arriba del eje x, así que nunca lo toca. Mira otra vez las soluciones 2 ± 3i. La parte real, 2, es la coordenada x de ese punto más bajo, y 3^2 = 9 es su altura."
+     ]
+    }
+   ]
+  },
+  {
+   "title": "División de polinomios",
+   "lessons": [
+    {
+     "title": "División larga de polinomios",
+     "mainIdea": "La división larga de polinomios repite un solo ciclo: dividir los términos principales, multiplicar, restar y bajar el siguiente término, hasta que el residuo tenga menor grado que el divisor.",
+     "reading": [
+      "Al dividir 93 entre 4 se obtiene 23 y sobra 1, y 93 = 4 × 23 + 1. Los polinomios se dividen de la misma manera. El polinomio que se divide es el *dividendo*, el que divide es el *divisor*, el resultado es el *cociente* y lo que sobra es el *residuo*. Divide 2x^3 + 3x^2 − 5x + 4 entre x + 2. Pregunta cuántas veces cabe x en 2x^3: la respuesta es 2x^2, el primer término del cociente.",
+      "Multiplica 2x^2 por el divisor: 2x^2(x + 2) = 2x^3 + 4x^2. Resta del dividendo: (2x^3 + 3x^2) − (2x^3 + 4x^2) = −x^2. Baja el −5x para obtener −x^2 − 5x. Repite: −x^2 ÷ x = −x. Multiplica: −x(x + 2) = −x^2 − 2x. Resta: −5x − (−2x) = −3x. Baja el 4: −3x + 4. Una vez más: −3x ÷ x = −3, y −3(x + 2) = −3x − 6. Resta: 4 − (−6) = 10.",
+      "El cociente es 2x^2 − x − 3 y el residuo es 10. En una sola línea: 2x^3 + 3x^2 − 5x + 4 = (x + 2)(2x^2 − x − 3) + 10. Comprueba multiplicando. (x + 2)(2x^2 − x − 3) = 2x^3 − x^2 − 3x + 4x^2 − 2x − 6. Eso se simplifica a 2x^3 + 3x^2 − 5x − 6. Al sumar 10 se obtiene el polinomio original. Los errores de signo en el paso de restar causan la mayoría de las respuestas equivocadas. Resta la línea completa, con todo y sus signos negativos.",
+      "Si falta una potencia, guarda su lugar con un cero. Para dividir x^3 − 8 entre x − 2, escribe el dividendo como x^3 + 0x^2 + 0x − 8 para que las columnas queden alineadas. El ciclo da x^2, luego 2x, luego 4, con residuo 0. Así que x^3 − 8 = (x − 2)(x^2 + 2x + 4). Un residuo de 0 significa que el divisor es un factor, una idea en la que se apoyan las dos lecciones siguientes."
+     ],
+     "words": [
+      {
+       "w": "dividendo",
+       "d": "el polinomio que se divide"
+      },
+      {
+       "w": "divisor",
+       "d": "el polinomio entre el que se divide"
+      },
+      {
+       "w": "cociente",
+       "d": "el resultado de una división, sin contar el residuo"
+      },
+      {
+       "w": "residuo",
+       "d": "lo que sobra después de dividir; su grado es menor que el grado del divisor"
+      }
+     ],
+     "look": {
+      "title": "Una división sin sobrante",
+      "text": "Divide x^2 + 5x + 6 entre x + 2. Primer término: x^2 ÷ x = x. Multiplica x(x + 2) = x^2 + 2x y resta para obtener 3x. Baja el 6: 3x + 6. Siguiente término: 3x ÷ x = 3, y 3(x + 2) = 3x + 6. Resta para obtener 0. Cociente x + 3, residuo 0, así que x^2 + 5x + 6 = (x + 2)(x + 3).",
+      "prompt": "Divide x^2 + 7x + 10 entre x + 2 con los mismos pasos. ¿Cuál es el cociente y cómo puedes confirmarlo multiplicando?"
+     },
+     "check": [
+      {
+       "q": "¿Cuál es el cociente al dividir x^2 + 5x + 6 entre x + 3?",
+       "choices": [
+        "x + 3",
+        "x + 2",
+        "x + 6",
+        "x − 2"
+       ],
+       "why": "x^2 + 5x + 6 = (x + 3)(x + 2), así que al dividir entre x + 3 queda x + 2 con residuo 0."
+      },
+      {
+       "q": "Divide x^2 + 3x + 7 entre x + 1. ¿Cuál es el residuo?",
+       "choices": [
+        "7",
+        "4",
+        "5",
+        "0"
+       ],
+       "why": "(x + 1)(x + 2) = x^2 + 3x + 2, y 7 − 2 = 5. Así que el cociente es x + 2 y el residuo es 5."
+      },
+      {
+       "q": "¿Por qué se escribe x^3 − 8 como x^3 + 0x^2 + 0x − 8 antes de dividir?",
+       "choices": [
+        "Porque el residuo siempre es cero",
+        "Para subir el grado del dividendo",
+        "Para hacer más pequeño el divisor",
+        "Para mantener los términos semejantes alineados en columnas"
+       ],
+       "why": "Los ceros guardan el lugar de cada potencia en su propia columna, de modo que al restar se emparejan términos semejantes."
+      }
+     ],
+     "short": [
+      "Polynomials divide the way numbers do: 93 = 4 × 23 + 1. The polynomial you divide is the *dividend*, the one you divide by is the *divisor*, the result is the *quotient*, and what is left is the *remainder*. To divide 2x^3 + 3x^2 − 5x + 4 by x + 2, repeat one cycle: divide the leading terms, multiply, subtract, and bring down the next term.",
+      "The cycle gives the quotient 2x^2 − x − 3 and the remainder 10, so 2x^3 + 3x^2 − 5x + 4 = (x + 2)(2x^2 − x − 3) + 10. Subtract the whole line, minus signs included. If a power is missing, hold its place with a zero, as in x^3 + 0x^2 + 0x − 8, so the columns line up. A remainder of 0 means the divisor is a factor: x^3 − 8 = (x − 2)(x^2 + 2x + 4)."
+     ],
+     "more": [
+      "Polynomial division is the long division you already know in disguise. Put x = 10 into the example and the dividend 2x^3 + 3x^2 − 5x + 4 becomes 2254, the divisor x + 2 becomes 12, and the quotient 2x^2 − x − 3 becomes 187. Dividing 2254 by 12 really does give 187 with 10 left over. The place values of ordinary numbers work just like the powers of x.",
+      "The cycle always stops because each pass removes the highest power that is left, so the degree of what remains keeps falling. When it is lower than the degree of the divisor, nothing more can be divided. Later in this unit, this kind of division helps you simplify fractions with x in the denominator: dividing x^2 + 5x + 6 by x + 2 gives x + 3 with nothing left over, so that fraction is just x + 3."
+     ],
+     "short_es": [
+      "Los polinomios se dividen como los números: 93 = 4 × 23 + 1. El polinomio que se divide es el *dividendo*, el que divide es el *divisor*, el resultado es el *cociente* y lo que sobra es el *residuo*. Para dividir 2x^3 + 3x^2 − 5x + 4 entre x + 2, repite un ciclo: divide los términos principales, multiplica, resta y baja el siguiente término.",
+      "El ciclo da el cociente 2x^2 − x − 3 y el residuo 10, así que 2x^3 + 3x^2 − 5x + 4 = (x + 2)(2x^2 − x − 3) + 10. Resta la línea completa, con todo y sus signos negativos. Si falta una potencia, guarda su lugar con un cero, como en x^3 + 0x^2 + 0x − 8, para que las columnas queden alineadas. Un residuo de 0 significa que el divisor es un factor: x^3 − 8 = (x − 2)(x^2 + 2x + 4)."
+     ],
+     "more_es": [
+      "La división de polinomios es la división larga que ya conoces, disfrazada. Si pones x = 10 en el ejemplo, el dividendo 2x^3 + 3x^2 − 5x + 4 se convierte en 2254, el divisor x + 2 se convierte en 12 y el cociente 2x^2 − x − 3 se convierte en 187. Al dividir 2254 entre 12 sí se obtiene 187 y sobran 10. El valor posicional de los números comunes funciona igual que las potencias de x.",
+      "El ciclo siempre termina porque en cada vuelta se elimina la potencia más alta que queda, así que el grado de lo que sobra va bajando. Cuando es menor que el grado del divisor, ya no se puede dividir más. Más adelante en esta unidad, este tipo de división te ayudará a simplificar fracciones con x en el denominador: al dividir x^2 + 5x + 6 entre x + 2 se obtiene x + 3 sin que sobre nada, así que esa fracción es simplemente x + 3."
+     ]
+    },
+    {
+     "title": "División sintética y residuos",
+     "mainIdea": "La división sintética es un atajo para dividir entre x − c, y el teorema del residuo dice que el residuo siempre es igual a p(c).",
+     "reading": [
+      "Cuando el divisor es x − c, un atajo llamado *división sintética* usa solo los coeficientes. Divide p(x) = x^3 − 4x^2 + x + 6 entre x − 3, así que c = 3. Escribe los coeficientes 1, −4, 1, 6 en una fila. Baja el 1. Multiplica por 3 y suma al siguiente coeficiente: 1 × 3 = 3, y −4 + 3 = −1. Multiplica otra vez: −1 × 3 = −3, y 1 + (−3) = −2. Una vez más: −2 × 3 = −6, y 6 + (−6) = 0.",
+      "La fila de abajo dice 1, −1, −2, 0. El último número es el residuo, 0. Los demás son los coeficientes del cociente, con un grado menos que el dividendo: x^2 − x − 2. Así que x^3 − 4x^2 + x + 6 = (x − 3)(x^2 − x − 2). Dos advertencias. Usa c, no −c: dividir entre x + 1 significa c = −1. Y suma en cada paso, nunca restes; la resta ya está incluida en el signo de c.",
+      "El *teorema del residuo* explica el último número. Cuando un polinomio p(x) se divide entre x − c, el residuo es exactamente p(c). Compruébalo con el ejemplo: p(3) = 27 − 36 + 3 + 6 = 0, que coincide con el residuo 0. Esto da una manera rápida de *evaluar* un polinomio, es decir, de hallar su valor en un número. Para q(x) = 2x^3 − 5x + 1 en x = 2, la división sintética con los coeficientes 2, 0, −5, 1 da 2, 4, 3, 7, así que q(2) = 7. Comprobación directa: 16 − 10 + 1 = 7."
+     ],
+     "words": [
+      {
+       "w": "división sintética",
+       "d": "un atajo que usa solo los coeficientes para dividir un polinomio entre x − c"
+      },
+      {
+       "w": "teorema del residuo",
+       "d": "el residuo al dividir p(x) entre x − c es igual a p(c)"
+      },
+      {
+       "w": "evaluar",
+       "d": "hallar el valor de una función en un número específico, como p(3)"
+      }
+     ],
+     "look": {
+      "title": "Valores de p(x) = x^3 − 4x^2 + x + 6",
+      "rows": [
+       "x = −1",
+       "x = 0",
+       "x = 1",
+       "x = 2",
+       "x = 3",
+       "x = 4"
+      ],
+      "unit": "p(x)",
+      "prompt": "Según el teorema del residuo, ¿qué divisores de la forma x − c dejan residuo 0? ¿Qué sugiere eso sobre los factores de p(x)?"
+     },
+     "check": [
+      {
+       "q": "¿Cuál es el residuo al dividir x^3 + 2x − 1 entre x − 1?",
+       "choices": [
+        "0",
+        "1",
+        "2",
+        "−2"
+       ],
+       "why": "Según el teorema del residuo, el residuo es p(1) = 1 + 2 − 1 = 2."
+      },
+      {
+       "q": "Usa la división sintética para dividir x^2 − 5x + 6 entre x − 2.",
+       "choices": [
+        "x − 3, residuo 0",
+        "x + 3, residuo 0",
+        "x − 3, residuo 6",
+        "x − 2, residuo 0"
+       ],
+       "why": "Los coeficientes 1, −5, 6 con c = 2 dan 1, −3, 0. Cociente x − 3, residuo 0."
+      },
+      {
+       "q": "p(x) = 2x^3 − 3x^2 + 4. ¿Cuál es el residuo al dividir p(x) entre x + 1?",
+       "choices": [
+        "3",
+        "9",
+        "−1",
+        "1"
+       ],
+       "why": "x + 1 = x − (−1), así que el residuo es p(−1) = −2 − 3 + 4 = −1. Si usas c = 1, en cambio, da 3."
+      }
+     ],
+     "short": [
+      "*Synthetic division* is a shortcut for dividing by x − c that uses only the coefficients. To divide x^3 − 4x^2 + x + 6 by x − 3, use c = 3. Bring down the 1, then multiply by 3 and add to the next coefficient, again and again. The bottom row 1, −1, −2, 0 gives the quotient x^2 − x − 2 and the remainder 0. Use c, not −c: dividing by x + 1 means c = −1.",
+      "The *remainder theorem* says that dividing p(x) by x − c leaves the remainder p(c). That gives a fast way to *evaluate* a polynomial. For q(x) = 2x^3 − 5x + 1, synthetic division with 2, 0, −5, 1 and c = 2 ends in 7, so q(2) = 7."
+     ],
+     "more": [
+      "Look again at what each step of the shortcut does: multiply by c, then add the next coefficient. That is the same as writing 2x^3 − 5x + 1 as ((2x + 0)x − 5)x + 1 and working from the inside out. A degree-3 polynomial then needs only 3 multiplications and 3 additions, with no powers to compute. Calculators and computers evaluate polynomials this way, and the method carries the name of William Horner, who published it in 1819.",
+      "Try it on p(x) = x^3 − 4x^2 + x + 6 with c = −2. Bring down 1. Then 1 × (−2) = −2, and −4 + (−2) = −6. Next, −6 × (−2) = 12, and 1 + 12 = 13. Last, 13 × (−2) = −26, and 6 + (−26) = −20. The remainder is −20, so p(−2) = −20, and you found it without ever cubing −2."
+     ],
+     "short_es": [
+      "La *división sintética* es un atajo para dividir entre x − c que usa solo los coeficientes. Para dividir x^3 − 4x^2 + x + 6 entre x − 3, usa c = 3. Baja el 1, luego multiplica por 3 y suma al siguiente coeficiente, una y otra vez. La fila de abajo, 1, −1, −2, 0, da el cociente x^2 − x − 2 y el residuo 0. Usa c, no −c: dividir entre x + 1 significa c = −1.",
+      "El *teorema del residuo* dice que al dividir p(x) entre x − c el residuo es p(c). Eso da una manera rápida de *evaluar* un polinomio. Para q(x) = 2x^3 − 5x + 1, la división sintética con 2, 0, −5, 1 y c = 2 termina en 7, así que q(2) = 7."
+     ],
+     "more_es": [
+      "Mira otra vez lo que hace cada paso del atajo: multiplicar por c y luego sumar el siguiente coeficiente. Es lo mismo que escribir 2x^3 − 5x + 1 como ((2x + 0)x − 5)x + 1 y trabajar desde adentro hacia afuera. Así, un polinomio de grado 3 solo necesita 3 multiplicaciones y 3 sumas, sin calcular ninguna potencia. Las calculadoras y las computadoras evalúan polinomios de esta manera, y el método lleva el nombre de William Horner, quien lo publicó en 1819.",
+      "Pruébalo con p(x) = x^3 − 4x^2 + x + 6 y c = −2. Baja el 1. Luego 1 × (−2) = −2, y −4 + (−2) = −6. Después, −6 × (−2) = 12, y 1 + 12 = 13. Por último, 13 × (−2) = −26, y 6 + (−26) = −20. El residuo es −20, así que p(−2) = −20, y lo encontraste sin elevar −2 al cubo."
+     ]
+    },
+    {
+     "title": "El teorema del factor",
+     "mainIdea": "x − c es un factor de p(x) exactamente cuando p(c) = 0, así que probar unos cuantos valores candidatos puede descomponer un polinomio en factores lineales.",
+     "reading": [
+      "El teorema del residuo tiene un caso especial muy poderoso. Si p(c) = 0, el residuo es 0, así que x − c divide a p(x) exactamente y es un *factor*. Lo contrario también es cierto. Este es el *teorema del factor*: x − c es un factor de p(x) si y solo si p(c) = 0. Un número c con p(c) = 0 se llama *cero de la función*. Hallar ceros y hallar factores es el mismo trabajo.",
+      "Factoriza p(x) = x^3 − 7x + 6. Prueba x = 1: p(1) = 1 − 7 + 6 = 0, así que x − 1 es un factor. La división sintética con los coeficientes 1, 0, −7, 6 y c = 1 da 1, 1, −6, 0. El cociente es x^2 + x − 6, que se factoriza como (x + 3)(x − 2). Así que p(x) = (x − 1)(x − 2)(x + 3), y los ceros son 1, 2 y −3. Comprueba el último: p(−3) = −27 + 21 + 6 = 0.",
+      "¿Qué valores conviene probar? Con coeficientes enteros, toda *raíz racional* p/q debe tener a p como divisor del término constante y a q como divisor del coeficiente principal. Para 2x^3 − 3x^2 − 3x + 2, el término constante es 2 y el coeficiente principal es 2, así que los candidatos son ±1, ±2 y ±1/2. Prueba x = 2: 16 − 12 − 6 + 2 = 0. La división sintética da 2, 1, −1, 0, así que el cociente es 2x^2 + x − 1 = (2x − 1)(x + 1). Los ceros son 2, 1/2 y −1.",
+      "La lista de candidatos es solo una lista de sospechosos. Muchos fallarán, y un polinomio puede no tener ningún cero racional. Prueba primero los enteros pequeños y deja de dividir cuando el cociente sea una cuadrática que puedas factorizar o resolver con la fórmula. Un error común es probar x = 2 sustituyendo x − 2; el valor de prueba es c, el número que hace cero al factor."
+     ],
+     "words": [
+      {
+       "w": "teorema del factor",
+       "d": "x − c es un factor de p(x) si y solo si p(c) = 0"
+      },
+      {
+       "w": "cero de la función",
+       "d": "un valor de entrada c donde el resultado es 0, es decir, p(c) = 0"
+      },
+      {
+       "w": "raíz racional",
+       "d": "un cero que es una fracción p/q; con coeficientes enteros, p divide al término constante y q divide al coeficiente principal"
+      },
+      {
+       "w": "factor",
+       "d": "un polinomio que divide a otro con residuo 0"
+      }
+     ],
+     "look": {
+      "title": "Un cero abre el resto",
+      "text": "Toma p(x) = x^3 − 6x^2 + 11x − 6. Prueba x = 1: 1 − 6 + 11 − 6 = 0, así que x − 1 es un factor. La división sintética con 1, −6, 11, −6 y c = 1 da la fila 1, −5, 6, 0. El cociente es x^2 − 5x + 6.",
+      "prompt": "Factoriza el cociente y escribe los tres ceros de p(x). Luego comprueba uno de los ceros nuevos sustituyéndolo en p(x)."
+     },
+     "check": [
+      {
+       "q": "¿Es x − 2 un factor de x^3 − 3x^2 + 4?",
+       "choices": [
+        "Sí, porque p(2) = 0",
+        "No, porque p(2) = 4",
+        "Sí, porque p(2) = 2",
+        "No, porque el término constante es 4"
+       ],
+       "why": "p(2) = 8 − 12 + 4 = 0, así que, según el teorema del factor, x − 2 es un factor."
+      },
+      {
+       "q": "x = −1 es un cero de p(x) = x^3 + 2x^2 − 5x − 6. ¿Cuáles son los tres ceros?",
+       "choices": [
+        "−1, 3, −2",
+        "−1, −3, 2",
+        "1, 3, −2",
+        "−1, −3, −2"
+       ],
+       "why": "La división sintética con c = −1 da el cociente x^2 + x − 6 = (x + 3)(x − 2). Ceros: −1, −3, 2."
+      },
+      {
+       "q": "Escribe todas las posibles raíces racionales de 3x^3 + x − 4.",
+       "choices": [
+        "±1, ±3",
+        "±1, ±2, ±4",
+        "±1, ±2, ±4, ±1/3, ±2/3, ±4/3",
+        "±3, ±4/3"
+       ],
+       "why": "Los numeradores dividen a 4 (1, 2, 4) y los denominadores dividen a 3 (1, 3), lo que da los doce candidatos."
+      }
+     ],
+     "short": [
+      "If p(c) = 0, the remainder is 0, so x − c divides p(x) evenly and is a *factor*. This is the *factor theorem*: x − c is a factor of p(x) if and only if p(c) = 0. Finding zeros and finding factors are the same job.",
+      "To factor p(x) = x^3 − 7x + 6, try x = 1: p(1) = 0, so x − 1 is a factor. Synthetic division gives the quotient x^2 + x − 6 = (x + 3)(x − 2), so the zeros are 1, 2 and −3. To choose values to test, list the possible *rational root* values p/q, where p divides the constant term and q divides the leading coefficient. The test value is c, not the factor x − c."
+     ],
+     "more": [
+      "The list of suspects never misses a rational zero, but not every zero is rational. For x^2 − 2 the candidates are ±1 and ±2, and none of them works, because the zeros of x^2 − 2 are ±√2, which are not fractions. When the list of candidates fails, the polynomial can still have zeros. They are just not fractions.",
+      "Here is a useful fact for any polynomial of odd degree with real coefficients: it has at least one real zero. Complex zeros arrive in conjugate pairs, so they use up zeros two at a time. A cubic has three zeros, and three cannot be split into pairs only, so at least one is real. That is why the graph of a cubic always crosses the x-axis at least once."
+     ],
+     "short_es": [
+      "Si p(c) = 0, el residuo es 0, así que x − c divide a p(x) exactamente y es un *factor*. Este es el *teorema del factor*: x − c es un factor de p(x) si y solo si p(c) = 0. Hallar ceros y hallar factores es el mismo trabajo.",
+      "Para factorizar p(x) = x^3 − 7x + 6, prueba x = 1: p(1) = 0, así que x − 1 es un factor. La división sintética da el cociente x^2 + x − 6 = (x + 3)(x − 2), así que los ceros son 1, 2 y −3. Para elegir los valores que probarás, haz la lista de los valores p/q posibles para una *raíz racional*, donde p divide al término constante y q divide al coeficiente principal. El valor de prueba es c, no el factor x − c."
+     ],
+     "more_es": [
+      "La lista de sospechosos nunca deja fuera un cero racional, pero no todo cero es racional. Para x^2 − 2 los candidatos son ±1 y ±2, y ninguno sirve, porque los ceros de x^2 − 2 son ±√2, que no son fracciones. Cuando la lista de candidatos falla, el polinomio todavía puede tener ceros. Solo que no son fracciones.",
+      "Aquí tienes un dato útil para cualquier polinomio de grado impar con coeficientes reales: tiene al menos un cero real. Los ceros complejos llegan en pares conjugados, así que gastan los ceros de dos en dos. Una cúbica tiene tres ceros, y tres no se pueden repartir solo en pares, así que al menos uno es real. Por eso la gráfica de una cúbica siempre cruza el eje x al menos una vez."
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Ceros y gráficas",
+   "lessons": [
+    {
+     "title": "Contar todos los ceros",
+     "mainIdea": "El teorema fundamental del álgebra dice que un polinomio de grado n tiene exactamente n ceros cuando se cuentan los ceros complejos y los repetidos.",
+     "reading": [
+      "Una ecuación lineal tiene una solución, una cuadrática tiene dos, y el patrón continúa. El *teorema fundamental del álgebra* afirma que todo polinomio de *grado* n ≥ 1 tiene exactamente n ceros, siempre que cuentes los ceros complejos y cuentes un cero repetido tantas veces como se repita. Carl Friedrich Gauss dio una demostración en su tesis doctoral de 1799. El teorema no te encuentra los ceros, pero te dice cuándo dejar de buscar.",
+      "Toma p(x) = x^3 − x^2 + 4x − 4. Su grado es 3, así que espera tres ceros. Factoriza por agrupación: x^2(x − 1) + 4(x − 1) = (x − 1)(x^2 + 4). El factor x − 1 da el cero 1. El factor x^2 + 4 da x^2 = −4, así que x = 2i y x = −2i. Tres ceros: 1, 2i, −2i. Solo uno aparece como intersección con el eje x en la gráfica, porque los ceros complejos no tienen lugar en una recta numérica real.",
+      "Cuando un polinomio tiene coeficientes reales, los ceros complejos llegan en *pares conjugados*. Si 1 + i es un cero, 1 − i también lo es. Eso te permite reconstruir un polinomio a partir de sus ceros. Para los ceros 2, 1 + i y 1 − i: el par da (x − (1 + i))(x − (1 − i)) = (x − 1)^2 − i^2 = x^2 − 2x + 1 + 1 = x^2 − 2x + 2. Multiplica por (x − 2): x^3 − 2x^2 + 2x − 2x^2 + 4x − 4 = x^3 − 4x^2 + 6x − 4."
+     ],
+     "words": [
+      {
+       "w": "teorema fundamental del álgebra",
+       "d": "un polinomio de grado n tiene exactamente n ceros, contando los ceros complejos y los repetidos"
+      },
+      {
+       "w": "grado",
+       "d": "la potencia más alta de la variable en un polinomio; el grado de x^3 − x^2 + 4x − 4 es 3"
+      },
+      {
+       "w": "pares conjugados",
+       "d": "la regla de que si a + bi es un cero de un polinomio con coeficientes reales, entonces a − bi también es un cero"
+      }
+     ],
+     "look": {
+      "title": "Ceros que no se ven",
+      "text": "Un polinomio con coeficientes reales tiene grado 4. Conoces tres de sus ceros: 0, 3 e i. Como los ceros complejos vienen en pares conjugados, −i tiene que ser el cuarto cero. El polinomio se puede escribir como x(x − 3)(x − i)(x + i) = x(x − 3)(x^2 + 1).",
+      "prompt": "¿Cuántas intersecciones con el eje x tiene esta gráfica? Multiplica x(x − 3)(x^2 + 1) y comprueba que su grado es 4."
+     },
+     "check": [
+      {
+       "q": "¿Cuántos ceros tiene un polinomio de grado 5, contando los ceros complejos y los repetidos?",
+       "choices": [
+        "5",
+        "A lo sumo 2",
+        "4",
+        "10"
+       ],
+       "why": "El teorema fundamental del álgebra dice que hay exactamente n ceros para el grado n, así que 5."
+      },
+      {
+       "q": "Un polinomio con coeficientes reales tiene a 3 + 2i como cero. ¿Qué otro número tiene que ser también un cero?",
+       "choices": [
+        "−3 − 2i",
+        "−3 + 2i",
+        "3 − 2i",
+        "2 − 3i"
+       ],
+       "why": "Los ceros complejos de los polinomios con coeficientes reales vienen en pares conjugados, así que 3 − 2i también es un cero."
+      },
+      {
+       "q": "¿Qué polinomio tiene ceros 2i y −2i y coeficiente principal 1?",
+       "choices": [
+        "x^2 − 4",
+        "x^2 + 4",
+        "x^2 + 4x",
+        "x^2 − 4x + 4"
+       ],
+       "why": "(x − 2i)(x + 2i) = x^2 − 4i^2 = x^2 + 4. El polinomio x^2 − 4 tiene ceros reales ±2."
+      }
+     ],
+     "short": [
+      "The *fundamental theorem of algebra* says that every polynomial of *degree* n has exactly n zeros, if you count complex zeros and count a repeated zero as many times as it repeats. So a degree-5 polynomial has 5 zeros. Gauss proved it in his 1799 thesis. For p(x) = x^3 − x^2 + 4x − 4 = (x − 1)(x^2 + 4), the three zeros are 1, 2i and −2i.",
+      "When a polynomial has real coefficients, its complex zeros come in *conjugate pairs*: if 3 + 2i is a zero, so is 3 − 2i. This lets you build a polynomial from its zeros. The zeros 2i and −2i give (x − 2i)(x + 2i) = x^2 + 4."
+     ],
+     "more": [
+      "The theorem promises that the zeros exist, but it does not give a formula for them. Degree 2 has the quadratic formula, and Cardano printed the formula for cubics in 1545. In 1824 Abel proved that no general formula using roots exists for degree 5. For higher degrees, people find zeros by testing values, by factoring or with a computer.",
+      "Counting repeats keeps the theorem free of exceptions. The polynomial (x − 2)^3 has degree 3, yet it seems to have only one zero, 2. The theorem counts that zero three times, once for each time the factor x − 2 appears, so the total is 3."
+     ],
+     "short_es": [
+      "El *teorema fundamental del álgebra* dice que todo polinomio de *grado* n tiene exactamente n ceros, si cuentas los ceros complejos y cuentas un cero repetido tantas veces como se repita. Así que un polinomio de grado 5 tiene 5 ceros. Gauss lo demostró en su tesis de 1799. Para p(x) = x^3 − x^2 + 4x − 4 = (x − 1)(x^2 + 4), los tres ceros son 1, 2i y −2i.",
+      "Cuando un polinomio tiene coeficientes reales, sus ceros complejos vienen en *pares conjugados*: si 3 + 2i es un cero, 3 − 2i también lo es. Esto te permite construir un polinomio a partir de sus ceros. Los ceros 2i y −2i dan (x − 2i)(x + 2i) = x^2 + 4."
+     ],
+     "more_es": [
+      "El teorema promete que los ceros existen, pero no da una fórmula para encontrarlos. El grado 2 tiene la fórmula cuadrática, y Cardano publicó la fórmula para las cúbicas en 1545. En 1824, Abel demostró que no existe una fórmula general con raíces para el grado 5. Con grados mayores, la gente encuentra los ceros probando valores, factorizando o usando una computadora.",
+      "Contar las repeticiones es lo que impide que el teorema tenga excepciones. El polinomio (x − 2)^3 tiene grado 3, pero parece tener un solo cero, el 2. El teorema cuenta ese cero tres veces, una por cada vez que aparece el factor x − 2, así que el total es 3."
+     ]
+    },
+    {
+     "title": "Multiplicidad y gráfica",
+     "mainIdea": "En un cero de multiplicidad impar la gráfica cruza el eje x; en un cero de multiplicidad par toca el eje y da la vuelta.",
+     "reading": [
+      "Escribe un polinomio en forma factorizada y su gráfica casi queda dibujada. Toma f(x) = (x + 1)(x − 2)^2. Los ceros son −1 y 2, así que la gráfica tiene *intersecciones con el eje x* en esos puntos. Pero el factor x − 2 aparece dos veces. El número de veces que se repite un factor es la *multiplicidad* del cero. Aquí −1 tiene multiplicidad 1 y 2 tiene multiplicidad 2. El grado, que se halla sumando las multiplicidades, es 1 + 2 = 3.",
+      "La multiplicidad cambia la manera en que la gráfica se encuentra con el eje. Prueba puntos a cada lado de x = 2. f(1) = (2)(−1)^2 = 2, que es positivo. f(3) = (4)(1)^2 = 4, también positivo. La gráfica no cambia de signo en 2, así que toca el eje allí y rebota hacia arriba. Ahora prueba alrededor de x = −1. f(−2) = (−1)(−4)^2 = −16, negativo, mientras que f(0) = (1)(4) = 4, positivo. El signo cambia, así que la gráfica cruza en −1.",
+      "La regla: una multiplicidad impar significa que la gráfica cruza, y una multiplicidad par significa que toca y da la vuelta. Una multiplicidad de 3 cruza, pero se aplana en la intersección, como la gráfica de x^3 cerca del origen. La *intersección con el eje y* es f(0), que en nuestro ejemplo es 4. Entre las intersecciones, la gráfica tiene *puntos de giro*, colinas y valles; una gráfica de grado 3 tiene como máximo 2 de ellos."
+     ],
+     "words": [
+      {
+       "w": "multiplicidad",
+       "d": "el número de veces que aparece un factor x − c; en (x − 2)^2 el cero 2 tiene multiplicidad 2"
+      },
+      {
+       "w": "intersecciones con el eje x",
+       "d": "los puntos donde la gráfica se encuentra con el eje x; los ceros reales de la función"
+      },
+      {
+       "w": "intersección con el eje y",
+       "d": "el punto donde la gráfica se encuentra con el eje y, que se halla con f(0)"
+      },
+      {
+       "w": "puntos de giro",
+       "d": "una colina o un valle de la gráfica, donde pasa de subir a bajar o al revés"
+      }
+     ],
+     "look": {
+      "title": "Valores de f(x) = (x + 1)(x − 2)^2",
+      "rows": [
+       "x = −2",
+       "x = −1",
+       "x = 0",
+       "x = 1",
+       "x = 2",
+       "x = 3"
+      ],
+      "unit": "f(x)",
+      "prompt": "¿En qué cero cambia el signo de f(x) y en cuál se queda igual? ¿Qué te dice eso sobre la forma de la gráfica en cada uno?"
+     },
+     "check": [
+      {
+       "q": "g(x) = (x − 3)^2 (x + 5). ¿Qué hace la gráfica en x = 3?",
+       "choices": [
+        "Cruza el eje de lado a lado",
+        "Toca el eje y da la vuelta",
+        "Tiene una asíntota vertical",
+        "No está definida"
+       ],
+       "why": "El cero 3 tiene multiplicidad par 2, así que la gráfica toca el eje x sin cambiar de signo."
+      },
+      {
+       "q": "¿Cuál es el grado de (x − 1)^3 (x + 2)^2?",
+       "choices": [
+        "2",
+        "3",
+        "5",
+        "6"
+       ],
+       "why": "Se suman las multiplicidades: 3 + 2 = 5. Multiplicarlas da 6, que es incorrecto."
+      },
+      {
+       "q": "¿Cuál es la intersección con el eje y de h(x) = (x − 2)(x + 3)(x − 1)?",
+       "choices": [
+        "−6",
+        "0",
+        "5",
+        "6"
+       ],
+       "why": "h(0) = (−2)(3)(−1) = 6. Dos negativos hacen que el producto sea positivo."
+      }
+     ],
+     "short": [
+      "In factored form, a polynomial's graph is almost drawn for you. For f(x) = (x + 1)(x − 2)^2, the zeros −1 and 2 are the *x-intercepts*. The number of times a factor repeats is the zero's *multiplicity*: −1 has multiplicity 1 and 2 has multiplicity 2. Adding the multiplicities gives the degree, 1 + 2 = 3.",
+      "At a zero of odd multiplicity the graph crosses the axis. At a zero of even multiplicity it touches the axis and turns back, because the sign does not change. The *y-intercept* is f(0), which is 4 here. The hills and valleys are *turning points*, and a degree-3 graph has at most 2."
+     ],
+     "more": [
+      "Here is why the sign does not change at a double zero. Near x = 2, the factor (x − 2)^2 is never negative, and the other factor, x + 1, stays positive. So f(x) stays positive on both sides of 2 and bounces off the axis. Near x = −1, the factor x + 1 changes from negative to positive as x passes −1, so f changes sign and crosses.",
+      "You can also work backward from a picture. Suppose a cubic graph crosses the x-axis at −1 and touches it at 4. Then it has the factors x + 1 and (x − 4)^2, so it looks like f(x) = a(x + 1)(x − 4)^2 for some number a. One more point pins down a. If the graph passes through (0, 8), then a × 1 × 16 = 8, so a = 1/2."
+     ],
+     "short_es": [
+      "En forma factorizada, la gráfica de un polinomio casi queda dibujada. Para f(x) = (x + 1)(x − 2)^2, los ceros −1 y 2 son las *intersecciones con el eje x*. El número de veces que se repite un factor es la *multiplicidad* del cero: −1 tiene multiplicidad 1 y 2 tiene multiplicidad 2. Al sumar las multiplicidades se obtiene el grado, 1 + 2 = 3.",
+      "En un cero de multiplicidad impar la gráfica cruza el eje. En un cero de multiplicidad par toca el eje y da la vuelta, porque el signo no cambia. La *intersección con el eje y* es f(0), que aquí es 4. Las colinas y los valles son *puntos de giro*, y una gráfica de grado 3 tiene como máximo 2."
+     ],
+     "more_es": [
+      "Esta es la razón por la que el signo no cambia en un cero doble. Cerca de x = 2, el factor (x − 2)^2 nunca es negativo, y el otro factor, x + 1, se queda positivo. Así que f(x) sigue siendo positiva a los dos lados de 2 y rebota en el eje. Cerca de x = −1, el factor x + 1 pasa de negativo a positivo cuando x pasa por −1, así que f cambia de signo y cruza.",
+      "También puedes trabajar al revés, a partir de una imagen. Supón que la gráfica de una cúbica cruza el eje x en −1 y lo toca en 4. Entonces tiene los factores x + 1 y (x − 4)^2, así que se ve como f(x) = a(x + 1)(x − 4)^2 para algún número a. Un punto más fija el valor de a. Si la gráfica pasa por (0, 8), entonces a × 1 × 16 = 8, así que a = 1/2."
+     ]
+    },
+    {
+     "title": "Comportamiento en los extremos",
+     "mainIdea": "Lejos del origen, la gráfica de un polinomio sigue a su término principal: el grado y el signo del coeficiente principal deciden hacia dónde apunta cada extremo.",
+     "reading": [
+      "Aleja mucho la vista de la gráfica de f(x) = −2x^3 + 5x^2 + 100 y las ondulaciones desaparecen. Lo que queda es la forma de su *término principal*, −2x^3, el término con la potencia más alta. En x = 100, los términos son −2,000,000, luego 50,000 y luego 100. El término principal opaca a los demás, y f(100) = −1,949,900. La dirección hacia la que van los dos extremos de la gráfica, llamada su *comportamiento en los extremos*, depende solo de ese término principal.",
+      "Dos datos lo deciden. El grado dice si los extremos coinciden. Un grado par significa que ambos extremos van en la misma dirección, como una parábola. Un grado impar significa que los extremos van en direcciones opuestas, como una recta. El signo del *coeficiente principal* dice hacia dónde. Con un coeficiente principal positivo, el extremo derecho sube. Con uno negativo, el extremo derecho baja. Así que −2x^3 tiene grado impar y coeficiente negativo: el extremo derecho baja y el izquierdo sube.",
+      "Practica con f(x) = 3x^4 − 7x^3 + x − 9. El término principal es 3x^4: grado par, coeficiente positivo, así que ambos extremos suben. Fíjate en que el término 50x de 7x^2 − 3x^6 + 50x no es el principal, aunque esté escrito al final; el término principal es −3x^6, así que ambos extremos bajan. Entre los extremos, una gráfica de grado n tiene como máximo n − 1 puntos de giro, lo que limita cuánto puede ondularse."
+     ],
+     "words": [
+      {
+       "w": "término principal",
+       "d": "el término con la potencia más alta de la variable, como −2x^3 en −2x^3 + 5x^2 + 100"
+      },
+      {
+       "w": "coeficiente principal",
+       "d": "el número que está delante del término principal; −2 en −2x^3"
+      },
+      {
+       "w": "comportamiento en los extremos",
+       "d": "la dirección hacia la que va la gráfica cuando x se vuelve muy grande o muy negativa"
+      }
+     ],
+     "look": {
+      "title": "Predice antes de graficar",
+      "text": "Considera f(x) = 3x^4 − 7x^3 + x − 9. Su término principal es 3x^4, con grado par y coeficiente positivo. Entonces, cuando x se va muy a la derecha la gráfica sube, y cuando x se va muy a la izquierda también sube. Ambos extremos apuntan hacia arriba, como una U ancha con posibles ondulaciones en el medio.",
+      "prompt": "Describe el comportamiento en los extremos de g(x) = −x^4 + 8x^2 y de h(x) = x^5 − 20x. ¿Cuántos puntos de giro puede tener cada una, como máximo?"
+     },
+     "check": [
+      {
+       "q": "Describe el comportamiento en los extremos de f(x) = 4x^5 − x^2 + 3.",
+       "choices": [
+        "Ambos extremos hacia arriba",
+        "Ambos extremos hacia abajo",
+        "Izquierda hacia arriba, derecha hacia abajo",
+        "Izquierda hacia abajo, derecha hacia arriba"
+       ],
+       "why": "Grado impar 5 con coeficiente positivo 4: el extremo derecho sube y el izquierdo baja."
+      },
+      {
+       "q": "¿Cuál es el mayor número de puntos de giro que puede tener un polinomio de grado 6?",
+       "choices": [
+        "6",
+        "5",
+        "7",
+        "3"
+       ],
+       "why": "Un polinomio de grado n tiene como máximo n − 1 puntos de giro, así que 6 − 1 = 5."
+      },
+      {
+       "q": "¿Qué término controla el comportamiento en los extremos de f(x) = 7x^2 − 3x^6 + 50x?",
+       "choices": [
+        "7x^2",
+        "50x",
+        "−3x^6",
+        "El término constante"
+       ],
+       "why": "El término principal es el de la potencia más alta, −3x^6, sin importar dónde esté escrito."
+      }
+     ],
+     "short": [
+      "Far from the origin, a polynomial's graph follows its *leading term*, the term with the highest power. For f(x) = −2x^3 + 5x^2 + 100 that is −2x^3. At x = 100 it is −2,000,000, while the other terms are only 50,000 and 100. The direction the two ends point is the graph's *end behavior*.",
+      "Two facts decide it. Even degree means both ends go the same way, and odd degree means they go opposite ways. A positive *leading coefficient* means the right end rises, and a negative one means it falls. So −2x^3 has its left end up and its right end down. The leading term is the one with the highest power, wherever it is written, and a degree-n graph has at most n − 1 turning points."
+     ],
+     "more": [
+      "Why does the leading term win? Watch the pieces of f(x) = −2x^3 + 5x^2 + 100 as x grows. At x = 10, −2x^3 is −2,000 and 5x^2 is 500. At x = 1000, −2x^3 is −2,000,000,000 and 5x^2 is only 5,000,000. The bigger x gets, the smaller the other terms look next to the leading term.",
+      "End behavior describes the far-out graph, which is not always the part you care about. The box volume 4x^3 − 80x^2 + 400x from the story rises forever to the right. But a 20-inch sheet cannot be cut with a 50-inch corner, so the real box lives only in the middle, where the graph makes a hill."
+     ],
+     "short_es": [
+      "Lejos del origen, la gráfica de un polinomio sigue a su *término principal*, el término con la potencia más alta. Para f(x) = −2x^3 + 5x^2 + 100 ese término es −2x^3. En x = 100 vale −2,000,000, mientras que los otros términos son solo 50,000 y 100. La dirección hacia la que apuntan los dos extremos es el *comportamiento en los extremos* de la gráfica.",
+      "Dos datos lo deciden. Un grado par significa que los dos extremos van en la misma dirección, y un grado impar significa que van en direcciones opuestas. Un *coeficiente principal* positivo significa que el extremo derecho sube, y uno negativo significa que baja. Así que −2x^3 tiene el extremo izquierdo hacia arriba y el derecho hacia abajo. El término principal es el de la potencia más alta, sin importar dónde esté escrito, y una gráfica de grado n tiene como máximo n − 1 puntos de giro."
+     ],
+     "more_es": [
+      "¿Por qué gana el término principal? Observa las partes de f(x) = −2x^3 + 5x^2 + 100 mientras x crece. En x = 10, −2x^3 vale −2,000 y 5x^2 vale 500. En x = 1000, −2x^3 vale −2,000,000,000 y 5x^2 vale solo 5,000,000. Mientras más grande es x, más pequeños se ven los otros términos junto al término principal.",
+      "El comportamiento en los extremos describe la gráfica lejana, que no siempre es la parte que te importa. El volumen de la caja 4x^3 − 80x^2 + 400x del relato sube sin parar hacia la derecha. Pero una hoja de 20 pulgadas no se puede recortar con una esquina de 50 pulgadas, así que la caja real vive solo en el medio, donde la gráfica forma una colina."
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Modelos polinomiales",
+   "lessons": [
+    {
+     "title": "Construir el modelo de la caja",
+     "mainIdea": "Una situación real se convierte en un modelo polinomial escribiendo cada cantidad en términos de una sola variable; luego una tabla o una gráfica muestra dónde llega a su punto más alto el modelo.",
+     "reading": [
+      "Vuelve a la hoja cuadrada de 20 pulgadas, a la que se le recorta un cuadrado de lado x en cada esquina. Al doblar los lados hacia arriba se forma una caja de altura x. Cada lado de la base pierde x en ambos extremos, así que la base mide 20 − 2x por 20 − 2x. El volumen es V(x) = x(20 − 2x)^2. Esta ecuación es un *modelo*: una función que representa la situación real. Al desarrollarla, es una *función cúbica*, 4x^3 − 80x^2 + 400x.",
+      "No todo valor de x tiene sentido. El corte tiene que ser positivo, y dos cortes no pueden gastar las 20 pulgadas completas, así que 0 < x < 10. Ese intervalo es el *dominio* del modelo. Ahora prueba valores. V(1) = 1 × 18^2 = 324. V(2) = 2 × 16^2 = 512. V(3) = 3 × 14^2 = 588. V(4) = 4 × 12^2 = 576. V(5) = 5 × 10^2 = 500. El volumen sube, llega a su punto más alto entre 3 y 4, y baja.",
+      "Para precisar el *máximo*, prueba entre 3 y 4. V(3.3) = 3.3 × 13.4^2 = 3.3 × 179.56 = 592.5. V(3.5) = 3.5 × 13^2 = 591.5. El punto más alto está cerca de x = 3.3 pulgadas, lo que da unas 593 pulgadas cúbicas. Una herramienta para graficar muestra la misma colina. A veces los estudiantes dan x = 3.3 como respuesta a la pregunta sobre el volumen; lee la pregunta otra vez, porque la altura y el volumen son respuestas distintas.",
+      "Las hojas rectangulares siguen la misma receta con dos longitudes de base. Para una hoja de 16 pulgadas por 10 pulgadas, V(x) = x(16 − 2x)(10 − 2x), y el dominio es 0 < x < 5 porque el lado corto se acaba primero. V(2) = 2 × 12 × 6 = 144 pulgadas cúbicas. Sean cuales sean los números, escribe cada dimensión en términos de x, multiplica y explora el dominio."
+     ],
+     "words": [
+      {
+       "w": "modelo",
+       "d": "una función que representa una situación real para poder analizarla con matemáticas"
+      },
+      {
+       "w": "función cúbica",
+       "d": "una función polinomial de grado 3, como V(x) = 4x^3 − 80x^2 + 400x"
+      },
+      {
+       "w": "dominio",
+       "d": "el conjunto de valores de entrada que tienen sentido; para la caja de 20 pulgadas, 0 < x < 10"
+      },
+      {
+       "w": "máximo",
+       "d": "el mayor valor de salida; la cima de la colina en una gráfica"
+      }
+     ],
+     "look": {
+      "title": "Volumen de la caja con una hoja de 20 pulgadas",
+      "rows": [
+       "corte de 1 pulg",
+       "corte de 2 pulg",
+       "corte de 3 pulg",
+       "corte de 4 pulg",
+       "corte de 5 pulg",
+       "corte de 6 pulg"
+      ],
+      "unit": "pulgadas cúbicas",
+      "prompt": "¿Entre qué dos cortes está el máximo? ¿Por qué el volumen vuelve a bajar hacia cero cuando el corte se acerca a 10 pulgadas?"
+     },
+     "check": [
+      {
+       "q": "A una hoja cuadrada de 12 pulgadas se le recortan esquinas de x pulgadas. ¿Cuál es el volumen cuando x = 2?",
+       "choices": [
+        "128 pulgadas cúbicas",
+        "200 pulgadas cúbicas",
+        "144 pulgadas cúbicas",
+        "64 pulgadas cúbicas"
+       ],
+       "why": "V(2) = 2 × (12 − 4)^2 = 2 × 64 = 128 pulgadas cúbicas."
+      },
+      {
+       "q": "¿Cuál es el dominio del modelo de la caja para una hoja cuadrada de 12 pulgadas?",
+       "choices": [
+        "0 < x < 12",
+        "0 < x < 6",
+        "x > 0",
+        "0 < x < 3"
+       ],
+       "why": "Dos cortes de x tienen que sumar menos de 12, así que 2x < 12 y x < 6, con x positivo."
+      },
+      {
+       "q": "A una hoja de 16 por 10 pulgadas se le quitan esquinas de 2 pulgadas. ¿Cuál es el volumen de la caja?",
+       "choices": [
+        "160 pulgadas cúbicas",
+        "120 pulgadas cúbicas",
+        "192 pulgadas cúbicas",
+        "144 pulgadas cúbicas"
+       ],
+       "why": "V = 2 × (16 − 4) × (10 − 4) = 2 × 12 × 6 = 144 pulgadas cúbicas."
+      }
+     ],
+     "short": [
+      "Cut a square of side x from each corner of a 20-inch square sheet and fold up the sides. The box has height x and a base of 20 − 2x by 20 − 2x, so its volume is V(x) = x(20 − 2x)^2. This is a *model*, a function that stands in for the real situation. Multiplied out, it is a *cubic function*, 4x^3 − 80x^2 + 400x.",
+      "Not every x makes sense. The cut must be positive, and two cuts cannot use up the 20 inches, so 0 < x < 10. That interval is the *domain*. A table shows V(2) = 512, V(3) = 588 and V(4) = 576, so the volume climbs and then falls. The *maximum* is near x = 3.3 inches. For a rectangular sheet, write each dimension in terms of x: a 16 by 10 sheet with 2-inch corners gives 2 × 12 × 6 = 144 cubic inches."
+     ],
+     "more": [
+      "A table finds the best cut to within a small step, and calculus, a course you may take later, finds it exactly. For this box the exact best cut is x = 10/3 inches, about 3.33, which is very close to the table's answer. The volume there is 16,000/27, or about 592.6 cubic inches.",
+      "A box maker also thinks about waste. The four cut-off corners are squares of side x, so together they take away 4x^2 square inches of the sheet. At x = 10/3 that is 4 × 100/9, about 44.4 square inches, out of the sheet's 400 square inches. About 89 percent of the sheet becomes the box."
+     ],
+     "short_es": [
+      "Recorta un cuadrado de lado x en cada esquina de una hoja cuadrada de 20 pulgadas y dobla los lados hacia arriba. La caja tiene altura x y una base de 20 − 2x por 20 − 2x, así que su volumen es V(x) = x(20 − 2x)^2. Esto es un *modelo*, una función que representa la situación real. Al desarrollarla, es una *función cúbica*, 4x^3 − 80x^2 + 400x.",
+      "No todo valor de x tiene sentido. El corte tiene que ser positivo, y dos cortes no pueden gastar las 20 pulgadas, así que 0 < x < 10. Ese intervalo es el *dominio*. Una tabla muestra V(2) = 512, V(3) = 588 y V(4) = 576, así que el volumen sube y luego baja. El *máximo* está cerca de x = 3.3 pulgadas. Para una hoja rectangular, escribe cada dimensión en términos de x: una hoja de 16 por 10 con esquinas de 2 pulgadas da 2 × 12 × 6 = 144 pulgadas cúbicas."
+     ],
+     "more_es": [
+      "Una tabla encuentra el mejor corte con una diferencia pequeña, y el cálculo, un curso que quizás tomes más adelante, lo encuentra con exactitud. Para esta caja, el mejor corte exacto es x = 10/3 pulgadas, unas 3.33, que está muy cerca de la respuesta de la tabla. El volumen ahí es 16,000/27, es decir, unas 592.6 pulgadas cúbicas.",
+      "Quien fabrica cajas también piensa en el desperdicio. Las cuatro esquinas recortadas son cuadrados de lado x, así que juntas le quitan 4x^2 pulgadas cuadradas a la hoja. En x = 10/3 eso es 4 × 100/9, unas 44.4 pulgadas cuadradas, de las 400 pulgadas cuadradas de la hoja. Cerca del 89 por ciento de la hoja se convierte en la caja."
+     ]
+    },
+    {
+     "title": "Sistemas con una cuadrática",
+     "mainIdea": "Para resolver un sistema que mezcla una recta con una parábola o un círculo, sustituye una ecuación en la otra y resuelve la ecuación cuadrática que resulta.",
+     "reading": [
+      "Un dron vuela por una trayectoria recta mientras una pelota traza un arco en el aire. ¿Dónde podrían encontrarse? Eso es un *sistema de ecuaciones* con una ecuación lineal y una cuadrática. Toma y = x^2 − 3 y y = 2x. Las dos son iguales a y, así que iguálalas: x^2 − 3 = 2x. Pasa todo a un lado: x^2 − 2x − 3 = 0. Factoriza: (x − 3)(x + 1) = 0, así que x = 3 o x = −1.",
+      "Cada x necesita su y. Usa la recta: cuando x = 3, y = 6; cuando x = −1, y = −2. Los *puntos de intersección* son (3, 6) y (−1, −2). Compruébalos en la parábola: 3^2 − 3 = 6 y (−1)^2 − 3 = −2. Los dos funcionan. Una recta y una parábola pueden encontrarse en dos puntos, en un solo punto si la recta apenas roza la curva, o en ninguno. Si la ecuación cuadrática tiene un discriminante negativo, no hay intersecciones reales.",
+      "Un círculo funciona igual con la *sustitución*. Resuelve x^2 + y^2 = 25 junto con y = x + 1. Reemplaza y: x^2 + (x + 1)^2 = 25, así que 2x^2 + 2x + 1 = 25. Entonces 2x^2 + 2x − 24 = 0, y al dividir entre 2 se obtiene x^2 + x − 12 = 0 = (x + 4)(x − 3). Así que x = 3 con y = 4, o x = −4 con y = −3. Comprobación: 9 + 16 = 25 y 16 + 9 = 25. Olvidar hallar los valores de y es la manera más común de perder la respuesta."
+     ],
+     "words": [
+      {
+       "w": "sistema de ecuaciones",
+       "d": "dos o más ecuaciones que tienen que ser verdaderas al mismo tiempo"
+      },
+      {
+       "w": "sustitución",
+       "d": "reemplazar una variable de una ecuación con una expresión de la otra"
+      },
+      {
+       "w": "puntos de intersección",
+       "d": "un punto que está en las dos gráficas, así que cumple las dos ecuaciones"
+      }
+     ],
+     "look": {
+      "title": "Dónde una parábola se encuentra con una recta horizontal",
+      "text": "Resuelve y = x^2 y y = 4. Iguálalas: x^2 = 4, así que x = 2 o x = −2. Los dos puntos tienen y = 4, lo que da (2, 4) y (−2, 4). La recta horizontal corta la parábola dos veces, una a cada lado del eje y.",
+      "prompt": "Resuelve y = x^2 + 1 junto con y = 5. Luego explica qué pasa si la segunda ecuación se cambia por y = 0."
+     },
+     "check": [
+      {
+       "q": "Resuelve el sistema y = x^2 y y = x + 2.",
+       "choices": [
+        "(2, 4) y (−1, 1)",
+        "Solo (2, 4)",
+        "(1, 1) y (−2, 4)",
+        "(2, 2) y (−1, −1)"
+       ],
+       "why": "x^2 − x − 2 = (x − 2)(x + 1) = 0, así que x = 2 o −1. Luego y = x^2 da 4 y 1."
+      },
+      {
+       "q": "¿Cuántas soluciones reales tiene el sistema y = x^2 + 5 y y = 1?",
+       "choices": [
+        "2",
+        "1",
+        "0",
+        "4"
+       ],
+       "why": "x^2 + 5 = 1 significa x^2 = −4, que no tiene soluciones reales. La recta está por debajo de la parábola."
+      },
+      {
+       "q": "Resuelve x^2 + y^2 = 20 y y = 2x.",
+       "choices": [
+        "(2, 4) y (−2, −4)",
+        "(4, 2) y (−4, −2)",
+        "Solo (2, 4)",
+        "(2, −4) y (−2, 4)"
+       ],
+       "why": "x^2 + 4x^2 = 20, así que x^2 = 4 y x = ±2. Luego y = 2x da 4 y −4."
+      }
+     ],
+     "short": [
+      "A *system of equations* with a line and a parabola, such as y = x^2 − 3 and y = 2x, is solved by *substitution*. Both equal y, so set them equal: x^2 − 3 = 2x. Then x^2 − 2x − 3 = 0, which factors as (x − 3)(x + 1) = 0, so x = 3 or x = −1.",
+      "Next, find each y from the line. The *intersection points* are (3, 6) and (−1, −2). A line and a parabola can meet at two points, at one point or nowhere, and a negative discriminant means no real intersections. A circle works the same way: put y = x + 1 into x^2 + y^2 = 25 to get x^2 + x − 12 = 0, so (3, 4) and (−4, −3). Always find the y-values."
+     ],
+     "more": [
+      "When a line just grazes a parabola, the quadratic has only one solution. Try y = x^2 and y = 2x − 1. Setting them equal gives x^2 − 2x + 1 = 0, which is (x − 1)^2 = 0. The only solution is x = 1, so the line touches the parabola at the single point (1, 1). In the language of the last lesson, the discriminant is zero.",
+      "You can use this to choose a line on purpose. Which lines y = 2x + k meet y = x^2 at exactly one point? Setting them equal gives x^2 − 2x − k = 0, and its discriminant is 4 + 4k. That is zero when k = −1, which is the line you just saw. For k greater than −1 the line cuts the parabola twice, and for k less than −1 it misses it."
+     ],
+     "short_es": [
+      "Un *sistema de ecuaciones* con una recta y una parábola, como y = x^2 − 3 y y = 2x, se resuelve por *sustitución*. Las dos son iguales a y, así que iguálalas: x^2 − 3 = 2x. Entonces x^2 − 2x − 3 = 0, que se factoriza como (x − 3)(x + 1) = 0, así que x = 3 o x = −1.",
+      "Después, halla cada y con la recta. Los *puntos de intersección* son (3, 6) y (−1, −2). Una recta y una parábola pueden encontrarse en dos puntos, en un solo punto o en ninguno, y un discriminante negativo significa que no hay intersecciones reales. Un círculo funciona igual: pon y = x + 1 en x^2 + y^2 = 25 para obtener x^2 + x − 12 = 0, y así (3, 4) y (−4, −3). Halla siempre los valores de y."
+     ],
+     "more_es": [
+      "Cuando una recta apenas roza una parábola, la ecuación cuadrática tiene una sola solución. Prueba con y = x^2 y y = 2x − 1. Al igualarlas queda x^2 − 2x + 1 = 0, que es (x − 1)^2 = 0. La única solución es x = 1, así que la recta toca la parábola en un solo punto, (1, 1). Con las palabras de la lección anterior, el discriminante es cero.",
+      "Puedes usar esto para elegir una recta a propósito. ¿Qué rectas y = 2x + k se encuentran con y = x^2 en exactamente un punto? Al igualarlas queda x^2 − 2x − k = 0, y su discriminante es 4 + 4k. Eso es cero cuando k = −1, que es la recta que acabas de ver. Para k mayor que −1 la recta corta la parábola dos veces, y para k menor que −1 no la toca."
+     ]
+    }
+   ]
+  }
+ ],
+ "review": [
+  {
+   "q": "¿Cuánto es (3 − i)(3 + i)?",
+   "choices": [
+    "8",
+    "9 − i",
+    "9",
+    "10"
+   ],
+   "why": "9 + 3i − 3i − i^2 = 9 + 1 = 10. El producto de conjugados es a^2 + b^2."
+  },
+  {
+   "q": "¿Cuál es el residuo al dividir x^3 − 2x + 5 entre x − 2?",
+   "choices": [
+    "5",
+    "1",
+    "7",
+    "9"
+   ],
+   "why": "Según el teorema del residuo, p(2) = 8 − 4 + 5 = 9."
+  },
+  {
+   "q": "Un polinomio de grado 3 con coeficientes reales tiene ceros 1 y 2i. ¿Qué forma factorizada le corresponde?",
+   "choices": [
+    "(x − 1)(x − 2)",
+    "(x − 1)(x + 4)",
+    "(x + 1)(x^2 + 4)",
+    "(x − 1)(x^2 + 4)"
+   ],
+   "why": "El cero 2i trae consigo a −2i, y (x − 2i)(x + 2i) = x^2 + 4. El cero 1 da el factor x − 1."
+  },
+  {
+   "q": "Describe el comportamiento en los extremos de f(x) = −x^4 + 3x.",
+   "choices": [
+    "Ambos extremos hacia abajo",
+    "Ambos extremos hacia arriba",
+    "Izquierda hacia abajo, derecha hacia arriba",
+    "Izquierda hacia arriba, derecha hacia abajo"
+   ],
+   "why": "Grado par 4 con coeficiente principal negativo −1: ambos extremos apuntan hacia abajo."
+  },
+  {
+   "q": "A una hoja cuadrada de 30 pulgadas se le recortan esquinas de 5 pulgadas y se doblan los lados hacia arriba. ¿Cuál es el volumen?",
+   "choices": [
+    "1,500 pulgadas cúbicas",
+    "2,000 pulgadas cúbicas",
+    "2,500 pulgadas cúbicas",
+    "4,000 pulgadas cúbicas"
+   ],
+   "why": "V = 5 × (30 − 10)^2 = 5 × 400 = 2,000 pulgadas cúbicas."
+  },
+  {
+   "q": "Resuelve x^2 − 6x + 13 = 0.",
+   "choices": [
+    "3 ± 4i",
+    "−3 ± 2i",
+    "3 ± 2i",
+    "6 ± 4i"
+   ],
+   "why": "El discriminante es 36 − 52 = −16, así que x = (6 ± 4i) / 2 = 3 ± 2i."
+  },
+  {
+   "q": "f(x) = (x − 4)^2 (x + 1). ¿Cómo se encuentra la gráfica con el eje x?",
+   "choices": [
+    "Cruza en x = 4 y toca en x = −1",
+    "Cruza en los dos ceros",
+    "Toca en x = 4 y cruza en x = −1",
+    "Toca en los dos ceros"
+   ],
+   "why": "La multiplicidad 2 en x = 4 significa tocar y dar la vuelta; la multiplicidad 1 en x = −1 significa cruzar."
+  },
+  {
+   "q": "Resuelve el sistema y = x^2 − 1 y y = 3.",
+   "choices": [
+    "Solo (2, 3)",
+    "(4, 3) y (−4, 3)",
+    "(3, 2) y (3, −2)",
+    "(2, 3) y (−2, 3)"
+   ],
+   "why": "x^2 − 1 = 3 da x^2 = 4, así que x = ±2, y y = 3 en los dos puntos."
+  }
+ ]
+}

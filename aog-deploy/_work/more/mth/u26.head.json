@@ -1,0 +1,147 @@
+{
+ "title": "Estadística: de una muestra a una afirmación",
+ "years": "Estadística y probabilidad",
+ "intro": [
+  "Una enfermera dice que un niño está en el percentil 90. Un sitio de noticias dice que un candidato va adelante, 48% a 46%. Un comercial dice que un suplemento redujo el riesgo en 30%. Cada una de estas es una afirmación construida con datos, y cada una se puede leer bien o leer mal. Esta unidad trata de leerlas bien. Aprenderás cómo una sola curva en forma de campana describe estaturas, calificaciones y lanzamientos de moneda; cómo unos cientos de personas elegidas al azar pueden representar a millones; y cómo decidir si un resultado sorprendente es real o solo un golpe de suerte.",
+  "Las herramientas son pocas y se apoyan unas en otras. El centro, la dispersión y la forma describen un montón de datos. Las puntuaciones z y los percentiles ubican un valor dentro del montón. Las reglas de probabilidad dicen qué tan probables son las combinaciones de sucesos, y el valor esperado convierte esas probabilidades en decisiones. Después la dirección se invierte: en lugar de usar una población conocida para predecir una muestra, usas una muestra para hacer una afirmación sobre una población desconocida, y le pones a esa afirmación un margen de error honesto.",
+  "Al final podrás calcular un percentil a partir de una puntuación z, comprobar si una tabla de doble entrada muestra independencia, hallar el valor esperado de un juego, explicar por qué una encuesta de 1,000 personas tiene un margen de error cercano a 3 puntos, seguir la lógica de una prueba de hipótesis y desarmar un titular que confunde un cambio relativo de 20% con una diferencia real. Son destrezas para un curso de estadística, y también para ser un ciudadano al que un número no puede engañar."
+ ],
+ "bigQuestion": "¿Cuándo se puede confiar en que un número calculado con unas pocas personas dice algo cierto sobre todas, y cómo sabemos hasta dónde confiar en él?",
+ "timeline": [
+  {"t": "John Graunt estudia los registros de muertes de Londres y muestra que surgen patrones al contar a muchas personas"},
+  {"t": "Ars Conjectandi, de Jacob Bernoulli, demuestra que las proporciones de una muestra se acercan a la probabilidad verdadera a medida que aumentan las pruebas"},
+  {"t": "Abraham de Moivre muestra que los conteos binomiales se acumulan en una curva en forma de campana"},
+  {"t": "Carl Friedrich Gauss usa la curva normal para describir los errores en las mediciones astronómicas"},
+  {"t": "Adolphe Quetelet aplica la curva de campana a las estaturas humanas y a otras mediciones sociales"},
+  {"t": "Karl Pearson presenta la prueba de ji al cuadrado para comparar los conteos observados con los esperados"},
+  {"t": "William Gosset, que escribía bajo el nombre de Student, publica un método para sacar conclusiones de muestras pequeñas"},
+  {"t": "Statistical Methods for Research Workers, de Ronald Fisher, populariza las pruebas de significancia y el diseño aleatorizado"},
+  {"t": "La encuesta de la revista Literary Digest fracasa pese a dos millones de respuestas; la muestra más pequeña pero representativa de Gallup acierta"},
+  {"t": "Unas encuestas que se detuvieron demasiado pronto ayudan a producir el famoso titular equivocado «Dewey derrota a Truman»"},
+  {"t": "El ensayo de campo de la vacuna Salk contra la polio usa asignación al azar, placebos y ocultamiento (ciego) con cientos de miles de niños"},
+  {"t": "Las simulaciones en computadora permiten a los estudiantes construir distribuciones muestrales y valores p sin fórmulas"}
+ ],
+ "wrap": {
+  "words": [
+   {"w": "desviación estándar", "d": "una distancia típica de los valores a la media; mientras mayor es, más dispersos están los datos"},
+   {"w": "curva normal", "d": "la curva simétrica en forma de campana, descrita por completo con su media y su desviación estándar"},
+   {"w": "regla empírica", "d": "en una curva normal, cerca de 68%, 95% y 99.7% de los valores están a 1, 2 y 3 desviaciones estándar de la media"},
+   {"w": "puntuación z", "d": "cuántas desviaciones estándar está un valor por encima (positivo) o por debajo (negativo) de la media"},
+   {"w": "percentil", "d": "el porcentaje de un grupo cuyos valores quedan por debajo de un valor dado"},
+   {"w": "probabilidad condicional", "d": "la probabilidad de A dado que ya ocurrió B, que se escribe P(A | B)"},
+   {"w": "independientes", "d": "dos sucesos son independientes cuando el hecho de que uno ocurra no cambia la probabilidad del otro"},
+   {"w": "valor esperado", "d": "el resultado promedio a largo plazo por intento: se suma cada resultado multiplicado por su probabilidad"},
+   {"w": "variabilidad muestral", "d": "la diferencia natural, debida al azar, entre el resultado de una muestra aleatoria y el de la siguiente"},
+   {"w": "sesgo", "d": "una inclinación sistemática que hace que una muestra difiera de la población en una dirección previsible"},
+   {"w": "margen de error", "d": "la cantidad de más o menos alrededor de una estimación de la muestra; son unos 2 errores estándar para una confianza de 95%"},
+   {"w": "valor p", "d": "la probabilidad, si la hipótesis nula fuera cierta, de obtener un resultado al menos tan extremo como el observado"}
+  ],
+  "test": [
+   {
+    "q": "Los valores 6, 7, 8, 9, 10 tienen media 8. ¿Cuál es su desviación estándar si divides las desviaciones al cuadrado entre la cantidad de datos?",
+    "choices": ["√2 ≈ 1.41", "2", "10", "4"],
+    "why": "Las desviaciones son −2, −1, 0, 1, 2; los cuadrados 4, 1, 0, 1, 4 suman 10; 10 ÷ 5 = 2; √2 ≈ 1.41. Quedarse en 2 es olvidar la raíz cuadrada."
+   },
+   {
+    "q": "Las calificaciones son normales con media 500 y desviación estándar 100. ¿Más o menos qué porcentaje de las calificaciones está entre 400 y 600?",
+    "choices": ["95%", "68%", "34%", "99.7%"],
+    "why": "400 y 600 están cada uno a 1 desviación estándar de 500, y la regla empírica dice que cerca de 68% queda dentro de 1 desviación estándar."
+   },
+   {
+    "q": "Con media 500 y desviación estándar 100, ¿cuál es la puntuación z de una calificación de 350?",
+    "choices": ["1.5", "−150", "−1.5", "3.5"],
+    "why": "(350 − 500) ÷ 100 = −150 ÷ 100 = −1.5. Conserva el signo negativo; −150 es olvidar dividir."
+   },
+   {
+    "q": "En una curva normal, una puntuación z de 2 corresponde más o menos a qué percentil?",
+    "choices": ["50.º", "84.º", "95.º", "98.º"],
+    "why": "Cerca de 97.7% de los valores queda por debajo de z = 2, así que es más o menos el percentil 98. El 84 corresponde a z = 1."
+   },
+   {
+    "q": "¿Qué conjunto de datos describiría mal un modelo normal, y por qué?",
+    "choices": [
+     "Los ingresos de los hogares, porque una cola larga a la derecha hace que el montón esté sesgado",
+     "Las estaturas de mujeres adultas, porque se agrupan alrededor de la media",
+     "Los errores de medición, porque son simétricos",
+     "Las calificaciones de un examen estandarizado grande, porque tienen forma de campana"
+    ],
+    "why": "Los ingresos están sesgados a la derecha: la mayoría está cerca del medio, pero unos pocos valores enormes estiran la cola, así que la media y la regla empírica engañan."
+   },
+   {
+    "q": "Se lanza una moneda justa 3 veces. ¿Cuál es la probabilidad de obtener cara las 3 veces?",
+    "choices": ["3/6", "1/6", "1/8", "3/8"],
+    "why": "Los lanzamientos son independientes: 1/2 × 1/2 × 1/2 = 1/8. Si sumas, obtienes 3/6, y 3/8 es la probabilidad de obtener exactamente una cara."
+   },
+   {
+    "q": "Una tabla muestra que 120 estudiantes practican un deporte; 40 de ellos tienen un trabajo. En total, 70 de 200 estudiantes tienen un trabajo. ¿Qué comparación sirve para probar si el deporte y el trabajo son independientes?",
+    "choices": ["40/200 frente a 70/200", "40/70 frente a 120/200", "40/120 frente a 120/200", "40/120 frente a 70/200"],
+    "why": "Independencia significa que P(trabajo | deporte) es igual a P(trabajo): compara 40/120 ≈ 0.33 con 70/200 = 0.35. Difieren un poco, así que los sucesos no son del todo independientes."
+   },
+   {
+    "q": "P(A) = 0.6, P(B) = 0.3 y P(A y B) = 0.2. ¿Cuánto es P(A o B)?",
+    "choices": ["0.9", "0.7", "0.18", "1.1"],
+    "why": "0.6 + 0.3 − 0.2 = 0.7. Responder 0.9 es olvidar restar lo que se traslapa; 0.18 es multiplicar en lugar de restar."
+   },
+   {
+    "q": "Un juego paga $12 con probabilidad 1/4 y nada en los demás casos, y cuesta $4 jugarlo. ¿Cuál es el resultado neto esperado por juego?",
+    "choices": ["$3", "$8", "−$4", "−$1"],
+    "why": "El pago esperado es 12 × 1/4 = $3; réstale el costo de $4: 3 − 4 = −$1."
+   },
+   {
+    "q": "Un jugador que acierta 25% de sus tiros libres lanza 48 tiros independientes. ¿Cuáles son la media y la desviación estándar del número de aciertos?",
+    "choices": ["Media 12, DE 3", "Media 12, DE 9", "Media 24, DE 3.5", "Media 12, DE 3.5"],
+    "why": "Media = 48 × 0.25 = 12. DE = √(48 × 0.25 × 0.75) = √9 = 3. Responder 9 es olvidar la raíz cuadrada; √12 ≈ 3.5 omite el factor (1 − p)."
+   },
+   {
+    "q": "Una revista encuesta a sus propios suscriptores sobre una elección en todo el estado. ¿Cuál es la principal debilidad?",
+    "choices": [
+     "La muestra es demasiado pequeña",
+     "Los suscriptores no son una rebanada al azar de todos los votantes, así que la muestra está sesgada",
+     "Las revistas no pueden hacer encuestas",
+     "El margen de error es demasiado grande para calcularlo"
+    ],
+    "why": "Los suscriptores se diferencian del público en general de maneras previsibles. Eso es sesgo, y una muestra sesgada más grande no lo arregla."
+   },
+   {
+    "q": "Para una proporción cercana a 0.5, ¿qué tamaño de muestra da un margen de error de 95% de más o menos 2 puntos porcentuales usando 1 ÷ √n?",
+    "choices": ["400", "1,000", "2,500", "10,000"],
+    "why": "1 ÷ √2,500 = 1 ÷ 50 = 0.02, o sea 2 puntos. Con n = 400 salen 5 puntos; con n = 10,000 sale 1 punto."
+   },
+   {
+    "q": "Una encuesta de 1,000 personas da 52% de apoyo con un margen de error de 3 puntos. ¿Qué se puede concluir?",
+    "choices": [
+     "El apoyo es exactamente 52%",
+     "Una mayoría apoya sin duda la medida",
+     "El apoyo verdadero está entre 49% y 55% con certeza",
+     "Los valores de 49% a 55% son compatibles con los datos, así que la mayoría no es segura"
+    ],
+    "why": "52% ± 3% va de 49% a 55%. Como 49% está por debajo de la mitad, la encuesta no puede descartar que el apoyo sea menor de 50%, y el método mismo falla cerca de 5% de las veces."
+   },
+   {
+    "q": "Una empresa afirma que su tasa de defectos es 2%. Una muestra aleatoria de 1,000 artículos tiene 35 defectuosos. Si la afirmación fuera cierta, el conteo esperado sería 20 con desviación estándar de unos 4.4. ¿Cuál es la puntuación z y qué sugiere?",
+    "choices": [
+     "z ≈ 3.4, evidencia fuerte de que la tasa de defectos es mayor que 2%",
+     "z ≈ 1.75, la afirmación se sostiene",
+     "z ≈ 0.75, la afirmación se sostiene",
+     "z ≈ 15, la afirmación es imposible"
+    ],
+    "why": "(35 − 20) ÷ 4.4 ≈ 3.4. Un conteo tan por encima del valor esperado casi nunca ocurriría si la tasa verdadera fuera 2%, así que la afirmación es dudosa."
+   },
+   {
+    "q": "Un titular dice que un tratamiento redujo el riesgo en 50%. Las tasas fueron 2 de cada 10,000 y 1 de cada 10,000. ¿Cuál es el cambio absoluto?",
+    "choices": ["50 por cada 10,000", "1 por cada 10,000", "5 por cada 10,000", "La mitad de todos los casos de la población"],
+    "why": "2 − 1 = 1 caso por cada 10,000 personas. La cifra de 50% es relativa a la tasa original de 2, y eso hace que un cambio diminuto suene grande."
+   }
+  ],
+  "write": {
+   "prompt": "Una muestra aleatoria de 400 estudiantes de una escuela preparatoria grande encuentra que 232 dicen dormir menos de 7 horas. Estima la fracción de todos los estudiantes que duermen menos de 7 horas, da un margen de error y un intervalo, y decide si la escuela puede afirmar que más de la mitad de sus estudiantes duerme poco. Luego nombra un sesgo que el margen de error no detectaría.",
+   "tips": [
+    "Empieza con la proporción de la muestra: 232 ÷ 400, como decimal y como porcentaje.",
+    "Calcula el margen de error con 1 ÷ √n, muestra la aritmética y luego escribe el intervalo.",
+    "Explica qué significa 95% de confianza usando la idea de muchas muestras repetidas, no una probabilidad sobre este intervalo en particular.",
+    "Compara el intervalo completo con 50% antes de decidir si «más de la mitad» tiene apoyo.",
+    "Nombra un sesgo concreto (a quién se dejó fuera, quién no contestó o cómo se redactó la pregunta) y explica por qué una muestra más grande no lo arreglaría."
+   ]
+  }
+ }
+}

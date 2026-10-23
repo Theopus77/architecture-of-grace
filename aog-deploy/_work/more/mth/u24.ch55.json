@@ -348,6 +348,252 @@
      ]
     }
    ]
+  },
+  {
+   "title": "Los logaritmos deshacen los exponentes",
+   "lessons": [
+    {
+     "title": "Lo que pregunta un logaritmo",
+     "mainIdea": "Un logaritmo es un exponente: log_b(y) = x significa b^x = y, así que log_2(32) pregunta qué potencia de 2 da 32.",
+     "reading": [
+      "Supón que una colonia se duplica cada hora y quieres saber cuándo 1 célula se convierte en 32. Te estás preguntando: ¿2 elevado a qué potencia es 32? Como 2^5 = 32, la respuesta es 5. Un *logaritmo* es exactamente esta pregunta escrita como función. Escribimos log_2(32) = 5, y se lee «logaritmo en base 2 de 32 es igual a 5». La regla general: log_b(y) = x significa lo mismo que b^x = y. La *base* b es el factor de crecimiento, y es la cantidad, y el logaritmo devuelve el *exponente*. Así, log_10(1,000) = 3 porque 10^3 = 1,000, y log_5(25) = 2 porque 5^2 = 25.",
+      "Algunos valores salen directo de la definición. log_b(1) = 0 para cualquier base, porque b^0 = 1. log_b(b) = 1, porque b^1 = b. Las respuestas negativas están permitidas: log_5(1/25) = −2 porque 5^(−2) = 1/25. Las fracciones también: log_4(8) = 1.5 porque 4^1.5 = (√4)^3 = 2^3 = 8. Lo que no se permite es una entrada igual a cero o negativa: log_2(0) y log_2(−8) no existen, porque ninguna potencia de 2 es cero ni negativa. El *dominio* de un logaritmo son solo los números positivos.",
+      "Dos errores aparecen una y otra vez. El primero es dividir en lugar de buscar un exponente: log_2(8) no es 8 ÷ 2 = 4; es 3, porque 2^3 = 8. El segundo es cambiar la base y la entrada: log_8(2) es 1/3, no 3, porque 8^(1/3) = 2. Cuando tengas dudas, reescribe el logaritmo como una oración con exponentes y compruébala. ¿log_3(81) = ? se convierte en 3^? = 81; como 3 × 3 × 3 × 3 = 81, la respuesta es 4. Ese paso de reescritura es todo el método."
+     ],
+     "words": [
+      {
+       "w": "logaritmo",
+       "d": "el exponente que necesitas: log_b(y) es la potencia de b que es igual a y"
+      },
+      {
+       "w": "base",
+       "d": "el número que se eleva a una potencia; en log_2(32) la base es 2"
+      },
+      {
+       "w": "exponente",
+       "d": "la potencia a la que se eleva una base; 2^5 tiene exponente 5"
+      },
+      {
+       "w": "dominio",
+       "d": "las entradas que acepta una función; para un logaritmo, solo números positivos"
+      }
+     ],
+     "look": {
+      "title": "Potencias de 2 y sus logaritmos",
+      "unit": "exponente",
+      "rows": [
+       "log_2(1)",
+       "log_2(2)",
+       "log_2(4)",
+       "log_2(8)",
+       "log_2(16)",
+       "log_2(64)",
+       "log_2(1024)"
+      ],
+      "prompt": "log_2(1024) = 10 es la razón por la que un kilobyte es casi mil bytes. ¿Cuánto es log_2(1/8) y por qué es negativo?"
+     },
+     "check": [
+      {
+       "q": "log_3(81) = ?",
+       "choices": [
+        "27",
+        "4",
+        "3",
+        "9"
+       ],
+       "why": "3^4 = 3 × 3 × 3 × 3 = 81, así que el exponente es 4. Dividir 81 entre 3 da 27, que es la operación equivocada."
+      },
+      {
+       "q": "¿Qué ecuación dice lo mismo que log_7(49) = 2?",
+       "choices": [
+        "2^7 = 49",
+        "49^2 = 7",
+        "7^2 = 49",
+        "7 × 2 = 49"
+       ],
+       "why": "log_b(y) = x significa b^x = y. La base 7 elevada al exponente 2 da 49."
+      },
+      {
+       "q": "log_2(1/16) = ?",
+       "choices": [
+        "4",
+        "1/4",
+        "−8",
+        "−4"
+       ],
+       "why": "2^(−4) = 1/2^4 = 1/16, así que el exponente es −4. Una fracción entre 0 y 1 siempre tiene un logaritmo negativo."
+      }
+     ],
+     "short": [
+      "A colony doubles every hour. When does 1 cell become 32? Ask: 2 to what power is 32? Since 2^5 = 32, the answer is 5. A *logarithm* is that question written as a function: log_2(32) = 5. The rule is that log_b(y) = x means b^x = y. The *base* is b, y is the amount, and the log gives back the *exponent*. So log_10(1,000) = 3, and log_5(25) = 2.",
+      "Some logs come straight from the definition: log_b(1) = 0 and log_b(b) = 1. Answers can be negative, like log_5(1/25) = −2, because 5^(−2) = 1/25. The input can never be zero or negative, so the *domain* is the positive numbers. Do not divide: log_2(8) is 3, not 4. When you are unsure, rewrite the log as an exponent sentence."
+     ],
+     "more": [
+      "Logarithms count things that multiply. Think about how many times you must double 1 to reach a million. log_2(1,000,000) is a little less than 20, because 2^20 is 1,048,576. A computer uses the same idea when it searches a sorted list of a million names. It checks the middle, throws away half, and repeats, so it needs at most about 20 checks.",
+      "A log does not have to be a whole number. log_2(20) lies between 4 and 5, because 20 is between 2^4 = 16 and 2^5 = 32. The log is the exponent you would need, even when no whole-number exponent works. You will see how to find these in-between answers with a calculator in the next lesson."
+     ],
+     "short_es": [
+      "Una colonia se duplica cada hora. ¿Cuándo 1 célula se convierte en 32? Pregunta: ¿2 elevado a qué potencia es 32? Como 2^5 = 32, la respuesta es 5. Un *logaritmo* es esa pregunta escrita como función: log_2(32) = 5. La regla es que log_b(y) = x significa b^x = y. La *base* es b, y es la cantidad, y el logaritmo devuelve el *exponente*. Así, log_10(1,000) = 3, y log_5(25) = 2.",
+      "Algunos logaritmos salen directo de la definición: log_b(1) = 0 y log_b(b) = 1. Las respuestas pueden ser negativas, como log_5(1/25) = −2, porque 5^(−2) = 1/25. La entrada nunca puede ser cero ni negativa, así que el *dominio* son los números positivos. No dividas: log_2(8) es 3, no 4. Cuando tengas dudas, reescribe el logaritmo como una oración con exponentes."
+     ],
+     "more_es": [
+      "Los logaritmos cuentan cosas que se multiplican. Piensa cuántas veces hay que duplicar 1 para llegar a un millón. log_2(1,000,000) es un poco menos que 20, porque 2^20 es 1,048,576. Una computadora usa la misma idea cuando busca en una lista ordenada de un millón de nombres. Revisa el del medio, descarta la mitad y repite, así que necesita como máximo unas 20 revisiones.",
+      "Un logaritmo no tiene que ser un número entero. log_2(20) está entre 4 y 5, porque 20 está entre 2^4 = 16 y 2^5 = 32. El logaritmo es el exponente que necesitarías, aun cuando ningún exponente entero funcione. En la próxima lección verás cómo hallar con una calculadora estas respuestas intermedias."
+     ]
+    },
+    {
+     "title": "Logaritmos comunes, logaritmos naturales y calculadoras",
+     "mainIdea": "Las calculadoras dan logaritmos en base 10 (log) y en base e (ln); cualquier otra base sale de la regla del cambio de base, log_b(y) = ln(y) ÷ ln(b).",
+     "reading": [
+      "Dos bases son tan importantes que tienen sus propias teclas. El *logaritmo común* usa base 10 y se escribe log(y), sin mostrar la base. Cuenta potencias de diez: log(1,000) = 3, log(1,000,000) = 6, log(0.01) = −2, y log(500) ≈ 2.699 porque 500 está entre 10^2 y 10^3, más cerca de la de arriba. El *logaritmo natural* usa base e y se escribe ln(y). Deshace e^x: ln(e^2) = 2, ln(e) = 1, ln(1) = 0. Como e ≈ 2.718, ln(10) ≈ 2.303 y ln(2) ≈ 0.693. La tecla LOG de una calculadora es de base 10; la tecla LN es de base e.",
+      "¿Y si la base es 3? Pocas calculadoras tienen una tecla log_3, así que usa la *regla del cambio de base*: log_b(y) = log(y) ÷ log(b), y lo mismo con ln. Ejemplo: log_3(20) = ln(20) ÷ ln(3) ≈ 2.9957 ÷ 1.0986 ≈ 2.727. Compruébalo: 3^2 = 9 y 3^3 = 27, así que un exponente de 2.727 cae con sentido entre 2 y 3, cerca del extremo de arriba. Otro ejemplo: log_2(10) = ln(10) ÷ ln(2) ≈ 2.3026 ÷ 0.6931 ≈ 3.322, es decir, hacen falta unas 3.3 duplicaciones para multiplicar por 10. Ese número explica por qué 10 duplicaciones son más o menos 1,000 (2^10 = 1,024).",
+      "El error que hay que evitar es dividir los números antes de sacar el logaritmo: log_3(20) no es log(20 ÷ 3). La regla dice el logaritmo de la entrada dividido entre el logaritmo de la base, dos logaritmos separados. Un segundo error es esperar que un logaritmo crezca rápido. Los logaritmos crecen despacio: log(10) = 1, log(100) = 2, log(1,000) = 3. Multiplicar la entrada por 10 suma solo 1 a la salida. Ese crecimiento lento es justo la razón por la que los científicos usan logaritmos para domar rangos enormes, desde la energía de los terremotos hasta la intensidad del sonido."
+     ],
+     "words": [
+      {
+       "w": "logaritmo común",
+       "d": "el logaritmo en base 10, que se escribe log(y); log(1,000) = 3"
+      },
+      {
+       "w": "logaritmo natural",
+       "d": "el logaritmo en base e, que se escribe ln(y); ln(e) = 1"
+      },
+      {
+       "w": "regla del cambio de base",
+       "d": "log_b(y) = log(y) ÷ log(b), que permite a una calculadora hallar un logaritmo en cualquier base"
+      }
+     ],
+     "look": {
+      "title": "Estima antes de calcular",
+      "text": "log(4,000) está entre log(1,000) = 3 y log(10,000) = 4. Como 4,000 está a menos de la mitad de ese rango en una escala que multiplica, espera unos 3.6; la calculadora da 3.602. ln(50) está entre ln(e^3) = 3 y ln(e^4) = 4, pues e^3 ≈ 20.1 y e^4 ≈ 54.6; la calculadora da 3.912.",
+      "prompt": "Estima log(250) y ln(8) de la misma manera, y después comprueba cada uno con una calculadora."
+     },
+     "check": [
+      {
+       "q": "log(0.001) = ?",
+       "choices": [
+        "−3",
+        "3",
+        "−2",
+        "1/3"
+       ],
+       "why": "0.001 = 10^(−3), así que el logaritmo común es −3. Las entradas menores que 1 dan logaritmos negativos."
+      },
+      {
+       "q": "¿A qué valor se acerca más log_5(40)?",
+       "choices": [
+        "8",
+        "2.29",
+        "0.90",
+        "3.69"
+       ],
+       "why": "log_5(40) = ln(40) ÷ ln(5) ≈ 3.689 ÷ 1.609 ≈ 2.29. Comprobación: 5^2 = 25 y 5^3 = 125, así que 40 necesita un exponente entre 2 y 3."
+      },
+      {
+       "q": "¿Qué afirmación es verdadera?",
+       "choices": [
+        "log(100) = 10",
+        "ln(1) = 1",
+        "ln(e^5) = 5",
+        "log(50) = 5"
+       ],
+       "why": "ln deshace e^x, así que ln(e^5) = 5. log(100) = 2, ln(1) = 0 y log(50) ≈ 1.7."
+      }
+     ],
+     "short": [
+      "Two bases have their own calculator keys. The *common logarithm* has base 10 and is written log(y). It counts powers of ten: log(1,000) = 3, log(0.01) = −2, and log(500) is about 2.699, between 2 and 3. The *natural logarithm* has base e and is written ln(y). It undoes e^x, so ln(e^2) = 2, ln(e) = 1 and ln(1) = 0.",
+      "For any other base, use the *change-of-base rule*: log_b(y) = log(y) ÷ log(b), and the same with ln. For example, log_3(20) = ln(20) ÷ ln(3) ≈ 2.727, which is between 2 and 3, as it should be. Take two separate logs; do not divide the numbers first. Logs grow slowly: multiplying the input by 10 adds only 1 to the output."
+     ],
+     "more": [
+      "Why do calculators have these two keys? Base 10 matches the way we write numbers, so the common log of a number tells you roughly how many digits it has. Base e fits natural change: the curve y = e^x climbs at a speed equal to its own height at every point. That is what makes ln the most useful log in science.",
+      "Logarithms were invented in 1614 by John Napier to save people time. Before calculators, astronomers and sailors multiplied large numbers by looking up two logs in a printed table, adding them, and looking up the sum. For more than 300 years that was the fastest way to do long multiplications, until pocket calculators arrived in the 1970s."
+     ],
+     "short_es": [
+      "Dos bases tienen sus propias teclas en la calculadora. El *logaritmo común* tiene base 10 y se escribe log(y). Cuenta potencias de diez: log(1,000) = 3, log(0.01) = −2, y log(500) es más o menos 2.699, entre 2 y 3. El *logaritmo natural* tiene base e y se escribe ln(y). Deshace e^x, así que ln(e^2) = 2, ln(e) = 1 y ln(1) = 0.",
+      "Para cualquier otra base, usa la *regla del cambio de base*: log_b(y) = log(y) ÷ log(b), y lo mismo con ln. Por ejemplo, log_3(20) = ln(20) ÷ ln(3) ≈ 2.727, que está entre 2 y 3, como debe ser. Saca dos logaritmos separados; no dividas primero los números. Los logaritmos crecen despacio: multiplicar la entrada por 10 suma solo 1 a la salida."
+     ],
+     "more_es": [
+      "¿Por qué las calculadoras tienen estas dos teclas? La base 10 coincide con la forma en que escribimos los números, así que el logaritmo común de un número te dice más o menos cuántas cifras tiene. La base e encaja con el cambio natural: la curva y = e^x sube con una rapidez igual a su propia altura en cada punto. Eso hace que ln sea el logaritmo más útil en la ciencia.",
+      "Los logaritmos los inventó en 1614 John Napier para ahorrarle tiempo a la gente. Antes de las calculadoras, los astrónomos y los marineros multiplicaban números grandes buscando dos logaritmos en una tabla impresa, sumándolos y buscando la suma. Durante más de 300 años esa fue la forma más rápida de hacer multiplicaciones largas, hasta que llegaron las calculadoras de bolsillo en la década de 1970."
+     ]
+    },
+    {
+     "title": "Las tres reglas de los logaritmos",
+     "mainIdea": "Como los logaritmos son exponentes, log(ab) = log a + log b, log(a ÷ b) = log a − log b y log(a^n) = n × log a.",
+     "reading": [
+      "Los exponentes se suman cuando multiplicas potencias: 2^3 × 2^4 = 2^7. Como los logaritmos son exponentes, los logaritmos se suman cuando se multiplican las entradas: log_2(8 × 16) = log_2(8) + log_2(16) = 3 + 4 = 7, y en efecto 8 × 16 = 128 = 2^7. Esta es la *regla del producto*. La *regla del cociente* sigue de la misma manera: log_3(81 ÷ 9) = log_3(81) − log_3(9) = 4 − 2 = 2, y 81 ÷ 9 = 9 = 3^2. La *regla de la potencia* maneja los exponentes dentro del logaritmo: log(5^3) = 3 × log(5). Con log(5) ≈ 0.699, eso da unos 2.097, y 5^3 = 125 en efecto está un poco más allá de 100 = 10^2.",
+      "Estas reglas te permiten construir muchos logaritmos a partir de unos pocos. Toma log(2) ≈ 0.301 y log(3) ≈ 0.477. Entonces log(6) = log(2 × 3) ≈ 0.778. log(12) = log(4 × 3) = 2 log(2) + log(3) ≈ 0.602 + 0.477 = 1.079. log(1.5) = log(3 ÷ 2) ≈ 0.477 − 0.301 = 0.176. log(8) = 3 log(2) ≈ 0.903. Antes de las calculadoras, la gente hacía todas sus multiplicaciones así: buscaba dos logaritmos, los sumaba y buscaba la respuesta. La regla de la potencia es la clave para resolver ecuaciones más adelante, porque baja un exponente desconocido hasta donde puedes dividirlo: log(2^x) = x × log(2).",
+      "La regla que los estudiantes inventan y que no existe: log(a + b) = log(a) + log(b). Pruébala: log(10 + 100) = log(110) ≈ 2.04, pero log(10) + log(100) = 1 + 2 = 3. No son iguales. Los logaritmos convierten la multiplicación en suma, y no hay ninguna regla para el logaritmo de una suma. Además, log(a) × log(b) no es log(ab), y log(a) ÷ log(b) no es log(a ÷ b); esa segunda es la fórmula del cambio de base para log_b(a), que es otra cosa. Guarda las tres reglas verdaderas en una tarjeta y rechaza las demás."
+     ],
+     "words": [
+      {
+       "w": "regla del producto",
+       "d": "log(ab) = log a + log b: el logaritmo de un producto es la suma de los logaritmos"
+      },
+      {
+       "w": "regla del cociente",
+       "d": "log(a ÷ b) = log a − log b: el logaritmo de un cociente es la diferencia de los logaritmos"
+      },
+      {
+       "w": "regla de la potencia",
+       "d": "log(a^n) = n × log a: un exponente dentro de un logaritmo sale al frente como multiplicador"
+      }
+     ],
+     "look": {
+      "title": "Primero, achícalo",
+      "text": "Escribe log_2(32 × 64) como una suma: 5 + 6 = 11. Escribe log_5(125 ÷ 25) como una resta: 3 − 2 = 1. Escribe log_3(9^4) con la regla de la potencia: 4 × 2 = 8. Cada respuesta dice cuántas veces se multiplicó la base.",
+      "prompt": "Usa log(2) ≈ 0.301 y log(3) ≈ 0.477 para hallar log(18) y log(2/3) sin calculadora."
+     },
+     "check": [
+      {
+       "q": "log_2(8 × 4) = ?",
+       "choices": [
+        "6",
+        "32",
+        "1",
+        "5"
+       ],
+       "why": "log_2(8) + log_2(4) = 3 + 2 = 5, y 8 × 4 = 32 = 2^5. Multiplicar los logaritmos (3 × 2 = 6) es la regla equivocada."
+      },
+      {
+       "q": "Usando log(2) ≈ 0.301, log(32) ≈ ?",
+       "choices": [
+        "1.505",
+        "9.632",
+        "0.602",
+        "1.204"
+       ],
+       "why": "32 = 2^5, así que log(32) = 5 × log(2) ≈ 5 × 0.301 = 1.505. Comprobación: 10^1.505 ≈ 32."
+      },
+      {
+       "q": "¿Qué expresión es igual a log(x^2 y)?",
+       "choices": [
+        "2(log x + log y)",
+        "2 log x + log y",
+        "log x + 2 log y",
+        "log 2x + log y"
+       ],
+       "why": "Regla del producto: log(x^2) + log(y). Regla de la potencia: log(x^2) = 2 log x. Entonces, 2 log x + log y."
+      }
+     ],
+     "short": [
+      "Exponents add when you multiply powers: 2^3 × 2^4 = 2^7. Logs are exponents, so logs add when the inputs multiply. This is the *product rule*: log_2(8 × 16) = 3 + 4 = 7, and 8 × 16 = 128 = 2^7. The *quotient rule* subtracts: log_3(81 ÷ 9) = 4 − 2 = 2. The *power rule* brings an exponent out front: log(5^3) = 3 × log(5).",
+      "Together the rules build many logs from a few. With log(2) ≈ 0.301 and log(3) ≈ 0.477, log(6) = log(2) + log(3) ≈ 0.778, and log(8) = 3 log(2) ≈ 0.903. Only these three rules are true. There is no rule for the log of a sum: log(10 + 100) is about 2.04, but log(10) + log(100) = 3."
+     ],
+     "more": [
+      "The rules explain why doubling always adds the same amount to a log. Since log(2x) = log(2) + log(x), doubling any number adds about 0.301 to its common log. On a log scale, a doubling is always the same step, whether you go from 3 to 6 or from 3,000 to 6,000. That is why log scales can show very small and very large amounts on one picture.",
+      "Sound is measured this way. Doubling the power of a sound adds about 3 units on the decibel scale, because 10 × log(2) is about 3. A sound that is four times as strong adds about 6, because 4 is 2 × 2. The units are called decibels, and you will meet them again soon."
+     ],
+     "short_es": [
+      "Los exponentes se suman cuando multiplicas potencias: 2^3 × 2^4 = 2^7. Los logaritmos son exponentes, así que se suman cuando las entradas se multiplican. Esta es la *regla del producto*: log_2(8 × 16) = 3 + 4 = 7, y 8 × 16 = 128 = 2^7. La *regla del cociente* resta: log_3(81 ÷ 9) = 4 − 2 = 2. La *regla de la potencia* saca un exponente al frente: log(5^3) = 3 × log(5).",
+      "Juntas, las reglas construyen muchos logaritmos a partir de unos pocos. Con log(2) ≈ 0.301 y log(3) ≈ 0.477, log(6) = log(2) + log(3) ≈ 0.778, y log(8) = 3 log(2) ≈ 0.903. Solo estas tres reglas son verdaderas. No hay ninguna regla para el logaritmo de una suma: log(10 + 100) es más o menos 2.04, pero log(10) + log(100) = 3."
+     ],
+     "more_es": [
+      "Las reglas explican por qué duplicar siempre suma la misma cantidad a un logaritmo. Como log(2x) = log(2) + log(x), duplicar cualquier número suma unos 0.301 a su logaritmo común. En una escala logarítmica, una duplicación es siempre el mismo paso, ya sea que vayas de 3 a 6 o de 3,000 a 6,000. Por eso las escalas logarítmicas pueden mostrar cantidades muy pequeñas y muy grandes en una sola imagen.",
+      "El sonido se mide de esta manera. Duplicar la potencia de un sonido suma unas 3 unidades en la escala de decibeles, porque 10 × log(2) es más o menos 3. Un sonido cuatro veces más fuerte suma unas 6, porque 4 es 2 × 2. Las unidades se llaman decibeles, y pronto te las volverás a encontrar."
+     ]
+    }
+   ]
   }
  ]
 }
