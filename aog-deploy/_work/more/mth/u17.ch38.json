@@ -1,0 +1,407 @@
+{
+ "title": "Probabilidad y muestreo",
+ "years": "Probabilidad",
+ "bigQuestion": "¿Cómo podemos hacer afirmaciones confiables sobre el azar y sobre todo un grupo cuando solo podemos ver una parte?",
+ "story": {
+  "title": "Cien lanzamientos",
+  "kicker": "Un estudiante lanza una moneda 100 veces, saca 56 caras y tiene que decidir si la moneda hace trampa.",
+  "paragraphs": [
+   "El hermanito de Devon perdió cuatro lanzamientos de moneda seguidos y anunció que la moneda de veinticinco centavos estaba trucada. Devon no lo creía, pero decir «es justa» no iba a resolver nada. Así que Devon se sentó a la mesa de la cocina con la moneda y una hoja de papel y la lanzó 100 veces, haciendo una marca por cada resultado. El conteo final fue 56 caras y 44 cruces. Su hermano señaló el papel. «¿Ves? Más caras. No es justa».",
+   "Devon lo pensó. Una moneda justa tiene una probabilidad de 1/2 de salir cara, así que en 100 lanzamientos se esperan unas 50 caras. Pero esperar no es lo mismo que garantizar. Devon volvió a mirar las marcas. Los primeros 10 lanzamientos tuvieron 7 caras. Los siguientes 10 tuvieron solo 4. Los conteos subían y bajaban todo el tiempo; 56 era simplemente donde pasaron a quedar en el lanzamiento número 100.",
+   "Al día siguiente Devon llevó la pregunta a la clase de matemáticas, y la maestra la convirtió en un experimento. Veinticinco estudiantes lanzaron cada uno una moneda 100 veces. Sus conteos de caras fueron de 41 a 59, y la mayoría estuvo entre 45 y 55. Nadie dijo que esas monedas estuvieran trucadas. El 56 de Devon estaba del lado alto, pero bien dentro de lo que habían producido las monedas justas. Cuando la clase sumó todo, 2,500 lanzamientos habían dado 1,261 caras: una fracción de 0.5044, notablemente cerca de la mitad.",
+   "Ese es el corazón de este capítulo. La probabilidad es un número de largo plazo. Cualquier serie corta puede vagar, y ese vaivén se achica a medida que crece el número de ensayos. La misma idea explica por qué una muestra aleatoria de 25 estudiantes puede decirte algo verdadero sobre toda una escuela, y por qué una muestra más grande te dice más. El hermano de Devon no quedó convencido, así que Devon le ofreció un trato: 1,000 lanzamientos más, y el que pierda lava los platos."
+  ],
+  "think": "Si Devon hubiera sacado 80 caras en 100 lanzamientos, ¿seguirías creyendo que la moneda es justa? ¿Qué harías después para averiguarlo?"
+ },
+ "sections": [
+  {
+   "title": "Qué significa la probabilidad",
+   "lessons": [
+    {
+     "title": "Un número de 0 a 1",
+     "mainIdea": "La probabilidad es un número de 0 a 1 que dice qué tan probable es un evento: 0 significa imposible, 1 significa seguro y 1/2 significa tan probable como no.",
+     "reading": [
+      "¿Nevará en Chicago en enero? Muy posible. ¿Nevará en julio? Casi imposible. La *probabilidad* convierte palabras como «probable» en números. La probabilidad de un *evento* es un número de 0 a 1. Una probabilidad de 0 significa que el evento no puede ocurrir. Una probabilidad de 1 significa que es seguro. Una probabilidad de 1/2, o 0.5, significa que el evento es tan probable como no, como una moneda justa que cae en cara.",
+      "Las probabilidades se pueden escribir como fracciones, decimales o porcentajes. 1/4 = 0.25 = 25% describen la misma probabilidad. Los eventos cercanos a 1, como 0.9, son *probables*. Los eventos cercanos a 0, como 0.05, son poco probables. Sacar un 7 en un dado común de seis caras tiene probabilidad 0, porque ninguna cara muestra 7. Sacar un número menor que 7 tiene probabilidad 1, porque todas las caras lo muestran.",
+      "Un error común es escribir una probabilidad mayor que 1 o menor que 0. Si obtienes 7/6 o 120%, algo salió mal, normalmente un conteo de arriba que es demasiado grande. Otro error es pensar que «poco probable» significa «no ocurrirá». Un evento con probabilidad 0.1 ocurre cerca de 1 vez de cada 10 a la larga. Aun así ocurre."
+     ],
+     "words": [
+      {"w": "probabilidad", "d": "un número de 0 a 1 que dice qué tan probable es un evento"},
+      {"w": "evento", "d": "algo que puede ocurrir o no, como sacar un número par"},
+      {"w": "probable", "d": "que tiene una probabilidad más cerca de 1 que de 0"}
+     ],
+     "look": {
+      "title": "Colócalos en la recta",
+      "text": "Imagina una recta numérica de 0 a 1. Coloca en ella estos eventos: el sol sale mañana; una moneda justa cae en cruz; sacas un 6 en un dado; sacas un número menor que 7; un día de la semana elegido al azar empieza con la letra M.",
+      "prompt": "¿Cuáles eventos están en 0 o en 1? ¿Cuáles dos están más cerca, y cuáles son sus probabilidades como fracciones?"
+     },
+     "check": [
+      {"q": "¿Qué probabilidad describe un evento poco probable pero posible?", "choices": ["0", "0.1", "1", "0.9"], "why": "0.1 está cerca de 0 pero no es 0, así que el evento puede ocurrir pero normalmente no ocurre. 0 es imposible; 0.9 y 1 son probable o seguro."},
+      {"q": "Un estudiante dice que la probabilidad de lluvia mañana es 1.3. ¿Qué está mal?", "choices": ["Debería escribirse como porcentaje.", "A la lluvia no se le puede dar una probabilidad.", "Una probabilidad no puede ser mayor que 1.", "Nada; 1.3 significa muy probable."], "why": "Toda probabilidad está entre 0 y 1. Un valor de 1.3 señala un error al contar."},
+      {"q": "¿Cuál es la probabilidad de sacar un número menor que 7 en un dado de seis caras?", "choices": ["6/7", "0", "1/6", "1"], "why": "Las seis caras muestran un número menor que 7, así que 6/6 = 1. El evento es seguro."}
+     ],
+     "short": [
+      "Will it snow in Chicago in January? Very likely. In July? Almost impossible. *Probability* turns words like \"likely\" into numbers. The probability of an *event* is a number from 0 to 1. A probability of 0 means the event cannot happen. A probability of 1 means it is certain. A probability of 1/2 means as likely as not, like a fair coin landing heads. Events near 1 are *likely*, and events near 0 are unlikely, but unlikely does not mean it will not happen. Probabilities can be fractions, decimals or percents: 1/4 = 0.25 = 25%. Rolling a number less than 7 on a six-sided die has probability 1, because every face shows one. A probability is never more than 1 or less than 0."
+     ],
+     "more": [
+      "The words we use for chance mean different things to different people. One person might call 7 chances out of 10 \"likely,\" and another might want 9 out of 10 before using that word. A number settles the question, because 0.7 is 0.7 for everyone. Numbers also let you compare chances exactly. You can say that a 3/4 chance is greater than a 2/3 chance, and a plain word like \"likely\" cannot do that."
+     ],
+     "short_es": [
+      "¿Nevará en Chicago en enero? Muy posible. ¿Y en julio? Casi imposible. La *probabilidad* convierte palabras como «probable» en números. La probabilidad de un *evento* es un número de 0 a 1. Una probabilidad de 0 significa que el evento no puede ocurrir. Una probabilidad de 1 significa que es seguro. Una probabilidad de 1/2 significa tan probable como no, como una moneda justa que cae en cara. Los eventos cercanos a 1 son *probables* y los cercanos a 0 son poco probables, pero poco probable no significa que no ocurrirá. Las probabilidades pueden ser fracciones, decimales o porcentajes: 1/4 = 0.25 = 25%. Sacar un número menor que 7 en un dado de seis caras tiene probabilidad 1, porque todas las caras muestran uno. Una probabilidad nunca es mayor que 1 ni menor que 0."
+     ],
+     "more_es": [
+      "Las palabras que usamos para el azar significan cosas distintas para personas distintas. Una persona podría llamar «probable» a 7 oportunidades de 10, y otra podría querer 9 de 10 antes de usar esa palabra. Un número resuelve la duda, porque 0.7 es 0.7 para todos. Los números también te permiten comparar probabilidades con exactitud. Puedes decir que una probabilidad de 3/4 es mayor que una de 2/3, y una palabra sencilla como «probable» no puede hacer eso."
+     ]
+    },
+    {
+     "title": "Probabilidad teórica",
+     "mainIdea": "Cuando todos los resultados son igualmente probables, probabilidad = número de resultados favorables ÷ número total de resultados.",
+     "reading": [
+      "Una ruleta tiene 8 secciones iguales; 3 son rojas y 5 son azules. Cada sección es un *resultado*, y como las secciones son del mismo tamaño, los resultados son *igualmente probables*. La *probabilidad teórica* de rojo es el número de secciones rojas dividido entre el total: 3/8 = 0.375. No necesitas girar la ruleta. Esto es lo que debería pasar a la larga.",
+      "Un dado común tiene seis resultados igualmente probables: 1, 2, 3, 4, 5, 6. La probabilidad de un número par es 3/6 = 1/2, porque 2, 4 y 6 son los tres resultados favorables. Una bolsa tiene 4 canicas rojas y 6 azules. P(roja) = 4/10 = 2/5 = 0.4. P(azul) = 6/10 = 3/5 = 0.6. Las dos suman 1, porque una canica tiene que ser roja o azul. La probabilidad de que un evento no ocurra es 1 menos la probabilidad de que sí ocurra: P(no roja) = 1 − 0.4 = 0.6.",
+      "También puedes predecir conteos. Si lanzas un dado 60 veces, esperas un 3 más o menos 1/6 de las veces: 60 × 1/6 = 10 veces. Esperar no es garantizar. Errores comunes: tratar los resultados como igualmente probables cuando no lo son (una ruleta con una sección grande y tres pequeñas), y poner el número equivocado arriba. P(roja) usa arriba el conteo de rojas y abajo el total, 10, no el conteo de azules."
+     ],
+     "words": [
+      {"w": "resultado", "d": "un resultado posible, como una sección de una ruleta"},
+      {"w": "probabilidad teórica", "d": "los resultados favorables divididos entre los resultados totales, cuando todos los resultados son igualmente probables"},
+      {"w": "igualmente probables", "d": "resultados que tienen la misma oportunidad de ocurrir"}
+     ],
+     "look": {
+      "title": "Eventos con un dado justo",
+      "unit": "probabilidad (redondeada)",
+      "rows": ["P(sacar un 1)", "P(número par)", "P(número mayor que 4)", "P(número menor que 7)"],
+      "prompt": "Escribe cada probabilidad como fracción con denominador 6. ¿Por qué P(número menor que 7) es igual a 1?"
+     },
+     "check": [
+      {"q": "¿Cuál es la probabilidad de sacar un número mayor que 4 con un dado justo?", "choices": ["1/3", "1/2", "2/3", "1/6"], "why": "Solo el 5 y el 6 son mayores que 4: 2 favorables de 6, y 2/6 = 1/3."},
+      {"q": "Una bolsa tiene 5 canicas verdes, 3 amarillas y 2 blancas. ¿Cuál es P(no verde)?", "choices": ["1/5", "1/2", "3/10", "2/3"], "why": "Hay 10 canicas y 5 no son verdes: 5/10 = 1/2. O 1 − P(verde) = 1 − 5/10 = 1/2."},
+      {"q": "Una ruleta tiene 4 secciones iguales numeradas del 1 al 4. En 80 giros, ¿aproximadamente cuántas veces esperarías que caiga en 2?", "choices": ["4", "40", "20", "25"], "why": "P(2) = 1/4, y 80 × 1/4 = 20."}
+     ],
+     "short": [
+      "A spinner has 8 equal sections: 3 red and 5 blue. Each section is an *outcome*. Because the sections are the same size, the outcomes are *equally likely*. The *theoretical probability* of red is the number of red sections divided by the total: 3/8 = 0.375. You do not need to spin at all. A die has six equally likely outcomes, so P(even) = 3/6 = 1/2. The probability that an event does not happen is 1 minus the probability that it does. With 4 red and 6 blue marbles, P(red) = 0.4 and P(not red) = 1 − 0.4 = 0.6. You can also predict counts: in 60 rolls, expect a 3 about 60 × 1/6 = 10 times. Expect does not mean guarantee."
+     ],
+     "more": [
+      "Names in a hat make a good example. Put the names of 25 students in a hat and draw one without looking. Each name is equally likely, so each has a 1/25 chance. If 10 of the names belong to girls, P(girl) = 10/25 = 2/5. The other 15 names give 15/25 = 3/5, and 2/5 + 3/5 = 1, as it must. The draw is fair only because the slips are the same size and well mixed. If one slip were bigger or folded differently, you could not call the outcomes equally likely."
+     ],
+     "short_es": [
+      "Una ruleta tiene 8 secciones iguales: 3 rojas y 5 azules. Cada sección es un *resultado*. Como las secciones son del mismo tamaño, los resultados son *igualmente probables*. La *probabilidad teórica* de rojo es el número de secciones rojas dividido entre el total: 3/8 = 0.375. No necesitas girar la ruleta. Un dado tiene seis resultados igualmente probables, así que P(par) = 3/6 = 1/2. La probabilidad de que un evento no ocurra es 1 menos la probabilidad de que sí ocurra. Con 4 canicas rojas y 6 azules, P(roja) = 0.4 y P(no roja) = 1 − 0.4 = 0.6. También puedes predecir conteos: en 60 lanzamientos, espera un 3 más o menos 60 × 1/6 = 10 veces. Esperar no es garantizar."
+     ],
+     "more_es": [
+      "Los nombres en un sombrero son un buen ejemplo. Pon los nombres de 25 estudiantes en un sombrero y saca uno sin mirar. Cada nombre es igualmente probable, así que cada uno tiene una probabilidad de 1/25. Si 10 de los nombres son de niñas, P(niña) = 10/25 = 2/5. Los otros 15 nombres dan 15/25 = 3/5, y 2/5 + 3/5 = 1, como debe ser. El sorteo es justo solo porque los papelitos son del mismo tamaño y están bien mezclados. Si un papelito fuera más grande o estuviera doblado de otra manera, no podrías decir que los resultados son igualmente probables."
+     ]
+    },
+    {
+     "title": "Probabilidad experimental",
+     "mainIdea": "Probabilidad experimental = veces que ocurrió el evento ÷ número de ensayos; con más ensayos suele acercarse a la probabilidad teórica.",
+     "reading": [
+      "La clase de Devon hace girar 50 veces la ruleta de 3 secciones rojas y 5 azules y anota 18 rojos. La *probabilidad experimental* de rojo es el número de rojos dividido entre el número de *ensayos*: 18/50 = 0.36. La probabilidad teórica era 3/8 = 0.375. Son cercanas pero no idénticas. Eso es normal. Cincuenta giros no bastan para caer exactamente en 0.375; de hecho, 0.375 × 50 = 18.75 ni siquiera es un número entero.",
+      "Cuantos más ensayos hagas, más tiende la probabilidad experimental a acercarse a la teórica. Diez lanzamientos de una moneda podrían dar 7 caras, una probabilidad experimental de 0.7. Cien lanzamientos dieron 56 caras, o 0.56. La clase de Devon juntó 2,500 lanzamientos y obtuvo 1,261 caras, que es 1,261 ÷ 2,500 = 0.5044. Cada conjunto más grande de ensayos queda más cerca de 0.5.",
+      "La probabilidad experimental es la única opción cuando no puedes contar resultados igualmente probables. ¿Cuál es la probabilidad de que una tachuela caiga con la punta hacia arriba? Una tachuela no es simétrica, así que la dejas caer 200 veces y cuentas. Si cae con la punta hacia arriba 130 veces, la probabilidad experimental es 130/200 = 0.65. Errores comunes: dividir entre el número de éxitos en lugar del número de ensayos, y confiar en un experimento diminuto. Tres lanzamientos que caen todos en cara no significan que P(cara) = 1."
+     ],
+     "words": [
+      {"w": "probabilidad experimental", "d": "las veces que ocurrió un evento divididas entre el número de ensayos"},
+      {"w": "ensayo", "d": "una vez que se hace un experimento, como un giro o un lanzamiento"}
+     ],
+     "look": {
+      "title": "Caras en los lanzamientos de Devon",
+      "unit": "caras",
+      "rows": ["Primeros 10 lanzamientos", "Primeros 50 lanzamientos", "Los 100 lanzamientos", "Toda la clase, 2,500 lanzamientos"],
+      "prompt": "Calcula la probabilidad experimental de cara en cada fila. ¿Qué pasa con los valores a medida que crece el número de lanzamientos?"
+     },
+     "check": [
+      {"q": "Una moneda se lanza 40 veces y cae en cara 24 veces. ¿Cuál es la probabilidad experimental de cara?", "choices": ["0.5", "0.4", "1.67", "0.6"], "why": "24 ÷ 40 = 0.6. Si divides 40 entre 24 obtienes 1.67, que no puede ser una probabilidad."},
+      {"q": "Se saca una canica de una bolsa y se devuelve 200 veces. Sale roja 30 veces. ¿Cuál es la probabilidad experimental de roja?", "choices": ["0.15", "0.3", "30", "0.85"], "why": "30 ÷ 200 = 0.15. El conteo 30 no es una probabilidad, y 0.85 es la probabilidad de no roja."},
+      {"q": "¿Qué experimento da la mejor estimación de la probabilidad verdadera de que una ruleta caiga en verde?", "choices": ["5 giros", "500 giros", "20 giros", "50 giros"], "why": "Más ensayos hacen que la probabilidad experimental se acerque más al valor verdadero."}
+     ],
+     "short": [
+      "Devon's class spins the 3-red, 5-blue spinner 50 times and records 18 reds. The *experimental probability* of red is the number of reds divided by the number of *trials*: 18/50 = 0.36. The theoretical probability was 3/8 = 0.375. They are close but not the same, and that is normal. The more trials you run, the closer the experimental probability tends to get to the theoretical one. A coin flipped 10 times might give 7 heads, or 0.7. Devon's class combined 2,500 flips and got 1,261 heads, which is 0.5044. Experimental probability is the only choice when you cannot count equally likely outcomes, like the chance a thumbtack lands point up. Divide by the number of trials, and do not trust a tiny experiment."
+     ],
+     "more": [
+      "Experimental probability works even when no formula exists. Suppose you want the chance that a paper cup tossed into the air lands on its side. No rule tells you, but you can toss it 100 times and count. The same idea is used when a company drops 1,000 phone cases from the same height and counts how many crack. For the number to be trustworthy, every trial must be done the same way, and there must be many of them."
+     ],
+     "short_es": [
+      "La clase de Devon hace girar 50 veces la ruleta de 3 secciones rojas y 5 azules y anota 18 rojos. La *probabilidad experimental* de rojo es el número de rojos dividido entre el número de *ensayos*: 18/50 = 0.36. La probabilidad teórica era 3/8 = 0.375. Son cercanas pero no iguales, y eso es normal. Cuantos más ensayos hagas, más tiende la probabilidad experimental a acercarse a la teórica. Una moneda lanzada 10 veces podría dar 7 caras, o 0.7. La clase de Devon juntó 2,500 lanzamientos y obtuvo 1,261 caras, que es 0.5044. La probabilidad experimental es la única opción cuando no puedes contar resultados igualmente probables, como la probabilidad de que una tachuela caiga con la punta hacia arriba. Divide entre el número de ensayos, y no confíes en un experimento diminuto."
+     ],
+     "more_es": [
+      "La probabilidad experimental sirve aun cuando no existe una fórmula. Supón que quieres saber la probabilidad de que un vaso de papel lanzado al aire caiga de lado. Ninguna regla te lo dice, pero puedes lanzarlo 100 veces y contar. La misma idea se usa cuando una empresa deja caer 1,000 fundas de teléfono desde la misma altura y cuenta cuántas se rompen. Para que el número sea confiable, cada ensayo debe hacerse de la misma manera, y debe haber muchos."
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Eventos compuestos",
+   "lessons": [
+    {
+     "title": "Enumerar todos los resultados",
+     "mainIdea": "Para un evento compuesto, haz la lista del espacio muestral de manera organizada; entonces la probabilidad es resultados favorables sobre resultados totales.",
+     "reading": [
+      "Lanza dos monedas. ¿Cuáles son los resultados posibles? Muchos estudiantes dicen tres: dos caras, dos cruces, o una de cada una. Pero haz la lista con cuidado, primero la primera moneda y luego la segunda (C = cara, X = cruz): CC, CX, XC, XX. Hay cuatro resultados, y son igualmente probables. La lista completa es el *espacio muestral*. «Una cara y una cruz» ocurre en dos de los cuatro, CX y XC, así que su probabilidad es 2/4 = 1/2, no 1/3. Por eso importa la lista organizada.",
+      "Ahora lanza una moneda y un dado. Por cada uno de los 2 resultados de la moneda hay 6 resultados del dado, así que el espacio muestral tiene 2 × 6 = 12 resultados. Son C1, C2, C3, C4, C5, C6, X1, X2, X3, X4, X5, X6. P(cara y un número par) = 3/12 = 1/4, porque C2, C4 y C6 son favorables. Una comprobación rápida: multiplica el número de resultados de cada parte. Ese producto es el tamaño del espacio muestral de un *evento compuesto*.",
+      "Una tabla funciona bien para dos dados. Las filas son el primer dado (1 a 6) y las columnas son el segundo (1 a 6), lo que da 6 × 6 = 36 casillas. Cuenta las casillas cuya suma es 7: (1,6), (2,5), (3,4), (4,3), (5,2), (6,1). Son 6, así que P(suma de 7) = 6/36 = 1/6. Una suma de 2 aparece en una sola casilla, (1,1), así que P(suma de 2) = 1/36. Error común: tratar (2,5) y (5,2) como un solo resultado. Son lanzamientos distintos."
+     ],
+     "words": [
+      {"w": "espacio muestral", "d": "la lista organizada de todos los resultados posibles"},
+      {"w": "evento compuesto", "d": "un evento formado por dos o más partes, como el lanzamiento de una moneda y de un dado juntos"}
+     ],
+     "look": {
+      "title": "Tabla de dos dados",
+      "text": "Dibuja una tabla de 6 por 6. Rotula las filas del 1 al 6 para el primer dado y las columnas del 1 al 6 para el segundo. Escribe la suma en cada casilla. Cuenta cuántas casillas muestran una suma de 8: (2,6), (3,5), (4,4), (5,3), (6,2).",
+      "prompt": "¿Cuál es P(suma de 8)? ¿Qué suma tiene más casillas, y cuál es su probabilidad?"
+     },
+     "check": [
+      {"q": "Un almuerzo tiene 3 opciones de sándwich y 2 de bebida. ¿Cuántos almuerzos distintos son posibles?", "choices": ["5", "9", "6", "3"], "why": "Cada uno de los 3 sándwiches se combina con cada una de las 2 bebidas: 3 × 2 = 6. Si sumas, te da 5 por error."},
+      {"q": "Se lanzan dos monedas justas. ¿Cuál es la probabilidad de dos caras?", "choices": ["1/3", "1/2", "3/4", "1/4"], "why": "El espacio muestral es CC, CX, XC, XX. Solo CC sirve: 1/4. Si cuentas tres resultados, te da 1/3 por error."},
+      {"q": "Se lanzan dos dados. ¿Cuál es P(suma de 2)?", "choices": ["1/36", "1/6", "2/36", "1/12"], "why": "Solo (1,1) da una suma de 2, y hay 36 casillas igualmente probables."}
+     ],
+     "short": [
+      "Flip two coins. Listing the outcomes carefully, first coin then second, gives HH, HT, TH, TT. That is four equally likely outcomes. The full list is the *sample space*. \"One head and one tail\" happens in two of the four, so its probability is 2/4 = 1/2, not 1/3. Now flip a coin and roll a die. The sample space has 2 × 6 = 12 outcomes. A *compound event* has two or more parts, and you multiply the number of outcomes for each part to find the size of its sample space. For two dice, a table of 6 × 6 = 36 cells helps. Only (1,1) gives a sum of 2, so P(sum of 2) = 1/36. Six cells give a sum of 7, so P(sum of 7) = 1/6. Treat (2,5) and (5,2) as different rolls."
+     ],
+     "more": [
+      "An organized list keeps you from missing outcomes. Go in order, finishing everything that starts the same way before moving on. Suppose a locker code is one letter from A, B or C followed by one digit from 1 or 2. List it as A1, A2, B1, B2, C1, C2. That is 6 outcomes, which matches 3 × 2. If your list does not match the product, you know something was missed or repeated. Checking the count this way catches mistakes before they spoil your probability."
+     ],
+     "short_es": [
+      "Lanza dos monedas. Si haces la lista con cuidado, primero la primera moneda y luego la segunda (C = cara, X = cruz), obtienes CC, CX, XC, XX. Son cuatro resultados igualmente probables. La lista completa es el *espacio muestral*. «Una cara y una cruz» ocurre en dos de los cuatro, así que su probabilidad es 2/4 = 1/2, no 1/3. Ahora lanza una moneda y un dado. El espacio muestral tiene 2 × 6 = 12 resultados. Un *evento compuesto* tiene dos o más partes, y multiplicas el número de resultados de cada parte para hallar el tamaño de su espacio muestral. Con dos dados ayuda una tabla de 6 × 6 = 36 casillas. Solo (1,1) da una suma de 2, así que P(suma de 2) = 1/36. Seis casillas dan una suma de 7, así que P(suma de 7) = 1/6. Trata (2,5) y (5,2) como lanzamientos distintos."
+     ],
+     "more_es": [
+      "Una lista organizada evita que se te pasen resultados. Ve en orden, terminando todo lo que empieza igual antes de pasar a lo siguiente. Supón que el código de un casillero es una letra entre A, B o C seguida de un dígito entre 1 o 2. Haz la lista: A1, A2, B1, B2, C1, C2. Son 6 resultados, que coincide con 3 × 2. Si tu lista no coincide con el producto, sabes que se te pasó algo o que algo se repitió. Comprobar el conteo de esta manera atrapa los errores antes de que echen a perder tu probabilidad."
+     ]
+    },
+    {
+     "title": "Diagramas de árbol",
+     "mainIdea": "Un diagrama de árbol se ramifica una vez por cada elección; cada camino desde el inicio hasta una punta es un resultado, y el número de puntas es el producto de los números de ramas.",
+     "reading": [
+      "Una cafetería vende sándwiches con 2 panes (blanco, integral) y 3 rellenos (pavo, queso, verduras). Un *diagrama de árbol* empieza con 2 ramas para el pan. De cada pan, dibuja 3 ramas para el relleno. Cuenta los extremos: 2 × 3 = 6 sándwiches: blanco-pavo, blanco-queso, blanco-verduras, integral-pavo, integral-queso, integral-verduras. Cada camino desde el inicio hasta una punta es un resultado.",
+      "Agrega una tercera elección, 2 bebidas (agua, jugo). De cada una de las 6 puntas de sándwich dibuja 2 ramas más. Ahora hay 2 × 3 × 2 = 12 comidas completas. Si un cliente elige cada opción al azar, todos los caminos son igualmente probables, así que la probabilidad de una comida cualquiera, como integral-queso-jugo, es 1/12. La probabilidad de «un sándwich integral con jugo» cuenta 3 caminos, uno por cada relleno, así que es 3/12 = 1/4.",
+      "Los diagramas de árbol lucen cuando las *ramas* no son las mismas en cada paso. Supón un juego: lanzas una moneda; si sale cara, lanzas un dado; si sale cruz, giras una ruleta de 4 secciones. El árbol tiene 6 puntas bajo cara y 4 bajo cruz, 10 en total, pero las puntas no son igualmente probables, porque cara y cruz se llevan cada una la mitad de la probabilidad. Error común: multiplicar conteos cuando las elecciones dependen unas de otras. Dibuja el árbol y cuenta los caminos en lugar de suponer."
+     ],
+     "words": [
+      {"w": "diagrama de árbol", "d": "un dibujo que se ramifica una vez por cada elección, de modo que cada camino es un resultado"},
+      {"w": "rama", "d": "una línea de un diagrama de árbol que representa una opción en ese paso"}
+     ],
+     "look": {
+      "title": "Dibuja el árbol",
+      "text": "Una camiseta viene en 4 colores, 3 tallas y 2 largos de manga. Dibuja un árbol con 4 ramas para el color, luego 3 para la talla desde cada color, y luego 2 para el largo de manga desde cada talla.",
+      "prompt": "¿Cuántas puntas tiene el árbol? Si eliges una camiseta al azar, ¿cuál es la probabilidad de que sea de talla chica y manga corta, de cualquier color?"
+     },
+     "check": [
+      {"q": "Un diagrama de árbol tiene 4 ramas para el color, luego 3 para la talla y luego 2 para el largo de manga. ¿Cuántos resultados hay?", "choices": ["9", "24", "12", "6"], "why": "4 × 3 × 2 = 24 puntas. Si sumas los conteos, te da 9 por error."},
+      {"q": "En la cafetería con 2 panes, 3 rellenos y 2 bebidas, ¿cuál es la probabilidad de elegir al azar integral-queso-jugo?", "choices": ["1/7", "1/6", "1/12", "3/12"], "why": "Hay 2 × 3 × 2 = 12 comidas igualmente probables, y solo una es integral-queso-jugo."},
+      {"q": "¿Por qué dibujar un diagrama de árbol en lugar de solo multiplicar?", "choices": ["Multiplicar nunca se permite en eventos compuestos.", "Los árboles siempre dan un número mayor.", "Los árboles son obligatorios para eventos simples.", "Muestra todos los resultados, y sirve cuando las elecciones posteriores dependen de las anteriores."], "why": "Multiplicar da el conteo, pero el árbol muestra qué resultados existen, aun cuando las ramas cambian de un paso a otro."}
+     ],
+     "short": [
+      "A cafe sells sandwiches with 2 breads and 3 fillings. A *tree diagram* starts with 2 *branches* for bread, and from each bread it draws 3 branches for filling. Each path from the start to a tip is one outcome, and the number of tips is 2 × 3 = 6. Add a choice of 2 drinks and there are 2 × 3 × 2 = 12 meals. If a customer picks at random, every path is equally likely, so one meal, like wheat-cheese-juice, has probability 1/12. A tree shows every outcome, and it still works when later choices depend on earlier ones, like flipping a coin and then rolling a die for heads but spinning a 4-section spinner for tails. Draw the tree and count the paths instead of assuming."
+     ],
+     "more": [
+      "You can also write probabilities on the branches. On a tree for two fair coin flips, every branch gets 1/2. To find the probability of a whole path, multiply the numbers along it: heads then heads is 1/2 × 1/2 = 1/4. That matches counting 1 of the 4 outcomes. Writing the numbers on the branches is a helpful habit, because it lets a tree handle cases where the branches are not equally likely, like a spinner with one large section and one small one."
+     ],
+     "short_es": [
+      "Una cafetería vende sándwiches con 2 panes y 3 rellenos. Un *diagrama de árbol* empieza con 2 *ramas* para el pan, y de cada pan dibuja 3 ramas para el relleno. Cada camino desde el inicio hasta una punta es un resultado, y el número de puntas es 2 × 3 = 6. Agrega una elección de 2 bebidas y hay 2 × 3 × 2 = 12 comidas. Si un cliente elige al azar, todos los caminos son igualmente probables, así que una comida, como integral-queso-jugo, tiene probabilidad 1/12. Un árbol muestra todos los resultados, y sigue sirviendo cuando las elecciones posteriores dependen de las anteriores, como lanzar una moneda y luego lanzar un dado si sale cara, pero girar una ruleta de 4 secciones si sale cruz. Dibuja el árbol y cuenta los caminos en lugar de suponer."
+     ],
+     "more_es": [
+      "También puedes escribir probabilidades en las ramas. En un árbol para dos lanzamientos de una moneda justa, cada rama lleva 1/2. Para hallar la probabilidad de un camino completo, multiplica los números a lo largo de él: cara y luego cara es 1/2 × 1/2 = 1/4. Eso coincide con contar 1 de los 4 resultados. Escribir los números en las ramas es un buen hábito, porque permite que un árbol maneje casos en que las ramas no son igualmente probables, como una ruleta con una sección grande y una pequeña."
+     ]
+    },
+    {
+     "title": "Probabilidad de eventos compuestos",
+     "mainIdea": "Halla la probabilidad de un evento compuesto contando los resultados favorables en el espacio muestral, o multiplicando las probabilidades de partes independientes.",
+     "reading": [
+      "Gira una ruleta de 4 secciones (1, 2, 3, 4) y lanza una moneda (C = cara, X = cruz). El espacio muestral tiene 4 × 2 = 8 resultados igualmente probables. ¿Cuál es P(3 y cara)? Solo un resultado, 3C, así que 1/8. ¿Cuál es P(número par y cruz)? Dos resultados, 2X y 4X, así que 2/8 = 1/4. Contar siempre funciona cuando los resultados son igualmente probables.",
+      "Hay un atajo cuando las partes no se afectan entre sí, lo que llamamos *eventos independientes*. La ruleta no cambia la moneda. Entonces P(3 y cara) = P(3) × P(cara) = 1/4 × 1/2 = 1/8, la misma respuesta. Con dos dados, P(los dos muestran 6) = 1/6 × 1/6 = 1/36. Con tres lanzamientos de moneda, P(todas caras) = 1/2 × 1/2 × 1/2 = 1/8.",
+      "Los eventos de «al menos uno» son más fáciles con el opuesto, llamado el *complemento*. P(al menos una cara en dos lanzamientos) = 1 − P(sin caras) = 1 − P(XX) = 1 − 1/4 = 3/4. Compruébalo con la lista: CC, CX, XC son tres de los cuatro resultados. Un error común es sumar cuando debes multiplicar. Para «3 y cara», 1/4 + 1/2 = 3/4 es mucho más grande de lo posible. Otro es multiplicar cuando los eventos no son independientes, como sacar dos canicas sin devolver la primera."
+     ],
+     "words": [
+      {"w": "eventos independientes", "d": "eventos en los que un resultado no cambia las probabilidades del otro"},
+      {"w": "complemento", "d": "que el evento no ocurra; su probabilidad es 1 menos la probabilidad del evento"}
+     ],
+     "look": {
+      "title": "Tres lanzamientos",
+      "text": "Haz la lista de todos los resultados de tres lanzamientos de moneda: CCC, CCX, CXC, CXX, XCC, XCX, XXC, XXX. Son 8 resultados igualmente probables.",
+      "prompt": "¿Cuál es P(exactamente dos caras)? ¿Cuál es P(al menos una cruz)? Comprueba la segunda con 1 menos P(todas caras)."
+     },
+     "check": [
+      {"q": "Se lanzan tres monedas justas. ¿Cuál es P(las tres caen en cara)?", "choices": ["1/8", "1/3", "1/2", "3/8"], "why": "1/2 × 1/2 × 1/2 = 1/8, y CCC es 1 de los 8 resultados."},
+      {"q": "Una ruleta con 3 colores iguales se gira dos veces. ¿Cuál es P(rojo las dos veces)?", "choices": ["2/3", "1/9", "1/3", "1/6"], "why": "Los giros son independientes: 1/3 × 1/3 = 1/9. Si sumas, te da 2/3 por error."},
+      {"q": "Se lanzan dos monedas justas. ¿Cuál es P(al menos una cara)?", "choices": ["1/2", "1/4", "3/4", "1"], "why": "1 − P(XX) = 1 − 1/4 = 3/4. Con la lista: CC, CX, XC son 3 de 4 resultados."}
+     ],
+     "short": [
+      "Spin a 4-section spinner (1 to 4) and flip a coin. The sample space has 4 × 2 = 8 equally likely outcomes, so you can count: P(3 and heads) = 1/8. When the parts do not affect each other, they are *independent events*, and you can multiply: P(3 and heads) = 1/4 × 1/2 = 1/8. For three coin flips, P(all heads) = 1/2 × 1/2 × 1/2 = 1/8. For \"at least one\" events, use the *complement*, the event not happening. P(at least one head in two flips) = 1 − P(TT) = 1 − 1/4 = 3/4. Do not add when you should multiply, and do not multiply when events depend on each other, like drawing two marbles without putting the first back."
+     ],
+     "more": [
+      "Why does multiplying work? Think of the two-coin tree. The first flip splits all the possibilities into halves: half start with heads. Then the second flip splits that half again into halves. Half of a half is 1/2 × 1/2 = 1/4 of all the possibilities. Multiplying probabilities is taking a part of a part. That is also why the answer gets smaller each time you require one more thing to happen. \"Heads\" is 1/2 and \"heads and heads\" is 1/4. Each extra flip you require cuts the chance in half."
+     ],
+     "short_es": [
+      "Gira una ruleta de 4 secciones (1 a 4) y lanza una moneda. El espacio muestral tiene 4 × 2 = 8 resultados igualmente probables, así que puedes contar: P(3 y cara) = 1/8. Cuando las partes no se afectan entre sí, son *eventos independientes*, y puedes multiplicar: P(3 y cara) = 1/4 × 1/2 = 1/8. Con tres lanzamientos de moneda, P(todas caras) = 1/2 × 1/2 × 1/2 = 1/8. Para los eventos de «al menos uno», usa el *complemento*, que el evento no ocurra. P(al menos una cara en dos lanzamientos) = 1 − P(XX) = 1 − 1/4 = 3/4. No sumes cuando debes multiplicar, y no multipliques cuando los eventos dependen unos de otros, como sacar dos canicas sin devolver la primera."
+     ],
+     "more_es": [
+      "¿Por qué funciona multiplicar? Piensa en el árbol de dos monedas. El primer lanzamiento divide todas las posibilidades en mitades: la mitad empieza con cara. Luego el segundo lanzamiento divide esa mitad otra vez en mitades. La mitad de una mitad es 1/2 × 1/2 = 1/4 de todas las posibilidades. Multiplicar probabilidades es tomar una parte de una parte. Por eso también la respuesta se hace más pequeña cada vez que exiges que ocurra una cosa más. «Cara» es 1/2 y «cara y cara» es 1/4. Cada lanzamiento extra que exiges reduce la probabilidad a la mitad."
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Simulaciones y muestras",
+   "lessons": [
+    {
+     "title": "Simular el azar",
+     "mainIdea": "Una simulación usa una herramienta al azar que corresponde a las probabilidades reales, repetida muchas veces, para estimar una probabilidad difícil de calcular.",
+     "reading": [
+      "El pronóstico dice que hay un 30% de probabilidad de lluvia cada día de esta semana. ¿Cuál es la probabilidad de lluvia en al menos 2 de los 5 días de escuela? Calcularlo a mano es complicado. En cambio, haz una *simulación*. Usa *dígitos aleatorios* del 0 al 9. Deja que 0, 1 y 2 representen lluvia; son 3 de 10 dígitos, que corresponde al 30%. Los dígitos del 3 al 9 significan que no llueve. Toma 5 dígitos aleatorios para una semana: 8 1 4 2 7 significa lluvia el martes y el jueves, 2 días de lluvia.",
+      "Una semana es un ensayo. Haz 50 ensayos, cuenta cuántos tienen 2 o más días de lluvia y divide entre 50. Si 24 ensayos cumplen, la estimación es 24/50 = 0.48. La regla clave: la herramienta debe corresponder a la probabilidad real. Para un jugador de baloncesto que encesta el 80% de sus tiros libres, deja que los dígitos del 0 al 7 signifiquen encestar y el 8 y el 9, fallar. Para una probabilidad de 1/6, lanza un dado y elige una cara. Para 1/4, usa una ruleta con cuatro secciones iguales, o dos lanzamientos de moneda en los que cuente CC.",
+      "Errores comunes: asignar la cantidad equivocada de dígitos, pues del 0 al 3 da 40%, no 30%. Reutilizar los mismos dígitos en cada ensayo. Detenerse después de unos pocos ensayos. Una simulación es un experimento, así que su respuesta es una probabilidad experimental. Es más confiable con más ensayos, pero sigue siendo una estimación."
+     ],
+     "words": [
+      {"w": "simulación", "d": "un experimento con una herramienta al azar que representa una situación real"},
+      {"w": "dígitos aleatorios", "d": "dígitos del 0 al 9 producidos de modo que cada uno es igualmente probable, que se usan para modelar el azar"}
+     ],
+     "look": {
+      "title": "Cómo hacer corresponder una herramienta al azar con una probabilidad",
+      "unit": "probabilidad",
+      "rows": ["Lluvia 30%: dígitos 0–2 de 10", "Tiro libre 80%: dígitos 0–7 de 10", "Una cara de un dado", "Dos monedas, las dos en cara"],
+      "prompt": "¿Qué herramienta usarías para simular una probabilidad de 1/5? Explica cómo asignarías los dígitos o las caras."
+     },
+     "check": [
+      {"q": "Quieres simular una probabilidad del 40% con dígitos aleatorios del 0 al 9. ¿Qué asignación sirve?", "choices": ["Los dígitos 0–4 significan sí; 5–9 significan no.", "Los dígitos 0–3 significan sí; 4–7 significan no; omite el 8 y el 9.", "Los dígitos pares significan sí; los impares significan no.", "Los dígitos 0, 1, 2 y 3 significan sí; 4–9 significan no."], "why": "Cuatro de diez dígitos es 4/10 = 40%. Las otras asignaciones dan 5/10 o 4/8, que son ambas 50%."},
+      {"q": "Una simulación de semanas de 5 días hace 40 ensayos; 14 de ellos tienen al menos 2 días de lluvia. ¿Cuál es la probabilidad estimada?", "choices": ["0.35", "0.14", "0.4", "0.65"], "why": "14 ÷ 40 = 0.35."},
+      {"q": "¿Qué herramienta al azar simula mejor una probabilidad de 1/6?", "choices": ["un lanzamiento de moneda", "un lanzamiento de un dado justo, con una cara que significa sí", "una ruleta con 4 secciones iguales", "los dígitos aleatorios 0–5 significan sí"], "why": "Un dado tiene 6 caras igualmente probables, así que una cara tiene probabilidad exactamente 1/6. Los dígitos 0–5 dan 6/10."}
+     ],
+     "short": [
+      "The forecast says a 30% chance of rain each day this week. What is the chance of rain on at least 2 of 5 school days? Instead of computing, run a *simulation*. Use *random digits* 0 to 9. Let 0, 1 and 2 stand for rain, because 3 out of 10 digits match 30%. Take 5 random digits for one week and count the rainy days. One week is one trial. Run 50 trials and count how many have 2 or more rainy days. If 24 do, the estimate is 24/50 = 0.48. The random tool must match the real probability: 0 to 3 would give 40%, not 30%. For a 1/6 chance, roll a die and let one face mean yes. A simulation gives an estimate, and it gets more trustworthy with more trials."
+     ],
+     "more": [
+      "Simulations are used when trying the real thing again and again would be slow, costly or unsafe. Computers are made for this: they can run thousands of trials in a blink. You can do the same thing on a small scale with a coin, a die or a hat of numbers. Two people can simulate the same situation and get estimates that differ a little. That is normal. It is a sign that each estimate comes from a limited number of trials, and the more trials each person runs, the closer the two estimates tend to be."
+     ],
+     "short_es": [
+      "El pronóstico dice que hay un 30% de probabilidad de lluvia cada día de esta semana. ¿Cuál es la probabilidad de lluvia en al menos 2 de los 5 días de escuela? En lugar de calcular, haz una *simulación*. Usa *dígitos aleatorios* del 0 al 9. Deja que 0, 1 y 2 representen lluvia, porque 3 de 10 dígitos corresponden al 30%. Toma 5 dígitos aleatorios para una semana y cuenta los días de lluvia. Una semana es un ensayo. Haz 50 ensayos y cuenta cuántos tienen 2 o más días de lluvia. Si 24 lo cumplen, la estimación es 24/50 = 0.48. La herramienta al azar debe corresponder a la probabilidad real: del 0 al 3 daría 40%, no 30%. Para una probabilidad de 1/6, lanza un dado y deja que una cara signifique sí. Una simulación da una estimación, y es más confiable con más ensayos."
+     ],
+     "more_es": [
+      "Las simulaciones se usan cuando repetir una y otra vez la situación real sería lento, caro o peligroso. Las computadoras están hechas para esto: pueden hacer miles de ensayos en un abrir y cerrar de ojos. Tú puedes hacer lo mismo a pequeña escala con una moneda, un dado o un sombrero con números. Dos personas pueden simular la misma situación y obtener estimaciones que difieren un poco. Eso es normal. Es una señal de que cada estimación viene de un número limitado de ensayos, y cuantos más ensayos haga cada persona, más cerca tienden a quedar las dos estimaciones."
+     ]
+    },
+    {
+     "title": "Muestras aleatorias",
+     "mainIdea": "Una muestra aleatoria le da a cada miembro de la población la misma oportunidad de ser elegido, así que es probable que la muestra se parezca al todo.",
+     "reading": [
+      "Quieres saber cuántas horas duermen los estudiantes de tu escuela, pero la escuela tiene 800 estudiantes. Preguntarles a los 800 es un censo. Preguntarle a un grupo más pequeño es tomar una *muestra*. El grupo completo que te interesa es la *población*. Una muestra solo ayuda si se parece a la población, y la mejor manera de lograrlo es elegir al azar: cada estudiante tiene la misma oportunidad de ser elegido.",
+      "Aleatorio no quiere decir descuidado. Pon el nombre o el número de identificación de cada estudiante en una lista, y luego usa un generador de números aleatorios, o saca números de un sombrero, para elegir 50. Eso es una *muestra aleatoria*. Compárala con preguntarles a los 50 estudiantes de la fila de la cafetería a las 7:30 a.m., que son madrugadores, o al equipo de baloncesto, que es más alto que el promedio. Esas muestras están *sesgadas*: algunos estudiantes tuvieron mucha más oportunidad de ser elegidos que otros, así que la muestra se inclina hacia un lado.",
+      "Las muestras aleatorias también varían. Dos muestras aleatorias de 50 estudiantes podrían dar un promedio de sueño de 7.1 y de 7.4 horas. Las muestras más grandes varían menos. El Censo de EE. UU. cuenta a cada persona una vez cada diez años; entre un conteo y otro, el gobierno estima con muestras. Error común: pensar que una muestra grande y sesgada es mejor que una pequeña y aleatoria. Un millón de respuestas a una encuesta en línea que solo vieron los noctámbulos siguen hablándote de los noctámbulos."
+     ],
+     "words": [
+      {"w": "población", "d": "todo el grupo sobre el que quieres aprender"},
+      {"w": "muestra", "d": "un grupo más pequeño tomado de la población"},
+      {"w": "muestra aleatoria", "d": "una muestra en la que cada miembro de la población tuvo la misma oportunidad de ser elegido"},
+      {"w": "sesgada", "d": "que se inclina hacia un lado porque algunos miembros tenían más probabilidad de ser elegidos que otros"}
+     ],
+     "look": {
+      "title": "Población de EE. UU. según el censo (redondeada)",
+      "unit": "millones de personas",
+      "rows": ["1790", "1900", "2000", "2020"],
+      "prompt": "Un censo cuenta a todos. ¿Por qué una encuesta escolar podría usar una muestra aleatoria en lugar de un censo?"
+     },
+     "check": [
+      {"q": "¿Cuál muestra de los 800 estudiantes de una escuela es una muestra aleatoria?", "choices": ["Los primeros 50 estudiantes que entran por la puerta principal.", "Los 50 estudiantes de los equipos deportivos.", "50 estudiantes elegidos sacando números de identificación de la lista de los 800.", "50 estudiantes que se ofrecen en línea."], "why": "Sacar de la lista completa le da a cada estudiante la misma oportunidad. Las otras favorecen a los que llegan temprano, a los atletas o a los voluntarios."},
+      {"q": "Una encuesta sobre el almuerzo se les da solo a los estudiantes que compran almuerzo. ¿Cuál es el problema?", "choices": ["La muestra es demasiado grande.", "El almuerzo no es un tema estadístico.", "Las muestras aleatorias no pueden ser sobre comida.", "Los estudiantes que traen almuerzo no tuvieron ninguna oportunidad de ser elegidos, así que la muestra está sesgada."], "why": "Una muestra aleatoria debe darle una oportunidad a todos en la población. Dejar fuera a quienes traen almuerzo inclina los resultados."},
+      {"q": "¿Cuál variará menos del valor verdadero de la población?", "choices": ["una muestra aleatoria de 200", "una muestra aleatoria de 20", "una muestra aleatoria de 50", "todas las muestras varían lo mismo"], "why": "Las muestras aleatorias más grandes rebotan menos, así que sus resultados quedan más cerca del valor de la población."}
+     ],
+     "short": [
+      "A school has 800 students, and you want to know how many hours they sleep. Asking all 800 is a census. Asking a smaller group is taking a *sample*. The whole group you care about is the *population*. A sample helps only if it looks like the population, so pick at random: every student has the same chance of being chosen. Put every student's name on a list, then use a random number generator or draw numbers from a hat to pick 50. That is a *random sample*. Asking the 50 students in the cafeteria line at 7:30 a.m., or the basketball team, gives a *biased* sample, because some students had a much better chance of being chosen than others. Larger random samples vary less. A huge biased sample is still biased."
+     ],
+     "more": [
+      "A famous example comes from 1936. A magazine called the Literary Digest mailed a poll to millions of people and predicted the wrong winner of the presidential election. Many of the names came from lists of people who owned cars and telephones, and in those years that was not a fair picture of all voters. The poll was huge, but it was biased. Later pollsters used smaller samples chosen with more care and did better. The lesson still holds today: how you choose matters more than how many you ask."
+     ],
+     "short_es": [
+      "Una escuela tiene 800 estudiantes, y quieres saber cuántas horas duermen. Preguntarles a los 800 es un censo. Preguntarle a un grupo más pequeño es tomar una *muestra*. El grupo completo que te interesa es la *población*. Una muestra solo ayuda si se parece a la población, así que elige al azar: cada estudiante tiene la misma oportunidad de ser elegido. Pon el nombre de cada estudiante en una lista, y luego usa un generador de números aleatorios o saca números de un sombrero para elegir 50. Eso es una *muestra aleatoria*. Preguntarles a los 50 estudiantes de la fila de la cafetería a las 7:30 a.m., o al equipo de baloncesto, da una muestra *sesgada*, porque algunos estudiantes tuvieron mucha más oportunidad de ser elegidos que otros. Las muestras aleatorias más grandes varían menos. Una muestra enorme y sesgada sigue estando sesgada."
+     ],
+     "more_es": [
+      "Un ejemplo famoso viene de 1936. Una revista llamada Literary Digest envió por correo una encuesta a millones de personas y predijo el ganador equivocado de la elección presidencial. Muchos de los nombres salieron de listas de personas que tenían automóvil y teléfono, y en esos años eso no era un retrato justo de todos los votantes. La encuesta era enorme, pero estaba sesgada. Más tarde, quienes hacían encuestas usaron muestras más pequeñas elegidas con más cuidado y les fue mejor. La lección sigue vigente hoy: cómo eliges importa más que a cuántos preguntas."
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Hacer inferencias",
+   "lessons": [
+    {
+     "title": "De la muestra a la población",
+     "mainIdea": "Halla la proporción en una muestra aleatoria y luego multiplícala por el tamaño de la población para estimar el conteo en toda la población.",
+     "reading": [
+      "A una muestra aleatoria de 50 estudiantes de una escuela de 800 se les pregunta cuál es su almuerzo favorito. 20 eligen pizza. La *proporción* de la muestra es 20/50 = 0.4, o 40%. Si la muestra se parece a la escuela, a cerca del 40% de los 800 estudiantes les gusta más la pizza: 0.4 × 800 = 320 estudiantes. Esto es una *inferencia*: una conclusión sobre la población sacada de la muestra.",
+      "Otro ejemplo: una muestra aleatoria de 40 estudiantes muestra que 12 caminan a la escuela, así que 12/40 = 0.3. En un distrito de 1,200 estudiantes, estima 0.3 × 1,200 = 360 que caminan. La estimación no es exacta. Una segunda muestra podría mostrar 10 o 14 que caminan, lo que daría 300 o 420. Informa «cerca de 360», y recuerda que las muestras más grandes dan estimaciones más precisas.",
+      "La misma idea sirve para controles de calidad. Una fábrica toma una muestra aleatoria de 100 focos y encuentra 3 que fallan. La proporción es 3/100 = 0.03. En un envío de 20,000 focos, espera cerca de 0.03 × 20,000 = 600 fallas. Errores comunes: multiplicar el conteo de la muestra por la población en lugar de usar la proporción (20 × 800 no tiene sentido), y sacar inferencias de una muestra sesgada. Una muestra de la fila de la pizza siempre dirá pizza."
+     ],
+     "words": [
+      {"w": "proporción", "d": "la parte dividida entre el todo, como 20/50 = 0.4"},
+      {"w": "inferencia", "d": "una conclusión sobre una población basada en una muestra"}
+     ],
+     "look": {
+      "title": "Bolitas de chicle en el frasco",
+      "text": "Un frasco tiene 500 bolitas de chicle de varios colores. No puedes contarlas todas, así que agitas el frasco y sacas una cucharada de 40. En esa cucharada, 14 son azules. Plantea la proporción 14/40 y úsala para estimar cuántas bolitas azules hay en el frasco.",
+      "prompt": "¿Aproximadamente cuántas bolitas azules hay en el frasco? ¿Por qué importa agitar primero el frasco?"
+     },
+     "check": [
+      {"q": "En una muestra aleatoria de 50 estudiantes, a 20 les gusta más la pizza. ¿Aproximadamente a cuántos de los 800 estudiantes de la escuela les gusta más la pizza?", "choices": ["20", "320", "200", "400"], "why": "20/50 = 0.4, y 0.4 × 800 = 320."},
+      {"q": "Una muestra aleatoria de 40 estudiantes muestra que 12 caminan a la escuela. En un distrito de 1,200 estudiantes, ¿aproximadamente cuántos caminan?", "choices": ["12", "300", "360", "480"], "why": "12/40 = 0.3, y 0.3 × 1,200 = 360."},
+      {"q": "Una cucharada de 40 bolitas de chicle de un frasco de 500 tiene 14 azules. ¿Aproximadamente cuántas bolitas azules hay en el frasco?", "choices": ["140", "14", "350", "175"], "why": "14/40 = 0.35, y 0.35 × 500 = 175."}
+     ],
+     "short": [
+      "A random sample of 50 students at an 800-student school is asked their favorite lunch, and 20 pick pizza. The sample *proportion* is 20/50 = 0.4, or 40%. If the sample looks like the school, about 40% of all 800 students prefer pizza: 0.4 × 800 = 320. This is an *inference*, a conclusion about the population drawn from the sample. In another random sample, 12 of 40 students walk to school, so 12/40 = 0.3. In a district of 1,200 students, about 0.3 × 1,200 = 360 walk. The estimate is not exact, so say \"about 360.\" Multiply the proportion by the population, not the sample count, and use a random sample."
+     ],
+     "more": [
+      "Sample proportions are the idea behind the polls on the news. A pollster picks a random sample of voters, finds the proportion who favor a choice, and reports that number for the whole population. A good report also says how many people were asked and how the sample was chosen. Those two facts tell you how far to trust the estimate. A poll of 1,000 randomly chosen people usually tells you more than a poll of 10 people."
+     ],
+     "short_es": [
+      "A una muestra aleatoria de 50 estudiantes de una escuela de 800 se les pregunta cuál es su almuerzo favorito, y 20 eligen pizza. La *proporción* de la muestra es 20/50 = 0.4, o 40%. Si la muestra se parece a la escuela, a cerca del 40% de los 800 estudiantes les gusta más la pizza: 0.4 × 800 = 320. Esto es una *inferencia*, una conclusión sobre la población sacada de la muestra. En otra muestra aleatoria, 12 de 40 estudiantes caminan a la escuela, así que 12/40 = 0.3. En un distrito de 1,200 estudiantes, caminan cerca de 0.3 × 1,200 = 360. La estimación no es exacta, así que di «cerca de 360». Multiplica la proporción por la población, no el conteo de la muestra, y usa una muestra aleatoria."
+     ],
+     "more_es": [
+      "Las proporciones de una muestra son la idea detrás de las encuestas de las noticias. Quien hace la encuesta elige una muestra aleatoria de votantes, halla la proporción que prefiere una opción y da ese número para toda la población. Un buen informe también dice a cuántas personas se preguntó y cómo se eligió la muestra. Esos dos datos te dicen cuánto puedes confiar en la estimación. Una encuesta de 1,000 personas elegidas al azar suele decirte más que una de 10 personas."
+     ]
+    },
+    {
+     "title": "Comparar dos poblaciones",
+     "mainIdea": "Compara muestras aleatorias de dos poblaciones como comparas dos grupos: mira la diferencia entre los centros en relación con la dispersión.",
+     "reading": [
+      "¿Los estudiantes de séptimo y de octavo grado dedican cantidades distintas de tiempo a la tarea? No puedes preguntarle a todos, así que toma una muestra aleatoria de 30 de cada grado. Muestra de séptimo: media 45 minutos, DMA 10. Muestra de octavo: media 65 minutos, DMA 10. La diferencia de medias es 65 − 45 = 20 minutos, que son 20 ÷ 10 = 2 DMA. Es una separación grande y visible, así que puedes inferir que los estudiantes de octavo de esta escuela, en general, dedican más tiempo.",
+      "Cambia los números: media de séptimo 52, media de octavo 55, las dos con DMA 12. La diferencia es de 3 minutos, o 3 ÷ 12 = 0.25 de DMA. Dos muestras aleatorias de la misma población podrían diferir fácilmente en esa cantidad. No afirmes una diferencia real. Di que las muestras se traslapan demasiado para saberlo. Una *diferencia significativa* es una que es grande comparada con la dispersión.",
+      "Repetir el muestreo muestra por qué. Si sacaras muchos pares de muestras de 30, la diferencia entre las medias de las muestras rebotaría unos pocos minutos aun cuando las poblaciones fueran idénticas. Ese rebote es la *variabilidad del muestreo*. Para significar algo, una diferencia debe ser grande comparada con ese rebote y con la dispersión dentro de cada grupo. Errores comunes: comparar dos muestras sesgadas, y comparar muestras de tamaños muy distintos sin darse cuenta. Tamaños de 30 y de 3 no pesan lo mismo."
+     ],
+     "words": [
+      {"w": "diferencia significativa", "d": "una distancia entre dos centros que es grande comparada con la dispersión, normalmente de 2 DMA o más"},
+      {"w": "variabilidad del muestreo", "d": "el rebote natural de los resultados de una muestra aleatoria a la siguiente"}
+     ],
+     "look": {
+      "title": "Dos muestras sobre la tarea (ejemplo)",
+      "unit": "minutos",
+      "rows": ["Media de séptimo grado", "DMA de séptimo grado", "Media de octavo grado", "DMA de octavo grado"],
+      "prompt": "¿A cuántas DMA están las medias de las muestras? ¿Qué conclusión es razonable?"
+     },
+     "check": [
+      {"q": "Muestra A: media 45, DMA 10. Muestra B: media 65, DMA 10. ¿A cuántas DMA están las medias?", "choices": ["2", "20", "10", "0.5"], "why": "65 − 45 = 20, y 20 ÷ 10 = 2 DMA."},
+      {"q": "Dos muestras aleatorias tienen medias de 52 y 55, cada una con una DMA de 12. ¿Cuál es la mejor conclusión?", "choices": ["Los estudiantes de octavo claramente dedican más tiempo.", "La diferencia es pequeña comparada con la dispersión, así que no se muestra una diferencia real.", "La diferencia es de 3 DMA.", "Las muestras tienen que estar sesgadas."], "why": "55 − 52 = 3, y 3 ÷ 12 = 0.25 de DMA, bien dentro de la variabilidad normal del muestreo."},
+      {"q": "¿Qué cambio haría más convincente una diferencia entre dos medias de muestras?", "choices": ["Muestras más pequeñas.", "Preguntar solo a los estudiantes a quienes les gusta la tarea.", "Muestras aleatorias más grandes con la misma diferencia.", "Una DMA mayor en cada muestra."], "why": "Las muestras aleatorias más grandes rebotan menos, así que la misma diferencia resalta con más claridad. El sesgo o más dispersión debilitarían el argumento."}
+     ],
+     "short": [
+      "Do seventh graders and eighth graders spend different amounts of time on homework? Take a random sample of 30 from each grade. Seventh grade: mean 45 minutes, MAD 10. Eighth grade: mean 65 minutes, MAD 10. The difference in means is 20 minutes, which is 20 ÷ 10 = 2 MADs. That is a *meaningful difference*, a gap that is large compared with the spread, so you can infer that eighth graders generally spend more time. If the means were 52 and 55 with both MADs 12, the gap would be 3 ÷ 12 = 0.25 MAD, and you should not claim a real difference. Different random samples bounce around by a small amount, called *sampling variability*. A gap must be bigger than that bounce to mean something. Larger random samples bounce less, so the same gap is more convincing."
+     ],
+     "more": [
+      "Think about why the bounce happens. Suppose every seventh grader and every eighth grader in a school did exactly the same amount of homework on average. A random sample of 30 from each grade would still not give identical means, because the 30 students you happen to pick are not the same 30 you would pick the next time. Sometimes a sample gets a few students who do more, and sometimes a few who do less. That is chance at work, not a real difference. It is why a gap of about 2 MADs or more is taken seriously, and a gap of a small part of a MAD is not."
+     ],
+     "short_es": [
+      "¿Los estudiantes de séptimo y de octavo grado dedican cantidades distintas de tiempo a la tarea? Toma una muestra aleatoria de 30 de cada grado. Séptimo: media 45 minutos, DMA 10. Octavo: media 65 minutos, DMA 10. La diferencia de medias es de 20 minutos, que son 20 ÷ 10 = 2 DMA. Es una *diferencia significativa*, una distancia grande comparada con la dispersión, así que puedes inferir que los estudiantes de octavo, en general, dedican más tiempo. Si las medias fueran 52 y 55, con las dos DMA de 12, la diferencia sería de 3 ÷ 12 = 0.25 de DMA, y no deberías afirmar una diferencia real. Distintas muestras aleatorias rebotan un poco, lo que se llama *variabilidad del muestreo*. Para significar algo, una diferencia debe ser mayor que ese rebote. Las muestras aleatorias más grandes rebotan menos, así que la misma diferencia convence más."
+     ],
+     "more_es": [
+      "Piensa en por qué ocurre el rebote. Supón que todos los estudiantes de séptimo y todos los de octavo de una escuela dedicaran exactamente la misma cantidad de tiempo a la tarea, en promedio. Una muestra aleatoria de 30 de cada grado aun así no daría medias idénticas, porque los 30 estudiantes que te tocan no son los mismos 30 que elegirías la próxima vez. A veces una muestra incluye a unos pocos estudiantes que hacen más, y a veces a unos pocos que hacen menos. Eso es el azar trabajando, no una diferencia real. Por eso se toma en serio una diferencia de unas 2 DMA o más, y no una diferencia de una parte pequeña de una DMA."
+     ]
+    }
+   ]
+  }
+ ],
+ "review": [
+  {"q": "Una bolsa tiene 3 canicas rojas y 9 azules. ¿Cuál es P(roja)?", "choices": ["1/3", "3/9", "3/4", "1/4"], "why": "Hay 12 canicas en total: 3/12 = 1/4. Si divides entre la cantidad de azules, te da 3/9 por error."},
+  {"q": "Se lanza un dado justo 120 veces. ¿Aproximadamente cuántas veces debería salir un 5?", "choices": ["20", "5", "24", "60"], "why": "120 × 1/6 = 20."},
+  {"q": "Una moneda se lanza 50 veces y cae en cruz 22 veces. ¿Cuál es la probabilidad experimental de cruz?", "choices": ["0.5", "0.44", "0.56", "22"], "why": "22 ÷ 50 = 0.44. El valor teórico es 0.5, y 0.56 es cara."},
+  {"q": "¿Cuántos resultados hay en el espacio muestral cuando lanzas una moneda y un dado?", "choices": ["8", "6", "12", "36"], "why": "2 × 6 = 12 resultados."},
+  {"q": "Se lanzan dos dados. ¿Cuál es P(suma de 7)?", "choices": ["1/36", "7/36", "1/12", "1/6"], "why": "Seis de las 36 casillas dan una suma de 7: 6/36 = 1/6."},
+  {"q": "¿Cuál muestra de una escuela es aleatoria?", "choices": ["Nombres sacados de un sombrero que tiene el nombre de cada estudiante.", "Los estudiantes que se sientan en la primera fila.", "Los estudiantes que responden una encuesta en el sitio web de la escuela.", "Los primeros 30 estudiantes en llegar."], "why": "Solo el sombrero le da a cada estudiante la misma oportunidad de ser elegido."},
+  {"q": "En una muestra aleatoria de 60 estudiantes, 15 van en bicicleta a la escuela. La escuela tiene 900 estudiantes. ¿Aproximadamente cuántos van en bicicleta?", "choices": ["15", "225", "150", "60"], "why": "15/60 = 0.25, y 0.25 × 900 = 225."},
+  {"q": "Un jugador encesta el 70% de sus tiros libres. ¿Qué asignación de dígitos simula un tiro?", "choices": ["Los dígitos 0–7 significan encestar; 8–9 significan fallar.", "Los dígitos 0–5 significan encestar; 6–9 significan fallar.", "Los dígitos 0–6 significan encestar; 7–9 significan fallar.", "Los dígitos pares significan encestar; los impares significan fallar."], "why": "Los dígitos del 0 al 6 son 7 de los 10 dígitos, lo que corresponde al 70%. Las otras dan 80%, 60% o 50%."}
+ ]
+}
