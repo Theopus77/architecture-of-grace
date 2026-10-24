@@ -479,10 +479,13 @@
         this.primed = false; this.rFill = 0; this.rRead = this.rWrite = 0;
       }
 
-      /* the cartridge hears groove VELOCITY: still record, no sound */
+      /* the cartridge hears groove VELOCITY: still record, no sound.
+         AOG-VINYL-REAL-V1 — nearly proportional, not the old v^0.22 curve that
+         kept a slow drag half as loud as full speed. A flick is the loud part. */
       var v = Math.abs(this.rate) / (this.srRatio || 1);
-      var want = v < 0.015 ? 0 : Math.min(1, Math.pow(Math.min(v, 1), 0.22));
-      this.gate += (want - this.gate) * 0.02;          /* ~1 ms, click-free */
+      var want = v < 0.01 ? 0 : Math.min(1.35, Math.pow(v, 0.85));
+      var kG = want < this.gate ? 0.08 : 0.02;
+      this.gate += (want - this.gate) * kG;
       var g = this.gate;
 
       /* fast passes get filtered, so speed never turns into gravel */
@@ -492,15 +495,35 @@
       this.lpR += a * (sR - this.lpR);
       var yL = this.lpL * g, yR = this.lpR * g;
 
-      /* surface noise and crackle ride the groove speed */
-      if (this.noiseAmt > 0 && v > 0.02) {
+      /* the chirp: highs the lowpass just removed, only while the speed is changing */
+      var accel = Math.abs(this.rate - (this._pr || 0));
+      this._pr = this.rate;
+      var spark = Math.min(0.7, accel * sr * 0.05);
+      if (spark > 0.02) {
+        yL += (sL * g - yL) * spark;
+        yR += (sR * g - yR) * spark;
+      }
+
+      /* surface noise rides a record that is playing. A hand on the vinyl is a
+         scratch, not a crackle. One tick when a still record starts. */
+      var moving = v > 0.04;
+      if (moving && !this._wasMoving) {
+        this.pop = (Math.random() * 2 - 1) * 0.2;
+        this.popDecay = 1;
+      }
+      this._wasMoving = moving;
+      if (this.noiseAmt > 0 && moving && !this.handOn) {
         this.nz += 0.22 * ((Math.random() * 2 - 1) - this.nz);
-        var hiss = this.nz * 0.02 * this.noiseAmt * Math.min(1, v);
-        if (this.popDecay > 0) { this.popDecay *= 0.86; } else if (Math.random() < 0.00008 * Math.min(2, v)) {
-          this.pop = (Math.random() * 2 - 1) * 0.28 * this.noiseAmt; this.popDecay = 1;
+        var hiss = this.nz * 0.012 * this.noiseAmt * Math.min(1, v);
+        if (this.popDecay > 0) { this.popDecay *= 0.86; } else if (Math.random() < 0.000025 * Math.min(2, v)) {
+          this.pop = (Math.random() * 2 - 1) * 0.18 * this.noiseAmt; this.popDecay = 1;
         }
         var crack = this.pop * this.popDecay;
         yL += hiss + crack; yR += hiss - crack;
+      } else if (this.popDecay > 0) {
+        this.popDecay *= 0.86;
+        var tick = this.pop * this.popDecay;
+        yL += tick; yR += tick * 0.6;
       }
 
       /* DC blocker — a held record must not leave a step on the output */
@@ -509,7 +532,7 @@
       outL[i] = this.dcYL; outR[i] = this.dcYR;
       if (this.dcYL > peak) peak = this.dcYL; else if (-this.dcYL > peak) peak = -this.dcYL;
 
-      this.pos += this.rate;
+      this.pos += this.rate * (servo || !this.motorOn ? 1 : (1 + 0.0011 * Math.sin((this._wow = (this._wow || 0) + 1) * 0.0027)));
       if (this.slip && this.div) {
         this.slipPos += runRate;          /* ⚠ the shadow always runs FORWARD */
         if (this.slipPos > last) this.slipPos = last;

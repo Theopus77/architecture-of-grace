@@ -11,7 +11,7 @@
  * Bump by REPLACING the CACHE line. Don't keep the old one as a comment: every byte here is
  * downloaded again on each update check. Old lines live in tools/sw-cache-history.txt and git log.
  */
-const CACHE = 'aog-cache-2026.10.23.m7576'   // TURNTABLES: ADAPTIVE SCRATCH WINDOW AND A HEAVIER PLATTER RETURN (music-decks.html AOG-SCRATCH-FEEL-V1, aog-vinyl-worklet.js)
+const CACHE = 'aog-cache-2026.10.24.m7577'   // TURNTABLES: PLATTER KEEPS SPINNING UNDER A SCRATCH, CARTRIDGE FOLLOWS GROOVE SPEED (aog-vinyl-worklet.js AOG-VINYL-REAL-V1, music-decks.html)
 
 // Same-origin essentials — reliable to precache at install.
 /* AOG-SW-LIGHT-V1 (2026-10-01) — Jimmy: "Why is it taking so long for the website to load on my phone now?"
