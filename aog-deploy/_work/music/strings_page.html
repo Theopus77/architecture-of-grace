@@ -1462,7 +1462,7 @@ function recPath(id){ return id.indexOf("/")>=0 ? "/audio/"+id+"/" : REAL.base+i
 /* how much memory a set's decoded notes take (bytes: 4 a sample) */
 function recBytes(R){ let n=0; Object.values((R&&R.buf)||{}).forEach(b=>{ n+=b.length*b.numberOfChannels*4; }); return n; }
 function recOf(id){ const s=SOUNDS[id]; return (REAL.on && s && s.rec) ? s.rec : ""; }
-function recSet(id){ return REAL.sets[id]||(REAL.sets[id]={id:id, state:"idle", meta:null, buf:{}, at:{}, lead:{}, lvl:null, job:null, rr:{}, done:0, total:0}); }
+function recSet(id){ return REAL.sets[id]||(REAL.sets[id]={id:id, state:"idle", meta:null, buf:{}, at:{}, lead:{}, loop:{}, lvl:null, job:null, rr:{}, done:0, total:0}); }
 /* is this sound ready to play its recordings (a sound made on the page always is); get it ready (for a recording made
    offline: Send to the turntables, the chord pads) */
 function soundReady(id){ const r=recOf(id); return !r || !!(REAL.sets[r] && REAL.sets[r].state==="ready"); }
@@ -1508,6 +1508,95 @@ function recLead(b, gl){
   let i=from; const thr=pk*0.01; while(i<n && Math.abs(d[i])<thr) i++;
   return (i>=n ? from : Math.max(from, i-Math.round(0.0005*sr)))/sr;
 }
+/* AOG-STRINGS-PRO-V1 (2026-10-23) — Jimmy wants the Studio pro-grade everywhere. Held notes died early: the recordings stop
+   at 2.2 to 6 s (kind to a phone's download), so a clean electric was 58 dB down at 3 s and the finger bass 65 dB down at
+   6 s, where a real one still rings. Now every held recording of the guitars and basses gets a sustain loop, found once
+   as it loads (as the Band's findLoop does for its winds, AOG-BAND-HOLD-V1), so a note rings on for as long as a real
+   one, with nothing more to download:
+   · the loop is the last 0.3 to 1 s of the note before it fades (where it is still within 45 dB of its peak), at least
+     half a second after the pluck. A plucked note fades as it rings, so the stretch is first made level: from the loop's
+     start on, each sample is lifted by as much as the note has faded there (its level over 100 ms), and the voice puts a
+     fade back with its own gain (strTail: the note's own rate, a straight line through its level in dB over its last
+     1.4 s), so the first time through sounds as recorded.
+     The loop's end moves by up to half a wave to where the two ends line up best, its last 0.1 s is blended into the
+     0.1 s before its start (lifted by as much as the two differ, so the loudness holds) and the few samples past the end
+     become those past the start: the jump back lands where the sound already is, with no click.
+   · after the loop's start the note keeps fading at a rate that fits the sound (strTail): its own rate, kept between
+     what a real instrument of that kind does. A high-gain sound (lead, metal, shred; hotSound) sustains while it rings,
+     as a cranked amp makes a string do, and blooms into gentle feedback only when a finger holds the note a long time
+     (vc.hold, strBloom). Measured: music-handoff/tests/strings/sustain.js.
+   The work is a few milliseconds a recording, done as each one is decoded. */
+function strLoop(b, st, m){
+  const sr=b.sampleRate, d=b.getChannelData(0), N=b.length, W=Math.round(0.02*sr), i0=Math.round(st*sr), nW=Math.floor((N-i0)/W);
+  if(nW<45) return null;
+  const env=new Float32Array(nW); let pk=0;
+  for(let w=0;w<nW;w++){ let e=0; const a=i0+w*W; for(let k=a;k<a+W;k++) e+=d[k]*d[k]; env[w]=Math.sqrt(e/W); if(env[w]>pk) pk=env[w]; }
+  if(!(pk>1e-5)) return null;
+  /* the end: before the file's own fade (its last 80 ms) and where the note is still within 45 dB of its peak */
+  let e=nW-5; const floor=pk*Math.pow(10, -45/20); while(e>0 && env[e]<floor) e--;
+  const Z0=i0+e*W, minA=i0+Math.round(0.5*sr); let Z=Z0;
+  if(Z-minA<0.3*sr) return null;
+  /* the note's fade over its last 1.4 s (from half a second after the pluck): a straight line through its level (dB a second) */
+  const w1=e, w0=Math.max(Math.ceil((minA-i0)/W), w1-70); let n=0, sx=0, sy=0, sxx=0, sxy=0;
+  for(let w=w0;w<w1;w++){ const x=w*W/sr, y=20*Math.log10(env[w]+1e-9); n++; sx+=x; sy+=y; sxx+=x*x; sxy+=x*y; }
+  let k=n>4 ? (n*sxy-sx*sy)/(n*sxx-sx*sx) : -6; if(!(k===k)) k=-6; k=Math.max(-60, Math.min(-0.2, k));
+  /* the loop: the last second before the end (at least 0.3 s, from half a second after the pluck) */
+  let A=Math.max(minA, Z-Math.round(1.0*sr));
+  /* made level: each sample lifted to the loop's level at its start, by the note's own level there (over 100 ms, so the
+     wave and the quick beats of its partials stay as recorded); that also holds where the fade quickens near the end */
+  const sm=new Float32Array(nW); for(let w=0;w<nW;w++){ let s2=0, c2=0; for(let j=Math.max(0,w-2);j<=Math.min(nW-1,w+2);j++){ s2+=env[j]*env[j]; c2++; } sm[w]=Math.sqrt(s2/c2)+1e-9; }
+  const smAt=(i)=>{ const x=Math.max(0, Math.min(nW-1.001, (i-i0)/W-0.5)), j=Math.floor(x), f=x-j; return sm[j]*(1-f)+sm[Math.min(nW-1,j+1)]*f; };
+  /* the end, moved by up to half a wave, where the two ends' waves line up best (as the Band's findLoop; every other sample of
+     the last 17 ms is enough: a millisecond or two a recording on a phone) */
+  const P=Math.max(8, Math.round(sr/mtof(m))), L=Math.min(768, Math.round(0.017*sr)), h=P>>1;
+  let bz=Z, br=-2;
+  const corr=(z)=>{ if(z+8>=N || z-L<A) return; let xy=0, xx=0, yy=0;
+    for(let i=0;i<L;i+=2){ const p=d[z-L+i], q=d[A-L+i]; xy+=p*q; xx+=p*p; yy+=q*q; }
+    const r=xy/Math.sqrt(xx*yy+1e-20); if(r>br){ br=r; bz=z; } };
+  const sk=Math.max(1, P>>5), z0=Z;                          /* coarse steps (1/32 of a wave), then every sample near the best */
+  for(let z=z0-h; z<=z0+h; z+=sk) corr(z);
+  const zc=bz; for(let z=zc-sk+1; z<zc+sk; z++) if(z!==zc) corr(z);
+  Z=bz; if(Z+8>=N || Z-A<0.25*sr) return null;
+  const ref=smAt(A), lift=(i)=>ref/smAt(i), X=Math.min(Math.round(0.1*sr), (Z-A)>>2);
+  for(let ch=0; ch<b.numberOfChannels; ch++){
+    const c=b.getChannelData(ch);
+    /* the stretch made level (the lift found once a window, in straight steps between) */
+    for(let i=A;i<Z;){ const e1=Math.min(Z, i+W), g0=lift(i), dg=(lift(e1)-g0)/(e1-i); for(let j=0;i<e1;i++, j++) c[i]*=g0+dg*j; }
+    let xy=0, xx=0, yy=0;
+    for(let i=0;i<X;i++){ const p=c[Z-X+i], q=c[A-X+i]*lift(A-X+i); xy+=p*q; xx+=p*p; yy+=q*q; }
+    const r=Math.max(0, Math.min(1, xy/Math.sqrt(xx*yy+1e-20)));
+    for(let i=0;i<X;i++){ const u=(i+0.5)/X, g=1/Math.sqrt((1-u)*(1-u)+u*u+2*r*u*(1-u)), z=Z-X+i; c[z]=(c[z]*(1-u)+c[A-X+i]*lift(A-X+i)*u)*g; }
+    for(let i=0;i<8 && Z+i<N;i++) c[Z+i]=c[A+i];
+  }
+  return {a:A/sr, z:Z/sr, k:k};
+}
+/* a high-gain sound (as Solo mode hears it, aog-solo.js hotAmp): a lead, high-gain or groove amp, a crunch amp turned up,
+   or a distortion, fuzz or a driven overdrive in front. Kept per sound until its amp is changed. */
+const HOTS={};
+function hotSound(id){
+  if(!GTR) return false;
+  if(id in HOTS) return HOTS[id];
+  let st=null; try{ st=rigFor(id); }catch(e){ return (HOTS[id]=false); }
+  const g=+((st.k&&st.k.gain)||0), fx=st.fx||{};
+  return (HOTS[id]=["lead","high","groove"].indexOf(st.model)>=0 || (st.model==="crunch" && g>=6.5) || !!(fx.ds&&fx.ds.on) || !!(fx.fz&&fx.fz.on) || !!(fx.od&&fx.od.on && g>=6));
+}
+/* how a held note keeps fading once its loop starts (dB a second, at the speed it plays): its own rate, kept between
+   what a real one does. A clean electric about 60 dB in 8 to 12 s; an acoustic a little sooner; a bass 8 s and more; a
+   high-gain sound holds (the amp's own gain keeps the string singing) for 6 s, then lets go */
+function strTail(id, k){
+  const snd=SOUNDS[id]||{};
+  if(hotSound(id)) return {k:-2, hold:6, k2:-9};
+  if(!GTR) return {k:Math.max(-5.5, Math.min(-2.5, k))};
+  if(snd.rec==="steel" || snd.rec==="nylon") return {k:Math.max(-8.5, Math.min(-4.5, k))};
+  return {k:Math.max(-6, Math.min(-3.5, k))};
+}
+/* the fade put back on a looped note (tl: its own gain; from: when the loop's start plays) → when it has died away */
+function strFade(tl, from, T){
+  const tau=8.686/-T.k; tl.gain.setValueAtTime(1, from); tl.gain.setTargetAtTime(0, from, tau);
+  if(!T.hold) return from+Math.min(40, 70/-T.k);
+  const t2=from+T.hold; tl.gain.setTargetAtTime(0, t2, 8.686/-T.k2);
+  return t2+60/-T.k2;
+}
 function recLoad(id){
   const R=recSet(id);
   REAL.order=REAL.order.filter(x=>x!==id).concat([id]);
@@ -1520,10 +1609,12 @@ function recLoad(id){
       if(!OC || !window.fetch) throw new Error("no audio");
       const r=await fetch(recPath(id)+"set.json?v="+REAL.ver); if(!r.ok) throw new Error(r.status);
       const meta=await r.json(), dec=new OC(1, 1, 44100), files=meta.zones.map(z=>z.f).concat(recRel(meta).concat(recSlaps(meta)).map(n=>n.f));
+      const held={}; if(meta.play!=="straight") meta.zones.forEach(z=>{ if((z.k||"sus")==="sus" && !z.lp) held[z.f]=z.m; });   /* AOG-STRINGS-PRO-V1: the held notes that get a sustain loop */
       R.total=files.length; let i=0;
       const lane=async()=>{ while(i<files.length && !R.dropped){ const f=files[i++];
         try{ const q=await fetch(recPath(id)+f+"?v="+REAL.ver); if(!q.ok) throw new Error(q.status);
-          const ab=await q.arrayBuffer(), gl=mp3Gapless(ab), b=await decodeWith(dec, ab); R.buf[f]=b; R.at[f]=recLead(b, gl); R.lead[f]=recFrom(b, gl); }catch(e){}
+          const ab=await q.arrayBuffer(), gl=mp3Gapless(ab), b=await decodeWith(dec, ab); R.buf[f]=b; R.at[f]=recLead(b, gl); R.lead[f]=recFrom(b, gl);
+          if(held[f]!=null){ const lp=strLoop(b, R.at[f], held[f]); if(lp) R.loop[f]=lp; } }catch(e){}
         R.done++; } };
       await Promise.all([lane(), lane(), lane(), lane(), lane(), lane()]);
       if(R.dropped) throw new Error("let go");
@@ -1531,7 +1622,7 @@ function recLoad(id){
       if(!meta.zones.some(z=>(z.k||"sus")==="sus") || meta.zones.some(z=>(z.k||"sus")==="sus" && !R.buf[z.f])) throw new Error("missing");
       recIndex(R, meta);
       R.state="ready";
-    }catch(e){ R.state=R.dropped?"idle":"failed"; R.buf={}; R.at={}; R.lead={}; }
+    }catch(e){ R.state=R.dropped?"idle":"failed"; R.buf={}; R.at={}; R.lead={}; R.loop={}; }
     recForget(); recLine(); recLive();
     return R;
   })();
@@ -1560,6 +1651,7 @@ function recIndex(R, meta){
   if(by.hammer) new Set(by.hammer.map(z=>z.v||1)).forEach(v=>{ L.hammer[v]=med(by.hammer.filter(z=>(z.v||1)===v).map(z=>rmsOf(z,0.01,0.26))); });
   meta.zones.forEach((z,i)=>{ z.i=i; }); R.ev={};   /* AOG-LEVEL-EVEN-V1: each recording's place, for its trim */
   R.meta=meta; R.by=by; R.layers=[...lays].sort((a,b)=>a-b); R.top=R.layers[R.layers.length-1]; R.lvl=L;
+  R.alt=meta.play!=="straight" && !meta.zones.some(z=>(z.r||1)>1);   /* AOG-STRINGS-PRO-V1: one take of each note (recPick) */
   R.noise=recRel(meta).filter(n=>R.buf[n.f]); R.slap=recSlaps(meta).filter(n=>R.buf[n.f]);
   if(R.slap.length) R.lvl.slap=med(R.slap.map(n=>rmsOf(n,0,0.03)));
 }
@@ -1603,10 +1695,24 @@ function recPick(R, kind, m, v, s){
   const near=list.filter(z=>Math.abs(z.m-m)===d), zm=Math.min.apply(null, near.map(z=>z.m)), zs=near.find(z=>z.m===zm).s;
   const takes=near.filter(z=>z.m===zm && z.s===zs).sort((a,b)=>(a.r||1)-(b.r||1));
   if(FORCE_Z!=null){ const f=FORCE_Z; FORCE_Z=null; const hit=all.find(z=>z.f===f && Math.abs(z.m-m)<=max); if(hit) return {z:hit, lay:hit.v||1}; }   /* AOG-NOTES-V1 */
+  /* AOG-STRINGS-PRO-V1: a set recorded with one take of each note (the steel-string and the classical guitar) still never
+     plays the same sound twice in a row: its takes, in turn, are the nearest recording; the same recording a hair apart
+     (vr: strVary); and, where the note sits between two recordings, the other one (two half steps away at most) */
+  if(R.alt && kind==="sus" && takes.length===1){
+    const alt=[{z:takes[0], vr:0}, {z:takes[0], vr:1}];
+    const other=all.filter(z=>(z.v||1)===lay && z.m!==zm && Math.abs(z.m-m)<=2 && Math.sign(z.m-m)!==Math.sign(zm-m) && (s==null || z.s==null || z.s===s));
+    if(other.length) alt.push({z:other.sort((a,b)=>Math.abs(a.m-m)-Math.abs(b.m-m))[0], vr:0});
+    const key="alt|"+lay+"|"+m, k=(R.rr[key]||0)%alt.length; R.rr[key]=k+1;
+    return {z:alt[k].z, lay:lay, vr:alt[k].vr ? ((R.rr.vary=((R.rr.vary||0)%4)+1)) : 0};
+  }
   const key=kind+"|"+lay+"|"+zm+"|"+zs, k=(R.rr[key]||0)%takes.length; R.rr[key]=k+1;
   return {z:takes[k], lay:lay};
 }
 function recRate(z, m){ return Math.pow(2, (m-z.m)/12-(z.c||0)/1200); }
+/* AOG-STRINGS-PRO-V1: the same recording a hair apart, four ways in turn (vr 1-4): two cents sharp or flat, starting half a
+   millisecond to a millisecond into the pluck, a gentle peak or dip (about 1 dB) in the body's range */
+const VARY=[null, {c:2, off:0.0006, hz:1800, db:1.2}, {c:-2, off:0.0011, hz:2700, db:-1.1}, {c:1.5, off:0.0008, hz:1150, db:-1}, {c:-1.5, off:0.0004, hz:3500, db:1}];
+function strVary(z, vr){ const v=VARY[vr]; return v ? {det:Math.pow(2, v.c/1200), off:v.off, hz:v.hz, db:v.db} : null; }
 /* a picked sound on a fingered recording (rclick: the recorded bass is played with the fingers): the made string's own
    pick, its click (the burst renderNote adds at the pluck), laid on the recorded pluck at the level and tone it has on the
    made string (rclick × that). Made once per sound when it is picked, from one note made with and without it; two of
@@ -1637,16 +1743,28 @@ function recVoice(c, ch, id, m, v, when, s, o, R){
   /* the made string sits at 0.2 × the loudness curve over its first quarter second; a recording is brought there too
      (a muted note: as loud at the pick as a held one) */
   const amp = kind==="sus" ? base/L.long[pk.lay] : kind==="hammer" ? 0.7*base/(L.hammer[pk.lay]||L.long[top]) : base*(L.short[top]/L.long[top])/L.mute;
-  const rate=recRate(z, m), off=R.at[z.f]+(soft && kind==="sus" ? 0.03 : 0);
+  /* AOG-STRINGS-PRO-V1: an acoustic's other take (recPick's pk.vr) is the same recording a hair apart in tuning, tone and
+     start (strVary), so two strums in a row are never the same sound */
+  const vr=pk.vr ? strVary(z, pk.vr) : null;
+  const rate=recRate(z, m)*(vr ? vr.det : 1), off=R.at[z.f]+(soft && kind==="sus" ? 0.03 : 0)+(vr ? vr.off : 0);
   const src=c.createBufferSource(); src.buffer=buf; src.playbackRate.value=rate;
+  /* AOG-STRINGS-PRO-V1: a held note rings on through its sustain loop, its own fade put back from where the loop starts
+     (strLoop, strTail, strFade: tl, right after the recording) */
+  const LP=kind==="sus" && R.loop && R.loop[z.f]; let tl=null, lpEnd=0;
+  if(LP){ src.loop=true; src.loopStart=LP.a; src.loopEnd=LP.z; tl=gainAt(c, 1); src.connect(tl); lpEnd=strFade(tl, when+Math.max(0, LP.a-off)/rate, strTail(id, LP.k*rate)); }
   const g=gainAt(c, amp), rel=gainAt(c, 1);
   /* a hammer-on or a tap with no recording of one: the held note from just after its pick, coming in softer */
   if(soft && kind==="sus"){ g.gain.setValueAtTime(0, when); g.gain.linearRampToValueAtTime(amp*0.6, when+0.008); }
-  let head=src;
+  let head=tl||src;
   /* the sound's own tone, as on the made string: a softer pluck a little darker (jazz darkest), above the layer's own
      (rlp, rlpSpan: a sound's tone for the recordings, where its made string's would leave a real one too bright) */
   const lpHz=snd.rlp||snd.lp, lpSpan=snd.rlp?(snd.rlpSpan||snd.lpSpan):snd.lpSpan;
-  if(lpHz){ const lp=c.createBiquadFilter(); lp.type="lowpass"; lp.Q.value=0.5; lp.frequency.value=Math.min(16000, lpHz*Math.pow(2, vv*lpSpan)); src.connect(lp); head=lp; }
+  if(lpHz){ const lp=c.createBiquadFilter(); lp.type="lowpass"; lp.Q.value=0.5; lp.frequency.value=Math.min(16000, lpHz*Math.pow(2, vv*lpSpan)); head.connect(lp); head=lp; }
+  /* AOG-STRINGS-PRO-V1: the other take's own tone (a gentle peak or dip in the body's range), and an up stroke: the pick
+     meets the strings from below, a little lighter in the low end (o.up: strumPlan's "u" strums, the strum strip played
+     upward) */
+  if(vr){ const q=c.createBiquadFilter(); q.type="peaking"; q.frequency.value=vr.hz; q.Q.value=1.1; q.gain.value=vr.db; head.connect(q); head=q; }
+  if(o && o.up){ const q=c.createBiquadFilter(); q.type="lowshelf"; q.frequency.value=240; q.gain.value=-2.5; head.connect(q); head=q; }
   head.connect(g);
   let tail=g; const pan=panFor(c, s); if(pan){ g.connect(pan); tail=pan; }
   tail.connect(rel); rel.connect(ch.amp);
@@ -1671,14 +1789,20 @@ function recVoice(c, ch, id, m, v, when, s, o, R){
   if(snd.twelve && s!=null){ const up=s<4?12:0, p2=recPick(R, "sus", m+up, vv, null);
     if(p2){ const det=s<4?1:Math.pow(2,4/1200), s2=c.createBufferSource(); s2.buffer=R.buf[p2.z.f]; s2.playbackRate.value=recRate(p2.z, m+up)*det;
       const a2=0.2*velAmp(vv)*lift*(p2.z.g||1)*evenOf(R, id, p2.z, m)/L.long[p2.lay]*(s<4?0.5:0.7), g2=gainAt(c, a2/Math.max(1e-9, amp));
-      s2.connect(g2); g2.connect(head===src?g:head); s2.start(when+0.009, R.at[p2.z.f]+(soft?0.03:0)); nodes.push(s2); pairs.push([s2, p2.z, up, det]); } }
+      /* AOG-STRINGS-PRO-V1: it rings on through its own loop, with its own fade */
+      const LP2=LP && R.loop[p2.z.f], o2=R.at[p2.z.f]+(soft?0.03:0); let in2=s2;
+      if(LP2){ s2.loop=true; s2.loopStart=LP2.a; s2.loopEnd=LP2.z; const t2=gainAt(c, 1); s2.connect(t2); in2=t2;
+        const r2=s2.playbackRate.value; strFade(t2, when+0.009+Math.max(0, LP2.a-o2)/r2, strTail(id, LP2.k*r2)); }
+      in2.connect(g2); g2.connect(head===(tl||src)?g:head); s2.start(when+0.009, o2); nodes.push(s2); pairs.push([s2, p2.z, up, det]); } }
   const vc=voiceShell(c, ch.bus, nodes, rel);
-  vc.tau=snd.damp; vc.natural=when+Math.max(0.05, buf.duration-off)/rate;
-  vc.rec={set:R.id, f:z.f, k:kind, v:pk.lay, r:z.r||1, m:z.m, c:z.c||0};
+  vc.tau=snd.damp; vc.natural=LP ? lpEnd : when+Math.max(0.05, buf.duration-off)/rate;
+  if(LP) nodes.forEach(n=>{ try{ n.stop(vc.natural+0.5); }catch(e){} });   /* a loop never ends by itself */
+  vc.rec={set:R.id, f:z.f, k:kind, v:pk.lay, r:z.r||1, m:z.m, c:z.c||0, loop:!!LP, vr:pk.vr||0};
   /* a recording that ends while it still rings fades over its last moments, never stops dead (a loud amp would show it) */
   try{ rel.gain.setTargetAtTime(0, Math.max(when+0.05, vc.natural-0.4), 0.12); }catch(e){}
   /* a slide glides the recording; on a fretless (rglide) it sings over a little longer */
   vc.glide=(m2, at)=>{ pairs.forEach(([sx, zz, up, det])=>{ try{ sx.playbackRate.cancelScheduledValues(at); sx.playbackRate.setTargetAtTime(recRate(zz, m2+up)*det, at, snd.rglide||0.012); }catch(e){} }); };
+  if(LP && hotSound(id)) strBloom(c, vc, m, when, head, g, soft && kind==="sus" ? amp*0.6 : amp, pan||rel);   /* AOG-STRINGS-PRO-V1: a long-held note on a high-gain sound: gentle feedback (vc.hold) */
   /* letting go of a ringing note (the mute, a short chord, a gap in a bass line): the sound of the hand on the string.
      Only a held note: a muted one is already under the hand. A driven amp lifts that small sound as much as the notes, so
      rrel keeps it under the note it stops (measured per sound through its own amp: 8 dB under it); rrel 0, none at all
@@ -1686,6 +1810,38 @@ function recVoice(c, ch, id, m, v, when, s, o, R){
   const stop0=vc.stop, hand=lift*(snd.rrel!=null ? snd.rrel : 1);
   vc.stop=function(t, tau, how){ const was=this.stopped; stop0.call(this, t, tau); if(!was && how && how.rel && hand>0 && (kind==="sus" || kind==="hammer")) recRelease(c, ch, R, hand, vv, when, Math.max(t, c.currentTime), s, this.natural); };
   return vc;
+}
+/* AOG-STRINGS-PRO-V1: feedback on a high-gain sound. A finger that holds a note (vc.hold: the neck, the whole-screen neck,
+   a MIDI key) for 3 s lets it bloom, slowly (over a few seconds), into a harmonic of the note: the octave; the twelfth on
+   a low note; the note itself up high, as a guitar near a loud amp does. The harmonic is the string's own (its overtone,
+   picked out with a narrow filter and lifted), so it grows in step with the note and never beats against it. It goes into
+   the amp with the note (the amp's own gain makes it sing), follows a bend or a slide, and goes as soon as the finger
+   lets go (vc.letGo) or the note stops. Nothing blooms by itself: a strum, a pattern, a lick or a take sent away never
+   holds. As the harmonic grows the rest of the note gives way a little (duck), as a string does when feedback takes it
+   over, so the whole stays about as loud. lvl: how far the harmonic is lifted (× amp); from: the note before its gain
+   (main, amp); to: where the note goes next. */
+const BLOOM={after:3, rise:1.4, lvl:1.2, duck:0.75, q:24};
+function strBloom(c, vc, m, when, from, main, amp, to){
+  let b=null, cur=m;
+  const harm=x=>x<50?3:(x>=76?1:2);
+  vc.hold=function(at){
+    if(this.stopped || b) return;
+    const t0=Math.max(c.currentTime, at==null?when:at)+BLOOM.after, h=harm(cur);
+    if(this.natural && t0>=this.natural-0.5) return;
+    const bp=c.createBiquadFilter(); bp.type="bandpass"; bp.frequency.value=Math.min(16000, mtof(cur)*h); bp.Q.value=BLOOM.q;
+    const g=gainAt(c, 0); from.connect(bp); bp.connect(g); g.connect(to);
+    g.gain.setValueAtTime(0, t0); g.gain.setTargetAtTime(amp*BLOOM.lvl, t0, BLOOM.rise);
+    main.gain.setTargetAtTime(amp*BLOOM.duck, t0, BLOOM.rise);
+    b={bp:bp, g:g, h:h};
+  };
+  vc.blooming=()=>!!b;
+  vc.letGo=function(at){
+    if(!b) return; const t=Math.max(c.currentTime, at||0), x=b; b=null;
+    try{ x.g.gain.cancelScheduledValues(t); x.g.gain.setTargetAtTime(0, t, 0.08); main.gain.cancelScheduledValues(t); main.gain.setTargetAtTime(amp, t, 0.08); }catch(e){}
+    if(c===ac) setTimeout(()=>{ try{ from.disconnect(x.bp); }catch(e){} }, Math.max(0, (t-c.currentTime)*1000)+900);   /* (live only: a take being made keeps its graph) */
+  };
+  const gl=vc.glide;
+  vc.glide=(m2, at)=>{ gl(m2, at); cur=m2; if(b) try{ b.bp.frequency.cancelScheduledValues(at); b.bp.frequency.setTargetAtTime(Math.min(16000, mtof(m2)*b.h), at, 0.012); }catch(e){} };
 }
 function recRelease(c, ch, R, lift, vv, on, t, s, natural){
   if(!R.noise.length || t>natural-0.05 || t-on<0.04) return;
@@ -1744,7 +1900,7 @@ function filt(c, type, f, q){ const b=c.createBiquadFilter(); b.type=type; b.fre
 const AKEY="aog."+INST+".amp.v1";
 let RIGS={}; try{ RIGS=JSON.parse(localStorage.getItem(AKEY)||"{}")||{}; if(typeof RIGS!=="object") RIGS={}; }catch(e){ RIGS={}; }
 function rigFor(id){ const snd=SOUNDS[id]||{}, st=AOGAmp.normalize(RIGS[id]||snd.rig||{model:"none",cab:"off"}, GTR?"guitar":"bass"); if(snd.pick) st.pickup=snd.pick; return st; }
-function saveRigs(){ try{ localStorage.setItem(AKEY, JSON.stringify(RIGS)); }catch(e){} }
+function saveRigs(){ for(const k in HOTS) delete HOTS[k]; try{ localStorage.setItem(AKEY, JSON.stringify(RIGS)); }catch(e){} }
 function makeChain(c){
   const ch={c:c};
   ch.bus=c.createGain(); ch.send=c.createGain(); ch.pre=c.createGain(); ch.amp=c.createGain();
@@ -2016,10 +2172,17 @@ function slideTo(s, f){
 function curChord(){ return (S.playing && PLAY.cur>=0 && S.prog.length) ? S.prog[PLAY.cur%S.prog.length] : null; }
 function shapeChord(){ return curChord() || S.hand; }
 /* a string strummed with the chord in your hand: its fret in the shape; a string the shape skips is muted */
-function pluckShape(s, v, when){
+function pluckShape(s, v, when, o){
   const c=shapeChord(), f=c ? shapeFor(c)[s] : 0;
   if(f<0){ dampString(s, when); return; }
-  pluckCell(s, f, v, when);
+  pluckCell(s, f, v, when, o);
+}
+/* AOG-STRINGS-PRO-V1: a finger holding the note it just played (p: its finger) holds its voice, so a high-gain sound can
+   bloom into feedback (strBloom); on the whole-screen neck, every string a finger holds (holdHeld) */
+function holdOn(p){ const L=STR_LIVE[p.s]; p.vc=L && L.vc; if(p.vc && p.vc.hold) p.vc.hold(); }
+function holdHeld(){
+  for(let s=0;s<TUNING.length;s++){ const L=STR_LIVE[s]; if(!L || !L.vc || L.vc.stopped || !L.vc.hold) continue;
+    const on=pvOn(s).length>0; if(on && !L.held){ L.held=true; L.vc.hold(); } else if(!on && L.held){ L.held=false; L.vc.letGo(); } }
 }
 /* one chord, now: the guitar strums it low to high; the bass plays its low note */
 function playChord(c, v){
@@ -2247,7 +2410,7 @@ function strumPlan(shp, rh, c){
     sp=Math.max(0.015, Math.min(0.04, sp));
     const at=busy[ev.t]!=null ? busy[ev.t]+0.015 : 0; let n=0;
     ss.forEach(h=>{ const cell=typeof h==="object", s=cell?h.s:h; if(seen[s+"@"+ev.t]) return; seen[s+"@"+ev.t]=1;
-      out.push({s:s, f:cell?h.f:null, role:cell&&h.role||"", t:ev.t, off:at+n*sp, v:ev.v*(1-0.035*n)*(ev.mute?0.7:1), chop:ev.chop||0, mute:!!ev.mute}); n++; });
+      out.push({s:s, f:cell?h.f:null, role:cell&&h.role||"", t:ev.t, off:at+n*sp, v:ev.v*(1-0.035*n)*(ev.mute?0.7:1), chop:ev.chop||0, mute:!!ev.mute, up:ev.w==="u"}); n++; });   /* AOG-STRINGS-PRO-V1: up, an up stroke */
     if(n) busy[ev.t]=at+(n-1)*sp;
   });
   /* AOG-STRINGS-REAL-V1: free = the hand lets go of a short note before its string is played again (a recording adds
@@ -2400,7 +2563,7 @@ function scheduleBar(c, ch, k, t0, barSec, swing, from){
       p={...p, v:Math.min(1, p.v*h.v*(1+0.025*feel(k, p.s*97+Math.round(p.t*48))()))};
       if(from && when<from) return;   /* AOG-HAND-STYLE-V1: the part of the bar already played */
       if(!fresh(p.s, when)) return;
-      const vc=makeVoice(c, ch, S.sound, m, p.v, when, p.s, p.mute?{art:"mute"}:undefined);      /* a muted strum: the muted recordings (AOG-STRINGS-REAL-V1) */
+      const vc=makeVoice(c, ch, S.sound, m, p.v, when, p.s, p.mute?{art:"mute"}:p.up?{up:true}:undefined);      /* a muted strum: the muted recordings (AOG-STRINGS-REAL-V1); an up stroke (AOG-STRINGS-PRO-V1) */
       if(vc){ vc.stop(endAt, p.chop?0.02:SOUNDS[S.sound].damp, p.free?{rel:true}:undefined); vc.m=m; vc.cell=p.s+":"+f; vc.on=when; vc.off=endAt; vc.role=p.role; out.push(vc); }
     });
   } else {
@@ -3006,8 +3169,8 @@ function bindNeck(){
     try{ svg.setPointerCapture(e.pointerId); }catch(err){}
     FINGERS.set(e.pointerId, h);
     if(window.AOGSolo && AOGSolo.down(e, h)){ if(h.zone==="fret"){ lessonNote(h.s, h.f); if(LES.count("solo")>=8) LES.mark("solo8"); } litNeck(); return; }   /* AOG-SOLO-V1: Solo mode plays the touch (AOG-LESSONS-V1: a lit note) */
-    if(NECK.play && pvDown(e, h)){ if(h.zone==="fret" && (e.pointerType==="mouse" || PV.tap)) lessonNote(h.s, h.f); litNeck(); return; }   /* AOG-PLAY-V1: one hand holds, the other strums */
-    if(h.zone==="strum") pluckShape(h.s, 0.72); else { pluckCell(h.s, h.f, 0.76); lessonNote(h.s, h.f); }
+    if(NECK.play && pvDown(e, h)){ if(h.zone==="fret" && (e.pointerType==="mouse" || PV.tap)) lessonNote(h.s, h.f); holdHeld(); litNeck(); return; }   /* AOG-PLAY-V1: one hand holds, the other strums */
+    if(h.zone==="strum") pluckShape(h.s, 0.72); else { pluckCell(h.s, h.f, 0.76); lessonNote(h.s, h.f); holdOn(h); }
     litNeck();
   });
   svg.addEventListener("pointermove",(e)=>{
@@ -3017,24 +3180,26 @@ function bindNeck(){
       if(AOGSolo.move(e, p, h)){ const fs=AOGSolo._t.FING.get(e.pointerId);
         if(fs && fs.bend>0.4) LES.mark("bend"); if(p.zone==="fret" && p.f!==f0) LES.mark("slide"); if((AOGSolo._t.SO.pops||0)>pops) LES.mark("pop"); return; } }
     if(window.AOGSolo && AOGSolo.move(e, p, h)) return;   /* AOG-SOLO-V1: bends, slides, the whammy */
-    if(NECK.play && pvMove(e, p, h)) return;   /* AOG-PLAY-V1: strums, slides, bends */
+    if(NECK.play && pvMove(e, p, h)){ holdHeld(); return; }   /* AOG-PLAY-V1: strums, slides, bends */
     if(p.zone==="strum"){
       if(h.zone!=="strum" || h.s===p.s) return;
       /* every string crossed sounds, one after another, as a strum does */
       const dir=h.s>p.s?1:-1, now=ac?ac.currentTime:0; let k=0;
-      const crossed=[]; for(let s=p.s+dir; s!==h.s+dir; s+=dir){ pluckShape(s, 0.68, now+k*0.006); crossed.push(s); k++; }
+      const crossed=[]; for(let s=p.s+dir; s!==h.s+dir; s+=dir){ pluckShape(s, 0.68, now+k*0.006, dir<0?{up:true}:undefined); crossed.push(s); k++; }   /* AOG-STRINGS-PRO-V1: upward, an up stroke */
       if(!p.lset) p.lset=new Set([p.s]); lessonStrum(p, crossed, dir>0);   /* AOG-LESSONS-V1 */
       p.s=h.s;
     } else {
       if(h.zone!=="fret" || (h.s===p.s && h.f===p.f)) return;
-      if(h.s===p.s){ slideTo(h.s, h.f); LES.mark("slide"); } else pluckCell(h.s, h.f, 0.7);
+      if(h.s===p.s){ slideTo(h.s, h.f); LES.mark("slide"); } else { if(p.vc && p.vc.letGo) p.vc.letGo(); pluckCell(h.s, h.f, 0.7); holdOn(Object.assign(p, {s:h.s})); }
       lessonNote(h.s, h.f);   /* AOG-LESSONS-V1 */
       p.s=h.s; p.f=h.f;
     }
     litNeck();
   });
   const up=(e)=>{ if(!FINGERS.has(e.pointerId)) return; if(window.AOGSolo) AOGSolo.up(e); /* AOG-SOLO-V1: pull-offs */
-    const p=FINGERS.get(e.pointerId); FINGERS.delete(e.pointerId); if(NECK.play) pvUp(e, p); /* AOG-PLAY-V1: a lifted finger */ litNeck(); };
+    const p=FINGERS.get(e.pointerId); FINGERS.delete(e.pointerId); if(NECK.play) pvUp(e, p); /* AOG-PLAY-V1: a lifted finger */
+    if(p && p.vc && p.vc.letGo) p.vc.letGo(); if(NECK.play) holdHeld();   /* AOG-STRINGS-PRO-V1: a lifted finger lets the feedback go */
+    litNeck(); };
   svg.addEventListener("pointerup",up); svg.addEventListener("pointercancel",up); svg.addEventListener("lostpointercapture",up);
 }
 function moveNeck(step){ const was=S.fret0; S.fret0+=step; buildNeck(); if(S.fret0!==was){ save(); LES.mark(step>0?"higher":"lower"); } }
@@ -3448,12 +3613,14 @@ function midiOn(m, v){
   const was=STR_LIVE[cl.s]; pluckCell(cl.s, cl.f, Math.max(0.08, v));
   const L=STR_LIVE[cl.s]; if(!L || L===was) return;   /* the sound is not ready yet */
   cl.vc=L.vc; MIDI_HELD.set(m, cl); KEYCELLS.set("midi"+m, cl.s+":"+cl.f);
+  if(L.vc.hold) L.vc.hold();   /* AOG-STRINGS-PRO-V1: a key held long on a high-gain sound blooms into feedback */
   if(MIDI_ST.bend){ try{ L.vc.glide(TUNING[cl.s]+cl.f+MIDI_ST.bend, ac.currentTime); }catch(e){} }
   lessonNote(cl.s, cl.f); litNeck();
 }
 function midiOff(m){
   const cl=MIDI_HELD.get(m); if(!cl) return;
   MIDI_HELD.delete(m); KEYCELLS.delete("midi"+m);
+  if(cl.vc && cl.vc.letGo) cl.vc.letGo();   /* AOG-STRINGS-PRO-V1: the feedback goes with the key */
   if(MIDI_ST.sus) MIDI_RING.add(cl); else midiLetGo(cl);
   litNeck();
 }
