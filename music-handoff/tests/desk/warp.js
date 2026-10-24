@@ -41,10 +41,10 @@ const ONSETS = `(name, from, to) => { const d = __T.B[name].L, sr = 44100; let m
 
   /* 2 · the song at 120 and at 80 */
   for (const bpm of [120, 80]) {
-    const used0 = await p.evaluate(() => __aogStudio.WW.used);
+    const used0 = await p.evaluate(() => __aogStudio.WW.used + (window.AOGStretch ? AOGStretch.stats.worker : 0));   /* AOG-STRETCH-PRO-V1: either Worker */
     await tempo(p, bpm); await settle(p);
     await p.evaluate(n => __T.render(n), "w" + bpm);
-    const r = await p.evaluate(([n, bpm]) => { const o = __ON(n, 0, 60 / bpm * 16 - 0.05), st = __aogStudio, cl = st.SONG.tracks[0].clip; return { o, err: Math.max(...o.map((t, k) => Math.abs(t - (k + 1) * 60 / bpm))), end: st.clipEnd(cl, false), bars: 4 * 240 / bpm, used: st.WW.used }; }, ["w" + bpm, bpm]);
+    const r = await p.evaluate(([n, bpm]) => { const o = __ON(n, 0, 60 / bpm * 16 - 0.05), st = __aogStudio, cl = st.SONG.tracks[0].clip; return { o, err: Math.max(...o.map((t, k) => Math.abs(t - (k + 1) * 60 / bpm))), end: st.clipEnd(cl, false), bars: 4 * 240 / bpm, used: st.WW.used + (window.AOGStretch ? AOGStretch.stats.worker : 0) }; }, ["w" + bpm, bpm]);
     ok(r.o.length === 15 && r.err <= 0.010 && near(r.end, r.bars, 0.001) && r.used > used0, `the song at ${bpm}: all 15 clicks land within ${(r.err * 1000).toFixed(1)} ms of their beats (at most 10), the take spans its 4 bars (${r.end.toFixed(4)} s of ${r.bars.toFixed(4)}), made in the Worker `);
   }
   /* without it, at 120, the clicks drift off the beats */

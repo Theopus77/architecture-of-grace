@@ -92,7 +92,7 @@ const STR={
   laneAria:{en:"Track {n}: {name}",es:"Pista {n}: {name}"}, laneBars:{en:"bars {a} to {b}",es:"compases {a} a {b}"},
   trackPick:{en:"Track",es:"Pista"},
   recsH:{en:"Put a recording on this track",es:"Pon una grabación en esta pista"},
-  recsNone:{en:"No recordings yet. On any instrument, press ● Record, then Send to the Mixing Desk.",es:"Aún no hay grabaciones. En cualquier instrumento, pulsa ● Grabar y luego Enviar a la mesa de mezclas."},
+  recsNone:{en:"No recordings yet.",es:"Aún no hay grabaciones."},
   putOn:{en:"Put it on track {n}",es:"Ponla en la pista {n}"},
   putting:{en:"Putting it on…",es:"Poniéndola…"},
   arrived:{en:"{name} is on track {n}.",es:"{name} está en la pista {n}."},   /* AOG-DESK-ARRIVE-V1 */
@@ -430,6 +430,7 @@ function cleanClip(c){
   if(XFADES.indexOf(c.xf)>0) o.xf=c.xf;   /* AOG-DESK-XFADE-V1: only when it is on, so a song without crossfades reads as before */
   if(c.warp===true && o.bpm>0) o.warp=true;   /* AOG-DESK-WARP-V1: it follows the song's tempo */
   if(c.lp===true) o.lp=true;   /* AOG-DESK-CLIPLOOP-V1: its end was dragged to repeat it */
+  if(c.sx===2) o.sx=2;   /* AOG-STRETCH-PRO-V1: its stretch keeps the hits in place (aog-stretch.js) */
   /* AOG-MICBOOTH-V1: a voice take keeps its dry recording beside it, and the sound chosen, so it can be made again (AOG-VOCAL-V1: the Vocal Booth's sounds too) */
   if(o.voice && typeof c.dry==="string" && /^c[a-z0-9]{4,41}$/.test(c.dry)) o.dry=c.dry;
   if(o.voice && /^(clean|warm|radio|rap|echo|hall|tuned|robot|phone|deep|high|harmony|wide|slap|mega|old|ghost|chop|pop|custom)$/.test(c.snd)) o.snd=c.snd;   /* AOG-VOCAL-FX-V2: the booth's More sounds too */
@@ -1082,10 +1083,11 @@ async function wsola(buf, sp, cancelled, tolSec){
   return out;
 }
 function ensureStretch(c){
+  sxMark(c);   /* AOG-STRETCH-PRO-V1 */
   if(!needStretch(c)){ STRETCH.delete(c.id); SJOB.delete(c.id); return Promise.resolve(); }
-  if(stretchReady(c)) return Promise.resolve();
+  if(stretchReady(c) && sxOk(c)) return Promise.resolve();
   const b=dmBase(c); if(!b) return Promise.resolve();
-  const sp=stF(c), wt=!!(c.warp && c.bpm>0), key=c.id+"@"+sp+"@"+(b===BUF.get(c.id) ? "" : "tuned")+(wt ? "@warp" : ""), run=SJOB.get(c.id);
+  const sp=stF(c), wt=!!(c.warp && c.bpm>0), key=c.id+"@"+sp+"@"+(b===BUF.get(c.id) ? "" : "tuned")+(wt ? "@warp" : "")+(c.sx===2 ? "@pro" : ""), run=SJOB.get(c.id);
   if(run && run.key===key) return run.p;
   const job={key:key};
   job.p=(async()=>{
@@ -1107,9 +1109,33 @@ const WARP_TOL=0.006;   /* a recording following the tempo looks only 6 ms eithe
 async function stretchOf(c, b, sp, wt, cancelled){
   if(wt && c.notes && !c.pitch && b===BUF.get(c.id)){ const r=await warpNotes(c, sp).catch(()=>null); if(cancelled()) return null; if(r) return r; }
   const tol=wt ? WARP_TOL : 0.012;
+  if(c.sx===2){ const r=await sxStretch(b, sp).catch(()=>null); if(cancelled()) return null; if(r) return r; }   /* AOG-STRETCH-PRO-V1 */
   const w=await warpWork(b, sp, tol).catch(()=>null);
   if(cancelled()) return null;
   return w || wsola(b, sp, cancelled, tol);
+}
+/* AOG-STRETCH-PRO-V1 (2026-10-23): a recording stretched from now on keeps every hit in place, to the sample, with its full
+   punch (aog-stretch.js: the hits copied untouched at their new times, only the steady sound between them stretched; loaded
+   on the first such stretch, made in its own Worker). A recording in a song from before keeps the first WSOLA, to the bit,
+   until its stretch is changed: the first stretch seen for it is remembered (SX0); a different one marks it (c.sx=2, kept in
+   the song). If the new engine is not ready in 1.5 s, the first WSOLA plays meanwhile and the new copy replaces it. */
+const SX0=new WeakMap(), SXB=new WeakSet(), SXL={p:null, off:false};
+function sxMark(c){ if(c.sx===2) return; const f=Math.round(stF(c)*1e6); if(!SX0.has(c)) SX0.set(c, f); else if(SX0.get(c)!==f){ c.sx=2; saveSoon(); } }
+function sxOk(c){ const st=STRETCH.get(c.id); return c.sx!==2 || SXL.off || !!(st && SXB.has(st.buf)); }
+function sxLoad(){
+  if(window.AOGStretch) return Promise.resolve(window.AOGStretch);
+  if(!SXL.p) SXL.p=new Promise((ok, no)=>{ const s=document.createElement("script"); s.src="/aog-stretch.js";
+    s.onload=()=>window.AOGStretch ? ok(window.AOGStretch) : no(new Error("stretch")); s.onerror=()=>{ SXL.p=null; no(new Error("stretch")); }; document.head.appendChild(s); });
+  return SXL.p;
+}
+async function sxStretch(b, sp){
+  let E=window.AOGStretch;
+  if(!E){ E=await Promise.race([sxLoad().catch(()=>null), new Promise(r=>setTimeout(()=>r(null), 1500))]);
+    if(!E){ sxLoad().then(()=>stretchAll(), ()=>{ SXL.off=true; }); return null; } }
+  const ch=[]; for(let k=0;k<b.numberOfChannels;k++) ch.push(b.getChannelData(k));
+  let r; try{ r=await E.run(ch, b.sampleRate, sp); }catch(e){ SXL.off=true; return null; }
+  const out=newBuf(r.out.length, r.out[0].length, b.sampleRate); r.out.forEach((a,k)=>out.getChannelData(k).set(a)); SXB.add(out);
+  return out;
 }
 const WW={w:null, n:0, q:new Map(), idle:0, used:0, ok:0};
 function warpWork(buf, sp, tol){
@@ -4630,4 +4656,4 @@ Object.assign(window.__aogStudio, { AUTO:AUTO, AUI:AUI, drawnAt:drawnAt, autoCor
 /* AOG-DESK-MORE-V1: for the tests (music-handoff/tests/studio/more.js, more2.js) */
 Object.assign(window.__aogStudio, { echoTime:echoTime, songPos:songPos, songChanged:songChanged, selectTrack:selectTrack, paintAll:paintAll, restore:restore, sget:sget, skeys:skeys, chainLatency:chainLatency, ECHO_T:ECHO_T });
 /* AOG-DESK-MASTER-V1, AOG-DESK-WARP-V1 …: for the desk tests (music-handoff/tests/desk/) */
-Object.assign(window.__aogStudio, { DW:DW, deskWork:deskWork, loudOfW:loudOfW, wavBufW:wavBufW, feed:feed, zipRead:zipRead, zipStore:zipStore, stemGroups:stemGroups, glueEff:glueEff, proMaster:proMaster, WW:WW, warpWork:warpWork, WARPN:WARPN, keepOf:keepOf, needStretch:needStretch, spd:spd, stretchReady:stretchReady, ensureStretch:ensureStretch, applyAll:applyAll, save:save, cleanSong:cleanSong, songEndMusic:songEndMusic, clipStart:clipStart, pAt:pAt, pLen:pLen, ratio:ratio });
+Object.assign(window.__aogStudio, { DW:DW, deskWork:deskWork, loudOfW:loudOfW, wavBufW:wavBufW, feed:feed, zipRead:zipRead, zipStore:zipStore, stemGroups:stemGroups, glueEff:glueEff, proMaster:proMaster, WW:WW, warpWork:warpWork, WARPN:WARPN, sxStretch:sxStretch, SXB:SXB, sxOk:sxOk, keepOf:keepOf, needStretch:needStretch, spd:spd, stretchReady:stretchReady, ensureStretch:ensureStretch, applyAll:applyAll, save:save, cleanSong:cleanSong, songEndMusic:songEndMusic, clipStart:clipStart, pAt:pAt, pLen:pLen, ratio:ratio });
