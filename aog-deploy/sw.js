@@ -11,7 +11,7 @@
  * Bump by REPLACING the CACHE line. Don't keep the old one as a comment: every byte here is
  * downloaded again on each update check. Old lines live in tools/sw-cache-history.txt and git log.
  */
-const CACHE = 'aog-cache-2026.10.24.m7578'   // VOCAL BOOTH: HEADPHONES FOLLOW THE SOUND YOU PICKED, ME AND MY TRACK, A TIMING CHECK (aog-vocal.js AOG-VOCAL-CUE-V1). MIXING DESK: THE LESSON STAYS FOLDED AND THE PAGE SCROLLS (music-studio.html AOG-DESK-SCROLL-V1)
+const CACHE = 'aog-cache-2026.10.24.m7579'   // MIXING DESK: THE SENTENCES UNDER THE FOLDS ARE GONE. THE CONTROLS STAY (music-studio.html AOG-DESK-QUIET-V1)
 
 // Same-origin essentials — reliable to precache at install.
 /* AOG-SW-LIGHT-V1 (2026-10-01) — Jimmy: "Why is it taking so long for the website to load on my phone now?"
