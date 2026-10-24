@@ -40,6 +40,15 @@
    The work done ahead is kept per take, stage by stage, so changing one thing does not make the others again. Live, ▶ Hear it
    plays exactly what + Add to My Track renders: the same chain, the same prepared take.
 
+
+   AOG-VOCAL-ENGINE-V1 (2026-10-23) — Jimmy: enhance the engine we already have, not another row of sounds.
+     Plate    a short bright room under the voice, about -18 dB, on every sound except Phone, Megaphone and Old record
+              (those stay a narrow band). The Room knob is still the hall, small or big. It is part of the chain, live
+              and on the take.
+     Harmony  the voice above stays (a third, or a fifth when that is chosen). A second voice, a fifth below, in the
+              same key, is mixed into the same buffer at a little over half the level, so the Harmony knob still
+              rides both. The s sounds on both stay soft.
+
    AOG-VOCAL-TUNE-V2 (2026-10-23) — Jimmy: "I want the autotune to be better on the vocal effects." Tune is now the booth's own
    pitch corrector (the desk's track Tune keeps dmTune), worked out ahead in the same Worker as Deep and High (FXW: tuneWork):
      the pitch   YIN on a copy at about 6 kHz every 10 ms, up to four candidates a frame, the steadiest path through them
@@ -63,7 +72,7 @@
      the chain  worked out ahead in FXW, per take: 0 Remove hum, Quiet the hiss, Breath control (clean) · 1 Tune · 2 Pitch,
                 Harmony · 3 Level rider, Squeeze (an opto compressor, then a peak catcher), Soft S (a split-band de-esser
                 that finds the singer's s), Smooth harsh spots (a resonance tamer), the ducking envelope (dyn) · 4 Ghost,
-                crackle. Live: EQ (proper filters), Grit, Volume, Double, Wide, Echo (Echo time, ducked), Slapback, Room
+                crackle. Live: EQ (proper filters), Grit, Volume, the Plate (AOG-VOCAL-ENGINE-V1), Double, Wide, Echo (Echo time, ducked), Slapback, Room
                 (Room delay, Room tone, ducked), Chop.
      recording  Your level (the meter's colour), the too-loud line, Count me in, Click in my headphones (never recorded).
      takes      Sing a part again (bars of a take sung again, crossfaded, the same length); Best take (a line from each take).
@@ -201,7 +210,7 @@
       p: P_({ tune: 100, spd: 82, vib: 1, lc: 100, pres: 3, air: 4, sq: 65, ss: 40, dbl: 15, echo: 8, room: 16, nr: 40, br: 6, ride: 55, tame: 40, duck: 55 }) },
     deep: { t: ["Deep", "Grave"], s: ["A lower, bigger voice", "Una voz más grave y grande"], p: P_({ pitch: -5, lc: 60, body: 2, sq: 55, room: 16 }) },
     high: { t: ["High", "Aguda"], s: ["A higher, lighter voice", "Una voz más aguda y ligera"], p: P_({ pitch: 5, lc: 120, body: -1, air: 2, sq: 55, ss: 30, room: 18 }) },
-    harmony: { t: ["Harmony", "Armonía"], s: ["A second voice sings with you", "Una segunda voz canta contigo"], p: P_({ harm: 55, hiv: 3, sq: 55, air: 1, room: 24 }) },
+    harmony: { t: ["Harmony", "Armonía"], s: ["A voice above, and a quieter one below", "Una voz arriba, y otra más baja"], p: P_({ harm: 55, hiv: 3, sq: 55, air: 1, room: 24 }) },
     wide: { t: ["Wide", "Amplia"], s: ["Spread from left to right", "Abierta de izquierda a derecha"], p: P_({ wide: 70, air: 2, sq: 55, room: 20 }) },
     slap: { t: ["Slapback", "Rebote"], s: ["One quick echo, like the 1950s", "Un eco rápido, como en los años 50"], p: P_({ slap: 55, lc: 100, body: 1, pres: 2, sq: 60, room: 8 }) },
     mega: { t: ["Megaphone", "Megáfono"], s: ["Rough and loud, through a horn", "Áspera y fuerte, por una bocina"], p: P_({ mega: 1, grit: 70, lc: 120, ss: 0, sq: 70, room: 6 }) },
@@ -919,6 +928,21 @@
   var IR = {};
   function irOf(ctx, big) { var k = (big ? "b" : "s") + ctx.sampleRate; if (ctx instanceof (window.OfflineAudioContext || window.webkitOfflineAudioContext || function () {})) return big ? roomIR(ctx, 2.8, 2.4) : roomIR(ctx, 1.1, 6.5);
     return IR[k] || (IR[k] = big ? roomIR(ctx, 2.8, 2.4) : roomIR(ctx, 1.1, 6.5)); }
+  /* a plate: short, bright, dense. The lows are held back so it sits under the voice instead of thickening it. */
+  var PLATE = {};
+  function plateIR(ctx) {
+    var sr = ctx.sampleRate, sec = 0.62, n = Math.round(sec * sr), b = ctx.createBuffer(2, n, sr);
+    for (var ch = 0; ch < 2; ch++) { var d = b.getChannelData(ch), r = rnd(11 + ch * 17), lp = 0, hp = 0, e = 0, i;
+      for (i = 0; i < n; i++) { var t = i / sr, w = r(); lp += 0.22 * (w - lp); hp += 0.12 * (lp - hp);
+        d[i] = (lp - hp) * Math.exp(-t * 8) * (t < 0.003 ? t / 0.003 : 1); e += d[i] * d[i]; }
+      var g = e > 0 ? 0.85 / Math.sqrt(e) : 0; for (var j = 0; j < n; j++) d[j] *= g; }
+    return b;
+  }
+  function plateOf(ctx) {
+    var off = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+    if (off && ctx instanceof off) return plateIR(ctx);
+    return PLATE[ctx.sampleRate] || (PLATE[ctx.sampleRate] = plateIR(ctx));
+  }
   function dbg(db) { return Math.pow(10, db / 20); }
   /* AOG-VOCAL-FX-V2 · Grit: a warm drive (a little lopsided, as a valve is), its level kept about where it was */
   var GRIT = null;
@@ -961,6 +985,14 @@
     thru([T.vol]);
     var dry = a; dry.connect(mix);
     out = mix;
+    /* AOG-VOCAL-ENGINE-V1: a short bright plate under the voice, about -18 dB. The Room knob is still the hall.
+       Phone, megaphone and old record stay a narrow band, so the plate stays out of those. */
+    if (!P.phone && !P.mega && !P.old) {
+      T.plateG = ctx.createGain(); T.plateG.gain.value = dbg(-18);
+      var pv = ctx.createConvolver(); pv.normalize = false; pv.buffer = plateOf(ctx);
+      var pHP = bq("highpass", 300, 0.7);
+      dry.connect(T.plateG); T.plateG.connect(pHP); pHP.connect(pv); pv.connect(mix);
+    }
     /* Double: two copies a few milliseconds late, each drifting slowly, one left and one right */
     T.dblG = ctx.createGain(); dry.connect(T.dblG);
     [[0.017, 0.31, -0.75], [0.026, 0.43, 0.75]].forEach(function (z) {
@@ -1131,16 +1163,18 @@
       return y;
     }
     /* the harmony note for each period: a third (or a fifth) up in the song's key, from the key's note nearest the voice */
-    function intervals(M, sr, hv, key, minor) {
+    function intervals(M, sr, hv, key, minor, down) {   /* down: a fifth below, in the same key */
       var m = M.P.length, iv = new Float32Array(m), sc = null, j, k;
       if (key >= 0) sc = (minor ? [0, 2, 3, 5, 7, 8, 10] : [0, 2, 4, 5, 7, 9, 11]).map(function (v) { return (v + key) % 12; }).sort(function (a, b) { return a - b; });
       for (j = 0; j < m; j++) {
         if (!M.V[j]) continue;
-        if (!sc) { iv[j] = hv === 5 ? 7 : 4; continue; }
+        if (!sc) { iv[j] = down ? -7 : (hv === 5 ? 7 : 4); continue; }
         var midi = 69 + 12 * Math.log2(sr / M.T[j] / 440), best = Math.round(midi), bd = Infinity;
         for (k = Math.round(midi) - 2; k <= Math.round(midi) + 2; k++) { if (sc.indexOf(((k % 12) + 12) % 12) < 0) continue; var dd = Math.abs(midi - k); if (dd < bd) { bd = dd; best = k; } }
-        var d = sc.indexOf(((best % 12) + 12) % 12), d2 = d + (hv === 5 ? 4 : 2);
-        iv[j] = sc[d2 % 7] + (d2 >= 7 ? 12 : 0) - sc[d];
+        var d = sc.indexOf(((best % 12) + 12) % 12), step = down ? -4 : (hv === 5 ? 4 : 2), d2 = d + step, oct = 0;
+        while (d2 < 0) { d2 += 7; oct -= 12; }
+        while (d2 >= 7) { d2 -= 7; oct += 12; }
+        iv[j] = sc[d2] + oct - sc[d];
       }
       var o = new Float32Array(m);   /* the middle of the periods around it, so one wobbly period does not flip the note */
       for (j = 0; j < m; j++) { if (!M.V[j]) continue; var w = []; for (k = j - 6; k <= j + 6; k++) if (k >= 0 && k < m && M.V[k]) w.push(iv[k]); w.sort(function (a, b) { return a - b; }); o[j] = w[w.length >> 1]; }
@@ -1589,7 +1623,12 @@
       var x = m.x, sr = m.sr, tr = track(x, sr), M = marks(x, sr, tr), r0 = Math.pow(2, m.pitch / 12), f0 = Math.pow(r0, FMT), lead = null, h = null;
       if (M.P.length < 2) return { id: m.id, x: null, h: null };
       if (m.pitch) lead = level(synth(x, M, function () { return r0; }, f0, 1), x, tr, sr);
-      if (m.hv) { var iv = intervals(M, sr, m.hv, m.key, m.minor); h = level(synth(x, M, function (j) { return r0 * Math.pow(2, iv[j] / 12); }, f0, 0.35), x, tr, sr); }
+      if (m.hv) {   /* AOG-VOCAL-ENGINE-V1: the voice above, and a quieter fifth below, in the same buffer */
+        var iv = intervals(M, sr, m.hv, m.key, m.minor, 0);
+        var up = level(synth(x, M, function (j) { return r0 * Math.pow(2, iv[j] / 12); }, f0, 0.35), x, tr, sr);
+        var ivL = intervals(M, sr, 5, m.key, m.minor, 1);
+        var lo = level(synth(x, M, function (j) { return r0 * Math.pow(2, ivL[j] / 12); }, f0, 0.35), x, tr, sr);
+        h = new Float32Array(up.length); for (var qi = 0; qi < h.length; qi++) h[qi] = up[qi] + 0.55 * lo[qi]; }
       return { id: m.id, x: lead, h: h };
     }
     if (self) self.onmessage = function (e) { var r; try { r = work(e.data); } catch (err) { r = { id: e.data.id, err: String(err) }; }
@@ -1672,7 +1711,7 @@
     /* AOG-VOCAL-PRO-V1: 0 clean-up · 1 Tune · 2 Pitch and Harmony · 3 rider, compressor, de-esser, peak catcher, tamer · 4 Ghost, crackle */
     var s0 = [P.nr, P.hum ? 1 : 0, P.br].join("|"),
       s1 = s0 + "|" + (P.tune > 0 ? [P.tune, P.spd, P.vib ? 1 : 0, tuneScale(P).join("")] : [0]).join("|"),   /* AOG-VOCAL-TUNE-V2 */
-      s2 = s1 + "|" + [P.pitch, hv, hv && k ? k.key + (k.minor ? "m" : "") : ""].join("|"),
+      s2 = s1 + "|" + [P.pitch, hv, hv && k ? k.key + (k.minor ? "m" : "") : "", hv ? "lo5" : ""].join("|"),   /* AOG-VOCAL-ENGINE-V1: the fifth below */
       s3 = s2 + "|" + [P.ride, P.sq, P.ss, P.tame].join("|"), s4 = s3 + "|" + [P.ghost, P.old ? 1 : 0].join("|");
     var sig = tk.id + "|" + s4;
     if (B.pre && B.pre.sig === sig) return B.pre.p;
