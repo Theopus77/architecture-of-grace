@@ -211,7 +211,7 @@
      runs dry for a moment and hands over 10 ms of digital silence in the middle of the voice (always at the very start of a
      recording, and now and then later), or drops 10 ms (a step in the wave). A real microphone never gives exact silence,
      so a run of exact zeros that cuts into the voice and out again is such a dropout, and so is a jump from one sample to
-     the next ten times bigger than any in the 2 ms around it: each is filled from the voice on both sides (one pitch period
+     the next seven times bigger than its usual steps in the 2 ms around it: each is filled from the voice on both sides (one pitch period
      at a time, overlapped, then crossfaded), and a cut at one side only gets a short fade. Measured on a busy machine: the
      dry take's highs above 4.6 kHz went from 0.11–0.59 % back to 0.005 %, as recorded on a quiet one. The worklet itself was
      made allocation-free too (it had made new memory 375 times a second).
@@ -220,9 +220,9 @@
      code the page's test hook runs) and for clipping, and posts each full buffer with its number (s), its first frame (f)
      and the time of frame 0 (t). The buffers come back to it to be used again. The page puts each one at its own frame, so
      nothing can land twice or out of place, and a buffer that never came is exact silence of the right length. */
-  function holeRms(R, a, b) { var M = R.length - 1, s = 0, c = 0; for (var k = a; k < b; k++) { var u = R[k & M]; s += u * u; c++; } return c ? Math.sqrt(s / c) : 0; }
+  function holeRms(R, a, b) { var M = R.length - 1, s = 0, c = 0; for (var k = a; k < b; k++) { var u = R[k & M]; if (u !== 0) { s += u * u; c++; } } return c >= 64 ? Math.sqrt(s / c) : -1; }   /* -1: (next to) nothing there but another gap */
   function holeEmit(S, upto, out) { var b = S.pb, E = S.E, Wn = S.Wn, e1 = Math.min(b + E + 3 * Wn, upto), near = holeRms(S.ring, b + E, Math.min(b + E + Wn, e1)), far = holeRms(S.ring, b + E + Wn, e1);
-    if (out.length < 512) out.push([S.pa, b, S.rb, far > 1e-4 ? near / far : -1, S.lb, near]); S.pe = -1; }
+    near = Math.max(0, near); if (out.length < 512) out.push([S.pa, b, S.rb, far > 1e-4 ? near / far : far < 0 && near >= 1e-3 ? 1 : -1, S.lb, near]); S.pe = -1; }
   function holeD2(R, a, b) { var M = R.length - 1, s = 0, c = 0; for (var k = a; k < b; k++) { var u = R[k & M] - 2 * R[(k - 1) & M] + R[(k - 2) & M]; s += u * u; c++; } return c ? Math.sqrt(s / c) : 0; }
   function holeScan(S, x, i0, n, g0, out, fin) {
     var R = S.ring, M = R.length - 1, E = S.E, Wn = S.Wn, i, v, g, d;
@@ -233,11 +233,14 @@
       /* a step: the voice jumps from one sample to the next far more than it has in the 2 ms before or after (a moment the
          browser dropped); it is mended as a short hole */
       d = v - 2 * S.x1 + S.x2; if (d < 0) d = -d;
-      if (S.sp >= 0 && g >= S.sp + S.Wa) { if (S.spA > 10 * holeD2(R, S.sp + 3, g + 1) && out.length < 512) out.push([S.sp - E, S.sp + E, 9, 9, 1, 1, 1]); S.sp = -1; }
-      if (S.sp < 0 && d > 0.02 && v !== 0 && S.x1 !== 0 && d * d > 100 * S.dq) { S.sp = g; S.spA = d; }
-      S.dq += (d * d - S.dq) * S.ka; S.x2 = S.x1; S.x1 = v;
+      if (S.sp >= 0 && g >= S.sp + S.Wa) { if (S.spA > 7 * holeD2(R, S.sp + 3, g + 1) && out.length < 512) out.push([S.sp - E, S.sp + E, 9, 9, 1, 1, 1]); S.sp = -1; }
+      if (v !== 0 && S.x1 !== 0 && S.x2 !== 0) {   /* a zero run's edges never count, and the voice's usual steps carry over a gap */
+        if (S.sp < 0 && S.nz > S.Wa && d > 0.02 && d * d > 49 * S.dq) { S.sp = g; S.spA = d; }
+        S.dq += (d * d - S.dq) * S.ka; S.nz++;
+      }
+      S.x2 = S.x1; S.x1 = v;
       if (v === 0) {
-        if (++S.run === S.min) { var a = g - S.min + 1, nb = holeRms(R, a - E - Wn, a - E), fb = holeRms(R, a - E - 3 * Wn, a - E - Wn); S.ra0 = a; S.rbx = fb > 1e-4 ? nb / fb : -1; S.lbx = nb; }
+        if (++S.run === S.min) { var a = g - S.min + 1, nb = Math.max(0, holeRms(R, a - E - Wn, a - E)), fb = holeRms(R, a - E - 3 * Wn, a - E - Wn); S.ra0 = a; S.rbx = fb > 1e-4 ? nb / fb : fb < 0 && nb >= 1e-3 ? 1 : -1; S.lbx = nb; }
       } else {
         if (S.run >= S.min) { if (S.pe >= 0) holeEmit(S, g, out); S.pa = S.ra0; S.pb = g; S.rb = S.rbx; S.lb = S.lbx; S.pe = g + E + 3 * Wn; }
         S.run = 0;
@@ -245,9 +248,9 @@
     }
     if (fin && S.pe >= 0) holeEmit(S, g0 + n, out);
   }
-  function holeState(sr) { var z = 1; while (z < 0.04 * sr) z *= 2;
-    return { ring: new Float32Array(z), E: Math.round(0.0012 * sr), Wn: Math.round(0.005 * sr), min: Math.max(32, Math.round(0.0013 * sr)), run: 0, pe: -1, pa: 0, pb: 0, rb: 0, lb: 0, ra0: 0, rbx: 0, lbx: 0, clip: 0, cl: 0.985,
-      x1: 0, x2: 0, dq: 0, ka: 1 - Math.exp(-1 / (0.002 * sr)), sp: -1, spA: 0, Wa: Math.round(0.002 * sr) }; }
+  function holeState(sr) { var z = 1; while (z < 0.08 * sr) z *= 2;
+    return { ring: new Float32Array(z), E: Math.round(0.0012 * sr), Wn: Math.round(0.01 * sr), min: Math.max(32, Math.round(0.0013 * sr)), run: 0, pe: -1, pa: 0, pb: 0, rb: 0, lb: 0, ra0: 0, rbx: 0, lbx: 0, clip: 0, cl: 0.985,
+      x1: 0, x2: 0, dq: 0, nz: 0, ka: 1 - Math.exp(-1 / (0.002 * sr)), sp: -1, spA: 0, Wa: Math.round(0.002 * sr) }; }
   var CAP_WK = holeRms.toString() + holeEmit.toString() + holeD2.toString() + holeScan.toString() + holeState.toString() +
     'class AogVocalCap extends AudioWorkletProcessor{constructor(o){super();var p=(o&&o.processorOptions)||{};this.N=p.n||6016;this.on=true;this.pool=[];' +
     'for(var i=0;i<6;i++)this.pool.push(new Float32Array(this.N));this.b=this.pool.pop();this.k=0;this.f=0;this.f0=0;this.s=0;this.z=0;this.t=-1;this.live=false;this.H=holeState(sampleRate);this.ev=[];' +
@@ -298,26 +301,35 @@
     return s;
   }
   function capMend(x, sr, ev, off) {
-    var E = Math.round(0.0012 * sr), F3 = Math.round(0.003 * sr), W = Math.round(0.035 * sr), fixed = 0, faded = 0, n = x.length;
-    var hs = (ev || []).map(function (h) { return [h[0] - (off || 0) - E, h[1] - (off || 0) + E, h[2] >= 0.7 && h[4] >= 1e-3, h[3] >= 0.7 && h[5] >= 1e-3]; }).sort(function (p, q) { return p[0] - q[0]; })
-      .reduce(function (o, h) { var l = o[o.length - 1]; if (l && h[0] <= l[1] && l[2] && l[3] && h[2] && h[3]) { l[1] = Math.max(l[1], h[1]); return o; } o.push(h); return o; }, []);
+    var E = Math.round(0.0012 * sr), F3 = Math.round(0.003 * sr), W = Math.round(0.035 * sr), G = Math.round(0.012 * sr), fixed = 0, faded = 0, n = x.length;
+    /* each dropout as a span (with the ringing either side), whether the voice cuts into it (i) and out of it (o) abruptly, and
+       whether it is a step (j: its samples are there but cannot be trusted); spans that touch are one span, and so are two
+       abrupt ones less than 12 ms apart (the bit between is too short to carry the voice on from, so it is filled too) */
+    var hs = (ev || []).map(function (h) { return { a: h[0] - (off || 0) - E, b: h[1] - (off || 0) + E, i: h[2] >= 0.7 && h[4] >= 1e-3, o: h[3] >= 0.7 && h[5] >= 1e-3, j: h[6] === 1 }; })
+      .sort(function (p, q) { return p.a - q.a; })
+      .reduce(function (r, h) { var l = r[r.length - 1]; if (l && (h.a <= l.b || (h.a - l.b < G && l.i && l.o && h.i && h.o))) { if (h.b >= l.b) { l.b = h.b; l.o = h.o; } l.j = l.j || h.j; return r; } r.push(h); return r; }, []);
+    function fadeOut(at) { for (var i = Math.max(0, at - F3); i < Math.min(n, at); i++) x[i] *= (at - i) / F3; }
+    function fadeIn(at) { for (var i = Math.max(0, at); i < Math.min(n, at + F3); i++) x[i] *= (i - at) / F3; }
     hs.forEach(function (h, k) {
-      var a = h[0], b = h[1], cutIn = h[2], cutOut = h[3], L = b - a, i;
+      var a = h.a, b = h.b, L = b - a, i;
       if (b <= 0 || a >= n) return;
-      if (cutIn && cutOut && L <= 0.12 * sr && a > 0 && b < n) {
-        var lo = Math.max(0, a - W, k ? hs[k - 1][1] : 0), hi = Math.min(n, b + W, k + 1 < hs.length ? hs[k + 1][0] : n);
-        var T1 = capPeriod(x, lo, a, sr), T2 = capPeriod(x, b, hi, sr);
-        if (T1 && a - 2 * T1 < lo) T1 = 0; if (T2 && b + 2 * T2 > hi) T2 = 0;
+      if (h.i && h.o && a > 0 && b < n && L <= 0.12 * sr) {   /* filled from both sides */
+        var lo = Math.max(0, a - W), hi = Math.min(n, b + W, k + 1 < hs.length ? hs[k + 1].a : n);
+        var T1 = capPeriod(x, lo, a, sr), T2 = capPeriod(x, b, hi, sr), r1 = 0, r2 = 0;
+        for (i = Math.max(lo, a - 400); i < a; i++) r1 = Math.max(r1, Math.abs(x[i])); for (i = b; i < Math.min(hi, b + 400); i++) r2 = Math.max(r2, Math.abs(x[i]));
+        if (T1 && (a - 2 * T1 < lo || Math.abs(capAt(x, a - 1 - T1) - x[a - 1]) > 0.15 * r1)) T1 = 0;
+        if (T2 && (b + 2 * T2 > hi || Math.abs(capAt(x, b + T2) - x[b]) > 0.15 * r2)) T2 = 0;
         for (i = 0; i < L; i++) {
           var j = L - 1 - i, f = T1 ? capOla(x, a, T1, i, 1) : x[Math.max(lo, a - 1 - i)] || 0, g = T2 ? capOla(x, b, T2, j, -1) : x[Math.min(hi - 1, b + j)] || 0,
             w = 0.5 - 0.5 * Math.cos(Math.PI * (i + 1) / (L + 1));
           x[a + i] = (1 - w) * f + w * g;
         }
-        fixed++;
-      } else {
-        if (cutIn) { for (i = Math.max(0, a - F3); i < Math.min(n, a + E); i++) x[i] *= Math.max(0, Math.min(1, (a - i) / F3)); faded++; }
-        if (cutOut) { for (i = Math.max(0, b - E); i < Math.min(n, b + F3); i++) x[i] *= Math.max(0, Math.min(1, (i - b) / F3)); faded++; }
+        fixed++; return;
       }
+      /* too long, or at the take's very start or end: what cannot be trusted is silence, with 3 ms fades where the voice is */
+      if (h.j || ((h.i || a <= 0) && (h.o || b >= n))) { x.fill(0, Math.max(0, a), Math.min(n, b)); if (a > 0) fadeOut(a); if (b < n) fadeIn(b); faded++; return; }
+      if (h.i) { fadeOut(a); x.fill(0, Math.max(0, a), Math.min(n, a + E)); faded++; }
+      if (h.o) { x.fill(0, Math.max(0, b - E), Math.min(n, b)); fadeIn(b); faded++; }
     });
     return { fixed: fixed, faded: faded };
   }
@@ -705,7 +717,7 @@
         holes: C.ev.length, mended: md.fixed, faded: md.faded, clip: C.clip, ev: C.ev.slice(0, 12).map(function (h) { return h.map(function (v) { return Math.round(v * 1000) / 1000; }); }) } : null;
       var sec = n / sr, bk = B.bkUsed;
       var head = B.Tb > 0 ? (B.Tb + B.lat) - B.t0 : Math.min(0.05, sec / 4); if (!(head >= 0)) head = 0;
-      var cut = Math.max(0, head - 0.25), k0 = Math.round(cut * sr), dry = X.slice(k0); head -= k0 / sr;
+      var cut = Math.max(0.06, head - 0.25), k0 = Math.min(Math.round(cut * sr), X.length), dry = X.slice(k0); head = Math.max(0, head - k0 / sr);   /* never the browser's first 60 ms, where its input settles (and stumbles most) */
       for (var fi = 0, fn = Math.min(dry.length, Math.round(0.002 * sr)); fi < fn; fi++) dry[fi] *= fi / fn;   /* the take starts softly, never on a step */
       var body = dry.length / sr - head;
       B.state = "idle"; sleepSoon();
@@ -751,6 +763,18 @@
     B.punch = { tk: tk, a: B.pa, b: B.pb, from: Math.max(1, B.pa - 1) };
     recPress();
   }
+  /* X[i0, i1) becomes Y[i0 + d, i1 + d) (silence past Y's ends), with equal-power crossfades XF long centred on i0 and i1
+     (none at an end that is the take's own start or end) */
+  function splice(X, Y, i0, i1, d, XF, fadeIn, fadeOut) {
+    var n = X.length, half = XF >> 1, a = fadeIn ? i0 - half : i0, b = fadeOut ? i1 + half : i1, i, j;
+    function at(k) { j = k + d; return j >= 0 && j < Y.length ? Y[j] : 0; }
+    function mix(k, w) { X[k] = X[k] * Math.cos(Math.PI / 2 * w) + at(k) * Math.sin(Math.PI / 2 * w); }
+    var m0 = Math.max(0, fadeIn ? i0 + half : i0), m1 = Math.min(n, fadeOut ? i1 - half : i1);
+    for (i = Math.max(0, a); i < m0 && i < n; i++) mix(i, clamp((i - a) / XF, 0, 1));
+    if (m1 > m0) { var s0 = m0 + d, s1 = m1 + d, c0 = Math.max(s0, 0), c1 = Math.min(s1, Y.length);
+      X.fill(0, m0, m1); if (c1 > c0) X.set(Y.subarray(c0, c1), m0 + (c0 - s0)); }
+    for (i = Math.max(m1, 0); i < Math.min(n, b); i++) mix(i, clamp((b - i) / XF, 0, 1));
+  }
   function punchMake(pu, nt) {
     var base = pu.tk, sr = base.sr, bs = nt.bk && nt.bk.barSec > 0 ? nt.bk.barSec : base.bk.barSec; if (!(bs > 0) || nt.sr !== sr) return null;
     var X = new Float32Array(base.dry), n = X.length, XF = Math.round(0.015 * sr), half = XF >> 1;
@@ -758,10 +782,7 @@
     var d = Math.round((nt.head + (pu.a - nt.from) * bs) * sr) - i0, nd = nt.dry;
     i1 = Math.min(i1, nd.length - d - (XF >> 1));   /* stopped early: only what was sung is replaced */
     if (i0 >= n || i1 <= i0) return null;
-    for (var i = Math.max(0, i0 - half); i < Math.min(n, i1 + half); i++) {
-      var t = Math.min(clamp((i - (i0 - half)) / XF, 0, 1), clamp((i1 + half - i) / XF, 0, 1)), j = i + d, y = j >= 0 && j < nd.length ? nd[j] : 0;
-      X[i] = X[i] * Math.cos(Math.PI / 2 * t) + y * Math.sin(Math.PI / 2 * t);
-    }
+    splice(X, nd, i0, i1, d, XF, true, true);
     return { id: nt.id, n: nt.n, dry: X, sr: sr, head: base.head, body: base.body, from: base.from, loop: base.loop, bpm: base.bpm, bk: base.bk, punched: [pu.a, pu.b, i0, i1] };
   }
   /* ── AOG-VOCAL-PRO-V1 · Best take: the lines of the take in use (where the voice is; gaps under 0.36 s join, bits under
@@ -801,11 +822,7 @@
     L.forEach(function (ln, k) {
       var t = takeById(C.pick[k]); used.push(t ? t.n : base.n); if (!t || t === base) return;
       var a = k ? (L[k - 1][1] + ln[0]) / 2 : 0, b = k + 1 < L.length ? (ln[1] + L[k + 1][0]) / 2 : n / sr, i0 = Math.round(a * sr), i1 = Math.min(n, Math.round(b * sr));
-      var d = Math.round((songOff(t) - songOff(base)) * sr), td = t.dry;
-      for (var i = Math.max(0, i0 - half); i < Math.min(n, i1 + half); i++) {
-        var w = Math.min(k ? clamp((i - (i0 - half)) / XF, 0, 1) : 1, k + 1 < L.length ? clamp((i1 + half - i) / XF, 0, 1) : 1), j = i + d, y = j >= 0 && j < td.length ? td[j] : 0;
-        X[i] = X[i] * Math.cos(Math.PI / 2 * w) + y * Math.sin(Math.PI / 2 * w);
-      }
+      splice(X, t.dry, i0, i1, Math.round((songOff(t) - songOff(base)) * sr), XF, k > 0, k + 1 < L.length);
     });
     var nt = { id: ++B.seq, n: B.seq, dry: X, sr: sr, head: base.head, body: base.body, from: base.from, loop: base.loop, bpm: base.bpm, bk: base.bk, comped: used };
     addTake(nt); say("comped", { n: nt.n });

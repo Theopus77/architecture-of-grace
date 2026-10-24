@@ -171,11 +171,14 @@ const DSP = async () => {
       const step = y => { let m = 0, all = []; for (let i = 2; i < y.length; i++) { const d = Math.abs(y[i] - 2 * y[i - 1] + y[i - 2]); all.push(d); if (d > m) m = d; } all.sort((a, b) => a - b); return m / all[Math.floor(all.length * 0.99)]; };
       const holes = new Float32Array(x); [0.5, 1.21, 1.9].forEach(s => holes.fill(0, Math.round(s * sr), Math.round(s * sr) + 480));
       const drop = new Float32Array(n); let o = 0; for (let i = 0; i < n; i++) { if (i === Math.round(0.8 * sr) || i === Math.round(2.2 * sr)) o += 480; drop[i] = x[Math.min(n - 1, i + o)]; }
-      const a = AOGVocal.mend(holes, sr), b = AOGVocal.mend(drop, sr), c = AOGVocal.mend(x, sr);
+      /* as a busy browser makes them in a row: two holes 10 ms apart, and a hole with a moment dropped just after it */
+      const row = new Float32Array(x); row.fill(0, Math.round(0.6 * sr), Math.round(0.6 * sr) + 480); row.fill(0, Math.round(0.6 * sr) + 960, Math.round(0.6 * sr) + 1440);
+      row.fill(0, Math.round(2.0 * sr), Math.round(2.0 * sr) + 480); { const p0 = Math.round(2.0 * sr) + 540; for (let i = p0; i < n; i++) row[i] = x[Math.min(n - 1, i + 480)]; }
+      const a = AOGVocal.mend(holes, sr), b = AOGVocal.mend(drop, sr), c = AOGVocal.mend(x, sr), d = AOGVocal.mend(row, sr);
       let same = true; for (let i = 0; i < n; i++) if (c.x[i] !== x[i]) { same = false; break; }
-      return { holes: { found: a.fixed, before: step(holes), after: step(a.x) }, drop: { found: b.fixed, before: step(drop), after: step(b.x) }, clean: { found: c.fixed + c.faded, same } }; });
-    ok(M.holes.found === 3 && M.holes.after < 1.6 && M.drop.found === 2 && M.drop.after < 1.6 && M.clean.found === 0 && M.clean.same,
-      `the mender fills three 10 ms holes (steps ${M.holes.before.toFixed(1)}× → ${M.holes.after.toFixed(2)}×) and two dropped moments (${M.drop.before.toFixed(1)}× → ${M.drop.after.toFixed(2)}×), and leaves a clean voice exactly as it was`);
+      return { holes: { found: a.fixed, before: step(holes), after: step(a.x) }, drop: { found: b.fixed, before: step(drop), after: step(b.x) }, clean: { found: c.fixed + c.faded, same }, row: { found: d.fixed, before: step(row), after: step(d.x) } }; });
+    ok(M.holes.found === 3 && M.holes.after < 1.6 && M.drop.found === 2 && M.drop.after < 1.6 && M.row.found >= 2 && M.row.after < 1.6 && M.clean.found === 0 && M.clean.same,
+      `the mender fills three 10 ms holes (steps ${M.holes.before.toFixed(1)}× → ${M.holes.after.toFixed(2)}×), two dropped moments (${M.drop.before.toFixed(1)}× → ${M.drop.after.toFixed(2)}×), and dropouts in a row (two holes 10 ms apart, a hole with a moment dropped just after: ${M.row.before.toFixed(1)}× → ${M.row.after.toFixed(2)}×), and leaves a clean voice exactly as it was`);
     ok(!errs.length, `no page errors while recording under load: ${errs.slice(0, 2).join(" | ")}`);
     await ctx.close(); await b.close(); }
   /* 2 · Count me in and Click in my headphones, with a silent microphone */
