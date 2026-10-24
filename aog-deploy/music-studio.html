@@ -59,7 +59,7 @@ try{if(localStorage.getItem("aog.lang")==="es")document.documentElement.setAttri
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%;overflow-x:clip;overscroll-behavior:none}
 body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.55 var(--sans);overflow-x:clip;overscroll-behavior:none}
-body *{overscroll-behavior:contain}
+body *{overscroll-behavior-x:contain}
 h1,h2,h3{font-family:var(--display);font-weight:600;letter-spacing:-.02em;text-wrap:balance}
 p{text-wrap:pretty}
 a{color:inherit}
@@ -709,7 +709,7 @@ html.aog-keys .st-cp .st-keys{display:block}
 .st-roomk{max-width:24rem;margin:.7rem 0 0}   /* AOG-REAL-ROOMS-V1 */
 .st-roomc{margin:.45rem 0 0;font-size:.9rem}
 /* AOG-DESK-WOOD-V1: walnut end cheeks on the console and the desk below, as on the consoles in Jimmy's drawings */
-.st-chassis{--cheek:16px;padding-left:calc(var(--cheek) + 18px);padding-right:calc(var(--cheek) + 18px);overflow:hidden}
+.st-chassis{--cheek:16px;padding-left:calc(var(--cheek) + 18px);padding-right:calc(var(--cheek) + 18px);overflow:clip}
 .st-chassis::before,.st-chassis::after{content:"";position:absolute;top:0;bottom:0;width:var(--cheek);pointer-events:none;
   background:
     radial-gradient(circle at 50% 22px,#d9b56a 0 2.2px,#6b4a1c 2.6px,transparent 3.4px),
@@ -756,6 +756,7 @@ html.aog-keys .st-cp .st-keys{display:block}
 @media (hover:none){ .st-cs{transition:none} }
 /* AOG-STUDIO-ROOM-V1: inside the Recording Studio the desk sits in the dim control room, not on paper */
 html.in-studio,html.in-studio:root:root body{background-color:#17110c!important;background-image:none!important}
+html.in-studio #view{padding-bottom:32px}/* AOG-DESK-SCROLL-V1: the last fold clears the Studio's bar */
 html.in-studio .st-chassis{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 0 -18px 30px rgba(0,0,0,.35),0 0 0 1px rgba(255,214,160,.05),0 22px 50px -14px rgba(0,0,0,.8)}
 /* AOG-DESK-SONGS-BTN-V1: Your songs, a hardware button with the locker's light */
 .st-desk .st-songs{flex:0 0 auto;display:inline-flex;align-items:center;gap:.6rem;min-height:48px;padding:.35rem .95rem .35rem .75rem;border-radius:8px;border:1px solid #050506;cursor:pointer;
@@ -774,8 +775,8 @@ html.in-studio .st-chassis{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 
    volume knob for each clip, and crossfades between pieces." ══ */
 /* AOG-DESK-ZOOM-V1: zoomed in, the lanes grow wider than the window and scroll sideways inside it (never the page);
    the names stay put on the left */
-.st-tl{scroll-behavior:auto}
-.st-song .st-tl.zoomed{overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;container-type:inline-size;scrollbar-width:thin;scrollbar-color:#6a5a3a #0d0e10}
+.st-tl{scroll-behavior:auto;touch-action:pan-y}/* AOG-DESK-SCROLL-V1: a finger on the lanes still moves the desk */
+.st-song .st-tl.zoomed{overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;touch-action:pan-x pan-y;container-type:inline-size;scrollbar-width:thin;scrollbar-color:#6a5a3a #0d0e10}
 .st-tl.zoomed>.st-ruler,.st-tl.zoomed>.st-lane{width:calc(var(--lab) + (100cqw - var(--lab)) * var(--z,1))}
 .st-tl.zoomed .st-ph{left:calc(var(--lab) + (100cqw - var(--lab)) * var(--z,1) * var(--ph,0))}
 .st-tl.zoomed .st-ln,.st-tl.zoomed .st-ruler>span:first-child{position:sticky;left:0;z-index:3}
@@ -1096,7 +1097,13 @@ html.in-studio .st-chassis{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 
       </details>
       </div>
     </section>
-    <section id="lessons" aria-label="Lessons"></section><!-- AOG-LESSONS-V1: the Mixing Desk's lessons (aog-lessons.js), under the instrument (Jimmy, 2026-10-05: "units and worksheets should go underneath the instruments") -->
+    <!-- AOG-DESK-LESSON-FOLD-V1: the worksheet stays closed, so the bottom of the desk is the bottom of the page until you ask for it -->
+    <details class="st-fold" id="lessonFold">
+      <summary><span class="st-fh" data-t="lesFold"></span><span class="st-fl" data-t="lesFoldL"></span></summary>
+      <div class="st-fb">
+        <section id="lessons" aria-label="Lessons"></section><!-- AOG-LESSONS-V1 -->
+      </div>
+    </details>
   </main>
   <footer class="foot" id="foot"></footer>
 </div>
@@ -1187,6 +1194,7 @@ const STR={
   fdAria:{en:"Track {n} · {name} · volume",es:"Pista {n} · {name} · volumen"}, fdPick:{en:"Track {n} · {name}",es:"Pista {n} · {name}"},
   chEmpty:{en:"Nothing on this track yet. Pick a recording below.",es:"Todavía no hay nada en esta pista. Elige una grabación abajo."},
   slipK:{en:"Lesson {n}",es:"Lección {n}"}, slipAll:{en:"All lessons ›",es:"Todas las lecciones ›"}, slipDone:{en:"Lesson done. Pick the next one when you are ready.",es:"Lección terminada. Elige la siguiente cuando quieras."},
+  lesFold:{en:"Lessons",es:"Lecciones"}, lesFoldL:{en:"The worksheet, when you want it.",es:"La hoja, cuando la quieras."},
   laneNames:{en:["Drums","Kit","Piano","Guitar","Bass","Band","Turntables","Voice","Live guitar","Live bass","Mix","Empty"],es:["Ritmos","Batería","Piano","Guitarra","Bajo","Banda","Tocadiscos","Voz","Guitarra en vivo","Bajo en vivo","Mezcla","Vacía"]},
   /* AOG-STUDIO-LONG-V1 — Jimmy: "I had no idea I could play 128 bars. I thought it ended after 8." */
   songLen:{en:"A song can be up to 128 bars, about 5 minutes. It grows as you add parts: pick a track, then use Plays to make it longer.",es:"Una canción puede tener hasta 128 compases, unos 5 minutos. Crece al agregar partes: elige una pista y usa Suena para alargarla."},
@@ -5299,10 +5307,11 @@ function paintSlip(){
   const el=$("slip"); if(!el) return;
   let m=null; try{ m=LES && LES.next ? LES.next() : null; }catch(e){ m=null; }
   if(!m){ el.hidden=true; return; }
-  const h=`<p class="st-slipk">${esc(t("slipK",{n:m.n}))} · ${esc(m.title)}</p><p class="st-slipt">${esc(m.done ? t("slipDone") : m.step)}</p><a href="#lessons">${esc(t("slipAll"))}</a>`;
+  const h=`<p class="st-slipk">${esc(t("slipK",{n:m.n}))} · ${esc(m.title)}</p><p class="st-slipt">${esc(m.done ? t("slipDone") : m.step)}</p><a href="#lessonFold">${esc(t("slipAll"))}</a>`;
   if(el._h!==h){ el._h=h; el.innerHTML=h; }
   el.hidden=false;
 }
+$("slip").addEventListener("click", e=>{ const a=e.target.closest && e.target.closest('a[href="#lessonFold"]'); if(!a) return; const d=$("lessonFold"); if(d) d.open=true; });
 
 /* ══ AOG-DESK-AUTO-V1 · Draw changes: a lane under a track's lane, its points, the menu, and the knobs that rest while
    their line has points. A tap on the lane adds a point; a drag along it draws (a point on each beat with Snap to the
@@ -5512,6 +5521,7 @@ function foldsInit(){
   /* the Studio's Send it out brings the button into view first: the fold opens so there is something to see */
   const ob=$("outBtn"), own=ob.scrollIntoView;
   ob.scrollIntoView=function(a){ foldOpen(ob); return own.call(ob, a); };
+  if(location.hash==="#lessons" || location.hash==="#lessonFold"){ const d=$("lessonFold"); if(d) d.open=true; }
 }
 function foldOpen(el){ const d=el && el.closest ? el.closest("details.st-fold") : null; if(d && !d.open) d.open=true; }
 /* a track picked: an empty one opens Add a recording, one with a recording opens This track */

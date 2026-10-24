@@ -78,6 +78,14 @@
     took: ["Got it! Press ▶ Hear it, then pick a sound.", "¡Listo! Pulsa ▶ Escúchala y elige un sonido."],
     mon: ["Hear myself (with headphones)", "Oírme (con audífonos)"],
     monWarn: ["Only with headphones on, or the speakers feed back.", "Solo con audífonos puestos, o los altavoces se acoplan."],
+    me: ["Me", "Yo"], trk: ["My Track", "Mi pista"],
+    meS: ["How loud you are in the headphones", "Qué tan fuerte te oyes en los audífonos"],
+    trkS: ["How loud the beat is in the headphones", "Qué tan fuerte va el ritmo en los audífonos"],
+    lat: ["This device has not been timed, so a take can sit a little late on the beat.", "Este aparato no se ha medido, así que una toma puede quedar un poco tarde en el ritmo."],
+    latBtn: ["Time this device", "Medir este aparato"],
+    latOn: ["Listening for the clicks. Stay quiet.", "Escuchando los clics. Guarda silencio."],
+    latOk: ["Timed. The next take sits on the beat.", "Medido. La próxima toma cae en el ritmo."],
+    latBad: ["The check did not hear the clicks. Use the speakers, stay quiet, and try again.", "La prueba no oyó los clics. Usa los altavoces, guarda silencio e inténtalo otra vez."],
     takesH: ["Your takes", "Tus tomas"], take: ["Take {n}", "Toma {n}"], pickTake: ["Use take {n}", "Usar la toma {n}"], drop: ["Let take {n} go", "Quitar la toma {n}"],
     gone: ["Take {n} is gone.", "La toma {n} se fue."], back: ["Bring it back", "Recuperarla"],
     sndH: ["Pick a sound", "Elige un sonido"], custom: ["Custom", "A tu medida"], customS: ["Your own settings", "Tus propios ajustes"],
@@ -198,6 +206,9 @@
       '<p class="vb-line" id="vbLine" role="status" aria-live="polite"></p>' +
       '<div class="vb-allow" id="vbAllow" hidden></div>' +
       '<label class="vb-mon"><input type="checkbox" id="vbMon"> <span id="vbMonT"></span></label><p class="vb-small" id="vbMonW" hidden></p>' +
+      '<div id="vbCues" hidden><label class="vb-c"><span class="vb-ct"><b id="vbMeT"></b><i id="vbMeV"></i></span><small id="vbMeS"></small><input type="range" class="vb-r" id="vbMe" min="0" max="100" step="1"></label>' +
+      '<label class="vb-c"><span class="vb-ct"><b id="vbTrkT"></b><i id="vbTrkV"></i></span><small id="vbTrkS"></small><input type="range" class="vb-r" id="vbTrk" min="0" max="100" step="1"></label></div>' +
+      '<p class="vb-small" id="vbLat" hidden></p><button type="button" class="vb-b" id="vbLatB" hidden></button>' +
       '</section>' +
       '<section class="vb-panel" id="vbTakesBox" hidden aria-labelledby="vbTakesH"><h2 class="vb-h" id="vbTakesH"></h2><ul class="vb-takes" id="vbTakes"></ul>' +
       '<button type="button" class="vb-b vb-back" id="vbBack" hidden></button></section>' +
@@ -230,6 +241,12 @@
     $("vbBack").addEventListener("click", bringBack);
     $("vbMon").checked = !!store().mon;
     $("vbMon").addEventListener("change", function () { keep({ mon: $("vbMon").checked }); paint(); });
+    var cue0 = store();
+    $("vbMe").value = cue0.me == null ? 90 : cue0.me;
+    $("vbTrk").value = cue0.tr == null ? 100 : cue0.tr;
+    function cueSlide(id, key) { $("vb" + id).addEventListener("input", function () { var o = {}; o[key] = +$("vb" + id).value; keep(o); cues(); paint(); }); }
+    cueSlide("Me", "me"); cueSlide("Trk", "tr");
+    $("vbLatB").addEventListener("click", timeDevice);
     [].forEach.call(root.querySelectorAll(".vb-snd"), function (b) { b.addEventListener("click", function () { var k = b.getAttribute("data-snd"); if (k !== "custom") pick(k); }); });
     [].forEach.call(root.querySelectorAll(".vb-r,.vb-sel[data-k]"), function (r) {
       r.addEventListener("input", function () { setCtrl(r.getAttribute("data-k"), +r.value); });
@@ -261,6 +278,12 @@
     var al = $("vbAllow"); al.hidden = !B.allow;
     if (B.allow) { var h = '<p>' + tw("denied") + '</p><p>' + tw("allowI") + '</p>' + (homeApp() ? '<p>' + tw("allowApp") + '</p>' : '') + '<p>' + tw("allowC") + '</p><p>' + tw("allowThen") + '</p>' + (B.err ? '<p class="vb-code">(' + B.err.replace(/[^A-Za-z]/g, "") + ')</p>' : ''); if (al.__h !== h) { al.innerHTML = h; al.__h = h; } }
     txt($("vbMonT"), tw("mon")); $("vbMonW").hidden = !$("vbMon").checked; txt($("vbMonW"), tw("monWarn")); $("vbMon").disabled = rec;
+    var cuesOn = $("vbMon").checked;
+    $("vbCues").hidden = !cuesOn;
+    txt($("vbMeT"), tw("me")); txt($("vbTrkT"), tw("trk")); txt($("vbMeS"), tw("meS")); txt($("vbTrkS"), tw("trkS"));
+    txt($("vbMeV"), $("vbMe").value); txt($("vbTrkV"), $("vbTrk").value);
+    var late = !timed(); $("vbLat").hidden = !late || B.line === "latOn" || B.line === "latOk"; txt($("vbLat"), tw("lat"));
+    $("vbLatB").hidden = !late; txt($("vbLatB"), tw("latBtn")); $("vbLatB").disabled = rec || B.timing;
     /* the takes */
     $("vbTakesBox").hidden = !B.takes.length && !B.gone; txt($("vbTakesH"), tw("takesH"));
     var lh = B.takes.map(function (t, i) { var on = i === B.cur;
@@ -311,9 +334,9 @@
     buf.copyToChannel(bk.R instanceof Float32Array ? bk.R : new Float32Array(bk.R || bk.L), 1);
     B.bkFor = bk; B.bkBuf = buf; return buf;
   }
-  function bkSource(bk, at, offs) {
+  function bkSource(bk, at, offs, into) {
     var c = B.ac, buf = bkBuffer(bk), s = c.createBufferSource(), g = c.createGain();
-    s.buffer = buf; s.connect(g); g.connect(c.destination);
+    s.buffer = buf; s.connect(g); g.connect(into || c.destination);
     var loop = !!bk.loop && bk.sec > 0.5 && bk.sec <= buf.duration + 0.01;
     if (loop) { s.loop = true; s.loopStart = 0; s.loopEnd = Math.min(buf.duration, bk.sec); if (offs >= s.loopEnd - 0.05) offs = offs % s.loopEnd; }
     else if (offs >= buf.duration - 0.05) offs = 0;
@@ -332,6 +355,61 @@
   }
   function sleepSoon() { setTimeout(function () { try { if (B.ac && B.ac.state === "running" && B.state !== "rec" && !B.hear) B.ac.suspend(); } catch (e) {} }, 250); }
   function rest() { if (B.state === "rec") stopRec(); hearStop(); sleepSoon(); setTimeout(drop, 700); fxRest(); }
+
+  /* AOG-VOCAL-CUE-V1 — the headphones hear the sound you picked (the live half of it) and you set Me and My Track apart.
+     Tune, Soft S, Pitch, Harmony, Ghost and Chop stay on the printed take: they are worked out after you stop. */
+  function timed() {
+    try { var m = JSON.parse(localStorage.getItem("aog.latency.v1") || "null"); return !!(m && m.rt > 0 && m.rt < 1); } catch (e) { return false; }
+  }
+  function cues() {
+    var c = B.ac; if (!c) return;
+    var s = store(), me = (s.me == null ? 90 : +s.me) / 100, tr = (s.tr == null ? 100 : +s.tr) / 100;
+    if (!B.cueMe || B.cueAc !== c) {
+      B.cueMe = c.createGain(); B.cueBk = c.createGain();
+      B.cueMe.gain.value = me; B.cueBk.gain.value = tr;
+      B.cueMe.connect(c.destination); B.cueBk.connect(c.destination); B.cueAc = c;
+      return;
+    }
+    try {
+      B.cueMe.gain.setTargetAtTime(me, c.currentTime, 0.03);
+      B.cueBk.gain.setTargetAtTime(tr, c.currentTime, 0.03);
+    } catch (e) { B.cueMe.gain.value = me; B.cueBk.gain.value = tr; }
+  }
+  function monClose() {
+    var ch = B.monCh; if (!ch) return;
+    B.monCh = null;
+    try { if (B.src && ch.inn) B.src.disconnect(ch.inn); } catch (e) {}
+    try { if (ch.out) ch.out.disconnect(); } catch (e) {}
+    try { ch.stop(B.ac && B.ac.currentTime); } catch (e) {}
+  }
+  function monOpen(bk) {
+    if (!B.src || !B.ac) return;
+    monClose(); cues();
+    var bpm = bk && bk.bpm > 0 ? bk.bpm : 90;
+    B.monCh = chain(B.ac, B.src, B.P, bpm, {});
+    B.monCh.out.connect(B.cueMe);
+    B.monShape = shapeOf(B.P);
+  }
+  function timeDevice() {
+    if (B.timing || B.state === "rec") return;
+    B.timing = true; say("latOn");
+    capSession(true);
+    if (B.mic) { try { B.mic.getTracks().forEach(function (t) { t.stop(); }); } catch (e) {} B.mic = null; clearTimeout(B.micT); }
+    function finish(ok) {
+      B.timing = false;
+      if (B.state !== "rec" && B.state !== "asking") capSession(false);
+      say(ok ? "latOk" : "latBad");
+    }
+    function run(L) { return L && L.measure ? L.measure() : Promise.reject(); }
+    var local = window.AOGLatency ? Promise.resolve() : new Promise(function (ok) {
+      var s = D.createElement("script"); s.src = "/aog-latency.js"; s.onload = s.onerror = function () { ok(); }; D.head.appendChild(s);
+    });
+    local.then(function () { return run(window.AOGLatency); }).then(function () { finish(true); }, function () {
+      var P = null; try { if (window.parent && window.parent !== window) P = window.parent.AOGLatency; } catch (e) {}
+      if (!P) { finish(false); return; }
+      return run(P).then(function () { finish(true); }, function () { finish(false); });
+    });
+  }
 
   /* ── ● Record / ■ Stop ── */
   function recPress() {
@@ -380,9 +458,9 @@
     B.src = c.createMediaStreamSource(stream);
     B.sink = c.createGain(); B.sink.gain.value = 0; B.sink.connect(c.destination);
     B.an = c.createAnalyser(); B.an.fftSize = 1024; B.src.connect(B.an); B.an.connect(B.sink);
-    if (mon) { var lc = c.createBiquadFilter(); lc.type = "highpass"; lc.frequency.value = 90; var cp = c.createDynamicsCompressor(); cp.threshold.value = -22; cp.ratio.value = 3;
-      var g = c.createGain(); g.gain.value = 0.9; var rv = c.createConvolver(); rv.normalize = false; rv.buffer = roomIR(c, 1.1, 7); var rg = c.createGain(); rg.gain.value = 0.16;
-      B.src.connect(lc); lc.connect(cp); cp.connect(g); g.connect(c.destination); cp.connect(rg); rg.connect(rv); rv.connect(c.destination); B.monG = [lc, cp, g, rv, rg]; }
+    cues();
+    if (mon) monOpen(bk);
+    else B.monCh = null;
     var ready;
     if (c.audioWorklet && window.AudioWorkletNode) {
       if (!B.wk) B.wk = c.audioWorklet.addModule(URL.createObjectURL(new Blob([CAP_WK], { type: "text/javascript" })));
@@ -404,7 +482,7 @@
       if (bk) {
         B.Tb = c.currentTime + 0.3;
         var offs = (B.from - 1) * bk.barSec;
-        B.play = bkSource(bk, B.Tb, offs); B.loop = B.play.loop;
+        B.play = bkSource(bk, B.Tb, offs, B.cueBk); B.loop = B.play.loop;
         if (B.play.offs !== offs) B.from = 1;
         if (!B.loop) B.play.s.onended = function () { if (B.state === "rec") stopRec("ended"); };
       } else { B.Tb = 0; B.play = null; }
@@ -428,6 +506,7 @@
     B.raf = requestAnimationFrame(step);
   }
   function release() {
+    monClose();
     [B.src, B.node, B.sink, B.an].concat(B.monG || []).forEach(function (n) { try { if (n) n.disconnect(); } catch (e) {} });
     B.src = B.node = B.sink = B.an = B.stream = B.monG = null;
     clearTimeout(B.micT); B.micT = setTimeout(drop, MIC_KEEP);   /* the microphone stays ready for the next take, then is let go */
@@ -531,7 +610,8 @@
     var mix = ctx.createGain(), out = mix, T = {}, lfos = [];
     function bq(type, f, q, gain) { var z = ctx.createBiquadFilter(); z.type = type; z.frequency.value = f; if (q != null) z.Q.value = q; if (gain != null) z.gain.value = gain; return z; }
     function wob(f, depth, param) { var l = ctx.createOscillator(), d = ctx.createGain(); l.frequency.value = f; d.gain.value = depth; l.connect(d); d.connect(param); l.start(0); lfos.push(l); }
-    var a = ctx.createGain(); src.connect(a);
+    var inn = ctx.createGain(); src.connect(inn);
+    var a = inn;
     function thru(ns) { ns.forEach(function (n) { a.connect(n); a = n; }); }
     /* Harmony: the second voice, made ahead, joins the lead here (its level changes as it plays) */
     T.harmG = ctx.createGain(); T.harmG.gain.value = 0; if (o.h) { o.h.connect(T.harmG); T.harmG.connect(a); }
@@ -606,7 +686,7 @@
     }
     set(P, null);
     function stop(at) { lfos.forEach(function (o) { try { o.stop(at); } catch (e) {} }); setTimeout(function () { try { out.disconnect(); mix.disconnect(); } catch (e) {} }, 400); }
-    return { out: out, set: set, stop: stop, shape: shapeOf(P) };
+    return { out: out, set: set, stop: stop, shape: shapeOf(P), inn: inn };
   }
   /* Soft S: the sharp highs (above 5 kHz) are pulled down when they jump above the rest of the voice */
   function deEss(x, sr, amt) {
@@ -1056,6 +1136,10 @@
   /* a change: live while it plays; Soft S and Tune, a moment later (the take carries on from where it was) */
   function applied(was) {
     paint();
+    if (B.state === "rec" && B.monCh) {
+      if (B.monShape !== shapeOf(B.P)) monOpen(B.bkUsed);
+      else B.monCh.set(B.P, B.ac.currentTime);
+    }
     var H0 = B.hear; if (!H0) return;
     var N = B.P, slow = was.ss !== N.ss || was.tune !== N.tune ||
       (N.tune > 0 && (was.spd !== N.spd || !!was.vib !== !!N.vib || tuneScale(was).join() !== tuneScale(N).join())) ||   /* AOG-VOCAL-TUNE-V2 */
