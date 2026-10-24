@@ -250,10 +250,13 @@ const DSP = async () => {
       const s0 = await ST(f), sr = s0.take.sr, bk = s0.bk, bpm = bk.bpm, barSec = bk.barSec || 240 / bpm;
       /* Echo and its ducking on a pretend take at the song's tempo: phrases of 0.6 s with 1.4 s gaps */
       const E = await f.evaluate(async ([sr, bpm]) => { const n = Math.round(9 * sr), x = new Float32Array(n), on = t => (t % 2) > 0.3 && (t % 2) < 0.9;
-        for (let i = 0; i < n; i++) { const t = i / sr; if (!on(t)) continue; let v = 0; for (let k = 1; k <= 10; k++) v += Math.sin(2 * Math.PI * 200 * k * t) / k; x[i] = 0.3 * v * Math.min(1, ((t % 2) - 0.3) / 0.01, (0.9 - (t % 2)) / 0.01); }
+        /* a breathy voice (noise in the voice's band), so the echo's lag shows as one sharp peak, never a period off */
+        let sd = 9, lp = 0, hp = 0; const rn = () => { sd = (sd * 1664525 + 1013904223) >>> 0; return sd / 4294967296 * 2 - 1; };
+        for (let i = 0; i < n; i++) { const t = i / sr, w = rn(); lp += 0.35 * (w - lp); hp += 0.03 * (lp - hp); if (!on(t)) continue; x[i] = 0.5 * (lp - hp) * Math.min(1, ((t % 2) - 0.3) / 0.01, (0.9 - (t % 2)) / 0.01); }
         AOGVocal._take(x, sr, { head: 0.3, bpm });
         const base = { echo: 70, room: 0, dbl: 0, sq: 0, ss: 0, ride: 0, nr: 0, tame: 0, lc: 0 }, mk = o => AOGVocal.make("clean", Object.assign({}, base, o));
-        const dry = await mk({ echo: 0 }), lag = async et => { const w = await mk({ et, duck: 0 }), r = w.L.map((v, i) => v - (dry.L[i] || 0)), d = dry.L; let best = -1, bl = 0;
+        /* the echo's lag against the take itself (a render carries the Plate's short tail, AOG-VOCAL-ENGINE-V1) */
+        const dry = await mk({ echo: 0 }), lag = async et => { const w = await mk({ et, duck: 0 }), r = w.L.map((v, i) => v - (dry.L[i] || 0)), d = x; let best = -1, bl = 0;
           for (let L = Math.round(0.05 * sr); L < Math.round(1.6 * sr); L += 8) { let s = 0; for (let i = 0; i < Math.round(4 * sr); i += 4) s += r[i + L] * d[i]; if (s > best) { best = s; bl = L; } }
           for (let L = bl - 8; L <= bl + 8; L++) { let s = 0; for (let i = 0; i < Math.round(4 * sr); i += 2) s += r[i + L] * d[i]; if (s > best) { best = s; bl = L; } } return bl / sr; };
         const lags = { 100: await lag(100), 75: await lag(75), 50: await lag(50) };
@@ -268,7 +271,7 @@ const DSP = async () => {
           const h = (await oc.startRendering()).getChannelData(0); let a = 0, t = 0; for (let i = 0; i < r.length; i++) { a += h[i] * h[i]; t += r[i] * r[i]; } return a / t; };
         return { lags, inV: seg(r1, true) - seg(r0, true), gap: seg(r1, false) - seg(r0, false), dark: await hiShare(4000), bright: await hiShare(12000) }; }, [sr, bpm]);
       const beat = 60 / bpm;
-      ok(Math.abs(E.lags[100] - beat) < 0.004 && Math.abs(E.lags[75] - 0.75 * beat) < 0.004 && Math.abs(E.lags[50] - 0.5 * beat) < 0.004,
+      ok(Math.abs(E.lags[100] - beat) < 0.002 && Math.abs(E.lags[75] - 0.75 * beat) < 0.002 && Math.abs(E.lags[50] - 0.5 * beat) < 0.002,
         `${nm}: the Echo is locked to the song's tempo (${bpm} bpm): 1/4 lands ${(E.lags[100] * 1000).toFixed(1)} ms after the voice (a beat is ${(beat * 1000).toFixed(1)}), dotted 1/8 ${(E.lags[75] * 1000).toFixed(1)} ms, 1/8 ${(E.lags[50] * 1000).toFixed(1)} ms`);
       ok(E.inV <= -6 && Math.abs(E.gap) <= 2.5, `${nm}: Keep words clear ducks the echo while the voice sings (${E.inV.toFixed(1)} dB at 100) and lets it back in the gaps (${E.gap.toFixed(1)} dB)`);
       ok(E.dark < 0.3 * E.bright, `${nm}: Room tone darkens the room (above 5 kHz the room has ${(E.dark * 100).toFixed(2)} % of its sound at Darker, ${(E.bright * 100).toFixed(2)} % at Bright)`);
