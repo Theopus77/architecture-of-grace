@@ -566,7 +566,7 @@
     return B.ac;
   }
   function sleepSoon() { setTimeout(function () { try { if (B.ac && B.ac.state === "running" && B.state !== "rec" && !B.hear) B.ac.suspend(); } catch (e) {} }, 250); }
-  function rest() { if (B.state === "rec") stopRec(); hearStop(); sleepSoon(); setTimeout(drop, 700); fxRest(); }
+  function rest() { if (B.state === "rec") stopRec(); B.hearWant = false; hearStop(); sleepSoon(); setTimeout(drop, 700); fxRest(); }
 
   /* AOG-VOCAL-CUE-V1 — the headphones hear the sound you picked (the live half of it) and you set Me and My Track apart.
      Tune, Soft S, Pitch, Harmony, Ghost and Chop stay on the printed take: they are worked out after you stop. */
@@ -1513,6 +1513,9 @@
       if (m.sq > 0 && A.n > 5) {
         var R = 1.3 + 0.027 * m.sq, Kn = 10, ref = db(A.lv), T = ref + 3 - 0.14 * m.sq, S = 16, ad = Math.exp(-1 / (0.02 * sr)), ad2 = Math.exp(-1 / (0.01 * sr)), env2 = 0, aa = Math.exp(-S / (0.012 * sr));
         var sc = zp(new Float64Array(x), bqc("hp", 90, 0.707, 0, sr)), env = 0, G = 0, mem = 0, nS = Math.ceil(n / S) + 1, gr = new Float32Array(nS), y, dd;
+        /* the detector starts where the take starts (its first 30 ms), so a take that begins mid-word is not let through louder */
+        var k0 = Math.min(n, Math.round(0.03 * sr)); for (k = 0; k < k0; k++) env += sc[k] * sc[k]; env = k0 ? env / k0 : 0; env2 = env;
+        dd = db(env2) - T; G = 2 * dd < -Kn ? 0 : 2 * Math.abs(dd) <= Kn ? (1 / R - 1) * (dd + Kn / 2) * (dd + Kn / 2) / (2 * Kn) : (1 / R - 1) * dd;
         for (i = 0; i < n; i += S) {
           var e2 = Math.min(n, i + S); for (k = i; k < e2; k++) { env = ad * env + (1 - ad) * sc[k] * sc[k]; env2 = ad2 * env2 + (1 - ad2) * env; }
           dd = db(env2) - T;
@@ -1781,14 +1784,14 @@
   }
 
   /* ── ▶ Hear it: the take in its sound with the beat; the controls change it as it plays ── */
-  function hearPress() { if (B.hear) { hearStop(); say(""); sleepSoon(); return; } hear(0); }
+  function hearPress() { if (B.hear) { B.hearWant = false; hearStop(); say(""); sleepSoon(); return; } hear(0); }
   function hear(at, keep) {   /* keep (AOG-VOCAL-PRO-V1): the sound playing goes on until the new one is ready, then it carries on from there */
-    var tk = cur(); if (!tk) return;
+    var tk = cur(); if (!tk) return; if (!keep) B.hearWant = true;
     var c = wake(); if (!keep) hearStop();
     var want = tk;
     prepared().then(function (pp) {
       if (cur() !== want) return;
-      if (keep) { if (!B.hear) return; at = c.currentTime - B.hear.T; hearStop(); }
+      if (keep) { if (B.hear) { at = c.currentTime - B.hear.T; hearStop(); } else if (B.hearWant) at = 0; else return; }   /* it ran to its end meanwhile: from the top */
       var x = pp.x, dur = x.length / tk.sr; if (!(at >= 0) || at >= dur - 0.05) at = 0;
       var buf = function (y) { var vb = c.createBuffer(1, y.length, tk.sr); vb.copyToChannel(y, 0); var s = c.createBufferSource(); s.buffer = vb; return s; };
       var v = buf(x), hs = pp.h ? buf(pp.h) : null, es = envSrc(c, pp), T = c.currentTime + 0.08, bk = tk.bk, b = null;
