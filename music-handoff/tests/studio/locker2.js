@@ -32,6 +32,13 @@ const OUT = process.env.AOG_SHOTS || fs.mkdtempSync(path.join(os.tmpdir(), "lock
 const cut = (file, name) => { const s = fs.readFileSync(path.join(TOOLS, file), "utf8"), a = s.indexOf("function " + name + "()"), end = "\n  return bad;\n}", e = s.indexOf(end, a); return s.slice(a, e + end.length); };
 const PROBE = cut("check-contrast.js", "probe"), CALM = cut("check-calm.js", "calmProbe");
 let fails = 0; const ok = (c, m) => { console.log((c ? "PASS " : "FAIL ") + m); if (!c) fails++; };
+/* AOG-DESK-QUIET-V1: under the console, Save, Open and Share open their own sheets (one at a time); the Mixer and Song settings
+   are folds, and the rarer things in a sheet or fold wait under its More. A test opens them as a person would. */
+const qSheet = async (p, k) => { const id = { save: "qSave", open: "qOpen", share: "qShare" }[k]; if ((await p.getAttribute("#" + id, "aria-expanded")) !== "true") await p.click("#" + id); };
+const qFold = async (p, id) => { if (!(await p.evaluate(i => document.getElementById(i).open, id))) await p.click("#" + id + " > summary"); };
+const qSong = async p => { await qFold(p, "foldSong"); await qFold(p, "mMore"); };
+const qSaveMore = async p => { await qSheet(p, "save"); await qFold(p, "lkMore"); };
+const qShareMore = async p => { await qSheet(p, "share"); await qFold(p, "outMore"); };
 const errs = [];
 function watch(ctx) { ctx.on("page", pg => { pg.on("pageerror", e => errs.push(pg.url().split("/").pop().slice(0, 40) + ": " + e.message)); pg.on("dialog", d => d.accept()); }); }
 const W = ms => new Promise(r => setTimeout(r, ms));
@@ -111,7 +118,7 @@ const until = async (fn, ms) => { const t0 = Date.now(); while (Date.now() - t0 
   /* 2 · the Mac: the whole link pasted into the web address box */
   const macLog = [], mac = await b.newContext({ viewport: { width: 1280, height: 900 }, userAgent: MAC_UA }); watch(mac); await routes(mac, macLog); await mac.clock.install();
   const M = await mac.newPage(); await M.goto(U + "music-studio.html"); await M.waitForTimeout(600);
-  await M.click("#foldSave > summary");
+  await qSaveMore(M);   /* AOG-DESK-QUIET-V1: connecting a locker is under Save's More */
   ok(await txt(M, "#locker .st-field .st-lab") === "Web address or device link", "the box says it takes the device link too");
   await M.fill("#lkUrl", LINK);
   await M.waitForSelector("#lkKeep", { timeout: 10000 });
@@ -123,12 +130,13 @@ const until = async (fn, ms) => { const t0 = Date.now(); while (Date.now() - t0 
   await M.evaluate(`(async()=>{ const add=${TAKE}; await add(1, [220,330]); await add(2, [440,550]); })()`);
   await M.waitForFunction(() => __aogStudio.INBOX.items.length === 2, null, { timeout: 8000 });
   await put(M, "Guitar take 1", 0); await put(M, "Guitar take 2", 1);
-  await M.fill("#songName", "Rainy day"); await M.evaluate(() => document.getElementById("songName").blur());
+  await qSheet(M, "share"); await M.fill("#songName", "Rainy day"); await M.evaluate(() => document.getElementById("songName").blur());
   const SID = (await state(M)).sid;
   ok(/^[a-z0-9]{12}$/.test(SID), "the song has its own id: " + SID);
+  await qSaveMore(M);   /* the switch is under Save's More */
   ok(await txt(M, "#lkKeep + span") === "Keep this song in my locker" && await txt(M, "#lkKeepAt") === "Not in your locker yet." && !(await M.isChecked("#lkKeep")), "the switch, off, and the line under it");
   macLog.length = 0;
-  await M.check("#lkKeep");
+  await qSaveMore(M); await M.check("#lkKeep");
   await until(() => M.evaluate(() => !!__aogStudio.LK.id && !__aogStudio.KEEP.busy));
   let sv = saves(SID);
   ok(sv.length === 1 && sv[0].dev === "Mac" && sv[0].name === "Rainy day" && macLog.join(" ") === "begin part finish", "on: it saves at once, as the Mac (" + macLog.join(" ") + ")");
@@ -186,7 +194,7 @@ const until = async (fn, ms) => { const t0 = Date.now(); while (Date.now() - t0 
   ok(await M.evaluate(() => !__aogStudio.KEEP.timer), "and no timer waiting");
 
   /* 4 · the iPad opens the song; the newer version from the Mac */
-  await D.evaluate(() => { document.getElementById("foldSave").open = true; });   /* the link opened it already */
+  await qSheet(D, "open"); await qFold(D, "lkMore");   /* AOG-DESK-QUIET-V1: the songs in the locker are behind Open; Check for new songs under its More */
   await D.click("#lkRefresh"); await until(() => D.evaluate(() => /Rainy day/.test(document.getElementById("locker").textContent)));
   const row = await D.evaluate(() => { const r = [...document.querySelectorAll("#locker .st-rec")].find(x => /Rainy day/.test(x.textContent)); return r ? r.querySelector(".st-cn").textContent : ""; });
   ok(new RegExp("^Mac · " + TIME.source + " · \\d+\\.\\d MB$").test(row) && await D.evaluate(() => /Earlier saves \(2\)/.test(document.getElementById("locker").textContent)),
@@ -237,9 +245,9 @@ const until = async (fn, ms) => { const t0 = Date.now(); while (Date.now() - t0 
   ok((await state(M)).song === (await state(D)).song, "the Mac opens it: the same song on both");
 
   /* both changed: Open the locker's (the Mac's switch off for this, so its own change stays on the Mac) */
-  await M.uncheck("#lkKeep");
+  await qSaveMore(M); await M.uncheck("#lkKeep");
   await vol(M, 3, 45);
-  await D.evaluate(() => { document.getElementById("foldSave").open = true; });
+  await qSheet(D, "save");   /* AOG-DESK-QUIET-V1: Save to my locker is behind Save */
   await vol(D, 3, 56); await D.click("#lkSave");
   await until(() => D.evaluate(() => /is in your locker/.test(document.getElementById("lockLine").textContent) && !__aogStudio.CARRY.busy), 15000);
   await mac.clock.fastForward(16000); await hide(M, true); await hide(M, false);
@@ -248,12 +256,12 @@ const until = async (fn, ms) => { const t0 = Date.now(); while (Date.now() - t0 
   await M.click("#lkNewOpen");
   await until(() => M.evaluate(() => !__aogStudio.CARRY.busy && __aogStudio.SONG.tracks[3].vol === 56), 30000);
   ok(await volOf(M, 3) === 56 && (await state(M)).song === (await state(D)).song, "Open the locker's: the iPad's song on the Mac");
-  await M.check("#lkKeep");
+  await qSaveMore(M); await M.check("#lkKeep");
 
   /* 5 · three saves kept; Earlier saves */
   sv = saves(SID);
   ok(sv.length === 3 && G.live().filter(f => f.name.startsWith("s" + SID)).length === 3, "the locker keeps the last 3 saves of the song (" + sv.map(x => x.dev).join(", ") + ")");
-  await M.evaluate(() => { document.getElementById("foldSave").open = true; });
+  await qSheet(M, "open"); await qFold(M, "lkMore");   /* AOG-DESK-QUIET-V1: the songs in the locker are behind Open; Check for new songs under its More */
   await M.click("#lkRefresh"); await until(() => M.evaluate(() => !!document.querySelector("#locker .st-earl")));
   ok(await txt(M, "#locker .st-earl summary") === "Earlier saves (2)", "one short line: " + await txt(M, "#locker .st-earl summary"));
   await M.click("#locker .st-earl summary");
@@ -320,7 +328,7 @@ const until = async (fn, ms) => { const t0 = Date.now(); while (Date.now() - t0 
   /* 7 · a v1 script */
   const oldLog = [], old = await b.newContext({ viewport: { width: 1280, height: 900 }, userAgent: MAC_UA }); watch(old); await routes(old, oldLog);
   const O = await old.newPage(); await O.goto(U + "music-studio.html"); await O.waitForTimeout(600);
-  await O.click("#foldSave > summary"); await O.fill("#lkUrl", U + "the-studio" + HASH1);
+  await qSaveMore(O); await O.fill("#lkUrl", U + "the-studio" + HASH1);
   await until(() => O.evaluate(() => /Locker connected/.test(document.getElementById("locker").textContent)));
   const said = await O.evaluate(() => (document.body.innerText.match(/Update your locker script to use this\. Your songs and key stay the same\./g) || []).length);
   ok(said === 1 && !(await O.$("#lkKeep")), "a v1 script: said once, plainly; no switch (" + said + ")");
@@ -357,7 +365,7 @@ const until = async (fn, ms) => { const t0 = Date.now(); while (Date.now() - t0 
   ok(await K.evaluate(v => localStorage.getItem("aog.studio.locker.v1") === v && !localStorage.getItem("aog.demo.thing"), LKV), "the dashboard's Delete everything keeps the locker");
   await K.goto(U + "music-studio.html"); await K.waitForTimeout(800);
   await K.evaluate(() => { document.getElementById("foldNew").open = true; }); await K.click("#newBtn"); await K.click("#newYes");
-  await K.evaluate(() => { document.getElementById("foldSave").open = true; });
+  await qSaveMore(K);   /* AOG-DESK-QUIET-V1 */
   await K.waitForSelector("#lkKeep", { timeout: 10000 }); await K.check("#lkKeep"); await K.uncheck("#lkKeep");
   ok(await K.evaluate(v => localStorage.getItem("aog.studio.locker.v1") === v, LKV), "Start a new song and the switch keep it");
   await K.click("#lkOff");
@@ -384,7 +392,7 @@ const until = async (fn, ms) => { const t0 = Date.now(); while (Date.now() - t0 
         localStorage.setItem("aog.studio.v1", JSON.stringify({ v: 1, tracks: [], sid: sid, name: "Rainy day" })); localStorage.setItem("aog.studio.lockkeep.v1", JSON.stringify({ on: true, lk: {} })); } } catch (e) {} }, [theme, lang, URL2, KEY, SID]);
     const m = await cx.newPage(); await m.goto(U + "music-studio.html"); await m.waitForTimeout(900);
     await until(() => shown(m, "#lkNew"), 10000);
-    await m.evaluate(() => { document.getElementById("foldSave").open = true; });
+    await qSheet(m, "open"); await qFold(m, "lkMore");   /* AOG-DESK-QUIET-V1: the songs in the locker are behind Open; Check for new songs under its More */
     await m.waitForSelector("#locker .st-earl", { timeout: 10000 }); await m.click("#locker .st-earl summary");
     await m.waitForTimeout(200);
     const f = await m.evaluate(() => { const r = el => el.getBoundingClientRect(), boxes = [document.getElementById("carryBlk"), document.getElementById("lkNew")];

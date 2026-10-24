@@ -8,6 +8,13 @@
      a song file from before (AOGSONG1) still opens;
    · Spanish; an iPhone and an iPad, light and dark. Port 9346. */
 const T = require("./lib.js"), { ok, near, add, put, HELP } = T;
+/* AOG-DESK-QUIET-V1: under the console, Save, Open and Share open their own sheets (one at a time); the Mixer and Song settings
+   are folds, and the rarer things in a sheet or fold wait under its More. A test opens them as a person would. */
+const qSheet = async (p, k) => { const id = { save: "qSave", open: "qOpen", share: "qShare" }[k]; if ((await p.getAttribute("#" + id, "aria-expanded")) !== "true") await p.click("#" + id); };
+const qFold = async (p, id) => { if (!(await p.evaluate(i => document.getElementById(i).open, id))) await p.click("#" + id + " > summary"); };
+const qSong = async p => { await qFold(p, "foldSong"); await qFold(p, "mMore"); };
+const qSaveMore = async p => { await qSheet(p, "save"); await qFold(p, "lkMore"); };
+const qShareMore = async p => { await qSheet(p, "share"); await qFold(p, "outMore"); };
 const fs = require("fs"), os = require("os"), path = require("path");
 const PORT = 9346, U = "http://localhost:" + PORT + "/", srv = T.srv(PORT);
 const OUTD = fs.mkdtempSync(path.join(os.tmpdir(), "deskexp-"));
@@ -28,7 +35,7 @@ const STATE = p => p.evaluate(async () => { const st = __aogStudio, ids = []; st
   await p.waitForFunction(() => __aogStudio.INBOX.items.length === 3, null, { timeout: 8000 });
   await put(p, 1, 0); await put(p, 2, 1); await put(p, 3, 2); await p.evaluate(HELP);
   await p.evaluate(() => { const st = __aogStudio, x = st.SONG.tracks; st.SONG.master.glue = 0; x[0].grp = "drums"; x[1].grp = "drums"; x[0].pan = -40; x[2].vol = 60; x[1].low = 3; st.songChanged(); });
-  await p.selectOption("#bitsSel", "24");
+  await qShareMore(p); await p.selectOption("#bitsSel", "24");
 
   /* 1 · stems: each track and each group */
   await click(p, "outBtn"); await p.waitForFunction(() => __aogStudio.OUT.song && !__aogStudio.OUT.busy, null, { timeout: 60000 });
@@ -83,6 +90,6 @@ const STATE = p => p.evaluate(async () => { const st = __aogStudio, ids = []; st
   ok(es.s === "Guardar mi canción" && es.o === "Abrir mi canción" && es.w === "Un archivo guarda toda la canción. Se queda en tu aparato; muévelo con AirDrop o Archivos.", "in Spanish: " + JSON.stringify(es));
   await c.close();
 
-  await T.looks(b, U, async m => { await m.click("#foldSave > summary"); /* AOG-DESK-FOLDS-V1 */ await m.evaluate(() => document.getElementById("carryBlk").scrollIntoView({ block: "start" })); }, "#carryBlk button, #carryBlk select, #carryBlk input", "Save my song");
+  await T.looks(b, U, async m => { await qSheet(m, "save"); /* AOG-DESK-FOLDS-V1 */ await m.evaluate(() => document.getElementById("carryBlk").scrollIntoView({ block: "start" })); }, "#carryBlk button, #carryBlk select, #carryBlk input", "Save my song");
   await T.done(b, srv);
 })().catch(e => { console.log("CRASH", e.stack); process.exit(1); });

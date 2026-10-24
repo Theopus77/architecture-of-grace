@@ -15,6 +15,13 @@ const OUTD = process.env.AOG_SHOTS || fs.mkdtempSync(path.join(os.tmpdir(), "sen
 const cut = (file, name) => { const s = fs.readFileSync(path.join(TOOLS, file), "utf8"), a = s.indexOf("function " + name + "()"), end = "\n  return bad;\n}", e = s.indexOf(end, a); return s.slice(a, e + end.length); };
 const PROBE = cut("check-contrast.js", "probe"), CALM = cut("check-calm.js", "calmProbe");
 let fails = 0; const ok = (c, m) => { console.log((c ? "PASS " : "FAIL ") + m); if (!c) fails++; };
+/* AOG-DESK-QUIET-V1: under the console, Save, Open and Share open their own sheets (one at a time); the Mixer and Song settings
+   are folds, and the rarer things in a sheet or fold wait under its More. A test opens them as a person would. */
+const qSheet = async (p, k) => { const id = { save: "qSave", open: "qOpen", share: "qShare" }[k]; if ((await p.getAttribute("#" + id, "aria-expanded")) !== "true") await p.click("#" + id); };
+const qFold = async (p, id) => { if (!(await p.evaluate(i => document.getElementById(i).open, id))) await p.click("#" + id + " > summary"); };
+const qSong = async p => { await qFold(p, "foldSong"); await qFold(p, "mMore"); };
+const qSaveMore = async p => { await qSheet(p, "save"); await qFold(p, "lkMore"); };
+const qShareMore = async p => { await qSheet(p, "share"); await qFold(p, "outMore"); };
 const errs = [];
 function watch(ctx) { ctx.on("page", pg => pg.on("pageerror", e => errs.push(pg.url().split("/").pop() + ": " + e.message))); }
 async function routes(ctx) { await ctx.route(/^https?:\/\/(?!localhost)/, r => r.abort()); }
@@ -39,13 +46,13 @@ async function song(p) {
   await p.evaluate(`(async()=>{ const add=${TAKE}; await add(1, [220,330,440,550]); await add(2, [660,550,440,330]); await add(3, [880,880,880,880]); })()`);
   await p.waitForFunction(() => __aogStudio.INBOX.items.length === 3, null, { timeout: 8000 });
   await put(p, "Guitar take 1", 0); await put(p, "Guitar take 2", 1); await put(p, "Guitar take 3", 2);
-  await p.fill("#songName", "Rainy day");
-  await p.click('#mixer .st-strip[data-tr="2"] [data-ms="mute"]');
+  await qSheet(p, "share"); await p.fill("#songName", "Rainy day");
+  await qFold(p, "foldMixer"); await p.click('#mixer .st-strip[data-tr="2"] [data-ms="mute"]');
 }
 const line = (p, id) => p.evaluate(i => document.getElementById(i).textContent.trim(), id);
 async function sendOut(p) {
   await p.evaluate(() => { __aogStudio.OUT.song = null; document.getElementById("outBox").innerHTML = ""; });
-  await p.click("#outBtn");
+  await qSheet(p, "share"); await p.click("#outBtn");
   await p.waitForFunction(() => !__aogStudio.OUT.busy && (__aogStudio.OUT.song || document.getElementById("outLine").textContent), null, { timeout: 60000 });
 }
 /* the peak (dB) and length of the file Send it out made */
@@ -96,7 +103,7 @@ print(json.dumps({"bad":bad,"files":out}))`, zipPath]).toString());
   await p.evaluate(() => { const r = document.getElementById("m-vol") || document.querySelector('#master input[data-k="vol"]'); r.value = "20"; r.dispatchEvent(new Event("input", { bubbles: true })); });
   await sendOut(p); f = await fileInfo(p);
   ok(f && Math.abs(f.g - Math.pow(10, 12 / 20)) < 1e-6 && f.db < -1.2, `a very quiet song comes up 12 dB, no more (${f && f.db} dB)`);
-  for (const i of [0, 1]) await p.click(`#mixer .st-strip[data-tr="${i}"] [data-ms="mute"]`);
+  await qFold(p, "foldMixer"); for (const i of [0, 1]) await p.click(`#mixer .st-strip[data-tr="${i}"] [data-ms="mute"]`);
   await sendOut(p);
   ok(await line(p, "outLine") === "Your song is silent, so there is nothing to send. Turn a track up first." && !(await p.evaluate(() => __aogStudio.OUT.song)), "a silent song is told plainly, and nothing is made");
   await p.evaluate(() => document.getElementById("langBtn").click());

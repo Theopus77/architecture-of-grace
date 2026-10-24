@@ -6,6 +6,13 @@
    · the reference starts with the song's bar 1, exactly where the song is heard; it rests when the song stops;
    · Spanish; an iPhone and an iPad, light and dark. Port 9345. */
 const T = require("./lib.js"), { ok, near, add, put, HELP } = T;
+/* AOG-DESK-QUIET-V1: under the console, Save, Open and Share open their own sheets (one at a time); the Mixer and Song settings
+   are folds, and the rarer things in a sheet or fold wait under its More. A test opens them as a person would. */
+const qSheet = async (p, k) => { const id = { save: "qSave", open: "qOpen", share: "qShare" }[k]; if ((await p.getAttribute("#" + id, "aria-expanded")) !== "true") await p.click("#" + id); };
+const qFold = async (p, id) => { if (!(await p.evaluate(i => document.getElementById(i).open, id))) await p.click("#" + id + " > summary"); };
+const qSong = async p => { await qFold(p, "foldSong"); await qFold(p, "mMore"); };
+const qSaveMore = async p => { await qSheet(p, "save"); await qFold(p, "lkMore"); };
+const qShareMore = async p => { await qSheet(p, "share"); await qFold(p, "outMore"); };
 const fs = require("fs"), os = require("os"), path = require("path");
 const PORT = 9345, U = "http://localhost:" + PORT + "/", srv = T.srv(PORT);
 const REF = path.join(fs.mkdtempSync(path.join(os.tmpdir(), "deskref-")), "my-favourite.wav");
@@ -13,7 +20,7 @@ const REF = path.join(fs.mkdtempSync(path.join(os.tmpdir(), "deskref-")), "my-fa
   b.writeUInt16LE(1, 20); b.writeUInt16LE(2, 22); b.writeUInt32LE(sr, 24); b.writeUInt32LE(sr * 4, 28); b.writeUInt16LE(4, 32); b.writeUInt16LE(16, 34); b.write("data", 36); b.writeUInt32LE(n * 4, 40);
   let z = 0x1234567; for (let i = 0; i < n; i++) { z ^= z << 13; z ^= z >>> 17; z ^= z << 5; const x = Math.round(12000 * (((z >>> 0) / 4294967296) * 2 - 1)); b.writeInt16LE(x, 44 + i * 4); b.writeInt16LE(x, 46 + i * 4); } fs.writeFileSync(REF, b); })();
 const sel = (p, id, v) => p.evaluate(([id, v]) => { const s = document.getElementById(id); s.value = String(v); s.dispatchEvent(new Event("change", { bubbles: true })); }, [id, v]);
-const view = async (p, v) => { await p.evaluate(() => { const d = document.getElementById("pmBox"); if (!d.open) { d.open = true; d.dispatchEvent(new Event("toggle")); } }); await p.waitForTimeout(50); await sel(p, "pmView", v); await p.waitForTimeout(50); };
+const view = async (p, v) => { await qSong(p); await p.evaluate(() => { const d = document.getElementById("pmBox"); if (!d.open) { d.open = true; d.dispatchEvent(new Event("toggle")); } }); await p.waitForTimeout(50); await sel(p, "pmView", v); await p.waitForTimeout(50); };
 /* the LUFS of a stretch of the recording of the speakers' signal, with the desk's own meter */
 const SEG = `(a, b) => { const r = __T.live, sr = __T.lsr, i0 = Math.round(a * sr - r.f0), i1 = Math.round(b * sr - r.f0); return lufsInt(kPow([r.L.subarray(i0, i1), r.R.subarray(i0, i1)], sr)); }`;
 async function abRun(p) {

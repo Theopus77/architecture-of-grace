@@ -14,6 +14,13 @@ const TOOLS = path.join(ROOT, "..", "tools");
 const cut = (file, name) => { const s = fs.readFileSync(path.join(TOOLS, file), "utf8"), a = s.indexOf("function " + name + "()"), end = "\n  return bad;\n}", e = s.indexOf(end, a); return s.slice(a, e + end.length); };
 const PROBE = cut("check-contrast.js", "probe"), CALM = cut("check-calm.js", "calmProbe");
 let fails = 0; const ok = (c, m) => { console.log((c ? "PASS " : "FAIL ") + m); if (!c) fails++; };
+/* AOG-DESK-QUIET-V1: under the console, Save, Open and Share open their own sheets (one at a time); the Mixer and Song settings
+   are folds, and the rarer things in a sheet or fold wait under its More. A test opens them as a person would. */
+const qSheet = async (p, k) => { const id = { save: "qSave", open: "qOpen", share: "qShare" }[k]; if ((await p.getAttribute("#" + id, "aria-expanded")) !== "true") await p.click("#" + id); };
+const qFold = async (p, id) => { if (!(await p.evaluate(i => document.getElementById(i).open, id))) await p.click("#" + id + " > summary"); };
+const qSong = async p => { await qFold(p, "foldSong"); await qFold(p, "mMore"); };
+const qSaveMore = async p => { await qSheet(p, "save"); await qFold(p, "lkMore"); };
+const qShareMore = async p => { await qSheet(p, "share"); await qFold(p, "outMore"); };
 const errs = [];
 function watch(ctx) { ctx.on("page", pg => pg.on("pageerror", e => errs.push(pg.url().split("/").pop() + ": " + e.message))); }
 /* the Netlify address /studio opens the Studio here too */
@@ -167,7 +174,7 @@ const FILL = `(async (k, from, n) => { const sr = 44100, len = Math.floor(0.6 * 
   ok(live.a > 0.02 && live.b > 0.02, `Play: track 1 is heard at the start (peak ${live.a.toFixed(3)}) and track 2 at bar 3 (peak ${live.b.toFixed(3)})`);
 
   /* Make the mix: both are in it; with track 2 muted, only track 1 */
-  const mixOf = async () => { await p.click("#mixBtn"); await p.waitForFunction(() => /ready|did not/.test(document.getElementById("mixLine").textContent), null, { timeout: 30000 });
+  const mixOf = async () => { await qSheet(p, "share"); await p.click("#mixBtn"); await p.waitForFunction(() => /ready|did not/.test(document.getElementById("mixLine").textContent), null, { timeout: 30000 });
     return p.evaluate(async ([w1, w2, gap]) => { const m = __aogStudio.MIX; const buf = await new OfflineAudioContext(2, 1, 44100).decodeAudioData(await m.wav.arrayBuffer()), d = buf.getChannelData(0), sr = buf.sampleRate;
       const rms = ([a, z]) => { let s = 0, n = 0; for (let i = Math.floor(a * sr); i < Math.min(d.length, Math.floor(z * sr)); i++) { s += d[i] * d[i]; n++; } return n ? 10 * Math.log10(s / n + 1e-12) : -120; };
       return { a: +rms(w1).toFixed(1), b: +rms(w2).toFixed(1), gap: +rms(gap).toFixed(1), sec: +buf.duration.toFixed(2), line: document.getElementById("mixLine").textContent }; }, [w1, w2, gap]); };
@@ -178,7 +185,7 @@ const FILL = `(async (k, from, n) => { const sr = 44100, len = Math.floor(0.6 * 
   ok(mix2.a > -40 && mix2.b < mix.b - 30 && /track 2/.test(mix2.line), `with track 2 muted, bar 3 goes quiet (${mix2.b} dB) and the line says so: ${mix2.line}`);
   await p.evaluate(() => document.querySelector('.st-strip[data-tr="1"] [data-ms="mute"]').click());
   /* the Studio's own mix still goes to the turntables, and is offered here too, beside the takes */
-  await p.click("#mixBtn"); await p.waitForFunction(() => /ready|did not/.test(document.getElementById("mixLine").textContent), null, { timeout: 30000 });
+  await qSheet(p, "share"); await p.click("#mixBtn"); await p.waitForFunction(() => /ready|did not/.test(document.getElementById("mixLine").textContent), null, { timeout: 30000 });
   await p.click("#sendBtn"); await p.waitForFunction(() => /Sent|did not/.test(document.getElementById("sendLine").textContent), null, { timeout: 10000 });
   await p.waitForFunction(() => [...document.querySelectorAll("#srcSel option")].some(o => /^Your last mix from the mixing desk/.test(o.textContent)), null, { timeout: 5000 }).catch(() => {});
   const sb = await p.evaluate(async () => { const x = await AOGHandoff.get("studiobench"); return { shelf: !!(x && x.wav && x.wav.size > 44), line: document.getElementById("sendLine").textContent.trim(),
