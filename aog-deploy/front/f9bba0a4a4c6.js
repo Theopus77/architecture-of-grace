@@ -83,6 +83,7 @@ const STR={
   fdAria:{en:"Track {n} · {name} · volume",es:"Pista {n} · {name} · volumen"}, fdPick:{en:"Track {n} · {name}",es:"Pista {n} · {name}"},
   chEmpty:{en:"Nothing on this track yet. Pick a recording below.",es:"Todavía no hay nada en esta pista. Elige una grabación abajo."},
   slipK:{en:"Lesson {n}",es:"Lección {n}"}, slipAll:{en:"All lessons ›",es:"Todas las lecciones ›"}, slipDone:{en:"Lesson done. Pick the next one when you are ready.",es:"Lección terminada. Elige la siguiente cuando quieras."},
+  lesFold:{en:"Lessons",es:"Lecciones"}, lesFoldL:{en:"The worksheet, when you want it.",es:"La hoja, cuando la quieras."},
   laneNames:{en:["Drums","Kit","Piano","Guitar","Bass","Band","Turntables","Voice","Live guitar","Live bass","Mix","Empty"],es:["Ritmos","Batería","Piano","Guitarra","Bajo","Banda","Tocadiscos","Voz","Guitarra en vivo","Bajo en vivo","Mezcla","Vacía"]},
   /* AOG-STUDIO-LONG-V1 — Jimmy: "I had no idea I could play 128 bars. I thought it ended after 8." */
   songLen:{en:"A song can be up to 128 bars, about 5 minutes. It grows as you add parts: pick a track, then use Plays to make it longer.",es:"Una canción puede tener hasta 128 compases, unos 5 minutos. Crece al agregar partes: elige una pista y usa Suena para alargarla."},
@@ -91,7 +92,7 @@ const STR={
   laneAria:{en:"Track {n}: {name}",es:"Pista {n}: {name}"}, laneBars:{en:"bars {a} to {b}",es:"compases {a} a {b}"},
   trackPick:{en:"Track",es:"Pista"},
   recsH:{en:"Put a recording on this track",es:"Pon una grabación en esta pista"},
-  recsNone:{en:"No recordings yet. On any instrument, press ● Record, then Send to the Mixing Desk.",es:"Aún no hay grabaciones. En cualquier instrumento, pulsa ● Grabar y luego Enviar a la mesa de mezclas."},
+  recsNone:{en:"No recordings yet.",es:"Aún no hay grabaciones."},
   putOn:{en:"Put it on track {n}",es:"Ponla en la pista {n}"},
   putting:{en:"Putting it on…",es:"Poniéndola…"},
   arrived:{en:"{name} is on track {n}.",es:"{name} está en la pista {n}."},   /* AOG-DESK-ARRIVE-V1 */
@@ -176,6 +177,7 @@ const STR={
   bitsLab:{en:"File quality",es:"Calidad del archivo"},
   bitsOpt16:{en:"16-bit · smaller file",es:"16 bits · archivo más pequeño"}, bitsOpt24:{en:"24-bit · studio quality",es:"24 bits · calidad de estudio"},
   bits16:{en:"16-bit",es:"16 bits"}, bits24:{en:"24-bit",es:"24 bits"},
+  typeLab:{en:"File type",es:"Tipo de archivo"}, typeWav:{en:"WAV (best)",es:"WAV (la mejor)"}, typeM4a:{en:"M4A (small, plays everywhere)",es:"M4A (pequeño, se oye en todas partes)"}, typeMp3:{en:"MP3",es:"MP3"},   /* AOG-EXPORT-PRO-V1 */
   /* AOG-DESK-CHOPS-OUT-V1 */
   outChops:{en:"Your chops (.zip)",es:"Tus cortes (.zip)"}, outChopsMaking:{en:"Making your chops' files…",es:"Haciendo los archivos de tus cortes…"},
   outChopsReady:{en:"Your chops: {n} files in one .zip",es:"Tus cortes: {n} archivos en un .zip"},
@@ -430,7 +432,7 @@ function cleanClip(c){
   if(c.lp===true) o.lp=true;   /* AOG-DESK-CLIPLOOP-V1: its end was dragged to repeat it */
   /* AOG-MICBOOTH-V1: a voice take keeps its dry recording beside it, and the sound chosen, so it can be made again (AOG-VOCAL-V1: the Vocal Booth's sounds too) */
   if(o.voice && typeof c.dry==="string" && /^c[a-z0-9]{4,41}$/.test(c.dry)) o.dry=c.dry;
-  if(o.voice && /^(clean|warm|radio|rap|echo|hall|tuned|robot|phone|deep|high|harmony|wide|slap|mega|old|ghost|chop|custom)$/.test(c.snd)) o.snd=c.snd;   /* AOG-VOCAL-FX-V2: the booth's More sounds too */
+  if(o.voice && /^(clean|warm|radio|rap|echo|hall|tuned|robot|phone|deep|high|harmony|wide|slap|mega|old|ghost|chop|pop|custom)$/.test(c.snd)) o.snd=c.snd;   /* AOG-VOCAL-FX-V2: the booth's More sounds too */
   /* AOG-PIANOROLL-V1: a take from the Piano, Guitar, Bass or Band keeps the notes it was played with (checked by aog-pianoroll.js) */
   if(c.notes){ const n=window.AOGPianoRoll ? AOGPianoRoll.clean(c.notes) : (Array.isArray(c.notes.ev) ? c.notes : null); if(n) o.notes=n; }
   /* AOG-STUDIO-INBOX-V1: a take from the list remembers its tool, its number and which take in the list it was */
@@ -2526,7 +2528,7 @@ async function lockRemove(id){
 const KEEP_KEY="aog.studio.lockkeep.v1", KEEP_WAIT=20000, DEVS=["iPhone","iPad","Mac","Windows","Android","computer"];
 const DEVW={iPhone:{en:"iPhone",es:"iPhone"}, iPad:{en:"iPad",es:"iPad"}, Mac:{en:"Mac",es:"Mac"}, Windows:{en:"Windows computer",es:"computadora con Windows"},
   Android:{en:"Android",es:"Android"}, computer:{en:"computer",es:"computadora"}};
-const VOICE_SNDS=/^(clean|warm|radio|rap|echo|hall|tuned|robot|phone|deep|high|harmony|wide|slap|mega|old|ghost|chop|custom)$/;
+const VOICE_SNDS=/^(clean|warm|radio|rap|echo|hall|tuned|robot|phone|deep|high|harmony|wide|slap|mega|old|ghost|chop|pop|custom)$/;
 const KEEP={on:false, ready:false, timer:0, wait:false, busy:false, fail:false, hushed:false, checking:false, checked:0, newer:null, both:false, note:"", got:new Set(), sending:"", earl:"",
   prog:"", failW:"", hint:false, old:false};   /* AOG-LOCKER-V3: the MB words while it goes up; where a big save stopped; the line to keep the screen open; an old script and a big song */
 let LK={sid:"", id:"", at:0, dev:"", sig:"", skip:""};
@@ -3088,6 +3090,12 @@ function outLevel(ld){
 function shareable(f){ try{ return !!(navigator.share && navigator.canShare && navigator.canShare({files:[f]})); }catch(e){ return false; } }
 function outItem(o){ o.url=o.url||URL.createObjectURL(o.file); return o; }
 function dropOut(k){ if(OUT[k] && OUT[k].url) URL.revokeObjectURL(OUT[k].url); OUT[k]=null; }
+/* AOG-EXPORT-PRO-V1: the File type chosen (WAV, M4A, MP3) and the song's name, artist, tempo and key inside the file;
+   aog-export.js is fetched on the first Send it out. If it cannot load, the .wav stays as it is. */
+function exportPro(o, Lc, Rc){
+  return (window.AOGExport ? Promise.resolve() : new Promise((ok,no)=>{ const s=document.createElement("script"); s.src="/aog-export.js"; s.onload=ok; s.onerror=no; document.head.appendChild(s); }))
+    .then(()=>AOGExport.desk(o, {Lc:Lc, Rc:Rc, sr:MIX_SR, type:($("outType")||{}).value||"wav", title:songTitle(), lang:S.lang, line:$("outLine")}), ()=>o);
+}
 async function sendOut(){
   const line=$("outLine"), btn=$("outBtn");
   foldOpen(btn);   /* AOG-DESK-FOLDS-V1: the Studio's Send it out lands here too */
@@ -3104,6 +3112,7 @@ async function sendOut(){
       OUT.song=outItem({file:new File([await wavBufW(Lc, Rc, MIX_SR, g, BITS)], name, {type:"audio/wav"}), g:g, at:Date.now(), left:leftOut(),
         bits:BITS, lufs:r.lufs, tpDb:r.tpDb, why:r.why});
       line.textContent="";
+      OUT.song=await exportPro(OUT.song, Lc, Rc);   /* AOG-EXPORT-PRO-V1 */
     }
   }catch(e){ line.textContent=t("fail"); }
   try{ await chopsLook(); }catch(e){ OUT.chopSrc=null; }   /* AOG-DESK-CHOPS-OUT-V1 */
@@ -3242,7 +3251,7 @@ function paintOut(){
   const left=o.left.filter(i=>SONG.tracks[i].clip);
   /* AOG-DESK-LUFS-V1: how loud the file came out, in plain words */
   const lv=t("outLoud",{l:luWords(o.lufs), p:dbWords(o.tpDb)})+(o.why==="peak" ? ". "+t("outLoudPeak") : o.why==="quiet" ? ". "+t("outLoudQuiet") : "");
-  box.innerHTML=outRow("song", t("outReady")+" · "+t(o.bits===24 ? "bits24" : "bits16")+" · "+madeWords(o.at))+
+  box.innerHTML=outRow("song", t("outReady")+" · "+(o.fmt ? L(o.fmt) : t(o.bits===24 ? "bits24" : "bits16"))+" · "+madeWords(o.at))+   /* AOG-EXPORT-PRO-V1: o.fmt for an M4A or MP3 */
     `<p class="st-line" id="outLoud">${esc(lv)}</p>`+
     (left.length ? `<p class="st-line">${esc(t("outLeft",{list:left.map(i=>t("trackLow",{n:i+1})).join(", ")}))}</p>` : "")+
     (OUT.stems ? outRow("stems", t("outStemsReady",{n:OUT.stems.n})) :
@@ -3262,6 +3271,7 @@ function paintBits(){
 function bindOut(){
   $("outBtn").onclick=sendOut;
   const bs=$("bitsSel"); if(bs) bs.onchange=()=>{ setBits(+bs.value); paintBits(); };   /* AOG-DESK-BITS-V1 */
+  const ot=$("outType"); if(ot){ try{ ot.value=localStorage.getItem("aog.studio.filetype.v1")||"wav"; if(!ot.value) ot.value="wav"; }catch(e){} ot.onchange=()=>{ try{ localStorage.setItem("aog.studio.filetype.v1", ot.value); }catch(e){} }; }   /* AOG-EXPORT-PRO-V1 */
   $("outBox").addEventListener("click", e=>{
     const el=e.target.closest && e.target.closest("button,a"); if(!el || el.disabled) return;
     if(el.id==="stemBtn") sendStems();
@@ -4186,10 +4196,11 @@ function paintSlip(){
   const el=$("slip"); if(!el) return;
   let m=null; try{ m=LES && LES.next ? LES.next() : null; }catch(e){ m=null; }
   if(!m){ el.hidden=true; return; }
-  const h=`<p class="st-slipk">${esc(t("slipK",{n:m.n}))} · ${esc(m.title)}</p><p class="st-slipt">${esc(m.done ? t("slipDone") : m.step)}</p><a href="#lessons">${esc(t("slipAll"))}</a>`;
+  const h=`<p class="st-slipk">${esc(t("slipK",{n:m.n}))} · ${esc(m.title)}</p><p class="st-slipt">${esc(m.done ? t("slipDone") : m.step)}</p><a href="#lessonFold">${esc(t("slipAll"))}</a>`;
   if(el._h!==h){ el._h=h; el.innerHTML=h; }
   el.hidden=false;
 }
+$("slip").addEventListener("click", e=>{ const a=e.target.closest && e.target.closest('a[href="#lessonFold"]'); if(!a) return; const d=$("lessonFold"); if(d) d.open=true; });
 
 /* ══ AOG-DESK-AUTO-V1 · Draw changes: a lane under a track's lane, its points, the menu, and the knobs that rest while
    their line has points. A tap on the lane adds a point; a drag along it draws (a point on each beat with Snap to the
@@ -4399,6 +4410,7 @@ function foldsInit(){
   /* the Studio's Send it out brings the button into view first: the fold opens so there is something to see */
   const ob=$("outBtn"), own=ob.scrollIntoView;
   ob.scrollIntoView=function(a){ foldOpen(ob); return own.call(ob, a); };
+  if(location.hash==="#lessons" || location.hash==="#lessonFold"){ const d=$("lessonFold"); if(d) d.open=true; }
 }
 function foldOpen(el){ const d=el && el.closest ? el.closest("details.st-fold") : null; if(d && !d.open) d.open=true; }
 /* a track picked: an empty one opens Add a recording, one with a recording opens This track */

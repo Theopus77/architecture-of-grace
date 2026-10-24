@@ -11,7 +11,7 @@
  * Bump by REPLACING the CACHE line. Don't keep the old one as a comment: every byte here is
  * downloaded again on each update check. Old lines live in tools/sw-cache-history.txt and git log.
  */
-const CACHE = 'aog-cache-2026.10.23.m7572'   // THE LOCKER, V3: EACH RECORDING SENT ONCE, A FADER MOVE SENDS A FEW KB, 3 PIECES AT ONCE, SAVES AND OPENS CARRY ON WHERE THEY STOPPED, EVERY PIECE CHECKED (THE IPAD'S 'INVALID CHARACTERS'), MB PROGRESS (music-studio.html, AoG-Studio-Locker.gs AOG-LOCKER-V3) + ONE FRAME TO SHOW A PAGE (aog-sketch.js AOG-ONE-PAINT-QUIET-V1)
+const CACHE = 'aog-cache-2026.10.24.m7581'   // PIANO: A KEY CHANGES COLOR AND DOES NOT MOVE THE SCREEN (aog-calm.css AOG-STILL-HIT-V1)
 
 // Same-origin essentials — reliable to precache at install.
 /* AOG-SW-LIGHT-V1 (2026-10-01) — Jimmy: "Why is it taking so long for the website to load on my phone now?"
