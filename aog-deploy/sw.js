@@ -11,7 +11,7 @@
  * Bump by REPLACING the CACHE line. Don't keep the old one as a comment: every byte here is
  * downloaded again on each update check. Old lines live in tools/sw-cache-history.txt and git log.
  */
-const CACHE = 'aog-cache-2026.10.23.m7574'   // THE VOCAL BOOTH'S OWN PITCH CORRECTOR: STEADY NOTES, NATURAL OR HARD, KEEP MY VIBRATO, ANY KEY, POP POLISH (aog-vocal.js AOG-VOCAL-TUNE-V2)
+const CACHE = 'aog-cache-2026.10.24.m7575'   // SEND IT OUT MAKES WAV, M4A OR MP3, EACH WITH THE SONG'S TITLE, ARTIST, TEMPO AND KEY; SMALL FILES STAY UNDER −1 dBTP (aog-export.js AOG-EXPORT-PRO-V1, music-studio.html, aog-share.js)
 
 // Same-origin essentials — reliable to precache at install.
 /* AOG-SW-LIGHT-V1 (2026-10-01) — Jimmy: "Why is it taking so long for the website to load on my phone now?"
