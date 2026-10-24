@@ -3346,17 +3346,23 @@ function bind(){
         lastAng = a; lastT = now; spun += da;
         trail.push({ t:now, a:spun });
       }
-      /* the speed is measured over the last ~70 ms of hand, not over the last
-         single event. Event to event, a slow steady pull is mostly jitter — and
-         jitter is what made a held-back vocal warble instead of drag. */
+      /* AOG-SCRATCH-FEEL-V1 — adaptive window + non-linear curve.
+         Slow pulls keep the 70 ms window (steady vocal drag).
+         Fast flicks use a shorter window so baby scratches and transforms
+         keep their sharp edges instead of smearing. */
       const now = performance.now();
-      while(trail.length > 2 && now - trail[0].t > 70) trail.shift();
+      const absInst = Math.abs(deck.handRate);
+      const win = absInst > 1.2 ? 28 : absInst > 0.4 ? 45 : 70;
+      while(trail.length > 2 && now - trail[0].t > win) trail.shift();
       const first = trail[0], last = trail[trail.length-1];
-      const dt = Math.max(0.012, (last.t - first.t)/1000);
-      const inst = ((last.a - first.a)/dt) / DEG_PER_SEC * TOUCH[touch];
-      /* slow moves are smoothed harder than fast ones: steadiness where you want
-         to hear words, immediacy where you want a cut. */
-      const k = Math.abs(inst) < 0.6 ? 0.45 : 0.8;
+      const dt = Math.max(0.008, (last.t - first.t)/1000);
+      let inst = ((last.a - first.a)/dt) / DEG_PER_SEC * TOUCH[touch];
+      /* non-linear: small motions stay fine, larger motions get more authority */
+      const sign = inst < 0 ? -1 : 1;
+      const mag = Math.abs(inst);
+      inst = sign * (mag < 0.35 ? mag * 0.75 : mag < 1.5 ? mag : mag * 1.15);
+      /* slow moves are smoothed harder than fast ones */
+      const k = Math.abs(inst) < 0.5 ? 0.38 : Math.abs(inst) < 1.5 ? 0.62 : 0.85;
       deck.handRate = deck.handRate*(1-k) + inst*k;
       if(Math.abs(deck.handRate) > 0.25){ const sg = deck.handRate > 0 ? 1 : -1; if(deck._sgn && sg !== deck._sgn) LX.flips[deck.id]++; deck._sgn = sg; }
       if(deck.handRate > 16) deck.handRate = 16;

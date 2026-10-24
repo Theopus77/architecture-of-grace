@@ -150,12 +150,12 @@
     var motorRate = run * (this.rev ? -1 : 1);
     this._run = run;
     this._target = this.handOn ? this.handRate * this.srRatio : motorRate;
-    /* the hand grips hard (6 ms). Off the hand, the slipmat lets the record snap
-       back to a platter already turning (100 ms), while a deck starting from a
-       dead stop has to spin the platter itself up (300 ms) — and a stopped deck
-       coasts down (340 ms). That difference is most of what a deck feels like. */
-    var tau = this.handOn ? 0.006
-            : (this.motorOn ? (Math.abs(this.rate) < 0.25 ? 0.30 : 0.10) : 0.34);
+    /* AOG-SCRATCH-FEEL-V1 — a little more mass. The hand still grips hard (8 ms).
+       Off the hand, the slipmat lets the record slide back onto a platter already
+       turning (140 ms), a dead stop still has to spin the platter up (380 ms),
+       and a stopped deck coasts down (420 ms). */
+    var tau = this.handOn ? 0.008
+            : (this.motorOn ? (Math.abs(this.rate) < 0.25 ? 0.38 : 0.14) : 0.42);
     this._k = 1 - Math.exp(-1 / (tau * this.sr));
   };
   /* every jump goes through here: the old place keeps sounding for 4 ms while
