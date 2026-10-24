@@ -13,11 +13,13 @@ let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails+
     const min=await p.evaluate(()=>({nums:[...document.querySelectorAll(".pad small")].map(e=>e.textContent).join(""), names:[...document.querySelectorAll(".pad")].map(e=>e.textContent.replace(/\s+/g," ").trim().split(" ")[1]).join(" "),
       wheel:[...document.querySelectorAll("#wheel .wd.fit")].map(g=>{ const pn=g.querySelector(".pn"); return pn ? g.querySelector("text").textContent+"="+pn.textContent : null; }).filter(Boolean).sort((a,b)=>a.split("=")[1]-b.split("=")[1]).join(" "),
       step:!!document.getElementById("stepLine")}));
-    ok(min.nums==="123456" && !min.step, `${pg}: A minor pads count ${min.nums}: ${min.names}`);
+    /* AOG-PIANO-12PADS-V1: the Piano's pads are twelve, 1 to 6 the key's own, then 7 to 12 */
+    const want=pg==="music-piano" ? "123456789101112" : "123456";
+    ok(min.nums===want && !min.step, `${pg}: A minor pads count ${min.nums}: ${min.names}`);
     ok(min.wheel==="Am=1 C=2 Dm=3 Em=4 F=5 G=6", `${pg}: the wheel's numbers match: ${min.wheel}`);
     await p.evaluate(()=>document.getElementById("majBtn").click()); await p.waitForTimeout(100);
     const maj=await p.evaluate(()=>[...document.querySelectorAll(".pad small")].map(e=>e.textContent).join(""));
-    ok(maj==="123456", `${pg}: a major key's pads count ${maj}`);
+    ok(maj===want, `${pg}: a major key's pads count ${maj}`);
     const pats=await p.evaluate(()=>[...document.querySelectorAll("#progSel option")].map(o=>o.textContent).filter(x=>/Minor groove|Flamenco|Minor folk|Epic/.test(x)).join(" | "));
     ok(pats==="Minor groove | Flamenco | Minor folk | Epic", `${pg}: the minor patterns, by name: ${pats}`);
     ok(errs.length===0, `${pg}: no page errors ${errs.join(" | ")}`);
