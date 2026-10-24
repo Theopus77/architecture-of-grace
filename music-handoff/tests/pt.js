@@ -29,7 +29,8 @@ const ok=(c,m)=>{console.log((c?"PASS ":"FAIL ")+m); if(!c) process.exitCode=1;}
  await p.keyboard.down("Shift"); await p.keyboard.press("d"); await p.keyboard.press("g"); await p.waitForTimeout(50);
  ok((await live())==="c"+(lo+4)+"~ c"+(lo+7)+"~", "with Shift held (pedal) the notes keep ringing after the keys come up");
  await p.keyboard.up("Shift"); await p.waitForTimeout(50); ok((await live())==="", "letting go of Shift lets them stop");
- await p.keyboard.press("x"); ok((await p.evaluate("KB.lo"))===lo+12, "X moves the keyboard up an octave"); await p.keyboard.press("z");
+ /* AOG-PIANO-KBOCT-V1: X moves the letters up an octave (across the keys in view first, then the view itself) */
+await p.keyboard.press("x"); ok((await p.evaluate("KB.lo+12*(KB.ko||0)"))===lo+12, "X moves the keyboard up an octave"); await p.keyboard.press("z");
  // Space with no pattern
  await p.keyboard.press("Space"); await p.waitForTimeout(100);
  ok(!(await p.evaluate("S.playing")) && (await p.textContent("#ownLine")).includes("chord pattern"), "Space with no pattern says to pick one first");

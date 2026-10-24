@@ -2561,14 +2561,17 @@ function buildKeys(){
   if(S.oct==null) S.oct = own===1?4:3;
   S.oct=Math.max(1, Math.min(7-own, S.oct));
   const lo=V?V.lo:12*(S.oct+1), hi=lo+12*oc;
-  KB={whites:7*oc+1, lo:lo, hi:hi};
+  /* AOG-PIANO-KBOCT-V1 (Jimmy, 2026-10-24: "I can't get to the higher notes using the keyboard as I can't get past F5"): the
+     letters start S.kbo octaves above the lowest key in view, so Z and X move them across every key on screen */
+  const ko=V?0:Math.max(0, Math.min(oc-1, S.kbo||0)); if(!V) S.kbo=ko;
+  KB={whites:7*oc+1, lo:lo, hi:hi, ko:ko};
   let html="", wi=0; const w=100/KB.whites;
   for(let m=lo; m<=hi; m++){
     const pc=m%12; if(WHITE.indexOf(pc)<0) continue;
-    const cap=!V && CAP[m-lo]!=null?`<span class="kc">${CAP[m-lo]}</span>`:"";
+    const cap=!V && CAP[m-lo-12*ko]!=null?`<span class="kc">${CAP[m-lo-12*ko]}</span>`:"";
     html+=`<div class="wk" data-m="${m}" aria-label="${noteLabel(m)}"><i class="sd" aria-hidden="true"></i>${cap}<span class="nm">${pcName(m)}${pc===0?`<small>${Math.floor(m/12)-1}</small>`:""}</span></div>`;
     if(BLACK_AFTER[pc]!=null && m+1<=hi){
-      const bm=m+1, bcap=!V && CAP[bm-lo]!=null?`<span class="kc">${CAP[bm-lo]}</span>`:"";
+      const bm=m+1, bcap=!V && CAP[bm-lo-12*ko]!=null?`<span class="kc">${CAP[bm-lo-12*ko]}</span>`:"";
       html+=`<div class="bk" data-m="${bm}" aria-label="${noteLabel(bm)}" style="left:calc(${(wi+1)*w}% - ${w*0.31}%);width:${w*0.62}%"><i class="sd" aria-hidden="true"></i>${bcap}</div>`;
     }
     wi++;
@@ -2918,9 +2921,12 @@ document.addEventListener("keydown",(e)=>{
   if(e.target && e.target.tagName==="SELECT") return;
   if(e.code==="ShiftLeft"||e.code==="ShiftRight"){ if(!e.repeat) setSus(true); return; }
   if(KEYMAP[e.code]!=null){ e.preventDefault(); if(e.repeat||HELD_KEYS.has(e.code)) return;
-    const m=KB.lo+KEYMAP[e.code]; HELD_KEYS.set(e.code, m); noteOn("c", m, 0.7); return; }
+    const m=KB.lo+12*(KB.ko||0)+KEYMAP[e.code]; HELD_KEYS.set(e.code, m); noteOn("c", m, 0.7); return; }
   const pi=padKey(e); if(pi>=0){ e.preventDefault(); if(!e.repeat) padDown(pi, 0.74); return; }   /* AOG-PIANO-12PADS-V1 */
-  if(e.code==="KeyZ"||e.code==="KeyX"){ e.preventDefault(); if(!e.repeat){ const n=octMove(e.code==="KeyZ"?-1:1); if(n) onOct(n); } return; }
+  if(e.code==="KeyZ"||e.code==="KeyX"){ e.preventDefault(); if(!e.repeat){ const d=e.code==="KeyZ"?-1:1, oc=Math.round((KB.hi-KB.lo)/12);
+      /* AOG-PIANO-KBOCT-V1: first the letters move across the keys in view; at the edge the view itself moves */
+      const k=(KB.ko||0)+d; if(!window.AOG_PKV && k>=0 && k<=oc-1){ S.kbo=k; buildKeys(); save(); onOct(d); return; }
+      const n=octMove(d); if(n) onOct(n); } return; }
   if(e.code==="Space"){
     const b=e.target.closest && e.target.closest("button,a,summary,[role=button]");
     if(b && b.id!=="playBtn" && !b.classList.contains("pad")) return;
