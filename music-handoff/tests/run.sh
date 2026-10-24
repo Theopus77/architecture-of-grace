@@ -10,6 +10,7 @@ for s in ${@:-$ALL}; do
   t=900; [ "$s" = levels/even ] && t=7200   # every note of every sound: the longest suite by far
   [ "$s" = solo/basslicks ] && t=1500   # every bass lick played through on three screens, about 12 minutes
   [ "$s" = solo/guitarlicks ] && t=2400   # every guitar lick (122) rendered, then played through on three screens, about 12 minutes
+  [ "$s" = solo/pianolicks ] && t=1800   # every piano lick (154) played through on three screens, about 16 minutes
   [ "$s" = solo/grand ] && t=1800   # the grand: six strengths of 30 notes, decays rendered 14 s long, then 120 notes played on a slowed phone, about 15 minutes
   out=$(timeout $t node $s.js 2>&1); code=$?
   pass=$(echo "$out" | grep -c "^PASS\|^ok\|✓"); fail=$(echo "$out" | grep -c "^FAIL\|^CRASH\|✗")
