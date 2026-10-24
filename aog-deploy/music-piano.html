@@ -733,10 +733,10 @@ function t(k, vars){ let s=(STR[k]||{})[S.lang]||k; if(vars) Object.keys(vars).f
    piano's, K-weighted, the loudest 400 ms, before the compressor, within half a decibel. tau = how fast a note stops when
    it is let go; tone = how a recorded piano is voiced; ready and the = the words while a recording loads. */
 const SOUNDS={
-  grand:  {grp:"grpPiano", en:"Grand piano",            es:"Piano de cola",              kind:"sample", set:"grand",   gain:1.66, rev:0.16},
+  grand:  {grp:"grpPiano", en:"Grand piano",            es:"Piano de cola",              kind:"sample", set:"grand",   gain:0.906, rev:0.16},
   upright:{grp:"grpPiano", en:"Upright piano",          es:"Piano vertical",             kind:"sample", set:"upright", gain:1.997, rev:0.13},
   honky:  {grp:"grpPiano", en:"Honky-tonk piano",       es:"Piano honky-tonk",           kind:"sample", set:"upright", honky:true, gain:2.17, rev:0.10},
-  bright: {grp:"grpPiano", en:"Bright piano",           es:"Piano brillante",            kind:"sample", set:"grand",   tone:"bright", gain:1.793, rev:0.14,
+  bright: {grp:"grpPiano", en:"Bright piano",           es:"Piano brillante",            kind:"sample", set:"grand",   tone:"bright", gain:0.872, rev:0.14,
            ready:{en:"Ready. This is the grand piano, with its high notes turned up.",es:"Listo. Es el piano de cola, con los agudos más fuertes."}},
   felt:   {grp:"grpPiano", en:"Soft felt piano",        es:"Piano suave de fieltro",     kind:"sample", set:"upright", tone:"felt", gain:1.919, rev:0.2,
            ready:{en:"Ready. This is the upright piano, with soft felt in front of its strings.",es:"Listo. Es el piano vertical, con fieltro suave delante de sus cuerdas."}},
@@ -1065,7 +1065,8 @@ function setFx(ch, id){
 
 /* ── the recorded pianos ── */
 const SETS={
-  grand:  {dir:"/audio/piano/grand2/",   notes:[21,24,27,30,33,36,39,42,45,48,51,54,57,60,63,66,69,72,75,78,81,84,87,90,93,96,99,102,105,108]},
+  /* AOG-GRAND-PRO-V1: six strength layers that blend, each note ringing as long as the real one (GRAND_PRO, below) */
+  grand:  {dir:"/audio/piano/grand3/",   pro:true, notes:[21,24,27,30,33,36,39,42,45,48,51,54,57,60,63,66,69,72,75,78,81,84,87,90,93,96,99,102,105,108]},
   upright:{dir:"/audio/piano/upright2/", notes:[21,25,29,33,37,41,45,49,53,57,61,65,69,73,77,81,85,89,93,97,101,105,108]},
   /* AOG-PIANO-SOUNDS-V2: one layer each, already brought to one level (even), every few semitones and in tune; the strings'
      notes loop between 2.4 s and 5.4 s while a key is held (audio/piano/CREDITS.txt) */
@@ -1126,7 +1127,56 @@ const SETS={
   /* AOG-PIANO-TOYBOX-V1: the toy piano: a real 1950s one, every key from C4 to F6, each a few cents out of tune as it was */
   toy:    {dir:"/audio/piano/toy2/", layers:["m"], even:true, notes:[25,28,31,34,37,40,43,46,49,52,55,58,61,64,67,70,73,76,79,82,85,88,91,94,97]}
 };
-Object.keys(SETS).forEach(k=>Object.assign(SETS[k],{buf:{},gain:{},start:{},peak:{},lp:{},state:"idle",done:0,job:null,ready:false,run:null}));
+Object.keys(SETS).forEach(k=>Object.assign(SETS[k],{buf:{},gain:{},start:{},peak:{},lp:{},rel:{},state:"idle",done:0,job:null,ready:false,run:null}));
+/* AOG-GRAND-PRO-V1 (2026-10-23) — Jimmy wants the Studio pro-grade everywhere. The grand was cut off at 4 to 5 seconds even
+   with the key or the pedal held (each recording kept 8 s low to 2.5 s high, its last third faded), it had 3 of Salamander's
+   16 strengths, and it jumped from one to the next. Now (music-handoff/tools/piano_grand_pro.py, audio/piano/grand3/):
+   · six strengths of each note, a (Salamander's layer 2) b (5) c (8) d (11) e (14) f (16, the loudest). Each plays at the
+     loudness its strength asks for (proDb: one smooth line from the softest touch to the hardest), and between two of them
+     the note is both, blended (proMix), so a note gets louder and brighter with no step. Phones keep five (not b).
+   · every file ends in a sustain loop (its last 40 %, the 20 % before it the crossfade, joined by bakeLoop once decoded),
+     levelled in the file from the crossfade on; from that moment the page lets it die away at that note's own measured
+     rate (dB a second) until it is 72 dB under its peak: a held C2 rings about 40 s, a C4 about 25 s, as the real piano.
+     GRAND_PRO.k[note] = [crossfade starts, loop starts, crossfade length] (s); f[file] = [loop ends, decay dB/s, end (s),
+     dB its peak was lowered in the file]; every file sits lift dB under the page's level.
+   · the middle strength (c) of every note comes first and the piano plays as soon as it is in, as before; the other
+     strengths, the release noises and the pedal come only once someone has played, while the hands are still.
+   · a key let go without the pedal makes Salamander's own release noise (the damper landing), softly; while the pedal is
+     down, the strings that are free ring along (symBank) and a MIDI pedal makes its own sound; a MIDI pedal halfway down
+     lets notes die away slower (half-pedal, setPedal). */
+/* AOG-GRAND-PRO-V1 data start */
+const GRAND_PRO={"D":{"a":-8.78,"b":-2.96,"c":0.0,"d":2.79,"e":6.25,"f":9.18},"f":{"102a":[2.1815,6.4,9.0],"102b":[2.06029,6.4,7.84],"102c":[2.16127,6.4,7.92],"102d":[2.12172,6.4,7.24],"102e":[2.16594,6.4,6.99],"102f":[2.04111,6.4,6.1],"105a":[2.12122,6.93,7.85],"105b":[2.04134,6.93,7.29],"105c":[2.18066,6.93,6.27],"105d":[2.18011,6.93,6.11],"105e":[2.19986,6.93,5.51],"105f":[2.04469,6.93,5.25],"108a":[2.06075,7.5,7.17],"108b":[2.16086,7.5,6.71],"108c":[2.1612,7.5,6.36],"108d":[2.16184,7.5,6.42],"108e":[2.12168,7.5,5.89],"108f":[2.04476,7.5,5.34],"21a":[5.948,1.82,36.46],"21b":[5.87422,1.9,35.27],"21c":[5.8742,1.95,34.46],"21d":[5.87417,2.04,32.82],"21e":[5.87417,2.08,32.25],"21f":[5.87415,2.11,31.68],"24a":[5.80068,1.76,36.46],"24b":[5.80073,1.76,36.4],"24c":[5.80073,1.86,34.6],"24d":[5.80075,1.81,35.56],"24e":[5.80073,1.9,34.08],"24f":[5.8007,1.91,33.72],"27a":[5.89943,1.08,45.0],"27b":[5.97741,1.46,44.94],"27c":[5.97741,1.53,42.93],"27d":[5.97739,1.59,41.39],"27e":[5.97739,1.69,38.91],"27f":[5.97735,1.75,37.42],"30a":[5.63413,1.86,36.28],"30b":[5.63413,1.94,34.95],"30c":[5.63413,2.03,33.52],"30d":[5.63413,2.04,33.37],"30e":[5.63415,2.07,32.96],"30f":[5.63415,2.1,32.52],"33a":[5.83798,1.04,45.0],"33b":[5.89261,1.23,45.0],"33c":[5.89261,1.09,45.0],"33d":[5.92907,1.04,45.0],"33e":[5.94721,1.35,45.0],"33f":[5.94719,1.4,43.44],"36a":[4.76651,1.12,45.0],"36b":[4.85853,1.12,45.0],"36c":[4.85855,1.12,45.0],"36d":[4.85857,1.16,45.0],"36e":[4.85859,1.26,41.97],"36f":[4.85862,1.33,39.84],"39a":[4.87617,1.21,45.0],"39b":[4.97927,1.32,43.47],"39c":[4.97927,1.39,41.34],"39d":[4.97927,1.38,41.44],"39e":[4.97927,1.43,39.93],"39f":[4.9793,1.44,39.25],"42a":[4.63719,1.31,43.71],"42b":[4.63721,1.38,42.3],"42c":[4.72231,1.52,38.54],"42d":[4.60327,1.6,36.6],"42e":[4.60478,1.7,34.4],"42f":[4.60478,1.64,35.88],"45a":[4.60469,1.42,43.93],"45b":[4.6046,1.54,40.22],"45c":[4.60456,1.62,38.22],"45d":[4.60456,1.69,36.54],"45e":[4.60456,1.75,35.2],"45f":[4.61365,1.69,36.07],"48a":[4.46206,1.53,35.11],"48b":[4.14007,1.65,33.44],"48c":[4.14007,1.7,32.81],"48d":[4.46209,1.89,29.79],"48e":[4.46211,2.0,28.29],"48f":[4.46977,2.01,27.83],"51a":[4.2815,1.66,33.02],"51b":[4.32009,1.66,32.76],"51c":[4.32007,1.66,32.7],"51d":[4.14615,1.66,32.66],"51e":[4.32009,1.66,32.47],"51f":[4.30726,1.8,30.03],"54a":[4.29975,1.8,31.49],"54b":[4.42093,1.8,30.79],"54c":[4.43721,1.8,30.67],"54d":[4.36138,1.8,30.59],"54e":[4.25658,1.8,30.45],"54f":[4.262,1.8,30.11],"57a":[4.14011,1.94,32.21],"57b":[4.22177,1.94,31.37],"57c":[4.14011,1.94,31.04],"57d":[4.15832,1.94,30.58],"57e":[4.14016,1.95,30.11],"57f":[4.14016,1.97,29.43],"60a":[3.68073,2.11,23.43],"60b":[3.71898,2.11,22.62],"60c":[3.68073,2.11,23.11],"60d":[3.68073,2.11,22.29],"60e":[3.68075,2.11,21.96],"60f":[3.68075,2.11,22.04],"63a":[3.68222,2.28,25.47],"63b":[3.68222,2.28,25.22],"63c":[3.68222,2.28,24.96],"63d":[3.68222,2.28,24.78],"63e":[3.68222,2.28,24.44],"63f":[3.70152,2.39,23.36],"66a":[3.68043,2.47,22.89],"66b":[3.95937,2.47,22.54],"66c":[3.99995,2.47,22.37],"66d":[3.92147,2.47,22.27],"66e":[3.94313,2.47,22.08],"66f":[3.94313,2.56,21.07],"69a":[3.68095,2.67,18.93],"69b":[3.99893,2.67,17.74],"69c":[3.80143,2.67,17.54],"69d":[3.99896,2.67,17.46],"69e":[3.98311,2.67,17.43],"69f":[3.99902,2.67,17.28],"72a":[2.76104,2.89,17.01],"72b":[2.76107,2.89,16.83],"72c":[2.76107,2.89,16.84],"72d":[2.76109,2.89,16.7],"72e":[2.76111,2.89,16.42],"72f":[2.76111,2.89,16.34],"75a":[2.99995,3.13,17.4],"75b":[2.99998,3.13,17.3],"75c":[2.99998,3.13,17.15],"75d":[3.0,3.13,16.85],"75e":[3.0,3.13,16.42],"75f":[2.99844,3.13,16.25],"78a":[2.76118,3.39,15.35],"78b":[2.76254,3.39,14.83],"78c":[2.7612,3.39,14.62],"78d":[2.76256,3.39,14.23],"78e":[2.76122,3.39,13.88],"78f":[2.76125,3.39,13.7],"81a":[2.78084,3.67,14.48],"81b":[2.88159,3.67,14.21],"81c":[2.84082,3.67,13.88],"81d":[2.82156,3.67,13.8],"81e":[2.88161,3.67,13.59],"81f":[2.8805,3.67,13.36],"84a":[2.12107,3.97,13.57],"84b":[2.14272,3.97,12.81],"84c":[2.16084,3.97,11.93],"84d":[2.12091,3.97,11.94],"84e":[2.1876,3.97,11.92],"84f":[2.17998,3.97,11.44],"87a":[2.15964,4.3,12.57],"87b":[2.04063,4.3,11.72],"87c":[2.1805,4.3,11.69],"87d":[2.18132,4.3,11.45],"87e":[2.18057,4.3,11.2],"87f":[2.19977,4.3,11.05],"90a":[2.18009,4.66,11.78],"90b":[2.13991,4.66,11.39],"90c":[2.13925,4.66,11.54],"90d":[2.16007,4.66,11.55],"90e":[2.14066,4.66,11.44],"90f":[2.12059,4.93,10.61],"93a":[2.10041,5.04,10.47],"93b":[2.14009,5.04,9.83],"93c":[2.04011,5.04,9.56],"93d":[2.18077,5.04,9.34],"93e":[2.18138,5.04,9.03],"93f":[2.05884,5.04,8.99],"96a":[2.16073,5.46,10.22],"96b":[2.04011,5.46,8.35],"96c":[2.04009,5.46,6.96],"96d":[2.12172,5.46,6.97],"96e":[2.04007,5.46,6.33],"96f":[2.04007,5.46,5.82],"99a":[2.05961,5.91,8.41],"99b":[2.05923,5.91,8.85],"99c":[2.18263,5.91,7.49],"99d":[2.04059,5.91,7.22],"99e":[2.14104,5.91,6.94],"99f":[2.18073,5.91,6.89]},"k":{"102":[0.88,1.32,0.44],"105":[0.88,1.32,0.44],"108":[0.88,1.32,0.44],"21":[2.4,3.6,1.2],"24":[2.4,3.6,1.2],"27":[2.4,3.6,1.2],"30":[2.4,3.6,1.2],"33":[2.4,3.6,1.2],"36":[2.0,3.0,1.0],"39":[2.0,3.0,1.0],"42":[2.0,3.0,1.0],"45":[2.0,3.0,1.0],"48":[1.8,2.7,0.9],"51":[1.8,2.7,0.9],"54":[1.8,2.7,0.9],"57":[1.8,2.7,0.9],"60":[1.6,2.4,0.8],"63":[1.6,2.4,0.8],"66":[1.6,2.4,0.8],"69":[1.6,2.4,0.8],"72":[1.2,1.8,0.6],"75":[1.2,1.8,0.6],"78":[1.2,1.8,0.6],"81":[1.2,1.8,0.6],"84":[0.88,1.32,0.44],"87":[0.88,1.32,0.44],"90":[0.88,1.32,0.44],"93":[0.88,1.32,0.44],"96":[0.88,1.32,0.44],"99":[0.88,1.32,0.44]},"lift":10.0,"r":{"102":{"ab":0.943,"ac":0.91,"bc":0.967,"cd":0.964,"de":0.968,"ef":0.969},"105":{"ab":0.862,"ac":0.792,"bc":0.961,"cd":0.973,"de":0.946,"ef":0.753},"108":{"ab":0.773,"ac":0.804,"bc":0.758,"cd":0.913,"de":-0.369,"ef":-0.288},"21":{"ab":0.113,"ac":0.11,"bc":0.994,"cd":0.996,"de":0.997,"ef":0.993},"24":{"ab":0.992,"ac":0.984,"bc":0.998,"cd":0.997,"de":0.292,"ef":0.242},"27":{"ab":0.991,"ac":0.977,"bc":0.995,"cd":0.996,"de":0.993,"ef":0.993},"30":{"ab":0.853,"ac":0.974,"bc":0.776,"cd":0.999,"de":0.992,"ef":0.997},"33":{"ab":0.989,"ac":0.978,"bc":0.997,"cd":0.998,"de":0.99,"ef":0.982},"36":{"ab":0.987,"ac":0.974,"bc":0.997,"cd":0.997,"de":0.996,"ef":0.994},"39":{"ab":0.983,"ac":0.974,"bc":0.997,"cd":0.998,"de":0.99,"ef":0.99},"42":{"ab":0.986,"ac":0.976,"bc":0.997,"cd":0.997,"de":0.995,"ef":0.997},"45":{"ab":0.987,"ac":0.973,"bc":0.996,"cd":0.994,"de":0.989,"ef":0.994},"48":{"ab":0.988,"ac":0.979,"bc":0.997,"cd":0.997,"de":0.997,"ef":0.996},"51":{"ab":0.988,"ac":0.982,"bc":0.999,"cd":0.998,"de":0.996,"ef":0.996},"54":{"ab":0.984,"ac":0.961,"bc":0.993,"cd":0.997,"de":0.996,"ef":0.99},"57":{"ab":0.961,"ac":0.934,"bc":0.993,"cd":0.989,"de":0.987,"ef":0.994},"60":{"ab":0.991,"ac":0.985,"bc":0.998,"cd":0.994,"de":0.995,"ef":1.0},"63":{"ab":0.987,"ac":0.972,"bc":0.996,"cd":0.997,"de":0.995,"ef":0.994},"66":{"ab":0.983,"ac":0.965,"bc":0.996,"cd":0.997,"de":0.997,"ef":0.996},"69":{"ab":0.99,"ac":0.982,"bc":0.997,"cd":0.999,"de":0.998,"ef":0.998},"72":{"ab":0.991,"ac":0.987,"bc":0.998,"cd":0.998,"de":0.996,"ef":0.986},"75":{"ab":0.998,"ac":0.994,"bc":0.997,"cd":0.997,"de":0.993,"ef":0.983},"78":{"ab":0.999,"ac":0.997,"bc":0.999,"cd":0.999,"de":0.997,"ef":0.995},"81":{"ab":0.968,"ac":0.931,"bc":0.984,"cd":0.993,"de":0.991,"ef":0.991},"84":{"ab":0.778,"ac":0.746,"bc":0.966,"cd":0.939,"de":0.987,"ef":0.989},"87":{"ab":0.886,"ac":0.881,"bc":0.991,"cd":0.995,"de":0.99,"ef":0.99},"90":{"ab":0.864,"ac":0.864,"bc":0.989,"cd":0.985,"de":0.986,"ef":0.989},"93":{"ab":0.978,"ac":0.951,"bc":0.991,"cd":0.994,"de":0.993,"ef":0.996},"96":{"ab":0.968,"ac":0.935,"bc":0.987,"cd":0.992,"de":0.993,"ef":0.998},"99":{"ab":0.962,"ac":0.957,"bc":0.969,"cd":0.986,"de":0.969,"ef":0.994}}};
+/* AOG-GRAND-PRO-V1 data end */
+const PRO_LAY=["a","b","c","d","e","f"];
+/* how loud a strength is, in dB from the middle recording as recorded: a smooth line, every tenth of the way (soft taps are
+   as soft as before; the hardest is 4 dB or so over today's loudest, as heard through the room) */
+const PRO_DB=[-17,-14.8,-12.6,-10.4,-8.1,-5.8,-3.5,-1.2,2.4,7.5,14];
+function proDb(v){ const x=Math.max(0,Math.min(1,v))*10, i=Math.min(9, Math.floor(x)); return PRO_DB[i]+(PRO_DB[i+1]-PRO_DB[i])*(x-i)-PRO_DB0; }
+const PRO_DB0=(()=>{ const x=6.2, i=6; return PRO_DB[i]+(PRO_DB[i+1]-PRO_DB[i])*(x-i); })();   /* the middle recording sounds as recorded at 0.62 */
+/* where each strength is played as it was recorded (proDb(v) equals its step from the middle one) */
+function proCenters(P){ const c={}; PRO_LAY.forEach(L=>{ let lo=0, hi=1; for(let i=0;i<40;i++){ const mid=(lo+hi)/2; if(proDb(mid)<P.D[L]) lo=mid; else hi=mid; } c[L]=(lo+hi)/2; }); return c; }
+if(GRAND_PRO) GRAND_PRO.c=proCenters(GRAND_PRO);
+SETS.grand.pro=GRAND_PRO;
+function proLays(set){ return set.pro && onPhone() ? PRO_LAY.filter(L=>L!=="b") : PRO_LAY; }   /* a phone keeps five, for its memory */
+/* the recordings this strength plays, and how much of each: one, or the two either side of it in the middle 60 % of the way
+   between them. The six of a note start together (lined up when they were made), each at the loudness the strength asks
+   for; blended, they keep that loudness exactly: how alike the two are (P.r, measured when they were made) says how much
+   they add up */
+function proMix(set, n, v){
+  const P=set.pro, have=proLays(set).filter(L=>set.buf[n+L]); if(!have.length) return [];
+  let lo=null, hi=null; have.forEach(L=>{ if(P.c[L]<=v) lo=L; else if(hi==null) hi=L; });
+  if(lo==null) return [[hi,1]]; if(hi==null) return [[lo,1]];
+  const u=(v-P.c[lo])/(P.c[hi]-P.c[lo]), s=Math.max(0, Math.min(1, (u-0.2)/0.6));
+  if(s<=0) return [[lo,1]]; if(s>=1) return [[hi,1]];
+  const r=P.r && P.r[n] && P.r[n][lo+hi], rho=typeof r==="number" ? Math.max(-0.5, Math.min(1, r)) : 0.5;
+  const k=1/Math.sqrt((1-s)*(1-s)+s*s+2*s*(1-s)*rho);
+  return [[lo,(1-s)*k],[hi,s*k]];
+}
+/* the strength layer heard most at v (the level tools ask, music-handoff/tools/levels/rooms.js) */
+function layerAt(set, n, v){
+  if(set.pro){ const mx=proMix(set, n, v); return mx.length ? mx.reduce((a,b)=>b[1]>a[1]?b:a)[0] : null; }
+  let l=v<0.42?"s":v<0.78?"m":"l"; if(!set.buf[n+l]) l=["m","l","s"].find(x=>set.buf[n+x]); return l||null;
+}
 const LAYER_TARGET={s:-24, m:-19, l:-15};          /* dB, the level each layer is brought most of the way to */
 function decodeWith(dec, ab){ return new Promise((ok,no)=>{ const r=dec.decodeAudioData(ab, ok, no); if(r && r.then) r.then(ok,no); }); }
 /* AOG-PIANO-STEREO-V1: a recording may keep both its microphones (left and right). Its peak is the louder side's, it
@@ -1159,7 +1209,13 @@ function oneSide(b){
    and every new lesson tick drew the lesson card again (the page's helpers then read it all again). A note that landed
    then waited. Now the work that can wait does: it starts once the keys have been still for a few seconds (HANDS: the last
    note by hand, and a key still held), in quiet moments. The notes themselves never wait. */
-const HANDS={at:-1e9, rush:0}, STILL_MS=3000;   /* rush: a take being made (Send, a re-render) needs every recording now */
+const HANDS={at:-1e9, played:false}, STILL_MS=3000;   /* rush: a take being made (Send, a re-render) needs every recording now */
+/* AOG-GRAND-PRO-V1: what waits for someone to play (the grand's other strengths) waits on a promise, not a timer; the first
+   note, or a take that needs every recording (rush, however it is set), lets it go */
+let PLAYED_Q=[];
+function handsWake(){ HANDS.played=true; const q=PLAYED_Q; PLAYED_Q=[]; q.forEach(f=>f()); }
+function handsPlayed(){ return HANDS.played || HANDS.rush>0 ? Promise.resolve() : new Promise(r=>PLAYED_Q.push(r)); }
+(()=>{ let r=0; Object.defineProperty(HANDS, "rush", {enumerable:true, get(){ return r; }, set(x){ r=x; if(x>0) handsWake(); }}); })();
 function handsBusy(ms){
   if(HANDS.rush) return false;
   if(performance.now()-HANDS.at < ms) return true;
@@ -1195,12 +1251,18 @@ function loadSet(name, onStep){
      still loading stops: its downloads are called off, and a note already on its way is dropped, so it never fills up
      again behind the new one (with more recorded sounds, stepping through the menu passes several of them) */
   Object.keys(SETS).forEach(k=>{ const o=SETS[k]; if(k!==name && o.state!=="idle"){ if(o.run) o.run.stop();
-    Object.assign(o,{buf:{},gain:{},start:{},peak:{},lp:{},state:"idle",done:0,job:null,ready:false,run:null}); } });
+    Object.assign(o,{buf:{},gain:{},start:{},peak:{},lp:{},rel:{},state:"idle",done:0,job:null,all:null,ready:false,run:null}); } });
   const ctl=typeof AbortController==="function" ? new AbortController() : null, run={stop(){ try{ if(ctl) ctl.abort(); }catch(e){} }};
   set.run=run; set.state="loading"; set.done=0;
   const OC=window.OfflineAudioContext||window.webkitOfflineAudioContext;
   const dec=new OC(1, 1, 32000);
   const files=[]; (set.layers||["m","s","l"]).forEach(l=>set.notes.forEach(n=>files.push([n,l])));
+  /* AOG-GRAND-PRO-V1: the middle strength first (the piano plays once it is in); then, once someone has played, the release
+     noises and the pedal, then the other strengths, the nearest to the middle first */
+  const FIRST=set.pro ? "c" : "m";
+  if(set.pro){ files.length=0; set.notes.forEach(n=>files.push([n,"c"]));
+    set.notes.forEach(n=>files.push(["rel",n])); ["pedalD1","pedalU1","pedalD2","pedalU2"].forEach(x=>files.push(["ped",x]));
+    ["d","b","e","a","f"].filter(L=>proLays(set).indexOf(L)>=0).forEach(L=>set.notes.forEach(n=>files.push([n,L]))); }
   set.total=files.length;
   let failed=0, idx=0;
   /* AOG-PIANO-GENTLE-V1 (2026-10-11, Jimmy: "SUPER MAN SPEED!"): the middle layer comes first, six at a time, and the piano
@@ -1209,32 +1271,45 @@ function loadSet(name, onStep){
   /* AOG-PIANO-STEADY-V1: and only while the hands are still. The soft and loud layers wait until no key has been played
      for a few seconds, then come one at a time in quiet moments; the middle layer, which the piano needs, keeps coming
      while you play, two at a time, each unpacked between notes */
-  async function worker(k){
-    while(idx<files.length && set.run===run){
-      if(set.ready){ if(k>=1) return; await handsStill(STILL_MS); if(idx>=files.length || set.run!==run) return; }
+  /* AOG-GRAND-PRO-V1: the grand's middle strength is all the six take at first; what comes after it, one at a time, later */
+  const nFirst=set.pro ? set.notes.length : files.length;
+  async function worker(k, lim){
+    while(idx<(lim||files.length) && set.run===run){
+      if(set.ready){ if(k>=1) return; if(set.pro) await handsPlayed(); await handsStill(STILL_MS); if(idx>=files.length || set.run!==run) return; }
       else if(k>=2 && handsBusy(STILL_MS)){ await handsStill(STILL_MS); if(idx>=files.length || set.run!==run) return; }
-      const [n,l]=files[idx++];
+      const [n,l]=files[idx++], extra=n==="rel"||n==="ped", url=n==="rel" ? "rel"+l : n==="ped" ? l : n+l;
       try{
-        const r=await fetch(set.dir+n+l+".mp3", ctl ? {signal:ctl.signal} : undefined); if(!r.ok) throw new Error(r.status);
+        const r=await fetch(set.dir+url+".mp3", ctl ? {signal:ctl.signal} : undefined); if(!r.ok) throw new Error(r.status);
         const ab=await r.arrayBuffer();
         if(set.run!==run) return;
-        await (l==="m" ? handsGap() : handsStill(STILL_MS));
+        await (l===FIRST ? handsGap() : handsStill(STILL_MS));
         if(set.run!==run) return;
         let b=await decodeWith(dec, ab);
         if(set.run!==run) return;
-        await (l==="m" ? handsGap() : handsStill(STILL_MS));
+        await (l===FIRST ? handsGap() : handsStill(STILL_MS));
         if(set.run!==run) return;
         if(ONE_SIDE_ON_PHONE[name] && onPhone()) b=oneSide(b);
-        const m=measure(b, l);
-        if(set.loop) set.lp[n+l]=bakeLoop(b, set.loop[0], loopEnd(set, n), 0.5, set.steady);
-        set.buf[n+l]=b; set.start[n+l]=m.start; set.gain[n+l]=set.even?1:m.gain; set.peak[n+l]=m.peak;
+        if(extra) set.rel[n==="rel" ? "r"+l : l]=b;
+        else {
+          const m=measure(b, l);
+          if(set.loop) set.lp[n+l]=bakeLoop(b, set.loop[0], loopEnd(set, n), 0.5, set.steady);
+          /* AOG-GRAND-PRO-V1: each recording's own loop, joined the long way (an equal-power crossfade: the two ends of a
+             piano's dying tone agree only in part) */
+          if(set.pro && set.pro.k[n] && set.pro.f[n+l]){ const k=set.pro.k[n]; set.lp[n+l]=bakeLoop(b, k[1], set.pro.f[n+l][0], k[2], false); }
+          /* AOG-GRAND-PRO-V1: a note's six strengths start where its middle one does (they were lined up when made) */
+          set.buf[n+l]=b; set.start[n+l]=set.pro && set.start[n+"c"]!=null ? set.start[n+"c"] : m.start; set.gain[n+l]=set.even||set.pro?1:m.gain; set.peak[n+l]=m.peak;
+        }
       }catch(e){ if(set.run!==run) return; failed++; }
       set.done++;
-      if(!set.ready && set.notes.every(k=>set.buf[k+"m"])) set.ready=true;
+      if(!set.ready && set.notes.every(k=>set.buf[k+FIRST])){ set.ready=true; if(set.pro) set.state="ready"; }
       if(onStep) handsLater(onStep, set);
     }
   }
-  set.job=Promise.all([0,1,2,3,4,5].map(worker)).then(()=>{
+  const first=Promise.all([0,1,2,3,4,5].map(k=>worker(k, nFirst)));
+  /* AOG-GRAND-PRO-V1: the grand is ready (its job done) once its middle strength is in; the rest comes on its own, and a
+     take that needs every recording waits for that too (set.all, allIn) */
+  if(nFirst<files.length){ set.all=first.then(()=>set.ready && set.run===run ? worker(0) : null).then(()=>{ if(set.run===run && set.ready && onStep) handsLater(onStep, set); return set; }); }
+  set.job=first.then(()=>{
     if(set.run!==run) return set;          /* let go while it loaded: it stays put away */
     set.state = set.ready ? "ready" : "failed";
     if(!set.ready) set.job=null;
@@ -1243,6 +1318,8 @@ function loadSet(name, onStep){
   });
   return set.job;
 }
+/* every recording of a set, for a take made offline (the grand's later strengths come at once while rush is set) */
+async function allIn(name, onStep){ await loadSet(name, onStep); const s=SETS[name]; if(s.all) await s.all; return s; }
 /* AOG-PIANO-SOUNDS-V2: a held string note loops. The half second before the loop's end is faded into the half second before
    its start, so the jump back lands where the sound already is: no seam, whatever the decoder did to the file's timing */
 function bakeLoop(b, a, z, x, steady){
@@ -1281,7 +1358,7 @@ function nearest(set, m){ let best=set.notes[0]; set.notes.forEach(n=>{ if(Math.
 const EVENP={"accordion":{"m":"[SQNNOOQQURONLRJKKOMMLKIK","mk":"OOOOOOOOOOOOOOOOOOOOOOOOO"},
 "bells":{"m":"OMNMQPRNMNP","mk":"MOOOOOOOOOO"},
 "brass":{"m":"kcb^XNNHSNNMNMNJKHHHHGHHH","mk":"OOOOOOOOOOOOOOOOOOOOOOOOO"},
-"bright":{"m":"S[Q_ZRLIJRINMNRKOKPM]zXb^pSSSS","mk":"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOO","s":"SHJJILKKKOHQPLQNRLPOX_UWUZSSSS","sk":"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOO","l":"RbSf`VKHIRKMMOUDKCHG`mZgcwRRRR","lk":"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOO"},
+"bright":{"a":"VBJ?BKOOPMPPQNPQPRRQL?MLHAVVVV","ak":"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOO","b":"VAJ?BKOOPMOOPNPQQRRQNEONLEVVVV","bk":"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOO","c":"SCJBDKNOONOOPNPPQQRQQSQQQVSSSS","ck":"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOO","d":"SYKbXOMMMPMMMNNMONONRZTVZ`SSSS","dk":"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOO","e":"OlTtlWTTNSRKLTLEMEIGN\\W_ZcOOOO","ek":"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOO","f":"OsXwsYYXRZWKNVN=I=G@GYT`Q_OOOO","fk":"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOO"},
 "celesta":{"m":"x]E@CFFGKLLMPOPROPOPQOPRT","mk":"OOOOOOOOOOOOOOOOOOOOOOOOO","l":"~~~~sg^\\XPOOOMKLJIFFFEEFI","lk":"OOOOOOOOOOOOOOOOOOOOOOOOO"},
 "choir":{"m":"WTQUORPVTQPUKLQTPNPVOPX~~","mk":"OOOOOOOOOOOOOOOOOOOOOOOOO"},
 "church":{"m":"XKTTYU]NRPJKKUKLMNMJO","mk":"OOOOOOOOOOOOOOOOOOOO:"},
@@ -1292,7 +1369,7 @@ const EVENP={"accordion":{"m":"[SQNNOOQQURONLRJKKOMMLKIK","mk":"OOOOOOOOOOOOOOOO
 "felt":{"m":"OJKHIMGPSTPMLOd^`YVWOOO","mk":"OIXKPKSIUVMbjPbd;VYOOOO","s":"OOOOOOOOOOOOOOOOOOOOOOO","sk":"OOOOOOOOOOOOOOOOOOOOOOO","l":"OOOOOOOOOOOOOOOOOOOOOOO","lk":"OOOOOOOOOOOOOOOOOOOOOOO"},
 "glock":{"m":"OOOOOO","mk":"OOOOOO"},
 "gospel":{"m":"ZS\\[VZV\\M]J]M[H]MWIXM^IYQ","mk":"OOOOOOOOOOOOOOOOOOOOOOOOO"},
-"grand":{"m":"SWNYVPLJKQJONNPMPLQOYlTY\\eSSSS","mk":"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOO","s":"SIKJILLLLPIQPLRNRMQOX_TWUZSSSS","sk":"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOO","l":"Os_xo^Z\\TZ]QKXK@K=EALbSOUaOOOO","lk":"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOO"},
+"grand":{"a":"QBJ?BKOOPMPPPNPQPRQPL?MKHAQQQQ","ak":"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOO","b":"QAJ?BKOOOMOOPNPPPQQPNEONLEQQQQ","bk":"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOO","c":"QGJGHKNOOMOOPNPPPQQQQOQQPQQQQQ","ck":"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOO","d":"QSNVTPONMPNNNOOMONNNQTRTVYQQQQ","dk":"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOO","e":"O\\T^[TTTQRSOOSMJOILJNVSTW[OOOO","ek":"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOO","f":"O^V`^VVVTTVOOTMFMHMHHTQRQWOOOO","fk":"OOOOOOOOOOOOOOOOOOOOOOOOOOOOOO"},
 "harp":{"m":"Y^b`RNVPPUOmYS_XqbcvS","mk":"OUOOOVO@OOcOROOOOj\\OO"},
 "harpsi":{"m":"P^JGJJUQNLMKTOOONNKNOOMOOSQJ","mk":"OOOOOOOOOOOOOOOOOOOOOOOOOOOX"},
 "honky":{"m":"NJIEMKDPSWQJRRgge^]ZNNN","mk":"OXXTUNON[ZW_g\\diLQMOOOO","s":"MLLMLOFQU_TIXPj_~z~oMMM","sk":"OSWOLQPZZLJ_iWX`cYwOOOO","l":"H[TMacN_PUR<NRc^PFGKHHH","lk":"OMLJRMB[J^]c[=aJJGOOOOO"},
@@ -1335,6 +1412,7 @@ function voiceShell(c, out, nodes, rel, endPad){
 }
 function sampleVoice(c, ch, snd, m, v, when){
   const set=SETS[snd.set];
+  if(set.pro) return proVoice(c, ch, snd, set, m, v, when);   /* AOG-GRAND-PRO-V1 */
   const n=nearest(set, m);
   let layer=v<0.42?"s":v<0.78?"m":"l";
   if(snd.tone==="felt") layer="m";                    /* AOG-PIANO-SOUNDS-V2: one even layer; the felt (the filter below) softens every hammer */
@@ -1390,6 +1468,95 @@ function sampleVoice(c, ch, snd, m, v, when){
   else if(!set.loop) vc.natural=when+(buf.duration-set.start[n+layer])/rate;
   if(snd.tone || set.even) ringOn(ch, m, vc, when);   /* AOG-PIANO-SOUNDS-V2 (the three first pianos are as they were) */
   return vc;
+}
+/* AOG-GRAND-PRO-V1: the grand. One or two recordings of the note (proMix), each at the loudness the strength asks for; it
+   plays its file, then its loop, dying away from the loop's crossfade at the note's own rate until 72 dB under its peak.
+   Let go without the pedal (stop(t, tau, {rel:true}), noteOff), the damper's own sound follows, softly. */
+const REL_DB=-3, PEDAL_DB=-6;   /* the release noise and the pedal's sound, under Salamander's own levels (−37 and −20 dB) */
+function proVoice(c, ch, snd, set, m, v, when){
+  const P=set.pro, n=nearest(set, m), mix=proMix(set, n, v); if(!mix.length) return null;
+  const rate=Math.pow(2,(m-n)/12), vv=clampV(v,0,1), f0=mtof(m), k=P.k[n];
+  const lp=c.createBiquadFilter(); lp.type="lowpass"; lp.Q.value=0.5;
+  /* the bright piano opens sooner (its own voicing, as before); the grand's own recordings carry its tone, so its filter
+     only softens the softest touches a little */
+  lp.frequency.value=snd.tone==="bright" ? Math.min(19000, 3200*Math.pow(2, vv*2.6)) : Math.min(19000, Math.max(2500*Math.pow(2, vv*3.2), 2.5*f0));
+  const lv=snd.post ? snd.drive : snd.gain, lift=Math.pow(10, (P.lift||0)/20);
+  const g=c.createGain(); g.gain.value=lv*lift;
+  const rel=c.createGain(); rel.gain.value=1;
+  if(snd.tone==="bright"){ const hs=c.createBiquadFilter(); hs.type="highshelf"; hs.frequency.value=2600; hs.gain.value=7*clampV((96-m)/24,0,1); lp.connect(hs); hs.connect(g); }
+  else lp.connect(g);
+  g.connect(rel); rel.connect(snd.bus ? fx(ch, snd.bus) : ch.bus); if(!snd.post) rel.connect(ch.send);
+  const srcs=[]; let end=when;
+  mix.forEach(([L, w])=>{
+    const key=n+L, buf=set.buf[key], fm=P.f[key], st=set.start[key]||0, lpx=set.lp[key];
+    const lay=Math.pow(10, (proDb(vv)-P.D[L]+(fm[3]||0))/20)*w*evenP(snd, set, n, L, m);
+    const s=c.createBufferSource(); s.buffer=buf; s.playbackRate.value=rate;
+    if(lpx){ s.loop=true; s.loopStart=lpx[0]; s.loopEnd=lpx[1]; }
+    const sg=gainAt(c, lay), tF=when+Math.max(0, k[0]-st)/rate;
+    sg.gain.setValueAtTime(lay, tF); sg.gain.setTargetAtTime(0, tF, 20/(Math.LN10*fm[1])/rate);   /* fm[1] dB a second */
+    s.connect(sg); sg.connect(lp); s.start(when, st);
+    const e=when+Math.max(0.1, fm[2]-st)/rate; s.stop(e+0.05); end=Math.max(end, e); srcs.push(s);
+  });
+  /* (no peak cap here, the bright piano too: the grand never had one, and the room's limiter holds every peak; capping each
+     note by its own sharpest instant made the bright piano's C6 recording 4.6 dB softer than its neighbours) */
+  const vc=voiceShell(c, ch.bus, srcs, rel);
+  vc.tau=snd.tau||damper(m); vc.natural=end;
+  /* the free strings ring along while the pedal is down (symBank: its input is open only then) */
+  const sb=symBank(ch); if(sb){ g.connect(sb.input); }
+  const st0=vc.stop;
+  vc.stop=function(t, tau, o){ if(!this.stopped && o && o.rel) relNoise(c, ch, snd, set, m, vv, Math.max(t, c.currentTime), Math.max(0, t-when)); return st0.call(this, t, tau); };
+  /* AOG-GRAND-PRO-V1: a half-pedal lets a let-go note die slower; the pedal coming up lands the damper (damp) */
+  vc.damp=function(t, tau){ const T=Math.max(t, c.currentTime); rel.gain.setTargetAtTime(0, T, tau); const e=T+tau*7; if(!this.end || e<this.end){ this.end=e; srcs.forEach(s=>{ try{ s.stop(e); }catch(x){} }); } };
+  if(snd.tone) ringOn(ch, m, vc, when);
+  return vc;
+}
+/* the damper landing on the strings: Salamander's release noise for the note (its nearest), softer the softer the note was
+   struck and the longer it was held (its SFZ: 82 % strength tracking, 2 dB a second) */
+function relNoise(c, ch, snd, set, m, v, t, held){
+  const n=nearest(set, m), b=set.rel["r"+n]; if(!b) return;
+  const s=c.createBufferSource(); s.buffer=b; s.playbackRate.value=Math.pow(2,(m-n)/12);
+  const lv=(snd.post ? snd.drive : snd.gain)*Math.pow(10, ((set.pro.lift||0)+REL_DB-2*Math.min(held, 10))/20)*(0.18+0.82*v*v);
+  const g=gainAt(c, lv); s.connect(g); g.connect(ch.bus); if(!snd.post) g.connect(ch.send);
+  s.start(t); s.onended=()=>{ try{ g.disconnect(); }catch(e){} };
+}
+/* a MIDI pedal's own sound (down or up), the grand only */
+function pedalNoise(c, ch, down){
+  const snd=SOUNDS[S.sound], set=snd && snd.kind==="sample" ? SETS[snd.set] : null; if(!set || !set.pro) return;
+  const b=set.rel[(down?"pedalD":"pedalU")+(Math.random()<0.5?1:2)]; if(!b) return;
+  const s=c.createBufferSource(); s.buffer=b; const g=gainAt(c, snd.gain*Math.pow(10, ((set.pro.lift||0)+PEDAL_DB)/20));
+  s.connect(g); g.connect(ch.bus); s.start(c.currentTime); s.onended=()=>{ try{ g.disconnect(); }catch(e){} };
+}
+/* AOG-GRAND-PRO-V1: the strings that are free while the pedal is down. Twelve open strings, one of each pitch from C2 to B2,
+   each a delay round a loop (one wave of its note long, a little softer and darker each time round: it rings about three
+   seconds), so the partials of the notes played that land on their own harmonics ring on, softly (a struck C4 sets the
+   C2 and G2 strings going, an E4 the E2). Its input opens with the pedal (symPedal) and the strings are damped when it
+   comes up. Made once per chain, the first time the grand plays in it. */
+const SYM_T60=3, SYM_OUT=0.12, SYM_DAMP=0.25;
+function symBank(ch){
+  if(ch.sym!==undefined) return ch.sym;
+  const c=ch.c; ch.sym=null;
+  try{
+    const input=gainAt(c, 0), out=gainAt(c, SYM_OUT), fbs=[];
+    for(let pc=0; pc<12; pc++){
+      /* (a filter's Q is in dB here: −6 dB, so it never lifts any pitch above unity and the loop can never run away) */
+      const f=mtof(36+pc), lpf=c.createBiquadFilter(); lpf.type="lowpass"; lpf.frequency.value=3200; lpf.Q.value=-6.02;
+      const per=1/f-1/(0.5*2*Math.PI*3200);   /* the filter's own delay taken off, so the loop is in tune */
+      const d=c.createDelay(0.05); d.delayTime.value=per;
+      const k=Math.pow(10, -3*per/SYM_T60), fb=gainAt(c, k), pre=gainAt(c, 1-k);
+      input.connect(pre); pre.connect(d); d.connect(lpf); lpf.connect(fb); fb.connect(d); lpf.connect(out); fbs.push([fb, k, per]);
+    }
+    out.connect(ch.bus); out.connect(ch.send);
+    ch.sym={input:input, fbs:fbs, depth:0};
+    symPedal(ch, c===ac ? (S.ped!=null ? S.ped : (S.sus?1:0)) : 0, c.currentTime);   /* a render made offline sets its own (AOGRoomRender) */
+  }catch(e){ ch.sym=null; }
+  return ch.sym;
+}
+/* the pedal at depth d (0 up … 1 down) from time t: the strings' input opens, and they ring (or are damped) */
+function symPedal(ch, d, t){
+  const sb=ch.sym; if(!sb) return; d=clampV(d,0,1); sb.depth=d;
+  const open=d<=PED_ON ? 0 : clampV((d-PED_ON)/(PED_FULL-PED_ON), 0, 1);
+  sb.input.gain.setTargetAtTime(open, t, 0.03);
+  sb.fbs.forEach(([fb, k, per])=>{ const kk=open>0 ? Math.pow(10, -3*per/(SYM_DAMP+(SYM_T60-SYM_DAMP)*open)) : Math.pow(10, -3*per/SYM_DAMP); fb.gain.setTargetAtTime(kk, t, 0.02); });
 }
 function osc(c, type, f){ const o=c.createOscillator(); o.type=type; o.frequency.value=f; return o; }
 /* AOG-PIANO-LATE-NOTE-V1 (2026-10-03) — Jimmy, on an iPad: "playing the ORGAN, every 4-5 notes I would hear a drum".
@@ -1844,6 +2011,7 @@ function prune(){ const now=ac?ac.currentTime:0; for(let i=ALL.length-1;i>=0;i--
 function noteOn(tag, m, v){
   if(m<21||m>108) return;
   HANDS.at=performance.now();   /* AOG-PIANO-STEADY-V1 */
+  if(!HANDS.played) handsWake();   /* AOG-GRAND-PRO-V1: the grand's other strengths may come once the hands are still */
   const c=ctx(), now=c.currentTime, key=tag+m;
   const old=LIVE.get(key); if(old){ old.stop(now, 0.05); LIVE.delete(key); }
   const vc=makeVoice(c, LIVE_CH, S.sound, m, v, now);
@@ -1881,17 +2049,35 @@ function noteOff(tag, m){
   const key=tag+m, vc=LIVE.get(key); if(!vc) return;
   HANDS.at=performance.now();   /* AOG-PIANO-STEADY-V1 */
   vc.down=false;
-  if(!S.sus){ vc.stop(ac.currentTime, vc.tau); LIVE.delete(key); }
+  /* AOG-GRAND-PRO-V1: let go without the pedal, the damper lands (its sound, on the grand); half down, the note dies slower */
+  if(!S.sus){ vc.stop(ac.currentTime, vc.tau, {rel:true}); LIVE.delete(key); }
+  else if(S.ped!=null && S.ped<PED_FULL){ vc.stop(ac.currentTime, halfTau(vc, S.ped)); LIVE.delete(key); HALF.add(vc); }
   litKeys();
+}
+/* AOG-GRAND-PRO-V1: a MIDI pedal's depth (CC64, 0 … 127). Up to PED_ON it is up; from PED_FULL it is all the way down; in
+   between (half-pedal) the dampers touch the strings lightly, so a note let go dies away slower the deeper the pedal */
+const PED_ON=0.12, PED_FULL=0.75, HALF=new Set();
+function halfTau(vc, d){ const h=clampV((d-PED_ON)/(PED_FULL-PED_ON), 0, 1); return (vc.tau||0.2)*(1+40*h*h); }
+function setPedal(d){
+  d=clampV(+d||0, 0, 1); const was=S.ped==null ? (S.sus?1:0) : S.ped; S.ped=d;
+  const on=d>PED_ON;
+  if(ac && on!==(was>PED_ON)) pedalNoise(ac, LIVE_CH, on);   /* a real pedal's own sound */
+  if(on!==!!S.sus) setSus(on, true);
+  if(ac){
+    if(on && d<PED_FULL) LIVE.forEach((vc,key)=>{ if(!vc.down){ vc.stop(ac.currentTime, halfTau(vc, d)); LIVE.delete(key); HALF.add(vc); } });
+    if(LIVE_CH) symPedal(LIVE_CH, d, ac.currentTime);
+  }
 }
 function allOff(){
   if(!ac) return;
   LIVE.forEach(vc=>vc.stop(ac.currentTime, Math.min(vc.tau,0.15))); LIVE.clear();
   litKeys();
 }
-function setSus(on){
+function setSus(on, fromPedal){
   if(ac && !!S.sus!==!!on && window.AOGRecorder && AOGRecorder.pedal) AOGRecorder.pedal(ac, !!on);   /* AOG-NOTES-V1 */
   S.sus=on;
+  if(!on && ac){ HALF.forEach(vc=>{ try{ if(vc.damp) vc.damp(ac.currentTime, vc.tau||0.2); }catch(e){} }); HALF.clear(); }   /* AOG-GRAND-PRO-V1: the dampers land on the notes a half-pedal let ring */
+  if(!fromPedal){ S.ped=null; if(ac && LIVE_CH) symPedal(LIVE_CH, on?1:0, ac.currentTime); }   /* Shift, the button: all the way */
   const b=document.getElementById("susBtn"); if(b) b.setAttribute("aria-pressed", on?"true":"false");
   if(!on && ac){ LIVE.forEach((vc,key)=>{ if(!vc.down){ vc.stop(ac.currentTime, vc.tau); LIVE.delete(key); } }); }
   litKeys();
@@ -2065,11 +2251,14 @@ window.AOGRoomRender={
     p=p||{}; const K=AOGRecorder.notes, evs=K.events(p.events, 21, 108), id=SOUNDS[p.sound] ? p.sound : S.sound;
     const sr=p.sr>=8000 && p.sr<=192000 ? p.sr : 44100, set=p.set||{}, era=typeof set.era==="number" ? Math.max(0, Math.min(1, set.era)) : S.era;
     const ids=[...new Set([id].concat(evs.map(e=>e.snd).filter(x=>SOUNDS[x])))];
-    HANDS.rush++; try{ for(const k of ids){ const s=SOUNDS[k]; if(s.kind==="sample") await loadSet(s.set); } } finally { HANDS.rush--; }
+    HANDS.rush++; try{ for(const k of ids){ const s=SOUNDS[k]; if(s.kind==="sample") await allIn(s.set); } } finally { HANDS.rush--; }
     const oc=K.context(K.sec(evs, p.sec, p.tail==null ? 1.5 : p.tail), sr);
     if(window.AOGAmp && AOGAmp.load) await AOGAmp.load(oc);   /* a pedalboard in the chain, when the piano has one */
     const ch=makeChain(oc); await addCrunch(ch);
     setSendLevel(ch, id); ch.lp.frequency.value=eraHz(era); if(ch.crunch) ch.crunch.parameters.get("era").value=era;
+    /* AOG-GRAND-PRO-V1: the take's pedal, for the strings that ring along with it */
+    if(Array.isArray(p.ped) && p.ped.length && ids.some(k=>SOUNDS[k].kind==="sample" && SETS[SOUNDS[k].set].pro) && symBank(ch))
+      p.ped.forEach(q=>{ if(q && q.t>=0) symPedal(ch, q.on?1:0, +q.t); });
     ch.ceil.output.disconnect(); ch.ceil.output.connect(oc.destination); K.space(oc, ch.dry, ch.pre, p.space);   /* the take is heard before the Volume; the room before the limiter, as live (AOG-STRUM-CLEAN-V1) */
     evs.forEach(e=>{ const vc=makeVoice(oc, ch, SOUNDS[e.snd] ? e.snd : id, e.m, e.v, e.t); K.play(vc, e); });
     const buf=await oc.startRendering();
@@ -2084,7 +2273,7 @@ async function bounce(dest){   /* AOG-SEND-TO-PADS-V1: dest "pads" = the whole r
   btn.disabled=true; line.textContent=t("sending");
   try{
     const snd=SOUNDS[S.sound];
-    if(snd.kind==="sample"){ HANDS.rush++; try{ await loadSet(snd.set, paintLoad); } finally { HANDS.rush--; } }
+    if(snd.kind==="sample"){ HANDS.rush++; try{ await allIn(snd.set, paintLoad); } finally { HANDS.rush--; } }
     if(S.withDrums && DRUM.take && !DRUM.buf){ ctx(); try{ DRUM.buf=await decodeWith(ac, await DRUM.take.wav.arrayBuffer()); }catch(e){ DRUM.buf=null; } }
     const bpm=curBpm(), barSec=beatsPerBar()*60/bpm, L=S.prog.length;
     const reps=Math.max(1, Math.ceil((22/barSec)/L)), bars=L*reps;
@@ -2315,7 +2504,8 @@ function paintLoad(){
   const set=SETS[snd.set], es=S.lang==="es", name=soundName(S.sound).toLowerCase();
   if(set.state==="failed"){ line.textContent=t("loadFail"); return; }
   /* AOG-PIANO-SOUNDS-V2: a sound can bring its own words (the marimba is "la marimba", the strings are a section) */
-  if(set.state==="ready" && set.done>=set.total){ line.textContent=snd.ready?snd.ready[S.lang]:snd.honky?t("readyHonky"):t("ready",{name:(es?"un ":"")+name}); return; }
+  /* AOG-GRAND-PRO-V1: the grand is ready once its middle strength is in (the others come later, unseen) */
+  if((set.state==="ready" && set.done>=set.total) || (set.pro && set.ready)){ line.textContent=snd.ready?snd.ready[S.lang]:snd.honky?t("readyHonky"):t("ready",{name:(es?"un ":"")+name}); return; }
   if(set.ready){   /* AOG-PIANO-LOAD-QUIET-V1: while the last layers come in (it already plays), the count moves once a second */
     const now=performance.now(), w=paintLoad.w||0;
     if(now-w<1000){ if(!paintLoad.q) paintLoad.q=setTimeout(()=>{ paintLoad.q=0; paintLoad(); }, 1000-(now-w)); return; }
@@ -2658,7 +2848,9 @@ document.addEventListener("DOMContentLoaded",()=>{ paintScaleSel(); paintAnySel(
 /* fingers: each pointer plays the key under it, and sliding moves to the next key */
 const POINTERS=new Map();
 function keyAt(x,y){ const el=document.elementFromPoint(x,y); const k=el && el.closest && el.closest("#kbd [data-m]"); return k||null; }
-function velAt(el, y){ const r=el.getBoundingClientRect(); const f=(y-r.top)/Math.max(1,r.height); return Math.max(0.15, Math.min(1, 0.3+0.7*f)); }
+/* AOG-GRAND-PRO-V1: a finger on glass cannot press harder, so on a touch screen the lower fifth of a key is the hardest
+   touch, and a firm tap low on the key reaches the grand's loudest strengths */
+function velAt(el, y, pt){ const r=el.getBoundingClientRect(); let f=(y-r.top)/Math.max(1,r.height); if(pt==="touch") f=f/0.8; return Math.max(0.15, Math.min(1, 0.3+0.7*f)); }
 /* AOG-STEADY-ALL-V1 (2026-10-17) — Jimmy: "after a certain number of notes are played, it freezes up for a note or two". A
    finger that lands is already on its key (the event says which), so the page is not asked again what is under it; and a
    finger held on a key (they rock a little all the time) is known to be on it while it stays inside it, so the page is
@@ -2681,7 +2873,7 @@ function bindKeyboard(){
     if(e.button>0) return; e.preventDefault();
     const k=(e.target && e.target.closest && e.target.closest("#kbd [data-m]")) || keyAt(e.clientX,e.clientY); if(!k) return;   /* AOG-STEADY-ALL-V1 */
     try{ kb.setPointerCapture(e.pointerId); }catch(err){}
-    const m=+k.getAttribute("data-m"); POINTERS.set(e.pointerId, m); noteOn("k", m, velAt(k, e.clientY));
+    const m=+k.getAttribute("data-m"); POINTERS.set(e.pointerId, m); noteOn("k", m, velAt(k, e.clientY, e.pointerType));
   });
   kb.addEventListener("pointermove",(e)=>{
     if(!POINTERS.has(e.pointerId)) return;
@@ -2690,7 +2882,7 @@ function bindKeyboard(){
     if(m===was){ keyHere(e.pointerId, k); return; }
     if(was!=null && ![...POINTERS.entries()].some(([id,x])=>id!==e.pointerId && x===was)) noteOff("k", was);
     POINTERS.set(e.pointerId, m);
-    if(m!=null) noteOn("k", m, velAt(k, e.clientY));
+    if(m!=null) noteOn("k", m, velAt(k, e.clientY, e.pointerType));
     keyHere(e.pointerId, k);
   });
   const up=(e)=>{ PRECT.delete(e.pointerId); if(!POINTERS.has(e.pointerId)) return; const m=POINTERS.get(e.pointerId); POINTERS.delete(e.pointerId);
@@ -2727,7 +2919,7 @@ var MIDI=null;   /* var: paintText may ask for it before this line runs */
 function bindMidi(){
   if(!window.AOGMidi) return;
   MIDI=AOGMidi.attach({btn:"midiBtn", line:"midiLine", lang:()=>S.lang, start:ctx,
-    on:(m, v)=>noteOn("m", m, v), off:(m)=>noteOff("m", m), sustain:(on)=>setSus(on),
+    on:(m, v)=>noteOn("m", m, v), off:(m)=>noteOff("m", m), sustain:(on)=>setSus(on), pedal:(d)=>setPedal(d),   /* AOG-GRAND-PRO-V1: half-pedal */
     words:{btn:STR.midi, ready:STR.midiReady, none:STR.midiNone, wait:STR.midiWait, no:STR.midiNo}});
 }
 
