@@ -11,7 +11,7 @@
  * Bump by REPLACING the CACHE line. Don't keep the old one as a comment: every byte here is
  * downloaded again on each update check. Old lines live in tools/sw-cache-history.txt and git log.
  */
-const CACHE = 'aog-cache-2026.10.24.m7596'   // GUITAR AND BASS RING LIKE REAL ONES: SUSTAIN LOOPS, HIGH-GAIN SUSTAIN, FEEDBACK BLOOM ON A LONG HOLD, ACOUSTIC STRUMS THAT NEVER REPEAT (music-guitar.html, music-bass.html AOG-STRINGS-PRO-V1)
+const CACHE = 'aog-cache-2026.10.24.m7597'   // GUITAR AND BASS BACK AS BEFORE: THE NEW SUSTAIN (AOG-STRINGS-PRO-V1) MADE THE STRINGS SWAY TEST OVER 5x SLOWER; IT RETURNS ONCE IT IS LIGHT AGAIN
 
 // Same-origin essentials — reliable to precache at install.
 /* AOG-SW-LIGHT-V1 (2026-10-01) — Jimmy: "Why is it taking so long for the website to load on my phone now?"

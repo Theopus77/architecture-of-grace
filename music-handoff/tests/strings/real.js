@@ -156,10 +156,7 @@ const sets=a=>[...new Set(a)].sort().join(",");
             out.tune.push({f:z.f, k, c:+c.toFixed(1)}); }
           /* 4 · clicks: a note's start, its own end, a let-go with the hand's sound */
           const sus=R.by.sus, z0=sus.find(z=>(z.v||1)===R.top) || sus[0], m0=z0.m, s0=z0.s==null?null:z0.s;
-          /* (AOG-STRINGS-PRO-V1: a held note now rings on through its sustain loop, so it is rendered until it has ended by
-             itself, and a second more) */
-          const rr0=JSON.stringify(R.rr), n0=await T.solo((oc,ch)=>makeVoice(oc,ch,id,m0,0.8,0.1,s0), 0.3, 44100), dur1=Math.max(7, Math.min(60, n0.out.natural+1.5)); R.rr=JSON.parse(rr0);   /* the same take again */
-          const n1=await T.solo((oc,ch)=>{ const vc=makeVoice(oc,ch,id,m0,0.8,0.1,s0); return vc; }, dur1, 44100), d1=n1.d, on=Math.round(0.1*44100), nat=Math.round(n1.out.natural*44100);
+          const n1=await T.solo((oc,ch)=>{ const vc=makeVoice(oc,ch,id,m0,0.8,0.1,s0); return vc; }, 7, 44100), d1=n1.d, on=Math.round(0.1*44100), nat=Math.round(n1.out.natural*44100);
           const atk=T.step(d1, on+Math.round(0.0005*44100), on+Math.round(0.02*44100));
           out.start={first:T.step(d1, on-2, on+Math.round(0.0005*44100))/(atk||1e-9), before:T.peak(d1, 0, on-2)};
           out.end={tail:T.db(T.peak(d1, Math.max(on,nat-441), Math.min(d1.length,nat+441))/(T.peak(d1,on,on+44100)||1e-9)), after:T.peak(d1, Math.min(d1.length-1,nat+441), d1.length)};
