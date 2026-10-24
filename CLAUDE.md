@@ -49,6 +49,7 @@ PRESENT AND FUTURE." Every page, now and every page added later:
 
 - Design for the iPhone first, then the iPad, then a computer, and check all three.
 - No endless animations, nothing that moves on its own, no surprise sounds.
+- A played key must not move the screen (Jimmy, 2026-10-23, the Piano in the Studio: "When I hit the keys, the screen shakes a bit. It is not neurodivergent and makes me shake."). Color and an inset shadow may show that the key is down. No translate, no page jump, no scrollbar flicker. The guard lives in `aog-calm.css` (AOG-STILL-HIT-V1) and on the Piano as AOG-PIANO-STILL-V1. Do not put the 2px drop back on a key, a pad or a string.
 - Neuro-affirming words: describe what a learner can do and what helps; never
   deficit labels.
 - No page-change fade or flash (Jimmy, 2026-09-27). `@view-transition` stays

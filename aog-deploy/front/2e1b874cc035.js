@@ -176,6 +176,8 @@ const STR = {
   partsKind:{en:"Kind of music",es:"Tipo de música"},
   erase:{en:"Erase",es:"Borrar"},
   eraseTip:{en:"Then tap the pad to empty",es:"Luego toca el pad que quieres vaciar"},
+  /* AOG-MIDI-EXPR-V1 */
+  midiHelp:{en:"MIDI: the C below middle C starts and stops the left deck, and the C♯ beside it cues it while you hold it. D and D♯ do the same for the right deck. The mod wheel moves the crossfader.",es:"MIDI: el Do debajo del Do central pone y para el plato de la izquierda, y el Do♯ de al lado marca el cue mientras lo mantienes. Re y Re♯ hacen lo mismo con el de la derecha. La rueda de modulación mueve el crossfader."},
   keysHint:{en:"On a keyboard, the left hand plays the left deck and the right hand the right: Q and P start and stop, W and O cue, E and I sync, A S D F Z X C V and H J K L N M , . are the pads. ← and → move the crossfader.",es:"Con un teclado, la mano izquierda toca el plato de la izquierda y la derecha el de la derecha: Q y P ponen y paran, W y O marcan el cue, E e I sincronizan, A S D F Z X C V y H J K L N M , . son los pads. ← y → mueven el crossfader."},
   padHint:{en:"Pads: tap an empty pad to mark the spot. Tap it again and the record jumps there on the beat. With SLIP on, a pad plays while you hold it, then the song carries on where it would have been.",es:"Pads: toca un pad vacío para marcar el punto. Tócalo otra vez y el disco salta ahí en el pulso. Con SLIP encendido, el pad suena mientras lo mantienes y luego la canción sigue donde habría estado."},
   loopN:{en:"Loop %n beats",es:"Bucle de %n pulsos"},
@@ -1538,7 +1540,7 @@ function deckParts(d){
   const strip = document.getElementById("strip"+d.id), wq = (s)=>wave ? wave.querySelector(s) : null;
   /* pictures still on their way to the old elements are dropped */
   d.wGen = (d.wGen||0) + 1; d.zGen = (d.zGen||0) + 1; d._wkey = ""; d._lk = ""; d.zs = d.zNext = null; d.waveDirty = true;
-  const mv = { vinyl:anim(q(".vinyl"), "turn"), arm:anim(q(".arm"), "turn"), meter:anim(q(".meter i"), "fill"),
+  const mv = { vinyl:anim(q(".vinyl"), "turn"), strobe:anim(q(".strobe"), "turn"), arm:anim(q(".arm"), "turn"), meter:anim(q(".meter i"), "fill"),
                cmeter:anim(strip ? strip.querySelector(".meter i") : null, "fill"),
                bmeter:anim(document.querySelector(`#bay [data-bch="${d.id}"] .bmeter i`), "fillY"),
                head:anim(wq(".whead"), "right"), slip:anim(wq(".wslip"), "right"), slipO:anim(wq(".wslip"), "show"),
@@ -1552,7 +1554,10 @@ function paintDeck(d){
   if(!d.$) return;
   const el = d.$.el;
   const M = d.$.mv;                                   /* turns in tenths of a degree */
-  setA(M.vinyl, STILL ? 0 : Math.round((((d.rot % 360) + 360) % 360)*10)*100);
+  const recA = ((d.rot % 360) + 360) % 360;
+  const platA = ((d.platterRot == null ? d.rot : d.platterRot) % 360 + 360) % 360;
+  setA(M.vinyl, STILL ? 0 : Math.round(recA * 10) * 100);
+  setA(M.strobe, STILL ? 0 : Math.round((((platA - recA) % 360) + 360) % 360 * 10) * 100);
   setA(M.arm, d.buf ? Math.round((16 + 13*Math.min(1, d.pos/d.buf.length))*10)*100 : 16000);
   if((FRAME & 1) === 0 || d.level === 0){            /* the meters, every other frame: the eye cannot tell */
     setA(M.meter, Math.round(Math.min(1, d.level*1.4)*100)*10);
@@ -1636,6 +1641,15 @@ function loop(){
   decks.forEach(d=>{
     if(d.buf){
       d.rot = (d.pos / d.buf.sampleRate) * DEG_PER_SEC;
+      /* the platter under the record keeps the motor's spin while a hand slips the vinyl */
+      const dt = Math.min(0.05, (now - (d._vis || now)) / 1000);
+      d._vis = now;
+      const recW = (d.rate || 0) * DEG_PER_SEC;
+      const motorW = d.motor ? (d.revOn ? -1 : 1) * (d.pitch || 1) * (d.rpm || 1) * (d.bend || 1) * DEG_PER_SEC : 0;
+      const wantW = (d.held && d.motor) ? motorW : recW;
+      d._pW = d._pW == null ? wantW : d._pW + (wantW - d._pW) * Math.min(1, dt / 0.05);
+      if (d.platterRot == null) d.platterRot = d.rot;
+      d.platterRot += d._pW * dt;
       /* a held hand that stops moving is a hand holding the record still */
       if(d.held && performance.now() - d.lastMove > 40){ d.handRate *= 0.45; send(d, { t:"hand", on:true, rate:d.handRate, x:d.handX || 0, v:0, still:true }); d.lastMove = performance.now(); }
     }
@@ -2639,17 +2653,23 @@ function bind(){
         lastAng = a; lastT = now; spun += da;
         trail.push({ t:now, a:spun });
       }
-      /* the speed is measured over the last ~70 ms of hand, not over the last
-         single event. Event to event, a slow steady pull is mostly jitter — and
-         jitter is what made a held-back vocal warble instead of drag. */
+      /* AOG-SCRATCH-FEEL-V1 — adaptive window + non-linear curve.
+         Slow pulls keep the 70 ms window (steady vocal drag).
+         Fast flicks use a shorter window so baby scratches and transforms
+         keep their sharp edges instead of smearing. */
       const now = performance.now();
-      while(trail.length > 2 && now - trail[0].t > 70) trail.shift();
+      const absInst = Math.abs(deck.handRate);
+      const win = absInst > 1.2 ? 28 : absInst > 0.4 ? 45 : 70;
+      while(trail.length > 2 && now - trail[0].t > win) trail.shift();
       const first = trail[0], last = trail[trail.length-1];
-      const dt = Math.max(0.012, (last.t - first.t)/1000);
-      const inst = ((last.a - first.a)/dt) / DEG_PER_SEC * TOUCH[touch];
-      /* slow moves are smoothed harder than fast ones: steadiness where you want
-         to hear words, immediacy where you want a cut. */
-      const k = Math.abs(inst) < 0.6 ? 0.45 : 0.8;
+      const dt = Math.max(0.008, (last.t - first.t)/1000);
+      let inst = ((last.a - first.a)/dt) / DEG_PER_SEC * TOUCH[touch];
+      /* non-linear: small motions stay fine, larger motions get more authority */
+      const sign = inst < 0 ? -1 : 1;
+      const mag = Math.abs(inst);
+      inst = sign * (mag < 0.35 ? mag * 0.75 : mag < 1.5 ? mag : mag * 1.15);
+      /* slow moves are smoothed harder than fast ones */
+      const k = Math.abs(inst) < 0.5 ? 0.38 : Math.abs(inst) < 1.5 ? 0.62 : 0.85;
       deck.handRate = deck.handRate*(1-k) + inst*k;
       if(Math.abs(deck.handRate) > 0.25){ const sg = deck.handRate > 0 ? 1 : -1; if(deck._sgn && sg !== deck._sgn) LX.flips[deck.id]++; deck._sgn = sg; }
       if(deck.handRate > 16) deck.handRate = 16;
@@ -2696,6 +2716,7 @@ function paintChrome(){
   document.getElementById("mixH").textContent = t("mixer");
   document.getElementById("padHint").textContent = t("padHint");
   document.getElementById("keysHint").textContent = t("keysHint");
+  { const mh=document.getElementById("midiHelp"); if(mh) mh.textContent = t("midiHelp"); if(MIDI) MIDI.paint(); }   /* AOG-MIDI-EXPR-V1 */
   document.getElementById("curveBtn").textContent = t("curve")+": "+(curve==="sharp"?t("sharp"):t("smooth"));
   document.getElementById("noiseBtn").textContent = noiseOn ? t("noiseOn") : t("noiseOff");
   document.getElementById("touchBtn").textContent = touchLabel();
@@ -2747,6 +2768,28 @@ document.addEventListener("keydown", e=>{
 });
 document.addEventListener("keyup", e=>{ const b=DK_HELD.get(e.code); if(!b) return; DK_HELD.delete(e.code); dkPress(b, "keyup"); });
 window.addEventListener("blur", ()=>{ DK_HELD.forEach(b=>dkPress(b, "keyup")); DK_HELD.clear(); });
+/* ══ AOG-MIDI-EXPR-V1 (2026-10-23) — Jimmy wants the Studio pro-grade everywhere. A MIDI keyboard or controller plays the
+   decks the way the computer keys do, and presses the same buttons: C3 (48, the C below middle C) starts and stops the left
+   deck, C#3 (49) cues it while held; D3 (50) and D#3 (51) do the same for the right deck; the mod wheel (CC 1) moves the
+   crossfader (0 all left, 127 all right), which ramps as the slider does. Any channel. The button and the MIDI line show
+   only where the browser has Web MIDI (a computer, not an iPhone or iPad); nothing is asked until it is pressed. ══ */
+const DK_MIDI={48:"KeyQ", 49:"KeyW", 50:"KeyP", 51:"KeyO"};
+const DK_MHELD=new Map();
+function dkMidiOn(n){
+  const code=DK_MIDI[n], b=code && dkBtn(code); if(!b) return;
+  if(DK_KEYS[code][1]==="play"){ b.click(); return; }
+  if(DK_MHELD.has(n)) return; DK_MHELD.set(n, b); dkPress(b, "keydown");
+}
+function dkMidiOff(n){ const b=DK_MHELD.get(n); if(!b) return; DK_MHELD.delete(n); dkPress(b, "keyup"); }
+function dkMidiXf(v){ const xf=document.getElementById("xf"); if(!xf) return; xf.value=String(Math.round(Math.max(0, Math.min(1, v))*100)/100); xf.oninput(); }
+var MIDI=null;
+function bindDecksMidi(){
+  if(!window.AOGMidi || MIDI) return;
+  MIDI=AOGMidi.attach({btn:"midiBtn", line:"midiLine", lang:()=>S.lang, start:ctx, on:dkMidiOn, off:dkMidiOff});
+  MIDI.on("mod", dkMidiXf);
+  document.getElementById("midiRow").hidden=!MIDI.supported;
+}
+if(document.readyState==="loading") document.addEventListener("DOMContentLoaded", bindDecksMidi); else setTimeout(bindDecksMidi, 0);
 document.getElementById("recBtn").onclick = recToggle;
 document.getElementById("touchBtn").onclick = ()=>{
   touch = touch==="fine" ? "normal" : touch==="normal" ? "vinyl" : "fine";

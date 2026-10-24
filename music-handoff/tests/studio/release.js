@@ -73,6 +73,8 @@ const fileInfo = (p, k) => p.evaluate(async k => {
   const ab = await o.file.arrayBuffer(), v = new DataView(ab), s4 = q => String.fromCharCode(v.getUint8(q), v.getUint8(q + 1), v.getUint8(q + 2), v.getUint8(q + 3));
   const hd = { riff: s4(0), wave: s4(8), fmt: s4(12), fmtLen: v.getUint32(16, true), format: v.getUint16(20, true), ch: v.getUint16(22, true), sr: v.getUint32(24, true),
     byteRate: v.getUint32(28, true), align: v.getUint16(32, true), bits: v.getUint16(34, true), data: s4(36), dataLen: v.getUint32(40, true), riffLen: v.getUint32(4, true), size: ab.byteLength };
+  /* AOG-EXPORT-PRO-V1: after the sound, exactly one LIST INFO chunk (the song's name, artist, tempo and key), and nothing else */
+  const at = 44 + hd.dataLen; hd.list = at + 12 <= ab.byteLength && s4(at) === "LIST" && s4(at + 8) === "INFO" && at + 8 + v.getUint32(at + 4, true) === ab.byteLength ? 8 + v.getUint32(at + 4, true) : -1;
   const buf = await new OfflineAudioContext(2, 1, 44100).decodeAudioData(ab.slice(0));
   const L = buf.getChannelData(0), R = buf.getChannelData(1), ld = st.loudOf(L, R, 44100);
   const out = { name: o.file.name, hd, frames: buf.length, lufs: +ld.lufs.toFixed(2), tpDb: +ld.tpDb.toFixed(3), g: o.g, why: o.why, bits: o.bits };
@@ -167,7 +169,7 @@ async function grab(p, sel, name) { const [d] = await Promise.all([p.waitForEven
   const loud = await line(p, "outLoud");
   ok(/^Loudness −14\.0 LUFS · peak −\d+\.\d dB$/.test(loud) && (await line(p, "outBox")).includes("Your file is ready · 16-bit ·"), "it says so in plain words: " + loud);
   ok(f16.hd.riff === "RIFF" && f16.hd.wave === "WAVE" && f16.hd.format === 1 && f16.hd.ch === 2 && f16.hd.sr === 44100 && f16.hd.bits === 16 && f16.hd.align === 4 && f16.hd.byteRate === 44100 * 4 &&
-    f16.hd.dataLen === f16.frames * 4 && f16.hd.riffLen === f16.hd.size - 8, "16-bit header: PCM, stereo, 44.1 kHz, 16 bits, 4 bytes a frame: " + JSON.stringify(f16.hd));
+    f16.hd.dataLen === f16.frames * 4 && f16.hd.riffLen === f16.hd.size - 8 && f16.hd.list > 12 && f16.hd.size === 44 + f16.frames * 4 + f16.hd.list, "16-bit header: PCM, stereo, 44.1 kHz, 16 bits, 4 bytes a frame: " + JSON.stringify(f16.hd));
   /* TPDF dither on silence: a step of ±1 about a quarter of the time (the two random steps add to more than half a step) */
   /* within two steps: the dither's one, the rounding's half, and the browser's own decoding (it reads a step above
      the middle as 1/32767, below as 1/32768) */
@@ -186,7 +188,7 @@ async function grab(p, sel, name) { const [d] = await Promise.all([p.waitForEven
   await sendOut(p);
   const f24 = await fileInfo(p);
   ok(f24.hd.format === 1 && f24.hd.ch === 2 && f24.hd.bits === 24 && f24.hd.align === 6 && f24.hd.byteRate === 44100 * 6 && f24.hd.dataLen === f24.frames * 6 && f24.hd.riffLen === f24.hd.size - 8 &&
-    f24.frames === f16.frames && f24.hd.size === 44 + f16.frames * 6, "24-bit header: PCM (format 1), 24 bits, 6 bytes a frame, as long as the 16-bit file: " + JSON.stringify(f24.hd));
+    f24.frames === f16.frames && f24.hd.list > 12 && f24.hd.size === 44 + f16.frames * 6 + f24.hd.list, "24-bit header: PCM (format 1), 24 bits, 6 bytes a frame, as long as the 16-bit file: " + JSON.stringify(f24.hd));
   ok(f24.errLsb24 <= 0.51 && Math.abs(f24.lufs + 14) <= 0.3 && f24.tpDb <= -1 && f24.tailQ16 < 0.05 && (await line(p, "outBox")).includes("Your file is ready · 24-bit ·"),
     `it decodes back within ${f24.errLsb24} of a 24-bit step, at ${f24.lufs} LUFS and ${f24.tpDb} dBTP, with no dither (its silent end: ${f24.tailQ16} of a 16-bit step)`);
   await p.click("#stemBtn"); await p.waitForFunction(() => __aogStudio.OUT.stems && !__aogStudio.OUT.busy, null, { timeout: 90000 });
