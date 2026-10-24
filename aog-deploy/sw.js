@@ -11,7 +11,7 @@
  * Bump by REPLACING the CACHE line. Don't keep the old one as a comment: every byte here is
  * downloaded again on each update check. Old lines live in tools/sw-cache-history.txt and git log.
  */
-const CACHE = 'aog-cache-2026.10.24.m7591'   // CHEMISTRY: ITS OWN COURSE, K-12, IN THE SCIENCE ORDER (chemistry-hub.html)
+const CACHE = 'aog-cache-2026.10.24.m7592'   // EARTH SCIENCE: ITS OWN COURSE, K-12, IN THE SCIENCE ORDER (earth-science-hub.html)
 
 // Same-origin essentials — reliable to precache at install.
 /* AOG-SW-LIGHT-V1 (2026-10-01) — Jimmy: "Why is it taking so long for the website to load on my phone now?"
