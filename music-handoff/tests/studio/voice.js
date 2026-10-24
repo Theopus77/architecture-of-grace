@@ -16,6 +16,13 @@ const TOOLS = path.join(ROOT, "..", "tools");
 const cut = (file, name) => { const s = fs.readFileSync(path.join(TOOLS, file), "utf8"), a = s.indexOf("function " + name + "()"), end = "\n  return bad;\n}", e = s.indexOf(end, a); return s.slice(a, e + end.length); };
 const PROBE = cut("check-contrast.js", "probe"), CALM = cut("check-calm.js", "calmProbe");
 let fails = 0; const ok = (c, m) => { console.log((c ? "PASS " : "FAIL ") + m); if (!c) fails++; };
+/* AOG-DESK-QUIET-V1: under the console, Save, Open and Share open their own sheets (one at a time); the Mixer and Song settings
+   are folds, and the rarer things in a sheet or fold wait under its More. A test opens them as a person would. */
+const qSheet = async (p, k) => { const id = { save: "qSave", open: "qOpen", share: "qShare" }[k]; if ((await p.getAttribute("#" + id, "aria-expanded")) !== "true") await p.click("#" + id); };
+const qFold = async (p, id) => { if (!(await p.evaluate(i => document.getElementById(i).open, id))) await p.click("#" + id + " > summary"); };
+const qSong = async p => { await qFold(p, "foldSong"); await qFold(p, "mMore"); };
+const qSaveMore = async p => { await qSheet(p, "save"); await qFold(p, "lkMore"); };
+const qShareMore = async p => { await qSheet(p, "share"); await qFold(p, "outMore"); };
 const errs = [];
 function watch(ctx) { ctx.on("page", pg => pg.on("pageerror", e => errs.push(pg.url().split("/").pop() + ": " + e.message))); }
 async function routes(ctx) {
@@ -81,15 +88,15 @@ async function record(p, secs) {
     "Record asked once; Stop let the microphone go and put Your voice 1 on track 8: " + JSON.stringify(r1));
   ok(r1.head > 0.08 && r1.head < 0.6 && r1.sec > 2, "the take is lined up just after the start bar, where the song began: head " + r1.head + " s");
   /* only track 8 heard: the mix carries the voice */
-  await p.click('#mixer .st-strip[data-tr="7"] [data-ms="solo"]');
-  await p.click("#mixBtn"); await p.waitForFunction(() => /ready/.test(document.getElementById("mixLine").textContent), null, { timeout: 60000 });
+  await qFold(p, "foldMixer"); await p.click('#mixer .st-strip[data-tr="7"] [data-ms="solo"]');
+  await qSheet(p, "share"); await p.click("#mixBtn"); await p.waitForFunction(() => /ready/.test(document.getElementById("mixLine").textContent), null, { timeout: 60000 });
   const hz = await p.evaluate(async () => { const m = __aogStudio.MIX, buf = await new OfflineAudioContext(2, 1, 44100).decodeAudioData(await m.wav.arrayBuffer()), d = buf.getChannelData(0), sr = buf.sampleRate;
     const a = Math.floor(0.6 * sr), z = Math.floor(1.6 * sr); let up = 0, e = 0; for (let i = a + 1; i < z; i++) { if (d[i - 1] < 0 && d[i] >= 0) up++; e += d[i] * d[i]; } return { hz: Math.round(up / ((z - a) / sr)), db: +(10 * Math.log10(e / (z - a))).toFixed(1) }; });
   ok(Math.abs(hz.hz - 330) < 8 && hz.db > -40, "Make the mix with only track 8 heard carries the voice: " + JSON.stringify(hz));
-  await p.click('#mixer .st-strip[data-tr="7"] [data-ms="solo"]');
+  await qFold(p, "foldMixer"); await p.click('#mixer .st-strip[data-tr="7"] [data-ms="solo"]');
 
   /* 3 · Send it out: Your voice on its own */
-  await p.click("#outBtn"); await p.waitForFunction(() => __aogStudio.OUT.song && !__aogStudio.OUT.busy, null, { timeout: 60000 });
+  await qSheet(p, "share"); await p.click("#outBtn"); await p.waitForFunction(() => __aogStudio.OUT.song && !__aogStudio.OUT.busy, null, { timeout: 60000 });
   await p.click("#voiceOutBtn"); await p.waitForFunction(() => __aogStudio.OUT.voice && !__aogStudio.OUT.busy, null, { timeout: 60000 });
   ok(await p.evaluate(() => __aogStudio.OUT.voice.file.name) === "my-song-voice.wav", "Send it out offers your voice on its own: my-song-voice.wav");
 

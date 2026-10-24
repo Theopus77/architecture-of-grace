@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- AOG-FAST-BUILD-V1 source:108e98b6fa6bf3ea · MADE BY tools/build-fast.py from music-studio.html: edit music-studio.html, then run it. -->
+<!-- AOG-FAST-BUILD-V1 source:db87e13962d96c5d · MADE BY tools/build-fast.py from music-studio.html: edit music-studio.html, then run it. -->
 <html lang="en">
 <head>
 <script>/* AOG-STUDIO-ONLY-V1 (Jimmy, 2026-10-10: "one location for all the instruments … and that is the studio"): opened on its own address, this room opens inside the Studio instead, at this exact address (its lesson, take or link). Inside the Studio's frame, and for the site's own checks, it stays. */(function(){try{if(window.top!==window||navigator.webdriver)return;var M={"music-pads":"pads","drum-machine":"pads","beat-lab":"pads","music-kit":"kit","drum-kit":"kit","music-piano":"piano","piano":"piano","keys":"piano","music-guitar":"guitar","guitar":"guitar","music-bass":"bass","bass":"bass","music-band":"band","band":"band","music-decks":"decks","decks":"decks","turntables":"decks","music-vocal":"vocal","vocal-booth":"vocal","vocal":"vocal","booth":"vocal","music-studio":"studio","studio":"studio","mixing-desk":"studio"},f=(location.pathname.split("/").pop()||"").replace(/\.html$/,""),r=M[f];if(!r)return;var F={pads:"music-pads",kit:"music-kit",piano:"music-piano",guitar:"music-guitar",bass:"music-bass",band:"music-band",decks:"music-decks",vocal:"music-vocal",studio:"music-studio"};location.replace("/the-studio.html?at="+encodeURIComponent("/"+F[r]+".html"+location.search+location.hash)+"#"+r);}catch(e){}})();</script>
@@ -675,6 +675,48 @@ html.aog-keys .st-cp .st-keys{display:block}
 #trackBlk>.st-pick>.st-lab,.st-fold .st-field>.st-lab,.st-fold .st-stp>.st-lab{font:600 .95rem/1.3 var(--sans);letter-spacing:0;text-transform:none;color:#ddd3c1;margin:0 0 .35rem}
 .st-fnew{margin-top:22px}
 @media (max-width:520px){ .st-fold>summary{padding:10px 12px 10px 36px} .st-fold>summary::before{left:13px} .st-fold>.st-fb{padding:12px 10px 12px} }
+/* ══ AOG-DESK-QUIET-V1 (Jimmy, 2026-10-23: "ON a iphone / ipad it is still alot of scrolling and A LOT OF WORDS causing a
+   headache for me"): three big keys (Save, Open, Share), each opening its own sheet; every fold a short heading alone, with
+   at most a small count beside it; inside, a few things, and the rest under one More. ══ */
+.st-qrow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0}
+.st-rest .st-qb{min-height:56px;padding:0 8px;font:700 1.08rem/1.15 var(--sans);letter-spacing:.01em;border-radius:12px}
+#deskQuick .st-qb[aria-expanded="true"]{background-color:#e6b65a;background-image:radial-gradient(120% 140% at 35% 20%,#fbe6b0 0%,#e2b85e 45%,#b8862f 100%);color:#22170a;border-color:#5e4512}
+.st-fold>summary{flex-direction:row;align-items:center;justify-content:flex-start;gap:.7rem;min-height:52px}
+.st-fold .st-fn2{font:700 .82rem/1.2 var(--sans);color:#22170a;background:#e6b65a;border-radius:999px;padding:.2rem .6rem;white-space:nowrap}
+.st-fold .st-fn2:empty{display:none}
+.st-sheet:not([open]){display:none}
+.st-sheet{margin-top:10px}
+.st-sheet>.st-fb{padding:14px}
+.st-rest>#trackBlk{padding-top:0;margin-top:0}
+.st-rest>#trackBlk>.st-pick{margin:14px 0 0}
+#foldAdd[hidden]{display:none}
+/* Save and Open: one sheet; the page shows what each needs */
+#foldSave[data-lk="off"][data-mode="save"] #fileOpen,#foldSave[data-lk="off"][data-mode="open"] #fileSave{display:none}
+#foldSave[data-mode="open"] .st-lkgo #lkSave,#foldSave[data-mode="save"] .st-lklist{display:none}
+#foldSave .st-filebox .st-row,#foldSave .st-lkgo{margin:0}
+#foldSave .st-filebox #fileSave,#foldSave .st-filebox #fileOpen,#foldSave .st-lkgo #lkSave{min-height:52px;min-width:12rem;font-size:1.02rem}
+#locker .st-lkmain .st-lkl.ok small,#locker .st-lkmain .st-lkl.wait small{display:none}
+#locker .st-lkmain .st-lkl{margin:0 0 .7rem}
+.st-lkmore{margin-top:12px}
+.st-lkmore>div{padding:0 12px}
+.st-lkmore>div:empty{display:none}
+.st-lkmore>.st-lkslot{padding-bottom:12px}
+.st-lkmore .st-blk{margin-top:1rem}
+#lockLine:empty,#fileLine:empty{display:none}
+/* Song settings: Song volume and the room; the rest under More, and More for the whole song with it */
+#foldSong:not(.mm-on) #proMaster{display:none}
+#foldSong .st-mstrip>.st-sh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+#foldSong .st-master{margin-top:0}
+#foldSong .st-mstrip .st-mvol{grid-template-columns:minmax(0,1fr);max-width:24rem}
+#foldNew>summary{flex-direction:column;align-items:flex-start;justify-content:center;gap:2px}
+#pmEqHow{margin-top:8px}
+.st-fmore{margin:12px 0 0}
+.st-fmore>.st-field{display:block;padding:0 12px;margin:.4rem 0 .8rem}
+.st-mmore{margin-top:12px}
+.st-mmore>.st-sls{padding:4px 12px 4px}
+.st-mmore>.st-field{display:block;padding:0 12px;margin:.6rem 0 0}
+.st-mmore>.st-roomc{padding:0 12px 12px}
+#foldSong #proMaster .st-pm{margin-top:10px}
 /* trays: the open recording, each take, each mixer strip */
 .st-cc,.st-rec,.st-strip{background-color:#15161a;background-image:linear-gradient(#111215,#191a1e);border:1px solid #0a0a0c;
   box-shadow:inset 0 2px 6px rgba(0,0,0,.7),0 1px 0 rgba(255,255,255,.06)}
@@ -1002,32 +1044,102 @@ html.in-studio .st-chassis{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 
       </div>
       <div class="st-chassis st-rest">
 
-      <!-- AOG-DESK-MIXFIRST-V1 (Jimmy, 2026-10-09: "May the track and mixer positions be switched?"): the mixer first, then the track -->
-      <div class="st-blk" id="mixerBlk">
-        <h2 class="st-h" data-t="mixerH"></h2>
-        <p class="st-line" data-t="mixerLine" style="margin:0 0 .7rem"></p>
-        <div class="st-mixer" id="mixer"></div>
-        <div class="st-master" id="master"></div>
-        <div id="proMaster"></div><!-- AOG-DESK-MASTER-V1: more for the whole song (aog-desk-pro.js) -->
+      <!-- AOG-DESK-QUIET-V1 (Jimmy, 2026-10-23: "ON a iphone / ipad it is still alot of scrolling and A LOT OF WORDS causing a
+           headache for me."): under the console, three big keys, Save, Open and Share, each opening its own sheet (one at a
+           time); then short folds, each a heading of two or three words and nothing under it: Mixer, Track (This track, and
+           Add a recording only when there are recordings to add), Song settings, Start a new song (last, apart). Inside each
+           sheet or fold a few things show; the rest waits under one More. Every id and handler stayed; elements only moved. -->
+      <div class="st-qrow" id="deskQuick" role="group" aria-labelledby="qH">
+        <h2 class="st-h st-sr" id="qH" data-t="qH"></h2>
+        <button type="button" class="st-btn st-qb" id="qSave" aria-controls="foldSave" aria-expanded="false" data-t="qSave"></button>
+        <button type="button" class="st-btn st-qb" id="qOpen" aria-controls="foldSave" aria-expanded="false" data-t="qOpen"></button>
+        <button type="button" class="st-btn st-qb" id="qShare" aria-controls="foldFinish" aria-expanded="false" data-t="qShare"></button>
       </div>
 
-      <!-- AOG-DESK-FOLDS-V1 (Jimmy, 2026-10-23, on an iPad: "the bottom half of the mixer is hard to follow as it is a lot of
-           words and noise. It makes me confused."): under the mixer, the track picker, then five folds, each with one plain
-           heading and one short line: This track, Add a recording, Finish and share, Save your song, Start a new song (last,
-           apart). Add a recording and Finish and share start open; a fold someone opens or closes stays so on this device
-           (aog.studio.folds.v1), except Start a new song, which always starts closed. The desk opens a fold itself when it
-           sends someone there: a take arrives, a track is picked, Edit, Your songs, Send it out, a locker link, a song to open. -->
+      <details class="st-fold st-sheet" id="foldSave" data-mode="save" data-lk="off">
+        <summary class="st-sr"><span class="st-fh" data-t="fSaveH"></span></summary>
+        <div class="st-fb">
+          <div class="st-blk" id="carryBlk"><!-- AOG-STUDIO-CARRY-V1: the same song on the iPhone, the iPad and the computer -->
+            <h2 class="st-h st-sr" data-t="carryH"></h2><!-- kept for a screen reader -->
+            <div class="st-filebox" id="fileBox"><!-- AOG-DESK-PROJECT-V1; AOG-DESK-QUIET-V1: here with no locker, under More with one -->
+              <div class="st-row st-filerow"><button type="button" class="st-btn st-go" id="fileSave"></button><button type="button" class="st-btn st-go" id="fileOpen"></button></div>
+              <input type="file" id="fileIn" hidden>
+              <p class="st-line" id="fileLine" aria-live="polite"></p>
+            </div>
+            <div class="st-filehow" id="fileHow"><!-- AOG-DESK-QUIET-V1: under More -->
+              <h3 class="st-h3" data-t="fileH"></h3>
+              <p class="st-line" data-t="fileWhat" style="margin:0 0 .6rem"></p>
+            </div>
+            <p class="st-line" id="lockLine" aria-live="polite"></p>
+            <p class="st-line st-big" id="lkBig" hidden></p><!-- AOG-LOCKER-V3: only while a big save goes up -->
+            <div class="st-ask" id="openAsk" hidden>
+              <p id="openAskT"></p>
+              <div class="st-row"><button type="button" class="st-btn st-clear" id="openYes"></button><button type="button" class="st-btn" id="openNo"></button></div>
+            </div>
+            <div id="locker"><!-- AOG-DESK-QUIET-V1: the locker's light and its key (paintLocker draws .st-lkmain); its More holds
+                 the rest (.st-lkrare), and the song file and the versions (.st-lkslot, moved there by savePlace) -->
+              <div class="st-lkmain"></div>
+              <details class="st-more st-lkmore" id="lkMore"><summary data-t="moreW"></summary>
+                <div class="st-lkrare"></div>
+                <div class="st-lkslot"></div>
+              </details>
+            </div>
+          </div>
+          <div class="st-blk" id="verBlk"><!-- AOG-DESK-VERSIONS-V1: versions of this song, on this device, and A/B (under More) -->
+            <h2 class="st-h" data-t="verH"></h2>
+            <div class="st-row"><label class="st-field st-name"><span class="st-lab" data-t="verName"></span><input type="text" id="verName" maxlength="40" autocomplete="off" enterkeyhint="done"></label><button type="button" class="st-btn st-go" id="verSave"></button></div>
+            <div id="verList"></div>
+            <div class="st-ask" id="verAsk" hidden><p id="verAskT"></p><div class="st-row"><button type="button" class="st-btn st-clear" id="verYes"></button><button type="button" class="st-btn" id="verNo"></button></div></div>
+            <p class="st-line" id="verMsg" aria-live="polite"></p>
+          </div>
+        </div>
+      </details>
+
+      <details class="st-fold st-sheet" id="foldFinish">
+        <summary class="st-sr"><span class="st-fh" data-t="fFinH"></span></summary>
+        <div class="st-fb">
+          <label class="st-field st-name"><span class="st-lab" data-t="songName"></span><input type="text" id="songName" maxlength="80" autocomplete="off" enterkeyhint="done"></label>
+          <div class="st-row"><button type="button" class="st-btn st-go" id="mixBtn"></button><button type="button" class="st-btn st-go" id="outBtn"></button></div><!-- AOG-STUDIO-SENDOUT-V1 -->
+          <details class="st-more st-fmore" id="outMore"><summary data-t="moreW"></summary><!-- AOG-DESK-QUIET-V1: the file's quality and type, set once -->
+            <label class="st-field st-bits"><span class="st-lab" data-t="bitsLab"></span><select id="bitsSel"></select></label><!-- AOG-DESK-BITS-V1 -->
+            <label class="st-field st-bits"><span class="st-lab" data-t="typeLab"></span><select id="outType"><option value="wav" data-t="typeWav"></option><option value="m4a" data-t="typeM4a"></option><option value="mp3" data-t="typeMp3"></option></select></label><!-- AOG-EXPORT-PRO-V1 -->
+          </details>
+          <p class="st-line" id="mixLine" aria-live="polite"></p>
+          <div id="mixOut"></div>
+          <p class="st-line" id="outLine" aria-live="polite"></p>
+          <div id="outBox"></div>
+          <p class="st-line" id="sendLine" aria-live="polite"></p>
+        </div>
+      </details>
+
+      <!-- AOG-DESK-MIXFIRST-V1 (Jimmy, 2026-10-09: "May the track and mixer positions be switched?"): the mixer first, then the
+           track. AOG-DESK-QUIET-V1: the full mixer is a fold; the console's channel and faders above are the same controls. -->
+      <details class="st-fold" id="foldMixer">
+        <summary><span class="st-fh" data-t="mixerH"></span></summary>
+        <div class="st-fb">
+          <div class="st-blk" id="mixerBlk">
+            <h2 class="st-h st-sr" data-t="mixerH"></h2>
+            <p class="st-line" data-t="mixerLine" style="margin:0 0 .7rem"></p>
+            <div class="st-mixer" id="mixer"></div>
+          </div>
+        </div>
+      </details>
+
+      <!-- AOG-DESK-FOLDS-V1: the track picker, This track, and Add a recording (AOG-DESK-QUIET-V1: only when there is a
+           recording to add, with how many wait). A fold someone opens or closes stays so on this device (aog.studio.folds.v2);
+           the desk opens a fold itself when it sends someone there: a take arrives, a track is picked, Edit, Your songs, Send it
+           out, a locker link, a song to open. -->
       <div class="st-blk" id="trackBlk">
         <label class="st-field st-pick"><span class="st-lab" data-t="trackPick"></span><select id="trackSel"></select></label>
         <details class="st-fold" id="foldTrack">
-          <summary><span class="st-fh" data-t="fTrkH"></span><span class="st-fl" data-t="fTrkL"></span></summary>
+          <summary><span class="st-fh" data-t="fTrkH"></span></summary>
           <div class="st-fb">
             <div id="clipBox"></div>
             <div id="moreBox"></div><!-- AOG-DESK-MORE-V1: more for this track: effects, takes, name and colour, and the clipboard -->
           </div>
         </details>
-        <details class="st-fold" id="foldAdd" open>
-          <summary><span class="st-fh" data-t="fAddH"></span><span class="st-fl" data-t="fAddL"></span></summary>
+        <details class="st-fold" id="foldAdd" hidden>
+          <summary><span class="st-fh" data-t="fAddH"></span><span class="st-fn2" id="addN"></span></summary>
           <div class="st-fb">
             <h3 class="st-h3 st-sr" data-t="recsH" id="recsH"></h3>
             <div class="st-recs" id="recs"></div>
@@ -1053,52 +1165,18 @@ html.in-studio .st-chassis{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 
         <p class="st-line" id="splitMsg" aria-live="polite"></p>
       </div>
 
-      <details class="st-fold" id="foldFinish" open>
-        <summary><span class="st-fh" data-t="fFinH"></span><span class="st-fl" data-t="fFinL"></span></summary>
+      <!-- AOG-DESK-QUIET-V1: the whole song's strip (Song volume, Room sound; its EQ, Glue and Echo time under More) and, with
+           More open, More for the whole song (aog-desk-pro.js) -->
+      <details class="st-fold" id="foldSong">
+        <summary><span class="st-fh" data-t="fSongH"></span></summary>
         <div class="st-fb">
-          <label class="st-field st-name"><span class="st-lab" data-t="songName"></span><input type="text" id="songName" maxlength="80" autocomplete="off" enterkeyhint="done"></label>
-          <label class="st-field st-bits"><span class="st-lab" data-t="bitsLab"></span><select id="bitsSel"></select></label><!-- AOG-DESK-BITS-V1 -->
-          <label class="st-field st-bits"><span class="st-lab" data-t="typeLab"></span><select id="outType"><option value="wav" data-t="typeWav"></option><option value="m4a" data-t="typeM4a"></option><option value="mp3" data-t="typeMp3"></option></select></label><!-- AOG-EXPORT-PRO-V1 -->
-          <div class="st-row"><button type="button" class="st-btn st-go" id="mixBtn"></button><button type="button" class="st-btn st-go" id="outBtn"></button></div><!-- AOG-STUDIO-SENDOUT-V1 -->
-          <p class="st-line" id="mixLine" aria-live="polite"></p>
-          <div id="mixOut"></div>
-          <p class="st-line" id="outLine" aria-live="polite"></p>
-          <div id="outBox"></div>
-          <p class="st-line" id="sendLine" aria-live="polite"></p>
-        </div>
-      </details>
-
-      <details class="st-fold" id="foldSave">
-        <summary><span class="st-fh" data-t="fSaveH"></span><span class="st-fl" data-t="fSaveL"></span></summary>
-        <div class="st-fb">
-          <div class="st-blk" id="verBlk"><!-- AOG-DESK-VERSIONS-V1: versions of this song, on this device, and A/B -->
-            <h2 class="st-h" data-t="verH"></h2>
-            <div class="st-row"><label class="st-field st-name"><span class="st-lab" data-t="verName"></span><input type="text" id="verName" maxlength="40" autocomplete="off" enterkeyhint="done"></label><button type="button" class="st-btn st-go" id="verSave"></button></div>
-            <div id="verList"></div>
-            <div class="st-ask" id="verAsk" hidden><p id="verAskT"></p><div class="st-row"><button type="button" class="st-btn st-clear" id="verYes"></button><button type="button" class="st-btn" id="verNo"></button></div></div>
-            <p class="st-line" id="verMsg" aria-live="polite"></p>
-          </div>
-          <div class="st-blk" id="carryBlk"><!-- AOG-STUDIO-CARRY-V1: the same song on the iPhone, the iPad and the computer -->
-            <h2 class="st-h st-sr" data-t="carryH"></h2><!-- the fold's line says it; kept for a screen reader -->
-            <h3 class="st-h3" data-t="fileH"></h3>
-            <p class="st-line" data-t="fileWhat" style="margin:0 0 .6rem"></p><!-- AOG-DESK-PROJECT-V1 -->
-            <div class="st-row"><button type="button" class="st-btn st-go" id="fileSave"></button><button type="button" class="st-btn" id="fileOpen"></button></div>
-            <input type="file" id="fileIn" hidden>
-            <p class="st-line" id="fileLine" aria-live="polite"></p>
-            <h3 class="st-h3" data-t="lockH"></h3>
-            <div id="locker"></div>
-            <p class="st-line" id="lockLine" aria-live="polite"></p>
-            <p class="st-line st-big" id="lkBig" hidden></p><!-- AOG-LOCKER-V3: only while a big save goes up -->
-            <div class="st-ask" id="openAsk" hidden>
-              <p id="openAskT"></p>
-              <div class="st-row"><button type="button" class="st-btn st-clear" id="openYes"></button><button type="button" class="st-btn" id="openNo"></button></div>
-            </div>
-          </div>
+          <div class="st-master" id="master"></div>
+          <div id="proMaster"></div><!-- AOG-DESK-MASTER-V1: more for the whole song (aog-desk-pro.js) -->
         </div>
       </details>
 
       <details class="st-fold st-fnew" id="foldNew"><!-- last and apart, so nobody clears a song by mistake -->
-        <summary><span class="st-fh" data-t="newSong"></span><span class="st-fl" data-t="fNewL"></span></summary>
+        <summary><span class="st-fh" data-t="newSong"></span><span class="st-fl" data-t="fNewL"></span></summary><!-- Jimmy: it still says it clears the tracks -->
         <div class="st-fb">
           <div class="st-row st-new"><button type="button" class="st-btn st-clear" id="newBtn"></button></div>
           <div class="st-ask" id="newAsk" hidden>
@@ -1122,6 +1200,6 @@ html.in-studio .st-chassis{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 
 <script src="/aog-desk-more.js"></script><!-- AOG-DESK-MORE-V1: effect slots, takes, sections, the clipboard, versions (loaded first: the desk's code below calls it) -->
 <script src="/aog-desk-pro.js" defer></script><script src="/aog-desk-rec.js" defer></script><script src="/aog-desk-arrange.js" defer></script><!-- AOG-DESK-PRO-V1: the master strip's panel, groups, loop recording, markers, keys (runs after the desk's code) -->
 <script src="/aog-desk-lock.js"></script>
-<script src="/front/f88b673b933f.js"></script>
+<script src="/front/043c23439e0c.js"></script>
 </body>
 </html>

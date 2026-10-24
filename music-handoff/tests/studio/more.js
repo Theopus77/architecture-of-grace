@@ -29,6 +29,13 @@ const cut = (file, name) => { const s = fs.readFileSync(path.join(TOOLS, file), 
 const PROBE = cut("check-contrast.js", "probe"), CALM = cut("check-calm.js", "calmProbe");
 let OLD = null; try { OLD = cp.execSync("git -C " + JSON.stringify(ROOT) + " show origin/claude/desk-auto:aog-deploy/music-studio.html", { maxBuffer: 64 << 20 }).toString(); } catch (e) { OLD = null; }
 let fails = 0; const ok = (c, m) => { console.log((c ? "PASS " : "FAIL ") + m); if (!c) fails++; };
+/* AOG-DESK-QUIET-V1: under the console, Save, Open and Share open their own sheets (one at a time); the Mixer and Song settings
+   are folds, and the rarer things in a sheet or fold wait under its More. A test opens them as a person would. */
+const qSheet = async (p, k) => { const id = { save: "qSave", open: "qOpen", share: "qShare" }[k]; if ((await p.getAttribute("#" + id, "aria-expanded")) !== "true") await p.click("#" + id); };
+const qFold = async (p, id) => { if (!(await p.evaluate(i => document.getElementById(i).open, id))) await p.click("#" + id + " > summary"); };
+const qSong = async p => { await qFold(p, "foldSong"); await qFold(p, "mMore"); };
+const qSaveMore = async p => { await qSheet(p, "save"); await qFold(p, "lkMore"); };
+const qShareMore = async p => { await qSheet(p, "share"); await qFold(p, "outMore"); };
 const errs = [];
 function watch(ctx) { ctx.on("page", pg => pg.on("pageerror", e => errs.push(pg.url().split("/").pop() + ": " + e.message))); }
 async function routes(ctx) {
@@ -337,9 +344,9 @@ const setRange = (p, sel, v) => p.evaluate(([sel, v]) => { const r = document.qu
   const echoAt = async () => { await p.evaluate(() => __T.render("wet")); return p.evaluate(() => { const a = __T.peakAt("dry", 0.3, 0.8), t = __T.first("wet", "dry", a + 0.05, 0.5); return +(t - a).toFixed(4); }); };
   const got = {};
   for (const [k, beats] of [["d8", 0.75], ["q", 1], ["e", 0.5], ["t8", 1 / 3], ["s", 0.25]]) {
-    await p.selectOption("#etSel", k); await p.waitForTimeout(40); got[k] = [await echoAt(), +(beats * 0.6).toFixed(4)]; }
+    await qSong(p); await p.selectOption("#etSel", k); await p.waitForTimeout(40); got[k] = [await echoAt(), +(beats * 0.6).toFixed(4)]; }
   ok(Object.values(got).every(([g, w]) => near(g, w, 0.0025)), "at 100 a minute the echo of a click comes one dotted 1/8, 1/4, 1/8, 1/8 triplet and 1/16 later (within 2.5 ms): " + JSON.stringify(got));
-  await p.selectOption("#etSel", "q");
+  await qSong(p); await p.selectOption("#etSel", "q");
   await p.click("#playBtn"); await p.waitForTimeout(400);
   await p.evaluate(() => AOGSong.set({ bpm: 120 })); await p.waitForTimeout(300);
   const dl = await p.evaluate(() => +__aogStudio.LIVE.dly.delayTime.value.toFixed(4));
@@ -351,18 +358,18 @@ const setRange = (p, sel, v) => p.evaluate(([sel, v]) => { const r = document.qu
   /* 8 · Undo for mixer moves */
   await p.evaluate(() => { __aogStudio.SONG.tracks.forEach(x => { x.mute = false; }); __aogStudio.SONG.master.glue = 30; delete __aogStudio.SONG.master.et; __aogStudio.songChanged(); __aogStudio.selectTrack(0); __aogStudio.paintAll(); });
   const ua = await p.evaluate(() => __aogStudio.UNDO.length);
-  await p.focus("#t0-vol"); for (let k = 0; k < 5; k++) await p.keyboard.press("ArrowRight");
+  await qFold(p, "foldMixer"); await p.focus("#t0-vol"); for (let k = 0; k < 5; k++) await p.keyboard.press("ArrowRight");
   const v5 = await p.evaluate(() => [__aogStudio.SONG.tracks[0].vol, __aogStudio.UNDO.length]);
   await p.click("#tlUndo"); await p.waitForTimeout(80);
   const vu = await p.evaluate(() => [__aogStudio.SONG.tracks[0].vol, +document.getElementById("t0-vol").value, +document.getElementById("fv0").value]);
   await p.click("#tlRedo"); await p.waitForTimeout(80);
   const vr = await p.evaluate(() => __aogStudio.SONG.tracks[0].vol);
   ok(v5[0] === 85 && v5[1] === ua + 1 && vu.every(v => v === 80) && vr === 85, `a run of five slider moves (80 → 85) is one Undo step; Undo puts the fader back (${vu.join(",")}), Redo moves it again`);
-  await p.click('#mixer .st-strip[data-tr="0"] [data-ms="mute"]');
+  await qFold(p, "foldMixer"); await p.click('#mixer .st-strip[data-tr="0"] [data-ms="mute"]');
   await p.evaluate(() => { const r = document.getElementById("t0-pan"); for (let v = 5; v <= 50; v += 5) { r.value = String(-v); r.dispatchEvent(new Event("input", { bubbles: true })); } });
   await p.evaluate(() => { const r = document.getElementById("t0-low"); r.value = "6"; r.dispatchEvent(new Event("input", { bubbles: true })); const s = document.getElementById("t0-room"); s.value = "40"; s.dispatchEvent(new Event("input", { bubbles: true })); });
   await p.evaluate(() => { const r = document.getElementById("m-glue"); r.value = "70"; r.dispatchEvent(new Event("input", { bubbles: true })); });
-  await p.selectOption("#etSel", "s");
+  await qSong(p); await p.selectOption("#etSel", "s");
   const mx = await p.evaluate(() => { const x = __aogStudio.SONG.tracks[0]; return [x.mute, x.pan, x.low, x.room, __aogStudio.SONG.master.glue, __aogStudio.SONG.master.et].join(); });
   const steps = [];
   for (let k = 0; k < 6; k++) { await p.click("#tlUndo"); await p.waitForTimeout(50); steps.push(await p.evaluate(() => { const x = __aogStudio.SONG.tracks[0]; return [x.mute, x.pan, x.low, x.room, __aogStudio.SONG.master.glue, __aogStudio.SONG.master.et || "d8"].join(); })); }
@@ -389,10 +396,10 @@ const setRange = (p, sel, v) => p.evaluate(([sel, v]) => { const r = document.qu
 
   /* 10 · versions: saved without copying any recording, opened, and A/B while it plays */
   await p.evaluate(() => { const st = __aogStudio; st.SONG.tracks.forEach((x, j) => { x.mute = j > 1; }); st.songChanged(); });
-  await p.click("#foldSave > summary");   /* AOG-DESK-FOLDS-V1: versions sit in the Save your song fold, closed at first */
-  await p.fill("#verName", "First mix"); await p.click("#verSave"); await p.waitForTimeout(150);
+  await qSheet(p, "save");   /* AOG-DESK-FOLDS-V1: versions sit in the Save your song fold, closed at first */
+  await qSaveMore(p); await p.fill("#verName", "First mix"); await qSaveMore(p); await p.click("#verSave"); await p.waitForTimeout(150);
   await p.evaluate(() => { const st = __aogStudio; st.SONG.tracks[0].mute = true; st.songChanged(); });
-  await p.click("#verSave"); await p.waitForTimeout(150);
+  await qSaveMore(p); await p.click("#verSave"); await p.waitForTimeout(150);
   const vs = await p.evaluate(async () => { const st = __aogStudio, keys = await st.skeys(), ids = new Set(); st.SONG.tracks.forEach(x => { if (x.clip) ids.add(x.clip.id); });
     const vk = keys.filter(k => /^ver:/.test(k)), audio = keys.filter(k => /^c/.test(k)), v = await st.sget(vk[0]);
     return { opts: [...document.querySelectorAll("#verSel option")].map(o => o.textContent.split(" · ")[0]).join(" | "), vk: vk.length, audio: audio.length, ids: ids.size, blob: JSON.stringify(v).length < 200000 && !(v.song && v.song.wav),
@@ -448,8 +455,8 @@ const setRange = (p, sel, v) => p.evaluate(([sel, v]) => { const r = document.qu
     await m.click("#putBtn"); await m.waitForFunction(() => __aogStudio.SONG.tracks[0].clip && !__aogStudio.S.busy, null, { timeout: 15000 });
     await m.evaluate(HELP);
     await m.selectOption("#mtSel", "fx"); await m.selectOption("#fxt0", "comp"); await m.selectOption("#fxt1", "eq"); await m.waitForTimeout(100);
-    await m.click("#foldSave > summary");   /* AOG-DESK-FOLDS-V1 */
-    await m.fill("#verName", "Phone mix"); await m.click("#verSave"); await m.waitForTimeout(150);
+    await qSheet(m, "save");   /* AOG-DESK-FOLDS-V1 */
+    await qSaveMore(m); await m.fill("#verName", "Phone mix"); await qSaveMore(m); await m.click("#verSave"); await m.waitForTimeout(150);
     await m.evaluate(() => { __aogStudio.SONG.tracks[0].name = "Lead"; __aogStudio.SONG.tracks[0].col = "ice"; __aogStudio.songChanged(); document.getElementById("moreBox").scrollIntoView({ block: "start" }); }); await m.waitForTimeout(150);
     const f = await m.evaluate(() => { const r = el => el.getBoundingClientRect(), btn = [...document.querySelectorAll("#moreBox button, #verBlk button, #master select")].filter(x => x.offsetParent);
       return { iw: innerWidth, sw: document.scrollingElement.scrollWidth, minH: Math.min(...btn.map(x => Math.round(r(x).height))), right: Math.max(...btn.map(x => Math.round(r(x).right))),

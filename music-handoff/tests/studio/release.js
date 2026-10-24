@@ -26,6 +26,13 @@ const OUTD = process.env.AOG_SHOTS || fs.mkdtempSync(path.join(os.tmpdir(), "rel
 const cut = (file, name) => { const s = fs.readFileSync(path.join(TOOLS, file), "utf8"), a = s.indexOf("function " + name + "()"), end = "\n  return bad;\n}", e = s.indexOf(end, a); return s.slice(a, e + end.length); };
 const PROBE = cut("check-contrast.js", "probe"), CALM = cut("check-calm.js", "calmProbe");
 let fails = 0; const ok = (c, m) => { console.log((c ? "PASS " : "FAIL ") + m); if (!c) fails++; };
+/* AOG-DESK-QUIET-V1: under the console, Save, Open and Share open their own sheets (one at a time); the Mixer and Song settings
+   are folds, and the rarer things in a sheet or fold wait under its More. A test opens them as a person would. */
+const qSheet = async (p, k) => { const id = { save: "qSave", open: "qOpen", share: "qShare" }[k]; if ((await p.getAttribute("#" + id, "aria-expanded")) !== "true") await p.click("#" + id); };
+const qFold = async (p, id) => { if (!(await p.evaluate(i => document.getElementById(i).open, id))) await p.click("#" + id + " > summary"); };
+const qSong = async p => { await qFold(p, "foldSong"); await qFold(p, "mMore"); };
+const qSaveMore = async p => { await qSheet(p, "save"); await qFold(p, "lkMore"); };
+const qShareMore = async p => { await qSheet(p, "share"); await qFold(p, "outMore"); };
 const errs = [];
 function watch(ctx) { ctx.on("page", pg => pg.on("pageerror", e => errs.push(pg.url().split("/").pop() + ": " + e.message))); }
 async function routes(ctx) { await ctx.route(/^https?:\/\/(?!localhost)/, r => r.abort()); }
@@ -58,12 +65,12 @@ async function song(p) {
   await add(p, { n: 1, kind: "tones", freqs: [220, 330, 440, 550] }); await add(p, { n: 2, kind: "tones", freqs: [660, 550, 440, 330] });
   await p.waitForFunction(() => __aogStudio.INBOX.items.length >= 2, null, { timeout: 8000 });
   await put(p, "Guitar take 1", 0); await put(p, "Guitar take 2", 1);
-  await p.fill("#songName", "Rainy day");
+  await qSheet(p, "share"); await p.fill("#songName", "Rainy day");
 }
 const line = (p, id) => p.evaluate(i => document.getElementById(i).textContent.trim(), id);
 async function sendOut(p) {
   await p.evaluate(() => { __aogStudio.OUT.song = null; document.getElementById("outBox").innerHTML = ""; });
-  await p.click("#outBtn");
+  await qSheet(p, "share"); await p.click("#outBtn");
   await p.waitForFunction(() => !__aogStudio.OUT.busy && (__aogStudio.OUT.song || document.getElementById("outLine").textContent), null, { timeout: 60000 });
 }
 /* the file Send it out made: its header, read byte by byte; decoded, its loudness and true peak (the page's own meter,
@@ -156,7 +163,7 @@ async function grab(p, sel, name) { const [d] = await Promise.all([p.waitForEven
     return { during, after: [document.getElementById("luNow").textContent, el.textContent], changes: n, seen: seen.slice(-4) }; });
   ok(/^−\d+\.\d$/.test(run.during.now) && /^−\d+\.\d$/.test(run.during.last3) && run.changes >= 4 && run.changes <= 24 && run.after.join() === "—,—",
     `while the song plays it reads Now ${run.during.now} and Last 3 s ${run.during.last3}, a few changes a second at most (${run.changes} in 5 s, both numbers), and rests when it stops`);
-  await p.click("#mixBtn"); await p.waitForFunction(() => /ready|did not/.test(document.getElementById("mixLine").textContent), null, { timeout: 60000 });
+  await qSheet(p, "share"); await p.click("#mixBtn"); await p.waitForFunction(() => /ready|did not/.test(document.getElementById("mixLine").textContent), null, { timeout: 60000 });
   const whole = await p.evaluate(async () => { const st = __aogStudio, buf = await new OfflineAudioContext(2, 1, 44100).decodeAudioData(await st.MIX.wav.arrayBuffer()), ld = st.loudOf(buf.getChannelData(0), buf.getChannelData(1), 44100);
     return { shown: document.getElementById("luSong").textContent, pk: document.getElementById("luPk").textContent, lufs: +ld.lufs.toFixed(2), tp: +ld.tpDb.toFixed(2), line: document.getElementById("mixLine").textContent }; });
   ok(whole.line === "Your mix is ready." && Math.abs(parseFloat(whole.shown.replace("−", "-")) - whole.lufs) < 0.06 && Math.abs(parseFloat(whole.pk.replace("−", "-")) - whole.tp) < 0.06 && Math.abs(whole.lufs - run.during.T) < 1.0,
@@ -183,7 +190,7 @@ async function grab(p, sel, name) { const [d] = await Promise.all([p.waitForEven
   ok(pyw === `2 2 44100 ${f16.frames}`, "any .wav reader opens the download: " + pyw);
 
   /* 4 · 24-bit: chosen, kept, and right */
-  await p.selectOption("#bitsSel", "24");
+  await qShareMore(p); await p.selectOption("#bitsSel", "24");
   ok(await p.evaluate(() => localStorage.getItem("aog.studio.bits.v1")) === "24" && await p.evaluate(() => __aogStudio.bits()) === 24, "24-bit is chosen and kept on this device");
   await sendOut(p);
   const f24 = await fileInfo(p);
@@ -194,11 +201,11 @@ async function grab(p, sel, name) { const [d] = await Promise.all([p.waitForEven
   await p.click("#stemBtn"); await p.waitForFunction(() => __aogStudio.OUT.stems && !__aogStudio.OUT.busy, null, { timeout: 90000 });
   const z24 = py((await grab(p, '[data-outdl="stems"]')).f);
   ok(z24.bad === null && z24.files.length === 2 && z24.files.every(x => x[4] === 3 && x[1] === f24.frames && x[2] === 2), "the tracks follow the choice: 24-bit, as long as the song: " + JSON.stringify(z24.files.map(x => x.slice(0, 5))));
-  await p.click("#mixBtn"); await p.waitForFunction(() => /ready|did not/.test(document.getElementById("mixLine").textContent), null, { timeout: 60000 });
+  await qSheet(p, "share"); await p.click("#mixBtn"); await p.waitForFunction(() => /ready|did not/.test(document.getElementById("mixLine").textContent), null, { timeout: 60000 });
   ok(await p.evaluate(async () => new DataView(await __aogStudio.MIX.wav.arrayBuffer()).getUint16(34, true)) === 24, "Make the mix follows it too: 24-bit");
   await p.reload(); await p.waitForTimeout(900);
   ok(await p.evaluate(() => document.getElementById("bitsSel").value) === "24" && await p.evaluate(() => __aogStudio.bits()) === 24, "after a reload the choice is still 24-bit");
-  await p.selectOption("#bitsSel", "16"); await p.reload(); await p.waitForTimeout(900);
+  await qShareMore(p); await p.selectOption("#bitsSel", "16"); await p.reload(); await p.waitForTimeout(900);
   ok(await p.evaluate(() => document.getElementById("bitsSel").value) === "16", "and back to 16-bit, kept as well");
 
   /* 5 · a very quiet song goes up 12 dB, no more, and says so */
@@ -228,7 +235,7 @@ async function grab(p, sel, name) { const [d] = await Promise.all([p.waitForEven
   ok(sentUp.length === 0, "nothing is uploaded: no request carried anything out of the page " + sentUp.join(" "));
   /* the Drum Machine's own save: bank D from bar 2 of the take; 24-bit */
   await p.evaluate(id => localStorage.setItem("aog.pads.v1", JSON.stringify({ v: 1, bank: 3, inAt: Date.now() + 1000, banks: [{ type: "drums" }, { type: "chords" }, { type: "notes" }, { type: "chops", rec: "t:" + id, bar: 2 }] })), rid);
-  await p.selectOption("#bitsSel", "24"); await sendOut(p);
+  await qShareMore(p); await p.selectOption("#bitsSel", "24"); await sendOut(p);
   await p.click("#chopsOutBtn"); await p.waitForFunction(() => __aogStudio.OUT.chops && !__aogStudio.OUT.busy, null, { timeout: 30000 });
   z = py((await grab(p, '[data-outdl="chops"]', "chops-bar2.zip")).f);
   ok(z.files.length === 12 && z.files.every((x, i) => x[4] === 3 && Math.abs(x[5] - (300 + 50 * (i + 4))) <= 3), "from the Drum Machine's own save, bar 2: 12 chops, beats 5 to 16, at 24-bit: " + z.files.map(x => x[5]).join(" "));
@@ -238,7 +245,7 @@ async function grab(p, sel, name) { const [d] = await Promise.all([p.waitForEven
 
   /* 7 · Spanish */
   await p.evaluate(id => localStorage.setItem("aog.pads.v1", JSON.stringify({ v: 1, bank: 3, inAt: Date.now() + 1000, banks: [{ type: "drums" }, { type: "chords" }, { type: "notes" }, { type: "chops", rec: "t:" + id, bar: 1 }] })), rid);
-  await p.selectOption("#bitsSel", "16");
+  await qShareMore(p); await p.selectOption("#bitsSel", "16");
   await p.evaluate(() => document.getElementById("langBtn").click());
   await sendOut(p);
   const es = await p.evaluate(() => ({ t: document.getElementById("lufsBox").innerText.replace(/\s+/g, " ").trim(), opts: [...document.querySelectorAll("#bitsSel option")].map(o => o.textContent).join(" | "),
@@ -258,7 +265,7 @@ async function grab(p, sel, name) { const [d] = await Promise.all([p.waitForEven
   const pk = await b.newContext({ viewport: { width: 1280, height: 900 } }); watch(pk); await routes(pk);
   const q = await pk.newPage(); await q.goto(U + "music-studio.html"); await q.waitForTimeout(700);
   await add(q, { n: 1, kind: "bursts" }); await q.waitForFunction(() => __aogStudio.INBOX.items.length >= 1, null, { timeout: 8000 });
-  await put(q, "Guitar take 1", 0); await q.fill("#songName", "Hits");
+  await put(q, "Guitar take 1", 0); await qSheet(q, "share"); await q.fill("#songName", "Hits");
   await sendOut(q); const fp = await fileInfo(q);
   const pl = await line(q, "outLoud");
   ok(fp.why === "peak" && fp.tpDb <= -1 && fp.tpDb > -1.1 && fp.lufs < -14.3 &&

@@ -29,6 +29,13 @@ const OUT = process.env.AOG_SHOTS || fs.mkdtempSync(path.join(os.tmpdir(), "lock
 const cut = (file, name) => { const s = fs.readFileSync(path.join(TOOLS, file), "utf8"), a = s.indexOf("function " + name + "()"), end = "\n  return bad;\n}", e = s.indexOf(end, a); return s.slice(a, e + end.length); };
 const PROBE = cut("check-contrast.js", "probe"), CALM = cut("check-calm.js", "calmProbe");
 let fails = 0; const ok = (c, m) => { console.log((c ? "PASS " : "FAIL ") + m); if (!c) fails++; };
+/* AOG-DESK-QUIET-V1: under the console, Save, Open and Share open their own sheets (one at a time); the Mixer and Song settings
+   are folds, and the rarer things in a sheet or fold wait under its More. A test opens them as a person would. */
+const qSheet = async (p, k) => { const id = { save: "qSave", open: "qOpen", share: "qShare" }[k]; if ((await p.getAttribute("#" + id, "aria-expanded")) !== "true") await p.click("#" + id); };
+const qFold = async (p, id) => { if (!(await p.evaluate(i => document.getElementById(i).open, id))) await p.click("#" + id + " > summary"); };
+const qSong = async p => { await qFold(p, "foldSong"); await qFold(p, "mMore"); };
+const qSaveMore = async p => { await qSheet(p, "save"); await qFold(p, "lkMore"); };
+const qShareMore = async p => { await qSheet(p, "share"); await qFold(p, "outMore"); };
 const errs = [];
 function watch(ctx) { ctx.on("page", pg => { pg.on("pageerror", e => errs.push(pg.url().split("/").pop().slice(0, 40) + ": " + e.message)); pg.on("dialog", d => d.accept()); }); }
 const W = ms => new Promise(r => setTimeout(r, ms));
@@ -118,9 +125,9 @@ const RAW = /invalid characters|not correctly encoded|InvalidCharacter|atob|unde
   ok(await M.evaluate(() => __aogStudio.CARRY.ver === 3) && /Locker script v3/.test(await txt(M, "#locker .st-lkl")), "the Mac is connected to a v3 locker: " + (await txt(M, "#locker .st-lkl")).replace(/\s+/g, " "));
   for (const n of [1, 2, 3]) await addTake(M, n, 2);
   await put(M, "Guitar take 1", 0); await put(M, "Guitar take 2", 1); await put(M, "Guitar take 3", 2);
-  await M.fill("#songName", "Rainy day"); await M.evaluate(() => document.getElementById("songName").blur());
+  await qSheet(M, "share"); await M.fill("#songName", "Rainy day"); await M.evaluate(() => document.getElementById("songName").blur());
   const SID = (await state(M)).sid;
-  await M.evaluate(() => { document.getElementById("foldSave").open = true; });
+  await qSaveMore(M);   /* AOG-DESK-QUIET-V1: Save to my locker behind Save; the switch under its More */
   await M.waitForSelector("#lkKeep");
   macLog.length = 0; macSt.delay = 300; macSt.max = 0;
   await M.check("#lkKeep");
@@ -190,7 +197,7 @@ const RAW = /invalid characters|not correctly encoded|InvalidCharacter|atob|unde
   const padLog = [], padSt = {}, pad = await b.newContext({ ...pw.devices["iPad (gen 7)"] }); watch(pad); await routes(pad, padLog, padSt); await pad.clock.install();
   const D = await pad.newPage(); await D.goto(U + "music-studio.html" + HASH);
   await until(() => D.evaluate(() => __aogStudio.CARRY.ver === 3 && Array.isArray(__aogStudio.CARRY.songs) && __aogStudio.CARRY.songs.length > 0));
-  await D.evaluate(() => { document.getElementById("foldSave").open = true; });
+  await qSheet(D, "open"); await qFold(D, "lkMore");   /* AOG-DESK-QUIET-V1: the songs in the locker are behind Open; Check for new songs under its More */
   await record(D, ["lockLine"]);
   padLog.length = 0; padSt.delay = 200; padSt.max = 0;
   await D.click("[data-lkopen]");
@@ -229,7 +236,7 @@ const RAW = /invalid characters|not correctly encoded|InvalidCharacter|atob|unde
   const phLog = [], phSt = {}, ph = await b.newContext({ ...pw.devices["iPhone 13"] }); watch(ph); await routes(ph, phLog, phSt);
   const Q = await ph.newPage(); await Q.goto(U + "music-studio.html" + HASH);
   await until(() => Q.evaluate(() => __aogStudio.CARRY.ver === 3 && Array.isArray(__aogStudio.CARRY.songs) && __aogStudio.CARRY.songs.length > 0));
-  await Q.evaluate(() => { document.getElementById("foldSave").open = true; });
+  await qSheet(Q, "open"); await qFold(Q, "lkMore");   /* AOG-DESK-QUIET-V1: the songs in the locker are behind Open; Check for new songs under its More */
   const tries = {}, firstGot = new Set();
   phSt.hook = (body, e, g) => {
     if (body.action !== "recGet") return null;
@@ -262,8 +269,8 @@ const RAW = /invalid characters|not correctly encoded|InvalidCharacter|atob|unde
   const O = await old.newPage(); await O.goto(U + "music-studio.html" + HASH2);
   await until(() => O.evaluate(() => __aogStudio.CARRY.ver === 2));
   await addTake(O, 7, 38); await put(O, "Guitar take 7", 0);
-  await O.fill("#songName", "Big song"); await O.evaluate(() => document.getElementById("songName").blur());
-  await O.evaluate(() => { document.getElementById("foldSave").open = true; });
+  await qSheet(O, "share"); await O.fill("#songName", "Big song"); await O.evaluate(() => document.getElementById("songName").blur());
+  await qSaveMore(O);   /* AOG-DESK-QUIET-V1: Save to my locker behind Save; the switch under its More */
   await O.waitForSelector("#lkKeep");
   oldLog.length = 0;
   await O.check("#lkKeep"); await W(1500);
@@ -285,7 +292,7 @@ const RAW = /invalid characters|not correctly encoded|InvalidCharacter|atob|unde
   const o2Log = [], o2St = {}, o2 = await b.newContext({ ...pw.devices["iPad (gen 7)"] }); watch(o2); await routes(o2, o2Log, o2St);
   const R = await o2.newPage(); await R.goto(U + "music-studio.html" + HASH2);
   await until(() => R.evaluate(() => __aogStudio.CARRY.ver === 2 && Array.isArray(__aogStudio.CARRY.songs) && __aogStudio.CARRY.songs.length > 0));
-  await R.evaluate(() => { document.getElementById("foldSave").open = true; });
+  await qSheet(R, "open"); await qFold(R, "lkMore");   /* AOG-DESK-QUIET-V1: the songs in the locker are behind Open; Check for new songs under its More */
   const t2 = {};
   o2St.hook = body => { if (body.action !== "get") return null; t2[body.n] = (t2[body.n] || 0) + 1;
     if (body.n === 1 && t2[1] === 1) return { ok: true };
@@ -338,7 +345,7 @@ const RAW = /invalid characters|not correctly encoded|InvalidCharacter|atob|unde
   ok(await K.evaluate(v => localStorage.getItem("aog.studio.locker.v1") === v && !localStorage.getItem("aog.demo.thing"), LKV), "the dashboard's Delete everything keeps the locker");
   await K.goto(U + "music-studio.html"); await K.waitForTimeout(800);
   await K.evaluate(() => { document.getElementById("foldNew").open = true; }); await K.click("#newBtn"); await K.click("#newYes");
-  await K.evaluate(() => { document.getElementById("foldSave").open = true; });
+  await qSaveMore(K);   /* AOG-DESK-QUIET-V1: Save to my locker behind Save; the switch under its More */
   await K.waitForSelector("#lkKeep", { timeout: 10000 }); await K.check("#lkKeep"); await K.uncheck("#lkKeep");
   ok(await K.evaluate(v => localStorage.getItem("aog.studio.locker.v1") === v, LKV), "Start a new song and the switch keep it");
   await K.click("#lkOff");
@@ -359,7 +366,7 @@ const RAW = /invalid characters|not correctly encoded|InvalidCharacter|atob|unde
       localStorage.setItem("aog.studio.locker.v1", JSON.stringify({ url: u, key: k })); } catch (e) {} }, [theme, lang, URL3, KEY]);
     const m = await cx.newPage(); await m.goto(U + "music-studio.html"); await m.waitForTimeout(900);
     await until(() => m.evaluate(() => __aogStudio.CARRY.ver === 3));
-    await m.evaluate(() => { document.getElementById("foldSave").open = true; });
+    await qSaveMore(m);   /* AOG-DESK-QUIET-V1: Save to my locker behind Save; the switch under its More */
     const words = await m.evaluate(() => { const st = __aogStudio, p = st.mbPair(34 * 1048576, 108 * 1048576);
       return { bigHint: st.t("bigHint"), lockSaving: st.t("lockSaving", p), lockLoading: st.t("lockLoading", p), lockStopped: st.t("lockStopped", p), lockOpenStopped: st.t("lockOpenStopped") }; });
     const want = lang === "es" ? ES : EN;

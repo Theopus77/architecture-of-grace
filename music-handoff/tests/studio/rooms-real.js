@@ -21,6 +21,13 @@ const TOOLS = path.join(ROOT, "..", "tools");
 const cut = (file, name) => { const s = fs.readFileSync(path.join(TOOLS, file), "utf8"), a = s.indexOf("function " + name + "()"), end = "\n  return bad;\n}", e = s.indexOf(end, a); return s.slice(a, e + end.length); };
 const PROBE = cut("check-contrast.js", "probe"), CALM = cut("check-calm.js", "calmProbe");
 let fails = 0; const ok = (c, m) => { console.log((c ? "PASS " : "FAIL ") + m); if (!c) fails++; };
+/* AOG-DESK-QUIET-V1: under the console, Save, Open and Share open their own sheets (one at a time); the Mixer and Song settings
+   are folds, and the rarer things in a sheet or fold wait under its More. A test opens them as a person would. */
+const qSheet = async (p, k) => { const id = { save: "qSave", open: "qOpen", share: "qShare" }[k]; if ((await p.getAttribute("#" + id, "aria-expanded")) !== "true") await p.click("#" + id); };
+const qFold = async (p, id) => { if (!(await p.evaluate(i => document.getElementById(i).open, id))) await p.click("#" + id + " > summary"); };
+const qSong = async p => { await qFold(p, "foldSong"); await qFold(p, "mMore"); };
+const qSaveMore = async p => { await qSheet(p, "save"); await qFold(p, "lkMore"); };
+const qShareMore = async p => { await qSheet(p, "share"); await qFold(p, "outMore"); };
 const errs = [];
 function watch(ctx) { ctx.on("page", pg => pg.on("pageerror", e => errs.push(pg.url().split("/").pop() + ": " + e.message))); }
 async function routes(ctx, wav) {
@@ -141,7 +148,7 @@ const ROOMS = { small: [0.25, 0.7], studio: [0.35, 0.9], hall: [1.0, 2.2], churc
   ok(Math.abs(tails.small.body - tails.made.body) < 2 && Math.abs(tails.church.body - tails.made.body) < 2, `while the take plays the mix is as loud whatever the room (dB): made-up ${tails.made.body}, small ${tails.small.body}, hall ${tails.hall.body}, church ${tails.church.body}`);
   ok(tails.same, "the same mix twice (church) is the same to the sample");
   /* the speakers: choosing Church on the desk puts the same room on the live Room return */
-  await d.selectOption("#roomSel", "church");
+  await qSong(d); await d.selectOption("#roomSel", "church");
   await d.evaluate(() => __aogStudio.play()); await d.waitForTimeout(300); await d.evaluate(() => __aogStudio.stop());
   await d.waitForFunction(() => { const E = __aogStudio.LIVE; return E && E.rev.buffer && E.rev.buffer.__aogReal === "church"; }, null, { timeout: 15000 }).catch(() => {});
   const lv2 = await d.evaluate(async () => { const st = __aogStudio, E = st.LIVE, oc = new OfflineAudioContext(2, 1, E.c.sampleRate); await st.deskRoomLoad(oc, "church"); const E2 = st.makeEngine(oc, false);

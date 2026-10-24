@@ -25,6 +25,13 @@ const OUTD = process.env.AOG_SHOTS || fs.mkdtempSync(path.join(os.tmpdir(), "exp
 const cut = (file, name) => { const s = fs.readFileSync(path.join(TOOLS, file), "utf8"), a = s.indexOf("function " + name + "()"), end = "\n  return bad;\n}", e = s.indexOf(end, a); return s.slice(a, e + end.length); };
 const PROBE = cut("check-contrast.js", "probe"), CALM = cut("check-calm.js", "calmProbe");
 let fails = 0; const ok = (c, m) => { console.log((c ? "PASS " : "FAIL ") + m); if (!c) fails++; };
+/* AOG-DESK-QUIET-V1: under the console, Save, Open and Share open their own sheets (one at a time); the Mixer and Song settings
+   are folds, and the rarer things in a sheet or fold wait under its More. A test opens them as a person would. */
+const qSheet = async (p, k) => { const id = { save: "qSave", open: "qOpen", share: "qShare" }[k]; if ((await p.getAttribute("#" + id, "aria-expanded")) !== "true") await p.click("#" + id); };
+const qFold = async (p, id) => { if (!(await p.evaluate(i => document.getElementById(i).open, id))) await p.click("#" + id + " > summary"); };
+const qSong = async p => { await qFold(p, "foldSong"); await qFold(p, "mMore"); };
+const qSaveMore = async p => { await qSheet(p, "save"); await qFold(p, "lkMore"); };
+const qShareMore = async p => { await qSheet(p, "share"); await qFold(p, "outMore"); };
 const errs = [];
 function watch(ctx) { ctx.on("page", pg => pg.on("pageerror", e => errs.push(pg.url().split("/").pop() + ": " + e.message))); }
 async function routes(ctx) { await ctx.route(/^https?:\/\/(?!localhost)/, r => r.abort()); }
@@ -192,13 +199,13 @@ async function song(p) {
   await p.evaluate(`(async()=>{ const add=${TAKE}; await add(1, "chord"); await add(2, "saw"); await add(3, "noise"); })()`);
   await p.waitForFunction(() => __aogStudio.INBOX.items.length === 3, null, { timeout: 8000 });
   await put(p, "Guitar take 1", 0); await put(p, "Guitar take 2", 1); await put(p, "Guitar take 3", 2);
-  await p.fill("#songName", "Rainy day");
+  await qSheet(p, "share"); await p.fill("#songName", "Rainy day");
 }
 const line = (p, id) => p.evaluate(i => document.getElementById(i).textContent.trim(), id);
 async function sendOut(p, type) {
-  if (type) await p.selectOption("#outType", type);
+  if (type) { await qShareMore(p); await p.selectOption("#outType", type); }
   await p.evaluate(() => { __aogStudio.OUT.song = null; document.getElementById("outBox").innerHTML = ""; });
-  await p.click("#outBtn");
+  await qSheet(p, "share"); await p.click("#outBtn");
   await p.waitForFunction(() => !__aogStudio.OUT.busy && (__aogStudio.OUT.song || document.getElementById("outLine").textContent), null, { timeout: 180000 });
 }
 async function grab(p, name) {
@@ -344,6 +351,7 @@ function likeness(dec, ref) {
     await cx.addInitScript(([th, lg]) => { try { localStorage.setItem("aog.grace.navy.v1", "1"); localStorage.setItem("aog.theme", th); localStorage.setItem("aog.interior.ws.v1.theme", th); localStorage.setItem("aog.theme.lightstart.v1", "1"); localStorage.setItem("aog.lang", lg); } catch (e) {} }, [theme, lang]);
     const m = await cx.newPage(); await m.goto(U + "music-studio.html"); await m.waitForTimeout(700);
     if (lang === "es" && await m.evaluate(() => document.documentElement.lang !== "es")) await m.evaluate(() => document.getElementById("langBtn").click());
+    await qShareMore(m);   /* AOG-DESK-QUIET-V1: File type is under Share's More */
     await m.locator("#outType").scrollIntoViewIfNeeded(); await m.waitForTimeout(200);
     const v = await m.evaluate(() => { const s = document.getElementById("outType"), r = s.getBoundingClientRect(), lab = s.closest("label");
       return { iw: innerWidth, sw: document.scrollingElement.scrollWidth, h: Math.round(r.height), w: Math.round(r.width), right: Math.round(r.right), left: Math.round(r.left), fs: parseFloat(getComputedStyle(s).fontSize),
@@ -352,7 +360,7 @@ function likeness(dec, ref) {
     const pc = await m.evaluate(`(${PROBE})()`), pk = await m.evaluate(`(${CALM})()`);
     ok(v.lab === words[0] && v.opts.join(" | ") === words[1] && v.h >= 44 && v.fs >= 16 && v.left >= 0 && v.right <= v.iw && v.sw <= v.iw && !pc.length && !pk.length,
       `${dev}, ${lang}, ${theme}: "${v.lab}": ${v.opts.join(" | ")}; ${v.w}×${v.h} px, ${v.fs}px text, fits (${v.left}–${v.right} of ${v.iw}), reads (${pc.length} ${JSON.stringify(pc.slice(0, 2))}), calm (${pk.join("; ") || "ok"})`);
-    await m.selectOption("#outType", "mp3");
+    await qShareMore(m); await m.selectOption("#outType", "mp3");
     ok(await m.evaluate(() => localStorage.getItem("aog.studio.filetype.v1")) === "mp3", `${dev}, ${lang}: the menu works with a finger's choice, and keeps it`);
     if (dev === "iPhone 13" && lang === "es") {
       await song(m); await sendOut(m, "mp3");
