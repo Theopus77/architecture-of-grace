@@ -152,7 +152,8 @@ const PIANO_FN=async(opt)=>{
     if(snd.kind==="sample"){ await loadSet(snd.set); const set=SETS[snd.set]; const t0=Date.now();
       while(set.done<set.total && Date.now()-t0<60000) await new Promise(r=>setTimeout(r,50)); }
     const set=snd.kind==="sample" ? SETS[snd.set] : null, lays=set ? (set.layers||["m","s","l"]) : ["m"];
-    const V=opt.vels || (snd.tone==="felt" ? [0.6] : lays.map(l=>({s:0.3, m:0.6, l:0.9})[l]));
+    /* AOG-GRAND-PRO-V1: a set of many strengths is measured where each plays alone, as recorded (set.pro.c) */
+    const V=opt.vels || (snd.tone==="felt" ? [0.6] : set && set.pro && set.pro.c ? (typeof proLays==="function" ? proLays(set) : Object.keys(set.pro.c)).map(l=>+set.pro.c[l].toFixed(3)) : lays.map(l=>({s:0.3, m:0.6, l:0.9})[l]));
     const rows=[];
     /* the keys its recordings reach (three past the lowest and the highest): further out a sound is stretched past what it
        is (a glockenspiel five octaves down), which no trim makes into the instrument */
@@ -164,12 +165,12 @@ const PIANO_FN=async(opt)=>{
       /* a sound through a moving effect (the spinning speaker, the tremble, the vibraphone's motor, a chorus): its whole
          first second, so where the wobble happens to be when a note starts does not count */
       const r=snd.bus ? __lv.kw(await oc.startRendering(), 0.05, 1.0) : __lv.kw(await oc.startRendering(), 0.05, 0.4, 0.6);
-      let n=null, lay=null; if(set && set.ready){ n=nearest(set, m); lay=v<0.42?"s":v<0.78?"m":"l"; if(snd.tone==="felt") lay="m"; if(!set.buf[n+lay]) lay=["m","l","s"].find(l=>set.buf[n+l]); }
+      let n=null, lay=null; if(set && set.ready){ n=nearest(set, m); if(set.pro && typeof layerAt==="function") lay=layerAt(set, n, v); else { lay=v<0.42?"s":v<0.78?"m":"l"; if(snd.tone==="felt") lay="m"; if(!set.buf[n+lay]) lay=["m","l","s"].find(l=>set.buf[n+l]); } }
       rows.push({m, v, n, lay, f:n!=null?n+lay:null, lufs:r.lufs, peak:r.peak});
     }
     res[id]=rows;
   }
-  res.__sets={}; opt.ids.forEach(id=>{ const s=SOUNDS[id]; if(s.kind==="sample") res.__sets[id]={set:s.set, notes:SETS[s.set].notes, layers:SETS[s.set].layers||["m","s","l"]}; });
+  res.__sets={}; opt.ids.forEach(id=>{ const s=SOUNDS[id]; if(s.kind==="sample") res.__sets[id]={set:s.set, notes:SETS[s.set].notes, layers:SETS[s.set].pro && typeof proLays==="function" ? proLays(SETS[s.set]) : SETS[s.set].layers||["m","s","l"]}; });
   return res;
 };
 async function piano(h, opt){

@@ -1,4 +1,5 @@
-/* AOG-CHORD-KEYS-10-V1 — Jimmy: "I have only use 6 keys for the chords. There are 10, 1 through 0 should be used and the other
+/* AOG-PIANO-12PADS-V1: the Piano's twelve pads, the same keys, the same chords as its strip, patterns lighting the same pads (below).
+   AOG-CHORD-KEYS-10-V1 — Jimmy: "I have only use 6 keys for the chords. There are 10, 1 through 0 should be used and the other
    keys if needed." On the guitar and the bass, 1 to 0 play the ten chord buttons in order; − and = would play an eleventh and
    a twelfth (there are ten, so they do nothing); each button shows its key once a key is pressed; the picture of the keys
    says so, English and Spanish; the same inside the Recording Studio. Tab picks the string the letters play on (AOG-STRING-TAB-V1). Solo: the letters start like the piano, with "Only the scale" as a choice (AOG-SOLO-KEYS-CHOICE-V1). The desk's Your songs
@@ -31,6 +32,28 @@ const spy = f => f.evaluate(() => { window.__pd = []; if (!window.padDown.__spy)
     await p.evaluate(() => { const b = document.getElementById("langBtn"); if (b) b.click(); }); await p.waitForTimeout(400);
     ok(await p.evaluate(() => document.querySelector("#keyMap .km-row .km-say").textContent) === "los acordes", inst + ": in Spanish too");
     await p.evaluate(() => { const b = document.getElementById("langBtn"); if (b) b.click(); });
+  }
+  /* AOG-PIANO-12PADS-V1: the Piano has the twelve as pads too, played by the same keys; the first six are the key's own, so a
+     pattern on pads 1 to 6 lights the same pads; a chord with its own pad (G7) lights that one */
+  {
+    await p.goto(U + "music-piano.html"); await p.waitForTimeout(1500);
+    await p.mouse.click(5, 300); await spy(p);
+    for (const k of KEYS.concat(["Minus", "Equal"])) { await p.keyboard.press(k); await p.waitForTimeout(60); }
+    const got = await p.evaluate(() => window.__pd.join(","));
+    ok(got === "0,1,2,3,4,5,6,7,8,9,10,11", `piano: 1 to 0, − and = play the twelve chords in order: ${got}`);
+    const look = await p.evaluate(() => ({ pads: [...document.querySelectorAll("#pads .pad")].map(b => b.querySelector("kbd").textContent).join(""),
+      names: [...document.querySelectorAll("#pads .pad")].map(b => b.childNodes[1].textContent).join(" "), strip: [...document.querySelectorAll("#chordStrip .cs")].map(b => b.childNodes[0].textContent).join(" "),
+      caps: [...document.querySelectorAll("#chordStrip .cs")].map(b => { const k = b.querySelector("kbd"); return k && getComputedStyle(k).display !== "none" ? k.textContent : "?"; }).join(""),
+      first: pads().map(c => c.off + c.q).join() === allPads().slice(0, 6).map(c => c.off + c.q).join(), line: document.querySelector('[data-t="keysLine2"]').textContent }));
+    ok(look.pads === "1234567890−=" && look.names === look.strip && look.first && look.caps === "1234567890−=",
+      `piano: twelve pads (${look.names}), the chord strip's twelve, each showing its key (${look.pads}; on the strip ${look.caps}); the first six are the key's own`);
+    const lit = await p.evaluate(() => { const one = chords => { S.prog = chords; S.playing = true; const out = []; for (let k = 0; k < chords.length; k++) { PLAY.cur = k; paintNow(); out.push([...document.querySelectorAll("#pads .pad.now")].map(b => +b.getAttribute("data-i") + 1).join("+")); } S.playing = false; S.prog = []; paintNow(); return out.join(" "); };
+      return { pop: one(PRESETS.find(x => x.id === "pop").chords), g7: one([{ off: 0, q: "maj" }, { off: 7, q: "dom7" }, { off: 2, q: "m7" }]) }; });
+    ok(lit.pop === "1 5 6 4" && lit.g7 === "1 8 2", `piano: a pattern lights its pads: Pop 1 5 6 4 lights ${lit.pop}; C G7 Dm7 lights ${lit.g7}`);
+    await p.evaluate(() => document.getElementById("langBtn").click()); await p.waitForTimeout(300);
+    const es = await p.evaluate(() => document.querySelector('[data-t="keysLine2"]').textContent);
+    ok(/1 to 0, − and = play the twelve chords/.test(look.line) && /Del 1 al 0, − y = tocan los doce acordes/.test(es), `piano: the keys line says so, in English and Spanish ("${look.line}" / "${es}")`);
+    await p.evaluate(() => document.getElementById("langBtn").click());
   }
   /* AOG-STRING-TAB-V1: Tab picks the string the letters play on; it glows; past the last string the letters choose again */
   for (const inst of ["guitar", "bass"]) {

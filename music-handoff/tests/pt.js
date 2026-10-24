@@ -53,10 +53,11 @@ const ok=(c,m)=>{console.log((c?"PASS ":"FAIL ")+m); if(!c) process.exitCode=1;}
  await p.click("#ownBtn");
  // key and mood
  await p.selectOption("#keySel","7"); await p.waitForTimeout(80);
- ok((await p.locator(".pad").allTextContents()).map(x=>x.replace(/^\d/,"").replace(/\d$/,"").trim()).join(" ")==="G Am Bm C D Em", "key of G: G Am Bm C D Em");
+/* AOG-PIANO-12PADS-V1: the Piano shows twelve pads now; the first six are the key's six */
+ ok((await p.locator(".pad").allTextContents()).slice(0,6).map(x=>x.replace(/^\d/,"").replace(/\d$/,"").trim()).join(" ")==="G Am Bm C D Em", "key of G: G Am Bm C D Em");
  ok((await p.locator(".slot").allTextContents()).join(" ")==="G D Em C", "the pattern moves to the new key too: G D Em C");
  await p.selectOption("#keySel","0"); await p.click("#minBtn"); await p.waitForTimeout(80);
- ok((await p.locator(".pad").allTextContents()).map(x=>x.replace(/^\d/,"").replace(/\d$/,"").trim()).join(" ")==="Cm E♭ Fm Gm A♭ B♭", "C minor uses flats: Cm E♭ Fm Gm A♭ B♭");
+ ok((await p.locator(".pad").allTextContents()).slice(0,6).map(x=>x.replace(/^\d/,"").replace(/\d$/,"").trim()).join(" ")==="Cm E♭ Fm Gm A♭ B♭", "C minor uses flats: Cm E♭ Fm Gm A♭ B♭");
  await p.click("#majBtn");
  // every instrument plays
  for(const id of ["epwarm","epreed","ep80","organ","church","grand"]){
@@ -76,7 +77,7 @@ const ok=(c,m)=>{console.log((c?"PASS ":"FAIL ")+m); if(!c) process.exitCode=1;}
  await p.locator("#era").fill("100"); await p.locator("#era").dispatchEvent("input");
  // Spanish
  await p.evaluate("document.getElementById('langBtn').click()"); await p.waitForTimeout(100);
- ok((await p.locator(".pad").allTextContents()).map(x=>x.replace(/^\d/,"").replace(/\d$/,"").trim()).join(" ")==="Do Re m Mi m Fa Sol La m", "en español: Do, Re m, Mi m, Fa, Sol, La m");
+ ok((await p.locator(".pad").allTextContents()).slice(0,6).map(x=>x.replace(/^\d/,"").replace(/\d$/,"").trim()).join(" ")==="Do Re m Mi m Fa Sol La m", "en español: Do, Re m, Mi m, Fa, Sol, La m");
  ok((await p.textContent("#mastH"))==="El piano" && (await p.evaluate("document.documentElement.lang"))==="es", "the page and its language tag switch to Spanish");
  await p.evaluate("document.getElementById('langBtn').click()");
  ok(errs.length===0, "no page errors "+errs.join(" | "));

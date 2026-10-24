@@ -50,8 +50,10 @@ const boxInfo=(f, sel)=>f.evaluate(sel=>{ const bs=[...document.querySelectorAll
       await p.evaluate(HOOK);
       ok(await p.evaluate(()=>document.querySelectorAll("#chordStrip .cs").length)===12, R.id+": twelve chord buttons on the strip");
       ok(await names(p)===MAJ_C, R.id+": in C major: "+await names(p));
-      ok(await p.evaluate(()=>JSON.stringify(pads())==='[{"n":1,"off":0,"q":"maj"},{"n":2,"off":2,"q":"min"},{"n":3,"off":4,"q":"min"},{"n":4,"off":5,"q":"maj"},{"n":5,"off":7,"q":"maj"},{"n":6,"off":9,"q":"min"}]'
-        && document.querySelectorAll("#pads .pad").length===6), R.id+": the six pads are the same six, in the same order");
+      /* AOG-PIANO-12PADS-V1 (2026-10-24): the Piano now shows the strip's twelve as pads; the first six stay the same six */
+      const np=R.id==="piano" ? 12 : 6;
+      ok(await p.evaluate(np=>JSON.stringify(pads().slice(0,6))==='[{"n":1,"off":0,"q":"maj"},{"n":2,"off":2,"q":"min"},{"n":3,"off":4,"q":"min"},{"n":4,"off":5,"q":"maj"},{"n":5,"off":7,"q":"maj"},{"n":6,"off":9,"q":"min"}]'
+        && document.querySelectorAll("#pads .pad").length===np, np), R.id+": the first six pads are the same six, in the same order"+(np===12?", and the Piano shows all twelve":""));
       const si=await boxInfo(p, "#chordStrip .cs");
       ok(si.rows===1 && si.w>=44 && !si.clip.length && !si.side, R.id+`: one row of twelve on a computer (${Math.round(si.w)} px each)`);
       /* each of the six more plays its own notes */

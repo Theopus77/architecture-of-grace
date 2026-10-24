@@ -31,7 +31,8 @@ const ok=(c,m)=>{console.log((c?"PASS ":"FAIL ")+m); if(!c) process.exitCode=1;}
  await T("touchEnd",[]); await p.waitForTimeout(60);
  // velocity by position
  await p.evaluate("__v=[]");
- const top=await pt('#kbd .wk[data-m="'+lo+'"]',0.66), bot=await pt('#kbd .wk[data-m="'+lo+'"]',0.97);
+ /* AOG-GRAND-PRO-V1: on a touch screen the lower fifth of a key is the hardest touch, so the softer press is taken higher up */
+const top=await pt('#kbd .wk[data-m="'+lo+'"]',0.40), bot=await pt('#kbd .wk[data-m="'+lo+'"]',0.97);
  await T("touchStart",[top]); await T("touchEnd",[]); await p.waitForTimeout(60);
  await T("touchStart",[bot]); await T("touchEnd",[]); await p.waitForTimeout(60);
  const vs=await p.evaluate("__v.map(x=>x[1])"); ok(vs.length===2 && vs[1]>vs[0]+0.15, "a press near the bottom of a key is louder: "+vs.join(" → "));
