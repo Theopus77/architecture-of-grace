@@ -2,8 +2,10 @@
 # A-flat 5, soft and loud, two microphones, two takes. Every other note, the condenser microphone, the first take; held
 # for 5 s like the others (the library's own loop carries a note on if it is shorter), the quiet before it trimmed, each
 # layer brought to the same loudness as the other players', faded out, mono 32 kHz MP3.
-import os, struct, subprocess, json, numpy as np
-SRC="/home/user/sfzinstruments/karoryfer.weresax/Samples/alto"; HERE=os.path.dirname(os.path.abspath(__file__)); OUT=os.path.join(HERE,"out","sax"); SR=32000
+import os, sys, struct, subprocess, json, numpy as np
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import bandio   # AOG-BAND-HIFI-V1: the rate, and where hifi.py wants the files (AOG_BAND_OUT)
+SRC="/home/user/sfzinstruments/karoryfer.weresax/Samples/alto"; HERE=os.path.dirname(os.path.abspath(__file__)); OUT=os.environ.get("AOG_BAND_OUT") or os.path.join(HERE,"out","sax"); SR=bandio.SR
 NAMES=["c","db","d","eb","e","f","gb","g","ab","a","bb","b"]
 def name(m): return "%s%d"%(NAMES[m%12], m//12-2)          # the library's octave numbers: 49 is db2, 60 is c3
 def loops(path):
@@ -37,7 +39,7 @@ for m in notes:
         g=10**((TARGET[lay]-20*np.log10(r))/20); g=min(g, 0.95/max(1e-6,np.max(np.abs(x)))); x=x*g
         fo=int(0.4*SR); x[-fo:]*=np.linspace(1,0,fo)**2; fi=int(0.002*SR); x[:fi]*=np.linspace(0,1,fi)
         f=os.path.join(OUT,"%d%s.mp3"%(m,lay))
-        subprocess.run(["ffmpeg","-v","error","-y","-f","f32le","-ar",str(SR),"-ac","1","-i","-","-codec:a","libmp3lame","-b:a","64k",f],input=x.astype(np.float32).tobytes(),check=True)
+        bandio.mp3(x, f, 64)
         made.append((m,lay,round(len(x)/SR,2)))
 print(len(made),"files", made[:4], "...", made[-2:])
-tot=sum(os.path.getsize(os.path.join(OUT,f)) for f in os.listdir(OUT)); print("%.2f MB"%(tot/1e6))
+tot=sum(os.path.getsize(os.path.join(OUT,f)) for f in os.listdir(OUT) if f.endswith(".mp3")); print("%.2f MB"%(tot/1e6))

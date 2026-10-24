@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- AOG-FAST-BUILD-V1 source:342624b8aed26227 · MADE BY tools/build-fast.py from music-decks.html: edit music-decks.html, then run it. -->
+<!-- AOG-FAST-BUILD-V1 source:ba4761a6496c4dc4 · MADE BY tools/build-fast.py from music-decks.html: edit music-decks.html, then run it. -->
 <html lang="en">
 <head>
 <script>/* AOG-STUDIO-ONLY-V1 (Jimmy, 2026-10-10: "one location for all the instruments … and that is the studio"): opened on its own address, this room opens inside the Studio instead, at this exact address (its lesson, take or link). Inside the Studio's frame, and for the site's own checks, it stays. */(function(){try{if(window.top!==window||navigator.webdriver)return;var M={"music-pads":"pads","drum-machine":"pads","beat-lab":"pads","music-kit":"kit","drum-kit":"kit","music-piano":"piano","piano":"piano","keys":"piano","music-guitar":"guitar","guitar":"guitar","music-bass":"bass","bass":"bass","music-band":"band","band":"band","music-decks":"decks","decks":"decks","turntables":"decks","music-vocal":"vocal","vocal-booth":"vocal","vocal":"vocal","booth":"vocal","music-studio":"studio","studio":"studio","mixing-desk":"studio"},f=(location.pathname.split("/").pop()||"").replace(/\.html$/,""),r=M[f];if(!r)return;var F={pads:"music-pads",kit:"music-kit",piano:"music-piano",guitar:"music-guitar",bass:"music-bass",band:"music-band",decks:"music-decks",vocal:"music-vocal",studio:"music-studio"};location.replace("/the-studio.html?at="+encodeURIComponent("/"+F[r]+".html"+location.search+location.hash)+"#"+r);}catch(e){}})();</script>
@@ -7,6 +7,8 @@
 .dk-keys{display:none}
 @media (hover:hover) and (pointer:fine){ .dk-keys{display:block} }
 html.aog-keys .dk-keys{display:block}
+#midiRow[hidden],#midiBtn[hidden]{display:none!important} #midiLine:empty{display:none}   /* AOG-MIDI-EXPR-V1: nothing about MIDI where the browser has none (iPhone, iPad) */
+.dk-midi{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem .7rem}
 </style><script>/* AOG-LIGHT-START-V1 — Jimmy: "All pages should start in light mode." Light unless this site was switched to dark. */(function(){var h=document.documentElement;if(!h.getAttribute("data-theme"))h.setAttribute("data-theme","light");})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <script>
@@ -658,6 +660,7 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
   <div class="decks stage" id="decks"></div>
   <p class="drophint no-print" id="padHint"></p>
   <p class="drophint dk-keys no-print" id="keysHint"></p><!-- AOG-DECKS-KEYS-V1 -->
+  <div class="drophint dk-midi no-print" id="midiRow" hidden><button type="button" class="pill" id="midiBtn" hidden></button><span id="midiHelp"></span><span id="midiLine" aria-live="polite"></span></div><!-- AOG-MIDI-EXPR-V1 -->
   <section class="mixer no-print" id="mixer" aria-labelledby="mixH">
     <h2 id="mixH">Mixer</h2>
     <div class="strips" id="strips"></div>
@@ -706,7 +709,8 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
 <script src="aog-eq.js"></script>
 <script src="aog-vinyl-worklet.js"></script>
 <script src="aog-dj.js"></script>
-<script src="/front/92daf5e8b5bf.js"></script>
+<script src="/aog-midi.js" defer></script><!-- AOG-MIDI-EXPR-V1: a MIDI keyboard or controller, the same helper as every music room -->
+<script src="/front/e64a7770d3d4.js"></script>
 <script>
 /* AOG-PGPANEL-V1 - the guide loads only when the bar is opened, and the frame is
    grown to its content so the panel scrolls with the page instead of inside itself. */

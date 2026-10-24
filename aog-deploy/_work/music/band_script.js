@@ -579,6 +579,7 @@ function eraHz(e){ return Math.exp(Math.log(18000)*(1-e)+Math.log(8500)*e); }
 function makeChain(c){
   const ch={c:c};
   ch.bus=c.createGain(); ch.send=c.createGain(); ch.pre=c.createGain();
+  exprStage(c, ch);   /* AOG-MIDI-EXPR-V1: the held players' swell, a straight wire until a keyboard moves it */
   const cv=c.createConvolver(); cv.buffer=roomIR(c);
   const ret=c.createGain(); ret.gain.value=0.9; cv.connect(ret); ret.connect(ch.pre);
   /* AOG-ROOM-PEDALS-V1: the pedals sit between the players and the room (aog-amp.js, kind "band"), here, so the live sound,
@@ -798,7 +799,10 @@ function loadInst(key, onStep, lanes){
   if(set.job) return set.job;
   set.state="loading"; set.done=0;
   const OC=window.OfflineAudioContext||window.webkitOfflineAudioContext;
-  const dec=new OC(1, 1, 32000);
+  /* AOG-BAND-HIFI-V1 (2026-10-23): the recordings are 44.1 kHz now (music-handoff/tools/band/hifi.py), as the Piano's and the
+     Guitar's are, and are decoded at that rate, so their treble (up to about 17 kHz, 32 kHz files stopped near 14) is
+     heard. The bagpipes' files are still 32 kHz; they are simply read at the new rate. */
+  const dec=new OC(1, 1, 44100);
   const files=filesOf(key), main=mainOf(key); set.total=files.length;
   let idx=0;
   /* AOG-BAND-STEADY-V1: once the player can play (its held notes are in), the rest (loud and short notes) come one at a
@@ -914,8 +918,14 @@ function windVoice(c, ch, inst, m, v, when, art, swellTo, swellDur){
       if(hasS) main=play(n+"s", n, gS*BM); if(hasL && gL>0.02){ const r=play(n+"l", n, gL*BM); main=main||r; } }
   }
   if(!main) return null;
-  out.connect(rel); rel.connect(ch.bus); rel.connect(ch.send);
+  if(ch.expr && holds(inst) && art!=="stac") rel.connect(ch.expr.input);   /* AOG-MIDI-EXPR-V1: a held player swells */
+  else { rel.connect(ch.bus); rel.connect(ch.send); }
+  out.connect(rel);
   const vc=voiceShell(c, ch.bus, srcs, rel);
+  vc.swells=!!ch.expr && holds(inst) && art!=="stac";
+  if(vc.swells){   /* AOG-MIDI-EXPR-V1: the chain knows its held notes until they end, so the vibrato reaches them all */
+    const sw=ch.sw||(ch.sw=new Set()); sw.add(vc); if(srcs[0]) srcs[0].addEventListener("ended", ()=>sw.delete(vc));
+    if(ch.vib) vibTo(ch, srcs); }
   vc.tau=art==="stac" ? 0.03 : PLUCKED[inst] ? 0.3 : BOWED[inst] ? 0.16 : 0.07;     /* a pluck let go rings on a moment, as a string does */
   vc.natural=main.loop ? Infinity : when+(main.buf.duration-(set.start[main.key]||0))/main.rate;   /* a looped note lasts until it is let go */
   vc.loop=main.loop ? {at:when, off:set.start[main.key]||0, a:main.loop[0], z:main.loop[1], rate:main.rate} : null;   /* where its seams fall (bandt/hold.js) */
@@ -971,6 +981,50 @@ function kitVoice(c, ch, piece, v, when, dur){
   if(c===ac && window.AOGRecorder && AOGRecorder.note) AOGRecorder.note(c, vc, {m:KIT_NOTE[piece]||38, v:v, when:when, kit:piece, kd:dur||0});   /* AOG-NOTES-V1 */
   return vc;
 }
+
+/* AOG-MIDI-EXPR-V1 (2026-10-23) — Jimmy wants the Studio pro-grade everywhere: a keyboard's expression pedal (CC11), breath
+   controller (CC2) and pressure on the keys (channel aftertouch) swell the held players (strings, brass, saxophones, flutes,
+   the other winds and voices), and its mod wheel (CC1) gives them vibrato. aog-midi.js passes each on (MIDI.on).
+     · expression and breath: the last one moved sets how loud and how bright, as a player leaning in: the level follows
+       General MIDI (its square: half way is 12 dB down) and a high shelf above 2 kHz closes as it falls (15 dB at the bottom)
+     · pressure: pressing into a held key adds up to 3 dB and a little brightness, and lets go as the hand relaxes
+     · the mod wheel: vibrato up to 35 cents, 5.5 times a second, on every held note (those already sounding too)
+   Each change glides over 15 ms (a ramp, never a step), so moving a pedal or a wheel never makes a zipper noise. Until a
+   keyboard moves any of them the stage is a straight wire (gain 1, a 0 dB shelf), so the Band sounds exactly as before;
+   plucked and struck players and short notes never go through it. The vibrato's oscillator is made only when the wheel is
+   first moved. */
+const EXPR={e:1, at:0, mod:0};
+function exprStage(c, ch){
+  let sh; try{ sh=new BiquadFilterNode(c, {type:"highshelf", frequency:2000, gain:0}); }catch(e){ sh=c.createBiquadFilter(); sh.type="highshelf"; sh.frequency.value=2000; sh.gain.value=0; }
+  const g=gainAt(c, 1); sh.connect(g); g.connect(ch.bus); g.connect(ch.send);
+  ch.expr={input:sh, shelf:sh, gain:g};
+}
+/* a parameter glides from where it is at t to v over 15 ms. Where it is comes from the glide before (kept on the
+   parameter: from, to, start, end), so a ramp always starts at t, on the live engine and on one rendered offline alike */
+function glide(p, v, t){
+  const g=p.aogGlide, at=g ? (t>=g.t1 ? g.to : t<=g.t0 ? g.from : g.from+(g.to-g.from)*(t-g.t0)/(g.t1-g.t0)) : p.value;
+  try{ p.cancelScheduledValues(t); p.setValueAtTime(at, t); p.linearRampToValueAtTime(v, t+0.015); }catch(e){ try{ p.value=v; }catch(x){} }
+  p.aogGlide={from:at, to:v, t0:t, t1:t+0.015};
+}
+/* the swell and the vibrato on chain ch, from time t (the live chain: now; a test: any time) */
+function exprAt(ch, t){
+  if(!ch || !ch.expr) return;
+  const e=Math.max(0, Math.min(1, EXPR.e)), a=Math.max(0, Math.min(1, EXPR.at));
+  glide(ch.expr.gain.gain, e*e*(1+0.41*a), t);
+  glide(ch.expr.shelf.gain, -15*(1-e)+3*a, t);
+  if(EXPR.mod>0 && !ch.vib) vibOf(ch);
+  if(ch.vib) glide(ch.vib.gain, 35*EXPR.mod, t);
+}
+/* the vibrato: one slow oscillator a chain, its depth in cents, into the detune of every held note's recordings */
+function vibOf(ch){
+  const c=ch.c, o=c.createOscillator(), g=gainAt(c, 0); o.frequency.value=5.5; o.connect(g); o.start();
+  ch.vib=g; ch.vibOsc=o;
+  if(ch.sw) ch.sw.forEach(v=>vibTo(ch, v.nodes));   /* the held notes already sounding */
+  return g;
+}
+function vibTo(ch, nodes){ (nodes||[]).forEach(n=>{ if(n && n.detune && n.buffer!==undefined){ try{ ch.vib.connect(n.detune); n.addEventListener("ended", ()=>{ try{ ch.vib.disconnect(n.detune); }catch(e){} }); }catch(e){} } }); }
+/* what a keyboard sends: "e" expression or breath, "at" pressure, "mod" the wheel */
+function exprIn(k, v){ EXPR[k]=v; if(ac && LIVE_CH) exprAt(LIVE_CH, ac.currentTime); }
 
 /* ── the live engine ── */
 let ac=null, LIVE_CH=null;
@@ -1731,6 +1785,9 @@ function bindMidi(){
     on:(m, v)=>{ noteOn("m"+m, playerFor(m), m, v); lessonKey(m, v); },
     off:(m)=>{ noteOff("m"+m); lessonKeyUp(m); },
     sustain:setSus});
+  /* AOG-MIDI-EXPR-V1: the swells and the vibrato */
+  MIDI.on("expression", v=>exprIn("e", v)); MIDI.on("breath", v=>exprIn("e", v));
+  MIDI.on("pressure", v=>exprIn("at", v)); MIDI.on("mod", v=>exprIn("mod", v));
 }
 /* computer keys: by position, so other keyboard layouts work too */
 const HELD_KEYS=new Map();

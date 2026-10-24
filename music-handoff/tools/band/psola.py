@@ -3,7 +3,7 @@
 # tone colour (its formants) and its timing: 63 and 66 from middle C, 70 from D5. Same levels, fades and MP3s as
 # process.py. Run after process.py and before finalize.py.
 import os, sys, json, subprocess, numpy as np
-HERE=os.path.dirname(os.path.abspath(__file__)); RAW=os.path.join(HERE,"raw"); OUT=os.path.join(HERE,"out"); SR=32000
+HERE=os.path.dirname(os.path.abspath(__file__)); RAW=os.path.join(HERE,"raw"); OUT=os.path.join(HERE,"out"); SR=int(os.environ.get("AOG_BAND_SR","32000"))   # AOG-BAND-HIFI-V1 (bandio.py)
 UP=4; SRU=SR*UP          # the work is done four times finer than the files, so every cycle lands within a quarter sample
 def load(path, sr=SR):
     pcm=subprocess.run(["ffmpeg","-v","error","-i",path,"-ac","1","-ar",str(sr),"-f","f32le","-"],capture_output=True,check=True).stdout

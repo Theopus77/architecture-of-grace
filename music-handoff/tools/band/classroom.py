@@ -32,27 +32,28 @@
 #   python3 -I classroom.py <aog-deploy/audio/band> <VCSL folder> <spanish-classical-guitar folder>
 import os, re, sys, json, shutil, subprocess, numpy as np
 HERE=os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, HERE)
-import tune
-SR=32000
+import tune, bandio
+SR=bandio.SR   # AOG-BAND-HIFI-V1: 44.1 kHz and both microphones when hifi.py runs this (bandio.py)
+M=bandio.M     # what is measured: the left microphone, as before
 BAND=sys.argv[1]; VCSL=sys.argv[2]; FPG=sys.argv[3]
 EDGE=os.path.join(VCSL,"Aerophones","Edge-blown Aerophones")
 PC={"C":0,"C#":1,"D":2,"D#":3,"E":4,"F":5,"F#":6,"G":7,"G#":8,"A":9,"A#":10,"B":11}
 RX=re.compile(r"_([A-G]#?)(\d)_rr\d")
 
 def load(path, left=True):
-    af=["-af","pan=mono|c0=c0"] if left else ["-ac","1"]
-    pcm=subprocess.run(["ffmpeg","-v","error","-i",path]+af+["-ar",str(SR),"-f","f32le","-"],capture_output=True,check=True).stdout
-    return np.frombuffer(pcm,dtype=np.float32).astype(np.float64)
-def load_mp3(path): return load(path, left=False)
+    """the left microphone (both, left and right, with AOG_BAND_STEREO), or the two averaged"""
+    return bandio.load(path, 0) if left else bandio.load(path, None)
+def load_mp3(path): return bandio.load(path, 0, stereo=False)   # the left microphone of a stereo note, as it was measured
 def onset(x):
-    pk=np.max(np.abs(x)); i=int(np.argmax(np.abs(x)>pk*0.03)); return max(0,i-int(0.005*SR))
+    x=M(x); pk=np.max(np.abs(x)); i=int(np.argmax(np.abs(x)>pk*0.03)); return max(0,i-int(0.005*SR))
 def loudest(x, w):
-    n=int(w*SR)
+    x=M(x); n=int(w*SR)
     if len(x)<=n: return float(np.sqrt(np.mean(x*x)+1e-12))
     c=np.concatenate([[0.0],np.cumsum(x*x)]); return float(np.sqrt(np.max(c[n:]-c[:-n])/n+1e-12))
-def held_level(x): b=x[int(0.25*SR):int(2.5*SR)]; return float(np.sqrt(np.mean(b*b)+1e-12))
+def held_level(x): b=M(x)[int(0.25*SR):int(2.5*SR)]; return float(np.sqrt(np.mean(b*b)+1e-12))
 def measured(x, n, kind):
     """how far (cents) the note sounds from n: a held note by its steady part, a short, plucked or struck one from its start"""
+    x=M(x)
     if kind=="held":
         h,sp,cnt=tune.heard(x, n, "held")
         if h is not None: return h
@@ -70,10 +71,8 @@ def biquad(x, ba):
     from scipy.signal import lfilter
     return lfilter(ba[0], ba[1], x)
 def write(inst, name, x, fade, kbps):
-    x=x.copy(); fo=min(int(fade*SR), len(x)//3); x[-fo:]*=np.linspace(1,0,fo)**2
-    fi=int(0.002*SR); x[:fi]*=np.linspace(0,1,fi)
-    subprocess.run(["ffmpeg","-v","error","-y","-f","f32le","-ar",str(SR),"-ac","1","-i","-","-codec:a","libmp3lame","-b:a","%dk"%kbps,
-        os.path.join(BAND,inst,name+".mp3")],input=x.astype(np.float32).tobytes(),check=True)
+    x=bandio.fades(x.copy(), int(fade*SR), int(0.002*SR))
+    bandio.mp3(x, os.path.join(BAND,inst,name+".mp3"), kbps)
 
 plan=[]   # {inst, kind held|short|pluck, note, x (trimmed, unlevelled)}
 # the recorders: VCSL's names, each note measured
@@ -165,7 +164,7 @@ for inst in INSTS:
         if abs(c)>=3: e["tune"][p["file"]]=c
         worst=max(worst, abs(h-c))
     man[inst]={"sus":sorted(e["sus"]),"susL":[],"stac":sorted(e["stac"]),"tune":e["tune"], "source":SOURCE[inst]}
-    d=os.path.join(BAND,inst); size=sum(os.path.getsize(os.path.join(d,f)) for f in os.listdir(d))
+    d=os.path.join(BAND,inst); size=sum(os.path.getsize(os.path.join(d,f)) for f in os.listdir(d) if f.endswith(".mp3"))
     print("%-14s %2d held/plucked %2d short, %d corrected, left within %.1f cents, %d KB, level shift %.1f dB"%(inst,len(e["sus"]),len(e["stac"]),len(e["tune"]),worst,size//1024,shift[inst]))
 with open(os.path.join(BAND,"manifest.json"),"w") as fh: json.dump(man, fh, separators=(",",":"))
 # AOG-GUITAR-UKE-V1: the Guitar room plays the same ukulele notes; its set.json (the guitar sets' format) lives beside them

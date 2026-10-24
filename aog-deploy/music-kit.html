@@ -5,6 +5,8 @@
 <meta charset="utf-8"><style id="aog-first-paint">/* AOG-ONE-PAINT-V1 — the page shows once, fully built, never longer than ~1 s behind. No fade, no motion. */html{background:#F7F2E6}html[data-theme="dark"]{background:#0A1E33}html:not(.aog-ready) body{visibility:hidden;animation:aogOnePaint 0s linear 1.1s forwards}@keyframes aogOnePaint{to{visibility:visible}}@media print{html:not(.aog-ready) body{visibility:visible;animation:none}}/* AOG-KIT-KEYS-V1 */
 .kkey{display:none;font-weight:800;opacity:.85}
 .kp-keys{display:none}
+#midiRow[hidden],#midiBtn[hidden]{display:none!important} #midiLine:empty{display:none}   /* AOG-MIDI-EXPR-V1: nothing about MIDI where the browser has none (iPhone, iPad) */
+.kp-midi{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem .7rem}
 @media (hover:hover) and (pointer:fine){ .kkey{display:inline} .kp-keys{display:block} }
 html.aog-keys .kkey{display:inline} html.aog-keys .kp-keys{display:block}
 </style><script>/* AOG-LIGHT-START-V1 — light unless this site was switched to dark. */(function(){var h=document.documentElement;if(!h.getAttribute("data-theme"))h.setAttribute("data-theme","light");})();</script>
@@ -147,6 +149,7 @@ body.aog-play #kitView{display:flex;flex-direction:column;position:fixed;inset:0
 <script src="/aog-song.js"></script><!-- AOG-SONG-V1: one tempo and key for the whole song -->
 <script src="/aog-amp.js"></script><!-- AOG-ROOM-PEDALS-V1: the pedalboard, the same panel as the guitar has -->
 <script src="aog-drumkit.js"></script>
+<script src="/aog-midi.js" defer></script><!-- AOG-MIDI-EXPR-V1: MIDI drums or a keyboard, the same helper as every music room -->
 <script src="aog-beats.js"></script>
 <script src="aog-beats-pro.js" defer></script><!-- AOG-BEATS-ELITE-V1: the newer beats, after the page is read -->
 <script src="/aog-lessons.js"></script>
@@ -186,6 +189,7 @@ body.aog-play #kitView{display:flex;flex-direction:column;position:fixed;inset:0
     <div id="kitBox"></div>
     <div id="pedalsNear" hidden></div><!-- AOG-ROOM-PEDALS-V1: the effects that are on, with their knobs, and the menu of the rest, under the kit (aog-amp.js) -->
     <p class="kp-line kp-keys" id="kitKeys"></p><!-- AOG-KIT-KEYS-V1 -->
+    <div class="kp-line kp-midi" id="midiRow" hidden><button type="button" class="kp-reset" id="midiBtn" hidden></button><span id="midiLine" aria-live="polite"></span></div><!-- AOG-MIDI-EXPR-V1 -->
     <section class="kp-beat" id="beatBox" aria-labelledby="beatH">
       <h2 id="beatH"></h2>
       <p class="kp-about" id="beatIntro"></p>
@@ -242,6 +246,9 @@ const STR={
   app:{en:"The Drum Kit",es:"La batería"}, kicker:{en:"Play a real drum kit",es:"Toca una batería de verdad"},
   lead:{en:"A real drum kit to play with your fingers. Pick a kit, then play.",es:"Una batería de verdad para tocar con los dedos. Elige una batería y toca."},
   kitLab:{en:"Drum kit",es:"Batería"},
+  /* AOG-MIDI-EXPR-V1: MIDI drums, pads or a keyboard */
+  midiBtn:{en:"Use MIDI drums or a keyboard",es:"Usar batería MIDI o un teclado"},
+  midiReady:{en:"MIDI ready: {name}. Its drum notes play these drums, as hard as you hit.",es:"MIDI listo: {name}. Sus notas de batería tocan estos tambores, tan fuerte como golpees."},
   kitKeys:{en:"On a keyboard, A S D F G H J K play the drums (the letter is on each one). Shift plays harder. Space starts and stops the beat.",es:"Con un teclado, A S D F G H J K tocan la batería (la letra está en cada tambor). Mayúsculas toca más fuerte. La barra espaciadora pone y para el ritmo."},
   loading:{en:"Getting the kit ready… {a} of {b}",es:"Preparando la batería… {a} de {b}"},
   failed:{en:"The kit did not load. Check the internet, then pick the kit again.",es:"La batería no se cargó. Revisa internet y vuelve a elegirla."},
@@ -475,9 +482,42 @@ function sound(b, id, when, accent, level){
     RING[key]=o; }
   return o;
 }
-function hit(b, id, accent){
-  const c=ctx(); sound(b, id, c.currentTime, accent, 0.5); light(id);
+function hit(b, id, accent, level){
+  const c=ctx(); sound(b, id, c.currentTime, accent, level==null ? 0.5 : level); light(id);
 }
+/* ══ AOG-MIDI-EXPR-V1 (2026-10-23) — Jimmy wants the Studio pro-grade everywhere. MIDI drums, a pad controller or a
+   keyboard play the kit by the General MIDI drum numbers: 35 and 36 the kick, 38 and 40 the snare, 37 the cross-stick, 42
+   the closed hi-hat, 44 its pedal, 46 the open hat, 41 and 43 the floor tom, 45 and 47 the middle tom, 48 and 50 the high
+   tom, 49 and 57 the crash, 52 the china, 55 the splash, 51 and 59 the ride, 53 its bell, 39 a clap. Each goes to the drum
+   of this kit with that name; a kit without one plays the drum in the same place (the toms on its tom, the cymbals on its
+   crash and ride). How hard a pad is hit picks the soft, middle or loud recording, as the middle or the edge of a drum on
+   the screen does, and sets how loud it is. Any MIDI channel. The button shows only where the browser has Web MIDI (a
+   computer's Chrome or Edge, not an iPhone or iPad), and nothing is asked until it is pressed (aog-midi.js). ══ */
+const GM_DRUM={35:["KICK"],36:["KICK"],37:["XSTICK","RIM","STICKS"],38:["SNARE"],40:["SNARE"],39:["CLAP"],42:["HAT","PEDAL"],44:["PEDAL","HAT"],46:["OPEN"],
+  41:["FLOOR","LOWTOM","TOM"],43:["FLOOR","LOWTOM","TOM"],45:["MIDTOM","TOM","FLOOR"],47:["MIDTOM","TOM"],48:["HITOM","TOM","MIDTOM"],50:["HITOM","TOM","MIDTOM"],
+  49:["CRASH","CHINA","SIZZLE"],57:["CRASH","CHINA","SIZZLE"],52:["CHINA","CRASH"],55:["SIZZLE","CRASH","CHINA"],51:["RIDE","BELL"],59:["RIDE","BELL"],53:["BELL","RIDE"]};
+const GM_PLACE={35:"kick",36:"kick",37:"snare",38:"snare",40:"snare",39:"clap",42:"ch",44:"ch",46:"oh",41:"tom",43:"tom",45:"tom",47:"tom",48:"tom",50:"tom",
+  49:"bell",57:"bell",52:"bell",55:"bell",51:"rim",59:"rim",53:"rim"};
+function gmPad(b, note){
+  const names=AOGDrumKit.padNames(b)||{}, ids=Object.keys(names);
+  for(const nm of (GM_DRUM[note]||[])){ const id=ids.find(i=>names[i]===nm); if(id) return id; }
+  const at=GM_PLACE[note]; return at && names[at]!==undefined ? at : null;
+}
+/* how hard: the loud recording from 96 of 127, the soft one under 45; the level follows the hit (100 is a tap's level) */
+function gmHit(note, vel){
+  const id=gmPad(S.bank, note); if(!id) return;
+  if(!ready()){ ctx(); return; }
+  const acc=vel>=0.75 ? 2 : vel<0.35 ? 3 : 0, level=Math.min(0.62, 0.5*(0.2+0.8*vel)/0.83);
+  hit(S.bank, id, acc, level); lessonTap(id, acc, PV.on);
+}
+var MIDI=null;
+function bindMidi(){
+  if(!window.AOGMidi || MIDI) return;
+  MIDI=AOGMidi.attach({btn:"midiBtn", line:"midiLine", lang:()=>S.lang, start:ctx, on:gmHit,
+    words:{btn:STR.midiBtn, ready:STR.midiReady}});
+  $("midiRow").hidden=!MIDI.supported;
+}
+if(document.readyState==="loading") document.addEventListener("DOMContentLoaded", bindMidi); else setTimeout(bindMidi, 0);
 /* ══ AOG-KIT-BEATS-V1 (2026-10-05) — Jimmy: "It would be nifty if the whole drum kits could play these pre loaded beats and
    then have the tempo etc, available on screen to adjust". Every beat the drum machine knows (aog-beats.js) plays on the
    kit that is picked here, with its speed, swing and volume on the screen. It starts only when Play is pressed and stops
@@ -731,6 +771,7 @@ function paintText(){
   REC.paint(); recPaint(); beatText(); paintKit();
   const st=AOGDrumKit.state(S.bank); $("kitLine").textContent = st && st.state==="ready" ? t("ready") : st && st.state==="failed" ? t("failed") : t("loading",{a:(st&&st.got)||0, b:(st&&st.total)||"…"});
   paintFx();   /* AOG-ROOM-PEDALS-V1 */
+  if(MIDI) MIDI.paint();   /* AOG-MIDI-EXPR-V1 */
 }
 /* AOG-ROOM-PEDALS-V1: the effects panel. aog-amp.js draws it (the guitar's own panel); the strip under the kit shows the
    effects that are on and a menu of the rest. Drawn again only when the language or the kit changes. */

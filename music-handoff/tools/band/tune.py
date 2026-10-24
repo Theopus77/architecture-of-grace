@@ -5,8 +5,8 @@
 #                quarter second), the middle value, louder windows counted more (vibrato swings around it)
 #   short notes and plucks: from 20 ms, while the note is within 20 dB of its loudest, up to 0.6 s; the middle value
 #   finalize.py's own reading (one window, 0.06-0.56 s) is kept next to it for comparison
-import numpy as np
-SR=32000
+import os, numpy as np
+SR=int(os.environ.get("AOG_BAND_SR","32000"))   # AOG-BAND-HIFI-V1: hifi.py measures at 44.1 kHz (bandio.py)
 def yin_window(seg, m, W):
     f=440*2**((m-69)/12); P=SR/f; lo=int(P*2**(-1.5/12))-1; hi=int(P*2**(1.5/12))+2
     if len(seg)<W+hi+1: return None

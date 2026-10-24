@@ -6,6 +6,8 @@
 .dk-keys{display:none}
 @media (hover:hover) and (pointer:fine){ .dk-keys{display:block} }
 html.aog-keys .dk-keys{display:block}
+#midiRow[hidden],#midiBtn[hidden]{display:none!important} #midiLine:empty{display:none}   /* AOG-MIDI-EXPR-V1: nothing about MIDI where the browser has none (iPhone, iPad) */
+.dk-midi{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem .7rem}
 </style><script>/* AOG-LIGHT-START-V1 — Jimmy: "All pages should start in light mode." Light unless this site was switched to dark. */(function(){var h=document.documentElement;if(!h.getAttribute("data-theme"))h.setAttribute("data-theme","light");})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <script>
@@ -657,6 +659,7 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
   <div class="decks stage" id="decks"></div>
   <p class="drophint no-print" id="padHint"></p>
   <p class="drophint dk-keys no-print" id="keysHint"></p><!-- AOG-DECKS-KEYS-V1 -->
+  <div class="drophint dk-midi no-print" id="midiRow" hidden><button type="button" class="pill" id="midiBtn" hidden></button><span id="midiHelp"></span><span id="midiLine" aria-live="polite"></span></div><!-- AOG-MIDI-EXPR-V1 -->
   <section class="mixer no-print" id="mixer" aria-labelledby="mixH">
     <h2 id="mixH">Mixer</h2>
     <div class="strips" id="strips"></div>
@@ -705,6 +708,7 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
 <script src="aog-eq.js"></script>
 <script src="aog-vinyl-worklet.js"></script>
 <script src="aog-dj.js"></script>
+<script src="/aog-midi.js" defer></script><!-- AOG-MIDI-EXPR-V1: a MIDI keyboard or controller, the same helper as every music room -->
 <script>
 /* AOG-DECKS-V2 · AOG-VINYL-ENGINE-V1 (2026-09-22) — decks with weight.
    The platter is dragged by ANGLE, not by sideways pixels, and the hand sets a
@@ -883,6 +887,8 @@ const STR = {
   partsKind:{en:"Kind of music",es:"Tipo de música"},
   erase:{en:"Erase",es:"Borrar"},
   eraseTip:{en:"Then tap the pad to empty",es:"Luego toca el pad que quieres vaciar"},
+  /* AOG-MIDI-EXPR-V1 */
+  midiHelp:{en:"MIDI: the C below middle C starts and stops the left deck, and the C♯ beside it cues it while you hold it. D and D♯ do the same for the right deck. The mod wheel moves the crossfader.",es:"MIDI: el Do debajo del Do central pone y para el plato de la izquierda, y el Do♯ de al lado marca el cue mientras lo mantienes. Re y Re♯ hacen lo mismo con el de la derecha. La rueda de modulación mueve el crossfader."},
   keysHint:{en:"On a keyboard, the left hand plays the left deck and the right hand the right: Q and P start and stop, W and O cue, E and I sync, A S D F Z X C V and H J K L N M , . are the pads. ← and → move the crossfader.",es:"Con un teclado, la mano izquierda toca el plato de la izquierda y la derecha el de la derecha: Q y P ponen y paran, W y O marcan el cue, E e I sincronizan, A S D F Z X C V y H J K L N M , . son los pads. ← y → mueven el crossfader."},
   padHint:{en:"Pads: tap an empty pad to mark the spot. Tap it again and the record jumps there on the beat. With SLIP on, a pad plays while you hold it, then the song carries on where it would have been.",es:"Pads: toca un pad vacío para marcar el punto. Tócalo otra vez y el disco salta ahí en el pulso. Con SLIP encendido, el pad suena mientras lo mantienes y luego la canción sigue donde habría estado."},
   loopN:{en:"Loop %n beats",es:"Bucle de %n pulsos"},
@@ -3403,6 +3409,7 @@ function paintChrome(){
   document.getElementById("mixH").textContent = t("mixer");
   document.getElementById("padHint").textContent = t("padHint");
   document.getElementById("keysHint").textContent = t("keysHint");
+  { const mh=document.getElementById("midiHelp"); if(mh) mh.textContent = t("midiHelp"); if(MIDI) MIDI.paint(); }   /* AOG-MIDI-EXPR-V1 */
   document.getElementById("curveBtn").textContent = t("curve")+": "+(curve==="sharp"?t("sharp"):t("smooth"));
   document.getElementById("noiseBtn").textContent = noiseOn ? t("noiseOn") : t("noiseOff");
   document.getElementById("touchBtn").textContent = touchLabel();
@@ -3454,6 +3461,28 @@ document.addEventListener("keydown", e=>{
 });
 document.addEventListener("keyup", e=>{ const b=DK_HELD.get(e.code); if(!b) return; DK_HELD.delete(e.code); dkPress(b, "keyup"); });
 window.addEventListener("blur", ()=>{ DK_HELD.forEach(b=>dkPress(b, "keyup")); DK_HELD.clear(); });
+/* ══ AOG-MIDI-EXPR-V1 (2026-10-23) — Jimmy wants the Studio pro-grade everywhere. A MIDI keyboard or controller plays the
+   decks the way the computer keys do, and presses the same buttons: C3 (48, the C below middle C) starts and stops the left
+   deck, C#3 (49) cues it while held; D3 (50) and D#3 (51) do the same for the right deck; the mod wheel (CC 1) moves the
+   crossfader (0 all left, 127 all right), which ramps as the slider does. Any channel. The button and the MIDI line show
+   only where the browser has Web MIDI (a computer, not an iPhone or iPad); nothing is asked until it is pressed. ══ */
+const DK_MIDI={48:"KeyQ", 49:"KeyW", 50:"KeyP", 51:"KeyO"};
+const DK_MHELD=new Map();
+function dkMidiOn(n){
+  const code=DK_MIDI[n], b=code && dkBtn(code); if(!b) return;
+  if(DK_KEYS[code][1]==="play"){ b.click(); return; }
+  if(DK_MHELD.has(n)) return; DK_MHELD.set(n, b); dkPress(b, "keydown");
+}
+function dkMidiOff(n){ const b=DK_MHELD.get(n); if(!b) return; DK_MHELD.delete(n); dkPress(b, "keyup"); }
+function dkMidiXf(v){ const xf=document.getElementById("xf"); if(!xf) return; xf.value=String(Math.round(Math.max(0, Math.min(1, v))*100)/100); xf.oninput(); }
+var MIDI=null;
+function bindDecksMidi(){
+  if(!window.AOGMidi || MIDI) return;
+  MIDI=AOGMidi.attach({btn:"midiBtn", line:"midiLine", lang:()=>S.lang, start:ctx, on:dkMidiOn, off:dkMidiOff});
+  MIDI.on("mod", dkMidiXf);
+  document.getElementById("midiRow").hidden=!MIDI.supported;
+}
+if(document.readyState==="loading") document.addEventListener("DOMContentLoaded", bindDecksMidi); else setTimeout(bindDecksMidi, 0);
 document.getElementById("recBtn").onclick = recToggle;
 document.getElementById("touchBtn").onclick = ()=>{
   touch = touch==="fine" ? "normal" : touch==="normal" ? "vinyl" : "fine";

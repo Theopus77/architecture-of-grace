@@ -52,22 +52,22 @@
 import os, re, sys, json, shutil, subprocess, numpy as np
 from scipy import signal
 HERE=os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, HERE)
-import tune
-SR=32000
+import tune, bandio
+SR=bandio.SR   # AOG-BAND-HIFI-V1: 44.1 kHz and both microphones when hifi.py runs this (bandio.py)
+M=bandio.M     # what is measured: the left microphone, as before
 BAND, DL, GUITAR = sys.argv[1], sys.argv[2], sys.argv[3]
 ONLY=sys.argv[4].split(",") if len(sys.argv)>4 else None
 PC={"C":0,"C#":1,"D":2,"D#":3,"E":4,"F":5,"F#":6,"G":7,"G#":8,"A":9,"A#":10,"B":11}
 rng=np.random.default_rng(20261013)
 
 def load(path, left=True):
-    af=["-af","pan=mono|c0=c0"] if left else ["-ac","1"]
-    pcm=subprocess.run(["ffmpeg","-v","error","-i",path]+af+["-ar",str(SR),"-f","f32le","-"],capture_output=True,check=True).stdout
-    return np.frombuffer(pcm,dtype=np.float32).astype(np.float64)
+    """the left microphone (both, left and right, with AOG_BAND_STEREO), or the two averaged"""
+    return bandio.load(path, 0) if left else bandio.load(path, None)
 def onset(x):
-    pk=np.max(np.abs(x)); i=int(np.argmax(np.abs(x)>pk*0.03)); return max(0,i-int(0.005*SR))
-def held_level(x): b=x[int(0.25*SR):int(2.5*SR)]; return 20*np.log10(np.sqrt(np.mean(b*b))+1e-12)
+    x=M(x); pk=np.max(np.abs(x)); i=int(np.argmax(np.abs(x)>pk*0.03)); return max(0,i-int(0.005*SR))
+def held_level(x): b=M(x)[int(0.25*SR):int(2.5*SR)]; return 20*np.log10(np.sqrt(np.mean(b*b))+1e-12)
 def loudest(x, w=0.15):
-    n=int(w*SR)
+    x=M(x); n=int(w*SR)
     if len(x)<=n: return 20*np.log10(np.sqrt(np.mean(x*x))+1e-12)
     c=np.concatenate([[0.0],np.cumsum(x*x)]); return 20*np.log10(np.sqrt(np.max(c[n:]-c[:-n])/n)+1e-12)
 def speed(x, semis):
@@ -215,11 +215,9 @@ for inst in INSTS:
     os.makedirs(d)
 for p in plan:
     x=p["y"]*p["g"]*10**(shift[p["inst"]]/20)
-    fo=min(p["fo"], len(x)//3); x[-fo:]*=np.linspace(1,0,fo)**2
-    fi=int(0.002*SR); x[:fi]*=np.linspace(0,1,fi)
+    bandio.fades(x, p["fo"], int(0.002*SR))
     p["file"]="%d%s"%(p["note"], p["key"])
-    subprocess.run(["ffmpeg","-v","error","-y","-f","f32le","-ar",str(SR),"-ac","1","-i","-","-codec:a","libmp3lame","-b:a","80k" if p["kind"]=="short" else "64k",
-        os.path.join(BAND,p["inst"],p["file"]+".mp3")],input=x.astype(np.float32).tobytes(),check=True)
+    bandio.mp3(x, os.path.join(BAND,p["inst"],p["file"]+".mp3"), 80 if p["kind"]=="short" else 64)
 # ── the tuning, measured on the finished files, and the manifest ──
 man=json.load(open(os.path.join(BAND,"manifest.json")),object_pairs_hook=dict)
 for inst in INSTS:
@@ -228,7 +226,7 @@ for inst in INSTS:
         n=p["note"]; k=p["key"]
         (e["stac"] if k=="t" else e["sus"]).add(n)
         if k=="l": e["susL"].add(n)
-        y=load(os.path.join(BAND,inst,p["file"]+".mp3"), left=False)
+        y=bandio.load(os.path.join(BAND,inst,p["file"]+".mp3"), 0, stereo=False)   # the left microphone of a stereo note, as it was measured
         if p["kind"]=="held":
             h,sp,cnt=tune.heard(y, n, "held")
             if h is None: h=(tune.finalize_yin(y, n)-n)*100
@@ -239,7 +237,7 @@ for inst in INSTS:
         if abs(c)>=3: e["tune"][p["file"]]=c
         rows.append((p["file"], round(h,1)))
     man[inst]={"sus":sorted(e["sus"]),"susL":sorted(e["susL"]),"stac":sorted(e["stac"]),"tune":e["tune"]}
-    d=os.path.join(BAND,inst); size=sum(os.path.getsize(os.path.join(d,f)) for f in os.listdir(d))
+    d=os.path.join(BAND,inst); size=sum(os.path.getsize(os.path.join(d,f)) for f in os.listdir(d) if f.endswith(".mp3"))
     print("%-14s %2d files %5.0f KB  notes %s  loud %s  short %s  brought down %.1f dB"%(inst, len(os.listdir(d)), size/1024, man[inst]["sus"], man[inst]["susL"] or "-", man[inst]["stac"] or "-", -shift[inst]))
     print("               as made: %s"%" ".join("%s:%+.0f"%r for r in rows))
 with open(os.path.join(BAND,"manifest.json"),"w") as fh: json.dump(man, fh, separators=(",",":"))

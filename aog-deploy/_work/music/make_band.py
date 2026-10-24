@@ -43,6 +43,12 @@ def build():
                     missing.append(os.path.relpath(p, ROOT))
     if missing:
         raise SystemExit("missing recordings: %s" % ", ".join(missing[:10]))
+    # AOG-BAND-HIFI-V1: a player made again at 44.1 kHz (music-handoff/tools/band/hifi.py) plays the files in its "dir"
+    # (<folder>/hq), whose tuning is "tq"; "tune" stays its old files' own, as the Drum Machine still plays those
+    # (music-pads.html reads this manifest). The page is given the tuning of the files it plays.
+    for inst, m in man.items():
+        if "tq" in m:
+            m["tune"] = m.pop("tq")
     if script.count("@@MANIFEST@@") != 1:
         raise SystemExit("band_script.js needs exactly one @@MANIFEST@@")
     out = head.rstrip("\n") + "\n<script>\n" + script.replace(

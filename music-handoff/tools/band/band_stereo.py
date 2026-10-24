@@ -30,13 +30,16 @@
 import os, re, sys, json, subprocess, numpy as np
 from multiprocessing import Pool
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-import tune
+import tune, bandio
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.normpath(os.path.join(HERE, "..", "..", "..", "aog-deploy"))
 BAND = os.path.join(ROOT, "audio", "band")
 REPO = "/home/user/sgossner/vsco-2-ce"
 SRC = os.path.join(HERE, "band_stereo_sources.json")
-SR = 32000
+SR = bandio.SR      # AOG-BAND-HIFI-V1: 44100 when hifi.py runs this (bandio.py)
+# AOG-BAND-HIFI-V1: with AOG_BAND_OUT set, build writes <AOG_BAND_OUT>/<player>/ and its report there, and leaves the
+# manifest alone (hifi.py takes it from there)
+OUT = os.environ.get("AOG_BAND_OUT")
 # player: (old builder, held kind, held folder, short folder). Builders: "p1" process.py, "p2" process2.py, "perc" percproc.py
 PLAYERS = {
     "trumpet":          ("p1", "held",  "Brass/Trumpet/sus",              "Brass/Trumpet/stac"),
@@ -292,20 +295,21 @@ def build_one(args):
     x = x[:end]
     fo = min(int(r["fade"] * SR), len(x) // 3); x[-fo:] *= (np.linspace(1, 0, fo) ** 2)[:, None]
     fi = int(0.002 * SR); x[:fi] *= np.linspace(0, 1, fi)[:, None]
-    old = mp3(os.path.join(BAND, player, key + ".mp3"))
+    old_path = os.path.join(BAND, player, key + ".mp3")
+    if not os.path.exists(old_path): old_path = os.path.join(BAND, player + "2", key + ".mp3")   # the stereo files it made before
+    old = mp3(old_path)
     ref = level(old ** 2, r); now = level(np.mean(x ** 2, axis=1), r)
     g = ref / now; x *= g
     same = match(old, x.mean(axis=1))[0]             # the new file's two microphones together line up with the old file
     pk = float(np.max(np.abs(x))); lim = 0.0
     if pk > 0.97:
         x *= 0.97 / pk; lim = 20 * np.log10(0.97 / pk)
-    out = os.path.join(BAND, player + "2"); os.makedirs(out, exist_ok=True); dst = os.path.join(out, key + ".mp3")
-    subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "f32le", "-ar", str(SR), "-ac", "2", "-i", "-", "-c:a", "libmp3lame", "-b:a", "%dk" % r["kb"], dst],
-                   input=x.astype(np.float32).tobytes(), check=True)
+    out = os.path.join(OUT, player) if OUT else os.path.join(BAND, player + "2"); os.makedirs(out, exist_ok=True); dst = os.path.join(out, key + ".mp3")
+    bandio.mp3(x, dst, r["kb"])
     c = None if r["tk"] is None else measure_tune(x, int(key[:-1]), r["tk"])
     return {"player": player, "key": key, "src": src, "psola": ps, "same": round(same, 3), "gain_db": round(20 * np.log10(g), 1), "limited_db": round(lim, 2),
             "sec": round(len(x) / SR, 3), "old_sec": round(len(old) / SR, 3), "cents": None if c is None else round(c, 1), "kb": os.path.getsize(dst) / 1024,
-            "old_kb": os.path.getsize(os.path.join(BAND, player, key + ".mp3")) / 1024}
+            "old_kb": os.path.getsize(old_path) / 1024}
 
 
 def do_build(only):
@@ -313,7 +317,8 @@ def do_build(only):
     jobs = [(p, k, v["src"], v.get("psola")) for p, keys in srcs.items() if (not only or p in only) for k, v in sorted(keys.items())]
     with Pool(4) as pool:
         rep = list(pool.imap(build_one, jobs))
-    json.dump(rep, open(os.path.join(HERE, "band_stereo_report.json"), "w"), indent=0)
+    json.dump(rep, open(os.path.join(OUT or HERE, "band_stereo_report.json"), "w"), indent=0)
+    if OUT: return
     for p in sorted(set(r["player"] for r in rep), key=list(PLAYERS).index):
         rs = [r for r in rep if r["player"] == p]
         m = man[p]; m["dir"] = p + "2"

@@ -14,11 +14,12 @@
 #   python3 strings_stereo.py            (from anywhere; writes aog-deploy/audio/band/violins2, violas2, cellos2)
 import os, re, sys, json, subprocess, numpy as np
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-import tune
+import tune, bandio
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.normpath(os.path.join(HERE, "..", "..", "..", "aog-deploy"))
 REPO = "/home/user/sgossner/vsco-2-ce"
-SR = 32000
+SR = bandio.SR      # AOG-BAND-HIFI-V1: 44100 when hifi.py runs this (bandio.py)
+OUT = os.environ.get("AOG_BAND_OUT")   # AOG-BAND-HIFI-V1: hifi.py builds into <AOG_BAND_OUT>/<player>/
 INST = {   # held folder, soft strength, loud strength (as fetch2.py picked them); short notes as choices.json picked them
     "violins": ("Strings/Violin Section/susVib", 1, 2),
     "violas":  ("Strings/Viola Section/susvib", 1, 2),
@@ -61,14 +62,13 @@ def trim_onset(x):
 
 
 def encode(x, dst, kbps):
-    subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "f32le", "-ar", str(SR), "-ac", "2", "-i", "-", "-c:a", "libmp3lame", "-b:a", "%dk" % kbps, dst],
-                   input=x.astype(np.float32).tobytes(), check=True)
+    bandio.mp3(x, dst, kbps)
 
 
 def build():
     report = []
     for inst, (held, sv, lv) in INST.items():
-        man = MAN[inst]; out = os.path.join(ROOT, "audio", "band", inst + "2"); os.makedirs(out, exist_ok=True)
+        man = MAN[inst]; out = os.path.join(OUT, inst) if OUT else os.path.join(ROOT, "audio", "band", inst + "2"); os.makedirs(out, exist_ok=True)
         files = {}
         for f in git_ls(held):
             m = RX.search(os.path.basename(f))
@@ -96,7 +96,9 @@ def build():
                 fl = int(fade * SR); x[-fl:] *= (0.5 * (1 + np.cos(np.linspace(0, np.pi, fl))))[:, None]
             x[:int(0.002 * SR)] *= np.linspace(0, 1, int(0.002 * SR))[:, None]
             # the loudness of the note it replaces, at the same moment
-            old = mp3_mono(os.path.join(ROOT, "audio", "band", inst, key + ".mp3"))
+            old_path = os.path.join(ROOT, "audio", "band", inst, key + ".mp3")
+            if not os.path.exists(old_path): old_path = os.path.join(ROOT, "audio", "band", inst + "2", key + ".mp3")   # the stereo files it made before
+            old = mp3_mono(old_path)
             ref = loudest(old[:int(2.5 * SR)] ** 2, win) if kind == "held" else loudest(old ** 2, win)
             pw = np.mean(x ** 2, axis=1)
             now = loudest(pw[:int(2.5 * SR)], win) if kind == "held" else loudest(pw, win)

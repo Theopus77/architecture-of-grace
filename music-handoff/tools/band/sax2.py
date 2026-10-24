@@ -34,8 +34,9 @@
 #   python3 sax2.py <aog-deploy/audio/band> [VCSL folder]
 import os, re, sys, json, shutil, subprocess, numpy as np
 HERE=os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, HERE)
-import tune
-SR=32000
+import tune, bandio
+SR=bandio.SR   # AOG-BAND-HIFI-V1: 44.1 kHz and both microphones when hifi.py runs this (bandio.py)
+M=bandio.M     # what is measured: the left microphone, as before
 BAND=sys.argv[1]
 VCSL=sys.argv[2] if len(sys.argv)>2 else "/home/user/sgossner/VCSL"
 REEDS=os.path.join(VCSL,"Aerophones","Reed Aerophones")
@@ -48,14 +49,12 @@ PLAYERS={
  "soprano":   ("Saxello/Non-Vibrato",         {"s":"2","l":"3"}, "Saxello/Staccato",         None),
 }
 def load(path):
-    """the left microphone alone, 32 kHz"""
-    pcm=subprocess.run(["ffmpeg","-v","error","-i",path,"-af","pan=mono|c0=c0","-ar",str(SR),"-f","f32le","-"],capture_output=True,check=True).stdout
-    return np.frombuffer(pcm,dtype=np.float32).astype(np.float64)
+    """the left microphone alone (both, left and right, with AOG_BAND_STEREO)"""
+    return bandio.load(path, 0)
 def load_mp3(path):
-    pcm=subprocess.run(["ffmpeg","-v","error","-i",path,"-ac","1","-ar",str(SR),"-f","f32le","-"],capture_output=True,check=True).stdout
-    return np.frombuffer(pcm,dtype=np.float32).astype(np.float64)
+    return bandio.load(path, 0, stereo=False)    # the left microphone (the one alone before), as it was measured
 def onset(x):
-    pk=np.max(np.abs(x)); i=int(np.argmax(np.abs(x)>pk*0.03)); return max(0,i-int(0.005*SR))
+    x=M(x); pk=np.max(np.abs(x)); i=int(np.argmax(np.abs(x)>pk*0.03)); return max(0,i-int(0.005*SR))
 def loudest(x, w):
     n=int(w*SR)
     if len(x)<=n: return float(np.sqrt(np.mean(x*x)+1e-12))
@@ -81,8 +80,8 @@ for inst,(held,layers,short,borrow) in PLAYERS.items():
 print(len(plan),"files planned")
 for p in plan:
     x=load(p["src"]); x=x[onset(x):]
-    if p["kind"]=="held": c,sp,cnt=tune.heard(x[:int(5*SR)], p["note"], "held")
-    else: c=(tune.finalize_yin(x[:int(0.9*SR)], p["note"])-p["note"])*100
+    if p["kind"]=="held": c,sp,cnt=tune.heard(M(x)[:int(5*SR)], p["note"], "held")
+    else: c=(tune.finalize_yin(M(x)[:int(0.9*SR)], p["note"])-p["note"])*100
     if c is not None and abs(c)>50:
         print("   rename %s %d: it sounds %+.0f cents from its name -> %d"%(p["inst"],p["note"],c,p["note"]+int(np.sign(c))))
         p["note"]+=int(np.sign(c))
@@ -91,8 +90,8 @@ TARGET={"held":{"l":-18.0,"s":-26.0},"short":{"m":-17.0}}
 one={i:len(PLAYERS[i][1])==1 for i in PLAYERS}
 for p in plan:
     x=p["x"]
-    if p["kind"]=="held": x=x[:int(5.0*SR)]; b=x[int(0.25*SR):int(2.5*SR)]; r=float(np.sqrt(np.mean(b*b)+1e-12)); fo=int(0.4*SR)
-    else: x=x[:int(0.9*SR)]; r=loudest(x,0.15); fo=int(0.1*SR)
+    if p["kind"]=="held": x=x[:int(5.0*SR)]; b=M(x)[int(0.25*SR):int(2.5*SR)]; r=float(np.sqrt(np.mean(b*b)+1e-12)); fo=int(0.4*SR)
+    else: x=x[:int(0.9*SR)]; r=loudest(M(x),0.15); fo=int(0.1*SR)
     p["y"]=x; p["fo"]=fo
     p["g"]=10**((TARGET[p["kind"]]["l" if one[p["inst"]] and p["kind"]=="held" else p["layer"]]-20*np.log10(r))/20)
     p["room"]=20*np.log10(0.95/max(1e-6,np.max(np.abs(x))*p["g"]))       # dB to spare under the peak limit
@@ -103,12 +102,10 @@ for inst in PLAYERS:                                                    # a fres
     os.makedirs(d)
 for p in plan:
     x=p["y"]*p["g"]*10**(shift[p["inst"]]/20)
-    fo=min(p["fo"],len(x)//3); x[-fo:]*=np.linspace(1,0,fo)**2
-    fi=int(0.002*SR); x[:fi]*=np.linspace(0,1,fi)
+    bandio.fades(x, p["fo"], int(0.002*SR))
     p["file"]="%d%s"%(p["note"],{"s":"s","l":"l","m":"t"}[p["layer"]])
     p["secs"]=len(x)/SR; p["peak"]=float(np.max(np.abs(x)))
-    subprocess.run(["ffmpeg","-v","error","-y","-f","f32le","-ar",str(SR),"-ac","1","-i","-","-codec:a","libmp3lame","-b:a","80k" if p["kind"]=="short" else "64k",
-        os.path.join(BAND,p["inst"],p["file"]+".mp3")],input=x.astype(np.float32).tobytes(),check=True)
+    bandio.mp3(x, os.path.join(BAND,p["inst"],p["file"]+".mp3"), 80 if p["kind"]=="short" else 64)
 # the tuning, measured on the finished files, and the manifest
 man=json.load(open(os.path.join(BAND,"manifest.json")),object_pairs_hook=dict)
 rows={}
@@ -135,7 +132,7 @@ for inst,(held,layers,short,borrow) in PLAYERS.items():
 with open(os.path.join(BAND,"manifest.json"),"w") as fh: json.dump(man, fh, separators=(",",":"))
 # what was made
 for inst in PLAYERS:
-    v=man[inst]; d=os.path.join(BAND,inst); size=sum(os.path.getsize(os.path.join(d,f)) for f in os.listdir(d))
+    v=man[inst]; d=os.path.join(BAND,inst); size=sum(os.path.getsize(os.path.join(d,f)) for f in os.listdir(d) if f.endswith(".mp3"))
     ps=[p for p in plan if p["inst"]==inst]; held=[p for p in ps if p["kind"]=="held"]
     left=[r[1]-r[3] for r in rows[inst]]
     print("%-10s held %d-%d (%d notes, %d loud) | short %s | %d files, %.0f KB | held %.2f-%.2f s | peak %.2f, brought down %.1f dB"%(inst, v["sus"][0], v["sus"][-1],

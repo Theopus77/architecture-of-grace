@@ -55,22 +55,22 @@
 import os, re, sys, json, shutil, subprocess, numpy as np
 from scipy import signal
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, HERE)
-import tune, psola
-SR = 32000
+import tune, psola, bandio
+SR = bandio.SR   # AOG-BAND-HIFI-V1: 44.1 kHz when hifi.py runs this; the didgeridoo keeps both microphones (bandio.py)
+M = bandio.M     # what is measured: the left microphone, as before
 BAND = sys.argv[1]; SRC = sys.argv[2]
 ONLY = sys.argv[3].split(",") if len(sys.argv) > 3 else None
 PC = {"c": 0, "db": 1, "d": 2, "eb": 3, "e": 4, "f": 5, "gb": 6, "g": 7, "ab": 8, "a": 9, "bb": 10, "b": 11}
 
-def load(path, ch=None, sr=SR):
-    """mono at sr; ch picks one channel (0 left, 1 right), else the two are averaged"""
-    af = ["-af", "pan=mono|c0=c%d" % ch] if ch is not None else ["-ac", "1"]
-    pcm = subprocess.run(["ffmpeg", "-v", "error", "-i", path] + af + ["-ar", str(sr), "-f", "f32le", "-"], capture_output=True, check=True).stdout
-    return np.frombuffer(pcm, dtype=np.float32).astype(np.float64)
+def load(path, ch=None, sr=SR, stereo=False):
+    """mono at sr; ch picks one channel (0 left, 1 right), else the two are averaged; stereo (with AOG_BAND_STEREO and ch
+    0) keeps both, left and right"""
+    return bandio.load(path, ch, sr, stereo=bandio.STEREO and stereo)
 def onset(x, sr=SR, frac=0.03):
-    pk = np.max(np.abs(x)); i = int(np.argmax(np.abs(x) > pk * frac)); return max(0, i - int(0.005 * sr))
+    x = M(x); pk = np.max(np.abs(x)); i = int(np.argmax(np.abs(x) > pk * frac)); return max(0, i - int(0.005 * sr))
 def loudest(x, w):
     """the loudest stretch of w seconds (RMS), by a running sum"""
-    n = int(w * SR); q = np.concatenate([[0.0], np.cumsum(x * x)])
+    x = M(x); n = int(w * SR); q = np.concatenate([[0.0], np.cumsum(x * x)])
     if len(x) <= n: return float(np.sqrt(q[-1] / max(1, len(x)) + 1e-12))
     return float(np.sqrt(np.max(q[n:] - q[:-n]) / n + 1e-12))
 def ring_end(x, most):
@@ -108,12 +108,15 @@ def tame(x, crest):
     """the rhythm's sharpest breath and voice pulses rounded off (2026-10-17): no sample louder than `crest` times the
     phrase's RMS. A look-ahead peak limiter (the gain a sample needs, the least over 10 ms around it, smoothed over 5 ms,
     so it never lets a peak through); the pulses keep their shape, only their tips come down. The Drum Machine sets each
-    recording's level by its peak, so a few sharp tips had held the whole rhythm 5 dB under the others."""
+    recording's level by its peak, so a few sharp tips had held the whole rhythm 5 dB under the others. Both microphones of
+    a stereo phrase get the same gain: the RMS is the left one's (as before), the peak either one's."""
     from scipy.ndimage import minimum_filter1d
-    ceil = crest * np.sqrt(np.mean(x * x)); need = np.minimum(1.0, ceil / np.maximum(np.abs(x), 1e-9))
+    a = np.abs(x) if x.ndim == 1 else np.max(np.abs(x), axis=1)
+    ceil = crest * np.sqrt(np.mean(M(x) ** 2)); need = np.minimum(1.0, ceil / np.maximum(a, 1e-9))
     w = int(0.005 * SR); g = minimum_filter1d(need, 2 * w + 1)
     g = np.convolve(g, np.ones(w) / w, mode="same"); g = minimum_filter1d(g, w)   # smooth, and never above what is needed
-    return x * np.minimum(g, need)
+    gg = np.minimum(g, need)
+    return x * (gg if x.ndim == 1 else gg[:, None])
 def kw(x):
     """how loud as the tests measure it (measure.inc): a 60 Hz high-pass (Q 0.5) and a +4 dB shelf above 1.5 kHz (RBJ
     biquads), then the loudest 400 ms, in dB"""
@@ -125,6 +128,7 @@ def kw(x):
             b = [A * ((A + 1) + (A - 1) * cw + sq), -2 * A * ((A - 1) + (A + 1) * cw), A * ((A + 1) + (A - 1) * cw - sq)]
             a = [(A + 1) - (A - 1) * cw + sq, 2 * ((A - 1) - (A + 1) * cw), (A + 1) - (A - 1) * cw - sq]
         return np.array(b) / a[0], np.array(a) / a[0]
+    x = M(x)
     for k in (rbj("hp", 60, 0.5, 0), rbj("hs", 1500, 0.7, 4)): x = signal.lfilter(k[0], k[1], x)
     return 20 * np.log10(loudest(x, 0.4))
 
@@ -258,12 +262,12 @@ if want("panflute"):
     for n in range(55, 89, 3): add("panflute", n, "s", panflute(n), "held")
 for inst, fn, start, length in (("didgeridoo", "Didgeridoo1_Sus2_Main.wav", 0.6, 7.0), ("didgeridoo_rhythm", "Didgeridoo1_Phrase8_Main.wav", 0.15, 11.5)):
     if not want(inst): continue
-    x = load(os.path.join(SRC, "didg", fn), 0); x = x[onset(x):]
+    x = load(os.path.join(SRC, "didg", fn), 0, stereo=True); x = x[onset(x):]
     x = x[int(start * SR):]
-    h, _, _ = tune.heard(x, 37, "held"); m0 = 37 + (h or 0) / 100
+    h, _, _ = tune.heard(M(x), 37, "held"); m0 = 37 + (h or 0) / 100
     for n in (32, 35, 38, 41):
         y = speed(x, n - m0)[:int(length * SR)]
-        fi = int(0.06 * SR); y[:fi] *= np.linspace(0, 1, fi) ** 2       # the drone was cut from its middle: a soft start
+        fi = int(0.06 * SR); bandio.ramp(y, 0, fi, np.linspace(0, 1, fi) ** 2)       # the drone was cut from its middle: a soft start
         if inst == "didgeridoo_rhythm": y = tame(y, 3.5)
         add(inst, n, "s", y, "held")
 for inst, (fn, fem, targets) in VOICES.items():
@@ -311,11 +315,9 @@ for inst, rows in made.items():
     for r in rows:
         n, k, x, meas, g = r
         x = x * g * 10 ** (shift / 20)
-        fo = int((0.4 if meas == "held" else 0.3 if meas == "pluck" else 0.1) * SR); fo = min(fo, len(x) // 3)
-        x = x.copy(); x[-fo:] *= np.linspace(1, 0, fo) ** 2
-        fi = int(0.002 * SR); x[:fi] *= np.linspace(0, 1, fi)
-        subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "f32le", "-ar", str(SR), "-ac", "1", "-i", "-", "-codec:a", "libmp3lame",
-                        "-b:a", "80k" if meas == "short" else "64k", os.path.join(d, "%d%s.mp3" % (n, k))], input=x.astype(np.float32).tobytes(), check=True)
+        fo = int((0.4 if meas == "held" else 0.3 if meas == "pluck" else 0.1) * SR)
+        bandio.fades(x, fo, int(0.002 * SR))
+        bandio.mp3(x, os.path.join(d, "%d%s.mp3" % (n, k)), 80 if meas == "short" else 64)
     print("%-18s brought down %.1f dB so every peak stays under 0.95" % (inst, -shift))
 
 # the tuning, measured on the finished files, and the manifest
@@ -323,7 +325,7 @@ man = json.load(open(os.path.join(BAND, "manifest.json")), object_pairs_hook=dic
 for inst, rows in made.items():
     tunes = {}; sus = sorted(r[0] for r in rows if r[1] == "s"); stac = sorted(r[0] for r in rows if r[1] == "t")
     for n, k, x, meas, g in sorted(rows, key=lambda r: (r[1], r[0])):
-        y = load(os.path.join(BAND, inst, "%d%s.mp3" % (n, k)))
+        y = load(os.path.join(BAND, inst, "%d%s.mp3" % (n, k)), 0)   # the left microphone of a stereo note (a mono one is itself)
         kind = "held" if meas == "held" else "pluck"
         h, sp, cnt = tune.heard(y, n, kind)
         if h is None: h = (tune.finalize_yin(y, n) - n) * 100
@@ -333,4 +335,4 @@ for inst, rows in made.items():
     man[inst] = {"sus": sus, "susL": [], "stac": stac, "tune": tunes}
 with open(os.path.join(BAND, "manifest.json"), "w") as fh: json.dump(man, fh, separators=(",", ":"))
 for inst in made:
-    d = os.path.join(BAND, inst); print(inst, len(os.listdir(d)), "files,", round(sum(os.path.getsize(os.path.join(d, f)) for f in os.listdir(d)) / 1024), "KB")
+    d = os.path.join(BAND, inst); print(inst, len(os.listdir(d)), "files,", round(sum(os.path.getsize(os.path.join(d, f)) for f in os.listdir(d) if f.endswith(".mp3")) / 1024), "KB")
