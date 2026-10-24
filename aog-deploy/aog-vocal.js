@@ -160,18 +160,130 @@
   var ORDER = ["clean", "warm", "radio", "rap", "echo", "hall", "tuned", "robot", "phone"];
   var MORE = ["pop", "deep", "high", "harmony", "wide", "slap", "mega", "old", "ghost", "chop"];   /* AOG-VOCAL-FX-V2: in their own fold */
   var KEY = "aog.vocal.v1", MAX_SEC = 240, MAX_TAKES = 8, MIC_KEEP = 120000;
-  var CAP_WK = 'class AogVocalCap extends AudioWorkletProcessor{constructor(){super();this.on=true;this.b=[];this.n=0;this.t=-1;' +
-    'this.port.onmessage=e=>{if(e.data==="stop"){this.flush();this.on=false;this.port.postMessage({end:true});}};}' +
-    'flush(){if(!this.n)return;const o=new Float32Array(this.n);let k=0;for(const x of this.b){o.set(x,k);k+=x.length;}this.port.postMessage({t:this.t,d:o},[o.buffer]);this.b=[];this.n=0;this.t=-1;}' +
-    'process(ins){if(!this.on)return false;const c=ins[0]&&ins[0][0];if(c&&c.length){if(this.t<0)this.t=currentTime;this.b.push(c.slice(0));this.n+=c.length;if(this.n>=sampleRate/4)this.flush();}return true;}}' +
+  /* AOG-VOCAL-PRO-V1 · the capture, lossless, and its dropouts mended.
+     Found (studio/vocal.js failing on a busy machine, the dry take 100× too bright above 4.6 kHz): the worklet and the page
+     never lost, doubled or misplaced a sample (counted: every frame the worklet was handed reached the take). The clicks
+     came from before the worklet: when the machine is busy, the browser's bridge from the microphone into the sound engine
+     runs dry for a moment and hands over 10 ms of digital silence in the middle of the voice (always at the very start of a
+     recording, and now and then later), or drops 10 ms (a step in the wave). A real microphone never gives exact silence,
+     so a run of exact zeros that cuts into the voice and out again is such a dropout, and so is a jump from one sample to
+     the next ten times bigger than any in the 2 ms around it: each is filled from the voice on both sides (one pitch period
+     at a time, overlapped, then crossfaded), and a cut at one side only gets a short fade. Measured on a busy machine: the
+     dry take's highs above 4.6 kHz went from 0.11–0.59 % back to 0.005 %, as recorded on a quiet one. The worklet itself was
+     made allocation-free too (it had made new memory 375 times a second).
+     The worklet writes each 128-frame block into a buffer it already has (no new memory on the sound thread), counts every
+     frame it is handed (an empty block is kept as silence in its place), watches for runs of exact zeros (holeScan, the same
+     code the page's test hook runs) and for clipping, and posts each full buffer with its number (s), its first frame (f)
+     and the time of frame 0 (t). The buffers come back to it to be used again. The page puts each one at its own frame, so
+     nothing can land twice or out of place, and a buffer that never came is exact silence of the right length. */
+  function holeRms(R, a, b) { var M = R.length - 1, s = 0, c = 0; for (var k = a; k < b; k++) { var u = R[k & M]; s += u * u; c++; } return c ? Math.sqrt(s / c) : 0; }
+  function holeEmit(S, upto, out) { var b = S.pb, E = S.E, Wn = S.Wn, e1 = Math.min(b + E + 3 * Wn, upto), near = holeRms(S.ring, b + E, Math.min(b + E + Wn, e1)), far = holeRms(S.ring, b + E + Wn, e1);
+    if (out.length < 512) out.push([S.pa, b, S.rb, far > 1e-4 ? near / far : -1, S.lb, near]); S.pe = -1; }
+  function holeD2(R, a, b) { var M = R.length - 1, s = 0, c = 0; for (var k = a; k < b; k++) { var u = R[k & M] - 2 * R[(k - 1) & M] + R[(k - 2) & M]; s += u * u; c++; } return c ? Math.sqrt(s / c) : 0; }
+  function holeScan(S, x, i0, n, g0, out, fin) {
+    var R = S.ring, M = R.length - 1, E = S.E, Wn = S.Wn, i, v, g, d;
+    for (i = 0; i < n; i++) {
+      g = g0 + i; v = x[i0 + i]; R[g & M] = v;
+      if (v >= S.cl || v <= -S.cl) S.clip++;
+      if (S.pe >= 0 && g >= S.pe) holeEmit(S, g, out);
+      /* a step: the voice jumps from one sample to the next far more than it has in the 2 ms before or after (a moment the
+         browser dropped); it is mended as a short hole */
+      d = v - 2 * S.x1 + S.x2; if (d < 0) d = -d;
+      if (S.sp >= 0 && g >= S.sp + S.Wa) { if (S.spA > 10 * holeD2(R, S.sp + 3, g + 1) && out.length < 512) out.push([S.sp - E, S.sp + E, 9, 9, 1, 1, 1]); S.sp = -1; }
+      if (S.sp < 0 && d > 0.02 && v !== 0 && S.x1 !== 0 && d * d > 100 * S.dq) { S.sp = g; S.spA = d; }
+      S.dq += (d * d - S.dq) * S.ka; S.x2 = S.x1; S.x1 = v;
+      if (v === 0) {
+        if (++S.run === S.min) { var a = g - S.min + 1, nb = holeRms(R, a - E - Wn, a - E), fb = holeRms(R, a - E - 3 * Wn, a - E - Wn); S.ra0 = a; S.rbx = fb > 1e-4 ? nb / fb : -1; S.lbx = nb; }
+      } else {
+        if (S.run >= S.min) { if (S.pe >= 0) holeEmit(S, g, out); S.pa = S.ra0; S.pb = g; S.rb = S.rbx; S.lb = S.lbx; S.pe = g + E + 3 * Wn; }
+        S.run = 0;
+      }
+    }
+    if (fin && S.pe >= 0) holeEmit(S, g0 + n, out);
+  }
+  function holeState(sr) { var z = 1; while (z < 0.04 * sr) z *= 2;
+    return { ring: new Float32Array(z), E: Math.round(0.0012 * sr), Wn: Math.round(0.005 * sr), min: Math.max(32, Math.round(0.0013 * sr)), run: 0, pe: -1, pa: 0, pb: 0, rb: 0, lb: 0, ra0: 0, rbx: 0, lbx: 0, clip: 0, cl: 0.985,
+      x1: 0, x2: 0, dq: 0, ka: 1 - Math.exp(-1 / (0.002 * sr)), sp: -1, spA: 0, Wa: Math.round(0.002 * sr) }; }
+  var CAP_WK = holeRms.toString() + holeEmit.toString() + holeD2.toString() + holeScan.toString() + holeState.toString() +
+    'class AogVocalCap extends AudioWorkletProcessor{constructor(o){super();var p=(o&&o.processorOptions)||{};this.N=p.n||6016;this.on=true;this.pool=[];' +
+    'for(var i=0;i<6;i++)this.pool.push(new Float32Array(this.N));this.b=this.pool.pop();this.k=0;this.f=0;this.f0=0;this.s=0;this.z=0;this.t=-1;this.live=false;this.H=holeState(sampleRate);this.ev=[];' +
+    'this.port.onmessage=e=>{var m=e.data;if(m==="stop"){if(this.on){holeScan(this.H,this.b,0,0,this.f,this.ev,true);this.post();this.on=false;' +
+    'this.port.postMessage({end:true,f:this.f,s:this.s,z:this.z,t:this.t,te:currentTime,clip:this.H.clip,ev:this.ev});}}' +
+    'else if(m&&m.back&&m.back.length===this.N&&this.pool.length<12)this.pool.push(m.back);};}' +
+    'post(){if(!this.k)return;var b=this.b,ev=this.ev.length?this.ev:null;if(ev)this.ev=[];this.port.postMessage({s:this.s++,f:this.f0,n:this.k,t:this.t,live:this.live,ev:ev,d:b},[b.buffer]);this.f0+=this.k;this.k=0;this.b=this.pool.pop()||new Float32Array(this.N);}' +
+    'process(ins){if(!this.on)return false;if(this.t<0)this.t=currentTime;var c=ins[0]&&ins[0][0],q=c?c.length:128;if(this.k+q>this.N)this.post();' +
+    'if(c){this.b.set(c,this.k);this.live=true;}else{this.b.fill(0,this.k,this.k+q);this.z++;}holeScan(this.H,this.b,this.k,q,this.f,this.ev);this.k+=q;this.f+=q;if(this.k+128>this.N)this.post();return true;}}' +
     'registerProcessor("aog-vocal-cap",AogVocalCap);';
+  /* the take as it comes in: blocks of 8 s, each buffer written at its own frame */
+  function capNew(sr) { return { sr: sr, B: Math.round(sr * 8), blk: [], hi: 0, got: 0, seq: -1, lost: 0, dup: 0, F: -1, z: 0, ev: [], clip: 0, te: -1 }; }
+  function capPut(C, f, d, n) {
+    for (var o = 0; o < n;) { var g = f + o, bi = Math.floor(g / C.B), at = g - bi * C.B, k = Math.min(n - o, C.B - at);
+      while (C.blk.length <= bi) C.blk.push(new Float32Array(C.B)); C.blk[bi].set(d.subarray(o, o + k), at); o += k; }
+    if (f + n > C.hi) C.hi = f + n; C.got += n;
+  }
+  function capMsg(C, m) {   /* one buffer from the worklet: its number says whether one went missing or came twice */
+    if (m.ev) C.ev = C.ev.concat(m.ev);
+    if (m.s <= C.seq) { C.dup++; return; }
+    if (m.s > C.seq + 1) C.lost += m.s - C.seq - 1;
+    C.seq = m.s; capPut(C, m.f, m.d, m.n);
+  }
+  function capTake(C) {
+    var n = C.F >= 0 ? C.F : C.hi, X = new Float32Array(n);
+    for (var i = 0; i * C.B < n; i++) if (C.blk[i]) X.set(C.blk[i].subarray(0, Math.min(C.B, n - i * C.B)), i * C.B);
+    return X;
+  }
+  /* the dropouts mended: a run of exact zeros that cuts in abruptly (the voice as loud just before it as 10 ms earlier) and
+     out abruptly is filled from both sides, each side carried on one pitch period at a time and crossfaded; a cut at one
+     side only fades (3 ms) into or out of the silence. Holes are rare, so this is little work. */
+  function capPeriod(x, a, b, sr) {   /* the voice's period in x[a, b) (normalised likeness, the shortest that fits), or 0 */
+    a = Math.max(0, a); b = Math.min(x.length, b);
+    var lo = Math.round(sr / 1000), hi = Math.min(Math.round(sr / 60), Math.floor((b - a) / 2)), L = b - a - hi; if (hi < 2 * lo) return 0;
+    var best = -1, bl = 0, r = [], t, j;
+    for (t = lo; t <= hi; t++) { var s = 0, e1 = 0, e2 = 0; for (j = a; j < a + L; j += 2) { var p = x[j + hi], q = x[j + hi - t]; s += p * q; e1 += p * p; e2 += q * q; } r[t] = e1 > 0 && e2 > 0 ? s / Math.sqrt(e1 * e2) : 0; if (r[t] > best) { best = r[t]; bl = t; } }
+    if (best < 0.6) return 0;
+    for (t = lo + 1; t < bl; t++) if (r[t] >= 0.92 * best && r[t] >= r[t - 1] && r[t] >= r[t + 1]) { bl = t; break; }
+    var y0 = r[bl - 1] || 0, y1 = r[bl], y2 = r[bl + 1] || 0, den = y0 - 2 * y1 + y2;
+    return bl + (den < 0 ? 0.5 * (y0 - y2) / den : 0);
+  }
+  function capAt(x, p) { var i = Math.floor(p), t = p - i, a = x[i - 1] || 0, b = x[i] || 0, c = x[i + 1] || 0, d = x[i + 2] || 0;
+    return (((0.5 * (d - a) + 1.5 * (b - c)) * t + (a - 2.5 * b + 2 * c - 0.5 * d)) * t + 0.5 * (c - a)) * t + b; }
+  function capOla(x, edge, T, i, dir) {   /* the voice carried on past an edge, one period at a time, each repeat overlapped (Hann, half a period each side) so a period a hair off never clicks */
+    var q = Math.floor(i / T), k1 = q + 1, s = 0;
+    for (var k = k1; k <= k1 + 1; k++) { var ph = (i - (k - 2) * T) / (2 * T); if (ph < 0 || ph >= 1) continue;
+      s += (0.5 - 0.5 * Math.cos(2 * Math.PI * ph)) * capAt(x, dir > 0 ? edge + i - k * T : edge - 1 - i + k * T); }
+    return s;
+  }
+  function capMend(x, sr, ev, off) {
+    var E = Math.round(0.0012 * sr), F3 = Math.round(0.003 * sr), W = Math.round(0.035 * sr), fixed = 0, faded = 0, n = x.length;
+    var hs = (ev || []).map(function (h) { return [h[0] - (off || 0) - E, h[1] - (off || 0) + E, h[2] >= 0.7 && h[4] >= 1e-3, h[3] >= 0.7 && h[5] >= 1e-3]; }).sort(function (p, q) { return p[0] - q[0]; })
+      .reduce(function (o, h) { var l = o[o.length - 1]; if (l && h[0] <= l[1] && l[2] && l[3] && h[2] && h[3]) { l[1] = Math.max(l[1], h[1]); return o; } o.push(h); return o; }, []);
+    hs.forEach(function (h, k) {
+      var a = h[0], b = h[1], cutIn = h[2], cutOut = h[3], L = b - a, i;
+      if (b <= 0 || a >= n) return;
+      if (cutIn && cutOut && L <= 0.12 * sr && a > 0 && b < n) {
+        var lo = Math.max(0, a - W, k ? hs[k - 1][1] : 0), hi = Math.min(n, b + W, k + 1 < hs.length ? hs[k + 1][0] : n);
+        var T1 = capPeriod(x, lo, a, sr), T2 = capPeriod(x, b, hi, sr);
+        if (T1 && a - 2 * T1 < lo) T1 = 0; if (T2 && b + 2 * T2 > hi) T2 = 0;
+        for (i = 0; i < L; i++) {
+          var j = L - 1 - i, f = T1 ? capOla(x, a, T1, i, 1) : x[Math.max(lo, a - 1 - i)] || 0, g = T2 ? capOla(x, b, T2, j, -1) : x[Math.min(hi - 1, b + j)] || 0,
+            w = 0.5 - 0.5 * Math.cos(Math.PI * (i + 1) / (L + 1));
+          x[a + i] = (1 - w) * f + w * g;
+        }
+        fixed++;
+      } else {
+        if (cutIn) { for (i = Math.max(0, a - F3); i < Math.min(n, a + E); i++) x[i] *= Math.max(0, Math.min(1, (a - i) / F3)); faded++; }
+        if (cutOut) { for (i = Math.max(0, b - E); i < Math.min(n, b + F3); i++) x[i] *= Math.max(0, Math.min(1, (i - b) / F3)); faded++; }
+      }
+    });
+    return { fixed: fixed, faded: faded };
+  }
 
   var B = {
     ac: null, wk: null, root: null,
     bk: null, bkP: null, bkBuf: null, bkFor: null,
     state: "idle",   /* idle · asking · rec · stopping */
     line: "", lineF: null, allow: false,
-    stream: null, src: null, node: null, sink: null, an: null, monG: null, chunks: [], t0: -1, Tb: 0, lat: 0, from: 1, loop: false, play: null, raf: 0, recAt: 0, shownSec: -1,
+    stream: null, src: null, node: null, sink: null, an: null, monG: null, cap: null, capInfo: null, heard: false, t0: -1, Tb: 0, lat: 0, from: 1, loop: false, play: null, raf: 0, recAt: 0, shownSec: -1,
     takes: [], cur: -1, seq: 0, gone: null,
     snd: "clean", P: P_({}), pre: null, preP: null, making: false,
     hear: null, oraf: 0, busy: false, fit: false, slowT: 0
@@ -376,7 +488,7 @@
   }
   function startRec(stream, bk, mon) {
     var c = B.ac;
-    B.stream = stream; B.chunks = []; B.t0 = -1;
+    B.stream = stream; B.cap = capNew(c.sampleRate); B.t0 = -1; B.heard = false;
     B.src = c.createMediaStreamSource(stream);
     B.sink = c.createGain(); B.sink.gain.value = 0; B.sink.connect(c.destination);
     B.an = c.createAnalyser(); B.an.fftSize = 1024; B.src.connect(B.an); B.an.connect(B.sink);
@@ -387,12 +499,14 @@
     if (c.audioWorklet && window.AudioWorkletNode) {
       if (!B.wk) B.wk = c.audioWorklet.addModule(URL.createObjectURL(new Blob([CAP_WK], { type: "text/javascript" })));
       ready = B.wk.then(function () {
-        B.node = new AudioWorkletNode(c, "aog-vocal-cap", { numberOfInputs: 1, numberOfOutputs: 1, outputChannelCount: [1] });
-        B.node.port.onmessage = function (e) { var m = e.data; if (m && m.d) { if (B.t0 < 0) B.t0 = m.t; B.chunks.push(m.d); } if (m && m.end && B.onEnd) B.onEnd(); };
+        var C = B.cap, node = B.node = new AudioWorkletNode(c, "aog-vocal-cap", { numberOfInputs: 1, numberOfOutputs: 1, outputChannelCount: [1], processorOptions: { n: 128 * Math.ceil(c.sampleRate / 8 / 128) } });
+        node.port.onmessage = function (e) { var m = e.data; if (!m || B.cap !== C) return;
+          if (m.d) { if (B.t0 < 0) B.t0 = m.t; if (m.live) B.heard = true; capMsg(C, m); try { node.port.postMessage({ back: m.d }, [m.d.buffer]); } catch (er) {} }
+          if (m.end) { C.F = m.f; C.z = m.z; C.clip = m.clip || 0; C.te = m.te; C.t = m.t; if (m.ev) C.ev = C.ev.concat(m.ev); if (B.onEnd) B.onEnd(); } };
       });
     } else {
       var N = 4096, sp = c.createScriptProcessor(N, 1, 1);
-      sp.onaudioprocess = function (e) { if (B.state !== "rec") return; if (B.t0 < 0) B.t0 = e.playbackTime - N / c.sampleRate; B.chunks.push(new Float32Array(e.inputBuffer.getChannelData(0))); };
+      sp.onaudioprocess = function (e) { if (B.state !== "rec" || !B.cap) return; if (B.t0 < 0) B.t0 = e.playbackTime - N / c.sampleRate; B.heard = true; B.cap.seq++; capPut(B.cap, B.cap.hi, e.inputBuffer.getChannelData(0), N); };
       B.node = sp; ready = Promise.resolve();
     }
     return ready.then(function () {
@@ -464,9 +578,9 @@
   function watch() {
     clearTimeout(B.wT); var t0 = B.recAt;
     B.wT = setTimeout(function () {
-      if (B.state !== "rec" || B.recAt !== t0 || B.t0 >= 0) return;
+      if (B.state !== "rec" || B.recAt !== t0 || B.heard) return;
       /* nothing came in: let it all go, and say so */
-      B.state = "stopping"; cancelAnimationFrame(B.raf); B.raf = 0; fade(B.play); B.play = null; release(); B.state = "idle"; drop(); B.chunks = [];
+      B.state = "stopping"; cancelAnimationFrame(B.raf); B.raf = 0; fade(B.play); B.play = null; release(); B.state = "idle"; drop(); B.cap = null;
       B.stuck = true;   /* the next tap on Record makes a new engine, inside the tap, as an iPad needs */
       say("again");
     }, 1500);
@@ -475,14 +589,17 @@
     if (B.state !== "rec") return;
     B.state = "stopping"; cancelAnimationFrame(B.raf); B.raf = 0; $("vbIn").style.transform = "scaleX(0)"; paint();
     var node = B.node, c = B.ac;
-    var flushed = node && node.port ? new Promise(function (ok) { B.onEnd = ok; try { node.port.postMessage("stop"); } catch (e) { ok(); } setTimeout(ok, 600); }) : Promise.resolve();
+    var flushed = node && node.port ? new Promise(function (ok) { B.onEnd = ok; try { node.port.postMessage("stop"); } catch (e) { ok(); } setTimeout(ok, 1500); }) : Promise.resolve();
     flushed.then(function () {
       B.onEnd = null; fade(B.play); B.play = null; release();
-      var sr = c.sampleRate, n = 0; B.chunks.forEach(function (x) { n += x.length; });
-      var X = new Float32Array(n), o = 0; B.chunks.forEach(function (x) { X.set(x, o); o += x.length; }); B.chunks = [];
+      var C = B.cap, sr = c.sampleRate, X = C ? capTake(C) : new Float32Array(0), n = X.length; B.cap = null;
+      var md = C ? capMend(X, sr, C.ev, 0) : null;
+      B.capInfo = C ? { frames: C.F, got: C.got, posts: C.seq + 1, lost: C.lost, dup: C.dup, gap: Math.max(0, n - C.got), empty: C.z, ended: C.F >= 0,
+        holes: C.ev.length, mended: md.fixed, faded: md.faded, clip: C.clip, ev: C.ev.slice(0, 12).map(function (h) { return h.map(function (v) { return Math.round(v * 1000) / 1000; }); }) } : null;
       var sec = n / sr, bk = B.bkUsed;
       var head = bk ? (B.Tb + B.lat) - B.t0 : Math.min(0.05, sec / 4); if (!(head >= 0)) head = 0;
       var cut = Math.max(0, head - 0.25), k0 = Math.round(cut * sr), dry = X.slice(k0); head -= k0 / sr;
+      for (var fi = 0, fn = Math.min(dry.length, Math.round(0.005 * sr)); fi < fn; fi++) dry[fi] *= fi / fn;   /* the take starts softly, never on a step */
       var body = dry.length / sr - head;
       B.state = "idle"; sleepSoon();
       if (body < 0.3) { say("short"); return; }
@@ -1134,7 +1251,7 @@
     /* for the Studio's own tests (music-handoff/tests/studio/vocal.js), read only */
     state: function () { var t = cur(); return { state: B.state, snd: B.snd, P: B.P, takes: B.takes.length, cur: B.cur, hear: !!B.hear, busy: B.busy, making: B.making,
       take: t ? { n: t.n, sec: t.dry.length / t.sr, head: t.head, body: t.body, from: t.from, loop: t.loop, sr: t.sr, added: !!t.added, bpm: t.bpm } : null,
-      ac: B.ac && B.ac.state, mic: !!B.stream, armed: !!B.mic, raf: !!(B.raf || B.oraf), line: $("vbLine") ? $("vbLine").textContent : "", allow: B.allow, gone: !!B.gone,
+      ac: B.ac && B.ac.state, mic: !!B.stream, cap: B.capInfo || null, armed: !!B.mic, raf: !!(B.raf || B.oraf), line: $("vbLine") ? $("vbLine").textContent : "", allow: B.allow, gone: !!B.gone,
       bk: B.bk ? { sec: B.bk.sec, loop: B.bk.loop, bpm: B.bk.bpm } : null }; },
     render: function () { var t = cur(); return t ? prepared().then(function (pp) { return render(pp, t, B.P); }) : Promise.reject(new Error("no take")); },
     /* a sound as it would be added, without changing the screen: a ready-made one by name, or its settings with changes */
@@ -1143,6 +1260,8 @@
     dry: function () { var t = cur(); return t ? t.norm || (t.norm = norm(t.dry)) : null; },
     /* AOG-VOCAL-TUNE-V2: Tune alone on any sound (Tuned's settings with changes; plan: 1 also hands back each period's target) */
     tune: function (x, sr, ch) { var P = P_(PRESETS.tuned.p); if (ch) for (var k in ch) P[k] = ch[k]; return tuneRun(new Float32Array(x), sr, P); },
+    /* AOG-VOCAL-PRO-V1: the capture's dropout finder and mender, on any samples (the same code the worklet runs) */
+    mend: function (x, sr) { var y = new Float32Array(x), S = holeState(sr), ev = []; holeScan(S, y, 0, y.length, 0, ev, true); var r = capMend(y, sr, ev, 0); return { x: y, ev: ev, fixed: r.fixed, faded: r.faded, clip: S.clip }; },
     presets: ORDER.slice(), more: MORE.slice()
   };
 })();
