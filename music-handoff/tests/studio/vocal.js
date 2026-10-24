@@ -286,7 +286,6 @@ const ST = f => f.evaluate(() => AOGVocal.state());
     const still = await f.evaluate(() => document.getElementById("vbIn").style.transform);
     ok(s.take && Math.abs(s.take.body - wall) < 1.3 && s.take.head >= 0 && s.take.head <= 0.26 && s.take.from === from && !s.mic && !ended && s.armed && !s.raf && /scaleX\(0\)/.test(still),
       `${nm}: ■ Stop ends the recording (the microphone stays ready for the next take) and makes a take of the right length (${wall.toFixed(2)} s recorded): ${JSON.stringify(s.take)}`);
-    const stopAt = Date.now();   /* when the microphone began its 2 minutes of staying ready */
     /* 3 · the sounds, measured */
     const R = await f.evaluate(MEASURE);
     ok(R.peak > 0.05 && R.peak <= 0.892, `${nm}: every sound renders, none past −1 dB (loudest peak ${R.peak.toFixed(3)})`);
@@ -412,14 +411,10 @@ const ST = f => f.evaluate(() => AOGVocal.state());
     if (nm === "iPad") ok(/repeats to fit/.test(s.line) && dk && (dk.beatLoops >= 2 || (dk.beatPieces && dk.beatPieces[0] >= 2)), `${nm}: a take longer than the loop makes the beat repeat to fit it: ${JSON.stringify({ loops: dk && dk.beatLoops, pieces: dk && dk.beatPieces, line: s.line })}`);
     /* 6 · a second take; ✕ and Bring it back (the mission slip, if it shows, is tapped away first, as a person would) */
     if (await p.evaluate(() => { const s = document.getElementById("msDone"); return !!(s && !s.hidden); })) { await p.click("#msDone"); await W(200); }
-    /* the microphone stays ready for 2 minutes after a take (MIC_KEEP); on a slow machine the sounds above can take longer, and
-       then a second ask is the booth working as meant. Still ready: no second ask. */
-    const ready = (await ST(f)).armed, wantAsks = ready ? 1 : 2, held = (Date.now() - stopAt) / 1000;
-    ok(ready || held >= 115, `${nm}: the microphone stayed ready until its 2 minutes were up (${held.toFixed(0)} s since the take, ready: ${ready})`);
     await f.click("#vbRec"); await f.waitForFunction(() => AOGVocal.state().state === "rec", null, { timeout: 15000 }); await W(2500);
     await f.click("#vbRec"); await f.waitForFunction(() => AOGVocal.state().takes === 2, null, { timeout: 15000 }).catch(() => {});
     s = await ST(f);
-    ok(s.takes === 2 && s.cur === 1 && !s.take.added && (await gums(p)) === wantAsks, `${nm}: a second take is kept beside the first and picked; ${ready ? "the microphone still ready, not asked for again" : "the 2 minutes had passed, so asked once more"} (AOG-VOCAL-MIC-V3): ${JSON.stringify({ takes: s.takes, cur: s.cur, ready, asks: await gums(p) })}`);
+    ok(s.takes === 2 && s.cur === 1 && !s.take.added && (await gums(p)) === 1, `${nm}: a second take is kept beside the first and picked, the microphone kept ready, not asked for again (AOG-VOCAL-MIC-V3): ${JSON.stringify({ takes: s.takes, cur: s.cur, asks: await gums(p) })}`);
     await f.click('.vb-tx[data-i="1"]'); await W(300); s = await ST(f);
     const goneLine = s.line;
     await f.click("#vbBack"); await W(300); const s2 = await ST(f);
