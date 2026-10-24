@@ -550,7 +550,7 @@ function sizeWords(n){ return t("mbN",{n:(Math.max(0.1, n/1048576)).toFixed(1)})
 /* AOG-DESK-SONGS-BTN-V1: the console's Your songs button goes straight to saving and opening, the locker's light shows it is on */
 function paintSongsBtn(){ const l=$("songsLed"), y=$("songsSay"); if(!l||!y) return; l.classList.toggle("on", !!CARRY.lock); const t2=t(CARRY.lock?"songsOn":"songsOff"); if(y.textContent!==t2) y.textContent=t2; }
 function goSongs(){
-  const b=$("carryBlk"); if(!b) return; foldOpen(b); b.scrollIntoView({block:"start"});
+  const b=$("carryBlk"); if(!b) return; if(typeof sheetMode==="function") sheetMode(CARRY.lock ? "open" : "save"); foldOpen(b); b.scrollIntoView({block:"start"});   /* AOG-DESK-QUIET-V1: with a locker, the songs in it */
   const h=b.querySelector("h2"); if(h){ h.setAttribute("tabindex","-1"); try{ h.focus({preventScroll:true}); }catch(e){} }
   if(CARRY.lock){ try{ lockList(true); }catch(e){} }
   else { const d=b.querySelector("#locker details"); if(d) d.open=true; }
@@ -570,10 +570,17 @@ function lockLight(){
 }
 function paintLocker(){
   try{ paintSongsBtn(); }catch(e){}
+  /* AOG-DESK-QUIET-V1: the light and the key in sight (.st-lkmain); everything else under More (.st-lkrare) */
   const box=$("locker"), lk=CARRY.lock, dis=CARRY.busy ? " disabled" : "";
+  /* a desk page from before (an old copy, a test's before-page) has an empty #locker: it gets the same two parts */
+  if(!box.querySelector(".st-lkmain")) box.innerHTML=`<div class="st-lkmain"></div><details class="st-more st-lkmore" id="lkMore"><summary>${esc(STR.moreW ? t("moreW") : (S.lang==="es" ? "Más" : "More"))}</summary><div class="st-lkrare"></div><div class="st-lkslot"></div></details>`;
+  const main=box.querySelector(".st-lkmain"), rare=box.querySelector(".st-lkrare");
+  const put=(el, h)=>{ if(el._h!==h){ el._h=h; el.innerHTML=h; } };
+  if(typeof savePlace==="function") savePlace();
   if(!lk){
     const keepU=$("lkUrl") ? $("lkUrl").value : "", keepK=$("lkKey") ? $("lkKey").value : "";
-    box.innerHTML=`<div class="st-lk">${lockLight()}<p class="st-info">${esc(t("lockAbout"))}</p>
+    put(main, "");
+    rare._h=""; rare.innerHTML=`<div class="st-lk"><h3 class="st-h3">${esc(t("lockH"))}</h3>${lockLight()}<p class="st-info">${esc(t("lockAbout"))}</p>
       <details${CARRY.st==="sheet" ? " open" : ""}><summary class="st-steps">${esc(t("lockSteps"))}</summary>
       <ol class="st-help"><li>${esc(t("lockS1"))}</li><li>${esc(t("lockS2")).replace(esc(t("lockScript")), `<a href="/AoG-Studio-Locker.gs" target="_blank" rel="noopener">${esc(t("lockScript"))}</a>`)}</li>
         <li>${esc(t("lockS3"))}</li><li>${esc(t("lockS4"))}</li><li>${esc(t("lockS5"))}</li></ol></details>
@@ -601,14 +608,17 @@ function paintLocker(){
   const how=w=>`<div class="st-old"><p class="st-info">${esc(t(w))}</p><details><summary class="st-steps">${esc(t("oldHow"))}</summary><ol class="st-help"><li>${esc(t("oldS1"))}</li><li>${esc(t("oldS2")).replace(esc(t("oldScriptW")), m=>`<a href="/AoG-Studio-Locker.gs" target="_blank" rel="noopener">${m}</a>`)}</li><li>${esc(t("oldS3"))}</li></ol></details></div>`;
   const keep=CARRY.st!=="ok" ? "" : lockV2() ? `<div class="st-keep"><label class="st-ksw"><input type="checkbox" role="switch" id="lkKeep"${KEEP.on ? " checked" : ""}><span>${esc(t("keepSw"))}</span></label><p class="st-info" id="lkKeepAt" aria-live="polite"></p>${KEEP.old && !lockV3() ? how("oldBig") : ""}</div>` :
     how("oldScript");   /* AOG-LOCKER-V3: a v2 script and a big song: the same three steps, said once, under the switch */
-  box.innerHTML=`<div class="st-lk">${lockLight()}${keep}
-    <div class="st-row"><button type="button" class="st-btn st-go" id="lkSave"${dis}>${esc(t("lockSave"))}</button><button type="button" class="st-btn" id="lkRefresh"${dis}>${esc(t(CARRY.st==="ok" ? "lockRefresh" : "ltAgain"))}</button></div>
-    <h3 class="st-h3" style="margin:.4rem 0 0">${esc(t("lockList"))}</h3>
-    <div class="st-inb">${list}</div>
+  const warn=CARRY.st!=="ok" && CARRY.st!=="wait" && !!CARRY.st, refresh=`<button type="button" class="st-btn" id="lkRefresh"${dis}>${esc(t(CARRY.st==="ok" ? "lockRefresh" : "ltAgain"))}</button>`;
+  put(main, `<div class="st-lk">${lockLight()}
+    <div class="st-row st-lkgo"><button type="button" class="st-btn st-go" id="lkSave"${dis}>${esc(t("lockSave"))}</button>${warn ? refresh : ""}</div>
+    <div class="st-lklist"><h3 class="st-h3" style="margin:.4rem 0 0">${esc(t("lockList"))}</h3>
+    <div class="st-inb">${list}</div></div></div>`);
+  put(rare, `<div class="st-lk"><h3 class="st-h3">${esc(t("lockH"))}</h3>${keep}
+    ${warn ? "" : `<div class="st-row">${refresh}</div>`}
     <div class="st-row"><button type="button" class="st-btn" id="lkPair">${esc(t("lockPair"))}</button><button type="button" class="st-btn" id="lkQrBtn" aria-expanded="${CARRY.qr}">${esc(t(CARRY.qr ? "lockQrHide" : "lockQr"))}</button></div>
     <div class="st-qr" id="lkQr" role="img" aria-label="${esc(t("lockQrAlt"))}"${CARRY.qr ? "" : " hidden"}></div>
     ${CARRY.qr ? `<p class="st-info">${esc(t("lockPairLine"))}</p>` : ""}
-    <div class="st-row"><button type="button" class="st-btn st-clear" id="lkOff">${esc(t("lockOff"))}</button></div></div>`;
+    <div class="st-row"><button type="button" class="st-btn st-clear" id="lkOff">${esc(t("lockOff"))}</button></div></div>`);
   if(CARRY.qr) drawQr();
   keepLine();
 }

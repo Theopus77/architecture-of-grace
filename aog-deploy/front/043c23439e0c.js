@@ -121,15 +121,15 @@ const STR={
   punch:{en:"Punch",es:"Pegada"}, room:{en:"Room",es:"Sala"}, echo:{en:"Echo",es:"Eco"},
   masterH:{en:"The whole song",es:"Toda la canción"},
   roomPick:{en:"Room sound",es:"Sonido de sala"}, rm_made:{en:"Smooth",es:"Suave"}, rm_small:{en:"Small room",es:"Sala pequeña"}, rm_studio:{en:"Studio",es:"Estudio"}, rm_hall:{en:"Hall",es:"Sala grande"}, rm_church:{en:"Church",es:"Iglesia"}, roomFrom:{en:"Where the rooms come from",es:"De dónde vienen las salas"},   /* AOG-REAL-ROOMS-V1 */ glue:{en:"Glue",es:"Unión"}, songVol:{en:"Song volume",es:"Volumen de la canción"},
-  /* AOG-DESK-FOLDS-V1: the five folds under the mixer, a heading and one short line each */
+  /* AOG-DESK-FOLDS-V1 · AOG-DESK-QUIET-V1: under the console, Save, Open and Share, then folds with a short heading only */
+  qH:{en:"Your song",es:"Tu canción"}, qSave:{en:"Save",es:"Guardar"}, qOpen:{en:"Open",es:"Abrir"}, qShare:{en:"Share",es:"Compartir"},
   fAddH:{en:"Add a recording",es:"Añade una grabación"},
-  fAddL:{en:"Put a take from any instrument on a track.",es:"Pon en una pista una toma de cualquier instrumento."},
+  addWait:{en:"{n} waiting",es:"{n} en espera"},
   fTrkH:{en:"This track",es:"Esta pista"},
-  fTrkL:{en:"Change its recording, effects, name and colour.",es:"Cambia su grabación, sus efectos, su nombre y su color."},
   fFinH:{en:"Finish and share",es:"Termina y comparte"},
-  fFinL:{en:"Name it, then make the mix or send it out.",es:"Ponle nombre. Luego haz la mezcla o compártela."},
   fSaveH:{en:"Save your song",es:"Guarda tu canción"},
-  fSaveL:{en:"Save versions, or take the song to your other devices.",es:"Guarda versiones o lleva la canción a tus otros aparatos."},
+  fSongH:{en:"Song settings",es:"Ajustes de la canción"},
+  moreW:{en:"More",es:"Más"},
   fNewL:{en:"Clears all eight tracks. Save first to keep your song.",es:"Borra las ocho pistas. Guarda antes para conservar tu canción."},
   newGo:{en:"Clear the desk",es:"Limpiar la mesa"},
   mixBtn:{en:"Make the mix",es:"Hacer la mezcla"}, mixing:{en:"Making the mix…",es:"Haciendo la mezcla…"},
@@ -2478,6 +2478,7 @@ async function voicePut(o){
 }
 function paintVoice(){
   const box=$("voiceBox"), on=SONG.sel===VOICE_T, c=SONG.tracks[VOICE_T].clip;
+  paintAdd();   /* AOG-DESK-QUIET-V1: track 8 opens Add a recording's place */
   $("recsH").hidden=on; $("recs").hidden=on;
   if(!on){ if(box.innerHTML) box.innerHTML=""; return; }
   const st=VOICE.state;
@@ -3424,6 +3425,7 @@ function fadeChange(el){
 }
 function paintRecs(){
   const box=$("recs"), i=SONG.sel, list=sources();
+  paintAdd();   /* AOG-DESK-QUIET-V1 */
   if(!list.length){ const h=`<p class="st-line" style="margin:0">${esc(t("recsNone"))}</p>`; if(box._sig!=="none|"+S.lang){ box.innerHTML=h; box._sig="none|"+S.lang; } return; }
   if(!S.picked || !list.some(o=>o.id===S.pick)){ S.pick=list[0].id; S.picked=false; }
   const takes=list.filter(o=>o.kind==="take"), shelves=list.filter(o=>o.kind==="shelf");
@@ -3454,6 +3456,7 @@ function paintInbox(){
   if(gl.textContent!==note) gl.textContent=note;   /* a live line: said once, not again at every repaint */
   const blk=$("inboxBlk"), none=!INBOX.items.length && !note && !$("inboxLine").textContent;   /* AOG-DESK-FOLDS-V1: an empty list says nothing; the empty menu above already says how */
   if(blk.hidden!==none) blk.hidden=none;
+  paintAdd();   /* AOG-DESK-QUIET-V1 */
   if(!INBOX.items.length){ box.innerHTML=`<p class="st-line" style="margin:0">${esc(t("inboxNone"))}</p>`; return; }
   box.innerHTML=`<p class="st-line" style="margin:0">${esc(t("inboxCount",{n:INBOX.items.length, max:INBOX_MAX}))}</p>`+INBOX.items.map(x=>{
     const name=takeLabel(x), T=TOOLS[x.from], on=tracksOf(x.id);
@@ -3495,10 +3498,16 @@ function paintMixer(rebuild){
         <div class="st-sls">${KNOBS.map(([k,lab,cls,lo,hi,st])=>slHtml(k,lab,cls,lo,hi,st,x[k],"t"+i)).join("")}</div>
       </div>`).join("");
     const m=SONG.master;
+    /* AOG-DESK-QUIET-V1: Song volume and Room sound in sight; the EQ, the Glue, the Echo's time and where the rooms come from
+       under More (#mMore, inside the strip, so every slider is still the master's) */
+    const mk=k=>MKNOBS.filter(x=>x[0]===k).map(([k2,lab,cls,lo,hi,st])=>slHtml(k2,lab,cls,lo,hi,st,m[k2],"m")).join("");
     $("master").innerHTML=`<div class="st-strip st-mstrip"><div class="st-sh"><span>${esc(t("masterH"))}</span></div>
-      <div class="st-sls">${MKNOBS.map(([k,lab,cls,lo,hi,st])=>slHtml(k,lab,cls,lo,hi,st,m[k],"m")).join("")}</div>${dmEchoHtml()}
+      <div class="st-sls st-mvol">${mk("vol")}</div>
       <label class="st-field st-roomk"><span class="st-lab">${esc(t("roomPick"))}</span><select id="roomSel">${DESK_ROOMS.map(id=>`<option value="${id}"${id===m.room?" selected":""}>${esc(t("rm_"+id))}</option>`).join("")}</select></label>
-      <p class="st-line st-roomc"><a href="/audio/rooms/CREDITS.txt">${esc(t("roomFrom"))}</a></p></div>`;   /* AOG-DESK-ECHO-SYNC-V1: the Echo's time · AOG-REAL-ROOMS-V1: the room */
+      <details class="st-more st-mmore" id="mMore"${MMORE.open ? " open" : ""}><summary>${esc(t("moreW"))}</summary>
+      <div class="st-sls">${["low","mid","high","glue"].map(mk).join("")}</div>${dmEchoHtml()}
+      <p class="st-line st-roomc"><a href="/audio/rooms/CREDITS.txt">${esc(t("roomFrom"))}</a></p></details></div>`;   /* AOG-DESK-ECHO-SYNC-V1: the Echo's time · AOG-REAL-ROOMS-V1: the room */
+    quietSong();
   }
   /* names, selection, mute and solo, and every slider's value (a reload or a new song) */
   const armNow=readArm(); /* AOG-DESK-ARM-V1 */
@@ -3571,10 +3580,11 @@ const CONS={sig:"", open:false};
 function paintConsole(){
   const box=$("chStrip"), fd=$("chFaders"); if(!box || !fd) return;
   const i=SONG.sel, x=SONG.tracks[i], c=x.clip;
-  const sig=[S.lang, i, laneName(i), colOf(i), c ? c.id+":"+(PEAKS.has(c.id)?1:0)+":"+trackName(i) : ""].join("|");   /* AOG-DESK-LOOK-V1: its colour too */
+  const none=!c && !sources().length;   /* AOG-DESK-QUIET-V1: with nothing to pick, the strip says how to make a recording */
+  const sig=[S.lang, i, laneName(i), colOf(i), c ? c.id+":"+(PEAKS.has(c.id)?1:0)+":"+trackName(i) : "", none].join("|");   /* AOG-DESK-LOOK-V1: its colour too */
   if(CONS.sig!==sig){
     CONS.sig=sig;
-    const wave=c ? `<div class="st-chw" style="--c:${colOf(i)}">${waveSvg(c, {a:0, b:fullBeats(c), n:1}, 260)}<span class="st-cph" aria-hidden="true"></span></div>` : `<p class="st-line st-chw0">${esc(t("chEmpty"))}</p>`;
+    const wave=c ? `<div class="st-chw" style="--c:${colOf(i)}">${waveSvg(c, {a:0, b:fullBeats(c), n:1}, 260)}<span class="st-cph" aria-hidden="true"></span></div>` : `<p class="st-line st-chw0">${esc(t(none ? "recsNone" : "chEmpty"))}</p>`;
     box.innerHTML=`<div class="st-chh"><span class="st-lab">${esc(t("chH"))}</span><b class="st-chn">${esc(laneName(i))}</b><span class="st-chs">${esc(t("trackN",{n:i+1}))}${c ? " · "+esc(trackName(i)) : ""}</span></div>`+wave+
       `<div class="st-chc"><div class="st-ms"><button type="button" class="st-btn st-mute" data-cms="mute" aria-pressed="false">${esc(t("mute"))}</button>`+
       `<button type="button" class="st-btn st-solo" data-cms="solo" aria-pressed="false">${esc(t("solo"))}</button></div></div>`+
@@ -3836,21 +3846,72 @@ function bindAuto(){
 }
 
 /* ══ AOG-DESK-FOLDS-V1 — the folds under the mixer ══
-   Each fold remembers on this device whether it is open (aog.studio.folds.v1); Start a new song never does, so it is
+   Each fold remembers on this device whether it is open (aog.studio.folds.v2); Start a new song never does, so it is
    always closed when the desk opens. The desk opens a fold itself when it sends someone to what is inside. */
-const FOLDS_KEY="aog.studio.folds.v1", FOLDS=["foldAdd","foldTrack","foldFinish","foldSave","foldNew"];
-function foldsGet(){ try{ const o=JSON.parse(localStorage.getItem(FOLDS_KEY)||"null"); return o && typeof o==="object" ? o : {}; }catch(e){ return {}; } }
-function foldsPut(o){ try{ localStorage.setItem(FOLDS_KEY, JSON.stringify(o)); }catch(e){} }
+/* AOG-DESK-QUIET-V1: the key is v2, so every fold starts closed once; what the desk had already shown (seen) comes along.
+   The sheets (Save and Open, Share) and Start a new song are never remembered: they are closed when the desk opens. */
+const FOLDS_KEY="aog.studio.folds.v2", FOLDS=["foldMixer","foldTrack","foldAdd","foldSong"];
+function foldsGet(){ try{ let o=JSON.parse(localStorage.getItem(FOLDS_KEY)||"null");
+  if(!o){ const v1=JSON.parse(localStorage.getItem("aog.studio.folds.v1")||"null"); o=v1 && v1.seen>0 ? {seen:v1.seen} : null; }
+  return o && typeof o==="object" ? o : {}; }catch(e){ return {}; } }
+function foldsPut(o){ try{ localStorage.setItem(FOLDS_KEY, JSON.stringify(o)); localStorage.removeItem("aog.studio.folds.v1"); }catch(e){} }
 function foldsInit(){
   const o=foldsGet();
   FOLDS.forEach(id=>{ const d=$(id); if(!d) return;
-    if(id!=="foldNew" && typeof o[id]==="boolean" && d.open!==o[id]) d.open=o[id];
-    d.addEventListener("toggle", ()=>{ if(id==="foldNew") return; const s=foldsGet(); if(s[id]===d.open) return; s[id]=d.open; foldsPut(s); });
+    if(typeof o[id]==="boolean" && d.open!==o[id]) d.open=o[id];
+    d.addEventListener("toggle", ()=>{ const s=foldsGet(); if(s[id]===d.open) return; s[id]=d.open; foldsPut(s); });
   });
   /* the Studio's Send it out brings the button into view first: the fold opens so there is something to see */
   const ob=$("outBtn"), own=ob.scrollIntoView;
   ob.scrollIntoView=function(a){ foldOpen(ob); return own.call(ob, a); };
   if(location.hash==="#lessons" || location.hash==="#lessonFold"){ const d=$("lessonFold"); if(d) d.open=true; }
+  quietInit();
+}
+/* ══ AOG-DESK-QUIET-V1 — Save, Open and Share: three big keys, each opening its own sheet. Save and Open share one sheet
+   (#foldSave): data-mode says which, data-lk whether a locker is connected, and the page's styles show what each needs:
+   Save shows Save to my locker (or Save my song), Open the songs in the locker (or Open my song). The rest is under More. ══ */
+function sheetMode(m){ const d=$("foldSave"); if(d && d.getAttribute("data-mode")!==m) d.setAttribute("data-mode", m); quietKeys(); }
+function quietKeys(){
+  const s=$("foldSave"), f=$("foldFinish"), m=s.getAttribute("data-mode")==="open" ? "open" : "save";
+  const set=(id, on)=>{ const b=$(id), v=on ? "true" : "false"; if(b && b.getAttribute("aria-expanded")!==v) b.setAttribute("aria-expanded", v); };
+  set("qSave", s.open && m==="save"); set("qOpen", s.open && m==="open"); set("qShare", f.open);
+}
+function quietPress(which){
+  const s=$("foldSave"), f=$("foldFinish");
+  if(which==="share"){ const on=!f.open; if(on) s.open=false; f.open=on; }
+  else { const same=s.open && s.getAttribute("data-mode")===which; sheetMode(which); if(same) s.open=false; else { f.open=false; s.open=true; } }
+  quietKeys();
+}
+function quietInit(){
+  $("qSave").onclick=()=>quietPress("save"); $("qOpen").onclick=()=>quietPress("open"); $("qShare").onclick=()=>quietPress("share");
+  ["foldSave","foldFinish"].forEach(id=>$(id).addEventListener("toggle", quietKeys));
+  quietKeys();
+}
+/* Add a recording shows only when there is a recording to put on a track (or track 8, your voice, is picked, or a line
+   about the takes needs saying), and says how many takes wait that are on no track yet */
+function paintAdd(){
+  const d=$("foldAdd"); if(!d) return;
+  const list=sources(), blk=$("inboxBlk"), show=list.length>0 || SONG.sel===VOICE_T || (blk && !blk.hidden);
+  if(d.hidden!==!show) d.hidden=!show;
+  const n=INBOX.items.filter(x=>!tracksOf(x.id).length).length, w=n ? t("addWait",{n:n}) : "", b=$("addN");
+  if(b && b.textContent!==w) b.textContent=w;
+  try{ paintConsole(); }catch(e){}   /* the console's empty line follows: a recording to pick, or how to make one */
+}
+/* Song settings: with its More open, More for the whole song (#proMaster) shows under the strip too */
+var MMORE={open:false};
+function quietSong(){ const d=$("mMore"), f=$("foldSong"); if(!d || !f) return;
+  if(f.classList.contains("mm-on")!==d.open) f.classList.toggle("mm-on", d.open);
+  if(!d._q){ d._q=1; d.addEventListener("toggle", ()=>{ MMORE.open=d.open; if(f.classList.contains("mm-on")!==d.open) f.classList.toggle("mm-on", d.open); }); } }
+/* the song file's line and the versions live in the locker's More (#lkMore); the song file's keys too once a locker is
+   connected (without one, they are the sheet's own keys). Moved only when that changes, so nothing being typed is lost. */
+function savePlace(){
+  const slot=document.querySelector("#lkMore .st-lkslot"), cb=$("carryBlk"), fb=$("fileBox"), fh=$("fileHow"), vb=$("verBlk"); if(!slot || !fb || !fh || !vb) return;
+  const lk=!!CARRY.lock;
+  if(slot.firstChild!==fh) slot.insertBefore(fh, slot.firstChild);
+  if(lk){ if(fh.nextSibling!==fb) slot.insertBefore(fb, fh.nextSibling); }
+  else if(fb.parentNode!==cb) cb.insertBefore(fb, cb.querySelector("h2").nextSibling);
+  if(vb.parentNode!==slot) slot.appendChild(vb);
+  const s=$("foldSave"), v=lk ? "on" : "off"; if(s.getAttribute("data-lk")!==v) s.setAttribute("data-lk", v);
 }
 function foldOpen(el){ const d=el && el.closest ? el.closest("details.st-fold") : null; if(d && !d.open) d.open=true; }
 /* a track picked: an empty one opens Add a recording, one with a recording opens This track */

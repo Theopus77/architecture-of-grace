@@ -11,9 +11,16 @@
    · groups: two Drums tracks move together by the same decibels, one Undo; a track in no group stays;
    · kept by a reload and by a song file; Spanish; an iPhone and an iPad, light and dark. Port 9340. */
 const T = require("./lib.js"), { ok, near, add, put, HELP } = T;
+/* AOG-DESK-QUIET-V1: under the console, Save, Open and Share open their own sheets (one at a time); the Mixer and Song settings
+   are folds, and the rarer things in a sheet or fold wait under its More. A test opens them as a person would. */
+const qSheet = async (p, k) => { const id = { save: "qSave", open: "qOpen", share: "qShare" }[k]; if ((await p.getAttribute("#" + id, "aria-expanded")) !== "true") await p.click("#" + id); };
+const qFold = async (p, id) => { if (!(await p.evaluate(i => document.getElementById(i).open, id))) await p.click("#" + id + " > summary"); };
+const qSong = async p => { await qFold(p, "foldSong"); await qFold(p, "mMore"); };
+const qSaveMore = async p => { await qSheet(p, "save"); await qFold(p, "lkMore"); };
+const qShareMore = async p => { await qSheet(p, "share"); await qFold(p, "outMore"); };
 const PORT = 9340, U = "http://localhost:" + PORT + "/", srv = T.srv(PORT);
 const setRange = (p, sel, v) => p.evaluate(([sel, v]) => { const r = document.querySelector(sel); r.value = String(v); r.dispatchEvent(new Event("input", { bubbles: true })); r.dispatchEvent(new Event("change", { bubbles: true })); }, [sel, v]);
-const view = async (p, v) => { await p.evaluate(() => { const d = document.getElementById("pmBox"); if (!d.open) { d.open = true; d.dispatchEvent(new Event("toggle")); } }); await p.waitForTimeout(50); await p.selectOption("#pmView", v); await p.waitForTimeout(50); };
+const view = async (p, v) => { await qSong(p); await p.evaluate(() => { const d = document.getElementById("pmBox"); if (!d.open) { d.open = true; d.dispatchEvent(new Event("toggle")); } }); await p.waitForTimeout(50); await p.selectOption("#pmView", v); await p.waitForTimeout(50); };
 const M = (p, fn) => p.evaluate(`(()=>{ const st=__aogStudio, m=st.SONG.master, x=st.SONG.tracks; (${fn})(m, x, st); st.songChanged(); })()`);
 const R = (p, n) => p.evaluate(n => __T.render(n), n);
 

@@ -15,6 +15,13 @@ const TOOLS = path.join(ROOT, "..", "tools");
 const cut = (file, name) => { const s = fs.readFileSync(path.join(TOOLS, file), "utf8"), a = s.indexOf("function " + name + "()"), end = "\n  return bad;\n}", e = s.indexOf(end, a); return s.slice(a, e + end.length); };
 const PROBE = cut("check-contrast.js", "probe"), CALM = cut("check-calm.js", "calmProbe");
 let fails = 0; const ok = (c, m) => { console.log((c ? "PASS " : "FAIL ") + m); if (!c) fails++; };
+/* AOG-DESK-QUIET-V1: under the console, Save, Open and Share open their own sheets (one at a time); the Mixer and Song settings
+   are folds, and the rarer things in a sheet or fold wait under its More. A test opens them as a person would. */
+const qSheet = async (p, k) => { const id = { save: "qSave", open: "qOpen", share: "qShare" }[k]; if ((await p.getAttribute("#" + id, "aria-expanded")) !== "true") await p.click("#" + id); };
+const qFold = async (p, id) => { if (!(await p.evaluate(i => document.getElementById(i).open, id))) await p.click("#" + id + " > summary"); };
+const qSong = async p => { await qFold(p, "foldSong"); await qFold(p, "mMore"); };
+const qSaveMore = async p => { await qSheet(p, "save"); await qFold(p, "lkMore"); };
+const qShareMore = async p => { await qSheet(p, "share"); await qFold(p, "outMore"); };
 const errs = [];
 function watch(ctx) { ctx.on("page", pg => pg.on("pageerror", e => errs.push(pg.url().split("/").pop() + ": " + e.message))); }
 async function routes(ctx) { await ctx.route(/^https?:\/\/(?!localhost)/, r => r.abort()); }
@@ -35,7 +42,7 @@ const NOTES = [220, 330, 440, 550];
 /* Make the mix, then each bar's note (by counting its waves in the middle of the bar) and level */
 async function mixBars(p, nBars) {
   await p.evaluate(() => { document.getElementById("mixLine").textContent = ""; });
-  await p.click("#mixBtn");
+  await qSheet(p, "share"); await p.click("#mixBtn");
   await p.waitForFunction(() => /ready|did not/.test(document.getElementById("mixLine").textContent), null, { timeout: 60000 });
   return p.evaluate(async (nBars) => {
     const st = __aogStudio, m = st.MIX, buf = await new OfflineAudioContext(2, 1, 44100).decodeAudioData(await m.wav.arrayBuffer()), d = buf.getChannelData(0), sr = buf.sampleRate, bar = st.barSec();
@@ -194,7 +201,7 @@ async function put(p, take, track) {
   await put(p, "Guitar take 2", 2); await p.selectOption("#trackSel", "0");
   const ed = await p.evaluate(() => ({ shown: [...document.querySelectorAll(".st-strip [data-edit]")].map(x => !x.hidden).slice(0, 4).join(), txt: document.querySelector('.st-strip[data-tr="2"] [data-edit]').textContent.trim(),
     aria: document.querySelector('.st-strip[data-tr="2"] [data-edit]').getAttribute("aria-label") }));
-  await p.click('.st-strip[data-tr="2"] [data-edit]'); await p.waitForTimeout(150);
+  await qFold(p, "foldMixer"); await p.click('.st-strip[data-tr="2"] [data-edit]'); await p.waitForTimeout(150);   /* AOG-DESK-QUIET-V1: the mixer is a fold */
   const ed2 = await p.evaluate(() => ({ sel: __aogStudio.SONG.sel, focus: document.activeElement.id, top: Math.round(document.getElementById("trackBlk").getBoundingClientRect().top) }));
   ok(ed.shown === "true,false,true,false" && /Edit$/.test(ed.txt) && ed.aria === "Edit track 3" && ed2.sel === 2 && ed2.focus === "trackSel" && ed2.top >= 0 && ed2.top < 120,
     "the mixer's Edit button: " + JSON.stringify(ed) + " → " + JSON.stringify(ed2));

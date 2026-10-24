@@ -24,6 +24,7 @@ const DP_STR={
   eqW:{en:"EQ",es:"Ecualizador"}, glW:{en:"Glue",es:"Unión"}, limW:{en:"Limiter",es:"Limitador"},
   lcLab:{en:"Low cut",es:"Corte de graves"}, lcOff:{en:"Off",es:"Apagado"}, lcHz:{en:"Below {n} Hz",es:"Debajo de {n} Hz"},
   eqLine:{en:"The line shows what the EQ does, from deep (left) to bright (right).",es:"La línea muestra lo que hace el ecualizador, de grave (izquierda) a brillante (derecha)."},
+  eqHow:{en:"How to read it",es:"Cómo leerla"},   /* AOG-DESK-QUIET-V1: the line's sentence waits behind this */
   eqAria:{en:"The EQ's curve",es:"La curva del ecualizador"},
   glAmt:{en:"Amount",es:"Cantidad"}, glThr:{en:"Starts at",es:"Empieza en"}, glRatio:{en:"Ratio",es:"Proporción"}, glMk:{en:"Make-up",es:"Compensar"},
   glHand:{en:"Set by hand. The Glue knob rests.",es:"Ajustado a mano. La perilla Unión descansa."},
@@ -96,7 +97,7 @@ function dpPane(){
   if(v==="eq") return `<div class="st-pmr">${dpOnBtn("pmEqOn","eqW",!m.eqOff)}<label class="st-field"><span class="st-lab">${esc(t("lcLab"))}</span><select id="pmLc">`+
       LCUTS.map(h=>`<option value="${h}"${(m.lc||0)===h?" selected":""}>${esc(h ? t("lcHz",{n:h}) : t("lcOff"))}</option>`).join("")+`</select></label></div>`+
     `<div class="st-pmk">${dpK("low","low")}${dpK("mid","mid")}${dpK("high","high")}</div>`+
-    `<svg class="st-eqc" id="pmEqC" viewBox="0 0 300 100" preserveAspectRatio="none" role="img" aria-label="${esc(t("eqAria"))}">${dpEqSvg()}</svg><p class="st-line" style="margin:0">${esc(t("eqLine"))}</p>`;
+    `<svg class="st-eqc" id="pmEqC" viewBox="0 0 300 100" preserveAspectRatio="none" role="img" aria-label="${esc(t("eqAria"))}">${dpEqSvg()}</svg><details class="st-more st-how" id="pmEqHow"><summary>${esc(t("eqHow"))}</summary><p class="st-line" style="margin:0;padding:0 12px 12px">${esc(t("eqLine"))}</p></details>`;   /* AOG-DESK-QUIET-V1 */
   if(v==="gl"){ const e=glueEff(m);
     return `<div class="st-pmr">${dpOnBtn("pmGlOn","glW",!m.glueOff)}<button type="button" class="st-btn" id="pmGlKnob"${e.hand ? "" : " hidden"}>${esc(t("glKnob"))}</button></div>`+
       `<div class="st-pmk">${dpK("glue","glAmt")}${dpK("thr","glThr")}${dpK("ratio","glRatio")}${dpK("mk","glMk")}</div>`+

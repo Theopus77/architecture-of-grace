@@ -6,6 +6,13 @@
    · inside the Studio on an iPhone (upright and sideways), an iPad (upright and sideways) and a computer, light and dark:
      nothing sideways, every button and menu big enough for a finger, readable and calm. Port 9348. */
 const T = require("./lib.js"), { ok, near, add, put } = T;
+/* AOG-DESK-QUIET-V1: under the console, Save, Open and Share open their own sheets (one at a time); the Mixer and Song settings
+   are folds, and the rarer things in a sheet or fold wait under its More. A test opens them as a person would. */
+const qSheet = async (p, k) => { const id = { save: "qSave", open: "qOpen", share: "qShare" }[k]; if ((await p.getAttribute("#" + id, "aria-expanded")) !== "true") await p.click("#" + id); };
+const qFold = async (p, id) => { if (!(await p.evaluate(i => document.getElementById(i).open, id))) await p.click("#" + id + " > summary"); };
+const qSong = async p => { await qFold(p, "foldSong"); await qFold(p, "mMore"); };
+const qSaveMore = async p => { await qSheet(p, "save"); await qFold(p, "lkMore"); };
+const qShareMore = async p => { await qSheet(p, "share"); await qFold(p, "outMore"); };
 const PORT = 9348, U = "http://localhost:" + PORT + "/", srv = T.srv(PORT);
 const inner = p => p.frames().find(x => x.parentFrame() === p.mainFrame());
 async function studio(b, opts, theme) {
@@ -28,6 +35,7 @@ async function studio(b, opts, theme) {
   let { cx, m, f } = await studio(b, { viewport: { width: 1366, height: 900 } }, "dark");
   await f.evaluate(() => { const set = (id, v) => { const r = document.getElementById(id); r.value = String(v); r.dispatchEvent(new Event("input", { bubbles: true })); r.dispatchEvent(new Event("change", { bubbles: true })); }; set("t2-vol", 50); set("t2-pan", -40); set("m-glue", 70); });
   const u0 = await f.evaluate(() => __aogStudio.UNDO.length);
+  await qFold(f, "foldMixer"); await qSong(f);   /* AOG-DESK-QUIET-V1: the mixer and the whole song's strip are folds now */
   for (const id of ["t2-vol", "t2-pan", "m-glue"]) { await f.evaluate(id => document.getElementById(id).scrollIntoView({ block: "center" }), id); await f.dblclick("#" + id, { position: { x: 4, y: 8 } }); await m.waitForTimeout(120); }
   const r1 = await f.evaluate(() => ({ v: __aogStudio.SONG.tracks[2].vol, p: __aogStudio.SONG.tracks[2].pan, g: __aogStudio.SONG.master.glue, u: __aogStudio.UNDO.length }));
   await f.evaluate(() => __aogStudio.undo()); const r2 = await f.evaluate(() => __aogStudio.SONG.master.glue);
@@ -53,6 +61,7 @@ async function studio(b, opts, theme) {
   /* 3 · everywhere: fits, a finger can press it, readable, calm; on an iPhone the counter and Your songs apart */
   for (const [dev, theme] of [["iPhone 13", "light"], ["iPhone 13", "dark"], ["iPhone 13 landscape", "dark"], ["iPad (gen 7)", "dark"], ["iPad (gen 7) landscape", "light"], [null, "light"]]) {
     ({ cx, m, f } = await studio(b, dev ? { ...T.pw.devices[dev] } : { viewport: { width: 1440, height: 900 } }, theme));
+    await qFold(f, "foldMixer"); await qSong(f); await qSheet(f, "share");   /* AOG-DESK-QUIET-V1: everything the desk had open before, open again */
     await f.evaluate(() => { for (const id of ["pmBox", "drMore", "daMore"]) { const d = document.getElementById(id); if (d) { d.open = true; d.dispatchEvent(new Event("toggle")); } } });
     await m.waitForTimeout(400);
     const g = await f.evaluate(() => { const R = el => el.getBoundingClientRect(), rd = document.querySelector("#transport .st-read"), sb = R(document.getElementById("songsBtn")), hit = a => !(a.right <= sb.left + 0.5 || sb.right <= a.left + 0.5 || a.bottom <= sb.top + 0.5 || sb.bottom <= a.top + 0.5), box = R(rd), parts = [rd, ...rd.querySelectorAll("*")].filter(x => x.getClientRects().length && !x.classList.contains("st-posw") && !(x.parentElement && x.parentElement.closest(".st-cw"))).map(R).filter(r => r.width > 1 && r.height > 1), over = parts.some(hit) || parts.some(r => r.width && (r.right > box.right + 1 || r.left < box.left - 1));

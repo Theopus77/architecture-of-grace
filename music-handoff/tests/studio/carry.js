@@ -77,7 +77,12 @@ const state = p => p.evaluate(async () => {
   db.close();
   return { song: JSON.stringify(Object.assign(S, { sel: 0 })), sums: sums.join(","), bufs: st.BUF.size };
 });
+/* AOG-DESK-QUIET-V1: Save, Open and Share are three keys under the console, each opening its own sheet; the locker's rarer
+   keys, the song file (once a locker is connected) and the versions are under the sheet's More */
+const sheet = async (p, k) => { const id = { save: "qSave", open: "qOpen", share: "qShare" }[k]; if ((await p.getAttribute("#" + id, "aria-expanded")) !== "true") await p.click("#" + id); };
+const more = async p => { if (!(await p.evaluate(() => document.getElementById("lkMore").open))) await p.click("#lkMore > summary"); };
 async function mix(p) {
+  await sheet(p, "share");
   await p.evaluate(() => { document.getElementById("mixLine").textContent = ""; });
   await p.click("#mixBtn");
   await p.waitForFunction(() => /ready|did not|lista|No funcionó/.test(document.getElementById("mixLine").textContent), null, { timeout: 60000 });
@@ -95,7 +100,7 @@ const waitLine = (p, id, re) => p.waitForFunction(([i, s]) => new RegExp(s).test
   await c.addInitScript(() => { try { if (!localStorage.getItem("aog.sync.url")) localStorage.setItem("aog.sync.url", "https://script.google.com/macros/s/SHEET/exec"); } catch (e) {} });
   const p = await c.newPage();
   await p.goto(U + "music-studio.html"); await p.waitForTimeout(700);
-  await p.click("#foldSave > summary");   /* AOG-DESK-FOLDS-V1: saving and opening sit in the Save your song fold, closed at first */
+  await sheet(p, "save");   /* AOG-DESK-FOLDS-V1 · AOG-DESK-QUIET-V1: saving sits behind the Save key, closed at first */
   ok(await p.isVisible("#carryBlk") && (await p.textContent("#carryBlk h2")).trim() === "Your song on your other devices", "the Mixing Desk has \"Your song on your other devices\"");
   ok(!(await p.isDisabled("#fileSave")), "Save song file is there");
   await p.click("#fileSave");
@@ -103,13 +108,14 @@ const waitLine = (p, id, re) => p.waitForFunction(([i, s]) => new RegExp(s).test
   await p.evaluate(`(async()=>{ const add=${TAKE}; await add(1, [220,330,440,550,220,330,440,550]); await add(2, [660,550,440,330,660,550,440,330]); })()`);
   await p.waitForFunction(() => __aogStudio.INBOX.items.length === 2, null, { timeout: 8000 });
   await put(p, "Guitar take 1", 0); await put(p, "Guitar take 2", 1);
-  await p.fill("#songName", "Rainy day");
+  await sheet(p, "share"); await p.fill("#songName", "Rainy day");   /* AOG-DESK-QUIET-V1: the name is in the Share sheet */
   await p.evaluate(() => { const r = document.getElementById("t1-vol"); r.value = "40"; r.dispatchEvent(new Event("input", { bubbles: true })); });
   await p.waitForTimeout(400);
   const A = await state(p), mixA = await mix(p);
   ok(/"name":"Rainy day"/.test(A.song) && A.bufs === 2, "the song is named and has two tracks");
 
   /* 2 · Save song file */
+  await sheet(p, "save");
   const [dl] = await Promise.all([p.waitForEvent("download"), p.click("#fileSave")]);
   const fname = dl.suggestedFilename(), fpath = path.join(OUT, fname); await dl.saveAs(fpath);
   await waitLine(p, "fileLine", /^Saved/);
@@ -148,7 +154,8 @@ const waitLine = (p, id, re) => p.waitForFunction(([i, s]) => new RegExp(s).test
   await q.setInputFiles("#fileIn", cutf); await waitLine(q, "fileLine", /not a song file|on the desk/);
   ok(await line(q, "fileLine") === "That is not a song file from the Mixing Desk." && await q.isHidden("#openAsk"), "a song file cut short is not opened");
 
-  /* 5 · the locker on the computer: a wrong key, then Connect */
+  /* 5 · the locker on the computer: a wrong key, then Connect (under Save's More) */
+  await sheet(p, "save"); await more(p);
   ok(await p.isVisible("#lkUrl") && await p.isVisible("#lkConnect"), "before it is connected, the locker shows a web address, a key and Connect");
   await p.fill("#lkUrl", "https://example.com/exec"); await p.fill("#lkKey", LOCK_KEY); await p.click("#lkConnect");
   ok(await line(p, "lockLine") === "The web address should start with https://script.google.com and end with /exec.", "a wrong web address is told plainly");
@@ -181,6 +188,7 @@ const waitLine = (p, id, re) => p.waitForFunction(([i, s]) => new RegExp(s).test
   const r = await pad.newPage(); await r.goto(U + "music-studio.html" + link.slice(link.indexOf("#"))); await r.waitForTimeout(500);   /* the same link, on the desk's own address */
   await r.waitForFunction(() => /Rainy day/.test(document.getElementById("locker").textContent), null, { timeout: 10000 });
   ok(!(await r.evaluate(() => location.hash)) && await line(r, "lockLine") === "Your locker is connected on this device.", "the iPad: connected, and the link left the address bar");
+  await sheet(r, "open");   /* AOG-DESK-QUIET-V1: the songs in the locker are behind Open */
   await r.click("[data-lkopen]");
   await waitLine(r, "lockLine", /is on the desk|did not/);
   await r.waitForFunction(() => __aogStudio.BUF.size === 2 && !__aogStudio.S.decoding, null, { timeout: 30000 });
@@ -216,9 +224,9 @@ const waitLine = (p, id, re) => p.waitForFunction(([i, s]) => new RegExp(s).test
       if (conn) localStorage.setItem("aog.studio.locker.v1", JSON.stringify({ url: u, key: k })); } catch (e) {} }, [theme, conn, LOCK_URL, LOCK_KEY]);
     STORE.set("sdemo12345", { name: "Rainy day", size: 10, parts: 1, at: Date.now(), done: true, data: [Buffer.alloc(10)] });
     const m = await cx.newPage(); await m.goto(U + "music-studio.html"); await m.waitForTimeout(900);
-    await m.click("#foldSave > summary");   /* AOG-DESK-FOLDS-V1 */
-    if (conn) { await m.waitForSelector("[data-lkopen]"); await m.click("[data-lkrm]"); await m.click("#lkQrBtn"); await m.waitForSelector("#lkQr canvas"); }
-    else await m.click("#carryBlk details summary");
+    await sheet(m, conn ? "open" : "save");   /* AOG-DESK-FOLDS-V1 · AOG-DESK-QUIET-V1 */
+    if (conn) { await m.waitForSelector("[data-lkopen]"); await m.click("[data-lkrm]"); await more(m); await m.click("#lkQrBtn"); await m.waitForSelector("#lkQr canvas"); }
+    else { await more(m); await m.click("#carryBlk .st-lkrare details summary"); }
     await m.locator("#carryBlk").scrollIntoViewIfNeeded(); await m.waitForTimeout(200);
     const f = await m.evaluate(() => { const r = el => el.getBoundingClientRect(), box = document.getElementById("carryBlk"), btn = [...box.querySelectorAll("button")].filter(x => x.offsetParent), inp = [...box.querySelectorAll("input")].filter(x => x.offsetParent);
       return { iw: innerWidth, sw: document.scrollingElement.scrollWidth, minBtn: Math.min(...btn.map(x => Math.round(r(x).height))), right: Math.max(...btn.concat(inp).map(x => Math.round(r(x).right))),
