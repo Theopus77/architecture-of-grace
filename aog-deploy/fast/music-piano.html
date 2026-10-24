@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- AOG-FAST-BUILD-V1 source:8f3581ad95f846c6 · MADE BY tools/build-fast.py from music-piano.html: edit music-piano.html, then run it. -->
+<!-- AOG-FAST-BUILD-V1 source:546abb816a40573a · MADE BY tools/build-fast.py from music-piano.html: edit music-piano.html, then run it. -->
 <html lang="en">
 <head>
 <script>/* AOG-STUDIO-ONLY-V1 (Jimmy, 2026-10-10: "one location for all the instruments … and that is the studio"): opened on its own address, this room opens inside the Studio instead, at this exact address (its lesson, take or link). Inside the Studio's frame, and for the site's own checks, it stays. */(function(){try{if(window.top!==window||navigator.webdriver)return;var M={"music-pads":"pads","drum-machine":"pads","beat-lab":"pads","music-kit":"kit","drum-kit":"kit","music-piano":"piano","piano":"piano","keys":"piano","music-guitar":"guitar","guitar":"guitar","music-bass":"bass","bass":"bass","music-band":"band","band":"band","music-decks":"decks","decks":"decks","turntables":"decks","music-vocal":"vocal","vocal-booth":"vocal","vocal":"vocal","booth":"vocal","music-studio":"studio","studio":"studio","mixing-desk":"studio"},f=(location.pathname.split("/").pop()||"").replace(/\.html$/,""),r=M[f];if(!r)return;var F={pads:"music-pads",kit:"music-kit",piano:"music-piano",guitar:"music-guitar",bass:"music-bass",band:"music-band",decks:"music-decks",vocal:"music-vocal",studio:"music-studio"};location.replace("/the-studio.html?at="+encodeURIComponent("/"+F[r]+".html"+location.search+location.hash)+"#"+r);}catch(e){}})();</script>
@@ -104,13 +104,17 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
 .seg{display:inline-flex;gap:.4rem;flex-wrap:wrap}
 
 /* chord pads: one tap, three notes that belong together */
-.pads{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.55rem;margin:.2rem 0 .2rem}
-@media (min-width:700px){ .pads{grid-template-columns:repeat(6,minmax(0,1fr))} }
+/* AOG-PIANO-12PADS-V1: twelve pads, as the guitar's and the bass's chords: three rows of four on a phone, two rows of six
+   from a phone on its side up; the six more a shade apart, as on the chord strip */
+.pads{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.5rem;margin:.2rem 0 .2rem}
+@media (min-width:600px){ .pads{grid-template-columns:repeat(6,minmax(0,1fr))} }
 .pad{min-height:86px;border-radius:14px;border:1px solid #0a0b0d;padding:.4rem .3rem;color:#1f1a10;
   background:linear-gradient(#fbf3df,#e6d7b5);box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 4px 0 #07080a;
   font:800 1.45rem/1.05 var(--display);touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .pad small{display:block;font:800 .72rem/1 var(--sans);letter-spacing:.12em;color:#5a4b2b;margin-bottom:.4rem}
-.pad kbd{display:none}
+.pad kbd,.cs kbd{display:none}
+.pad.more{background:linear-gradient(#efe6cf,#d9c79f);font-size:1.1rem;overflow-wrap:anywhere}
+@media (max-width:599px){ .pad{min-height:64px;font-size:1.2rem;padding:.3rem .15rem} .pad small{margin-bottom:.25rem} .pad.more{font-size:1rem} }
 .pad.hit{background:linear-gradient(#ffe08a,#e0a640);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 1px 0 #07080a}
 .pad.now{box-shadow:inset 0 0 0 3px #b4361f,0 4px 0 #07080a}
 /* AOG-PIANO-WHEEL-V1 — the chord wheel (circle of fifths): majors outside, their minors inside.
@@ -199,7 +203,8 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
 @media (hover:hover) and (pointer:fine){
   .wk .kc,.bk .kc{display:block;font:700 .66rem/1 var(--sans);margin-bottom:5px;letter-spacing:0}
   .wk .kc{color:#6b6355} .bk .kc{color:#cfc6b5}
-  .pad kbd{display:inline-block;margin-top:.35rem;font:700 .66rem/1.4 var(--sans);color:#5a4b2b;border:1px solid #8b7a55;border-radius:4px;padding:0 .35em}
+  .pad kbd,.cs kbd{display:inline-block;margin-top:.35rem;font:700 .66rem/1.4 var(--sans);color:#5a4b2b;border:1px solid #8b7a55;border-radius:4px;padding:0 .35em}
+  .cs kbd{margin:0 0 0 .3em;vertical-align:middle}
   .keys-line{display:block}
 }
 .keys-line{display:none}
@@ -493,7 +498,7 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
         <div id="pedalsNear" hidden></div><!-- AOG-ROOM-PEDALS-V1: the pedals that are on, with their knobs, and the menu of the rest, right under the keys (aog-amp.js) -->
         <p class="line lit-line" id="litLine" data-t="litLine" hidden></p>
         <!-- AOG-PIANO-SCALES-V1 (2026-10-05) — Jimmy: more scales, modes and chords on every instrument. A scale shows on
-             the keys; any chord of 45 kinds plays from any root. The six pads above stay as they are. -->
+             the keys; any chord of 45 kinds plays from any root. The pads above stay as they are. -->
         <div class="row sc-row">
           <label class="field"><span class="plab" data-t="scaleLab"></span><select id="scaleSel"></select></label>
         </div>
@@ -573,6 +578,6 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
   <div class="bp-main" id="bpMain"></div>
 </div>
 
-<script src="/front/e1f1288bbbcf.js"></script>
+<script src="/front/8fb1a5cd8524.js"></script>
 </body>
 </html>

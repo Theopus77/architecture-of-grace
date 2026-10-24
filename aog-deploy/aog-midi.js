@@ -8,6 +8,7 @@
        start:ctx,                            starts the sound inside the tap (an iPad will not start it later for a MIDI key)
        on:(note, vel)=>…,  off:(note)=>…,    a key pressed (vel 0..1) and let go
        sustain:(down)=>…,                    the sustain pedal (CC64), if the room has one
+       pedal:(depth)=>…,                     or its depth, 0..1 (half-pedal), in place of sustain
        bend:(semitones)=>…,                  the pitch wheel, ±2 semitones, if the room bends
        words:{…}                             a room's own words, to replace any of W below
      });
@@ -65,7 +66,9 @@
       if(cmd===0x90 && b>0){ if(away()) return; h.add(a); emit("note", a, b/127, st&0x0f); if(o.on) o.on(a, b/127); }
       else if(cmd===0x80 || (cmd===0x90 && b===0)){ if(!h.has(a)) return; h.delete(a); if(o.off) o.off(a); }
       else if(cmd===0xb0){
-        if(a===64){ if(o.sustain && !(b>=64 && away())) o.sustain(b>=64); if(!away()) emit("pedal", b/127); }
+        if(a===64){   /* one path for the pedal: a room that hears half-pedal gets pedal(depth) (AOG-GRAND-PRO-V1), any other its sustain at the middle; the listeners hear how far it is down (AOG-MIDI-EXPR-V1) */
+          if(o.pedal){ if(!(b>0 && away())) o.pedal(b/127); } else if(o.sustain && !(b>=64 && away())) o.sustain(b>=64);
+          if(!away()) emit("pedal", b/127); }
         else if(a===120 || a===123){ h.forEach(n=>{ if(o.off) o.off(n); }); h.clear(); if(a===123 && o.sustain) o.sustain(false); }   /* all sound off, all notes off */
         else if(!away()){ const k=EXPR[a]; if(k){ emit(k, b/127); if(o.expr) o.expr(k, b/127); } else emit("cc", a, b/127); }   /* AOG-MIDI-EXPR-V1 */
       }

@@ -748,11 +748,11 @@ function dmTakeBtn(o, i){
   b.hidden=!same; b.textContent=t("takeBtn"); b.setAttribute("data-take", o ? o.id : ""); b.disabled=!!S.busy;
 }
 /* Add as another take: the take in place stays as a take lane; the new one goes on, on the same bars, and plays */
-async function dmAddTake(srcId, ti){
+async function dmAddTake(srcId, ti, atBar){
   const x=SONG.tracks[ti], old=x.clip; if(!old || S.busy) return;
   const was=DM_SNAPS.trk.get(ti);
   x.takes=(x.takes||[]).concat([old]);   /* first, so putOn's drop keeps the take's sound */
-  await putOn(srcId, ti);
+  await putOn(srcId, ti, atBar); /* AOG-DESK-ARM-V1 */
   if(x.clip===old || !x.clip){ x.takes=x.takes.filter(c=>c.id!==old.id); dmTakesTidy(x); songChanged(); return; }
   x.takes=x.takes.filter(c=>c.id!==x.clip.id); delete x.tkHide;
   while(x.takes.length>DM_MAX_TAKES){ const g=x.takes.shift(); DM.msg=t("tkFull"); dmTakesTidy(x); dropClip(g.id); }

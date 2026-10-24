@@ -11,7 +11,7 @@
  * Bump by REPLACING the CACHE line. Don't keep the old one as a comment: every byte here is
  * downloaded again on each update check. Old lines live in tools/sw-cache-history.txt and git log.
  */
-const CACHE = 'aog-cache-2026.10.24.m7582'   // VOCAL BOOTH: A SHORT PLATE UNDER THE VOICE, AND A QUIETER FIFTH BELOW (aog-vocal.js AOG-VOCAL-ENGINE-V1)
+const CACHE = 'aog-cache-2026.10.24.m7587'   // A PRO-GRADE GRAND: FULL NATURAL DECAYS, SIX BLENDED STRENGTHS, RELEASE NOISE, PEDAL STRING RESONANCE, SMALLER FIRST DOWNLOAD (music-piano.html AOG-GRAND-PRO-V1, audio/piano/grand3) + TWELVE CHORD PADS ON THE PIANO, KEYS 1 TO 0, − AND = (AOG-PIANO-12PADS-V1)
 
 // Same-origin essentials — reliable to precache at install.
 /* AOG-SW-LIGHT-V1 (2026-10-01) — Jimmy: "Why is it taking so long for the website to load on my phone now?"
