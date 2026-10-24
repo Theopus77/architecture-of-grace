@@ -234,7 +234,10 @@ html:root:root body { --room:#17110c; background-color:#17110c !important; color
 
 /* 2 · the doors: dark keys, each with its drawing on a paper insert; the room you are in is lit */
 .sh-doors { grid-area:doors; padding:8px 0; }
-.sh-doors ul { list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:6px; }
+.sh-doors ul { list-style:none; margin:0; padding:0; display:flex; gap:6px; overflow-x:auto; overscroll-behavior-x:contain; scrollbar-width:none; } /* AOG-STUDIO-WOW-V1: one row, so the instrument is the first thing */
+.sh-doors ul::-webkit-scrollbar { display:none; }
+.sh-doors li { flex:0 0 auto; }
+.sh-doors a { white-space:nowrap; }
 .sh-doors li { min-width:0; display:flex; }
 .sh-doors a { position:relative; flex:1 1 auto; min-width:0; display:flex; align-items:center; justify-content:center; gap:8px; min-height:44px; padding:4px 6px;
   border-radius:10px; border:1px solid var(--st-edge); background:linear-gradient(#302a24, #221d18); color:var(--st-ink); text-decoration:none; text-align:center;
@@ -379,7 +382,9 @@ main.sh-main { grid-area:room; min-width:0; margin:0; }
 }
 /* an upright iPad: the doors in one row of nine, each with its drawing above its name; the desk in one row */
 @media (min-width:700px) {
-  .sh-doors ul { grid-template-columns:repeat(9,minmax(0,1fr)); }
+  .sh-doors ul { display:grid; overflow:visible; grid-template-columns:repeat(9,minmax(0,1fr)); }
+  .sh-doors li { flex:1 1 auto; }
+  .sh-doors a { white-space:normal; }
   .sh-doors a { flex-direction:column; gap:3px; padding:4px 4px 5px; font-size:.8rem; }
   .sh-doors .pic { display:block; width:48px; height:32px; }
   .sh-doors li:last-child { margin-left:8px; }
@@ -395,7 +400,7 @@ main.sh-main { grid-area:room; min-width:0; margin:0; }
 @media (min-width:1100px) and (min-height:700px) {
   .shell { grid-template-columns:172px minmax(0,1fr); grid-template-areas:"top top" "doors room" "mt mt"; column-gap:14px; }
   .sh-doors { padding:7px 0 0; }
-  .sh-doors ul { grid-template-columns:minmax(0,1fr); grid-auto-rows:minmax(54px, auto); gap:7px; }
+  .sh-doors ul { display:grid; grid-template-columns:minmax(0,1fr); grid-auto-rows:minmax(54px, auto); gap:7px; overflow:visible; }
   .sh-doors a { padding:5px 10px 5px 5px; font-size:.9rem; }
   .sh-doors .pic { width:60px; height:44px; }
   .sh-doors li:last-child { margin:10px 0 0; }
@@ -421,6 +426,10 @@ main.sh-main { grid-area:room; min-width:0; margin:0; }
   .shell { padding:0; display:block; }
   main.sh-main { padding:0; }
   .sh-room { border:0; border-radius:0; box-shadow:none; }
+}
+/* AOG-STUDIO-WOW-V1: on a phone the instrument fills what the one row of doors leaves */
+@media (max-width:699px) {
+  .sh-room { height:calc(100svh - 148px); min-height:420px; }
 }
 /* a phone in Safari (the browser's own bars take the rest): a little less air above the room, so the room keeps most of the screen */
 @media (max-width:699px) and (max-height:760px) {
@@ -532,7 +541,7 @@ main.sh-main { grid-area:room; min-width:0; margin:0; }
     if (AT) return AT.id;
     var h = (location.hash || "").slice(1); if (room(h)) return h;
     try { var s = localStorage.getItem(KEY); if (room(s)) return s; } catch (e) {}
-    return "pads";
+    return "studio"; /* AOG-STUDIO-WOW-V1: the door opens on the desk */
   }
   var steps = 0;   /* rooms walked through inside the Studio, so Back can leave it in one tap */
   /* AOG-STUDIO-KEEP-V1 (2026-10-11) — Jimmy: "make SURE IT IS the fastest it can be! SUPER MAN SPEED!" A room used to be
