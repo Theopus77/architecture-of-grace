@@ -13,8 +13,8 @@
                 ✕ lets one go, and Bring it back returns it until the next one goes.
      a sound   nine ready-made sounds (Clean, Warm, Radio, Rap, Echo, Big hall, Tuned, Robot, Phone), each a set of the controls
                 below; moving a control makes it your own (Custom).
-     shape it   Low cut, Body, Presence, Air (EQ), Squeeze (a compressor), Soft S (a de-esser), Tune (the desk's pitch
-                correction, dmTune), Double, Echo (on the dotted eighth of the song's tempo), Room (small or big), Volume.
+     shape it   Low cut, Body, Presence, Air (EQ), Squeeze (a compressor), Soft S (a de-esser), Tune (its own pitch
+                correction since AOG-VOCAL-TUNE-V2, below), Double, Echo (on the dotted eighth of the song's tempo), Room (small or big), Volume.
                 While ▶ Hear it plays, EQ, Squeeze, Double, Echo, Room and Volume change as you move them; Soft S and Tune are
                 worked out from the take (a moment) and the take carries on from where it was.
      + Add to My Track  the take in its sound, made offline with the very same chain, on the desk's track 8 at its bar,
@@ -38,7 +38,32 @@
      Ghost      a reverse echo that swells into each line: worked out ahead (the take, through a backwards room).
      Chop       the voice cut in time with the beat, on every sixteenth of the song's tempo, lined up with the take's bars.
    The work done ahead is kept per take, stage by stage, so changing one thing does not make the others again. Live, ▶ Hear it
-   plays exactly what + Add to My Track renders: the same chain, the same prepared take. */
+   plays exactly what + Add to My Track renders: the same chain, the same prepared take.
+
+
+   AOG-VOCAL-ENGINE-V1 (2026-10-23) — Jimmy: enhance the engine we already have, not another row of sounds.
+     Plate    a short bright room under the voice, about -18 dB, on every sound except Phone, Megaphone and Old record
+              (those stay a narrow band). The Room knob is still the hall, small or big. It is part of the chain, live
+              and on the take.
+     Harmony  the voice above stays (a third, or a fifth when that is chosen). A second voice, a fifth below, in the
+              same key, is mixed into the same buffer at a little over half the level, so the Harmony knob still
+              rides both. The s sounds on both stay soft.
+
+   AOG-VOCAL-TUNE-V2 (2026-10-23) — Jimmy: "I want the autotune to be better on the vocal effects." Tune is now the booth's own
+   pitch corrector (the desk's track Tune keeps dmTune), worked out ahead in the same Worker as Deep and High (FXW: tuneWork):
+     the pitch   YIN on a copy at about 6 kHz every 10 ms, up to four candidates a frame, the steadiest path through them
+                (Viterbi: a jump costs by its size, so a lone frame an octave off is not followed; a period an octave longer
+                than the first clear one costs more), sign changes and the dip's depth say an s, a t or a breath is not a note;
+                then each period's own length, exactly, at the full rate, around its pitch mark.
+     the note   chosen when a note starts, from its first 150 ms; it changes only when the voice's centre (two averages, about
+                170 and 200 ms, so a 5–6 Hz vibrato cancels) goes 22 cents past halfway to another note for 50 ms; the step is
+                put where the voice crossed halfway. Key: the song's key (AOGSong; every note while it has none), all notes, or
+                any of the 12 major and 12 minor keys.
+     the speed  Tune speed 100 snaps at once (the radio effect); slower glides into each new note over 2.4 ms × (100 − speed)
+                (Tuned: 60, about 100 ms). Keep my vibrato moves the note's centre only, so the wobble and expression stay.
+     the shift  each period laid down again a little closer or further apart (TD-PSOLA, FXW's own marks and grains, the voice's
+                colour kept); between notes (s, t, breaths, the quiet) the take itself, with 6 ms fades. Same length, same timing.
+   Tuned is natural, Robot is hard (and flat), Pop polish (More sounds) sits between, with the vibrato kept. */
 (function () {
   "use strict";
   if (window.AOGVocal) return;
@@ -62,6 +87,14 @@
     took: ["Got it! Press ▶ Hear it, then pick a sound.", "¡Listo! Pulsa ▶ Escúchala y elige un sonido."],
     mon: ["Hear myself (with headphones)", "Oírme (con audífonos)"],
     monWarn: ["Only with headphones on, or the speakers feed back.", "Solo con audífonos puestos, o los altavoces se acoplan."],
+    me: ["Me", "Yo"], trk: ["My Track", "Mi pista"],
+    meS: ["How loud you are in the headphones", "Qué tan fuerte te oyes en los audífonos"],
+    trkS: ["How loud the beat is in the headphones", "Qué tan fuerte va el ritmo en los audífonos"],
+    lat: ["This device has not been timed, so a take can sit a little late on the beat.", "Este aparato no se ha medido, así que una toma puede quedar un poco tarde en el ritmo."],
+    latBtn: ["Time this device", "Medir este aparato"],
+    latOn: ["Listening for the clicks. Stay quiet.", "Escuchando los clics. Guarda silencio."],
+    latOk: ["Timed. The next take sits on the beat.", "Medido. La próxima toma cae en el ritmo."],
+    latBad: ["The check did not hear the clicks. Use the speakers, stay quiet, and try again.", "La prueba no oyó los clics. Usa los altavoces, guarda silencio e inténtalo otra vez."],
     takesH: ["Your takes", "Tus tomas"], take: ["Take {n}", "Toma {n}"], pickTake: ["Use take {n}", "Usar la toma {n}"], drop: ["Let take {n} go", "Quitar la toma {n}"],
     gone: ["Take {n} is gone.", "La toma {n} se fue."], back: ["Bring it back", "Recuperarla"],
     sndH: ["Pick a sound", "Elige un sonido"], custom: ["Custom", "A tu medida"], customS: ["Your own settings", "Tus propios ajustes"],
@@ -69,6 +102,8 @@
     making: ["Making the sound…", "Haciendo el sonido…"],
     tunedKey: ["Tuned to {key}.", "Afinada en {key}."],
     tunedNoKey: ["The song has no key yet, so it tunes to the nearest note.", "La canción aún no tiene tonalidad, así que afina a la nota más cercana."],
+    tunedAll: ["It tunes to the nearest note.", "Afina a la nota más cercana."],   /* AOG-VOCAL-TUNE-V2: the Key choice */
+    songKey: ["Song's key", "Tonalidad de la canción"], allNotes: ["All notes", "Todas las notas"], majors: ["Major keys", "Tonalidades mayores"], minors: ["Minor keys", "Tonalidades menores"],
     more: ["More sounds", "Más sonidos"],
     harmKey: ["The second voice sings in {key}.", "La segunda voz canta en {key}."],
     harmNoKey: ["The song has no key yet, so the second voice stays the same distance above you.", "La canción aún no tiene tonalidad, así que la segunda voz se queda a la misma distancia encima de ti."],
@@ -98,7 +133,11 @@
     { k: "sq", t: ["Squeeze", "Apretar"], s: ["Evens out loud and soft", "Iguala lo fuerte y lo suave"], min: 0, max: 100 },
     { k: "grit", t: ["Grit", "Garra"], s: ["Adds a rough edge", "Le da un filo áspero"], min: 0, max: 100 },   /* AOG-VOCAL-FX-V2 */
     { k: "ss", t: ["Soft S", "S suave"], s: ["Calms sharp s and t sounds", "Calma las s y t agudas"], min: 0, max: 100, slow: 1 },
-    { k: "tune", t: ["Tune", "Afinar"], s: ["Pulls notes into the song's key", "Lleva las notas a la tonalidad"], min: 0, max: 100, slow: 1 },
+    { k: "tune", t: ["Tune", "Afinar"], s: ["Pulls each note into tune", "Afina cada nota"], min: 0, max: 100, slow: 1 },
+    /* AOG-VOCAL-TUNE-V2: how Tune sounds, and the notes it pulls to */
+    { k: "spd", t: ["Tune speed", "Velocidad de afinado"], s: ["Slow sounds natural. Fast is the robot sound.", "Lenta suena natural. Rápida es el sonido robot."], min: 0, max: 100, slow: 1 },
+    { k: "vib", chk: 1, t: ["Keep my vibrato", "Mantener mi vibrato"], s: ["Your voice keeps its natural wobble", "Tu voz mantiene su temblor natural"], slow: 1 },
+    { k: "tk", keys: 1, t: ["Key", "Tonalidad"], s: ["The notes Tune pulls to", "Las notas a las que afina"], slow: 1 },
     { k: "pitch", t: ["Pitch", "Tono"], s: ["Higher or lower, at the same speed", "Más aguda o más grave, a la misma velocidad"], min: -12, max: 12, unit: "st", slow: 1 },
     { k: "harm", t: ["Harmony", "Armonía"], s: ["A second voice above yours", "Una segunda voz encima de la tuya"], min: 0, max: 100, slow: 1 },
     { k: "hiv", t: ["Harmony note", "Nota de la armonía"], s: ["How far above you it sings", "Qué tan arriba de ti canta"], opts: [3, 5],
@@ -108,7 +147,7 @@
     { k: "room", t: ["Room", "Sala"], s: ["Space around the voice", "Espacio alrededor de la voz"], min: 0, max: 100 },
     { k: "vol", t: ["Volume", "Volumen"], s: ["How loud the take is", "Qué tan fuerte suena la toma"], min: -12, max: 6, unit: "dB" }
   ];
-  var BASE = { lc: 80, body: 0, pres: 0, air: 0, sq: 50, ss: 20, tune: 0, spd: 65, dbl: 0, echo: 0, room: 18, big: 0, phone: 0, vol: 0,
+  var BASE = { lc: 80, body: 0, pres: 0, air: 0, sq: 50, ss: 20, tune: 0, spd: 60, vib: 1, tk: -1, dbl: 0, echo: 0, room: 18, big: 0, phone: 0, vol: 0,
     grit: 0, pitch: 0, harm: 0, hiv: 3, wide: 0, slap: 0, mega: 0, old: 0, ghost: 0, chop: 0 };   /* AOG-VOCAL-FX-V2 */
   function P_(o) { var p = {}; for (var k in BASE) p[k] = BASE[k]; for (var j in o) p[j] = o[j]; return p; }
   var PRESETS = {
@@ -118,13 +157,16 @@
     rap: { t: ["Rap", "Rap"], s: ["Tight, punchy, doubled", "Firme, con golpe y doblada"], p: P_({ lc: 120, pres: 3, air: 2, sq: 80, ss: 35, dbl: 35, room: 8 }) },
     echo: { t: ["Echo", "Eco"], s: ["Repeats in time", "Se repite a tiempo"], p: P_({ echo: 55, room: 20 }) },
     hall: { t: ["Big hall", "Sala grande"], s: ["A voice in a great room", "Una voz en una sala enorme"], p: P_({ sq: 45, ss: 25, air: 2, room: 55, big: 1 }) },
-    tuned: { t: ["Tuned", "Afinada"], s: ["In the song's key", "En la tonalidad"], p: P_({ tune: 85, spd: 65 }) },
-    robot: { t: ["Robot", "Robot"], s: ["Hard tuned, like the radio hits", "Afinada al máximo, como en la radio"], p: P_({ lc: 120, pres: 2, sq: 60, tune: 100, spd: 100, dbl: 20, room: 12 }) },
+    /* AOG-VOCAL-TUNE-V2: Tuned is natural (each note's centre, ~100 ms, the vibrato kept); Robot snaps at once, flat */
+    tuned: { t: ["Tuned", "Afinada"], s: ["In tune, still natural", "Afinada y natural"], p: P_({ tune: 100, spd: 60, vib: 1 }) },
+    robot: { t: ["Robot", "Robot"], s: ["Hard tuned, like the radio hits", "Afinada al máximo, como en la radio"], p: P_({ lc: 120, pres: 2, sq: 60, tune: 100, spd: 100, vib: 0, dbl: 20, room: 12 }) },
     phone: { t: ["Phone", "Teléfono"], s: ["Like an old radio", "Como una radio vieja"], p: P_({ lc: 300, sq: 65, ss: 0, room: 6, phone: 1 }) },
     /* AOG-VOCAL-FX-V2: More sounds */
+    pop: { t: ["Pop polish", "Pulido pop"], s: ["Tuned and bright, like a pop record", "Afinada y brillante, como un disco pop"],   /* AOG-VOCAL-TUNE-V2 */
+      p: P_({ tune: 100, spd: 82, vib: 1, lc: 100, pres: 3, air: 4, sq: 65, ss: 40, dbl: 15, echo: 8, room: 16 }) },
     deep: { t: ["Deep", "Grave"], s: ["A lower, bigger voice", "Una voz más grave y grande"], p: P_({ pitch: -5, lc: 60, body: 2, sq: 55, room: 16 }) },
     high: { t: ["High", "Aguda"], s: ["A higher, lighter voice", "Una voz más aguda y ligera"], p: P_({ pitch: 5, lc: 120, body: -1, air: 2, sq: 55, ss: 30, room: 18 }) },
-    harmony: { t: ["Harmony", "Armonía"], s: ["A second voice sings with you", "Una segunda voz canta contigo"], p: P_({ harm: 55, hiv: 3, sq: 55, air: 1, room: 24 }) },
+    harmony: { t: ["Harmony", "Armonía"], s: ["A voice above, and a quieter one below", "Una voz arriba, y otra más baja"], p: P_({ harm: 55, hiv: 3, sq: 55, air: 1, room: 24 }) },
     wide: { t: ["Wide", "Amplia"], s: ["Spread from left to right", "Abierta de izquierda a derecha"], p: P_({ wide: 70, air: 2, sq: 55, room: 20 }) },
     slap: { t: ["Slapback", "Rebote"], s: ["One quick echo, like the 1950s", "Un eco rápido, como en los años 50"], p: P_({ slap: 55, lc: 100, body: 1, pres: 2, sq: 60, room: 8 }) },
     mega: { t: ["Megaphone", "Megáfono"], s: ["Rough and loud, through a horn", "Áspera y fuerte, por una bocina"], p: P_({ mega: 1, grit: 70, lc: 120, ss: 0, sq: 70, room: 6 }) },
@@ -133,7 +175,7 @@
     chop: { t: ["Chop", "Cortes"], s: ["Cut in time with the beat", "Cortada a tiempo con el ritmo"], p: P_({ chop: 1, pres: 2, sq: 65, room: 10 }) }
   };
   var ORDER = ["clean", "warm", "radio", "rap", "echo", "hall", "tuned", "robot", "phone"];
-  var MORE = ["deep", "high", "harmony", "wide", "slap", "mega", "old", "ghost", "chop"];   /* AOG-VOCAL-FX-V2: in their own fold */
+  var MORE = ["pop", "deep", "high", "harmony", "wide", "slap", "mega", "old", "ghost", "chop"];   /* AOG-VOCAL-FX-V2: in their own fold */
   var KEY = "aog.vocal.v1", MAX_SEC = 240, MAX_TAKES = 8, MIC_KEEP = 120000;
   var CAP_WK = 'class AogVocalCap extends AudioWorkletProcessor{constructor(){super();this.on=true;this.b=[];this.n=0;this.t=-1;' +
     'this.port.onmessage=e=>{if(e.data==="stop"){this.flush();this.on=false;this.port.postMessage({end:true});}};}' +
@@ -173,6 +215,9 @@
       '<p class="vb-line" id="vbLine" role="status" aria-live="polite"></p>' +
       '<div class="vb-allow" id="vbAllow" hidden></div>' +
       '<label class="vb-mon"><input type="checkbox" id="vbMon"> <span id="vbMonT"></span></label><p class="vb-small" id="vbMonW" hidden></p>' +
+      '<div id="vbCues" hidden><label class="vb-c"><span class="vb-ct"><b id="vbMeT"></b><i id="vbMeV"></i></span><small id="vbMeS"></small><input type="range" class="vb-r" id="vbMe" min="0" max="100" step="1"></label>' +
+      '<label class="vb-c"><span class="vb-ct"><b id="vbTrkT"></b><i id="vbTrkV"></i></span><small id="vbTrkS"></small><input type="range" class="vb-r" id="vbTrk" min="0" max="100" step="1"></label></div>' +
+      '<p class="vb-small" id="vbLat" hidden></p><button type="button" class="vb-b" id="vbLatB" hidden></button>' +
       '</section>' +
       '<section class="vb-panel" id="vbTakesBox" hidden aria-labelledby="vbTakesH"><h2 class="vb-h" id="vbTakesH"></h2><ul class="vb-takes" id="vbTakes"></ul>' +
       '<button type="button" class="vb-b vb-back" id="vbBack" hidden></button></section>' +
@@ -184,6 +229,10 @@
       '</div></details></section>' +
       '<details class="vb-panel vb-shape" id="vbShape"><summary id="vbShapeH"></summary><div class="vb-ctrls" id="vbCtrls">' +
       CTRL.map(function (c) {
+        if (c.chk) return '<label class="vb-c vb-chk"><span class="vb-ck"><input type="checkbox" data-k="' + c.k + '"><b data-t="' + c.k + '"></b></span><small data-s="' + c.k + '"></small></label>';
+        if (c.keys) { var ko = function (a, b) { var o = ""; for (var v = a; v < b; v++) o += '<option value="' + v + '"></option>'; return o; };
+          return '<label class="vb-c"><span class="vb-ct"><b data-t="' + c.k + '"></b></span><small data-s="' + c.k + '"></small><select class="vb-sel" data-k="' + c.k + '" id="vbKey">' +
+            '<option value="-1"></option><option value="-2"></option><optgroup data-g="majors">' + ko(0, 12) + '</optgroup><optgroup data-g="minors">' + ko(12, 24) + '</optgroup></select></label>'; }
         if (c.opts) return '<label class="vb-c"><span class="vb-ct"><b data-t="' + c.k + '"></b><i data-v="' + c.k + '"></i></span><small data-s="' + c.k + '"></small>' +
           '<select class="vb-sel" data-k="' + c.k + '">' + c.opts.map(function (o) { return '<option value="' + o + '"></option>'; }).join("") + '</select></label>';
         return '<label class="vb-c"><span class="vb-ct"><b data-t="' + c.k + '"></b><i data-v="' + c.k + '"></i></span><small data-s="' + c.k + '"></small>' +
@@ -201,11 +250,18 @@
     $("vbBack").addEventListener("click", bringBack);
     $("vbMon").checked = !!store().mon;
     $("vbMon").addEventListener("change", function () { keep({ mon: $("vbMon").checked }); paint(); });
+    var cue0 = store();
+    $("vbMe").value = cue0.me == null ? 90 : cue0.me;
+    $("vbTrk").value = cue0.tr == null ? 100 : cue0.tr;
+    function cueSlide(id, key) { $("vb" + id).addEventListener("input", function () { var o = {}; o[key] = +$("vb" + id).value; keep(o); cues(); paint(); }); }
+    cueSlide("Me", "me"); cueSlide("Trk", "tr");
+    $("vbLatB").addEventListener("click", timeDevice);
     [].forEach.call(root.querySelectorAll(".vb-snd"), function (b) { b.addEventListener("click", function () { var k = b.getAttribute("data-snd"); if (k !== "custom") pick(k); }); });
     [].forEach.call(root.querySelectorAll(".vb-r,.vb-sel[data-k]"), function (r) {
       r.addEventListener("input", function () { setCtrl(r.getAttribute("data-k"), +r.value); });
     });
     $("vbBig").addEventListener("input", function () { setCtrl("big", +$("vbBig").value); });
+    [].forEach.call(root.querySelectorAll(".vb-chk input"), function (r) { r.addEventListener("change", function () { setCtrl(r.getAttribute("data-k"), r.checked ? 1 : 0); }); });
     $("vbTakes").addEventListener("click", function (e) {
       var b = e.target.closest && e.target.closest("button"); if (!b) return;
       var i = +b.getAttribute("data-i"); if (b.classList.contains("vb-tx")) dropTake(i); else useTake(i);
@@ -231,6 +287,12 @@
     var al = $("vbAllow"); al.hidden = !B.allow;
     if (B.allow) { var h = '<p>' + tw("denied") + '</p><p>' + tw("allowI") + '</p>' + (homeApp() ? '<p>' + tw("allowApp") + '</p>' : '') + '<p>' + tw("allowC") + '</p><p>' + tw("allowThen") + '</p>' + (B.err ? '<p class="vb-code">(' + B.err.replace(/[^A-Za-z]/g, "") + ')</p>' : ''); if (al.__h !== h) { al.innerHTML = h; al.__h = h; } }
     txt($("vbMonT"), tw("mon")); $("vbMonW").hidden = !$("vbMon").checked; txt($("vbMonW"), tw("monWarn")); $("vbMon").disabled = rec;
+    var cuesOn = $("vbMon").checked;
+    $("vbCues").hidden = !cuesOn;
+    txt($("vbMeT"), tw("me")); txt($("vbTrkT"), tw("trk")); txt($("vbMeS"), tw("meS")); txt($("vbTrkS"), tw("trkS"));
+    txt($("vbMeV"), $("vbMe").value); txt($("vbTrkV"), $("vbTrk").value);
+    var late = !timed(); $("vbLat").hidden = !late || B.line === "latOn" || B.line === "latOk"; txt($("vbLat"), tw("lat"));
+    $("vbLatB").hidden = !late; txt($("vbLatB"), tw("latBtn")); $("vbLatB").disabled = rec || B.timing;
     /* the takes */
     $("vbTakesBox").hidden = !B.takes.length && !B.gone; txt($("vbTakesH"), tw("takesH"));
     var lh = B.takes.map(function (t, i) { var on = i === B.cur;
@@ -247,12 +309,17 @@
     CTRL.forEach(function (c) {
       txt(B.root.querySelector('[data-t="' + c.k + '"]'), L(c.t)); txt(B.root.querySelector('[data-s="' + c.k + '"]'), L(c.s));
       var v = B.P[c.k], inp = B.root.querySelector('[data-k="' + c.k + '"]');
+      if (c.chk) { if (inp.checked !== !!v) inp.checked = !!v; return; }
+      if (c.keys) { var sk = songKey();   /* AOG-VOCAL-TUNE-V2 */
+        [].forEach.call(inp.options, function (o) { var n = +o.value; txt(o, n === -1 ? tw("songKey") + (sk ? ": " + nameOf(sk) : "") : n === -2 ? tw("allNotes") : nameOf({ key: n % 12, minor: n >= 12 })); });
+        [].forEach.call(inp.querySelectorAll("optgroup"), function (g) { att(g, "label", tw(g.getAttribute("data-g"))); });
+        if (String(inp.value) !== String(v)) inp.value = String(v); return; }
       if (String(inp.value) !== String(v)) inp.value = v;
       if (c.opts) { [].forEach.call(inp.options, function (o) { txt(o, L(c.ow[o.value])); }); txt(B.root.querySelector('[data-v="' + c.k + '"]'), L(c.ow[v] || c.ow[0])); }
       else txt(B.root.querySelector('[data-v="' + c.k + '"]'), c.unit ? (v > 0 ? "+" : "") + v : String(v));
     });
     txt($("vbBigT"), tw("size")); var bg = $("vbBig"); txt(bg.options[0], tw("small")); txt(bg.options[1], tw("big")); if (bg.value !== String(B.P.big)) bg.value = String(B.P.big);
-    var hb = $("vbHear"); txt(hb, B.hear ? tw("hearStop") : tw("hear")); att(hb, "aria-pressed", B.hear ? "true" : "false"); hb.disabled = !tk || B.making;
+    var hb = $("vbHear"); txt(hb, B.hear ? tw("hearStop") : B.making ? tw("making") : tw("hear")); att(hb, "aria-busy", B.making ? "true" : "false"); att(hb, "aria-pressed", B.hear ? "true" : "false"); hb.disabled = !tk || B.making;
     var ab = $("vbAdd"); txt(ab, B.busy ? tw("adding") : tw("add")); ab.disabled = !tk || B.busy || !!(tk && tk.added); ab.hidden = !tk;
   }
 
@@ -276,9 +343,9 @@
     buf.copyToChannel(bk.R instanceof Float32Array ? bk.R : new Float32Array(bk.R || bk.L), 1);
     B.bkFor = bk; B.bkBuf = buf; return buf;
   }
-  function bkSource(bk, at, offs) {
+  function bkSource(bk, at, offs, into) {
     var c = B.ac, buf = bkBuffer(bk), s = c.createBufferSource(), g = c.createGain();
-    s.buffer = buf; s.connect(g); g.connect(c.destination);
+    s.buffer = buf; s.connect(g); g.connect(into || c.destination);
     var loop = !!bk.loop && bk.sec > 0.5 && bk.sec <= buf.duration + 0.01;
     if (loop) { s.loop = true; s.loopStart = 0; s.loopEnd = Math.min(buf.duration, bk.sec); if (offs >= s.loopEnd - 0.05) offs = offs % s.loopEnd; }
     else if (offs >= buf.duration - 0.05) offs = 0;
@@ -297,6 +364,61 @@
   }
   function sleepSoon() { setTimeout(function () { try { if (B.ac && B.ac.state === "running" && B.state !== "rec" && !B.hear) B.ac.suspend(); } catch (e) {} }, 250); }
   function rest() { if (B.state === "rec") stopRec(); hearStop(); sleepSoon(); setTimeout(drop, 700); fxRest(); }
+
+  /* AOG-VOCAL-CUE-V1 — the headphones hear the sound you picked (the live half of it) and you set Me and My Track apart.
+     Tune, Soft S, Pitch, Harmony, Ghost and Chop stay on the printed take: they are worked out after you stop. */
+  function timed() {
+    try { var m = JSON.parse(localStorage.getItem("aog.latency.v1") || "null"); return !!(m && m.rt > 0 && m.rt < 1); } catch (e) { return false; }
+  }
+  function cues() {
+    var c = B.ac; if (!c) return;
+    var s = store(), me = (s.me == null ? 90 : +s.me) / 100, tr = (s.tr == null ? 100 : +s.tr) / 100;
+    if (!B.cueMe || B.cueAc !== c) {
+      B.cueMe = c.createGain(); B.cueBk = c.createGain();
+      B.cueMe.gain.value = me; B.cueBk.gain.value = tr;
+      B.cueMe.connect(c.destination); B.cueBk.connect(c.destination); B.cueAc = c;
+      return;
+    }
+    try {
+      B.cueMe.gain.setTargetAtTime(me, c.currentTime, 0.03);
+      B.cueBk.gain.setTargetAtTime(tr, c.currentTime, 0.03);
+    } catch (e) { B.cueMe.gain.value = me; B.cueBk.gain.value = tr; }
+  }
+  function monClose() {
+    var ch = B.monCh; if (!ch) return;
+    B.monCh = null;
+    try { if (B.src && ch.inn) B.src.disconnect(ch.inn); } catch (e) {}
+    try { if (ch.out) ch.out.disconnect(); } catch (e) {}
+    try { ch.stop(B.ac && B.ac.currentTime); } catch (e) {}
+  }
+  function monOpen(bk) {
+    if (!B.src || !B.ac) return;
+    monClose(); cues();
+    var bpm = bk && bk.bpm > 0 ? bk.bpm : 90;
+    B.monCh = chain(B.ac, B.src, B.P, bpm, {});
+    B.monCh.out.connect(B.cueMe);
+    B.monShape = shapeOf(B.P);
+  }
+  function timeDevice() {
+    if (B.timing || B.state === "rec") return;
+    B.timing = true; say("latOn");
+    capSession(true);
+    if (B.mic) { try { B.mic.getTracks().forEach(function (t) { t.stop(); }); } catch (e) {} B.mic = null; clearTimeout(B.micT); }
+    function finish(ok) {
+      B.timing = false;
+      if (B.state !== "rec" && B.state !== "asking") capSession(false);
+      say(ok ? "latOk" : "latBad");
+    }
+    function run(L) { return L && L.measure ? L.measure() : Promise.reject(); }
+    var local = window.AOGLatency ? Promise.resolve() : new Promise(function (ok) {
+      var s = D.createElement("script"); s.src = "/aog-latency.js"; s.onload = s.onerror = function () { ok(); }; D.head.appendChild(s);
+    });
+    local.then(function () { return run(window.AOGLatency); }).then(function () { finish(true); }, function () {
+      var P = null; try { if (window.parent && window.parent !== window) P = window.parent.AOGLatency; } catch (e) {}
+      if (!P) { finish(false); return; }
+      return run(P).then(function () { finish(true); }, function () { finish(false); });
+    });
+  }
 
   /* ── ● Record / ■ Stop ── */
   function recPress() {
@@ -345,9 +467,9 @@
     B.src = c.createMediaStreamSource(stream);
     B.sink = c.createGain(); B.sink.gain.value = 0; B.sink.connect(c.destination);
     B.an = c.createAnalyser(); B.an.fftSize = 1024; B.src.connect(B.an); B.an.connect(B.sink);
-    if (mon) { var lc = c.createBiquadFilter(); lc.type = "highpass"; lc.frequency.value = 90; var cp = c.createDynamicsCompressor(); cp.threshold.value = -22; cp.ratio.value = 3;
-      var g = c.createGain(); g.gain.value = 0.9; var rv = c.createConvolver(); rv.normalize = false; rv.buffer = roomIR(c, 1.1, 7); var rg = c.createGain(); rg.gain.value = 0.16;
-      B.src.connect(lc); lc.connect(cp); cp.connect(g); g.connect(c.destination); cp.connect(rg); rg.connect(rv); rv.connect(c.destination); B.monG = [lc, cp, g, rv, rg]; }
+    cues();
+    if (mon) monOpen(bk);
+    else B.monCh = null;
     var ready;
     if (c.audioWorklet && window.AudioWorkletNode) {
       if (!B.wk) B.wk = c.audioWorklet.addModule(URL.createObjectURL(new Blob([CAP_WK], { type: "text/javascript" })));
@@ -369,7 +491,7 @@
       if (bk) {
         B.Tb = c.currentTime + 0.3;
         var offs = (B.from - 1) * bk.barSec;
-        B.play = bkSource(bk, B.Tb, offs); B.loop = B.play.loop;
+        B.play = bkSource(bk, B.Tb, offs, B.cueBk); B.loop = B.play.loop;
         if (B.play.offs !== offs) B.from = 1;
         if (!B.loop) B.play.s.onended = function () { if (B.state === "rec") stopRec("ended"); };
       } else { B.Tb = 0; B.play = null; }
@@ -393,6 +515,7 @@
     B.raf = requestAnimationFrame(step);
   }
   function release() {
+    monClose();
     [B.src, B.node, B.sink, B.an].concat(B.monG || []).forEach(function (n) { try { if (n) n.disconnect(); } catch (e) {} });
     B.src = B.node = B.sink = B.an = B.stream = B.monG = null;
     clearTimeout(B.micT); B.micT = setTimeout(drop, MIC_KEEP);   /* the microphone stays ready for the next take, then is let go */
@@ -482,6 +605,21 @@
   var IR = {};
   function irOf(ctx, big) { var k = (big ? "b" : "s") + ctx.sampleRate; if (ctx instanceof (window.OfflineAudioContext || window.webkitOfflineAudioContext || function () {})) return big ? roomIR(ctx, 2.8, 2.4) : roomIR(ctx, 1.1, 6.5);
     return IR[k] || (IR[k] = big ? roomIR(ctx, 2.8, 2.4) : roomIR(ctx, 1.1, 6.5)); }
+  /* a plate: short, bright, dense. The lows are held back so it sits under the voice instead of thickening it. */
+  var PLATE = {};
+  function plateIR(ctx) {
+    var sr = ctx.sampleRate, sec = 0.62, n = Math.round(sec * sr), b = ctx.createBuffer(2, n, sr);
+    for (var ch = 0; ch < 2; ch++) { var d = b.getChannelData(ch), r = rnd(11 + ch * 17), lp = 0, hp = 0, e = 0, i;
+      for (i = 0; i < n; i++) { var t = i / sr, w = r(); lp += 0.22 * (w - lp); hp += 0.12 * (lp - hp);
+        d[i] = (lp - hp) * Math.exp(-t * 8) * (t < 0.003 ? t / 0.003 : 1); e += d[i] * d[i]; }
+      var g = e > 0 ? 0.85 / Math.sqrt(e) : 0; for (var j = 0; j < n; j++) d[j] *= g; }
+    return b;
+  }
+  function plateOf(ctx) {
+    var off = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+    if (off && ctx instanceof off) return plateIR(ctx);
+    return PLATE[ctx.sampleRate] || (PLATE[ctx.sampleRate] = plateIR(ctx));
+  }
   function dbg(db) { return Math.pow(10, db / 20); }
   /* AOG-VOCAL-FX-V2 · Grit: a warm drive (a little lopsided, as a valve is), its level kept about where it was */
   var GRIT = null;
@@ -496,7 +634,8 @@
     var mix = ctx.createGain(), out = mix, T = {}, lfos = [];
     function bq(type, f, q, gain) { var z = ctx.createBiquadFilter(); z.type = type; z.frequency.value = f; if (q != null) z.Q.value = q; if (gain != null) z.gain.value = gain; return z; }
     function wob(f, depth, param) { var l = ctx.createOscillator(), d = ctx.createGain(); l.frequency.value = f; d.gain.value = depth; l.connect(d); d.connect(param); l.start(0); lfos.push(l); }
-    var a = ctx.createGain(); src.connect(a);
+    var inn = ctx.createGain(); src.connect(inn);
+    var a = inn;
     function thru(ns) { ns.forEach(function (n) { a.connect(n); a = n; }); }
     /* Harmony: the second voice, made ahead, joins the lead here (its level changes as it plays) */
     T.harmG = ctx.createGain(); T.harmG.gain.value = 0; if (o.h) { o.h.connect(T.harmG); T.harmG.connect(a); }
@@ -521,6 +660,14 @@
     thru([T.vol]);
     var dry = a; dry.connect(mix);
     out = mix;
+    /* AOG-VOCAL-ENGINE-V1: a short bright plate under the voice, about -18 dB. The Room knob is still the hall.
+       Phone, megaphone and old record stay a narrow band, so the plate stays out of those. */
+    if (!P.phone && !P.mega && !P.old) {
+      T.plateG = ctx.createGain(); T.plateG.gain.value = dbg(-18);
+      var pv = ctx.createConvolver(); pv.normalize = false; pv.buffer = plateOf(ctx);
+      var pHP = bq("highpass", 300, 0.7);
+      dry.connect(T.plateG); T.plateG.connect(pHP); pHP.connect(pv); pv.connect(mix);
+    }
     /* Double: two copies a few milliseconds late, each drifting slowly, one left and one right */
     T.dblG = ctx.createGain(); dry.connect(T.dblG);
     [[0.017, 0.31, -0.75], [0.026, 0.43, 0.75]].forEach(function (z) {
@@ -571,7 +718,7 @@
     }
     set(P, null);
     function stop(at) { lfos.forEach(function (o) { try { o.stop(at); } catch (e) {} }); setTimeout(function () { try { out.disconnect(); mix.disconnect(); } catch (e) {} }, 400); }
-    return { out: out, set: set, stop: stop, shape: shapeOf(P) };
+    return { out: out, set: set, stop: stop, shape: shapeOf(P), inn: inn };
   }
   /* Soft S: the sharp highs (above 5 kHz) are pulled down when they jump above the rest of the voice */
   function deEss(x, sr, amt) {
@@ -597,18 +744,22 @@
     return y;
   }
   function songKey() { try { var g = window.AOGSong && AOGSong.get(); return g && g.hasKey ? { key: g.key, minor: !!g.minor } : null; } catch (e) { return null; } }
-  function keyName() { var k = songKey(); if (!k || !window.AOGSong) return ""; var e = es();
-    return AOGSong.NOTES[e ? "es" : "en"][k.key] + " " + (e ? (k.minor ? "menor" : "mayor") : (k.minor ? "minor" : "major")); }
-  function tune(x, sr, amt, spd) {
-    if (!(amt > 0)) return Promise.resolve(x);
-    var S = SH(); if (!S || !S.desk) return Promise.resolve(x);
-    return S.desk().then(function (w) {
-      var t = w.__aogStudio.dmTune; if (!t) return x;
-      var ab = new w.AudioBuffer({ numberOfChannels: 1, length: x.length, sampleRate: sr }); ab.copyToChannel(new w.Float32Array(x), 0);
-      var k = songKey();
-      return t(ab, { amt: amt, spd: spd, key: k ? k.key : -1, minor: !!(k && k.minor) }, function () { return false; }).then(function (o) { return new Float32Array(o.getChannelData(0)); });
-    }).catch(function () { return x; });
+  var NOTE = { en: ["C", "C♯", "D", "E♭", "E", "F", "F♯", "G", "A♭", "A", "B♭", "B"], es: ["Do", "Do♯", "Re", "Mi♭", "Mi", "Fa", "Fa♯", "Sol", "La♭", "La", "Si♭", "Si"] };
+  function nameOf(k) { var e = es(), N = (window.AOGSong && AOGSong.NOTES) || NOTE; return N[e ? "es" : "en"][k.key] + " " + (e ? (k.minor ? "menor" : "mayor") : (k.minor ? "minor" : "major")); }
+  function keyName() { var k = songKey(); return k ? nameOf(k) : ""; }
+  /* AOG-VOCAL-TUNE-V2: the notes Tune pulls to. P.tk: −1 the song's key (every note while the song has none), −2 all notes,
+     0–11 a major key from C, 12–23 the minor key from C */
+  function tuneKey(P) { var t = P.tk == null ? -1 : +P.tk; if (t === -2) return null; if (t >= 0 && t < 24) return { key: t % 12, minor: t >= 12 }; return songKey(); }
+  function tuneScale(P) { var k = tuneKey(P), sc = [], i; for (i = 0; i < 12; i++) sc.push(k ? 0 : 1);
+    if (k) (k.minor ? [0, 2, 3, 5, 7, 8, 10] : [0, 2, 4, 5, 7, 9, 11]).forEach(function (v) { sc[(v + k.key) % 12] = 1; }); return sc; }
+  function tuneLine() { var k = tuneKey(B.P); if (k) say("tunedKey", { key: nameOf(k) }); else say(+B.P.tk === -2 ? "tunedAll" : "tunedNoKey"); }
+  /* Tune, worked out ahead in the Worker (FXW's tuneWork): { x: the tuned take, t: what it found } */
+  function tuneRun(x, sr, P) {
+    if (!(P.tune > 0)) return Promise.resolve({ x: x, t: null });
+    return fxRun({ kind: "tune", x: new Float32Array(x), sr: sr, amt: P.tune, spd: P.spd, vib: P.vib ? 1 : 0, sc: tuneScale(P), plan: !!P.plan })
+      .then(function (r) { return { x: r.x || x, t: r.t || null }; });
   }
+  function tune(x, sr, P) { return tuneRun(x, sr, P).then(function (r) { return r.x; }); }
   /* ── AOG-VOCAL-FX-V2: the pitch work (Deep, High, Pitch, Harmony), done ahead on the take, in a Worker ──
      FXW is the Worker's whole code (made from its own text, so it needs nothing around it); without Workers it runs here. */
   function FXW(self) {
@@ -636,19 +787,20 @@
     }
     /* a mark once in each period, at the same point of the wave each time (found by likeness to the period before);
        every 6 ms where there is no note */
-    function marks(x, sr, tr) {
+    function marks(x, sr, tr, span) {   /* span: how far from one period on the next mark is looked for (Tune's track is steadier: 0.12) */
       var n = x.length, per = tr.per, F = per.length, U = Math.round(0.006 * sr), lp = new Float32Array(n), c = Math.exp(-2 * Math.PI * 1000 / sr), s1 = 0, s2 = 0, i;
       for (i = 0; i < n; i++) { s1 += (1 - c) * (x[i] - s1); s2 += (1 - c) * (s1 - s2); lp[i] = s2; }
       function perAt(p) { var f = Math.round((p - tr.off) / tr.hop); if (f < 0) f = 0; return f < F ? per[f] : 0; }
       var P = [], V = [], T = [], pos = 0, prev = 0, lastV = false;
+      var stp = span ? 4 : 2;   /* the signal here is below 1 kHz: every 4th sample is plenty for Tune's steadier marks */
       while (pos < n) {
         var T0 = perAt(pos);
         if (T0 > 0) {
           var Ti = Math.max(2, Math.round(T0)), h = Ti >> 1;
           if (!lastV) { var e = Math.min(n, pos + Ti), bv = -Infinity, bp = pos; for (i = pos; i < e; i++) if (lp[i] > bv) { bv = lp[i]; bp = i; } pos = bp; }
           else if (prev - h >= 0) {
-            var lo = Math.max(prev + 1, Math.round(pos - 0.2 * T0)), hi = Math.min(n - h - 1, Math.round(pos + 0.2 * T0)), bc = -Infinity, bq = pos;
-            for (var q = lo; q <= hi; q++) { var s = 0, ee = 0; for (var j = -h; j < h; j += 2) { var u = lp[q + j]; s += lp[prev + j] * u; ee += u * u; } var sc = ee > 0 ? s / Math.sqrt(ee) : 0; if (sc > bc) { bc = sc; bq = q; } }
+            var lo = Math.max(prev + 1, Math.round(pos - (span || 0.2) * T0)), hi = Math.min(n - h - 1, Math.round(pos + (span || 0.2) * T0)), bc = -Infinity, bq = pos;
+            for (var q = lo; q <= hi; q++) { var s = 0, ee = 0; for (var j = -h; j < h; j += stp) { var u = lp[q + j]; s += lp[prev + j] * u; ee += u * u; } var sc = ee > 0 ? s / Math.sqrt(ee) : 0; if (sc > bc) { bc = sc; bq = q; } }
             pos = bq;
           }
           if (pos >= n) break;
@@ -668,7 +820,21 @@
         var c = P[j], v = M.V[j], r = v ? ratio(j) : 1, f = v ? phi : 1, wt = v ? 1 : uw;
         var Rh = j + 1 < m ? P[j + 1] - c : M.U, Lh = j > 0 ? c - P[j - 1] : Rh;
         var a0 = Math.max(0, Math.ceil(ts - Lh / f)), a1 = Math.min(n - 1, Math.floor(ts + Rh / f));
-        for (var q = a0; q <= a1; q++) { var u = (q - ts) * f, w = 0.5 + 0.5 * Math.cos(Math.PI * u / (u < 0 ? Lh : Rh)); y[q] += wt * w * cubic(x, c + u); }
+        /* AOG-VOCAL-TUNE-V2: the same grain, quicker: the window's cosine by a recurrence (one multiply a sample), and where
+           the grain is not resampled (f = 1: Tune, and every s), the four interpolation weights worked out once a grain */
+        var mid = Math.min(a1 + 1, Math.max(a0, Math.ceil(ts))), seg = 0;
+        for (; seg < 2; seg++) {
+          var s0 = seg ? mid : a0, s1 = seg ? a1 : mid - 1; if (s1 < s0) continue;
+          var th = Math.PI * f / (seg ? Rh : Lh), ph = th * (s0 - ts), k2 = 2 * Math.cos(th), cp = Math.cos(ph - th), cq = Math.cos(ph);
+          if (f === 1) {
+            var o = c - ts, i0 = Math.floor(o), tt = o - i0, t2 = tt * tt, t3 = t2 * tt,
+              wm = -0.5 * t3 + t2 - 0.5 * tt, w0 = 1.5 * t3 - 2.5 * t2 + 1, w1 = -1.5 * t3 + 2 * t2 + 0.5 * tt, w2 = 0.5 * t3 - 0.5 * t2;
+            for (var q = s0; q <= s1; q++) { var g = q + i0, sm = g >= 1 && g + 2 < n ? wm * x[g - 1] + w0 * x[g] + w1 * x[g + 1] + w2 * x[g + 2] : cubic(x, g + tt);
+              y[q] += wt * (0.5 + 0.5 * cq) * sm; var cn = k2 * cq - cp; cp = cq; cq = cn; }
+          } else {
+            for (var q2 = s0; q2 <= s1; q2++) { y[q2] += wt * (0.5 + 0.5 * cq) * cubic(x, c + (q2 - ts) * f); var cn2 = k2 * cq - cp; cp = cq; cq = cn2; }
+          }
+        }
         ts += v ? Rh / r : Rh;
       }
       return y;
@@ -684,26 +850,213 @@
       return y;
     }
     /* the harmony note for each period: a third (or a fifth) up in the song's key, from the key's note nearest the voice */
-    function intervals(M, sr, hv, key, minor) {
+    function intervals(M, sr, hv, key, minor, down) {   /* down: a fifth below, in the same key */
       var m = M.P.length, iv = new Float32Array(m), sc = null, j, k;
       if (key >= 0) sc = (minor ? [0, 2, 3, 5, 7, 8, 10] : [0, 2, 4, 5, 7, 9, 11]).map(function (v) { return (v + key) % 12; }).sort(function (a, b) { return a - b; });
       for (j = 0; j < m; j++) {
         if (!M.V[j]) continue;
-        if (!sc) { iv[j] = hv === 5 ? 7 : 4; continue; }
+        if (!sc) { iv[j] = down ? -7 : (hv === 5 ? 7 : 4); continue; }
         var midi = 69 + 12 * Math.log2(sr / M.T[j] / 440), best = Math.round(midi), bd = Infinity;
         for (k = Math.round(midi) - 2; k <= Math.round(midi) + 2; k++) { if (sc.indexOf(((k % 12) + 12) % 12) < 0) continue; var dd = Math.abs(midi - k); if (dd < bd) { bd = dd; best = k; } }
-        var d = sc.indexOf(((best % 12) + 12) % 12), d2 = d + (hv === 5 ? 4 : 2);
-        iv[j] = sc[d2 % 7] + (d2 >= 7 ? 12 : 0) - sc[d];
+        var d = sc.indexOf(((best % 12) + 12) % 12), step = down ? -4 : (hv === 5 ? 4 : 2), d2 = d + step, oct = 0;
+        while (d2 < 0) { d2 += 7; oct -= 12; }
+        while (d2 >= 7) { d2 -= 7; oct += 12; }
+        iv[j] = sc[d2] + oct - sc[d];
       }
       var o = new Float32Array(m);   /* the middle of the periods around it, so one wobbly period does not flip the note */
       for (j = 0; j < m; j++) { if (!M.V[j]) continue; var w = []; for (k = j - 6; k <= j + 6; k++) if (k >= 0 && k < m && M.V[k]) w.push(iv[k]); w.sort(function (a, b) { return a - b; }); o[j] = w[w.length >> 1]; }
       return o;
     }
+    /* ── AOG-VOCAL-TUNE-V2: Tune, the booth's own pitch corrector ──
+       1 · the pitch every 10 ms, and how sure it is: YIN on a copy at about 8 kHz, up to four candidates a frame, then the
+           steadiest path through them (Viterbi), so a lone frame an octave off, or a breath or an s that looks like a note, is
+           not followed; a period an octave too long costs more than the first clear one (YIN's own guard). */
+    function track2(x, sr) {
+      var n = x.length, Q = Math.max(1, Math.round(sr / 6000)), nd = Math.floor(n / Q), D = new Float32Array(nd), i, j, t, f, q;
+      var c1 = Math.exp(-2 * Math.PI * 1800 / sr), s1 = 0, s2 = 0;
+      for (i = 0, j = 0; j < nd; j++) { var acc = 0; for (q = 0; q < Q; q++, i++) { s1 += (1 - c1) * (x[i] - s1); s2 += (1 - c1) * (s1 - s2); acc += s2; } D[j] = acc / Q; }
+      var dsr = sr / Q, W = Math.round(0.028 * dsr), tmin = Math.max(2, Math.floor(dsr / 1100)), tmax = Math.ceil(dsr / 65), hop = Math.round(0.01 * sr);
+      var F = Math.max(0, Math.floor((nd - W - tmax - 3) * Q / hop)), K = 4, NS = K + 1;
+      var E = new Float32Array(F), em = 0, CP = new Float32Array(F * K), CC = new Float32Array(F * K), UC = new Float32Array(F), d = new Float64Array(tmax + 2);
+      var A = new Int32Array(F), T1 = tmax + 2, DF = new Float32Array(F * T1);
+      for (f = 0; f < F; f++) { var a0 = A[f] = Math.floor(f * hop / Q), e = 0; for (j = 0; j < W; j++) e += D[a0 + j] * D[a0 + j]; E[f] = e / W; if (E[f] > em) em = E[f]; }
+      /* YIN's difference for every frame at once: for each lag, one running sum along the take, read at each frame's ends
+         (a third of the work of summing each frame on its own) */
+      if (F) { var top = A[F - 1] + W, PS = new Float64Array(top + 1);
+        for (t = 1; t <= tmax + 1; t++) { var acc2 = 0; PS[0] = 0; for (j = 0; j < top; j++) { var dv = D[j] - D[j + t]; acc2 += dv * dv; PS[j + 1] = acc2; }
+          for (f = 0; f < F; f++) DF[f * T1 + t] = PS[A[f] + W] - PS[A[f]]; } }
+      for (f = 0; f < F; f++) {
+        for (q = 0; q < K; q++) CC[f * K + q] = Infinity;
+        UC[f] = 0;
+        if (E[f] < 1e-9 || E[f] < em * 3e-4) continue;   /* quiet: no note */
+        var run = 0; d[0] = 1;
+        for (t = 1; t <= tmax + 1; t++) { var s = Math.max(0, DF[f * T1 + t]); run += s; d[t] = run > 0 ? s * t / run : 1; }
+        var cand = [], first = -1;
+        for (t = tmin; t <= tmax; t++) if (d[t] < d[t - 1] && d[t] <= d[t + 1] && d[t] < 0.6) {
+          var y0 = d[t - 1], y1 = d[t], y2 = d[t + 1], den = y0 - 2 * y1 + y2, dx = den > 0 ? 0.5 * (y0 - y2) / den : 0;
+          cand.push([(t + dx) * Q, Math.max(0, y1 - 0.25 * (y0 - y2) * dx)]); if (first < 0 && y1 < 0.2) first = (t + dx) * Q;
+        }
+        UC[f] = E[f] > 0.02 * em ? 0.36 : 0.3;
+        if (!cand.length) continue;
+        if (first < 0) { var bv = 9; cand.forEach(function (c) { if (c[1] < bv) { bv = c[1]; first = c[0]; } }); }
+        /* a full-rate count of sign changes: an s or a t changes sign thousands of times a second, a sung note far fewer */
+        var b0 = f * hop, Lz = W * Q, zc = 0; for (j = b0 + 1; j < b0 + Lz && j < n; j++) if ((x[j] >= 0) !== (x[j - 1] >= 0)) zc++;
+        var hiss = zc * sr / Lz > 5000 ? 0.3 : 0;
+        cand.forEach(function (c) { c[2] = c[1] + hiss + (c[0] > first * 1.08 ? 0.1 * Math.log2(c[0] / first) + 0.05 : 0); });
+        cand.sort(function (p, r) { return p[2] - r[2]; });
+        for (q = 0; q < K && q < cand.length; q++) { CP[f * K + q] = cand[q][0]; CC[f * K + q] = cand[q][2]; }
+      }
+      /* the steadiest path: a jump costs by its size, a note starting or stopping a little */
+      var per = new Float32Array(F); if (!F) return { per: per, hop: hop, off: Math.round(W * Q / 2) };
+      var cost = new Float64Array(NS), nc = new Float64Array(NS), back = new Int8Array(F * NS), u, p;
+      for (u = 0; u < NS; u++) cost[u] = u === K ? UC[0] : CC[u];
+      for (f = 1; f < F; f++) {
+        for (u = 0; u < NS; u++) {
+          var lc = u === K ? UC[f] : CC[f * K + u], best = Infinity, bp = K;
+          if (lc === Infinity) { nc[u] = Infinity; back[f * NS + u] = K; continue; }
+          for (p = 0; p < NS; p++) { var pc = cost[p]; if (pc === Infinity) continue;
+            var tc = 0;
+            if (u === K) tc = p === K ? 0 : 0.1;
+            else if (p === K) tc = 0.1;
+            else { var st = Math.abs(12 * Math.log2(CP[f * K + u] / CP[(f - 1) * K + p])); tc = Math.min(0.6, 0.035 * st); }
+            if (pc + tc < best) { best = pc + tc; bp = p; } }
+          nc[u] = best + lc; back[f * NS + u] = bp;
+        }
+        for (u = 0; u < NS; u++) cost[u] = nc[u];
+      }
+      var sb = K, bc = Infinity; for (u = 0; u < NS; u++) if (cost[u] < bc) { bc = cost[u]; sb = u; }
+      for (f = F - 1; f >= 0; f--) { per[f] = sb === K ? 0 : CP[f * K + sb]; sb = f > 0 ? back[f * NS + sb] : K; }
+      /* a note shorter than 40 ms is not a note; the middle of five frames; a gap of one or two frames inside a note is the note */
+      for (f = 0; f < F;) { if (!per[f]) { f++; continue; } for (j = f; j < F && per[j]; j++); if (j - f < 4) for (q = f; q < j; q++) per[q] = 0; f = j; }
+      var pm = new Float32Array(F);
+      for (f = 0; f < F; f++) { if (!per[f]) continue; var w = []; for (j = f - 2; j <= f + 2; j++) if (j >= 0 && j < F && per[j]) w.push(per[j]); w.sort(function (p1, p2) { return p1 - p2; }); pm[f] = w[w.length >> 1]; }
+      for (f = 1; f < F - 1; f++) if (!pm[f] && pm[f - 1]) { for (j = f; j < F && j <= f + 2 && !pm[j]; j++);
+        if (j < F && j <= f + 2 && pm[j] && Math.abs(12 * Math.log2(pm[j] / pm[f - 1])) < 1.5) for (q = f; q < j; q++) pm[q] = pm[f - 1] + (pm[j] - pm[f - 1]) * (q - f + 1) / (j - f + 1); }
+      /* the last few frames' worth at the very end (too near the end for a whole window) carry the last note on */
+      var off = Math.round(W * Q / 2), xt = Math.max(0, Math.ceil((n - off) / hop) + 1 - F), pe = new Float32Array(F + xt);
+      pe.set(pm); if (F && pm[F - 1]) for (f = F; f < F + xt; f++) pe[f] = pm[F - 1];
+      return { per: pe, hop: hop, off: off };
+    }
+    /* 2 · the pitch of each period exactly, at the full rate, around its mark (two periods, centred on it) */
+    function fine(x, M) {
+      var n = x.length, P = M.P, m = P.length, mp = new Float32Array(m), j, L;
+      for (j = 0; j < m; j++) {
+        if (!M.V[j]) continue;
+        var T0 = M.T[j], lo = Math.max(2, Math.floor(T0 * 0.97) - 1), hi = Math.ceil(T0 * 1.03) + 1, Lw = Math.round(2 * T0), s0 = Math.round(P[j] - Lw / 2 - T0 / 2), per = T0;
+        if (s0 >= 0 && s0 + Lw + hi + 2 < n) {
+          var dd = [], bl = -1, bv = Infinity;
+          for (L = lo - 1; L <= hi + 1; L++) { var s = 0; for (var i = 0; i < Lw; i += 2) { var v = x[s0 + i] - x[s0 + i + L]; s += v * v; } dd[L] = s; if (L >= lo && L <= hi && s < bv) { bv = s; bl = L; } }
+          if (bl > 0) { var y0 = dd[bl - 1], y1 = dd[bl], y2 = dd[bl + 1], den = y0 - 2 * y1 + y2; per = bl + (den > 0 ? 0.5 * (y0 - y2) / den : 0); }
+        }
+        mp[j] = per;
+      }
+      return mp;
+    }
+    /* 3 · the plan: for each sung note, the scale note it is meant to be, and how far to move each period (in cents).
+       The target is chosen when a note starts, from its average, and changes only when the voice's centre (its pitch with
+       the vibrato averaged out) goes clearly past the halfway point to another note for 50 ms (hysteresis); the step is put
+       where the voice crossed halfway. Speed: 0 ms (Hard) snaps at once; slower glides into each new note over
+       2.4 ms × (100 − speed). Keep my vibrato corrects the centre only, so the wobble stays. */
+    function plan(M, per, sr, o) {
+      var P = M.P, V = M.V, m = P.length, sc = o.sc, mm = new Float32Array(m), cs = new Float32Array(m), tg = new Float32Array(m), corr = new Float32Array(m);
+      var amt = Math.max(0, Math.min(1, o.amt / 100)), rt = 0.0024 * Math.max(0, 100 - o.spd), changes = 0, notes = 0, j, k, q;
+      function near(v) { var r = Math.round(v), b = r, bd = 1e9; for (var z = r - 6; z <= r + 6; z++) if (sc[((z % 12) + 12) % 12]) { var dz = Math.abs(v - z); if (dz < bd) { bd = dz; b = z; } } return b; }
+      function box(v, a, b, hw, out) { var lo = a, hi = a, s = 0; for (var z = a; z <= b; z++) { while (hi <= b && P[hi] <= P[z] + hw) { s += v[hi]; hi++; } while (P[lo] < P[z] - hw) { s -= v[lo]; lo++; } out[z] = s / (hi - lo); } }
+      var mid0 = new Float32Array(m), tmp = new Float32Array(m);
+      for (j = 0; j < m; j++) if (V[j] && per[j] > 0) mid0[j] = 69 + 12 * Math.log2(sr / per[j] / 440);
+      for (var a = 0; a < m;) {
+        if (!V[a] || !(per[a] > 0)) { a++; continue; }
+        var b = a; while (b + 1 < m && V[b + 1] && per[b + 1] > 0) b++;
+        for (j = a; j <= b; j++) { var p0 = mid0[Math.max(a, j - 1)], p1 = mid0[j], p2 = mid0[Math.min(b, j + 1)]; mm[j] = Math.max(Math.min(p0, p1), Math.min(Math.max(p0, p1), p2)); }   /* the middle of three */
+        box(mm, a, b, 0.085 * sr, tmp); box(tmp, a, b, 0.1 * sr, cs);   /* two averages, ~170 and 200 ms: a 5–6 Hz vibrato cancels */
+        var s = 0, c = 0; for (j = a; j <= b && P[j] - P[a] < 0.15 * sr; j++) { s += mm[j]; c++; }
+        var T = near(s / c), j0 = -1, last = a; notes++;
+        for (j = a; j <= b; j++) {
+          var N = near(cs[j]);
+          if (N !== T) {
+            var hf = (T + N) / 2, past = N > T ? cs[j] - hf : hf - cs[j];
+            if (past > 0.22) {
+              if (j0 < 0) j0 = j;
+              if (P[j] - P[j0] >= 0.05 * sr) {
+                s = 0; c = 0; for (q = j0; q <= b && P[q] - P[j0] < 0.15 * sr; q++) { s += mm[q]; c++; }
+                var NT = near(s / c);
+                if (NT !== T) { var md = (T + NT) / 2, up = NT > T, k0 = j0;
+                  while (k0 > last + 1 && (up ? mm[k0 - 1] > md : mm[k0 - 1] < md)) k0--;
+                  for (q = k0; q < j; q++) tg[q] = NT; T = NT; last = k0; changes++; notes++; }
+                j0 = -1;
+              }
+            } else j0 = -1;
+          } else j0 = -1;
+          tg[j] = T;
+        }
+        /* Keep my vibrato: each note's own centre, found inside the note only, with the slide into it and out of it (where
+           the voice is more than 45 cents from the note's middle) left out; across a slide the move goes smoothly from one
+           note's to the next, so the singer's own slide is kept, never pulled back or pushed past */
+        if (o.vib) {
+          var segs = [], s0 = a;
+          for (j = a + 1; j <= b + 1; j++) if (j > b || tg[j] !== tg[j - 1]) { segs.push([s0, j - 1]); s0 = j; }
+          var IN = segs.map(function (sg) {
+            var w = []; for (q = sg[0]; q <= sg[1]; q++) w.push(mm[q]); w.sort(function (p1, p2) { return p1 - p2; });
+            var med = w[w.length >> 1], is = sg[0], ie = sg[1];
+            while (is <= ie && Math.abs(mm[is] - med) > 0.45) is++;
+            while (ie >= is && Math.abs(mm[ie] - med) > 0.45) ie--;
+            if (is > ie) { for (q = sg[0]; q <= sg[1]; q++) tmp[q] = tg[q] - med; return [sg[0], sg[1]]; }
+            box(mm, is, ie, 0.085 * sr, cs); box(cs, is, ie, 0.1 * sr, tmp);
+            for (q = is; q <= ie; q++) tmp[q] = tg[q] - tmp[q];
+            return [is, ie];
+          });
+          for (k = 0; k < IN.length; k++) {
+            var lo0 = k ? IN[k - 1][1] : -1, hi0 = IN[k][0];
+            for (q = (k ? lo0 + 1 : a); q < hi0; q++) tmp[q] = k ? tmp[lo0] + (tmp[hi0] - tmp[lo0]) * (P[q] - P[lo0]) / Math.max(1, P[hi0] - P[lo0]) : tmp[hi0];
+          }
+          for (q = IN[IN.length - 1][1] + 1; q <= b; q++) tmp[q] = tmp[IN[IN.length - 1][1]];
+        }
+        var st = 0;
+        for (j = a; j <= b; j++) {
+          var raw = amt * 100 * (o.vib ? tmp[j] : tg[j] - mm[j]);
+          if (rt < 0.002 || j === a) st = raw; else st += (1 - Math.exp(-(P[j] - P[j - 1]) / sr / rt)) * (raw - st);
+          corr[j] = Math.max(-300, Math.min(300, st));
+        }
+        a = b + 1;
+      }
+      return { corr: corr, changes: changes, notes: notes, tg: tg };
+    }
+    function tuneWork(m) {
+      var x = m.x, sr = m.sr, tr = track2(x, sr), M = marks(x, sr, tr, 0.12);
+      if (M.P.length < 2) return { id: m.id, x: null, h: null, t: { changes: 0, notes: 0 } };
+      var pl = plan(M, fine(x, M), sr, m), big = 0, j;
+      for (j = 0; j < pl.corr.length; j++) if (Math.abs(pl.corr[j]) > big) big = Math.abs(pl.corr[j]);
+      var info = { changes: pl.changes, notes: pl.notes };
+      if (m.plan) { info.tg = Array.prototype.slice.call(pl.tg); info.at = M.P.slice(); info.v = M.V.slice(); }
+      if (big < 0.5) return { id: m.id, x: null, h: null, t: info };   /* already in tune: the take as it is */
+      var y = level(synth(x, M, function (q) { return Math.pow(2, pl.corr[q] / 1200); }, 1, 1), x, tr, sr);
+      /* only the notes are moved: between them (an s, a t, a breath, the quiet) the take itself, sample for sample, with
+         6 ms fades into and out of each note */
+      var n = x.length, P = M.P, V = M.V, mk = P.length, rmp = Math.round(0.006 * sr), wv = new Float32Array(n), a = 0, b, i;
+      while (a < mk) {
+        if (!V[a]) { a++; continue; }
+        for (b = a; b + 1 < mk && V[b + 1]; b++);
+        var s0 = Math.max(0, P[a] - Math.round(M.T[a] || 0)), s1 = Math.min(n, P[b] + Math.round(M.T[b] || 0) + 1);
+        for (i = Math.max(0, s0 - rmp); i < Math.min(n, s1 + rmp); i++) {
+          var w = i < s0 ? (i - (s0 - rmp)) / rmp : i >= s1 ? 1 - (i - s1 + 1) / rmp : 1; w = 0.5 - 0.5 * Math.cos(Math.PI * Math.max(0, Math.min(1, w)));
+          if (w > wv[i]) wv[i] = w;
+        }
+        a = b + 1;
+      }
+      for (i = 0; i < n; i++) y[i] = x[i] + wv[i] * (y[i] - x[i]);
+      return { id: m.id, x: y, h: null, t: info };
+    }
     function work(m) {
+      if (m.kind === "tune") return tuneWork(m);
       var x = m.x, sr = m.sr, tr = track(x, sr), M = marks(x, sr, tr), r0 = Math.pow(2, m.pitch / 12), f0 = Math.pow(r0, FMT), lead = null, h = null;
       if (M.P.length < 2) return { id: m.id, x: null, h: null };
       if (m.pitch) lead = level(synth(x, M, function () { return r0; }, f0, 1), x, tr, sr);
-      if (m.hv) { var iv = intervals(M, sr, m.hv, m.key, m.minor); h = level(synth(x, M, function (j) { return r0 * Math.pow(2, iv[j] / 12); }, f0, 0.35), x, tr, sr); }
+      if (m.hv) {   /* AOG-VOCAL-ENGINE-V1: the voice above, and a quieter fifth below, in the same buffer */
+        var iv = intervals(M, sr, m.hv, m.key, m.minor, 0);
+        var up = level(synth(x, M, function (j) { return r0 * Math.pow(2, iv[j] / 12); }, f0, 0.35), x, tr, sr);
+        var ivL = intervals(M, sr, 5, m.key, m.minor, 1);
+        var lo = level(synth(x, M, function (j) { return r0 * Math.pow(2, ivL[j] / 12); }, f0, 0.35), x, tr, sr);
+        h = new Float32Array(up.length); for (var qi = 0; qi < h.length; qi++) h[qi] = up[qi] + 0.55 * lo[qi]; }
       return { id: m.id, x: lead, h: h };
     }
     if (self) self.onmessage = function (e) { var r; try { r = work(e.data); } catch (err) { r = { id: e.data.id, err: String(err) }; }
@@ -724,10 +1077,13 @@
   /* Deep, High, Pitch and Harmony: { x: the lead, h: the second voice or null } */
   function pitchWork(x, sr, pitch, hv, k) {
     if (!pitch && !hv) return Promise.resolve({ x: x, h: null });
-    var m = { id: ++FX.seq, x: new Float32Array(x), sr: sr, pitch: pitch, hv: hv, key: k ? k.key : -1, minor: !!(k && k.minor) };
-    var done = function (r) { return { x: r.x || x, h: r.h || null }; }, w = fxWorker();
-    if (!w) return new Promise(function (ok) { setTimeout(ok, 0); }).then(function () { return done(FXW(null)(m)); });
-    return new Promise(function (ok, no) { FX.wait[m.id] = { ok: ok, no: no }; w.postMessage(m, [m.x.buffer]); }).then(done);
+    return fxRun({ x: new Float32Array(x), sr: sr, pitch: pitch, hv: hv, key: k ? k.key : -1, minor: !!(k && k.minor) })
+      .then(function (r) { return { x: r.x || x, h: r.h || null }; });
+  }
+  function fxRun(m) {   /* one job for the Worker (here, if Workers fail) */
+    m.id = ++FX.seq; var w = fxWorker();
+    if (!w) return new Promise(function (ok) { setTimeout(ok, 0); }).then(function () { return FXW(null)(m); });
+    return new Promise(function (ok, no) { FX.wait[m.id] = { ok: ok, no: no }; w.postMessage(m, [m.x.buffer]); });
   }
   /* long loops in slices, so the page never waits more than a few milliseconds */
   function sliced(n, fn) {
@@ -771,11 +1127,12 @@
   function prepared(P0) {
     var tk = cur(), P = P0 || B.P; if (!tk) return Promise.reject(new Error("no take"));
     var k = songKey(), hv = P.harm > 0 ? P.hiv : 0;
-    var s1 = [P.ss, P.tune, P.spd].join("|"), s2 = s1 + "|" + [P.pitch, hv, hv && k ? k.key + (k.minor ? "m" : "") : ""].join("|"), s3 = s2 + "|" + [P.ghost, P.old ? 1 : 0].join("|");
+    var s1 = [P.ss].concat(P.tune > 0 ? [P.tune, P.spd, P.vib ? 1 : 0, tuneScale(P).join("")] : [0]).join("|"),   /* AOG-VOCAL-TUNE-V2 */
+      s2 = s1 + "|" + [P.pitch, hv, hv && k ? k.key + (k.minor ? "m" : "") : "", hv ? "lo5" : ""].join("|"), s3 = s2 + "|" + [P.ghost, P.old ? 1 : 0].join("|");
     var sig = tk.id + "|" + s3;
     if (B.pre && B.pre.sig === sig) return B.pre.p;
     if (!tk.norm) tk.norm = norm(tk.dry);
-    var p = memo(tk, 1, s1, function () { return tune(deEss(tk.norm, tk.sr, P.ss), tk.sr, P.tune, P.spd); })
+    var p = memo(tk, 1, s1, function () { return tune(deEss(tk.norm, tk.sr, P.ss), tk.sr, P); })
       .then(function (x) { return memo(tk, 2, s2, function () { return pitchWork(x, tk.sr, P.pitch, hv, k); }); })
       .then(function (r) { return memo(tk, 3, s3, function () { return ghost(r.x, tk.sr, P.ghost).then(function (y) { return { x: P.old ? crackle(y, tk.sr) : y, h: r.h }; }); }); });
     if (!P0) {   /* the one on screen is kept; a test's look at another sound is not */
@@ -805,20 +1162,26 @@
   function pick(k) {
     if (!PRESETS[k]) return;
     B.snd = k; var was = B.P; B.P = P_(PRESETS[k].p);
-    if (k === "tuned" || k === "robot") say(keyName() ? "tunedKey" : "tunedNoKey", keyName() ? { key: keyName() } : null);
+    if (k === "tuned" || k === "robot" || k === "pop") tuneLine();
     if (k === "harmony") say(keyName() ? "harmKey" : "harmNoKey", keyName() ? { key: keyName() } : null);
     applied(was);
   }
   function setCtrl(k, v) {
     var was = B.P, P = {}; for (var x in B.P) P[x] = B.P[x]; P[k] = v; B.P = P;
     if (B.snd !== "custom") B.snd = "custom";
+    if (k === "tk" && P.tune > 0) tuneLine();   /* AOG-VOCAL-TUNE-V2: which notes it now tunes to, in one line */
     applied(was);
   }
   /* a change: live while it plays; Soft S and Tune, a moment later (the take carries on from where it was) */
   function applied(was) {
     paint();
+    if (B.state === "rec" && B.monCh) {
+      if (B.monShape !== shapeOf(B.P)) monOpen(B.bkUsed);
+      else B.monCh.set(B.P, B.ac.currentTime);
+    }
     var H0 = B.hear; if (!H0) return;
-    var N = B.P, slow = was.ss !== N.ss || was.tune !== N.tune || was.spd !== N.spd ||
+    var N = B.P, slow = was.ss !== N.ss || was.tune !== N.tune ||
+      (N.tune > 0 && (was.spd !== N.spd || !!was.vib !== !!N.vib || tuneScale(was).join() !== tuneScale(N).join())) ||   /* AOG-VOCAL-TUNE-V2 */
       was.pitch !== N.pitch || (was.harm > 0) !== (N.harm > 0) || (N.harm > 0 && was.hiv !== N.hiv) || was.ghost !== N.ghost || !!was.old !== !!N.old,   /* AOG-VOCAL-FX-V2 */
       again = shapeOf(was) !== shapeOf(N);
     if (slow || again) { clearTimeout(B.slowT); B.slowT = setTimeout(function () { if (B.hear) hear(B.ac.currentTime - B.hear.T); }, slow ? 350 : 0); return; }
@@ -901,6 +1264,8 @@
     make: function (k, ch) { var t = cur(); if (!t) return Promise.reject(new Error("no take")); var P = P_(PRESETS[k] ? PRESETS[k].p : B.P); if (ch) for (var x in ch) P[x] = ch[x];
       return prepared(P).then(function (pp) { return render(pp, t, P); }); },
     dry: function () { var t = cur(); return t ? t.norm || (t.norm = norm(t.dry)) : null; },
+    /* AOG-VOCAL-TUNE-V2: Tune alone on any sound (Tuned's settings with changes; plan: 1 also hands back each period's target) */
+    tune: function (x, sr, ch) { var P = P_(PRESETS.tuned.p); if (ch) for (var k in ch) P[k] = ch[k]; return tuneRun(new Float32Array(x), sr, P); },
     presets: ORDER.slice(), more: MORE.slice()
   };
 })();

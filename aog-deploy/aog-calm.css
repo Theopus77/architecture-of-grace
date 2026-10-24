@@ -174,3 +174,20 @@ html body .aogpg-bar button small { white-space: normal; overflow-wrap: anywhere
 @media (max-width: 600px) { html body .aogpg-bar button[disabled] { display: none; } }
 /* music-decks: the Pitch and Volume sliders sat 2px past their box on a phone (browser margin + 100% width) */
 html body label.knob input[type="range"] { max-width: 100%; margin-left: 0; margin-right: 0; box-sizing: border-box; }
+
+/* AOG-STILL-HIT-V1 (Jimmy, 2026-10-23, the Piano in the Studio: "When I hit the keys, the screen
+   shakes a bit. It is not neurodivergent and makes me shake.")
+   A key, a pad or a string may change color when it is played. It must not move. A 2px drop
+   changes the scroll height, the scrollbar flickers, and the whole screen jumps. */
+html body .kbd .down,
+html body #kbd .down,
+html body .pad.hit,
+html body .pad:active,
+html body .sp-pad.hit,
+html body .sp-pad:active {
+  transform: none !important;
+}
+html body .kbd,
+html body #kbd {
+  overflow: clip;
+}
