@@ -1162,8 +1162,8 @@ function proLays(set){ return set.pro && onPhone() ? PRO_LAY.filter(L=>L!=="b") 
    between them. The six of a note start together (lined up when they were made), each at the loudness the strength asks
    for; blended, they keep that loudness exactly: how alike the two are (P.r, measured when they were made) says how much
    they add up */
-function proMix(set, n, v){
-  const P=set.pro, have=proLays(set).filter(L=>set.buf[n+L]); if(!have.length) return [];
+function proMix(set, n, v, ideal){
+  const P=set.pro, have=proLays(set).filter(L=>ideal || set.buf[n+L]); if(!have.length) return [];
   let lo=null, hi=null; have.forEach(L=>{ if(P.c[L]<=v) lo=L; else if(hi==null) hi=L; });
   if(lo==null) return [[hi,1]]; if(hi==null) return [[lo,1]];
   const u=(v-P.c[lo])/(P.c[hi]-P.c[lo]), s=Math.max(0, Math.min(1, (u-0.2)/0.6));
@@ -1474,7 +1474,15 @@ function sampleVoice(c, ch, snd, m, v, when){
    Let go without the pedal (stop(t, tau, {rel:true}), noteOff), the damper's own sound follows, softly. */
 const REL_DB=-3, PEDAL_DB=-6;   /* the release noise and the pedal's sound, under Salamander's own levels (−37 and −20 dB) */
 function proVoice(c, ch, snd, set, m, v, when){
-  const P=set.pro, n=nearest(set, m), mix=proMix(set, n, v); if(!mix.length) return null;
+  const P=set.pro, n=nearest(set, m);
+  /* the strengths the full set would play; one not in yet is played by the nearest that is, at that strength's own level
+     (its loudness and its even trim), so the piano is as loud in its first moments as once every strength is in */
+  const near=L=>{ if(set.buf[n+L]) return L; const i=PRO_LAY.indexOf(L); let best=null;
+    PRO_LAY.forEach((x,j)=>{ if(set.buf[n+x] && (best==null || Math.abs(j-i)<Math.abs(PRO_LAY.indexOf(best)-i))) best=x; }); return best; };
+  const mix=[]; proMix(set, n, v, true).forEach(([L, w])=>{ const B=near(L); if(!B) return;
+    const g=w*evenP(snd, set, n, L, m)/evenP(snd, set, n, B, m), same=mix.find(q=>q[0]===B);
+    if(same) same[1]+=g; else mix.push([B, g]); });
+  if(!mix.length) return null;
   const rate=Math.pow(2,(m-n)/12), vv=clampV(v,0,1), f0=mtof(m), k=P.k[n];
   const lp=c.createBiquadFilter(); lp.type="lowpass"; lp.Q.value=0.5;
   /* the bright piano opens sooner (its own voicing, as before); the grand's own recordings carry its tone, so its filter
@@ -1489,7 +1497,7 @@ function proVoice(c, ch, snd, set, m, v, when){
   const srcs=[]; let end=when;
   mix.forEach(([L, w])=>{
     const key=n+L, buf=set.buf[key], fm=P.f[key], st=set.start[key]||0, lpx=set.lp[key];
-    const lay=Math.pow(10, (proDb(vv)-P.D[L]+(fm[3]||0))/20)*w*evenP(snd, set, n, L, m);
+    const lay=Math.pow(10, (proDb(vv)-P.D[L]+(fm[3]||0))/20)*w*evenP(snd, set, n, L, m);   /* w carries a stand-in's own level */
     const s=c.createBufferSource(); s.buffer=buf; s.playbackRate.value=rate;
     if(lpx){ s.loop=true; s.loopStart=lpx[0]; s.loopEnd=lpx[1]; }
     const sg=gainAt(c, lay), tF=when+Math.max(0, k[0]-st)/rate;
