@@ -1691,10 +1691,11 @@
     return y;
   }
   /* each stage of the work done ahead is kept on its take, so changing a later one does not make the earlier ones again */
-  function memo(tk, n, sig, fn) {
-    var m = tk.m || (tk.m = {}), e = m[n]; if (e && e.sig === sig) return e.p;
-    var p = Promise.resolve().then(fn); m[n] = { sig: sig, p: p };
-    p.catch(function () { if (tk.m && tk.m[n] && tk.m[n].p === p) delete tk.m[n]; });
+  function memo(tk, n, sig, fn) {   /* AOG-VOCAL-PRO-V1: the last four of each stage are kept, so going back to a sound is quick */
+    var m = tk.m || (tk.m = {}), L = m[n] || (m[n] = []), i;
+    for (i = 0; i < L.length; i++) if (L[i].sig === sig) { var hit = L.splice(i, 1)[0]; L.unshift(hit); return hit.p; }
+    var p = Promise.resolve().then(fn); L.unshift({ sig: sig, p: p }); if (L.length > 4) L.pop();
+    p.catch(function () { var Q = tk.m && tk.m[n]; if (Q) for (var j = 0; j < Q.length; j++) if (Q[j].p === p) { Q.splice(j, 1); break; } });
     return p;
   }
   /* the take, ready for the chain: levelled, Soft S, Tune; then Pitch and Harmony; then Ghost and the record's crackle.
