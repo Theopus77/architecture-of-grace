@@ -59,7 +59,7 @@ try{if(localStorage.getItem("aog.lang")==="es")document.documentElement.setAttri
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%;overflow-x:clip;overscroll-behavior:none}
 body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.55 var(--sans);overflow-x:clip;overscroll-behavior:none}
-body *{overscroll-behavior:contain}
+body *{overscroll-behavior-x:contain}
 h1,h2,h3{font-family:var(--display);font-weight:600;letter-spacing:-.02em;text-wrap:balance}
 p{text-wrap:pretty}
 a{color:inherit}
@@ -651,6 +651,14 @@ html.aog-keys .st-cp .st-keys{display:block}
 .st-fold>summary:focus-visible{outline:3px solid #c9a24b;outline-offset:2px}
 .st-fold .st-fh{font:400 1.14rem/1.25 "Fraunces",var(--serif,Georgia,serif);color:#efe5cf}
 .st-fold .st-fl{font:400 .95rem/1.4 var(--sans);color:#cfc5b3}
+/* AOG-DESK-QUIET-V1 (Jimmy, 2026-10-23: "there is so much text. I think no."): a fold's name is enough.
+   The sentence under it is hidden, except Start a new song, which wipes the desk. The standing essays
+   under the mixer, the loudness numbers, the loop and the song file are hidden too. A status line
+   still appears when something actually happens. */
+.st-fold>summary .st-fl{display:none}
+#foldNew>summary .st-fl{display:block}
+.st-fold>summary{min-height:44px}
+#mixerBlk>p[data-t="mixerLine"],#lufsBox>p[data-t="luWhat"],#playMore>p[data-t="songLen"],#carryBlk p[data-t="fileWhat"],.st-lk>p.st-info{display:none}
 .st-fold[open]>summary{border-bottom:1px solid #26282d;border-radius:11px 11px 0 0}
 .st-fold>.st-fb{padding:12px 14px 14px}
 .st-fold>.st-fb>:first-child{margin-top:0}
@@ -709,7 +717,7 @@ html.aog-keys .st-cp .st-keys{display:block}
 .st-roomk{max-width:24rem;margin:.7rem 0 0}   /* AOG-REAL-ROOMS-V1 */
 .st-roomc{margin:.45rem 0 0;font-size:.9rem}
 /* AOG-DESK-WOOD-V1: walnut end cheeks on the console and the desk below, as on the consoles in Jimmy's drawings */
-.st-chassis{--cheek:16px;padding-left:calc(var(--cheek) + 18px);padding-right:calc(var(--cheek) + 18px);overflow:hidden}
+.st-chassis{--cheek:16px;padding-left:calc(var(--cheek) + 18px);padding-right:calc(var(--cheek) + 18px);overflow:clip}
 .st-chassis::before,.st-chassis::after{content:"";position:absolute;top:0;bottom:0;width:var(--cheek);pointer-events:none;
   background:
     radial-gradient(circle at 50% 22px,#d9b56a 0 2.2px,#6b4a1c 2.6px,transparent 3.4px),
@@ -756,6 +764,7 @@ html.aog-keys .st-cp .st-keys{display:block}
 @media (hover:none){ .st-cs{transition:none} }
 /* AOG-STUDIO-ROOM-V1: inside the Recording Studio the desk sits in the dim control room, not on paper */
 html.in-studio,html.in-studio:root:root body{background-color:#17110c!important;background-image:none!important}
+html.in-studio #view{padding-bottom:32px}/* AOG-DESK-SCROLL-V1: the last fold clears the Studio's bar */
 html.in-studio .st-chassis{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 0 -18px 30px rgba(0,0,0,.35),0 0 0 1px rgba(255,214,160,.05),0 22px 50px -14px rgba(0,0,0,.8)}
 /* AOG-DESK-SONGS-BTN-V1: Your songs, a hardware button with the locker's light */
 .st-desk .st-songs{flex:0 0 auto;display:inline-flex;align-items:center;gap:.6rem;min-height:48px;padding:.35rem .95rem .35rem .75rem;border-radius:8px;border:1px solid #050506;cursor:pointer;
@@ -774,8 +783,8 @@ html.in-studio .st-chassis{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 
    volume knob for each clip, and crossfades between pieces." ══ */
 /* AOG-DESK-ZOOM-V1: zoomed in, the lanes grow wider than the window and scroll sideways inside it (never the page);
    the names stay put on the left */
-.st-tl{scroll-behavior:auto}
-.st-song .st-tl.zoomed{overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;container-type:inline-size;scrollbar-width:thin;scrollbar-color:#6a5a3a #0d0e10}
+.st-tl{scroll-behavior:auto;touch-action:pan-y}/* AOG-DESK-SCROLL-V1: a finger on the lanes still moves the desk */
+.st-song .st-tl.zoomed{overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;touch-action:pan-x pan-y;container-type:inline-size;scrollbar-width:thin;scrollbar-color:#6a5a3a #0d0e10}
 .st-tl.zoomed>.st-ruler,.st-tl.zoomed>.st-lane{width:calc(var(--lab) + (100cqw - var(--lab)) * var(--z,1))}
 .st-tl.zoomed .st-ph{left:calc(var(--lab) + (100cqw - var(--lab)) * var(--z,1) * var(--ph,0))}
 .st-tl.zoomed .st-ln,.st-tl.zoomed .st-ruler>span:first-child{position:sticky;left:0;z-index:3}
@@ -1045,6 +1054,7 @@ html.in-studio .st-chassis{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 
         <div class="st-fb">
           <label class="st-field st-name"><span class="st-lab" data-t="songName"></span><input type="text" id="songName" maxlength="80" autocomplete="off" enterkeyhint="done"></label>
           <label class="st-field st-bits"><span class="st-lab" data-t="bitsLab"></span><select id="bitsSel"></select></label><!-- AOG-DESK-BITS-V1 -->
+          <label class="st-field st-bits"><span class="st-lab" data-t="typeLab"></span><select id="outType"><option value="wav" data-t="typeWav"></option><option value="m4a" data-t="typeM4a"></option><option value="mp3" data-t="typeMp3"></option></select></label><!-- AOG-EXPORT-PRO-V1 -->
           <div class="st-row"><button type="button" class="st-btn st-go" id="mixBtn"></button><button type="button" class="st-btn st-go" id="outBtn"></button></div><!-- AOG-STUDIO-SENDOUT-V1 -->
           <p class="st-line" id="mixLine" aria-live="polite"></p>
           <div id="mixOut"></div>
@@ -1095,7 +1105,13 @@ html.in-studio .st-chassis{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 
       </details>
       </div>
     </section>
-    <section id="lessons" aria-label="Lessons"></section><!-- AOG-LESSONS-V1: the Mixing Desk's lessons (aog-lessons.js), under the instrument (Jimmy, 2026-10-05: "units and worksheets should go underneath the instruments") -->
+    <!-- AOG-DESK-LESSON-FOLD-V1: the worksheet stays closed, so the bottom of the desk is the bottom of the page until you ask for it -->
+    <details class="st-fold" id="lessonFold">
+      <summary><span class="st-fh" data-t="lesFold"></span><span class="st-fl" data-t="lesFoldL"></span></summary>
+      <div class="st-fb">
+        <section id="lessons" aria-label="Lessons"></section><!-- AOG-LESSONS-V1 -->
+      </div>
+    </details>
   </main>
   <footer class="foot" id="foot"></footer>
 </div>
@@ -1186,6 +1202,7 @@ const STR={
   fdAria:{en:"Track {n} · {name} · volume",es:"Pista {n} · {name} · volumen"}, fdPick:{en:"Track {n} · {name}",es:"Pista {n} · {name}"},
   chEmpty:{en:"Nothing on this track yet. Pick a recording below.",es:"Todavía no hay nada en esta pista. Elige una grabación abajo."},
   slipK:{en:"Lesson {n}",es:"Lección {n}"}, slipAll:{en:"All lessons ›",es:"Todas las lecciones ›"}, slipDone:{en:"Lesson done. Pick the next one when you are ready.",es:"Lección terminada. Elige la siguiente cuando quieras."},
+  lesFold:{en:"Lessons",es:"Lecciones"}, lesFoldL:{en:"The worksheet, when you want it.",es:"La hoja, cuando la quieras."},
   laneNames:{en:["Drums","Kit","Piano","Guitar","Bass","Band","Turntables","Voice","Live guitar","Live bass","Mix","Empty"],es:["Ritmos","Batería","Piano","Guitarra","Bajo","Banda","Tocadiscos","Voz","Guitarra en vivo","Bajo en vivo","Mezcla","Vacía"]},
   /* AOG-STUDIO-LONG-V1 — Jimmy: "I had no idea I could play 128 bars. I thought it ended after 8." */
   songLen:{en:"A song can be up to 128 bars, about 5 minutes. It grows as you add parts: pick a track, then use Plays to make it longer.",es:"Una canción puede tener hasta 128 compases, unos 5 minutos. Crece al agregar partes: elige una pista y usa Suena para alargarla."},
@@ -1194,7 +1211,7 @@ const STR={
   laneAria:{en:"Track {n}: {name}",es:"Pista {n}: {name}"}, laneBars:{en:"bars {a} to {b}",es:"compases {a} a {b}"},
   trackPick:{en:"Track",es:"Pista"},
   recsH:{en:"Put a recording on this track",es:"Pon una grabación en esta pista"},
-  recsNone:{en:"No recordings yet. On any instrument, press ● Record, then Send to the Mixing Desk.",es:"Aún no hay grabaciones. En cualquier instrumento, pulsa ● Grabar y luego Enviar a la mesa de mezclas."},
+  recsNone:{en:"No recordings yet.",es:"Aún no hay grabaciones."},
   putOn:{en:"Put it on track {n}",es:"Ponla en la pista {n}"},
   putting:{en:"Putting it on…",es:"Poniéndola…"},
   arrived:{en:"{name} is on track {n}.",es:"{name} está en la pista {n}."},   /* AOG-DESK-ARRIVE-V1 */
@@ -1279,6 +1296,7 @@ const STR={
   bitsLab:{en:"File quality",es:"Calidad del archivo"},
   bitsOpt16:{en:"16-bit · smaller file",es:"16 bits · archivo más pequeño"}, bitsOpt24:{en:"24-bit · studio quality",es:"24 bits · calidad de estudio"},
   bits16:{en:"16-bit",es:"16 bits"}, bits24:{en:"24-bit",es:"24 bits"},
+  typeLab:{en:"File type",es:"Tipo de archivo"}, typeWav:{en:"WAV (best)",es:"WAV (la mejor)"}, typeM4a:{en:"M4A (small, plays everywhere)",es:"M4A (pequeño, se oye en todas partes)"}, typeMp3:{en:"MP3",es:"MP3"},   /* AOG-EXPORT-PRO-V1 */
   /* AOG-DESK-CHOPS-OUT-V1 */
   outChops:{en:"Your chops (.zip)",es:"Tus cortes (.zip)"}, outChopsMaking:{en:"Making your chops' files…",es:"Haciendo los archivos de tus cortes…"},
   outChopsReady:{en:"Your chops: {n} files in one .zip",es:"Tus cortes: {n} archivos en un .zip"},
@@ -4191,6 +4209,12 @@ function outLevel(ld){
 function shareable(f){ try{ return !!(navigator.share && navigator.canShare && navigator.canShare({files:[f]})); }catch(e){ return false; } }
 function outItem(o){ o.url=o.url||URL.createObjectURL(o.file); return o; }
 function dropOut(k){ if(OUT[k] && OUT[k].url) URL.revokeObjectURL(OUT[k].url); OUT[k]=null; }
+/* AOG-EXPORT-PRO-V1: the File type chosen (WAV, M4A, MP3) and the song's name, artist, tempo and key inside the file;
+   aog-export.js is fetched on the first Send it out. If it cannot load, the .wav stays as it is. */
+function exportPro(o, Lc, Rc){
+  return (window.AOGExport ? Promise.resolve() : new Promise((ok,no)=>{ const s=document.createElement("script"); s.src="/aog-export.js"; s.onload=ok; s.onerror=no; document.head.appendChild(s); }))
+    .then(()=>AOGExport.desk(o, {Lc:Lc, Rc:Rc, sr:MIX_SR, type:($("outType")||{}).value||"wav", title:songTitle(), lang:S.lang, line:$("outLine")}), ()=>o);
+}
 async function sendOut(){
   const line=$("outLine"), btn=$("outBtn");
   foldOpen(btn);   /* AOG-DESK-FOLDS-V1: the Studio's Send it out lands here too */
@@ -4207,6 +4231,7 @@ async function sendOut(){
       OUT.song=outItem({file:new File([await wavBufW(Lc, Rc, MIX_SR, g, BITS)], name, {type:"audio/wav"}), g:g, at:Date.now(), left:leftOut(),
         bits:BITS, lufs:r.lufs, tpDb:r.tpDb, why:r.why});
       line.textContent="";
+      OUT.song=await exportPro(OUT.song, Lc, Rc);   /* AOG-EXPORT-PRO-V1 */
     }
   }catch(e){ line.textContent=t("fail"); }
   try{ await chopsLook(); }catch(e){ OUT.chopSrc=null; }   /* AOG-DESK-CHOPS-OUT-V1 */
@@ -4345,7 +4370,7 @@ function paintOut(){
   const left=o.left.filter(i=>SONG.tracks[i].clip);
   /* AOG-DESK-LUFS-V1: how loud the file came out, in plain words */
   const lv=t("outLoud",{l:luWords(o.lufs), p:dbWords(o.tpDb)})+(o.why==="peak" ? ". "+t("outLoudPeak") : o.why==="quiet" ? ". "+t("outLoudQuiet") : "");
-  box.innerHTML=outRow("song", t("outReady")+" · "+t(o.bits===24 ? "bits24" : "bits16")+" · "+madeWords(o.at))+
+  box.innerHTML=outRow("song", t("outReady")+" · "+(o.fmt ? L(o.fmt) : t(o.bits===24 ? "bits24" : "bits16"))+" · "+madeWords(o.at))+   /* AOG-EXPORT-PRO-V1: o.fmt for an M4A or MP3 */
     `<p class="st-line" id="outLoud">${esc(lv)}</p>`+
     (left.length ? `<p class="st-line">${esc(t("outLeft",{list:left.map(i=>t("trackLow",{n:i+1})).join(", ")}))}</p>` : "")+
     (OUT.stems ? outRow("stems", t("outStemsReady",{n:OUT.stems.n})) :
@@ -4365,6 +4390,7 @@ function paintBits(){
 function bindOut(){
   $("outBtn").onclick=sendOut;
   const bs=$("bitsSel"); if(bs) bs.onchange=()=>{ setBits(+bs.value); paintBits(); };   /* AOG-DESK-BITS-V1 */
+  const ot=$("outType"); if(ot){ try{ ot.value=localStorage.getItem("aog.studio.filetype.v1")||"wav"; if(!ot.value) ot.value="wav"; }catch(e){} ot.onchange=()=>{ try{ localStorage.setItem("aog.studio.filetype.v1", ot.value); }catch(e){} }; }   /* AOG-EXPORT-PRO-V1 */
   $("outBox").addEventListener("click", e=>{
     const el=e.target.closest && e.target.closest("button,a"); if(!el || el.disabled) return;
     if(el.id==="stemBtn") sendStems();
@@ -5289,10 +5315,11 @@ function paintSlip(){
   const el=$("slip"); if(!el) return;
   let m=null; try{ m=LES && LES.next ? LES.next() : null; }catch(e){ m=null; }
   if(!m){ el.hidden=true; return; }
-  const h=`<p class="st-slipk">${esc(t("slipK",{n:m.n}))} · ${esc(m.title)}</p><p class="st-slipt">${esc(m.done ? t("slipDone") : m.step)}</p><a href="#lessons">${esc(t("slipAll"))}</a>`;
+  const h=`<p class="st-slipk">${esc(t("slipK",{n:m.n}))} · ${esc(m.title)}</p><p class="st-slipt">${esc(m.done ? t("slipDone") : m.step)}</p><a href="#lessonFold">${esc(t("slipAll"))}</a>`;
   if(el._h!==h){ el._h=h; el.innerHTML=h; }
   el.hidden=false;
 }
+$("slip").addEventListener("click", e=>{ const a=e.target.closest && e.target.closest('a[href="#lessonFold"]'); if(!a) return; const d=$("lessonFold"); if(d) d.open=true; });
 
 /* ══ AOG-DESK-AUTO-V1 · Draw changes: a lane under a track's lane, its points, the menu, and the knobs that rest while
    their line has points. A tap on the lane adds a point; a drag along it draws (a point on each beat with Snap to the
@@ -5502,6 +5529,7 @@ function foldsInit(){
   /* the Studio's Send it out brings the button into view first: the fold opens so there is something to see */
   const ob=$("outBtn"), own=ob.scrollIntoView;
   ob.scrollIntoView=function(a){ foldOpen(ob); return own.call(ob, a); };
+  if(location.hash==="#lessons" || location.hash==="#lessonFold"){ const d=$("lessonFold"); if(d) d.open=true; }
 }
 function foldOpen(el){ const d=el && el.closest ? el.closest("details.st-fold") : null; if(d && !d.open) d.open=true; }
 /* a track picked: an empty one opens Add a recording, one with a recording opens This track */

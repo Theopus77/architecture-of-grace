@@ -333,8 +333,8 @@ footer a{color:inherit}
 .zoom{position:relative;overflow:hidden;width:100%;height:36px;background:#0a1410;border-radius:8px;display:block;margin-top:.3rem;touch-action:none}
 .zoom .zimg{height:36px;width:auto;will-change:transform}
 .zoom .zhead{position:absolute;left:50%;top:0;bottom:0;width:2px;margin-left:-1px;background:#c4452a;pointer-events:none}
-/* AOG-DJ-VINYL-LOOK-V1: the strobe dots are on the platter's edge, outside the record, as on a real deck. They turn
-   with the record (a platter turns under its record), so they still show the spin and the speed. */
+/* AOG-DJ-VINYL-LOOK-V1: the strobe dots sit on the platter edge. AOG-VINYL-REAL-V1 —
+   while a hand slips the record, the dots keep the motor's spin. The label follows the groove. */
 .strobe{position:absolute;inset:-8.14%;border-radius:50%;pointer-events:none;
   background:repeating-conic-gradient(from 0deg,#f0dfae 0deg 2.2deg,transparent 2.2deg 9deg);
   -webkit-mask:radial-gradient(circle closest-side, transparent 0 95%, #000 95.6% 99%, transparent 99.6%);
@@ -2245,7 +2245,7 @@ function deckParts(d){
   const strip = document.getElementById("strip"+d.id), wq = (s)=>wave ? wave.querySelector(s) : null;
   /* pictures still on their way to the old elements are dropped */
   d.wGen = (d.wGen||0) + 1; d.zGen = (d.zGen||0) + 1; d._wkey = ""; d._lk = ""; d.zs = d.zNext = null; d.waveDirty = true;
-  const mv = { vinyl:anim(q(".vinyl"), "turn"), arm:anim(q(".arm"), "turn"), meter:anim(q(".meter i"), "fill"),
+  const mv = { vinyl:anim(q(".vinyl"), "turn"), strobe:anim(q(".strobe"), "turn"), arm:anim(q(".arm"), "turn"), meter:anim(q(".meter i"), "fill"),
                cmeter:anim(strip ? strip.querySelector(".meter i") : null, "fill"),
                bmeter:anim(document.querySelector(`#bay [data-bch="${d.id}"] .bmeter i`), "fillY"),
                head:anim(wq(".whead"), "right"), slip:anim(wq(".wslip"), "right"), slipO:anim(wq(".wslip"), "show"),
@@ -2259,7 +2259,10 @@ function paintDeck(d){
   if(!d.$) return;
   const el = d.$.el;
   const M = d.$.mv;                                   /* turns in tenths of a degree */
-  setA(M.vinyl, STILL ? 0 : Math.round((((d.rot % 360) + 360) % 360)*10)*100);
+  const recA = ((d.rot % 360) + 360) % 360;
+  const platA = ((d.platterRot == null ? d.rot : d.platterRot) % 360 + 360) % 360;
+  setA(M.vinyl, STILL ? 0 : Math.round(recA * 10) * 100);
+  setA(M.strobe, STILL ? 0 : Math.round((((platA - recA) % 360) + 360) % 360 * 10) * 100);
   setA(M.arm, d.buf ? Math.round((16 + 13*Math.min(1, d.pos/d.buf.length))*10)*100 : 16000);
   if((FRAME & 1) === 0 || d.level === 0){            /* the meters, every other frame: the eye cannot tell */
     setA(M.meter, Math.round(Math.min(1, d.level*1.4)*100)*10);
@@ -2343,6 +2346,15 @@ function loop(){
   decks.forEach(d=>{
     if(d.buf){
       d.rot = (d.pos / d.buf.sampleRate) * DEG_PER_SEC;
+      /* the platter under the record keeps the motor's spin while a hand slips the vinyl */
+      const dt = Math.min(0.05, (now - (d._vis || now)) / 1000);
+      d._vis = now;
+      const recW = (d.rate || 0) * DEG_PER_SEC;
+      const motorW = d.motor ? (d.revOn ? -1 : 1) * (d.pitch || 1) * (d.rpm || 1) * (d.bend || 1) * DEG_PER_SEC : 0;
+      const wantW = (d.held && d.motor) ? motorW : recW;
+      d._pW = d._pW == null ? wantW : d._pW + (wantW - d._pW) * Math.min(1, dt / 0.05);
+      if (d.platterRot == null) d.platterRot = d.rot;
+      d.platterRot += d._pW * dt;
       /* a held hand that stops moving is a hand holding the record still */
       if(d.held && performance.now() - d.lastMove > 40){ d.handRate *= 0.45; send(d, { t:"hand", on:true, rate:d.handRate, x:d.handX || 0, v:0, still:true }); d.lastMove = performance.now(); }
     }
@@ -3346,17 +3358,23 @@ function bind(){
         lastAng = a; lastT = now; spun += da;
         trail.push({ t:now, a:spun });
       }
-      /* the speed is measured over the last ~70 ms of hand, not over the last
-         single event. Event to event, a slow steady pull is mostly jitter — and
-         jitter is what made a held-back vocal warble instead of drag. */
+      /* AOG-SCRATCH-FEEL-V1 — adaptive window + non-linear curve.
+         Slow pulls keep the 70 ms window (steady vocal drag).
+         Fast flicks use a shorter window so baby scratches and transforms
+         keep their sharp edges instead of smearing. */
       const now = performance.now();
-      while(trail.length > 2 && now - trail[0].t > 70) trail.shift();
+      const absInst = Math.abs(deck.handRate);
+      const win = absInst > 1.2 ? 28 : absInst > 0.4 ? 45 : 70;
+      while(trail.length > 2 && now - trail[0].t > win) trail.shift();
       const first = trail[0], last = trail[trail.length-1];
-      const dt = Math.max(0.012, (last.t - first.t)/1000);
-      const inst = ((last.a - first.a)/dt) / DEG_PER_SEC * TOUCH[touch];
-      /* slow moves are smoothed harder than fast ones: steadiness where you want
-         to hear words, immediacy where you want a cut. */
-      const k = Math.abs(inst) < 0.6 ? 0.45 : 0.8;
+      const dt = Math.max(0.008, (last.t - first.t)/1000);
+      let inst = ((last.a - first.a)/dt) / DEG_PER_SEC * TOUCH[touch];
+      /* non-linear: small motions stay fine, larger motions get more authority */
+      const sign = inst < 0 ? -1 : 1;
+      const mag = Math.abs(inst);
+      inst = sign * (mag < 0.35 ? mag * 0.75 : mag < 1.5 ? mag : mag * 1.15);
+      /* slow moves are smoothed harder than fast ones */
+      const k = Math.abs(inst) < 0.5 ? 0.38 : Math.abs(inst) < 1.5 ? 0.62 : 0.85;
       deck.handRate = deck.handRate*(1-k) + inst*k;
       if(Math.abs(deck.handRate) > 0.25){ const sg = deck.handRate > 0 ? 1 : -1; if(deck._sgn && sg !== deck._sgn) LX.flips[deck.id]++; deck._sgn = sg; }
       if(deck.handRate > 16) deck.handRate = 16;
