@@ -1683,7 +1683,7 @@ function evenOf(R, id, z, m){
   return (z.i!=null ? a.z[z.i] : 1)*(a.n && j>=0 && j<a.n.length ? a.n[j] : 1);
 }
 function recLayer(R, v){ const vel=R.meta.vel||[0]; let lay=1; vel.forEach((b,i)=>{ if(v>=b) lay=i+1; }); return lay; }
-function recPick(R, kind, m, v, s){
+function recPick(R, kind, m, v, s, nearOnly){
   const all=R.by[kind]; if(!all || !all.length) return null;
   const want=recLayer(R, v), lays=[...new Set(all.map(z=>z.v||1))];
   const lay=lays.reduce((a,b)=>{ const da=Math.abs(a-want), dbb=Math.abs(b-want); return dbb<da || (dbb===da && b<a) ? b : a; });
@@ -1697,12 +1697,15 @@ function recPick(R, kind, m, v, s){
   if(FORCE_Z!=null){ const f=FORCE_Z; FORCE_Z=null; const hit=all.find(z=>z.f===f && Math.abs(z.m-m)<=max); if(hit) return {z:hit, lay:hit.v||1}; }   /* AOG-NOTES-V1 */
   /* AOG-STRINGS-PRO-V1: a set recorded with one take of each note (the steel-string and the classical guitar) still never
      plays the same sound twice in a row: its takes, in turn, are the nearest recording; the same recording a hair apart
-     (vr: strVary); and, where the note sits between two recordings, the other one (two half steps away at most) */
+     (vr: strVary); and, where the note sits between two recordings, the other one (two half steps away at most). nearOnly: only
+     the nearest recording (a twelve-string, whose evened levels are set for it, AOG-LEVEL-EVEN-V1) */
   if(R.alt && kind==="sus" && takes.length===1){
-    const alt=[{z:takes[0], vr:0}, {z:takes[0], vr:1}];
-    const other=all.filter(z=>(z.v||1)===lay && z.m!==zm && Math.abs(z.m-m)<=2 && Math.sign(z.m-m)!==Math.sign(zm-m) && (s==null || z.s==null || z.s===s));
-    if(other.length) alt.push({z:other.sort((a,b)=>Math.abs(a.m-m)-Math.abs(b.m-m))[0], vr:0});
-    const key="alt|"+lay+"|"+m, k=(R.rr[key]||0)%alt.length; R.rr[key]=k+1;
+    const key="alt|"+lay+"|"+m+"|"+s+(nearOnly?"|n":""), A=R.altc||(R.altc={});   /* each note's takes, found once */
+    let alt=A[key];
+    if(!alt){ alt=A[key]=[{z:takes[0], vr:0}, {z:takes[0], vr:1}];
+      const other=all.filter(z=>(z.v||1)===lay && z.m!==zm && Math.abs(z.m-m)<=2 && Math.sign(z.m-m)!==Math.sign(zm-m) && (s==null || z.s==null || z.s===s));
+      if(other.length && !nearOnly) alt.push({z:other.sort((a,b)=>Math.abs(a.m-m)-Math.abs(b.m-m))[0], vr:0}); }
+    const k=(R.rr[key]||0)%alt.length; R.rr[key]=k+1;
     return {z:alt[k].z, lay:lay, vr:alt[k].vr ? ((R.rr.vary=((R.rr.vary||0)%4)+1)) : 0};
   }
   const key=kind+"|"+lay+"|"+zm+"|"+zs, k=(R.rr[key]||0)%takes.length; R.rr[key]=k+1;
@@ -1710,9 +1713,10 @@ function recPick(R, kind, m, v, s){
 }
 function recRate(z, m){ return Math.pow(2, (m-z.m)/12-(z.c||0)/1200); }
 /* AOG-STRINGS-PRO-V1: the same recording a hair apart, four ways in turn (vr 1-4): two cents sharp or flat, starting half a
-   millisecond to a millisecond into the pluck, a gentle peak or dip (about 1 dB) in the body's range */
-const VARY=[null, {c:2, off:0.0006, hz:1800, db:1.2}, {c:-2, off:0.0011, hz:2700, db:-1.1}, {c:1.5, off:0.0008, hz:1150, db:-1}, {c:-1.5, off:0.0004, hz:3500, db:1}];
-function strVary(z, vr){ const v=VARY[vr]; return v ? {det:Math.pow(2, v.c/1200), off:v.off, hz:v.hz, db:v.db} : null; }
+   millisecond to a millisecond into the pluck, its tone a little brighter or darker (the voice's own tone filter, moved
+   5 to 9 %: no filter added, so a take costs a phone nothing more) */
+const VARY=[null, {c:2, off:0.0006, lp:1.09}, {c:-2, off:0.0011, lp:0.92}, {c:1.5, off:0.0008, lp:1.05}, {c:-1.5, off:0.0004, lp:0.95}];
+function strVary(z, vr){ const v=VARY[vr]; return v ? {det:Math.pow(2, v.c/1200), off:v.off, lp:v.lp} : null; }
 /* a picked sound on a fingered recording (rclick: the recorded bass is played with the fingers): the made string's own
    pick, its click (the burst renderNote adds at the pluck), laid on the recorded pluck at the level and tone it has on the
    made string (rclick × that). Made once per sound when it is picked, from one note made with and without it; two of
@@ -1736,8 +1740,8 @@ function recVoice(c, ch, id, m, v, when, s, o, R){
   const slapS=!!(snd.rslap && R.slap && R.slap.length && !soft && !(o && o.plain)), pop=slapS && ((o && o.pop) || (s!=null && s>=2));
   /* rstac: a sound whose every note is short (a muted, thumpy bass) plays the short recordings */
   let kind=((o && o.art==="mute") || (snd.rstac && !soft)) ? (R.by.mute?"mute":R.by.stac?"stac":"sus") : (soft && R.by.hammer) ? "hammer" : "sus";
-  let pk=recPick(R, kind, m, slapS ? 1 : vv, s);
-  if(!pk && kind!=="sus"){ kind="sus"; pk=recPick(R, kind, m, slapS ? 1 : vv, s); }
+  let pk=recPick(R, kind, m, slapS ? 1 : vv, s, !!snd.twelve);
+  if(!pk && kind!=="sus"){ kind="sus"; pk=recPick(R, kind, m, slapS ? 1 : vv, s, !!snd.twelve); }
   if(!pk) return null;
   const z=pk.z, buf=R.buf[z.f], base=0.2*velAmp(vv)*lift*(z.g||1)*evenOf(R, id, z, m);
   /* the made string sits at 0.2 × the loudness curve over its first quarter second; a recording is brought there too
@@ -1759,12 +1763,10 @@ function recVoice(c, ch, id, m, v, when, s, o, R){
   /* the sound's own tone, as on the made string: a softer pluck a little darker (jazz darkest), above the layer's own
      (rlp, rlpSpan: a sound's tone for the recordings, where its made string's would leave a real one too bright) */
   const lpHz=snd.rlp||snd.lp, lpSpan=snd.rlp?(snd.rlpSpan||snd.lpSpan):snd.lpSpan;
-  if(lpHz){ const lp=c.createBiquadFilter(); lp.type="lowpass"; lp.Q.value=0.5; lp.frequency.value=Math.min(16000, lpHz*Math.pow(2, vv*lpSpan)); head.connect(lp); head=lp; }
-  /* AOG-STRINGS-PRO-V1: the other take's own tone (a gentle peak or dip in the body's range), and an up stroke: the pick
-     meets the strings from below, a little lighter in the low end (o.up: strumPlan's "u" strums, the strum strip played
-     upward) */
-  if(vr){ const q=c.createBiquadFilter(); q.type="peaking"; q.frequency.value=vr.hz; q.Q.value=1.1; q.gain.value=vr.db; head.connect(q); head=q; }
-  if(o && o.up){ const q=c.createBiquadFilter(); q.type="lowshelf"; q.frequency.value=240; q.gain.value=-2.5; head.connect(q); head=q; }
+  /* AOG-STRINGS-PRO-V1: the other take's own tone (vr.lp), and an up stroke a little brighter: the pick meets the thin
+     strings first, from below (o.up: strumPlan's "u" strums, the strum strip played upward) */
+  const tone=(vr ? vr.lp : 1)*(o && o.up ? 1.15 : 1);
+  if(lpHz){ const lp=c.createBiquadFilter(); lp.type="lowpass"; lp.Q.value=0.5; lp.frequency.value=Math.min(16000, lpHz*Math.pow(2, vv*lpSpan)*tone); head.connect(lp); head=lp; }
   head.connect(g);
   let tail=g; const pan=panFor(c, s); if(pan){ g.connect(pan); tail=pan; }
   tail.connect(rel); rel.connect(ch.amp);
@@ -1786,7 +1788,7 @@ function recVoice(c, ch, id, m, v, when, s, o, R){
       cs.connect(cl); cl.connect(cg); cg.connect(pan||rel); cs.start(when); nodes.push(cs); } }
   /* a twelve-string's second string, a hair later: an octave up on the four low courses, the same note a few cents out on
      the two high ones (as the made one) */
-  if(snd.twelve && s!=null){ const up=s<4?12:0, p2=recPick(R, "sus", m+up, vv, null);
+  if(snd.twelve && s!=null){ const up=s<4?12:0, p2=recPick(R, "sus", m+up, vv, null, true);
     if(p2){ const det=s<4?1:Math.pow(2,4/1200), s2=c.createBufferSource(); s2.buffer=R.buf[p2.z.f]; s2.playbackRate.value=recRate(p2.z, m+up)*det;
       const a2=0.2*velAmp(vv)*lift*(p2.z.g||1)*evenOf(R, id, p2.z, m)/L.long[p2.lay]*(s<4?0.5:0.7), g2=gainAt(c, a2/Math.max(1e-9, amp));
       /* AOG-STRINGS-PRO-V1: it rings on through its own loop, with its own fade */
