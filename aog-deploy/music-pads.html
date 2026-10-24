@@ -178,6 +178,8 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
 .st{min-height:40px;border-radius:8px;border:1px solid #4a4f58;background:#24272d;color:#c9bfae;font:700 11px/1 var(--sans);padding:0}
 .st.beat{background:#2c3037}
 .st[aria-pressed="true"]{background:#7fd0e0;border-color:#7fd0e0;color:#0b2530}
+.st.q[aria-pressed="true"]{background:#355e66;border-color:#5a9aa6;color:#e7f6f8} /* AOG-PADS-FEEL-V1: quiet */
+.st.h[aria-pressed="true"]{background:#f3ead8;border-color:#f3ead8;color:#1a1c20} /* hard */
 .st.now{outline:2px solid #ffd36b;outline-offset:-2px}
 .pm-range{width:100%;min-height:40px;accent-color:#ffd36b}
 .pm-val{font:700 .95rem/1 var(--sans);color:#f6efdf;letter-spacing:0;text-transform:none}
@@ -357,6 +359,10 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
               <label class="pm-f"><span><span id="panLab"></span> · <span class="pm-val" id="panVal"></span></span><input class="pm-range" id="pan" type="range" min="-100" max="100" step="10"></label>
             </div>
             <div class="pm-row" style="margin-top:8px">
+              <label class="pm-f"><span><span id="nudgeLab"></span> · <span class="pm-val" id="nudgeVal"></span></span><input class="pm-range" id="nudge" type="range" min="-20" max="20" step="5"></label>
+              <label class="pm-f"><span id="cutLab"></span><select class="pm-sel" id="cutSel"></select></label>
+            </div>
+            <div class="pm-row" style="margin-top:8px">
               <button type="button" class="pm-b" id="padReset"></button>
               <button type="button" class="pm-b" id="padClear"></button>
             </div>
@@ -440,11 +446,15 @@ const STR={
   fxBackDone:{en:"Every effect is off again.",es:"Todos los efectos están apagados otra vez."},
   padSet:{en:"Pad {n}: volume, pitch, left and right",es:"Pad {n}: volumen, tono, izquierda y derecha"},
   vol:{en:"Volume",es:"Volumen"}, tune:{en:"Pitch",es:"Tono"}, pan:{en:"Left and right",es:"Izquierda y derecha"},
+  nudge:{en:"Nudge",es:"A tiempo"}, nudge0:{en:"on the beat",es:"a tiempo"}, nudgeEarly:{en:"{n} ms early",es:"{n} ms antes"}, nudgeLate:{en:"{n} ms late",es:"{n} ms tarde"},
+  cut:{en:"Cuts",es:"Corta"}, cutNone:{en:"Nothing",es:"Nada"},
+  stepQ:{en:"quiet",es:"suave"}, stepM:{en:"medium",es:"media"}, stepH:{en:"hard",es:"fuerte"}, /* AOG-PADS-FEEL-V1 */
   center:{en:"middle",es:"centro"}, left:{en:"left {n}",es:"izq. {n}"}, right:{en:"right {n}",es:"der. {n}"}, semis:{en:"{n} steps",es:"{n} semitonos"},
   padReset:{en:"Reset this pad",es:"Restablecer este pad"}, padClear:{en:"Clear this pad's hits",es:"Borrar los golpes de este pad"},
   loading:{en:"Getting the sounds ready… {a} of {b}",es:"Preparando los sonidos… {a} de {b}"},
   failed:{en:"Some sounds did not load. Check the internet, then pick the bank again.",es:"Algunos sonidos no se cargaron. Revisa internet y vuelve a elegir el banco."},
   ready:{en:"Ready. Tap a pad. Near the middle plays louder.",es:"Listo. Toca un pad. Cerca del centro suena más fuerte."},
+  readyKeysB:{en:"Ready. Tap a chord, or press 1 to 0, − and = for chords 1 to 12.",es:"Listo. Toca un acorde o pulsa 1 a 0, − e = para los acordes 1 a 12."},   /* AOG-PADS-NUMKEYS-V1 */
   readyKeys:{en:"Ready. Tap a pad, or use the keys Z to V, A to F, Q to R and 1 to 4.",es:"Listo. Toca un pad o usa las teclas Z a V, A a F, Q a R y 1 a 4."},
   recOn:{en:"Recording. Play the pads; you hear them back the next time round.",es:"Grabando. Toca los pads; los oirás en la siguiente vuelta."},
   recOff:{en:"Your loop is kept on this device.",es:"Tu bucle se guarda en este dispositivo."},
@@ -950,7 +960,8 @@ function canPlay(bi){
 }
 
 /* ══ playing one pad ══ */
-function padSet(bi, pi){ const o=S.pads[bi+":"+pi]||{}; return {vol:o.vol==null?100:o.vol, tune:o.tune||0, pan:o.pan||0}; }
+function padSet(bi, pi){ const o=S.pads[bi+":"+pi]||{}; return {vol:o.vol==null?100:o.vol, tune:o.tune||0, pan:o.pan||0, nudge:+o.nudge||0, cut:o.cut==null?-1:+o.cut}; } /* AOG-PADS-FEEL-V1 */
+function feelWhen(bi, pi, when){ const n=padSet(bi, pi).nudge; return n ? when+n/1000 : when; }
 /* AOG-PADS-LEVEL-V1 (2026-10-05) — Jimmy: "all the instruments don't start at the same volume." Each sound is brought to the
    grand piano's level on the piano page (the level every music tool is set to), measured as the ear hears it (K-weighted,
    loudest 400 ms, through the Beat Lab's own limiter): each instrument's C chord (a basses' low C), each kit playing one
@@ -1076,6 +1087,8 @@ function trigger(bi, pi, vel, when, T){
   if(!T){ T=LIVE; T.c=ctx(); T.dest=bus; if(S.banks[bi].type==="chords") chordNow(d, when); }
   const c=T.c, P=padSet(bi, pi), R=READY[bi], OPEN=T.open, CHOP=T.chop;
   when=Math.max(when||0, c.currentTime);
+  if(P.cut>=0 && P.cut!==pi && T.held){ const prev=T.held[bi+":"+P.cut]; if(prev && prev.stop) prev.stop(when, true); } /* AOG-PADS-FEEL-V1 */
+  function keep(v){ if(v){ const H=T.held||(T.held={}); H[bi+":"+pi]=v; } return v; }
   const B=S.banks[bi], trim=d.kind==="drum" ? trimOf("kit", kitFor(bi, pi, d.kit)||d.kit) : d.kind==="chop" ? trimOf("rec", (B.rec||"").replace(/^c:/,"")) : trimOf("inst", B.inst);
   const out=c.createGain(); out.gain.value=P.vol/100*trim;
   /* AOG-PADS-VOICES-V1 (2026-10-11) — Jimmy, on his iPad: "after like 5-6 chords it froze up, same with the bank c the
@@ -1105,7 +1118,7 @@ function trigger(bi, pi, vel, when, T){
     if(o){ try{ o.src.playbackRate.value=rate; }catch(e){} if(n==="OPEN") OPEN[bi].push(o); out.gain.value*=mono(o.src.buffer);
       if(live) o.src.onended=()=>{ try{ o.src.disconnect(); o.gain.disconnect(); }catch(e){} unplug(); const k=OPEN[bi].indexOf(o); if(k>=0) OPEN[bi].splice(k,1); }; }
     else if(live) unplug();
-    return {stop(){}};
+    return keep({stop(at){ if(!o) return; const t0=Math.max(at||0, c.currentTime); try{ o.gain.gain.setTargetAtTime(0, t0, 0.01); o.src.stop(t0+0.06); }catch(e){} }});
   }
   if(d.kind==="chop"){
     const ch=R.chops && R.chops[d.i]; if(!ch){ unplug(); return null; }
@@ -1116,7 +1129,7 @@ function trigger(bi, pi, vel, when, T){
     g.gain.setValueAtTime(lv, Math.max(when+0.005, when+dur-0.012)); g.gain.linearRampToValueAtTime(0, when+dur);
     s.start(when, ch[0], ch[1]); s.stop(when+dur+0.02);
     const v={s:s, g:g}; CHOP[bi]=v; s.onended=()=>{ if(CHOP[bi]===v) CHOP[bi]=null; if(live){ try{ s.disconnect(); g.disconnect(); }catch(e){} unplug(); } };
-    return {stop(){}};
+    return keep({stop(at){ const t0=Math.max(at||0, c.currentTime); try{ g.gain.cancelScheduledValues(t0); g.gain.setTargetAtTime(0, t0, 0.006); s.stop(t0+0.05); }catch(e){} }});
   }
   /* a note or a chord: it rings while the pad is held */
   const zs=R.zones||[], vs=[], lv=0.62*(0.3+0.7*vel)/Math.sqrt(d.notes.length);
@@ -1132,8 +1145,8 @@ function trigger(bi, pi, vel, when, T){
     });
   });
   if(live){ if(!vs.length) unplug(); while(RING.length>MAXV) letGo(RING.shift(), c); }
-  return {parts:vs.map(v=>v.url), stop(at){ if((INST[B.inst]||{}).ring) return; const t0=Math.max(at||0, c.currentTime);   /* AOG-PADS-CLASSROOM-V1: a pluck rings out */
-    vs.forEach(v=>{ try{ v.g.gain.cancelScheduledValues(t0); v.g.gain.setTargetAtTime(0, t0, 0.07); v.s.stop(t0+0.6); }catch(e){} }); }};
+  return keep({parts:vs.map(v=>v.url), stop(at, force){ if(!force && (INST[B.inst]||{}).ring) return; const t0=Math.max(at||0, c.currentTime);   /* AOG-PADS-CLASSROOM-V1: a pluck rings out. AOG-PADS-FEEL-V1: a paired pad cuts it anyway */
+    vs.forEach(v=>{ try{ v.g.gain.cancelScheduledValues(t0); v.g.gain.setTargetAtTime(0, t0, 0.07); v.s.stop(t0+0.6); }catch(e){} }); }});
 }
 const RING=[], MAXV=32;   /* AOG-PADS-VOICES-V1: the notes ringing now, the oldest first */
 function letGo(v, c){ if(!v) return; try{ const t0=c.currentTime; v.g.gain.cancelScheduledValues(t0); v.g.gain.setTargetAtTime(0, t0, 0.012); v.s.stop(t0+0.06); }catch(e){} }
@@ -1181,8 +1194,8 @@ function pump(){
       const abs=SEQ.abs, tk=abs%L, when=SEQ.t0+abs*sp, pass=Math.floor(abs/L), list=m.get(tk);
       if(list) list.forEach(e=>{
         if(e._skip===pass){ delete e._skip; return; }
-        const v=trigger(e.b, e.p, e.v, when); flash(e.b, e.p, when, e.v);
-        if(v && gated(e.b)) v.stop(when+Math.max(12, e.len||48)*sp);
+        const hw=feelWhen(e.b, e.p, when); const v=trigger(e.b, e.p, e.v, hw); flash(e.b, e.p, hw, e.v);
+        if(v && gated(e.b)) v.stop(hw+Math.max(12, e.len||48)*sp); /* AOG-PADS-FEEL-V1 */
       });
       if(S.click && tk%PPQ===0) blip(when, tk===0);
       if(tk%24===0) markStep(tk/24, when);
@@ -1302,15 +1315,22 @@ function bindMidi(){
 }
 const KEYMAP={z:0,x:1,c:2,v:3,a:4,s:5,d:6,f:7,q:8,w:9,e:10,r:11,"1":12,"2":13,"3":14,"4":15,b:16,n:17,g:18,h:19,t:20,y:21,"5":22,"6":23};
 const KEYCAP=["Z","X","C","V","A","S","D","F","Q","W","E","R","1","2","3","4","B","N","G","H","T","Y","5","6"];
+/* AOG-PADS-NUMKEYS-V1 (Jimmy, 2026-10-23: chords on the number keys, as on the Guitar and Bass): in B · Chords the keys
+   1 to 0, − and = play chords 1 to 12 by their number; the letters still play the pads where they sit */
+const NUMKEYS=["1","2","3","4","5","6","7","8","9","0","-","="], NUMCAP=["1","2","3","4","5","6","7","8","9","0","−","="];
+function numBank(){ return S.bank===1; }
+function keyCap(i){ if(!numBank()) return KEYCAP[i]; if(i<12) return NUMCAP[i]; return /^[0-9]$/.test(KEYCAP[i]) ? "" : KEYCAP[i]; }
 function typing(el){ return el && el.closest && el.closest("input,select,textarea,[contenteditable]"); }
 document.addEventListener("keydown",(e)=>{
   if(e.metaKey||e.ctrlKey||e.altKey||typing(e.target)) return;
   const k=e.key.toLowerCase();
   if(k===" "){ if(e.target.closest && e.target.closest("button,summary,a")) return; e.preventDefault(); if(!e.repeat) (SEQ.on?stop:play)(); return; }
+  const ni=numBank() ? NUMKEYS.indexOf(k) : -1;
+  if(ni>=0){ e.preventDefault(); if(!e.repeat) press("k"+k, ni, S.full?1:0.8); return; }   /* AOG-PADS-NUMKEYS-V1 */
   if(KEYMAP[k]==null) return; e.preventDefault(); if(e.repeat) return;
   press("k"+k, KEYMAP[k], S.full?1:0.8);
 });
-document.addEventListener("keyup",(e)=>{ const k=e.key.toLowerCase(); if(KEYMAP[k]!=null) release("k"+k); });
+document.addEventListener("keyup",(e)=>{ const k=e.key.toLowerCase(); if(KEYMAP[k]!=null || NUMKEYS.indexOf(k)>=0) release("k"+k); });
 
 /* ══ AOG-PADS-BOUNCE-V1 — the loop as one exact file ════════════════════════════════════════════════════════════════
    Jimmy: "Make it" (a loop that goes to the Mixing Desk exactly, not a live take). The loop is played offline, never
@@ -1372,9 +1392,9 @@ async function renderLoop(){
   for(let pass=0;pass<passes;pass++) for(const tk of ticks){
     m.get(tk).forEach(e=>{
       if(e.b<0 || e.b>3) return;
-      const when=long ? pre-(passes-1-pass)*sec+tk*sp : (pass*L+tk)*sp; if(when<0) return;
-      const v=trigger(e.b, e.p, e.v, when, T);
-      if(v && gated(e.b)) v.stop(when+Math.max(12, e.len||48)*sp);
+      const when=long ? pre-(passes-1-pass)*sec+tk*sp : (pass*L+tk)*sp; const hw=feelWhen(e.b, e.p, when); if(hw<0) return;
+      const v=trigger(e.b, e.p, e.v, hw, T);
+      if(v && gated(e.b)) v.stop(hw+Math.max(12, e.len||48)*sp);
     });
     if(performance.now()-t0>SLICE_MS){ await breath(); t0=performance.now(); }
   }
@@ -1632,7 +1652,7 @@ function paintLine(){
   if(R && R.state==="failed") s=t("failed");
   else if(!isReady(S.bank)) s=t("loading",{a:(R&&R.got)||0, b:(R&&R.total)||"…"});
   else if(SEQ.rec) s=t("recOn");
-  else s=matchMedia("(pointer: fine)").matches ? t("readyKeys") : t("ready");
+  else s=matchMedia("(pointer: fine)").matches ? t(numBank() ? "readyKeysB" : "readyKeys") : t("ready");
   $("line").textContent=s;
 }
 function opt(v, label, cur){ return `<option value="${v}"${String(v)===String(cur)?" selected":""}>${label}</option>`; }
@@ -1703,7 +1723,7 @@ function paintPads(){
   if(cp) patPads(cp).forEach((p,k)=>{ PO[p]=PO[p] ? PO[p]+"·"+(k+1) : String(k+1); });
   const order=[12,13,14,15,22,23, 8,9,10,11,20,21, 4,5,6,7,18,19, 0,1,2,3,16,17];   /* AOG-PADS-24-V1: 17 to 24 on the right */
   box.innerHTML=order.map(i=>{ const d=defs[i];
-    return `<button type="button" class="pad${i===S.sel?" sel":""}${PO[i]?" inpat":""}" data-p="${i}" data-kind="${d.kind}" data-fam="${padFam(d)}" aria-label="${esc((i+1)+": "+d.name+(PO[i]?" · "+t("patStep",{n:PO[i]}):""))}"><span class="pi">${i+1}</span>${PO[i]?`<span class="po">${PO[i]}</span>`:""}<span class="pn${d.name.length>12?" long":""}">${esc(d.name)}</span>${fine?`<span class="pk keyonly">${KEYCAP[i]}</span>`:""}</button>`; }).join("");
+    return `<button type="button" class="pad${i===S.sel?" sel":""}${PO[i]?" inpat":""}" data-p="${i}" data-kind="${d.kind}" data-fam="${padFam(d)}" aria-label="${esc((i+1)+": "+d.name+(PO[i]?" · "+t("patStep",{n:PO[i]}):""))}"><span class="pi">${i+1}</span>${PO[i]?`<span class="po">${PO[i]}</span>`:""}<span class="pn${d.name.length>12?" long":""}">${esc(d.name)}</span>${fine&&keyCap(i)?`<span class="pk keyonly">${keyCap(i)}</span>`:""}</button>`; }).join("");
   box.classList.toggle("waiting", !isReady(bk));
   paintFamKey(defs);
   paintTubes(box, bk, defs);   /* AOG-PADS-CLASSROOM-V1 */
@@ -1782,26 +1802,27 @@ function setBars(n){
 }
 function paintSteps(){
   const G=barGroups(); SV.g=clamp(SV.g, 0, G-1);
-  const s0=SV.g*GROUP*16, n=Math.min(S.bars*16, s0+GROUP*16)-s0, long=S.bars>GROUP, bi=S.bank, pi=S.sel, on=new Set();
+  const s0=SV.g*GROUP*16, n=Math.min(S.bars*16, s0+GROUP*16)-s0, long=S.bars>GROUP, bi=S.bank, pi=S.sel, lv=new Map();
   const lo=s0*24, hi=(s0+n)*24;
-  S.ev.forEach(e=>{ if(e.b===bi && e.p===pi && e.t>=lo && e.t<hi) on.add(Math.floor(e.t/24)); });
+  S.ev.forEach(e=>{ if(e.b!==bi || e.p!==pi || e.t<lo || e.t>=hi) return; const i=Math.floor(e.t/24), v=e.v==null?0.8:e.v, g=v<0.62?"q":v<0.9?"m":"h", was=lv.get(i);
+    if(!was || g==="h" || (g==="m" && was==="q")) lv.set(i, g); }); /* AOG-PADS-FEEL-V1 */
   const d=padDefs(bi)[pi]||{name:""};
   txt("stepsH", t("stepsH",{n:pi+1, name:d.name}));
   const fam=d.kind ? padFam(d) : "snap", sb=$("steps"); if(sb.dataset.fam!==fam) sb.dataset.fam=fam;   /* AOG-PADS-STAGE-V1: the picked pad's colour */
   paintBarNav();
   /* a step's number: its beat (1 to 16) in a loop of up to 4 bars; in a longer loop, the bar's number on its first step */
-  const cls=i=>`st${i%4===0?" beat":""}${long && i%16===0?" bar":""}${i===stepNow?" now":""}`, num=i=>long ? (i%16===0 ? String(i/16+1) : "") : (i%4===0 ? String(i/4+1) : "");
+  const cls=i=>`st${lv.has(i)?" "+lv.get(i):""}${i%4===0?" beat":""}${long && i%16===0?" bar":""}${i===stepNow?" now":""}`, num=i=>long ? (i%16===0 ? String(i/16+1) : "") : (i%4===0 ? String(i/4+1) : ""), stepWord=i=>lv.has(i)?t({q:"stepQ",m:"stepM",h:"stepH"}[lv.get(i)]):"";
   /* AOG-STEADY-ALL-V1 (2026-10-17) — Jimmy: "after a certain number of notes are played, it freezes up for a note or two".
      Each new pad played made its row of steps again from nothing (and the page's helpers read the new row), between two
      hits. The steps already there are now changed in place, only where they differ. */
   const box=$("steps"), kids=box.children;
   if(kids.length===n){
-    for(let k=0;k<n;k++){ const i=s0+k, b=kids[k], cl=cls(i), pr=String(on.has(i)), al=t("stepN",{n:i+1}), ds=String(i), nm=num(i);
+    for(let k=0;k<n;k++){ const i=s0+k, b=kids[k], cl=cls(i), pr=String(lv.has(i)), al=t("stepN",{n:i+1})+(stepWord(i)?" "+stepWord(i):""), ds=String(i), nm=num(i);
       if(b.dataset.s!==ds) b.dataset.s=ds; if(b.className!==cl) b.className=cl; if(b.getAttribute("aria-pressed")!==pr) b.setAttribute("aria-pressed", pr); if(b.getAttribute("aria-label")!==al) b.setAttribute("aria-label", al);
       if(b.textContent!==nm) b.textContent=nm; }
     return;
   }
-  let h=""; for(let k=0;k<n;k++){ const i=s0+k; h+=`<button type="button" class="${cls(i)}" data-s="${i}" aria-pressed="${on.has(i)}" aria-label="${esc(t("stepN",{n:i+1}))}">${num(i)}</button>`; }
+  let h=""; for(let k=0;k<n;k++){ const i=s0+k, w=stepWord(i); h+=`<button type="button" class="${cls(i)}" data-s="${i}" aria-pressed="${lv.has(i)}" aria-label="${esc(t("stepN",{n:i+1})+(w?" "+w:""))}">${num(i)}</button>`; }
   $("steps").innerHTML=h;
 }
 /* AOG-STEADY-ALL-V1: words written only when they change (each write is a change the page's helpers look at) */
@@ -1809,9 +1830,13 @@ function txt(id, v){ const e=$(id); if(e && e.textContent!==v) e.textContent=v; 
 function paintPadSet(){
   const P=padSet(S.bank, S.sel);
   txt("padSetSum", t("padSet",{n:S.sel+1}));
-  $("vol").value=P.vol; $("tune").value=P.tune; $("pan").value=P.pan;
+  $("vol").value=P.vol; $("tune").value=P.tune; $("pan").value=P.pan; $("nudge").value=P.nudge;
   txt("volVal", P.vol+"%"); txt("tuneVal", t("semis",{n:(P.tune>0?"+":"")+P.tune}));
   txt("panVal", P.pan===0 ? t("center") : P.pan<0 ? t("left",{n:-P.pan}) : t("right",{n:P.pan}));
+  txt("nudgeVal", P.nudge===0 ? t("nudge0") : P.nudge<0 ? t("nudgeEarly",{n:-P.nudge}) : t("nudgeLate",{n:P.nudge}));
+  const sel=$("cutSel"), defs=padDefs(S.bank), sig=S.bank+":"+S.sel+":"+defs.map(d=>d&&d.name||"").join("|");
+  if(sel.dataset.sig!==sig){ sel.dataset.sig=sig; sel.innerHTML='<option value="-1">'+esc(t("cutNone"))+"</option>"+defs.map((d,i)=>i===S.sel?"":'<option value="'+i+'">'+esc((i+1)+" · "+(d&&d.name||""))+"</option>").join(""); }
+  sel.value=String(P.cut>=0?P.cut:-1);
 }
 function paintTransport(){
   $("playBtn").textContent=SEQ.on ? t("stop") : t("play"); $("playBtn").setAttribute("aria-pressed", SEQ.on?"true":"false");
@@ -1831,7 +1856,7 @@ function paintControls(){
   $("clickBtn").textContent=t("click"); $("fullBtn").textContent=t("full"); if(MIDI) MIDI.paint();
   paintBeatPick();
   $("undoBtn").textContent=t("undo"); $("clearBtn").textContent=t("clear");
-  $("volLab").textContent=t("vol"); $("tuneLab").textContent=t("tune"); $("panLab").textContent=t("pan");
+  $("volLab").textContent=t("vol"); $("tuneLab").textContent=t("tune"); $("panLab").textContent=t("pan"); $("nudgeLab").textContent=t("nudge"); $("cutLab").textContent=t("cut");
   $("padReset").textContent=t("padReset"); $("padClear").textContent=t("padClear");
 }
 /* AOG-PADS-BEATPICK-V1 (Jimmy, 2026-10-05: "Is there a better way to pick a beat? The scroll down list is exhausting, plus I
@@ -2086,14 +2111,28 @@ function init(){
   $("beatPrev").onclick=()=>stepBeat(-1); $("beatNext").onclick=()=>stepBeat(1);
   $("steps").addEventListener("click",(e)=>{ const b=e.target.closest && e.target.closest(".st"); if(!b) return; SV.follow=false;
     const i=+b.dataset.s, bi=S.bank, pi=S.sel, lo=i*24, hi=lo+24; snapshot();
-    const had=S.ev.some(x=>x.b===bi && x.p===pi && x.t>=lo && x.t<hi);
-    LES.mark(had ? "stepdel" : "stepadd");
-    if(had) S.ev=S.ev.filter(x=>!(x.b===bi && x.p===pi && x.t>=lo && x.t<hi));
-    else { S.ev.push({b:bi, p:pi, t:lo, v:0.8, len:24}); if(!SEQ.on && isReady(bi)){ const v=trigger(bi, pi, 0.8, ctx().currentTime); flash(bi, pi, 0, 0.8); if(v && gated(bi)) v.stop(ctx().currentTime+0.25); } }
+    const hits=S.ev.filter(x=>x.b===bi && x.p===pi && x.t>=lo && x.t<hi);
+    const v0=hits.reduce((m,x)=>Math.max(m, x.v==null?0.8:x.v), 0);
+    /* empty → medium, medium → hard, hard → quiet, quiet → off. AOG-PADS-FEEL-V1 */
+    let next;
+    if(!hits.length) next=0.8;
+    else if(v0<0.62) next=0;
+    else if(v0<0.9) next=1;
+    else next=0.45;
+    LES.mark(next? "stepadd" : "stepdel");
+    if(!hits.length){ S.ev.push({b:bi, p:pi, t:lo, v:next, len:24}); }
+    else if(!next){ S.ev=S.ev.filter(x=>!(x.b===bi && x.p===pi && x.t>=lo && x.t<hi)); }
+    else hits.forEach(x=>{ x.v=next; });
+    if(next && !SEQ.on && isReady(bi)){ const v=trigger(bi, pi, next, ctx().currentTime); flash(bi, pi, 0, next); if(v && gated(bi)) v.stop(ctx().currentTime+0.25); }
     changed(); });
   const setPad=(k, v)=>{ const key=S.bank+":"+S.sel, o=Object.assign({}, S.pads[key]||{}); o[k]=+v; S.pads[key]=o; LES.mark({vol:"pvol", tune:"ptune", pan:"ppan"}[k]); save(); paintPadSet(); };
-  $("vol").oninput=()=>setPad("vol", $("vol").value); $("tune").oninput=()=>setPad("tune", $("tune").value); $("pan").oninput=()=>setPad("pan", $("pan").value);
-  $("padReset").onclick=()=>{ delete S.pads[S.bank+":"+S.sel]; LES.mark("preset"); save(); paintPadSet(); };
+  $("vol").oninput=()=>setPad("vol", $("vol").value); $("tune").oninput=()=>setPad("tune", $("tune").value); $("pan").oninput=()=>setPad("pan", $("pan").value); $("nudge").oninput=()=>setPad("nudge", $("nudge").value);
+  $("cutSel").onchange=()=>{ const bi=S.bank, pi=S.sel, other=+$("cutSel").value, key=bi+":"+pi, mine=Object.assign({}, S.pads[key]||{}), prev=mine.cut;
+    const drop=(a,b)=>{ const k=bi+":"+a, o=S.pads[k]; if(o && o.cut===b) delete o.cut; };
+    if(prev>=0 && prev!==pi) drop(prev, pi);
+    if(!(other>=0)) delete mine.cut; else { mine.cut=other; const ok=bi+":"+other, oo=Object.assign({}, S.pads[ok]||{}); if(oo.cut>=0 && oo.cut!==pi) drop(oo.cut, other); oo.cut=pi; S.pads[ok]=oo; }
+    if(!Object.keys(mine).length) delete S.pads[key]; else S.pads[key]=mine; save(); paintPadSet(); };
+  $("padReset").onclick=()=>{ const key=S.bank+":"+S.sel, o=S.pads[key]; if(o && o.cut>=0){ const po=S.pads[S.bank+":"+o.cut]; if(po && po.cut===S.sel) delete po.cut; } delete S.pads[key]; LES.mark("preset"); save(); paintPadSet(); };
   $("padClear").onclick=()=>{ const bi=S.bank, pi=S.sel; if(!S.ev.some(x=>x.b===bi && x.p===pi)) return; snapshot(); S.ev=S.ev.filter(x=>!(x.b===bi && x.p===pi)); changed(); };
   $("langBtn").onclick=()=>{ S0.lang=S0.lang==="es"?"en":"es"; try{ localStorage.setItem("aog.lang", S0.lang); }catch(e){} paintAll(); };
   $("themeBtn").onclick=()=>{ const h=document.documentElement, d=h.getAttribute("data-theme")==="dark"?"light":"dark";

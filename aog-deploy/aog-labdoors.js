@@ -120,6 +120,7 @@
       "html.in-studio .aog-learn>summary{min-height:44px;display:flex;align-items:center;gap:.5rem;padding:0 14px;cursor:pointer;font:700 1rem/1.2 var(--sans,system-ui,sans-serif);color:var(--ink,#1a232c);list-style:none}" +
       "html.in-studio .aog-learn>summary::-webkit-details-marker{display:none}" +
       "html.in-studio .aog-learn>summary::before{content:'\\25B8';font-size:.85em}html.in-studio .aog-learn[open]>summary::before{content:'\\25BE'}" +
+      "html.in-studio details.st-fold:not([open])>:not(summary),html.in-studio .aog-learn:not([open])>:not(summary){display:none!important}" +
       "html.in-studio .pm #pads+.pm-row,html.in-studio #rig #pads+.row{margin-top:.8rem}" +
       "html.in-studio .aog-learn>.aog-learn-in{padding:0 12px 12px}html.in-studio .aog-learn .bench-bar{margin:0;position:static}" +
       /* the course box and the guide line wait out of sight until they are in Lessons and more (no jump on the screen) */
@@ -192,8 +193,12 @@
     /* AOG-STUDIO-LESSONS-LAST-V1 (Jimmy, 2026-10-10, on the Drum Machine: "The worksheets lessons should not be above the
        looping information and sending it over"): in every room the lessons card comes after the playing, recording and
        sending, just above Lessons and more. A card already below it stays where it is. */
+    /* AOG-DESK-LESSON-SHUT-V1: the Mixing Desk keeps the card inside its closed Lessons fold.
+       Pulling it out left the fold empty and the card open on the page. A card already in a
+       disclosure stays there, so closed means closed. */
     var lessons = D.getElementById("lessons"), learn = D.getElementById("aogLearn");
-    if (lessons && learn && learn.parentNode && !learn.contains(lessons) &&
+    var folded = lessons && lessons.closest && lessons.closest("details");
+    if (!folded && lessons && learn && learn.parentNode && !learn.contains(lessons) &&
         (lessons.compareDocumentPosition(learn) & Node.DOCUMENT_POSITION_FOLLOWING) && lessons.nextElementSibling !== learn) {
       learn.parentNode.insertBefore(lessons, learn);
     }

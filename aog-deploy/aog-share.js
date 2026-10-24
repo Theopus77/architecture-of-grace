@@ -9,6 +9,8 @@
       small in the browser with WebCodecs: AAC in an .m4a where the browser can make AAC (Safari 26 on iPhone and iPad, Chrome
       and Edge on a Mac, Windows, Android), else Opus in an .m4a (Chrome on Linux, Firefox). A browser with neither (an iPhone
       before iOS 26) gets the levelled .wav, as Share it makes. The message is Listen back's own.
+      AOG-EXPORT-PRO-V1 (2026-10-23): aog-export.js (fetched then) makes the file: the same codecs, now with the lossy ceiling
+      (−1.5 dBTP before, and under −1 dBTP once decoded) and the tags (title, artist, album, year, tempo, key); the .wav is tagged too.
    2. Send the beat: a link, https://architectureofgrace.com/the-studio?beat=<code>. The code is the song's recipe: the Drum
       Machine's banks A to C (kits; the chords' and the bass's instrument, key, scale, range, pattern), their hits and pad
       settings, bars, tempo, swing, the song's key and the title. No recordings, nothing personal (not the artist's name).
@@ -61,7 +63,6 @@
   function did(what) { try { window.dispatchEvent(new CustomEvent("aog-studio-did", { detail: { what: what } })); } catch (e) {} }
   function slug(s) { return String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 40); }
   function clampI(v, a, b, d) { v = Math.round(+v); return isFinite(v) ? Math.max(a, Math.min(b, v)) : d; }
-  function breath() { return new Promise(function (r) { try { var c = new MessageChannel(); c.port1.onmessage = function () { c.port1.close(); r(); }; c.port2.postMessage(0); } catch (e) { setTimeout(r, 0); } }); }
 
   /* ══ the beat's code: JSON → deflate-raw → base64url ══ */
   function b64u(bytes) { var s = "", i, CH = 0x8000; for (i = 0; i < bytes.length; i += CH) s += String.fromCharCode.apply(null, bytes.subarray(i, i + CH)); return btoa(s).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, ""); }
@@ -160,106 +161,13 @@
     return { url: ORIGIN + "/the-studio?beat=" + code, code: code, title: name };
   }
 
-  /* ══ the song, made small: WebCodecs (AAC, else Opus) in an .m4a ══ */
-  function cat(list) {
-    var n = 0, i; for (i = 0; i < list.length; i++) n += list[i].length;
-    var o = new Uint8Array(n), at = 0; for (i = 0; i < list.length; i++) { o.set(list[i], at); at += list[i].length; } return o;
-  }
-  function u32(n) { return [n >>> 24 & 255, n >>> 16 & 255, n >>> 8 & 255, n & 255]; }
-  function u16(n) { return [n >>> 8 & 255, n & 255]; }
-  function str(s) { var o = []; for (var i = 0; i < s.length; i++) o.push(s.charCodeAt(i)); return o; }
-  function box(t) { var parts = [].slice.call(arguments, 1).map(function (p) { return p instanceof Uint8Array ? p : new Uint8Array(p); }), body = cat(parts); return cat([new Uint8Array(u32(body.length + 8).concat(str(t))), body]); }
-  function full(t, v, f) { return box.apply(null, [t, [v, f >> 16 & 255, f >> 8 & 255, f & 255]].concat([].slice.call(arguments, 3))); }
-  var MATRIX = [].concat(u32(0x10000), u32(0), u32(0), u32(0), u32(0x10000), u32(0), u32(0), u32(0), u32(0x40000000));
-  var FREQS = [96000, 88200, 64000, 48000, 44100, 32000, 24000, 22050, 16000, 12000, 11025, 8000];
-  /* m: {kind: "aac"|"opus", rate (the media's clock), ch, sizes, durs (in rate), data (the frames, end to end), asc, preskip, keep (samples to keep, or 0), br} */
-  function mp4(m) {
-    var count = m.sizes.length, total = 0, i;
-    for (i = 0; i < count; i++) total += m.durs[i];
-    var stts = [], run = null;
-    for (i = 0; i < count; i++) { if (run && run[1] === m.durs[i]) run[0]++; else { run = [1, m.durs[i]]; stts.push(run); } }
-    var entryHead = [0, 0, 0, 0, 0, 0].concat(u16(1), u32(0), u32(0), u16(m.ch), u16(16), u16(0), u16(0), u32(m.rate * 65536));
-    var entry;
-    if (m.kind === "aac") {
-      var dsi = [0x05, m.asc.length].concat([].slice.call(m.asc)), dcd = [0x04, 13 + dsi.length, 0x40, 0x15, 0, 0, 0].concat(u32(m.br), u32(m.br), dsi);
-      var esd = [0x03, 3 + dcd.length + 3, 0, 1, 0].concat(dcd, [0x06, 1, 0x02]);
-      entry = box("mp4a", entryHead, full("esds", 0, 0, esd));
-    } else entry = box("Opus", entryHead, box("dOps", [0, m.ch].concat(u16(m.preskip), u32(m.inRate), u16(0), [0])));
-    var media = m.kind === "opus" ? Math.max(0, total - m.preskip) : total, shown = m.keep > 0 ? Math.min(m.keep, media) : media;
-    var edts = m.kind === "opus" || m.keep > 0 ? box("edts", full("elst", 0, 0, u32(1), u32(shown), u32(m.kind === "opus" ? m.preskip : 0), u16(1), u16(0))) : new Uint8Array(0);
-    var ftyp = m.kind === "aac" ? box("ftyp", str("M4A "), u32(0), str("M4A "), str("isom"), str("mp42")) : box("ftyp", str("isom"), u32(512), str("isom"), str("iso2"), str("mp41"), str("Opus"));
-    function moov(off) {
-      var szs = []; for (var j = 0; j < count; j++) szs.push.apply(szs, u32(m.sizes[j]));
-      var tt = []; stts.forEach(function (r) { tt.push.apply(tt, u32(r[0]).concat(u32(r[1]))); });
-      var stbl = box("stbl", full("stsd", 0, 0, u32(1), entry), full("stts", 0, 0, u32(stts.length), tt), full("stsc", 0, 0, u32(1), u32(1), u32(count), u32(1)),
-        full("stsz", 0, 0, u32(0), u32(count), szs), full("stco", 0, 0, u32(1), u32(off)));
-      var minf = box("minf", full("smhd", 0, 0, u16(0), u16(0)), box("dinf", full("dref", 0, 0, u32(1), full("url ", 0, 1))), stbl);
-      var mdia = box("mdia", full("mdhd", 0, 0, u32(0), u32(0), u32(m.rate), u32(total), u16(0x55c4), u16(0)),
-        full("hdlr", 0, 0, u32(0), str("soun"), u32(0), u32(0), u32(0), str("SoundHandler"), [0]), minf);
-      var tkhd = full("tkhd", 0, 3, u32(0), u32(0), u32(1), u32(0), u32(shown), u32(0), u32(0), u16(0), u16(0), u16(0x0100), u16(0), MATRIX, u32(0), u32(0));
-      var mvhd = full("mvhd", 0, 0, u32(0), u32(0), u32(m.rate), u32(shown), u32(0x10000), u16(0x0100), u16(0), u32(0), u32(0), MATRIX, new Array(24).fill(0), u32(2));
-      return box("moov", mvhd, box("trak", tkhd, edts, mdia));
-    }
-    var size0 = moov(0).length, off = ftyp.length + size0 + 8;
-    return new Blob([ftyp, moov(off), new Uint8Array(u32(m.data.length + 8).concat(str("mdat"))), m.data], { type: "audio/mp4" });
-  }
-  var CODECS = [
-    { kind: "aac", cfg: { codec: "mp4a.40.2", bitrate: 128000, aac: { format: "aac" } } },
-    { kind: "opus", cfg: { codec: "opus", bitrate: 96000, opus: { frameDuration: 20000 } } }
-  ];
-  async function pickCodec(sr) {
-    if (!window.AudioEncoder || !window.AudioData || !AudioEncoder.isConfigSupported) return null;
-    for (var i = 0; i < CODECS.length; i++) for (var rates = [sr, 48000, 44100], j = 0; j < rates.length; j++) {
-      var c = Object.assign({ sampleRate: rates[j], numberOfChannels: 2 }, CODECS[i].cfg);
-      try { var r = await AudioEncoder.isConfigSupported(c); if (r && r.supported) return { kind: CODECS[i].kind, cfg: c }; } catch (e) {}
-    }
-    return null;
-  }
-  async function resample(L, R, sr, to) {
-    var O = window.OfflineAudioContext || window.webkitOfflineAudioContext, n = Math.ceil(L.length * to / sr), off = new O(2, n, to);
-    var b = off.createBuffer(2, L.length, sr); b.copyToChannel(L, 0); b.copyToChannel(R, 1);
-    var s = off.createBufferSource(); s.buffer = b; s.connect(off.destination); s.start(0);
-    var out = await off.startRendering(); return [out.getChannelData(0), out.getChannelData(1)];
-  }
-  function u8(d) { if (!d) return null; if (d instanceof ArrayBuffer) return new Uint8Array(d.slice(0)); return new Uint8Array(d.buffer.slice(d.byteOffset, d.byteOffset + d.byteLength)); }
-  async function encodeSmall(L, R, sr, gain) {
-    var pick = await pickCodec(sr); if (!pick) return null;
-    var rate = pick.cfg.sampleRate;
-    if (rate !== sr) { var rs = await resample(L, R, sr, rate); L = rs[0]; R = rs[1]; }
-    var chunks = [], desc = null, err = null;
-    var enc = new AudioEncoder({ output: function (c, meta) {
-      var b = new Uint8Array(c.byteLength); c.copyTo(b);
-      chunks.push({ d: b, dur: c.duration });
-      if (!desc && meta && meta.decoderConfig && meta.decoderConfig.description) desc = u8(meta.decoderConfig.description);
-    }, error: function (e) { err = e; } });
-    enc.configure(pick.cfg);
-    var n = L.length, F = Math.min(rate, 24000), buf = new Float32Array(F * 2), t0 = performance.now();
-    for (var i = 0; i < n && !err; i += F) {
-      var m = Math.min(F, n - i), plane = m === F ? buf : new Float32Array(m * 2);
-      for (var k = 0; k < m; k++) { var l = L[i + k] * gain, r = R[i + k] * gain; plane[k] = l > 1 ? 1 : l < -1 ? -1 : l; plane[m + k] = r > 1 ? 1 : r < -1 ? -1 : r; }
-      var ad = new AudioData({ format: "f32-planar", sampleRate: rate, numberOfFrames: m, numberOfChannels: 2, timestamp: Math.round(i / rate * 1e6), data: plane });
-      enc.encode(ad); ad.close();
-      while (enc.encodeQueueSize > 3 && !err) await new Promise(function (ok) { if ("ondequeue" in enc) enc.addEventListener("dequeue", ok, { once: true }); else setTimeout(ok, 8); });
-      if (performance.now() - t0 > 8) { await breath(); t0 = performance.now(); }
-    }
-    await enc.flush(); try { enc.close(); } catch (e) {}
-    if (err || !chunks.length) throw err || new Error("no frames");
-    var sizes = [], durs = [], parts = [];
-    if (pick.kind === "aac") {
-      chunks.forEach(function (c) {   /* a browser that hands back ADTS frames: the 7 or 9 byte header comes off */
-        var d = c.d; if (d.length > 7 && d[0] === 0xff && (d[1] & 0xf6) === 0xf0) d = d.subarray(d[1] & 1 ? 7 : 9);
-        parts.push(d); sizes.push(d.length); durs.push(1024);
-      });
-      var asc = desc && desc.length >= 2 && desc.length < 64 ? desc : null;
-      if (!asc) { var fi = Math.max(0, FREQS.indexOf(rate)); asc = new Uint8Array([(2 << 3) | (fi >> 1), ((fi & 1) << 7) | (2 << 3)]); }
-      /* no edit list: the encoder's few milliseconds of priming stay at the start, and nothing at the end is cut */
-      return { blob: mp4({ kind: "aac", rate: rate, ch: 2, sizes: sizes, durs: durs, data: cat(parts), asc: asc, keep: 0, br: 128000 }), kind: "aac" };
-    }
-    /* Opus: its clock is 48 kHz; the encoder's look-ahead (pre-skip) from its OpusHead, else libopus's usual 312 */
-    var pre = 312;
-    if (desc && desc.length >= 19 && String.fromCharCode.apply(null, desc.subarray(0, 8)) === "OpusHead") pre = desc[10] | (desc[11] << 8);
-    chunks.forEach(function (c) { parts.push(c.d); sizes.push(c.d.length); durs.push(c.dur > 0 ? Math.round(c.dur * 48000 / 1e6) : 960); });
-    return { blob: mp4({ kind: "opus", rate: 48000, inRate: rate, ch: 2, sizes: sizes, durs: durs, data: cat(parts), preskip: pre, keep: Math.round(n * 48000 / rate) }), kind: "opus" };
+  /* ══ the song, made small: AOG-EXPORT-PRO-V1 (aog-export.js, fetched the first time) makes it: AAC 128 kb/s, else Opus 96 kb/s,
+     in an .m4a, its true peak under −1 dBTP once decoded, with the song's name, the artist, the tempo and the key inside ══ */
+  var XP = null;
+  function exportJs() {
+    if (window.AOGExport) return Promise.resolve(window.AOGExport);
+    if (!XP) XP = new Promise(function (ok) { var s = D.createElement("script"); s.src = "/aog-export.js"; s.onload = function () { ok(window.AOGExport || null); }; s.onerror = function () { XP = null; ok(null); }; D.head.appendChild(s); });
+    return XP;
   }
   function title() { return A && A.title ? A.title() : w("myBeat"); }
   async function makeSong() {
@@ -267,12 +175,14 @@
     if (!bk || !bk.L || !st || !st.loudOfW || !st.outLevel) throw new Error("no desk");
     var Lc = bk.L, Rc = bk.R || bk.L, ld = await st.loudOfW(Lc, Rc, bk.sr);
     if (!(ld && ld.tp > 0.001)) return null;   /* nothing above −60 dB: as the desk's Send it out, no file */
-    var g = st.outLevel(ld).g, base = slug(title()) || "song", small = null;
-    try { small = await encodeSmall(Lc, Rc, bk.sr, g); } catch (e) { small = null; }
+    var lv = st.outLevel(ld), g = lv.g, base = slug(title()) || "song", small = null, X = await exportJs();
+    var tg = { title: title(), artist: A.artist ? A.artist() : "", es: es() };
+    if (X) { try { small = await X.small(Lc, Rc, bk.sr, g, { title: tg.title, artist: tg.artist, es: tg.es, tpDb: lv.tpDb }); } catch (e) { small = null; } }
     if (small) { S.kind = small.kind; return new File([small.blob], base + ".m4a", { type: "audio/mp4" }); }
-    S.kind = "wav";
-    var ab = await st.wavBufW(Lc, Rc, bk.sr, g, st.bits ? st.bits() : 16);
-    return new File([ab], base + ".wav", { type: "audio/wav" });
+    S.kind = "wav";   /* a browser that makes neither AAC nor Opus: the levelled .wav, tagged */
+    var ab = await st.wavBufW(Lc, Rc, bk.sr, g, st.bits ? st.bits() : 16), f = new File([ab], base + ".wav", { type: "audio/wav" });
+    if (X) { try { f = await X.wav(f, f.name, tg); } catch (e) {} }
+    return f;
   }
   function songReady() {
     if (S.file && S.fileOf === A.bk) return Promise.resolve(S.file);
@@ -432,7 +342,7 @@
   window.AOGShare = {
     open: open, close: close, arrive: arrive,
     /* for the tests (music-handoff/tests/studio/share.js) and nothing else */
-    _t: { encode: encode, decode: decode, clean: clean, pack: pack, mp4: mp4, makeLink: makeLink },
+    _t: { encode: encode, decode: decode, clean: clean, pack: pack, makeLink: makeLink },
     state: function () { return { open: S.open, line: el.Line ? el.Line.textContent : "", busy: S.busy, kind: S.kind, file: S.file ? S.file.name : "", link: S.link, at: S.at, arrived: S.arrived }; }
   };
 })();

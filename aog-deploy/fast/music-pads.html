@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- AOG-FAST-BUILD-V1 source:9453a341623a48f0 · MADE BY tools/build-fast.py from music-pads.html: edit music-pads.html, then run it. -->
+<!-- AOG-FAST-BUILD-V1 source:284c3e1a5a95f503 · MADE BY tools/build-fast.py from music-pads.html: edit music-pads.html, then run it. -->
 <html lang="en">
 <head>
 <script>/* AOG-STUDIO-ONLY-V1 (Jimmy, 2026-10-10: "one location for all the instruments … and that is the studio"): opened on its own address, this room opens inside the Studio instead, at this exact address (its lesson, take or link). Inside the Studio's frame, and for the site's own checks, it stays. */(function(){try{if(window.top!==window||navigator.webdriver)return;var M={"music-pads":"pads","drum-machine":"pads","beat-lab":"pads","music-kit":"kit","drum-kit":"kit","music-piano":"piano","piano":"piano","keys":"piano","music-guitar":"guitar","guitar":"guitar","music-bass":"bass","bass":"bass","music-band":"band","band":"band","music-decks":"decks","decks":"decks","turntables":"decks","music-vocal":"vocal","vocal-booth":"vocal","vocal":"vocal","booth":"vocal","music-studio":"studio","studio":"studio","mixing-desk":"studio"},f=(location.pathname.split("/").pop()||"").replace(/\.html$/,""),r=M[f];if(!r)return;var F={pads:"music-pads",kit:"music-kit",piano:"music-piano",guitar:"music-guitar",bass:"music-bass",band:"music-band",decks:"music-decks",vocal:"music-vocal",studio:"music-studio"};location.replace("/the-studio.html?at="+encodeURIComponent("/"+F[r]+".html"+location.search+location.hash)+"#"+r);}catch(e){}})();</script>
@@ -179,6 +179,8 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
 .st{min-height:40px;border-radius:8px;border:1px solid #4a4f58;background:#24272d;color:#c9bfae;font:700 11px/1 var(--sans);padding:0}
 .st.beat{background:#2c3037}
 .st[aria-pressed="true"]{background:#7fd0e0;border-color:#7fd0e0;color:#0b2530}
+.st.q[aria-pressed="true"]{background:#355e66;border-color:#5a9aa6;color:#e7f6f8} /* AOG-PADS-FEEL-V1: quiet */
+.st.h[aria-pressed="true"]{background:#f3ead8;border-color:#f3ead8;color:#1a1c20} /* hard */
 .st.now{outline:2px solid #ffd36b;outline-offset:-2px}
 .pm-range{width:100%;min-height:40px;accent-color:#ffd36b}
 .pm-val{font:700 .95rem/1 var(--sans);color:#f6efdf;letter-spacing:0;text-transform:none}
@@ -358,6 +360,10 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
               <label class="pm-f"><span><span id="panLab"></span> · <span class="pm-val" id="panVal"></span></span><input class="pm-range" id="pan" type="range" min="-100" max="100" step="10"></label>
             </div>
             <div class="pm-row" style="margin-top:8px">
+              <label class="pm-f"><span><span id="nudgeLab"></span> · <span class="pm-val" id="nudgeVal"></span></span><input class="pm-range" id="nudge" type="range" min="-20" max="20" step="5"></label>
+              <label class="pm-f"><span id="cutLab"></span><select class="pm-sel" id="cutSel"></select></label>
+            </div>
+            <div class="pm-row" style="margin-top:8px">
               <button type="button" class="pm-b" id="padReset"></button>
               <button type="button" class="pm-b" id="padClear"></button>
             </div>
@@ -393,6 +399,6 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
   </div>
   <div class="pv-grids" id="pvGrid"></div>
 </div>
-<script src="/front/0b5dd6686554.js"></script>
+<script src="/front/320d1f70878a.js"></script>
 </body>
 </html>

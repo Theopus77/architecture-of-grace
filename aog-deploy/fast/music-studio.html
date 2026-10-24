@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- AOG-FAST-BUILD-V1 source:50fc2f8844114031 · MADE BY tools/build-fast.py from music-studio.html: edit music-studio.html, then run it. -->
+<!-- AOG-FAST-BUILD-V1 source:677954ea3c2124a9 · MADE BY tools/build-fast.py from music-studio.html: edit music-studio.html, then run it. -->
 <html lang="en">
 <head>
 <script>/* AOG-STUDIO-ONLY-V1 (Jimmy, 2026-10-10: "one location for all the instruments … and that is the studio"): opened on its own address, this room opens inside the Studio instead, at this exact address (its lesson, take or link). Inside the Studio's frame, and for the site's own checks, it stays. */(function(){try{if(window.top!==window||navigator.webdriver)return;var M={"music-pads":"pads","drum-machine":"pads","beat-lab":"pads","music-kit":"kit","drum-kit":"kit","music-piano":"piano","piano":"piano","keys":"piano","music-guitar":"guitar","guitar":"guitar","music-bass":"bass","bass":"bass","music-band":"band","band":"band","music-decks":"decks","decks":"decks","turntables":"decks","music-vocal":"vocal","vocal-booth":"vocal","vocal":"vocal","booth":"vocal","music-studio":"studio","studio":"studio","mixing-desk":"studio"},f=(location.pathname.split("/").pop()||"").replace(/\.html$/,""),r=M[f];if(!r)return;var F={pads:"music-pads",kit:"music-kit",piano:"music-piano",guitar:"music-guitar",bass:"music-bass",band:"music-band",decks:"music-decks",vocal:"music-vocal",studio:"music-studio"};location.replace("/the-studio.html?at="+encodeURIComponent("/"+F[r]+".html"+location.search+location.hash)+"#"+r);}catch(e){}})();</script>
@@ -60,7 +60,7 @@ try{if(localStorage.getItem("aog.lang")==="es")document.documentElement.setAttri
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%;overflow-x:clip;overscroll-behavior:none}
 body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.55 var(--sans);overflow-x:clip;overscroll-behavior:none}
-body *{overscroll-behavior:contain}
+body *{overscroll-behavior-x:contain}
 h1,h2,h3{font-family:var(--display);font-weight:600;letter-spacing:-.02em;text-wrap:balance}
 p{text-wrap:pretty}
 a{color:inherit}
@@ -224,6 +224,8 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
 .st-ms .st-btn{min-height:44px;padding:0 .3rem;font-size:.88rem}
 .st-ms .st-mute[aria-pressed="true"]{background:linear-gradient(#ffb1a4,#c4452a);color:#2a0c08}
 .st-ms .st-solo[aria-pressed="true"]{background:linear-gradient(#ffe08a,#e09020);color:#2a1a08}
+.st-ms .st-arm[aria-pressed="true"]{background:linear-gradient(#ff6a5a,#b42318);color:#fff} /* AOG-DESK-ARM-V1 */
+.st-strip.armed{box-shadow:inset 0 0 0 1px #c4452a}
 .st-sls{display:grid;gap:.25rem .9rem;grid-template-columns:minmax(0,1fr)}
 .st-sl{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:0 .4rem;min-width:0;margin:0}
 .st-sl .st-lab{margin:0;font-size:.68rem;letter-spacing:.1em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -652,6 +654,14 @@ html.aog-keys .st-cp .st-keys{display:block}
 .st-fold>summary:focus-visible{outline:3px solid #c9a24b;outline-offset:2px}
 .st-fold .st-fh{font:400 1.14rem/1.25 "Fraunces",var(--serif,Georgia,serif);color:#efe5cf}
 .st-fold .st-fl{font:400 .95rem/1.4 var(--sans);color:#cfc5b3}
+/* AOG-DESK-QUIET-V1 (Jimmy, 2026-10-23: "there is so much text. I think no."): a fold's name is enough.
+   The sentence under it is hidden, except Start a new song, which wipes the desk. The standing essays
+   under the mixer, the loudness numbers, the loop and the song file are hidden too. A status line
+   still appears when something actually happens. */
+.st-fold>summary .st-fl{display:none}
+#foldNew>summary .st-fl{display:block}
+.st-fold>summary{min-height:44px}
+#mixerBlk>p[data-t="mixerLine"],#lufsBox>p[data-t="luWhat"],#playMore>p[data-t="songLen"],#carryBlk p[data-t="fileWhat"],.st-lk>p.st-info{display:none}
 .st-fold[open]>summary{border-bottom:1px solid #26282d;border-radius:11px 11px 0 0}
 .st-fold>.st-fb{padding:12px 14px 14px}
 .st-fold>.st-fb>:first-child{margin-top:0}
@@ -710,7 +720,7 @@ html.aog-keys .st-cp .st-keys{display:block}
 .st-roomk{max-width:24rem;margin:.7rem 0 0}   /* AOG-REAL-ROOMS-V1 */
 .st-roomc{margin:.45rem 0 0;font-size:.9rem}
 /* AOG-DESK-WOOD-V1: walnut end cheeks on the console and the desk below, as on the consoles in Jimmy's drawings */
-.st-chassis{--cheek:16px;padding-left:calc(var(--cheek) + 18px);padding-right:calc(var(--cheek) + 18px);overflow:hidden}
+.st-chassis{--cheek:16px;padding-left:calc(var(--cheek) + 18px);padding-right:calc(var(--cheek) + 18px);overflow:clip}
 .st-chassis::before,.st-chassis::after{content:"";position:absolute;top:0;bottom:0;width:var(--cheek);pointer-events:none;
   background:
     radial-gradient(circle at 50% 22px,#d9b56a 0 2.2px,#6b4a1c 2.6px,transparent 3.4px),
@@ -757,6 +767,8 @@ html.aog-keys .st-cp .st-keys{display:block}
 @media (hover:none){ .st-cs{transition:none} }
 /* AOG-STUDIO-ROOM-V1: inside the Recording Studio the desk sits in the dim control room, not on paper */
 html.in-studio,html.in-studio:root:root body{background-color:#17110c!important;background-image:none!important}
+html.in-studio #view{padding-bottom:32px}/* AOG-DESK-SCROLL-V1: the last fold clears the Studio's bar */
+html.in-studio header.no-print,html.in-studio .mast,html.in-studio .bench-bar,html.in-studio .st-slipbox{display:none!important}/* AOG-STUDIO-WOW-V1: the song is the first thing. The lesson waits in its fold. */
 html.in-studio .st-chassis{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 0 -18px 30px rgba(0,0,0,.35),0 0 0 1px rgba(255,214,160,.05),0 22px 50px -14px rgba(0,0,0,.8)}
 /* AOG-DESK-SONGS-BTN-V1: Your songs, a hardware button with the locker's light */
 .st-desk .st-songs{flex:0 0 auto;display:inline-flex;align-items:center;gap:.6rem;min-height:48px;padding:.35rem .95rem .35rem .75rem;border-radius:8px;border:1px solid #050506;cursor:pointer;
@@ -775,8 +787,8 @@ html.in-studio .st-chassis{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 
    volume knob for each clip, and crossfades between pieces." ══ */
 /* AOG-DESK-ZOOM-V1: zoomed in, the lanes grow wider than the window and scroll sideways inside it (never the page);
    the names stay put on the left */
-.st-tl{scroll-behavior:auto}
-.st-song .st-tl.zoomed{overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;container-type:inline-size;scrollbar-width:thin;scrollbar-color:#6a5a3a #0d0e10}
+.st-tl{scroll-behavior:auto;touch-action:pan-y}/* AOG-DESK-SCROLL-V1: a finger on the lanes still moves the desk */
+.st-song .st-tl.zoomed{overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;touch-action:pan-x pan-y;container-type:inline-size;scrollbar-width:thin;scrollbar-color:#6a5a3a #0d0e10}
 .st-tl.zoomed>.st-ruler,.st-tl.zoomed>.st-lane{width:calc(var(--lab) + (100cqw - var(--lab)) * var(--z,1))}
 .st-tl.zoomed .st-ph{left:calc(var(--lab) + (100cqw - var(--lab)) * var(--z,1) * var(--ph,0))}
 .st-tl.zoomed .st-ln,.st-tl.zoomed .st-ruler>span:first-child{position:sticky;left:0;z-index:3}
@@ -1046,6 +1058,7 @@ html.in-studio .st-chassis{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 
         <div class="st-fb">
           <label class="st-field st-name"><span class="st-lab" data-t="songName"></span><input type="text" id="songName" maxlength="80" autocomplete="off" enterkeyhint="done"></label>
           <label class="st-field st-bits"><span class="st-lab" data-t="bitsLab"></span><select id="bitsSel"></select></label><!-- AOG-DESK-BITS-V1 -->
+          <label class="st-field st-bits"><span class="st-lab" data-t="typeLab"></span><select id="outType"><option value="wav" data-t="typeWav"></option><option value="m4a" data-t="typeM4a"></option><option value="mp3" data-t="typeMp3"></option></select></label><!-- AOG-EXPORT-PRO-V1 -->
           <div class="st-row"><button type="button" class="st-btn st-go" id="mixBtn"></button><button type="button" class="st-btn st-go" id="outBtn"></button></div><!-- AOG-STUDIO-SENDOUT-V1 -->
           <p class="st-line" id="mixLine" aria-live="polite"></p>
           <div id="mixOut"></div>
@@ -1096,12 +1109,19 @@ html.in-studio .st-chassis{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 
       </details>
       </div>
     </section>
-    <section id="lessons" aria-label="Lessons"></section><!-- AOG-LESSONS-V1: the Mixing Desk's lessons (aog-lessons.js), under the instrument (Jimmy, 2026-10-05: "units and worksheets should go underneath the instruments") -->
+    <!-- AOG-DESK-LESSON-FOLD-V1: the worksheet stays closed, so the bottom of the desk is the bottom of the page until you ask for it -->
+    <details class="st-fold" id="lessonFold">
+      <summary><span class="st-fh" data-t="lesFold"></span><span class="st-fl" data-t="lesFoldL"></span></summary>
+      <div class="st-fb">
+        <section id="lessons" aria-label="Lessons"></section><!-- AOG-LESSONS-V1 -->
+      </div>
+    </details>
   </main>
   <footer class="foot" id="foot"></footer>
 </div>
 <script src="/aog-desk-more.js"></script><!-- AOG-DESK-MORE-V1: effect slots, takes, sections, the clipboard, versions (loaded first: the desk's code below calls it) -->
 <script src="/aog-desk-pro.js" defer></script><script src="/aog-desk-rec.js" defer></script><script src="/aog-desk-arrange.js" defer></script><!-- AOG-DESK-PRO-V1: the master strip's panel, groups, loop recording, markers, keys (runs after the desk's code) -->
-<script src="/front/ea2152ad2e93.js"></script>
+<script src="/aog-desk-lock.js"></script>
+<script src="/front/d01624391930.js"></script>
 </body>
 </html>
