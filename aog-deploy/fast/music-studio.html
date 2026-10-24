@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- AOG-FAST-BUILD-V1 source:7a13e5278bf9ff3b · MADE BY tools/build-fast.py from music-studio.html: edit music-studio.html, then run it. -->
+<!-- AOG-FAST-BUILD-V1 source:677954ea3c2124a9 · MADE BY tools/build-fast.py from music-studio.html: edit music-studio.html, then run it. -->
 <html lang="en">
 <head>
 <script>/* AOG-STUDIO-ONLY-V1 (Jimmy, 2026-10-10: "one location for all the instruments … and that is the studio"): opened on its own address, this room opens inside the Studio instead, at this exact address (its lesson, take or link). Inside the Studio's frame, and for the site's own checks, it stays. */(function(){try{if(window.top!==window||navigator.webdriver)return;var M={"music-pads":"pads","drum-machine":"pads","beat-lab":"pads","music-kit":"kit","drum-kit":"kit","music-piano":"piano","piano":"piano","keys":"piano","music-guitar":"guitar","guitar":"guitar","music-bass":"bass","bass":"bass","music-band":"band","band":"band","music-decks":"decks","decks":"decks","turntables":"decks","music-vocal":"vocal","vocal-booth":"vocal","vocal":"vocal","booth":"vocal","music-studio":"studio","studio":"studio","mixing-desk":"studio"},f=(location.pathname.split("/").pop()||"").replace(/\.html$/,""),r=M[f];if(!r)return;var F={pads:"music-pads",kit:"music-kit",piano:"music-piano",guitar:"music-guitar",bass:"music-bass",band:"music-band",decks:"music-decks",vocal:"music-vocal",studio:"music-studio"};location.replace("/the-studio.html?at="+encodeURIComponent("/"+F[r]+".html"+location.search+location.hash)+"#"+r);}catch(e){}})();</script>
@@ -224,6 +224,8 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
 .st-ms .st-btn{min-height:44px;padding:0 .3rem;font-size:.88rem}
 .st-ms .st-mute[aria-pressed="true"]{background:linear-gradient(#ffb1a4,#c4452a);color:#2a0c08}
 .st-ms .st-solo[aria-pressed="true"]{background:linear-gradient(#ffe08a,#e09020);color:#2a1a08}
+.st-ms .st-arm[aria-pressed="true"]{background:linear-gradient(#ff6a5a,#b42318);color:#fff} /* AOG-DESK-ARM-V1 */
+.st-strip.armed{box-shadow:inset 0 0 0 1px #c4452a}
 .st-sls{display:grid;gap:.25rem .9rem;grid-template-columns:minmax(0,1fr)}
 .st-sl{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:0 .4rem;min-width:0;margin:0}
 .st-sl .st-lab{margin:0;font-size:.68rem;letter-spacing:.1em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -766,6 +768,7 @@ html.aog-keys .st-cp .st-keys{display:block}
 /* AOG-STUDIO-ROOM-V1: inside the Recording Studio the desk sits in the dim control room, not on paper */
 html.in-studio,html.in-studio:root:root body{background-color:#17110c!important;background-image:none!important}
 html.in-studio #view{padding-bottom:32px}/* AOG-DESK-SCROLL-V1: the last fold clears the Studio's bar */
+html.in-studio header.no-print,html.in-studio .mast,html.in-studio .bench-bar,html.in-studio .st-slipbox{display:none!important}/* AOG-STUDIO-WOW-V1: the song is the first thing. The lesson waits in its fold. */
 html.in-studio .st-chassis{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 0 -18px 30px rgba(0,0,0,.35),0 0 0 1px rgba(255,214,160,.05),0 22px 50px -14px rgba(0,0,0,.8)}
 /* AOG-DESK-SONGS-BTN-V1: Your songs, a hardware button with the locker's light */
 .st-desk .st-songs{flex:0 0 auto;display:inline-flex;align-items:center;gap:.6rem;min-height:48px;padding:.35rem .95rem .35rem .75rem;border-radius:8px;border:1px solid #050506;cursor:pointer;
@@ -1118,6 +1121,7 @@ html.in-studio .st-chassis{box-shadow:inset 0 1px 0 rgba(255,255,255,.09),inset 
 </div>
 <script src="/aog-desk-more.js"></script><!-- AOG-DESK-MORE-V1: effect slots, takes, sections, the clipboard, versions (loaded first: the desk's code below calls it) -->
 <script src="/aog-desk-pro.js" defer></script><script src="/aog-desk-rec.js" defer></script><script src="/aog-desk-arrange.js" defer></script><!-- AOG-DESK-PRO-V1: the master strip's panel, groups, loop recording, markers, keys (runs after the desk's code) -->
-<script src="/front/f9bba0a4a4c6.js"></script>
+<script src="/aog-desk-lock.js"></script>
+<script src="/front/d01624391930.js"></script>
 </body>
 </html>
