@@ -9,7 +9,7 @@ ALL="learn/listen ppat precs pwheel2 pwheel plit pjim pt ptouch pflow psel plt p
 for s in ${@:-$ALL}; do
   t=900; [ "$s" = levels/even ] && t=7200   # every note of every sound: the longest suite by far
   [ "$s" = solo/basslicks ] && t=1500   # every bass lick played through on three screens, about 12 minutes
-  [ "$s" = bandt/hifi ] && t=3600   # AOG-BAND-HIFI-V1: every Band recording, five renders each and tune.py, about 20 minutes
+  [ "$s" = bandt/hifi ] && t=5400   # AOG-BAND-HIFI-V1: every Band recording, five renders each and tune.py, 25 minutes alone, an hour on a busy machine
   [ "$s" = solo/guitarlicks ] && t=2400   # every guitar lick (122) rendered, then played through on three screens, about 12 minutes
   out=$(timeout $t node $s.js 2>&1); code=$?
   pass=$(echo "$out" | grep -c "^PASS\|^ok\|✓"); fail=$(echo "$out" | grep -c "^FAIL\|^CRASH\|✗")

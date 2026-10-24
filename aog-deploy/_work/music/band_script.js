@@ -732,6 +732,18 @@ function onsetOf(buf, winds){
   return Math.max(0, i-Math.floor(0.002*buf.sampleRate))/buf.sampleRate;
 }
 const BREATH=new WeakSet();   /* the recordings whose breath is skipped; a voice starting one fades in over 8 ms */
+/* AOG-BAND-HIFI-V1: where a recording made again at 44.1 kHz starts is the start the page found on the 32 kHz file it
+   replaces, carried over (manifest "st": seconds, negative where its breath was skipped; music-handoff/tools/band/
+   hifi_starts.js). The breath is told from the tone by how often the wave crosses zero, and the new files' air above 16 kHz
+   crosses zero far more often, so a start found again could move by a window or two. Where it starts matters: a soft and
+   a loud recording of one note are played together, and 10 ms between them moves how they add (by up to 3 dB on the tenor
+   saxophone). A player without "st" (the voices, made again by PSOLA; what the computer makes) is measured as before. */
+function startOf(inst, f, b){
+  const st=MAN[inst] && MAN[inst].st && MAN[inst].st[f];
+  if(st==null) return onsetOf(b, inst!=="kit");
+  if(st<0) BREATH.add(b);
+  return Math.abs(st);
+}
 /* AOG-BAND-HOLD-V1 (2026-10-11) — Jimmy: "the Band's long notes would keep sounding instead of stopping when the recording
    runs out." The held recordings are about five seconds long, so a key held longer went quiet. A player who sustains (the
    winds, the brass, the bowed strings, the saxophones, the bagpipes and their drones) now holds the note for as long as the
@@ -816,7 +828,7 @@ function loadInst(key, onStep, lanes){
         const ab=await r.arrayBuffer(); if(set.ready) await bandStill(3000);
         let b=await decodeWith(dec, ab); if(set.ready) await bandStill(3000);
         if(b.numberOfChannels>1 && leftOnly(key)) b=leftOf(dec, b);
-        set.buf[f]=b; set.start[f]=onsetOf(b, instOf(key)!=="kit");
+        set.buf[f]=b; set.start[f]=startOf(f.slice(-1)==="t" && MAN[instOf(key)].stacDir || instOf(key), f, b);   /* AOG-BAND-HIFI-V1 */
         if(f.slice(-1)!=="t" && holds(instOf(key))){ const lp=findLoop(b, set.start[f], parseInt(f,10)); if(lp) set.loop[f]=lp; }   /* AOG-BAND-HOLD-V1 */
       }catch(e){}
       set.done++;

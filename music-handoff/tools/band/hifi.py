@@ -193,8 +193,15 @@ def kind_of(player, key):
 
 def cents(x, n, kind, player=None):
     """tune.py's reading, as each player's own builder took it: VS Chamber Orchestra's two microphones each measured and
-    the two averaged (band_stereo.py); every other stereo player by its left microphone, the one its builder measured (the
-    right one of the didgeridoo's rhythm, breath and voice pulsing in the drone, reads 20-30 cents flat to YIN)"""
+    the two averaged (band_stereo.py); the saxophones of sax2.py (tenor, its vibrato, soprano) on the two microphones
+    added, as bandt/sax2.js hears them in one channel, and their short notes by finalize.py's one window, as sax2.py
+    measured them; every other stereo player by its left microphone, the one its builder measured (the right one of the
+    didgeridoo's rhythm, breath and voice pulsing in the drone, reads 20-30 cents flat to YIN)"""
+    if player in FAMILIES["sax2"]:
+        y = x[:int(5 * SR)].mean(axis=1)
+        if kind == "short": return float((tune.finalize_yin(y[:int(0.9 * SR)], n) - n) * 100)
+        c, sp, k = tune.heard(y, n, "held")
+        return float(c) if c is not None else float((tune.finalize_yin(y, n) - n) * 100)
     out = []
     for ch in (range(x.shape[1]) if player is None or player in FAMILIES["vsco"] else [0]):
         y = x[:int(5 * SR), ch]
@@ -208,18 +215,25 @@ def cents(x, n, kind, player=None):
 
 
 def cents_played(x, n, kind, player):
-    """where tune.py hears the note once the page plays it corrected: the correction from cents(), then the file played at
-    that speed (band-limited, as a browser's resampler is meant to be) and measured again, the rest added, twice. A held
-    note reads the same either way; a note whose pitch moves (a pluck settling, a timpani roll, the didgeridoo's breathing
-    rhythm) is measured over a slightly shorter or longer stretch once sped up, and its reading moves by up to a few cents"""
+    """the whole-cent correction at which tune.py hears the note, as the page plays it corrected, closest to its own pitch.
+    The file is played at each speed (band-limited, as a browser's resampler is meant to be) and measured: first at the
+    correction cents() gives; if a cent or more is left, at that plus what is left and the cents either side, and the best
+    is kept. A held note reads the same either way; a note whose pitch moves (a pluck settling, a timpani roll, the
+    didgeridoo's breathing rhythm) is measured over a slightly shorter or longer stretch once sped up, and its reading
+    moves by up to a few cents. Returns the correction (the manifest keeps it from 1 cent)"""
     c = cents(x, n, kind, player)
     if c is None: return None
-    for _ in range(2):
-        r = 2 ** (-c / 1200)
-        d = cents(signal.resample(x, int(round(len(x) / r)), axis=0), n, kind, player)
-        if d is None or abs(d) < 0.05: break
-        c += d
-    return c
+    left = {}
+    def played(t):
+        if t not in left:
+            y = x if t == 0 else signal.resample(x, int(round(len(x) / 2 ** (-t / 1200))), axis=0)
+            d = cents(y, n, kind, player); left[t] = 1e9 if d is None else d
+        return left[t]
+    t0 = int(round(c))
+    if abs(played(t0)) >= 1:
+        t1 = int(round(t0 + played(t0)))
+        for t in (t1 - 1, t1, t1 + 1): played(t)
+    return float(min(left, key=lambda t: (abs(left[t]), abs(t - c))))
 
 
 def staged(player):
