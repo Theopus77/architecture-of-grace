@@ -404,6 +404,15 @@ voice and Gospel samples opens under the instrument menu, 32 tap pads through th
 (`/the-studio#band … ?at=music-band.html#gospel` opens it; level in GOS_GAIN, `band_script.js`). Built
 by `_work/gospel` (read its README); credits in `audio/crate/CREDITS.txt`, and the CC BY credit must stay there.
 
+## One sound, many kinds (Jimmy, 2026-10-27: "Let's get different types of bass, high hats, cymbals, closed hats, etc…"; AOG-DRUM-SHELF-V1)
+
+Seven Drum Machine kits in their own group of the kit menus, each eight kinds of one sound: Kicks (KK), 808 bass (BS),
+Snares (SN), Closed hi-hats (CH), Open hi-hats (OH), Cymbals (CY), Claps and snaps (CL), in `aog-drumkit.js`. A pad
+borrows another kit's recording (`SH(kit, pad, en, es, db)`: its files come from that kit's folder, it plays at that
+kit's trim through `AOGDrumKit.from`, and db evens it with the kit's other pads). The 808s are made by
+`music-handoff/tools/drumkits/kits_808.py` (tuned to C, at the trap kit's level). Borrow only from a kit the Drum
+Machine itself offers (one with a trim in LEVEL.kit: the 909, kit L, has none). The Drum Kit leaves these kits out.
+
 ## No floating My notes button (Jimmy, 2026-10-18: "I don't like the my notes button. Please remove that")
 
 `aog-markup.js` no longer puts the floating My notes button on any page. Highlights and notes still work, and a tap on

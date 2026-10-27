@@ -274,7 +274,8 @@ const STR={
 };
 function t(k, v){ let s=(STR[k]||{})[S.lang]||k; if(v) Object.keys(v).forEach(x=>{ s=s.split("{"+x+"}").join(v[x]); }); return s; }
 /* the kits: every recorded kit whose eight pads are all recordings */
-function KITS(){ return (window.AOGDrumKit ? AOGDrumKit.ids : []).filter(b=>Object.keys(AOGDrumKit.padNames(b)).every(id=>!AOGDrumKit.made(b,id))); }
+/* AOG-DRUM-SHELF-V1: the "one sound, many kinds" kits (eight kicks, eight cymbals …) stay in the Drum Machine: this room draws a drum set */
+function KITS(){ return (window.AOGDrumKit ? AOGDrumKit.ids : []).filter(b=>Object.keys(AOGDrumKit.padNames(b)).every(id=>!AOGDrumKit.made(b,id)) && !(AOGDrumKit.group && AOGDrumKit.group(b)==="shelf")); }
 function kitName(b){ const l=AOGDrumKit.label(b); return l[S.lang==="es"?1:0]; }
 /* what each pad is, in plain words, and what it looks like */
 const PAD_WORD={KICK:["Kick","Bombo"],SNARE:["Snare","Caja"],HAT:["Hi-hat","Charles"],OPEN:["Open hat","Charles abierto"],CRASH:["Crash","Crash"],RIDE:["Ride","Ride"],

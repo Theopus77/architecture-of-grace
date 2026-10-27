@@ -29,8 +29,9 @@ const ALLNEW={OR:["orchestra","orch"], ME:["mideast","world"], SB:["samba","worl
   PP:["poppunk","drums"], HL:["hiphoplive","drums"]};   /* AOG-DRUM-BARKER-V1 */
 const NEW=Object.fromEntries(Object.entries(ALLNEW).filter(([k])=>!ONLY.length || ONLY.includes(k)));
 const IDS=Object.keys(NEW), DIRS=Object.fromEntries(Object.entries(ALLNEW).map(([k,v])=>[k,"/audio/drums/"+v[0]+"/"]));
-const GROUP_EN={drums:"Drum sets", electronic:"Electronic", world:"World", orch:"Orchestra and marching", hand:"Hand percussion"};
-const GROUP_ES={drums:"Baterías", electronic:"Electrónica", world:"Del mundo", orch:"Orquesta y banda de marcha", hand:"Percusión de mano"};
+/* AOG-DRUM-SHELF-V1: "One sound, many kinds" (eight kicks, eight cymbals …) comes right after the drum sets */
+const GROUP_EN={drums:"Drum sets", shelf:"One sound, many kinds", electronic:"Electronic", world:"World", orch:"Orchestra and marching", hand:"Hand percussion"};
+const GROUP_ES={drums:"Baterías", shelf:"Un sonido, muchos tipos", electronic:"Electrónica", world:"Del mundo", orch:"Orquesta y banda de marcha", hand:"Percusión de mano"};
 const PADS=["kick","snare","ch","oh","clap","tom","rim","bell"];
 const IPHONE={viewport:{width:390,height:844}, isMobile:true, hasTouch:true, deviceScaleFactor:2};
 /* the Drum Machine's whole sound, as pads/level.js renders it: the bus at 0.9 into the limiter */
