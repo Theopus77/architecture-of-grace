@@ -145,7 +145,8 @@ Show everything keeps the full words. There is no gold button under the title.
 "Make a direct link icon" to each of these, each at its own address: the Studio
 (/the-studio), Daily Practice (/drops), SEL (/sel), The Courses (/courses), Adult
 SEL (/adult), the Educator Dashboard (/dashboard), the calm tools (/calm), the
-Microscope Lab (/microscope) and the Oscilloscope (/oscilloscope, also /waves). Each page links its own
+Microscope Lab (/microscope), the Oscilloscope (/oscilloscope, also /waves) and the Drum Machine (the Studio swaps in
+`drum-machine.webmanifest` and `app-drum-machine-*.png` while its room is open: AOG-PADS-APP-V1). Each page links its own
 `<name>.webmanifest` and `app-<name>-touch.png` (the Studio: `studio.*`), so Add to
 Home Screen opens that place, full screen.
 
@@ -418,6 +419,13 @@ drums · 8 more (BD), Snares (SN), Closed hi-hats (CH), Open hi-hats (OH), Cymba
 folder, it plays at that kit's trim through `AOGDrumKit.from`, and db evens it with the kit's other pads). Borrow only
 from a kit the Drum Machine itself offers (one with a trim in LEVEL.kit: the 909, kit L, has none). The Drum Kit leaves
 these kits out.
+
+## The Drum Machine as a unit (Jimmy, 2026-10-27: "make it feel more real and separate from the computer? Almost like a stand alone unit"; AOG-PADS-UNIT-V1)
+
+One case with a maker's plate (AoG · 24), a backlit screen (`#pmLcd`: tempo, bars, play/stop/record, bank and kit, the bar
+playing, the pad), Play and Record with their own lights, a light on every step and the sixteen steps across the foot of the
+unit, and Shift (Shift and a step: an accent; again: off; Undo takes it back). A skin and a small script in `music-pads.html`
+over the parts that were there: the screen is written only when what it says changes; nothing moves on a hit.
 
 ## No floating My notes button (Jimmy, 2026-10-18: "I don't like the my notes button. Please remove that")
 

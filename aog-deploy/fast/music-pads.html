@@ -1,9 +1,37 @@
 <!DOCTYPE html>
-<!-- AOG-FAST-BUILD-V1 source:284d3adc7ae0448a · MADE BY tools/build-fast.py from music-pads.html: edit music-pads.html, then run it. -->
+<!-- AOG-FAST-BUILD-V1 source:cc67732b2f8f31a2 · MADE BY tools/build-fast.py from music-pads.html: edit music-pads.html, then run it. -->
 <html lang="en">
 <head>
 <script>/* AOG-STUDIO-ONLY-V1 (Jimmy, 2026-10-10: "one location for all the instruments … and that is the studio"): opened on its own address, this room opens inside the Studio instead, at this exact address (its lesson, take or link). Inside the Studio's frame, and for the site's own checks, it stays. */(function(){try{if(window.top!==window||navigator.webdriver)return;var M={"music-pads":"pads","drum-machine":"pads","beat-lab":"pads","music-kit":"kit","drum-kit":"kit","music-piano":"piano","piano":"piano","keys":"piano","music-guitar":"guitar","guitar":"guitar","music-bass":"bass","bass":"bass","music-band":"band","band":"band","music-decks":"decks","decks":"decks","turntables":"decks","music-vocal":"vocal","vocal-booth":"vocal","vocal":"vocal","booth":"vocal","music-studio":"studio","studio":"studio","mixing-desk":"studio"},f=(location.pathname.split("/").pop()||"").replace(/\.html$/,""),r=M[f];if(!r)return;var F={pads:"music-pads",kit:"music-kit",piano:"music-piano",guitar:"music-guitar",bass:"music-bass",band:"music-band",decks:"music-decks",vocal:"music-vocal",studio:"music-studio"};location.replace("/the-studio.html?at="+encodeURIComponent("/"+F[r]+".html"+location.search+location.hash)+"#"+r);}catch(e){}})();</script>
-<meta charset="utf-8"><style id="aog-first-paint">/* AOG-ONE-PAINT-V1 — the page shows once, fully built, never longer than ~1 s behind. No fade, no motion. */html{background:#F7F2E6}html[data-theme="dark"]{background:#0A1E33}html:not(.aog-ready) body{visibility:hidden;animation:aogOnePaint 0s linear 1.1s forwards}@keyframes aogOnePaint{to{visibility:visible}}@media print{html:not(.aog-ready) body{visibility:visible;animation:none}}</style><script>/* AOG-LIGHT-START-V1 — light unless this site was switched to dark. */(function(){var h=document.documentElement;if(!h.getAttribute("data-theme"))h.setAttribute("data-theme","light");})();</script>
+<meta charset="utf-8"><style id="aog-first-paint">/* AOG-ONE-PAINT-V1 — the page shows once, fully built, never longer than ~1 s behind. No fade, no motion. */html{background:#F7F2E6}html[data-theme="dark"]{background:#0A1E33}html:not(.aog-ready) body{visibility:hidden;animation:aogOnePaint 0s linear 1.1s forwards}@keyframes aogOnePaint{to{visibility:visible}}@media print{html:not(.aog-ready) body{visibility:visible;animation:none}}
+/* ══ AOG-PADS-UNIT-V1 (2026-10-27) — Jimmy: "make it feel more real and separate from the computer? Almost like a stand alone
+   unit." One case: a maker's plate, a backlit screen that says what the unit is doing, Play and Record with their own
+   lights, a light on every step and the sixteen steps across the foot of the unit (as a TR-808), and Shift: Shift and a
+   step puts in an accent. Only colour shows a press; nothing moves (AOG-STILL-HIT-V1). The screen is a fixed device colour,
+   the same in light and dark. ══ */
+.pm{position:relative;background:linear-gradient(#2b2e34,#1a1c20);border:1px solid #0a0b0d;border-radius:18px;padding:10px 14px 14px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 6px 18px rgba(0,0,0,.35)}
+.pm::before,.pm::after{content:"";position:absolute;top:10px;width:9px;height:9px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#8a8f97,#3a3d42);box-shadow:inset 0 0 0 1px #111}
+.pm::before{left:10px} .pm::after{right:10px}
+.pm-plate{font:800 11px/1.3 var(--sans);letter-spacing:.22em;color:#c9bfae;text-transform:uppercase;margin:0 18px 8px;padding:0}
+.pm-plate b{color:#ffd36b;letter-spacing:.12em}
+.pm-lcd{display:grid;grid-template-columns:1fr auto;gap:2px 10px;margin:0 0 10px;padding:8px 12px;border-radius:8px;border:2px solid #0d0f12;
+  background:#c7d59c;color:#16200e;box-shadow:inset 0 2px 7px rgba(0,0,0,.38);font:700 15px/1.35 ui-monospace,"SF Mono",Menlo,Consolas,monospace;letter-spacing:.04em;min-height:52px}
+.pm-lcd span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pm-lcd .r{text-align:right}
+#playBtn,#loopRec,#pvPlay,#pvRec,#pmShift{position:relative;padding-left:26px}
+#playBtn::before,#loopRec::before,#pvPlay::before,#pvRec::before,#pmShift::before{content:"";position:absolute;left:10px;top:50%;width:9px;height:9px;margin-top:-4.5px;border-radius:50%;background:#3a3f46;box-shadow:inset 0 0 0 1px #0d0f12}
+#playBtn[aria-pressed="true"]::before,#pvPlay[aria-pressed="true"]::before{background:#5fe08f;box-shadow:0 0 7px #5fe08f}
+#loopRec[aria-pressed="true"]::before,#pvRec[aria-pressed="true"]::before{background:#ff5a4f;box-shadow:0 0 7px #ff5a4f}
+#pmShift[aria-pressed="true"]::before{background:#ffd36b;box-shadow:0 0 7px #ffd36b}
+.pm-unitsteps{margin-top:12px;padding-top:12px;border-top:1px solid #0d0f12;box-shadow:0 -1px 0 rgba(255,255,255,.05)}
+.pm-shiftrow{display:flex;align-items:center;gap:8px;margin:0 0 8px}
+.pm-shiftrow .pm-h{margin:0;flex:1 1 auto}
+.st{position:relative}
+.st::before{content:"";position:absolute;top:4px;left:50%;width:6px;height:6px;margin-left:-3px;border-radius:50%;background:#15171b}
+.st[aria-pressed="true"]::before{background:#ff6b4a;box-shadow:0 0 4px #ff6b4a}
+.st.now::before{background:#ffd36b;box-shadow:0 0 6px #ffd36b}
+</style><script>/* AOG-LIGHT-START-V1 — light unless this site was switched to dark. */(function(){var h=document.documentElement;if(!h.getAttribute("data-theme"))h.setAttribute("data-theme","light");})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <script>
 (function(){var t="light";try{if(localStorage.getItem("aog.theme.lightstart.v1")==="1"&&localStorage.getItem("aog.interior.ws.v1.theme")==="dark")t="dark";}catch(e){}document.documentElement.setAttribute("data-theme",t);if(t==="dark")document.documentElement.classList.add("dark");
@@ -296,6 +324,8 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
   <main id="view">
     <p class="pm-guide"><a href="/drum-machine-guide" id="guideLink"></a></p>
     <div class="pm">
+      <p class="pm-plate" aria-hidden="true"><b>AoG · 24</b> &nbsp;Drum machine</p><!-- AOG-PADS-UNIT-V1 -->
+      <div class="pm-lcd" id="pmLcd" aria-hidden="true"></div>
       <div class="pm-cols">
         <div>
           <div class="pm-row">
@@ -399,6 +429,6 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
   </div>
   <div class="pv-grids" id="pvGrid"></div>
 </div>
-<script src="/front/45f362793938.js"></script>
+<script src="/front/b517bdb0a46e.js"></script>
 </body>
 </html>

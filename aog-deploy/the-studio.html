@@ -625,12 +625,22 @@ main.sh-main { grid-area:room; min-width:0; margin:0; }
       step();
     }, function () {});
   }
+  /* AOG-PADS-APP-V1 (2026-10-27) — Jimmy: the Drum Machine "almost like a stand alone unit". While its room is open, Add to
+     Home Screen makes a Drum Machine icon of its own (drum-machine.webmanifest, app-drum-machine-*.png) that opens the Studio
+     in that room (/the-studio#pads); every other room keeps the Studio's. Written only when it changes. */
+  function appFor(id) {
+    var dm = id === "pads", set = function (sel, attr, v) { [].forEach.call(document.querySelectorAll(sel), function (el) { if (el.getAttribute(attr) !== v) el.setAttribute(attr, v); }); };
+    set('link[rel="manifest"]', "href", dm ? "/drum-machine.webmanifest" : "/studio.webmanifest");
+    set('link[rel="apple-touch-icon"]', "href", dm ? "/app-drum-machine-touch.png" : "/studio-touch-icon.png");
+    set('meta[name="apple-mobile-web-app-title"]', "content", dm ? "Drum Machine" : "Studio");
+  }
   function go(id, push) {
     var r = room(id); if (!r) return;
     if (id === cur && fr.getAttribute("src")) return;
     if (push) steps++;
     TP.back = id === "studio" ? (cur && cur !== "studio" ? cur : TP.back) : "";   /* AOG-STUDIO-LISTEN-V1: the way back from the desk */
     cur = id;
+    appFor(id);   /* AOG-PADS-APP-V1 */
     try { localStorage.setItem(KEY, id); } catch (e) {}
     if (location.hash !== "#" + id) { try { history[push ? "pushState" : "replaceState"](null, "", "#" + id); } catch (e) { location.hash = id; } }
     /* a new frame's first page adds no step of its own to Back, so Back still leaves the Studio in one tap */
