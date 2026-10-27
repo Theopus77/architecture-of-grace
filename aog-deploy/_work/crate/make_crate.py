@@ -244,6 +244,11 @@ def main():
     vp = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "voices", "voices.json")
     if os.path.exists(vp):
         with open(vp) as f: listing += json.load(f)
+    # and the gospel records: the Gospel Choir and Jubilee Voices (_work/gospel, AOG-GOSPEL-V1)
+    for g in ("gospel-choir.json", "jubilee-voices.json"):
+        gp = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "gospel", g)
+        if os.path.exists(gp):
+            with open(gp) as f: listing.append(json.load(f))
     with open(os.path.join(OUT, "crate.json"), "w") as f:
         json.dump(listing, f, ensure_ascii=False, indent=1)
     print("total", round(sum(x["bytes"] for x in listing) / 1048576, 2), "MB")

@@ -46,7 +46,9 @@ const TABLE=process.argv.includes("--table");
       else { Object.assign(S.banks[1], {type:"chords", inst:id, key:0, scale:"major"}); await wait(1);
         res.inst[id]=await render(2.6, T=>{ const v=trigger(1, 0, 0.8, 0.05, T); if(v) v.stop(2.05); }); pk.inst[id]=LASTPK; }
     }
-    for(const k of KITS()){
+    /* AOG-DRUM-SHELF-V1: a "one sound, many kinds" kit (eight kicks, eight cymbals …) has no beat to play: each pad plays
+       at its own kit's level, evened within the kit (aog-drumkit.js) */
+    for(const k of KITS().filter(b=>!(AOGDrumKit.group && AOGDrumKit.group(b)==="shelf"))){
       Object.assign(S.banks[0], {type:"drums", kitA:k, kitB:k}); await wait(0);
       const e=60/90/2;   /* an eighth note at 90 */
       res.kit[k]=await render(8*e+0.6, T=>{ for(let i=0;i<8;i++){ const t=0.05+i*e; trigger(0, 2, i%2?0.6:0.8, t, T);

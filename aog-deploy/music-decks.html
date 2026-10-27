@@ -808,6 +808,10 @@ const STR = {
   speechLead:{en:"Famous words, spoken aloud. One line on each pad.",es:"Palabras famosas, dichas en voz alta. Una línea en cada pad."},
   speechGo:{en:"Load the speeches",es:"Cargar los discursos"},
   speechDone:{en:"Done. The speeches are in Up next.",es:"Listo. Los discursos están en Lo que sigue."},
+  gospelH:{en:"Gospel voices",es:"Voces góspel"},
+  gospelLead:{en:"A gospel choir and the Fisk Jubilee Singers. One sample on each pad.",es:"Un coro góspel y los Fisk Jubilee Singers. Una muestra en cada pad."},
+  gospelGo:{en:"Load the gospel voices",es:"Cargar las voces góspel"},
+  gospelDone:{en:"Done. The gospel voices are in Up next.",es:"Listo. Las voces góspel están en Lo que sigue."},
   showList:{en:"See the tracks",es:"Ver las pistas"},
   pullHint:{en:"Tap a spine to pull that record out.",es:"Toca el lomo de un disco para sacarlo."},
   starterList:{en:"More: a track list for every lesson",es:"Más: una lista de canciones para cada lección"},
@@ -1575,12 +1579,13 @@ async function starterLoad(btn){
    verses read by LibriVox volunteers (public domain; audio/crate/CREDITS.txt). They
    are listed in audio/crate/crate.json with each verse's start: those land on pads
    1 to 8. Speech has no tempo, so the deck keeps none (no beat snapping). */
-/* AOG-FDR-V1 (2026-10-06): speeches (kind "speech", e.g. FDR's own recordings) get their own box, made the same way */
-let WORD = [], wordMsg = {scripture:"", speech:""};
-fetch("audio/crate/crate.json").then(r=>r.ok?r.json():[]).then(j=>{ WORD = (Array.isArray(j)?j:[]).filter(x=>x.kind==="scripture"||x.kind==="speech"); paintCrate(); }).catch(()=>{});
+/* AOG-FDR-V1 (2026-10-06): speeches (kind "speech", e.g. FDR's own recordings) get their own box, made the same way.
+   AOG-GOSPEL-V1 (2026-10-26): so do the gospel records (kind "gospel": the Gospel Choir and Jubilee Voices). */
+let WORD = [], wordMsg = {scripture:"", speech:"", gospel:""};
+fetch("audio/crate/crate.json").then(r=>r.ok?r.json():[]).then(j=>{ WORD = (Array.isArray(j)?j:[]).filter(x=>x.kind==="scripture"||x.kind==="speech"||x.kind==="gospel"); paintCrate(); }).catch(()=>{});
 const wordName = x => x.title + " - " + (x.version||"KJV") + ".mp3";
 function wordOf(name){ return WORD.find(x=>wordName(x)===name) || null; }
-const WORDKEY = {scripture:"word", speech:"speech"};
+const WORDKEY = {scripture:"word", speech:"speech", gospel:"gospel"};
 async function wordLoad(btn, kind){
   if(btn) btn.disabled = true;
   const list = WORD.filter(x=>x.kind===kind), id = WORDKEY[kind]+"Msg";
@@ -1791,6 +1796,7 @@ function paintCrate(){
     ${starterHtml()}
     ${wordHtml("scripture")}
     ${wordHtml("speech")}
+    ${wordHtml("gospel")}
     ${findLinks()}
     ${CRATE.prev.length ? `<h3>${t("cratePrev")}</h3>` : ""}
     ${CRATE.prev.map((r,i)=>crateRow(r,i,"prev")).join("")}
@@ -1801,6 +1807,8 @@ function paintCrate(){
   if(wg) wg.onclick = ()=>wordLoad(wg, "scripture");
   const sg2 = document.getElementById("speechGo");
   if(sg2) sg2.onclick = ()=>wordLoad(sg2, "speech");
+  const gg = document.getElementById("gospelGo");
+  if(gg) gg.onclick = ()=>wordLoad(gg, "gospel");
   wirePicks(box);
   wireSpines(box, paintCrate);
   const add = document.getElementById("crateAdd");

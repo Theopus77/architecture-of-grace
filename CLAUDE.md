@@ -393,6 +393,26 @@ against chords like the guitar's and bass's; `reach()` there says where each pla
 1/2/4 and ● Record this lick (a normal take, `REC.addTake`) as in the other rooms (AOG-LICKS-SONG-V1). The block's source is
 `_work/music/band_head.html` and `band_script.js`; build, then run `node music-handoff/tests/solo/bandlicks.js`.
 
+## Gospel voices (Jimmy, 2026-10-26: "Can you make gospel vocal samples for the studio"; AOG-GOSPEL-V1)
+
+Two records in the turntables' crate (`audio/crate/crate.json`, kind "gospel"), sixteen samples each, one on each pad:
+`39-gospel-choir.mp3` (a choir in C sung by VocalSet's twenty real singers, CC BY 4.0: hits, swells, the Amen chords, a
+walk-up) and `40-jubilee-voices.mp3` (a line from sixteen spirituals by the Fisk Jubilee Singers, 1909–1924, public domain).
+The Turntables show them in their own Gospel voices box; the Drum Machine plays them on bank D (trims in LEVEL.rec); the
+Band has them with its Voices (Jimmy, 2026-10-27: "Put them in the Vocals in the band room"; AOG-BAND-GOSPEL-V1): pick a
+voice and Gospel samples opens under the instrument menu, 32 tap pads through the band's pedals into ● Record
+(`/the-studio#band … ?at=music-band.html#gospel` opens it; level in GOS_GAIN, `band_script.js`). Built
+by `_work/gospel` (read its README); credits in `audio/crate/CREDITS.txt`, and the CC BY credit must stay there.
+
+## One sound, many kinds (Jimmy, 2026-10-27: "Let's get different types of bass, high hats, cymbals, closed hats, etc…", then "Bass meaning bass drums."; AOG-DRUM-SHELF-V1)
+
+Seven Drum Machine kits in their own group of the kit menus, each eight kinds of one sound: Bass drums (KK) and Bass
+drums · 8 more (BD), Snares (SN), Closed hi-hats (CH), Open hi-hats (OH), Cymbals (CY), Claps and snaps (CL), in
+`aog-drumkit.js`. A pad borrows another kit's recording (`SH(kit, pad, en, es, db)`: its files come from that kit's
+folder, it plays at that kit's trim through `AOGDrumKit.from`, and db evens it with the kit's other pads). Borrow only
+from a kit the Drum Machine itself offers (one with a trim in LEVEL.kit: the 909, kit L, has none). The Drum Kit leaves
+these kits out.
+
 ## No floating My notes button (Jimmy, 2026-10-18: "I don't like the my notes button. Please remove that")
 
 `aog-markup.js` no longer puts the floating My notes button on any page. Highlights and notes still work, and a tap on

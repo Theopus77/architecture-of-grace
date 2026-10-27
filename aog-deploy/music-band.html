@@ -122,6 +122,15 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
 .pad kbd{display:none}
 .pad.hit{background:linear-gradient(#ffe08a,#e0a640);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 1px 0 #07080a}
 .pad.now{box-shadow:inset 0 0 0 3px #b4361f,0 4px 0 #07080a}
+/* AOG-BAND-GOSPEL-V1: the gospel samples, one tap each (the chord pads' look, smaller words) */
+.gos{margin:.7rem 0 .2rem}
+.gpads{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem;margin:.6rem 0 .2rem}
+@media (min-width:520px){ .gpads{grid-template-columns:repeat(4,minmax(0,1fr))} }
+.gpad{min-height:56px;border-radius:12px;border:1px solid #0a0b0d;padding:.35rem .4rem;color:#1f1a10;
+  background:linear-gradient(#fbf3df,#e6d7b5);box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 4px 0 #07080a;
+  font:800 .95rem/1.15 var(--sans);text-align:center;touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.gpad:disabled{opacity:.6}
+.gpad[aria-pressed="true"]{background:linear-gradient(#ffe08a,#e0a640);box-shadow:inset 0 0 0 3px #b4361f,0 4px 0 #07080a}
 /* the chord wheel (circle of fifths), as on the piano (AOG-PIANO-WHEEL-V1/V2) */
 .wheel-wrap{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center}
 #rig svg.wheel{display:block;width:100%;max-width:420px;height:auto;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
@@ -429,6 +438,21 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
 
       <div class="blk">
         <h2 data-t="keysH"></h2>
+        <!-- AOG-BAND-GOSPEL-V1: the gospel samples, with the Voices: shown while a Voices sound is picked, right under the
+             section and instrument menus (gosPaint puts it there once aog-soundpick.js has moved them above the keys);
+             nothing loads until Gospel samples is opened -->
+        <div class="gos no-print" id="gosBox" hidden>
+          <button type="button" class="pbtn lk-open" id="gosOpen" aria-expanded="false" aria-controls="gosBody"></button>
+          <div class="lk-body" id="gosBody" hidden>
+            <div class="seg" role="group" id="gosRecs">
+              <button type="button" class="pbtn" data-g="39-gospel-choir.mp3" aria-pressed="true"></button>
+              <button type="button" class="pbtn" data-g="40-jubilee-voices.mp3" aria-pressed="false"></button>
+            </div>
+            <p class="line" id="gosSay"></p>
+            <div class="gpads" id="gosPads" role="group"></div>
+            <p class="line" id="gosLine" aria-live="polite"></p>
+          </div>
+        </div>
         <div class="sc-row" id="scaleRow"><!-- AOG-BAND-SCALES-V1 -->
           <label class="field"><span class="plab" data-t="scaleLab"></span><select id="scaleSel"></select></label>
         </div>
@@ -1865,11 +1889,12 @@ function paintText(){
   $("sendBtn").textContent=t("send"); $("sendPadsBtn").textContent=t("sendPadsBtn"); $("padsBtn").textContent=t("padsBtn"); $("toPadsLab").textContent=t("toPadsLab"); $("sendPadsBtn").setAttribute("aria-label", t("sendPadsAria")); $("padsBtn").setAttribute("aria-label", t("padsAria")); REC.paint();
   $("era").setAttribute("aria-label", t("eraAria"));
   $("nav").innerHTML=navHtml();
-  $("foot").innerHTML=`<p>${t("credit")} ${t("creditClass")} ${t("creditVoices")} ${t("creditWorld")} <a href="/audio/band/CREDITS.txt">${t("credits")}</a></p>`;
+  $("foot").innerHTML=`<p>${t("credit")} ${t("creditClass")} ${t("creditVoices")} ${t("creditGospel")} ${t("creditWorld")} <a href="/audio/band/CREDITS.txt">${t("credits")}</a></p>`;
   paintSounds(); paintKeySel(); paintProgSel(); paintRhythm(); paintMood(); paintPads(); paintProg(); paintPlay(); paintTempo();
   paintDial(); paintLoad(); paintDrums(); paintScaleUI(); paintAny(); buildKeys(); bpText(); LES.paint();
   paintFx();   /* AOG-ROOM-PEDALS-V1 */
   if(typeof lkPaint==="function" && $("lkBody")) lkPaint();   /* AOG-BAND-LICKS-V1 */
+  if(typeof gosPaint==="function" && $("gosBox")) gosPaint();   /* AOG-BAND-GOSPEL-V1 */
 }
 /* AOG-ROOM-PEDALS-V1: the pedal panel. aog-amp.js draws it (the guitar's own panel); the page keeps what is changed, with the
    sound it was changed on. The strip right under the keys shows the pedals that are on and a menu of the rest. */
@@ -2778,6 +2803,95 @@ function lkBind(){
 }
 window.AOGBandLick={_t:{LK, playLick, lickStop, lickRecord, lkRender, lkCompile, lkPlayers, lkLoad, lkTwoShift, lkNoteVoices}};
 
+/* ══ AOG-BAND-GOSPEL-V1 (2026-10-27) — Jimmy: "Put them in the Vocals in the band room." The crate's two gospel records
+   (AOG-GOSPEL-V1: the Gospel Choir, in C, and Jubilee Voices, the Fisk Jubilee Singers, 1909 to 1924), sixteen samples
+   each, wait under the instrument menu while a Voices sound is picked. Nothing loads until Gospel samples is opened: then
+   the crate's list, and a record the first time it is picked. A sample plays through the band's pedals and room into
+   ● Record (REC taps the chain); a new one stops the last, and a tap on the one playing stops it. GOS_GAIN sets each
+   record as loud as the grand piano's C chord through this chain (bandt/level.js's way of measuring). ══ */
+const GOS={open:false, list:null, st:"", rec:"39-gospel-choir.mp3", buf:{}, load:{}, src:null, g:null, i:-1, msg:""};
+const GOS_GAIN={"39-gospel-choir.mp3":1.837, "40-jubilee-voices.mp3":1.899};
+const GOS_SAY={"39-gospel-choir.mp3":"gosSayChoir", "40-jubilee-voices.mp3":"gosSayJub"};
+Object.assign(STR, {
+  gosOpen:{en:"Gospel samples",es:"Muestras góspel"},
+  gosChoir:{en:"Gospel Choir",es:"Coro góspel"}, gosJub:{en:"Jubilee Voices",es:"Voces del jubileo"},
+  gosSayChoir:{en:"A gospel choir in C. Tap a sample to hear it.",es:"Un coro góspel en Do. Toca una muestra para oírla."},
+  gosSayJub:{en:"The Fisk Jubilee Singers, 1909 to 1924. A line of a spiritual on each.",es:"Los Fisk Jubilee Singers, de 1909 a 1924. Una línea de un espiritual en cada una."},
+  gosLoading:{en:"Getting the samples ready…",es:"Preparando las muestras…"},
+  gosFail:{en:"The samples did not load. Check the internet, then pick the record again.",es:"Las muestras no se cargaron. Revisa internet y vuelve a elegir el disco."},
+  gosPlaying:{en:"Playing: {name}. Tap it again to stop.",es:"Sonando: {name}. Tócala otra vez para parar."},
+  gosReady:{en:"● Record keeps the samples you play, as it keeps your notes.",es:"● Grabar guarda las muestras que tocas, como guarda tus notas."},
+  creditGospel:{en:"The gospel samples are VocalSet's singers (CC BY 4.0) and the Fisk Jubilee Singers' records, 1909 to 1924 (public domain).",
+    es:"Las muestras góspel son las voces de VocalSet (CC BY 4.0) y los discos de los Fisk Jubilee Singers, de 1909 a 1924 (dominio público)."}
+});
+function gosShown(){ return (SOUNDS[S.sound]||{}).grp==="grpVoices"; }
+function gosEntry(){ return GOS.list ? GOS.list.find(x=>x.file===GOS.rec) || null : null; }
+function gosDecode(ab){ const c=ctx(); return new Promise((ok, no)=>{ const p=c.decodeAudioData(ab, ok, no); if(p && p.then) p.then(ok, no); }); }
+function gosLoad(){
+  const f=GOS.rec;
+  if(!GOS.list){ if(GOS.st!=="list"){ GOS.st="list";
+      fetch("/audio/crate/crate.json").then(r=>{ if(!r.ok) throw new Error(r.status); return r.json(); })
+        .then(j=>{ GOS.list=(Array.isArray(j)?j:[]).filter(x=>x.kind==="gospel" && Array.isArray(x.phrases)); GOS.st=""; gosLoad(); })
+        .catch(()=>{ GOS.st="failed"; gosPaint(); }); }
+    gosPaint(); return; }
+  if(GOS.buf[f] || GOS.load[f]) { gosPaint(); return; }
+  GOS.st=""; GOS.load[f]=fetch("/audio/crate/"+f).then(r=>{ if(!r.ok) throw new Error(r.status); return r.arrayBuffer(); }).then(gosDecode)
+    .then(b=>{ GOS.buf[f]=b; delete GOS.load[f]; gosPaint(); })
+    .catch(()=>{ delete GOS.load[f]; if(GOS.rec===f) GOS.st="failed"; gosPaint(); });
+  gosPaint();
+}
+function gosStop(){
+  const src=GOS.src, g=GOS.g; GOS.src=null; GOS.g=null; GOS.i=-1;
+  if(src && ac){ const now=ac.currentTime; try{ g.gain.cancelScheduledValues(now); g.gain.setTargetAtTime(0, now, 0.012); src.stop(now+0.08); }catch(e){} }
+  GOS.msg=""; if(GOS.open) gosPaint();
+}
+function gosPlay(i){
+  const E=gosEntry(), buf=GOS.buf[GOS.rec], ph=E && E.phrases[i]; if(!ph || !buf) return;
+  const again=GOS.src && GOS.i===i; gosStop(); if(again) return;
+  const c=ctx(), src=c.createBufferSource(), g=c.createGain(), now=c.currentTime+0.005;
+  src.buffer=buf; g.gain.value=GOS_GAIN[GOS.rec]||1; src.connect(g); g.connect(LIVE_CH.bus);
+  src.start(now, ph[0], Math.min(ph[1], buf.duration-ph[0]));
+  src.onended=()=>{ if(GOS.src===src){ GOS.src=null; GOS.g=null; GOS.i=-1; GOS.msg=""; gosPaint(); } try{ g.disconnect(); }catch(e){} };
+  GOS.src=src; GOS.g=g; GOS.i=i; GOS.msg=t("gosPlaying",{name:ph[2]}); gosPaint();
+}
+function gosPaint(){
+  const box=$("gosBox"); if(!box) return;
+  /* with the instrument menus: right under their line ("Ready…"), wherever the room has put them */
+  const line=$("loadLine"); if(line && line.parentNode && box.parentNode!==line.parentNode) line.parentNode.insertBefore(box, line.nextSibling);
+  const show=gosShown(); box.hidden=!show; if(!show && GOS.src) gosStop();
+  $("gosOpen").textContent=t("gosOpen"); $("gosOpen").setAttribute("aria-expanded", GOS.open ? "true" : "false");
+  $("gosBody").hidden=!GOS.open; if(!GOS.open) return;
+  document.querySelectorAll("#gosRecs [data-g]").forEach(b=>{ const f=b.getAttribute("data-g");
+    b.textContent=t(f.indexOf("39")===0 ? "gosChoir" : "gosJub");
+    b.setAttribute("aria-pressed", f===GOS.rec ? "true" : "false"); });
+  $("gosSay").textContent=t(GOS_SAY[GOS.rec]);
+  const E=gosEntry(), ready=!!(E && GOS.buf[GOS.rec]), box2=$("gosPads"), sig=S.lang+"|"+GOS.rec+"|"+(E?1:0);
+  if(box2.getAttribute("data-sig")!==sig){ box2.setAttribute("data-sig", sig);
+    box2.innerHTML=E ? E.phrases.map((p,i)=>`<button type="button" class="gpad" data-i="${i}" aria-pressed="false">${esc(p[2])}</button>`).join("") : ""; }
+  box2.querySelectorAll(".gpad").forEach(b=>{ const i=+b.getAttribute("data-i"); b.disabled=!ready; b.setAttribute("aria-pressed", GOS.src && GOS.i===i ? "true" : "false"); });
+  $("gosLine").textContent=GOS.st==="failed" ? t("gosFail") : !ready ? t("gosLoading") : GOS.msg || t("gosReady");
+}
+function gosBind(){
+  $("gosOpen").onclick=()=>{ GOS.open=!GOS.open; if(GOS.open) gosLoad(); else gosStop(); gosPaint(); };
+  document.querySelectorAll("#gosRecs [data-g]").forEach(b=>b.onclick=()=>{ const f=b.getAttribute("data-g"); if(f===GOS.rec && GOS.st!=="failed") return;
+    gosStop(); GOS.rec=f; if(GOS.st==="failed") GOS.st=""; gosLoad(); });
+  $("gosPads").addEventListener("pointerdown", e=>{ const b=e.target.closest && e.target.closest(".gpad"); if(!b || b.disabled || e.button>0) return;
+    e.preventDefault(); gosPlay(+b.getAttribute("data-i")); });
+  /* a key or a screen reader presses it as a click with no pointer (a finger or mouse already played it on pointerdown) */
+  $("gosPads").addEventListener("click", e=>{ if(e.detail!==0) return; const b=e.target.closest && e.target.closest(".gpad"); if(!b || b.disabled) return;
+    gosPlay(+b.getAttribute("data-i")); });
+  /* the sound picked decides whether it shows (the menu, or the whole-screen instrument's menu) */
+  document.addEventListener("change", e=>{ if(e.target && (e.target.id==="soundSel" || e.target.id==="bpSound")) setTimeout(gosPaint, 0); });
+  /* out of sight, silent: the Studio's hush, a hidden tab, leaving */
+  window.addEventListener("aog-hush", e=>{ if(e && e.detail && e.detail.on) gosStop(); });
+  document.addEventListener("visibilitychange", ()=>{ if(document.hidden) gosStop(); });
+  window.addEventListener("pagehide", ()=>gosStop());
+  document.addEventListener("DOMContentLoaded", gosPaint);   /* after aog-soundpick.js (defer) has moved the menus */
+  /* a link to the gospel samples opens them, with a voice picked (/the-studio#band … ?at=music-band.html#gospel) */
+  if(location.hash==="#gospel"){ if(!gosShown()){ const ss=$("soundSel"); ss.value="voice_f_aa"; ss.onchange(); } GOS.open=true; gosLoad(); }
+  gosPaint();
+}
+
 /* ══ AOG-LESSONS-V1 (2026-10-05) — the Band's lessons: each step ticks itself as it happens (the words:
    _work/music/lessons_band.py; the card: aog-lessons.js). Jimmy: "make sure all music labs have lessons galore".
    A step ticks only on the real thing: a key or pad played with that instrument, a pattern playing in that way,
@@ -2847,6 +2961,7 @@ loadState();
 bind();
 lessonTakes();
 lkBind();   /* AOG-BAND-LICKS-V1 */
+gosBind();   /* AOG-BAND-GOSPEL-V1 */
 paintText();
 bpInit();
 if(libsIn()) scalesReady(); else document.addEventListener("DOMContentLoaded", scalesReady);

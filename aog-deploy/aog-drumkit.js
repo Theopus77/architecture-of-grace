@@ -330,6 +330,58 @@
     clap: ["STACK", [1, 2, 2], "Stack (two cymbals, short and trashy)", "Stack (dos platillos, corto y sucio)", { look: "cym" }], tom: ["TOM", [2, 2, 2], "Tom", "Tom"],
     rim: ["FLAM", [1, 2, 2], "Flam (two sticks, one just before the other)", "Flam (dos baquetas, una justo antes que la otra)"], bell: ["CRASH", [1, 2, 2], "Crash", "Crash"] }));
   IDS.push("OR", "ME", "SB", "BP", "GS", "MT", "DS", "PK", "PO", "JG", "RG", "TR", "TH", "BM", "BR", "GR", "PP", "HL");
+  /* ══ AOG-DRUM-SHELF-V1 (2026-10-27) — Jimmy: "Let's get different types of bass, high hats, cymbals, closed hats, etc…",
+     then "Bass meaning bass drums." One sound, many kinds: kits whose eight pads are eight kinds of one sound (bass drums
+     twice over, snares, closed hi-hats, open hi-hats, cymbals, claps), to put beside a drum set in the Drum Machine's
+     other two kits. Each pad borrows a real recording from another kit (from: that kit), plays its files from that kit's
+     folder and plays at that kit's level in each room (AOGDrumKit.from), evened with the kit's other pads (db). Borrow
+     only from a kit the Drum Machine offers (with its own trim; the 909, kit L, has none). The Drum Kit leaves these kits
+     out: it draws a drum set, not eight bass drums. */
+  /* db: how much it is lifted or lowered so the eight pads of a kit are as loud as each other (each brought to the kit's
+     middle pad, measured through the Drum Machine: a hit at normal strength, K-weighted, the loudest 400 ms) */
+  function SH(from, id, en, es, db) {
+    var src = KITS[from].pads[id], o = {}; for (var k in src) if (k !== "en" && k !== "es") o[k] = src[k];
+    o.from = from; o.en = en; o.es = es; if (db) o.db = db; return o; }
+  function SK(dir, en, es, pads) { return { dir: dir, en: en, es: es, hand: 1, grp: "shelf", pads: pads }; }
+  GROUPS.splice(1, 0, { id: "shelf", en: "One sound, many kinds", es: "Un sonido, muchos tipos" });
+  KITS.KK = SK("", "Bass drums · 8 kinds", "Bombos · 8 tipos", {
+    kick: SH("P", "kick", "Kick · studio", "Bombo · estudio", 1.5), snare: SH("Q", "kick", "Kick · big room", "Bombo · sala grande", -2.0),
+    ch: SH("U", "kick", "Kick · jazz, small", "Bombo · jazz, pequeño", -0.7), oh: SH("T", "kick", "Kick · metal click", "Bombo · metal con clic", -0.6),
+    clap: SH("E", "kick", "Kick · boom bap", "Bombo · boom bap", -1.3), tom: SH("RG", "kick", "Kick · reggaeton", "Bombo · reguetón", 0.3),
+    rim: SH("TR", "kick", "Kick · 808", "Bombo · 808", 1.8), bell: SH("BR", "kick", "Kick · 1960s", "Bombo · años 60", 0.8) });
+  KITS.BD = SK("", "Bass drums · 8 more", "Bombos · 8 más", {
+    kick: SH("OR", "kick", "Bass drum · orchestra", "Bombo · orquesta", 1.5), snare: SH("O", "kick", "Bass drum · marching", "Bombo · banda de marcha", -0.7),
+    ch: SH("DS", "kick", "Kick · disco", "Bombo · disco", 1.5), oh: SH("GR", "kick", "Kick · 1970s room", "Bombo · sala de los 70", 0.4),
+    clap: SH("W", "kick", "Kick · funk", "Bombo · funk", -0.5), tom: SH("JG", "kick", "Kick · jungle", "Bombo · jungle", 0.8),
+    rim: SH("PO", "kick", "Kick · 1980s", "Bombo · años 80", 1.8), bell: SH("HL", "kick", "Kick · fat and round", "Bombo · grueso y redondo", 1.1) });
+  KITS.SN = SK("", "Snares · 8 kinds", "Cajas · 8 tipos", {
+    kick: SH("P", "snare", "Snare · studio", "Caja · estudio", -4.6), snare: SH("Q", "snare", "Snare · big room", "Caja · sala grande", 2.4),
+    ch: SH("PO", "snare", "Snare · big 1980s", "Caja · grande de los 80", -2.8), oh: SH("V", "snare", "Snare · brushes", "Caja · escobillas", 2.9),
+    clap: SH("BM", "snare", "Snare · beat machine", "Caja · caja de ritmos", 2.0), tom: SH("TR", "snare", "Snare · trap", "Caja · trap", -2.0),
+    rim: SH("E", "snare", "Snare · boom bap", "Caja · boom bap", -1.6), bell: SH("PP", "snare", "Snare · cracking", "Caja · aguda", 1.6) });
+  KITS.CH = SK("", "Closed hi-hats · 8 kinds", "Charles cerrados · 8 tipos", {
+    kick: SH("P", "ch", "Hi-hat · studio", "Charles · estudio", -7.5), snare: SH("U", "ch", "Hi-hat · jazz", "Charles · jazz", 2.7),
+    ch: SH("BM", "ch", "Hi-hat · beat machine", "Charles · caja de ritmos", 2.7), oh: SH("TR", "ch", "Hi-hat · trap", "Charles · trap", -3.1),
+    clap: SH("E", "ch", "Hi-hat · boom bap", "Charles · boom bap", -0.2), tom: SH("TH", "ch", "Hi-hat · tight", "Charles · preciso", 2.8),
+    rim: SH("BR", "ch", "Hi-hat · 1960s", "Charles · años 60", 0.2), bell: SH("R", "clap", "Hi-hat · pedal", "Charles · pedal", -3.4) });
+  KITS.OH = SK("", "Open hi-hats · 8 kinds", "Charles abiertos · 8 tipos", {
+    kick: SH("P", "oh", "Open hat · studio", "Abierto · estudio", -6.2), snare: SH("U", "oh", "Open hat · jazz", "Abierto · jazz", 1.4),
+    ch: SH("BM", "oh", "Open hat · beat machine", "Abierto · caja de ritmos", 3.1), oh: SH("TR", "oh", "Open hat · trap", "Abierto · trap", 0.1),
+    clap: SH("DS", "oh", "Half-open · disco", "Medio abierto · disco", -0.1), tom: SH("BR", "oh", "Loose hat · 1960s", "Suelto · años 60", -0.3),
+    rim: SH("Q", "oh", "Open hat · big room", "Abierto · sala grande", 0.8), bell: SH("K", "oh", "Swish · brushes", "Barrido · escobillas", -12.2) });
+  KITS.CY = SK("", "Cymbals · 8 kinds", "Platillos · 8 tipos", {
+    kick: SH("P", "bell", "Crash · studio", "Crash · estudio", -8.6), snare: SH("J", "bell", "Crash · arena", "Crash · estadio", -2.7),
+    ch: SH("U", "rim", "Ride · jazz", "Ride · jazz", 6.3), oh: SH("GR", "rim", "Ride · 1970s", "Ride · años 70", 9.4),
+    clap: SH("T", "clap", "China", "China", 1.0), tom: SH("R", "bell", "Sizzle", "Sizzle", -6.7),
+    rim: SH("PP", "clap", "Stack", "Stack", 3.4), bell: SH("OR", "bell", "Gong", "Gong", -1.0) });
+  KITS.CL = SK("", "Claps and snaps · 8 kinds", "Palmas y chasquidos · 8 tipos", {
+    kick: SH("RG", "clap", "Claps · reggaeton", "Palmas · reguetón", -0.6), snare: SH("TR", "clap", "Claps · trap", "Palmas · trap", -4.0),
+    ch: SH("GS", "clap", "Claps · church", "Palmas · iglesia", 2.0), oh: SH("PO", "clap", "Claps · 1980s", "Palmas · años 80", -2.0),
+    clap: SH("DS", "clap", "Claps · disco", "Palmas · disco", 0.6), tom: SH("MT", "clap", "Claps · soul", "Palmas · soul", 5.6),
+    rim: SH("TR", "tom", "Finger snap", "Chasquido de dedos", 0.6), bell: SH("P", "clap", "Cross-stick", "Aro cruzado", -5.2) });
+  IDS.push("KK", "BD", "SN", "CH", "OH", "CY", "CL");
+  /* the kit whose level a pad plays at in each room: its own kit for a borrowed pad, else none ("") */
+  function from(b, id) { var k = KITS[b], p = k && k.pads[id]; return (p && p.from) || ""; }
   var LAYERS = ["s", "m", "h"];
   function made(b, id) { var k = KITS[b], p = k && k.pads[id]; return !!(p && p.made); }
 
@@ -693,7 +745,8 @@
     var kit = KITS[b], jobs = [];
     Object.keys(kit.pads).forEach(function (id) {
       var f = files(b, id);
-      LAYERS.forEach(function (lay) { f[lay].forEach(function (name, j) { jobs.push({ id: id, lay: lay, j: j, name: name }); }); });
+      var dir = kit.pads[id].from ? KITS[kit.pads[id].from].dir : kit.dir;   /* AOG-DRUM-SHELF-V1: a borrowed pad, from its own kit's folder */
+      LAYERS.forEach(function (lay) { f[lay].forEach(function (name, j) { jobs.push({ id: id, lay: lay, j: j, name: name, dir: dir }); }); });
     });
     var OC = root.OfflineAudioContext || root.webkitOfflineAudioContext;
     if (!OC || !root.fetch) { setState(b, { state: "failed", got: 0, total: jobs.length }); return Promise.resolve(); }
@@ -703,7 +756,7 @@
     function worker() {
       if (idx >= jobs.length) return Promise.resolve();
       var jb = jobs[idx++];
-      return fetch(BASE + kit.dir + "/" + jb.name + ".mp3?v=" + VER)
+      return fetch(BASE + jb.dir + "/" + jb.name + ".mp3?v=" + VER)
         .then(function (r) { if (!r.ok) throw new Error(r.status); return r.arrayBuffer(); })
         .then(function (ab) { return hiOnly ? decodeWith(decHi, ab).then(function (x) { return [x, null]; }) : Promise.all([decodeWith(decHi, ab.slice(0)), decodeWith(decLo, ab)]); })
         .then(function (two) {
@@ -711,6 +764,9 @@
           /* AOG-DRUM-STEREO-V1: a stereo recording keeps its right side too */
           if (two[0].numberOfChannels > 1) o.h2 = two[0].getChannelData(1);
           if (two[1] && two[1].numberOfChannels > 1) o.l2 = two[1].getChannelData(1);
+          /* AOG-DRUM-SHELF-V1: a borrowed pad brought to its kit's level (db) */
+          var db = kit.pads[jb.id].db;
+          if (db) { var g = Math.pow(10, db / 20); ["h", "l", "h2", "l2"].forEach(function (c) { var a = o[c]; if (a) for (var i = 0; i < a.length; i++) a[i] *= g; }); }
           got[jb.id + "/" + jb.lay + "/" + jb.j] = o;
         })
         .catch(function () { bad++; })
@@ -876,6 +932,7 @@
     padWord: padWord, drumOf: drumOf, look: look, family: family, hand: function (b) { return !!(has(b) && KITS[b].hand); },
     /* AOG-DRUM-MORE-V1: the kit menus' groups, in order, and each kit's group; the new grooves' beat-menu groups */
     groups: GROUPS, group: group, beatGroups: BEAT_GROUPS,
+    from: from,   /* AOG-DRUM-SHELF-V1: the kit whose level a pad plays at */
     takes: function (b, id) { var p = has(b) && KITS[b].pads[id]; return p ? p.n.slice() : [0, 0, 0]; },   /* the takes of each strength: soft, normal, hard */
     lineHtml: lineHtml, decorate: decorate, creditHtml: creditHtml, words: WORDS
   };
