@@ -430,6 +430,9 @@ In real materials (Jimmy, 2026-10-27: "Make them look more real and less 'fake!'
 slotted screws, a backlit LCD with its pixel grid and glare, matte rubber pads with printed names, dark plastic buttons whose
 lights (not their colour) show Play, Record and Shift, and the 808's step keys (red, orange, yellow, cream in fours). All drawn
 by CSS, no pictures to fetch.
+Sixteen pads to start (Jimmy, 2026-10-27: "make the drum machine 16 pads again with the option of making it 24 … the pads can
+be a bit bigger"; AOG-PADS-16-V1): the four by four (pads 1 to 16, bigger); Pads 16 | 24 beside "Play on the whole screen"
+brings back pads 17 to 24 (and their kit menu), kept on the device (`S.np`). Hits on 17 to 24 play either way.
 
 ## No floating My notes button (Jimmy, 2026-10-18: "I don't like the my notes button. Please remove that")
 
