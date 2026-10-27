@@ -11,7 +11,7 @@
  * Bump by REPLACING the CACHE line. Don't keep the old one as a comment: every byte here is
  * downloaded again on each update check. Old lines live in tools/sw-cache-history.txt and git log.
  */
-const CACHE = 'aog-cache-2026.10.27.m7601'   // BASS MEANS BASS DRUMS: THE 808 BASS KIT MAKES WAY FOR BASS DRUMS · 8 MORE (ORCHESTRA, MARCHING, DISCO, 70s ROOM, FUNK, JUNGLE, 80s, FAT AND ROUND), EVENED WITH THE FIRST EIGHT (AOG-DRUM-SHELF-V1)
+const CACHE = 'aog-cache-2026.10.27.m7602'   // THE BAND'S VOICES GET A REAL CHOIR (AAH, OOH: SIX VOCALSET SINGERS A NOTE) AND THE GOSPEL CHOIR AND JUBILEE VOICES IN THE MENU (AOG-BAND-CHOIR-V1)
 
 // Same-origin essentials — reliable to precache at install.
 /* AOG-SW-LIGHT-V1 (2026-10-01) — Jimmy: "Why is it taking so long for the website to load on my phone now?"

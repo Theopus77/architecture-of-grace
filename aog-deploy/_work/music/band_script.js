@@ -323,6 +323,18 @@ Object.assign(SOUNDS, {
 });
 Object.assign(PLAYER, {voice_f_aa:1.011, voice_f_uu:1.173, voice_m_aa:1.078, voice_m_uu:0.993});
 Object.assign(BOWED, {voice_f_aa:1, voice_f_uu:1, voice_m_aa:1, voice_m_uu:1});
+/* AOG-BAND-CHOIR-V1 (2026-10-27) — Jimmy: "I only have 4 sound in the voices. I lost the choir voices as well." A real choir:
+   six of VocalSet's twenty singers on every note, men low, women high, both between (music-handoff/tools/band/choir.py),
+   on "aah" and "ooh". And the two gospel records, picked like any voice: the choir plays the keys, and the record's sixteen
+   samples open under the menu (gos: AOG-BAND-GOSPEL-V1). Levels from bandt/level.js. */
+Object.assign(SOUNDS, {
+  choir_aa:{grp:"grpVoices", en:"Choir · “aah”", es:"Coro · “aa”", gain:1.231, rev:0.25, stand:"string"},
+  choir_uu:{grp:"grpVoices", en:"Choir · “ooh”", es:"Coro · “uu”", gain:1.502, rev:0.25, stand:"string"},
+  gospel_choir:{grp:"grpVoices", en:"Gospel Choir · 16 samples", es:"Coro góspel · 16 muestras", parts:["choir_aa"], gain:1.231, rev:0.25, stand:"string", gos:"39-gospel-choir.mp3"},
+  jubilee:{grp:"grpVoices", en:"Jubilee Voices · 16 samples", es:"Voces del jubileo · 16 muestras", parts:["choir_aa"], gain:1.231, rev:0.25, stand:"string", gos:"40-jubilee-voices.mp3"}
+});
+Object.assign(PLAYER, {choir_aa:1, choir_uu:1});
+Object.assign(BOWED, {choir_aa:1, choir_uu:1});
 Object.assign(STR, {
   grpVoices:{en:"Voices",es:"Voces"},
   creditVoices:{en:"The singers come from VocalSet by Julia Wilkins, Prem Seetharaman, Alison Wahl and Bryan Pardo (CC BY 4.0). We cut, tuned and moved their notes.",
@@ -2315,14 +2327,17 @@ function gosBind(){
   $("gosPads").addEventListener("click", e=>{ if(e.detail!==0) return; const b=e.target.closest && e.target.closest(".gpad"); if(!b || b.disabled) return;
     gosPlay(+b.getAttribute("data-i")); });
   /* the sound picked decides whether it shows (the menu, or the whole-screen instrument's menu) */
-  document.addEventListener("change", e=>{ if(e.target && (e.target.id==="soundSel" || e.target.id==="bpSound")) setTimeout(gosPaint, 0); });
+  /* AOG-BAND-CHOIR-V1: picking the Gospel Choir or Jubilee Voices in the menu opens its samples */
+  document.addEventListener("change", e=>{ if(e.target && (e.target.id==="soundSel" || e.target.id==="bpSound")) setTimeout(()=>{
+    const g=(SOUNDS[S.sound]||{}).gos; if(g){ if(g!==GOS.rec) gosStop(); GOS.rec=g; GOS.open=true; if(GOS.st==="failed") GOS.st=""; gosLoad(); }
+    gosPaint(); }, 0); });
   /* out of sight, silent: the Studio's hush, a hidden tab, leaving */
   window.addEventListener("aog-hush", e=>{ if(e && e.detail && e.detail.on) gosStop(); });
   document.addEventListener("visibilitychange", ()=>{ if(document.hidden) gosStop(); });
   window.addEventListener("pagehide", ()=>gosStop());
   document.addEventListener("DOMContentLoaded", gosPaint);   /* after aog-soundpick.js (defer) has moved the menus */
   /* a link to the gospel samples opens them, with a voice picked (/the-studio#band … ?at=music-band.html#gospel) */
-  if(location.hash==="#gospel"){ if(!gosShown()){ const ss=$("soundSel"); ss.value="voice_f_aa"; ss.onchange(); } GOS.open=true; gosLoad(); }
+  if(location.hash==="#gospel"){ if(!gosShown()){ const ss=$("soundSel"); ss.value="gospel_choir"; ss.onchange(); } GOS.open=true; gosLoad(); }
   gosPaint();
 }
 

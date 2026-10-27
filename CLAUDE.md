@@ -401,7 +401,10 @@ walk-up) and `40-jubilee-voices.mp3` (a line from sixteen spirituals by the Fisk
 The Turntables show them in their own Gospel voices box; the Drum Machine plays them on bank D (trims in LEVEL.rec); the
 Band has them with its Voices (Jimmy, 2026-10-27: "Put them in the Vocals in the band room"; AOG-BAND-GOSPEL-V1): pick a
 voice and Gospel samples opens under the instrument menu, 32 tap pads through the band's pedals into ● Record
-(`/the-studio#band … ?at=music-band.html#gospel` opens it; level in GOS_GAIN, `band_script.js`). Built
+(`/the-studio#band … ?at=music-band.html#gospel` opens it; level in GOS_GAIN, `band_script.js`). The Band's Voices also
+have a real choir (Jimmy, 2026-10-27: "I only have 4 sound in the voices. I lost the choir voices as well"; AOG-BAND-CHOIR-V1):
+Choir · "aah" and "ooh" (players choir_aa, choir_uu: six VocalSet singers a note, `music-handoff/tools/band/choir.py`), and
+Gospel Choir and Jubilee Voices as menu entries that play the choir and open their samples; `bandt/voices.js` checks them. Built
 by `_work/gospel` (read its README); credits in `audio/crate/CREDITS.txt`, and the CC BY credit must stay there.
 
 ## One sound, many kinds (Jimmy, 2026-10-27: "Let's get different types of bass, high hats, cymbals, closed hats, etc…", then "Bass meaning bass drums."; AOG-DRUM-SHELF-V1)
