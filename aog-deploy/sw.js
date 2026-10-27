@@ -11,7 +11,7 @@
  * Bump by REPLACING the CACHE line. Don't keep the old one as a comment: every byte here is
  * downloaded again on each update check. Old lines live in tools/sw-cache-history.txt and git log.
  */
-const CACHE = 'aog-cache-2026.10.27.m7603'   // SEVEN REAL CHOIRS (AAH, OOH, OH, EH, EE, WOMEN, MEN) IN THE BAND, THE PIANO AND THE DRUM MACHINE, EVERY NOTE IN TUNE (AOG-BAND-CHOIR-V2, AOG-PIANO-CHOIR-V1)
+const CACHE = 'aog-cache-2026.10.27.m7604'   // THE DRUM MACHINE AS A UNIT: ONE CASE, A BACKLIT SCREEN, LIT PLAY AND RECORD, LIT STEPS ACROSS THE FOOT, SHIFT FOR ACCENTS, ITS OWN HOME SCREEN ICON (AOG-PADS-UNIT-V1, AOG-PADS-APP-V1)
 
 // Same-origin essentials — reliable to precache at install.
 /* AOG-SW-LIGHT-V1 (2026-10-01) — Jimmy: "Why is it taking so long for the website to load on my phone now?"

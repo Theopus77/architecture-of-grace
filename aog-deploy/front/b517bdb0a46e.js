@@ -134,7 +134,7 @@ const INST={
   "k:steel":{g:"keys",en:"Steel drums",es:"Tambores de acero",d:"/audio/piano/steel/",x:"m",L:"sml",n:[25,28,31,34,37,40,43,46,49,52,55,58,61,64,67,70,73,76,79,82,85,88,91,94,97]},
   "k:harp":{g:"keys",en:"Harp",es:"Arpa",d:"/audio/piano/harp2/",x:"m",n:[28,35,38,41,45,48,52,55,59,62,65,69,72,76,79,83,86,89,93,98,101]},
   "k:strings":{g:"keys",en:"Soft strings",es:"Cuerdas suaves",d:"/audio/piano/strings2/",x:"m",n:[36,40,43,47,50,53,57,59,62,65,69,72,76,79,83,86]},
-  "k:choir":{g:"voices",en:"Choir",es:"Coro",d:"/audio/piano/choir/",x:"m",n:[24,27,30,33,36,39,42,45,48,51,54,57,60,63,66,69,72,75,78,81,84,87,90,93,96]},
+  "k:choir":{g:"voices",en:"Choir · one singer",es:"Coro · un cantante",d:"/audio/piano/choir/",x:"m",n:[24,27,30,33,36,39,42,45,48,51,54,57,60,63,66,69,72,75,78,81,84,87,90,93,96]},
   "k:flute":{g:"keys",en:"Flute",es:"Flauta",d:"/audio/piano/flute2/",x:"m",n:[60,64,69,72,76,81,84,88,93,96]},
   "k:strsynth":{g:"keys",en:"'70s string synth",es:"Sintetizador de cuerdas de los 70",d:"/audio/piano/synthstr/",x:"m",n:[24,27,30,33,36,39,42,45,48,51,54,57,60,63,66,69,72,75,78,81,84,87,90,93,96]},
   "k:pad":{g:"keys",en:"Warm synth",es:"Sintetizador cálido",d:"/audio/piano/synthpad/",x:"m",n:[24,27,30,33,36,39,42,45,48,51,54,57,60,63,66,69,72,75,78,81,84,87,90,93,96]},
@@ -209,7 +209,15 @@ Object.assign(INST, {
   "b:voice_f_aa":{g:"voices",en:"Voice · “aah”, a woman",es:"Voz · “aa”, una mujer",d:"/audio/band/voice_f_aa/",x:"s",n:[57,60,63,66,69,72,75,78,81],c:{"57":-3,"60":-3,"63":-3,"66":-3,"69":-10,"72":-10,"75":11,"78":11,"81":11}},
   "b:voice_f_uu":{g:"voices",en:"Voice · “ooh”, a woman",es:"Voz · “uu”, una mujer",d:"/audio/band/voice_f_uu/",x:"s",n:[57,60,63,66,69,72,75,78,81],c:{"57":-4,"60":-4,"63":-4,"66":-4,"69":-5,"72":-5,"75":11,"78":11,"81":11}},
   "b:voice_m_aa":{g:"voices",en:"Voice · “aah”, a man",es:"Voz · “aa”, un hombre",d:"/audio/band/voice_m_aa/",x:"s",n:[45,48,51,54,57,60,63,66],c:{"51":-3,"63":-5,"66":-5}},
-  "b:voice_m_uu":{g:"voices",en:"Voice · “ooh”, a man",es:"Voz · “uu”, un hombre",d:"/audio/band/voice_m_uu/",x:"s",n:[45,48,51,54,57,60,63,66],c:{"57":-4,"60":-4}}
+  "b:voice_m_uu":{g:"voices",en:"Voice · “ooh”, a man",es:"Voz · “uu”, un hombre",d:"/audio/band/voice_m_uu/",x:"s",n:[45,48,51,54,57,60,63,66],c:{"57":-4,"60":-4}},
+  /* AOG-BAND-CHOIR-V2 (2026-10-27): the Band's choir (six of VocalSet's singers a note, CC BY 4.0), every note made in tune */
+  "b:choir_aa":{g:"voices",en:"Choir · “aah”",es:"Coro · “aa”",d:"/audio/band/choir_aa/",x:"s",n:[45,48,51,54,57,60,63,66,69,72,75,78,81]},
+  "b:choir_uu":{g:"voices",en:"Choir · “ooh”",es:"Coro · “uu”",d:"/audio/band/choir_uu/",x:"s",n:[45,48,51,54,57,60,63,66,69,72,75,78,81]},
+  "b:choir_oh":{g:"voices",en:"Choir · “oh”",es:"Coro · “oh”",d:"/audio/band/choir_oh/",x:"s",n:[45,48,51,54,57,60,63,66,69,72,75,78,81]},
+  "b:choir_eh":{g:"voices",en:"Choir · “eh”",es:"Coro · “e”",d:"/audio/band/choir_eh/",x:"s",n:[45,48,51,54,57,60,63,66,69,72,75,78,81]},
+  "b:choir_ee":{g:"voices",en:"Choir · “ee”",es:"Coro · “i”",d:"/audio/band/choir_ee/",x:"s",n:[45,48,51,54,57,60,63,66,69,72,75,78,81]},
+  "b:choir_w":{g:"voices",en:"Women’s choir · “aah”",es:"Coro de mujeres · “aa”",d:"/audio/band/choir_w/",x:"s",n:[54,57,60,63,66,69,72,75,78,81]},
+  "b:choir_m":{g:"voices",en:"Men’s choir · “oh”",es:"Coro de hombres · “oh”",d:"/audio/band/choir_m/",x:"s",n:[42,45,48,51,54,57,60,63,66,69]}
 });
 /* AOG-PADS-WORLD-V1 (2026-10-13; finished 2026-10-17) — Jimmy: "And finish the world instruments." The Band's world
    instruments (AOG-BAND-WORLD-V1) in their own group, World. c: their tuning (cents), copied from audio/band/manifest.json
@@ -573,6 +581,7 @@ const LEVEL={"inst":{"k:grand":6.9,"k:upright":4.9,"k:epwarm":6.8,"k:epreed":4.6
    attack allows without crackling) */
 Object.assign(LEVEL.inst, {"b:recorder":1.8, "b:recorder_alto":5.4, "b:ukulele":9.4, "b:boomwhackers":10.1});
 Object.assign(LEVEL.inst, {"b:voice_f_aa":5.3, "b:voice_f_uu":3.3, "b:voice_m_aa":5.5, "b:voice_m_uu":2.2});   /* AOG-BAND-VOICES-V1: pads/level.js --table */
+Object.assign(LEVEL.inst, {"b:choir_aa":6.2, "b:choir_uu":6.3, "b:choir_oh":7.1, "b:choir_eh":7.5, "b:choir_ee":6.6, "b:choir_w":6.2, "b:choir_m":7.1});   /* AOG-BAND-CHOIR-V2: pads/level.js --table */
 Object.assign(LEVEL.inst, {"b:sitar":9.3, "b:koto":8.7, "b:erhu":5.4, "b:panflute":2.2, "b:didgeridoo":14.8, "b:didgeridoo_rhythm":15.8});   /* AOG-PADS-WORLD-V1: pads/level.js --table */
 Object.assign(LEVEL.kit, {"HP":12.9,"HD":9.4,"HC":10.2,"TB":8.7});   /* AOG-DRUM-PERC-V1: the hand drums and the tabla (pads/level.js --table) */
 Object.assign(LEVEL.kit, {"OR":9.9,"ME":8.1,"SB":10.2,"BP":9.8,"GS":9,"MT":10.6,"DS":10.1,"PK":8,"PO":11.6,"JG":11.6,"RG":11.5,"TR":13.9,"TH":8.1,"BM":10.6,"BR":10.8,"GR":7.3,"PP":10.1,"HL":10.7});   /* AOG-DRUM-MORE-V1: the new kits (pads/morekits.js --table, as pads/level.js) */
@@ -1768,4 +1777,45 @@ async function takeIn(){
   }
   if(newest>seen){ S.inAt=newest; if(go>=0) S.bank=go; save(); paintAll(); prep(S.bank); const l=$("inLine"); if(l && msg) l.textContent=msg; }
 }
+/* AOG-PADS-UNIT-V1: the unit's screen and Shift. The screen is written only when what it says changes (on a paint, a pad
+   picked, the bar playing), so it costs nothing while the unit rests. Shift and a step: an accent (again: off). */
+(function(){
+  const W={en:{bpm:"BPM",bar:"BAR",bars:"BARS",play:"▶ PLAY",stop:"■ STOP",rec:"● REC",pad:"PAD",shift:"Shift",shiftOn:"SHIFT: TAP A STEP FOR AN ACCENT"},
+           es:{bpm:"BPM",bar:"COMPÁS",bars:"COMPASES",play:"▶ SUENA",stop:"■ PARADO",rec:"● GRABA",pad:"PAD",shift:"Shift",shiftOn:"SHIFT: TOCA UN PASO PARA UN ACENTO"}};
+  const w=k=>(W[S0.lang]||W.en)[k];
+  let bar=0, shift=false, last="";
+  function lcd(){
+    const el=$("pmLcd"); if(!el) return;
+    const d=(padDefs(S.bank)||[])[S.sel]||{name:""}, B=S.banks[S.bank];
+    const kit=B.type==="drums" && window.AOGDrumKit && AOGDrumKit.has(B.kitA) ? AOGDrumKit.label(B.kitA)[S0.lang==="es"?1:0] : "";
+    const st=SEQ.rec ? w("rec") : SEQ.on ? w("play") : w("stop");
+    const L=[String(w("bpm"))+" "+String(Math.round(S.bpm)).padStart(3,"0")+" · "+S.bars+" "+w(S.bars===1?"bar":"bars"), st,
+      bankLabel(S.bank)+(kit?" · "+kit:""), SEQ.on ? w("bar")+" "+(bar+1)+"/"+S.bars : "",
+      shift ? w("shiftOn") : w("pad")+" "+(S.sel+1)+" · "+d.name, ""];
+    const k=L.join("|"); if(k===last) return; last=k;
+    el.innerHTML=L.map((x,i)=>`<span${i%2?' class="r"':""}>${esc(x)}</span>`).join("");
+  }
+  /* the screen follows the unit: these already run when something changes */
+  const wrap=(name)=>{ const f=window[name]; if(typeof f!=="function") return; window[name]=function(){ const r=f.apply(this, arguments); lcd(); return r; }; };
+  ["paintAll","paintTransport","paintSel","paintControls"].forEach(wrap);
+  const bp=window.barPlaying; if(typeof bp==="function") window.barPlaying=function(b){ bar=b; const r=bp.apply(this, arguments); lcd(); return r; };
+  /* the sixteen steps across the foot of the unit, under both halves */
+  const sec=document.querySelector(".pm-sec.stepsec"), pm=document.querySelector(".pm"), cols=document.querySelector(".pm-cols");
+  if(sec && pm && cols){ sec.classList.add("pm-unitsteps"); cols.after(sec);
+    const h=$("stepsH"), row=document.createElement("div"); row.className="pm-shiftrow"; h.before(row); row.appendChild(h);
+    const b=document.createElement("button"); b.type="button"; b.className="pm-b"; b.id="pmShift"; b.setAttribute("aria-pressed","false"); b.textContent=w("shift"); row.appendChild(b);
+    b.onclick=()=>{ shift=!shift; b.setAttribute("aria-pressed", String(shift)); lcd(); };
+    /* Shift and a step: an accent (an accent again: off). Caught on the way down, so the step's own tap (soft, normal, hard)
+       does not run while Shift is lit; Undo takes it back */
+    sec.addEventListener("click", e=>{ if(!shift) return; const st=e.target.closest && e.target.closest("#steps .st"); if(!st) return;
+      e.stopPropagation(); snapshot();
+      const i=+st.dataset.s, lo=i*24, hi=lo+24, bi=S.bank, pi=S.sel, hits=S.ev.filter(x=>x.b===bi && x.p===pi && x.t>=lo && x.t<hi);
+      const acc=hits.length && hits.every(x=>(x.v==null?0.8:x.v)>=0.9);
+      if(acc) S.ev=S.ev.filter(x=>!(x.b===bi && x.p===pi && x.t>=lo && x.t<hi));
+      else if(!hits.length) S.ev.push({b:bi, p:pi, t:lo, v:1, len:24}); else hits.forEach(x=>{ x.v=1; });
+      SEQ.map=null; save(); paintSteps();
+      if(!acc && !SEQ.on && isReady(bi)){ const v=trigger(bi, pi, 1, ctx().currentTime); flash(bi, pi, 0, 1); if(v && gated(bi)) v.stop(ctx().currentTime+0.25); } }, true);
+  }
+  lcd();
+})();
 init();
