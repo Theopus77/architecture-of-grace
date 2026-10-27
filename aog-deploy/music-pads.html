@@ -224,6 +224,21 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
 #padView .pads{max-width:none;margin:0;width:min(calc(100vw - 28px),calc((100dvh - 96px) * 1.5))}   /* six across, four down */
 #padView .pads.np16{width:min(calc(100vw - 28px),calc(100dvh - 110px))}   /* AOG-PADS-16-V1: four across, four down: as wide as it is tall, so all four rows fit (Jimmy's iPad, 2026-10-27: "The top and bottom rows are cut off") */
 #padView .pad{min-height:0}
+/* AOG-PADS-STAGE-V1: Stage mode (Jimmy, 2026-10-27: "use this on stage in front of an audience and make live beats") */
+#padView .pv-st,#padView .pv-stage{display:none}
+#padView.onstage .pv-st{display:inline-flex} #padView.onstage .pv-stage{display:flex} #padView.onstage #pvBank{display:none}
+#padView .pv-stage{flex-wrap:wrap;align-items:center;gap:8px 14px;flex:0 0 auto;margin:0 0 8px}
+#padView .pv-banks,#padView .pv-scenes{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+#padView .pv-bk{display:inline-flex;gap:2px}
+#padView .pv-bk .pm-b:first-child{border-radius:12px 0 0 12px} #padView .pv-bk .pm-b:last-child{border-radius:0 12px 12px 0;min-width:64px;padding:0 .6rem}
+#padView .pv-mute[aria-pressed="true"]{background:#ff7a6e;border-color:#ff7a6e;color:#1f0806}
+#padView .pv-scn{position:relative;min-width:52px}
+#padView .pv-scn.kept::after{content:"";position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:50%;background:#5fe08f}
+#padView .pv-scn.kept[aria-pressed="true"]::after{background:#1f1206}
+#padView .pv-keep[aria-pressed="true"]{background:#8fe6d4;border-color:#8fe6d4;color:#06201b}
+#padView .pv-lab{font:800 .85rem/1 var(--sans);color:#d9cfbb}
+@media (max-height:500px){#padView .pv-bn,#padView .pv-lab{display:none}#padView .pv-bk .pm-b:last-child{min-width:48px}#padView .pv-stage{gap:6px 10px}}   /* a phone turned sideways: the letters only, one row */
+#padView.locked #pvClose{background:#2b2410;border-color:#ffd36b;color:#ffe9b0}
 /* AOG-PADS-WIDE-V1: turned sideways, the pads fill the whole screen (Jimmy's iPad, 2026-10-27: "The pads in horizontal mode are much smaller and don't take up the whole screen") */
 @media (orientation:landscape){#padView .pv-grids{align-items:stretch}#padView .pads,#padView .pads.np16{width:100%;height:100%;grid-template-rows:repeat(4,minmax(0,1fr))}#padView .pad{aspect-ratio:auto}}
 #padView .pad .pn{font-size:clamp(14px,2.4vmin,22px)}
@@ -478,10 +493,14 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
   <div class="pv-bar">
     <button type="button" class="pm-b" id="pvClose"></button>
     <select class="pm-sel" id="pvBank"></select>
+    <button type="button" class="pm-b" id="pvStage" aria-pressed="false"></button><!-- AOG-PADS-STAGE-V1 -->
     <span class="pv-sp"></span>
+    <button type="button" class="pm-b pv-st" id="pvStop"></button>
+    <button type="button" class="pm-b pv-st" id="pvLock" aria-pressed="false"></button>
     <button type="button" class="pm-b" id="pvPlay" aria-pressed="false"></button>
     <button type="button" class="pm-b rec" id="pvRec" aria-pressed="false"></button>
   </div>
+  <div class="pv-stage" id="pvStageRow"><div class="pv-banks" id="pvBanks"></div><div class="pv-scenes" id="pvScenes"></div></div>
   <div class="pv-grids" id="pvGrid"></div>
 </div>
 <script>
@@ -1260,6 +1279,7 @@ function flash(bi, pi, when, vel){
 /* ══ the loop ══ */
 const PPQ=96;
 const SEQ={on:false, rec:false, t0:0, abs:0, timer:0, map:null, undo:[]};
+const STAGE={mute:[false,false,false,false], lock:false, arm:false, wl:null, hold:0};   /* AOG-PADS-STAGE-V1 */
 function spt(){ return 60/S.bpm/PPQ; }
 function loopLen(){ return S.bars*4*PPQ; }
 function evMap(){
@@ -1290,6 +1310,7 @@ function pump(){
       const abs=SEQ.abs, tk=abs%L, when=SEQ.t0+abs*sp, pass=Math.floor(abs/L), list=m.get(tk);
       if(list) list.forEach(e=>{
         if(e._skip===pass){ delete e._skip; return; }
+        if(STAGE.mute[e.b]) return;   /* AOG-PADS-STAGE-V1: a muted layer sits out */
         const hw=feelWhen(e.b, e.p, when); const v=trigger(e.b, e.p, e.v, hw); flash(e.b, e.p, hw, e.v);
         if(v && gated(e.b)) v.stop(hw+Math.max(12, e.len||48)*sp); /* AOG-PADS-FEEL-V1 */
       });
@@ -2012,14 +2033,18 @@ window.addEventListener("pagehide", ()=>{ if(paintFx.t){ clearTimeout(paintFx.t)
    bank, Play and Record. Close, or Esc, brings the page back where it was. ══ */
 const PV={on:false, back:null, y:0};
 function pvWords(){ const es=S0.lang==="es"; return {big:es?"⤢ Tocar en toda la pantalla":"⤢ Play on the whole screen", close:es?"✕ Cerrar":"✕ Close",
-  region:es?"Los pads, en toda la pantalla":"The pads, on the whole screen"}; }
+  region:es?"Los pads, en toda la pantalla":"The pads, on the whole screen",
+  stage:es?"🎤 Escenario":"🎤 Stage", stop:es?"■ Parar todo":"■ Stop all", lock:es?"🔒 Bloquear":"🔒 Lock", unlock:es?"🔒 Mantén para abrir":"🔒 Hold to unlock",
+  on:es?"Suena":"On", off:es?"Callado":"Off", mute:es?"Silenciar":"Mute", scene:es?"Escena":"Scene", keep:es?"＋ Guardar":"＋ Keep",
+  keepNow:es?"Toca una escena para guardarla ahí":"Tap a scene to keep this there"}; }
 function pvPaint(){
   if(!$("padView")) return; const W=pvWords();
-  $("bigBtn").textContent=W.big; $("pvClose").textContent=W.close; $("padView").setAttribute("aria-label", W.region);
+  $("bigBtn").textContent=W.big; $("pvClose").textContent=STAGE.lock ? W.unlock : W.close; $("padView").setAttribute("aria-label", W.region);
   if(!PV.on) return;
   $("pvBank").innerHTML=[0,1,2,3].map(i=>opt(i, esc(bankLabel(i)), S.bank)).join(""); $("pvBank").setAttribute("aria-label", t("bankLab"));
   $("pvPlay").textContent=$("playBtn").textContent; $("pvPlay").setAttribute("aria-pressed", $("playBtn").getAttribute("aria-pressed")||"false");
   $("pvRec").textContent=$("loopRec").textContent; $("pvRec").setAttribute("aria-pressed", $("loopRec").getAttribute("aria-pressed")||"false");
+  stPaint();
 }
 function pvZoom(on){   /* as the piano does (AOG-PLAY-ZOOM-V1): the page holds still at its own size while the pads fill it */
   const m=document.querySelector('meta[name="viewport"]'); if(!m) return;
@@ -2033,19 +2058,73 @@ function pvOpen(on){
   if(on){
     PV.on=true; PV.y=window.scrollY||0;
     PV.back=document.createComment("pads"); pads.parentNode.insertBefore(PV.back, pads); $("pvGrid").appendChild(pads);
-    pvZoom(true); document.body.classList.add("aog-play");
+    pvZoom(true); document.body.classList.add("aog-play"); stWake(!!S.stageOn);
   } else {
     PV.on=false; document.body.classList.remove("aog-play"); pvZoom(false);
+    STAGE.mute=[false,false,false,false]; STAGE.lock=false; STAGE.arm=false; stWake(false);   /* the page outside always plays every layer */
     if(PV.back && PV.back.parentNode) PV.back.parentNode.replaceChild(pads, PV.back); PV.back=null;
   }
   paintPads();
   if(on) $("pvClose").focus(); else { window.scrollTo(0, PV.y); $("bigBtn").focus(); }
+  pvPaint();
+}
+/* ══ AOG-PADS-STAGE-V1 (2026-10-27) — Jimmy: "use this on stage in front of an audience and make live beats, with chords,
+   notes, chops etc…". Stage, inside the whole screen: the four banks as buttons (one tap, the loop goes on), each with its
+   own On/Off (a layer of the loop sits out while it is Off; a pad tapped still sounds), four scenes (which bank and which
+   layers are on, kept on the device), Stop all (the loop, every held pad and every ringing note, at once), Lock (Close and
+   Esc wait until Close is held for a moment) and the screen kept awake while Stage is open. On/Off and Lock end when the
+   whole screen closes. Nothing runs while nobody touches it. ══ */
+async function stWake(on){
+  try{
+    if(on && !STAGE.wl && navigator.wakeLock && document.visibilityState==="visible"){ const w=await navigator.wakeLock.request("screen"); if(!(PV.on && S.stageOn)){ w.release(); return; } STAGE.wl=w; w.addEventListener("release",()=>{ if(STAGE.wl===w) STAGE.wl=null; }); }
+    else if(!on && STAGE.wl){ const w=STAGE.wl; STAGE.wl=null; w.release(); }
+  }catch(e){}
+}
+function stPaint(){
+  const W=pvWords(), pv=$("padView"); pv.classList.toggle("onstage", !!S.stageOn); pv.classList.toggle("locked", STAGE.lock);
+  $("pvStage").textContent=W.stage; $("pvStage").setAttribute("aria-pressed", S.stageOn?"true":"false");
+  $("pvStop").textContent=W.stop; $("pvLock").textContent=W.lock; $("pvLock").setAttribute("aria-pressed", STAGE.lock?"true":"false");
+  if(!S.stageOn) return;
+  const bk=[0,1,2,3].map(i=>`<span class="pv-bk"><button type="button" class="pm-b" data-bk="${i}" aria-pressed="${S.bank===i}" aria-label="${esc(bankLabel(i))}">${"ABCD"[i]}<span class="pv-bn">${esc(" · "+t("t_"+S.banks[i].type))}</span></button><button type="button" class="pm-b pv-mute" data-mu="${i}" aria-pressed="${STAGE.mute[i]}" aria-label="${esc(W.mute+" "+bankLabel(i))}">${STAGE.mute[i]?"🔇":"🔊"}<span class="pv-bn">${esc(STAGE.mute[i]?W.off:W.on)}</span></button></span>`).join("");
+  if($("pvBanks").innerHTML!==bk) $("pvBanks").innerHTML=bk;
+  const sc=S.scenes||[], cur=sc.findIndex(x=>x && x.bank===S.bank && x.mute.every((m,i)=>m===STAGE.mute[i]));
+  const sn=`<span class="pv-lab">${esc(W.scene)}</span>`+[0,1,2,3].map(i=>`<button type="button" class="pm-b pv-scn${sc[i]?" kept":""}" data-sc="${i}" aria-pressed="${cur===i}" aria-label="${esc(W.scene+" "+(i+1))}">${i+1}</button>`).join("")
+    +`<button type="button" class="pm-b pv-keep" id="pvKeep" aria-pressed="${STAGE.arm}">${esc(STAGE.arm ? W.keepNow : W.keep)}</button>`;
+  if($("pvScenes").innerHTML!==sn) $("pvScenes").innerHTML=sn;
+}
+function stBank(i){ if(i===S.bank) return; const bs=$("bankSel"); bs.value=String(i); bs.onchange(); }
+function stScene(i){
+  const sc=S.scenes||(S.scenes=[null,null,null,null]);
+  if(STAGE.arm || !sc[i]){ sc[i]={bank:S.bank, mute:STAGE.mute.slice()}; STAGE.arm=false; save(); stPaint(); return; }
+  STAGE.mute=sc[i].mute.slice(); if(sc[i].bank!==S.bank) stBank(sc[i].bank); stPaint();
+}
+function stStopAll(){
+  stop(); RPT.clear(); [...DOWN.keys()].forEach(release);
+  if(ac){ const c=ac, t0=c.currentTime; RING.splice(0).forEach(v=>letGo(v, c));
+    LIVE.chop.forEach((v,i)=>{ if(v){ try{ v.g.gain.cancelScheduledValues(t0); v.g.gain.setTargetAtTime(0, t0, 0.01); v.s.stop(t0+0.06); }catch(e){} LIVE.chop[i]=null; } });
+    LIVE.open.forEach(a=>a.splice(0).forEach(o=>{ try{ o.gain.gain.setTargetAtTime(0, t0, 0.01); o.src.stop(t0+0.06); }catch(e){} }));
+    if(bus){ const g=bus.gain, was=0.9; g.cancelScheduledValues(t0); g.setTargetAtTime(0, t0, 0.01); g.setTargetAtTime(was, t0+0.25, 0.01); } }
+  paintTransport();
+}
+function stInit(){
+  $("pvStage").onclick=()=>{ S.stageOn=!S.stageOn; save(); stWake(S.stageOn); pvPaint(); };
+  $("pvStop").onclick=stStopAll;
+  $("pvLock").onclick=()=>{ STAGE.lock=!STAGE.lock; pvPaint(); };
+  $("pvBanks").addEventListener("click",(e)=>{ const b=e.target.closest("button"); if(!b) return;
+    if(b.dataset.bk!=null) stBank(+b.dataset.bk); else if(b.dataset.mu!=null){ const i=+b.dataset.mu; STAGE.mute[i]=!STAGE.mute[i]; stPaint(); } });
+  $("pvScenes").addEventListener("click",(e)=>{ const b=e.target.closest("button"); if(!b) return;
+    if(b.id==="pvKeep"){ STAGE.arm=!STAGE.arm; stPaint(); } else if(b.dataset.sc!=null) stScene(+b.dataset.sc); });
+  const cl=$("pvClose"), done=()=>{ clearTimeout(STAGE.hold); STAGE.hold=0; };
+  cl.addEventListener("pointerdown",()=>{ STAGE.freed=false; if(!STAGE.lock) return; done(); STAGE.hold=setTimeout(()=>{ STAGE.hold=0; STAGE.lock=false; STAGE.freed=true; pvPaint(); }, 800); });
+  ["pointerup","pointerleave","pointercancel"].forEach(ev=>cl.addEventListener(ev, done));
+  document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible" && PV.on && S.stageOn) stWake(true); });
 }
 function pvInit(){
   if(!$("padView")) return;
   $("bigBtn").onclick=()=>pvOpen(true);
-  $("pvClose").onclick=()=>pvOpen(false);
-  document.addEventListener("keydown",(e)=>{ if(PV.on && e.key==="Escape"){ e.preventDefault(); pvOpen(false); } });
+  $("pvClose").onclick=()=>{ if(STAGE.freed){ STAGE.freed=false; return; } if(!STAGE.lock) pvOpen(false); };   /* the hold that unlocks does not also close */
+  document.addEventListener("keydown",(e)=>{ if(PV.on && e.key==="Escape"){ e.preventDefault(); if(!STAGE.lock) pvOpen(false); } });
+  stInit();
   $("pvPlay").onclick=()=>{ $("playBtn").click(); pvPaint(); };
   $("pvRec").onclick=()=>{ $("loopRec").click(); pvPaint(); };
   $("pvBank").onchange=()=>{ const bs=$("bankSel"); bs.value=$("pvBank").value; bs.onchange(); };
