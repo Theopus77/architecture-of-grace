@@ -492,7 +492,7 @@ const STR={
   t_drums:{en:"Drums",es:"Batería"}, t_notes:{en:"Notes",es:"Notas"}, t_chords:{en:"Chords",es:"Acordes"}, t_chops:{en:"Chops of a record",es:"Cortes de un disco"},
   kitA:{en:"Pads 1 to 8",es:"Pads 1 a 8"}, kitB:{en:"Pads 9 to 16",es:"Pads 9 a 16"}, kitC:{en:"Pads 17 to 24",es:"Pads 17 a 24"},
   inst:{en:"Instrument",es:"Instrumento"}, key:{en:"Key",es:"Tono"}, scale:{en:"Scale",es:"Escala"}, oct:{en:"Range",es:"Registro"},
-  low:{en:"Low",es:"Grave"}, mid:{en:"Middle",es:"Medio"}, high:{en:"High",es:"Agudo"},
+  lowest:{en:"Lowest",es:"Muy grave"}, low:{en:"Low",es:"Grave"}, mid:{en:"Middle",es:"Medio"}, high:{en:"High",es:"Agudo"},
   record:{en:"Record to chop",es:"Disco para cortar"}, fromBar:{en:"Start at",es:"Empieza en"}, clen:{en:"Each pad plays",es:"Cada pad suena"}, clen1:{en:"1 beat",es:"1 tiempo"}, clen2:{en:"2 beats",es:"2 tiempos"}, clen4:{en:"1 bar",es:"1 compás"}, about:{en:"about {s} s",es:"unos {s} s"}, barN:{en:"Bar {n}",es:"Compás {n}"}, whole:{en:"The whole take",es:"Toda la toma"},
   matchT:{en:"Use its tempo",es:"Usar su tempo"},
   g_keys:{en:"Keys",es:"Teclados"}, g_guitar:{en:"Guitar",es:"Guitarra"}, g_bass:{en:"Bass",es:"Bajo"}, g_band:{en:"The band",es:"La banda"}, g_voices:{en:"Voices",es:"Voces"}, g_world:{en:"World",es:"Del mundo"},
@@ -1776,7 +1776,7 @@ function paintSetRow(){
     /* AOG-PADS-ALLSCALES-V1: every scale (the Chords bank: every seven-note scale) */
     const cur=B.type==="chords" && scaleIv(B.scale).length!==7 ? (patMinor(B)?"minor":"major") : B.scale;
     h+=field("fScale", t("scale"), scaleOptions(cur, B.type==="chords"));
-    if(B.type==="notes") h+=field("fOct", t("oct"), [2,3,4].map((o,i)=>opt(o, esc(t(["low","mid","high"][i])), B.oct)).join(""));
+    if(B.type==="notes") h+=field("fOct", t("oct"), [1,2,3,4].map((o,i)=>opt(o, esc(t(["lowest","low","mid","high"][i])), B.oct)).join("")); /* AOG-PADS-LOWEST-V1: a song puts the bass at 1 (E1); the menu shows it and offers it */
   }
   $("setRow").innerHTML=h;
   const on=(id, fn)=>{ const el=$(id); if(el) el.onchange=()=>{ fn(el.value); save(); paintAll(); prep(S.bank); }; };
