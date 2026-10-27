@@ -122,6 +122,15 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
 .pad kbd{display:none}
 .pad.hit{background:linear-gradient(#ffe08a,#e0a640);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 1px 0 #07080a}
 .pad.now{box-shadow:inset 0 0 0 3px #b4361f,0 4px 0 #07080a}
+/* AOG-BAND-GOSPEL-V1: the gospel samples, one tap each (the chord pads' look, smaller words) */
+.gos{margin:.7rem 0 .2rem}
+.gpads{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem;margin:.6rem 0 .2rem}
+@media (min-width:520px){ .gpads{grid-template-columns:repeat(4,minmax(0,1fr))} }
+.gpad{min-height:56px;border-radius:12px;border:1px solid #0a0b0d;padding:.35rem .4rem;color:#1f1a10;
+  background:linear-gradient(#fbf3df,#e6d7b5);box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 4px 0 #07080a;
+  font:800 .95rem/1.15 var(--sans);text-align:center;touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.gpad:disabled{opacity:.6}
+.gpad[aria-pressed="true"]{background:linear-gradient(#ffe08a,#e0a640);box-shadow:inset 0 0 0 3px #b4361f,0 4px 0 #07080a}
 /* the chord wheel (circle of fifths), as on the piano (AOG-PIANO-WHEEL-V1/V2) */
 .wheel-wrap{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center}
 #rig svg.wheel{display:block;width:100%;max-width:420px;height:auto;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
@@ -429,6 +438,21 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
 
       <div class="blk">
         <h2 data-t="keysH"></h2>
+        <!-- AOG-BAND-GOSPEL-V1: the gospel samples, with the Voices: shown while a Voices sound is picked, right under the
+             section and instrument menus (gosPaint puts it there once aog-soundpick.js has moved them above the keys);
+             nothing loads until Gospel samples is opened -->
+        <div class="gos no-print" id="gosBox" hidden>
+          <button type="button" class="pbtn lk-open" id="gosOpen" aria-expanded="false" aria-controls="gosBody"></button>
+          <div class="lk-body" id="gosBody" hidden>
+            <div class="seg" role="group" id="gosRecs">
+              <button type="button" class="pbtn" data-g="39-gospel-choir.mp3" aria-pressed="true"></button>
+              <button type="button" class="pbtn" data-g="40-jubilee-voices.mp3" aria-pressed="false"></button>
+            </div>
+            <p class="line" id="gosSay"></p>
+            <div class="gpads" id="gosPads" role="group"></div>
+            <p class="line" id="gosLine" aria-live="polite"></p>
+          </div>
+        </div>
         <div class="sc-row" id="scaleRow"><!-- AOG-BAND-SCALES-V1 -->
           <label class="field"><span class="plab" data-t="scaleLab"></span><select id="scaleSel"></select></label>
         </div>

@@ -2,7 +2,8 @@
 
 Jimmy: "Can you make gospel vocal samples for the studio". Two records in the turntables' crate, sixteen samples each,
 one on each pad (kind "gospel": the Turntables show them in their own Gospel voices box, the Drum Machine puts them on
-bank D, its chops bank, with pads 17 to 24 playing them two at a time):
+bank D, its chops bank, with pads 17 to 24 playing them two at a time; the Band has them with its Voices, under
+Gospel samples, AOG-BAND-GOSPEL-V1 in `_work/music/band_script.js`):
 
 - `39-gospel-choir.mp3`, Gospel Choir: a choir in C made from the twenty real singers of VocalSet (CC BY 4.0). "Oh!"
   hits on C, F, Am7 and F/G; "Aah" swells on Cmaj9 and Fmaj9; "Ooh" pads on C6/9 and Dm9; the Amen chords (F to C);
@@ -21,7 +22,8 @@ Get the sources into one scratch folder each:
 
 Then `python3 make_choir.py <vocalset folder>`, `python3 make_jubilee.py <fisk folder>` (each writes its record and its
 crate entry) and `python3 add_to_crate.py`. If a record changes length or level, measure it again with
-`music-handoff/tests/pads/level.js --table` and copy its new trim into LEVEL.rec in `music-pads.html`.
+`music-handoff/tests/pads/level.js --table` and copy its new trim into LEVEL.rec in `music-pads.html`; the Band's
+level (GOS_GAIN) is set so the samples are as loud through its chain as the grand piano's C chord (as bandt/level.js measures).
 
 Neither was heard by a person before it went up: the chords were checked by their notes (every pad holds the notes of its
 chord), the cuts by pictures of the sound and by a check for pops. Listen, and change a cut in `SONGS` if a line starts or

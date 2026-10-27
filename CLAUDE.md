@@ -398,7 +398,10 @@ against chords like the guitar's and bass's; `reach()` there says where each pla
 Two records in the turntables' crate (`audio/crate/crate.json`, kind "gospel"), sixteen samples each, one on each pad:
 `39-gospel-choir.mp3` (a choir in C sung by VocalSet's twenty real singers, CC BY 4.0: hits, swells, the Amen chords, a
 walk-up) and `40-jubilee-voices.mp3` (a line from sixteen spirituals by the Fisk Jubilee Singers, 1909–1924, public domain).
-The Turntables show them in their own Gospel voices box; the Drum Machine plays them on bank D (trims in LEVEL.rec). Built
+The Turntables show them in their own Gospel voices box; the Drum Machine plays them on bank D (trims in LEVEL.rec); the
+Band has them with its Voices (Jimmy, 2026-10-27: "Put them in the Vocals in the band room"; AOG-BAND-GOSPEL-V1): pick a
+voice and Gospel samples opens under the instrument menu, 32 tap pads through the band's pedals into ● Record
+(`/the-studio#band … ?at=music-band.html#gospel` opens it; level in GOS_GAIN, `band_script.js`). Built
 by `_work/gospel` (read its README); credits in `audio/crate/CREDITS.txt`, and the CC BY credit must stay there.
 
 ## No floating My notes button (Jimmy, 2026-10-18: "I don't like the my notes button. Please remove that")
