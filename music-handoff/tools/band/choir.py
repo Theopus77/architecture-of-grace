@@ -13,7 +13,7 @@
 # (tune.py) and the manifest corrects one 3 cents or more off. The manifest gets the two players (added, or replaced where
 # they are); every other player stays exactly as it was.
 #
-# Run:  python3 choir.py <aog-deploy/audio/band> <folder with the VocalSet files>
+# Run:  python3 choir.py <aog-deploy/audio/band> <folder with the VocalSet files> [player,player,...]   (only those)
 import os, sys, json, subprocess, numpy as np
 from scipy import signal
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, HERE)
@@ -93,16 +93,29 @@ def onset(x, frac=0.03):
     pk = np.max(np.abs(x)); i = int(np.argmax(np.abs(x) > pk * frac)); return max(0, i - int(0.005 * SR))
 
 LEN = 5.4; TARGET = -18.0
-made = {}
-for player, v in (("choir_aa", "a"), ("choir_uu", "u")):
+import tune
+# AOG-BAND-CHOIR-V2 (2026-10-27; Jimmy chose more vowels, the women's and men's choirs, and the choir in the Piano room):
+# player, vowel, who sings, notes. "mixed" is the men below E3, the women above F#4, both between.
+PLAYERS = [("choir_aa", "a", "mixed", NOTES), ("choir_uu", "u", "mixed", NOTES), ("choir_oh", "o", "mixed", NOTES),
+           ("choir_eh", "e", "mixed", NOTES), ("choir_ee", "i", "mixed", NOTES),
+           ("choir_w", "a", "women", list(range(54, 82, 3))), ("choir_m", "o", "men", list(range(42, 70, 3)))]
+ONLY = sys.argv[3].split(",") if len(sys.argv) > 3 else None
+def heard(y, n):
+    h, sp, cnt = tune.heard(y, n, "held")
+    return h if h is not None else (tune.finalize_yin(y, n) - n) * 100
+made = {}; tunes_of = {}
+for player, v, who, NOTES_P in PLAYERS:
+    if ONLY and player not in ONLY: continue
+    rng = np.random.default_rng(sum(map(ord, player)))          # each choir its own, the same every time it is made
     notes = {}; raw = {}
     for s in WOMEN + MEN:
         f = os.path.join(SRC, "%s_long_straight_%s.wav" % (s, v))
         if not os.path.exists(f): continue
         notes[s] = sung_notes(psola.load(f, SR), s.startswith("f")); raw[s] = psola.load(f, SRU)
     d = os.path.join(BAND, player); os.makedirs(d, exist_ok=True)
-    for n in NOTES:
-        pool = MEN if n < 52 else WOMEN if n > 66 else WOMEN + MEN
+    tunes = {}
+    for n in NOTES_P:
+        pool = WOMEN if who == "women" else MEN if who == "men" else MEN if n < 52 else WOMEN if n > 66 else WOMEN + MEN
         cands = []
         for s in pool:
             for j, (a, b, m) in enumerate(notes.get(s, [])):
@@ -119,31 +132,28 @@ for player, v in (("choir_aa", "a"), ("choir_uu", "u")):
             seg = np.concatenate([np.zeros(int(2.5 * SRU / (440 * 2 ** ((m - 69) / 12)))), seg[psola.onset(seg, SRU):]])
             cents = rng.uniform(-6, 6) / 100
             y = psola.down(psola.psola(seg, m, n - m + cents)); y = y[onset(y):]
-            y = hold_longer(y, n, LEN + 0.3)[:int(LEN * SR)]
+            y = hold_longer(y, n, LEN + 0.6)[:int((LEN + 0.15) * SR)]
             y = y / (np.sqrt(np.mean(y[:int(2.0 * SR)] ** 2)) + 1e-9) * 10 ** (rng.uniform(-1, 1) / 20)
-            at = int(rng.uniform(0, 0.03) * SR); mix[at:at + len(y)] += y
+            at = int(rng.uniform(0, 0.03) * SR); mix[at:at + len(y)] += y[:len(mix) - at]
+        # in tune as heard (tune.py): the whole note moved by the cents it is off, so every room plays it true
+        c = heard(mix[:int(LEN * SR)], n)
+        if abs(c) >= 0.5:
+            r = 2 ** (-c / 1200); mix = np.interp(np.arange(int(LEN * SR)) * r, np.arange(len(mix)), mix)   # read slower to lower a sharp note
         mix = mix[:int(LEN * SR)]
         mix *= 10 ** ((TARGET - kw(mix[:int(2.6 * SR)])) / 20)
         pk = np.max(np.abs(mix))
         if pk > 0.95: mix *= 0.95 / pk
         fo = int(0.4 * SR); mix[-fo:] *= np.linspace(1, 0, fo) ** 2; fi = int(0.002 * SR); mix[:fi] *= np.linspace(0, 1, fi)
+        path = os.path.join(d, "%ds.mp3" % n)
         subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "f32le", "-ar", str(SR), "-ac", "1", "-i", "-", "-codec:a", "libmp3lame", "-b:a", "64k",
-                        os.path.join(d, "%ds.mp3" % n)], input=mix.astype(np.float32).tobytes(), check=True)
-        print("%s %d: %s" % (player, n, " ".join("%s%+.1f" % (s, n - notes[s][j][2]) for _, s, j in pick)), flush=True)
-    made[player] = NOTES
+                        path], input=mix.astype(np.float32).tobytes(), check=True)
+        h = int(round(heard(psola.load(path, SR), n)))
+        if abs(h) >= 3: tunes["%ds" % n] = h               # what is still off, the page corrects
+        print("%s %d: %s · was %+.0f cents, now %+d" % (player, n, " ".join("%s%+.1f" % (s, n - notes[s][j][2]) for _, s, j in pick), c, h), flush=True)
+    made[player] = NOTES_P; tunes_of[player] = tunes
 
-# the tuning, measured on the finished files by tune.py (as world.py): a note 3 cents or more off is corrected by the page
-import tune
 man = json.load(open(os.path.join(BAND, "manifest.json")), object_pairs_hook=dict)
 for player, sus in made.items():
-    tunes = {}
-    for n in sus:
-        y = psola.load(os.path.join(BAND, player, "%ds.mp3" % n), SR)
-        h, sp, cnt = tune.heard(y, n, "held")
-        if h is None: h = (tune.finalize_yin(y, n) - n) * 100
-        c = int(round(h))
-        if abs(c) >= 3: tunes["%ds" % n] = c
-        print("%-9s %2d  %+4d cents%s" % (player, n, c, "  (corrected)" if abs(c) >= 3 else ""))
-    man[player] = {"sus": sus, "susL": [], "stac": [], "tune": tunes, "lvl": {}}
+    man[player] = {"sus": sus, "susL": [], "stac": [], "tune": tunes_of[player], "lvl": {}}
 open(os.path.join(BAND, "manifest.json"), "w").write(json.dumps(man))   # as the file is kept (default spacing)
 print("manifest: %s" % ", ".join(made))
