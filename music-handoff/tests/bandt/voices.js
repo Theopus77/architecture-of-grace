@@ -16,7 +16,8 @@ let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails+
 const VOICES=["voice_f_aa","voice_f_uu","voice_m_aa","voice_m_uu"];
 /* AOG-BAND-CHOIR-V1 (2026-10-27): the Band's choir on "aah" and "ooh" (six singers a note) joins the four, and the menu ends
    with the two gospel records, which play the choir on the keys and open their samples. The Drum Machine keeps the four. */
-const PLAYERS=VOICES.concat(["choir_aa","choir_uu"]), MENU=PLAYERS.concat(["gospel_choir","jubilee"]);
+const CHOIRS=["choir_aa","choir_uu","choir_oh","choir_eh","choir_ee","choir_w","choir_m"];   /* AOG-BAND-CHOIR-V2: and in the Drum Machine */
+const PLAYERS=VOICES.concat(CHOIRS), MENU=PLAYERS.concat(["gospel_choir","jubilee"]);
 const PITCH=`
 window.__yinWin=function(x,s,m,W,SR){ const f=440*Math.pow(2,(m-69)/12), P=SR/f, lo=Math.floor(P*Math.pow(2,-1.5/12))-1, hi=Math.floor(P*Math.pow(2,1.5/12))+2;
   if(s+W+hi+1>x.length) return null; const d=new Float64Array(hi-lo+1);
@@ -63,12 +64,12 @@ window.__note=async function(id,m,secs){ const SR=32000; S.sound=id; await loadS
   const menu=()=>p.evaluate(()=>[...document.querySelectorAll("#soundSel optgroup")].map(o=>[o.label, [...o.querySelectorAll("option")].map(x=>[x.value, x.textContent])]));
   let m=await menu(), g=m.find(x=>x[0]==="Voices");
   ok(g && JSON.stringify(g[1].map(x=>x[0]))===JSON.stringify(MENU), "a Voices group holds the four, the choir and the gospel records: "+(g?g[1].map(x=>x[1]).join(" | "):"none"));
-  ok(g && g[1].map(x=>x[1]).join("|")==="Voice · “aah”, a woman|Voice · “ooh”, a woman|Voice · “aah”, a man|Voice · “ooh”, a man|Choir · “aah”|Choir · “ooh”|Gospel Choir · 16 samples|Jubilee Voices · 16 samples", "their English names");
+  ok(g && g[1].map(x=>x[1]).join("|")==="Voice · “aah”, a woman|Voice · “ooh”, a woman|Voice · “aah”, a man|Voice · “ooh”, a man|Choir · “aah”|Choir · “ooh”|Choir · “oh”|Choir · “eh”|Choir · “ee”|Women’s choir · “aah”|Men’s choir · “oh”|Gospel Choir · 16 samples|Jubilee Voices · 16 samples", "their English names");
   let foot=await p.textContent("#foot");
   ok(/VocalSet by Julia Wilkins, Prem Seetharaman, Alison Wahl and Bryan Pardo \(CC BY 4\.0\)/.test(foot), "the credits name VocalSet and its licence");
   await p.evaluate(()=>document.getElementById("langBtn").click()); await p.waitForTimeout(300);
   m=await menu(); g=m.find(x=>x[0]==="Voces");
-  ok(g && g[1].map(x=>x[1]).join("|")==="Voz · “aa”, una mujer|Voz · “uu”, una mujer|Voz · “aa”, un hombre|Voz · “uu”, un hombre|Coro · “aa”|Coro · “uu”|Coro góspel · 16 muestras|Voces del jubileo · 16 muestras", "in Spanish, Voces: "+(g?g[1].map(x=>x[1]).join(" | "):m.map(x=>x[0]).join(", ")));
+  ok(g && g[1].map(x=>x[1]).join("|")==="Voz · “aa”, una mujer|Voz · “uu”, una mujer|Voz · “aa”, un hombre|Voz · “uu”, un hombre|Coro · “aa”|Coro · “uu”|Coro · “oh”|Coro · “e”|Coro · “i”|Coro de mujeres · “aa”|Coro de hombres · “oh”|Coro góspel · 16 muestras|Voces del jubileo · 16 muestras", "in Spanish, Voces: "+(g?g[1].map(x=>x[1]).join(" | "):m.map(x=>x[0]).join(", ")));
   foot=await p.textContent("#foot");
   ok(/VocalSet de Julia Wilkins, Prem Seetharaman, Alison Wahl y Bryan Pardo \(CC BY 4\.0\)/.test(foot), "the credits in Spanish name VocalSet and its licence");
   await p.evaluate(()=>document.getElementById("langBtn").click()); await p.waitForTimeout(250);
@@ -128,20 +129,20 @@ window.__note=async function(id,m,secs){ const SR=32000; S.sound=id; await loadS
     const preq=[]; q.on("request",r=>{ const u=r.url(), k=u.indexOf("/audio/band/"); if(k>=0) preq.push(u.slice(k+12)); });
     q.on("response",r=>{ if(r.status()>=400) bad.push("pads "+r.status()+" "+r.url()); });
     await q.goto("http://localhost:9334/music-pads.html"); await q.waitForTimeout(1500); await q.addScriptTag({content:MEASURE});
-    ok(!preq.some(u=>VOICES.some(f=>u.indexOf(f+"/")===0)), "the Drum Machine opens fetching none of them");
+    ok(!preq.some(u=>PLAYERS.some(f=>u.indexOf(f+"/")===0)), "the Drum Machine opens fetching none of them");
     const grp=await q.evaluate(()=>{ const d=new DOMParser().parseFromString("<select>"+instOptions("")+"</select>","text/html");
       const o=[...d.querySelectorAll("optgroup")].find(x=>x.label===t("g_voices")); return o ? {label:o.label, ids:[...o.querySelectorAll("option")].map(x=>x.value)} : null; });
-    ok(grp && grp.label==="Voices" && JSON.stringify(grp.ids)===JSON.stringify(["k:choir"].concat(VOICES.map(v=>"b:"+v))), "its Voices group lists the Choir and the four: "+JSON.stringify(grp));
-    const pr=await q.evaluate(async(VOICES)=>{ const man=await (await fetch("/audio/band/manifest.json")).json(), o={};
-      for(const inst of VOICES){ const I=INST["b:"+inst], M=man[inst]; if(!I){ o[inst]="missing"; continue; }
+    ok(grp && grp.label==="Voices" && JSON.stringify(grp.ids)===JSON.stringify(["k:choir"].concat(PLAYERS.map(v=>"b:"+v))), "its Voices group lists the Choir, the four and the seven choirs: "+JSON.stringify(grp));
+    const pr=await q.evaluate(async(PLAYERS)=>{ const man=await (await fetch("/audio/band/manifest.json")).json(), o={};
+      for(const inst of PLAYERS){ const I=INST["b:"+inst], M=man[inst]; if(!I){ o[inst]="missing"; continue; }
         const zs=await zonesOf("b:"+inst), bad=[];
         if(JSON.stringify(I.n)!==JSON.stringify(M.sus)) bad.push("notes");
         zs.forEach(z=>{ if(z.c!==(M.tune[z.m+"s"]||0)) bad.push("tune "+z.m); });
         for(const z of zs){ const r=await fetch(z.url); if(!r.ok) bad.push("file "+z.m); }
         if(typeof LEVEL.inst["b:"+inst]!=="number") bad.push("level");
         o[inst]=bad.length?bad.join(", "):"ok"; }
-      return o; }, VOICES);
-    ok(VOICES.every(i=>pr[i]==="ok"), "each is tuned as the Band tunes it, every file there, levelled: "+JSON.stringify(pr));
+      return o; }, PLAYERS);
+    ok(PLAYERS.every(i=>pr[i]==="ok"), "each is tuned as the Band tunes it, every file there, levelled: "+JSON.stringify(pr));
     const pl=await q.evaluate(async(ids)=>{ const wait=bi=>new Promise((ok,no)=>{ const t0=Date.now(); const c=()=>{ if(isReady(bi)) ok(); else if(READY[bi].state==="failed" || Date.now()-t0>60000) no(new Error("not ready "+bi)); else setTimeout(c,30); }; prep(bi); c(); });
       const render=async(sec, fn)=>{ const oc=new OfflineAudioContext(2, Math.round(44100*sec), 44100), g=oc.createGain(); g.gain.value=0.9; g.connect(oc.destination);
         const T={c:oc, dest:g, open:[[],[],[],[]], chop:[null,null,null,null]}; fn(T); return +__kw(await oc.startRendering()).toFixed(1); };
@@ -152,7 +153,7 @@ window.__note=async function(id,m,secs){ const SR=32000; S.sound=id; await loadS
         Object.assign(S.banks[2], {type:"notes", inst:id, key:0, scale:"major", oct:4}); await wait(2);
         const nt=await render(2.6, T=>{ const v=trigger(2, 0, 0.8, 0.05, T); if(v&&v.stop) v.stop(2.05); });
         out[id]={chord:ch, note:nt}; }
-      return out; }, ["k:choir"].concat(VOICES.map(v=>"b:"+v)));
+      return out; }, ["k:choir"].concat(PLAYERS.map(v=>"b:"+v)));
     ok(Object.values(pl).every(v=>v.chord>-40 && v.note>-40), "the chords and notes banks play the Choir and each singer: "+Object.keys(pl).map(i=>i+" "+pl[i].chord+"/"+pl[i].note+" dB").join(", "));
     await q.close(); }
 

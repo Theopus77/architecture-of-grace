@@ -403,8 +403,11 @@ Band has them with its Voices (Jimmy, 2026-10-27: "Put them in the Vocals in the
 voice and Gospel samples opens under the instrument menu, 32 tap pads through the band's pedals into ● Record
 (`/the-studio#band … ?at=music-band.html#gospel` opens it; level in GOS_GAIN, `band_script.js`). The Band's Voices also
 have a real choir (Jimmy, 2026-10-27: "I only have 4 sound in the voices. I lost the choir voices as well"; AOG-BAND-CHOIR-V1):
-Choir · "aah" and "ooh" (players choir_aa, choir_uu: six VocalSet singers a note, `music-handoff/tools/band/choir.py`), and
-Gospel Choir and Jubilee Voices as menu entries that play the choir and open their samples; `bandt/voices.js` checks them. Built
+Choir · "aah", "ooh", "oh", "eh", "ee", Women's choir · "aah" and Men's choir · "oh" (players choir_*: six VocalSet singers a
+note, every note set in tune, `music-handoff/tools/band/choir.py`; Jimmy, 2026-10-27, chose the vowels, the women's and men's
+choirs and "the choir in the Piano room": AOG-BAND-CHOIR-V2, AOG-PIANO-CHOIR-V1), and Gospel Choir and Jubilee Voices as menu
+entries that play the choir and open their samples. The Piano (`ch_*` sets, the Band's files) and the Drum Machine
+(`b:choir_*`) have the same seven; the Piano's old one-singer Choir stays as Choir · one singer. `bandt/voices.js` checks them. Built
 by `_work/gospel` (read its README); credits in `audio/crate/CREDITS.txt`, and the CC BY credit must stay there.
 
 ## One sound, many kinds (Jimmy, 2026-10-27: "Let's get different types of bass, high hats, cymbals, closed hats, etc…", then "Bass meaning bass drums."; AOG-DRUM-SHELF-V1)

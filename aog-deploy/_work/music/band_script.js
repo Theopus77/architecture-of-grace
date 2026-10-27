@@ -328,13 +328,19 @@ Object.assign(BOWED, {voice_f_aa:1, voice_f_uu:1, voice_m_aa:1, voice_m_uu:1});
    on "aah" and "ooh". And the two gospel records, picked like any voice: the choir plays the keys, and the record's sixteen
    samples open under the menu (gos: AOG-BAND-GOSPEL-V1). Levels from bandt/level.js. */
 Object.assign(SOUNDS, {
-  choir_aa:{grp:"grpVoices", en:"Choir · “aah”", es:"Coro · “aa”", gain:1.231, rev:0.25, stand:"string"},
-  choir_uu:{grp:"grpVoices", en:"Choir · “ooh”", es:"Coro · “uu”", gain:1.502, rev:0.25, stand:"string"},
-  gospel_choir:{grp:"grpVoices", en:"Gospel Choir · 16 samples", es:"Coro góspel · 16 muestras", parts:["choir_aa"], gain:1.231, rev:0.25, stand:"string", gos:"39-gospel-choir.mp3"},
-  jubilee:{grp:"grpVoices", en:"Jubilee Voices · 16 samples", es:"Voces del jubileo · 16 muestras", parts:["choir_aa"], gain:1.231, rev:0.25, stand:"string", gos:"40-jubilee-voices.mp3"}
+  choir_aa:{grp:"grpVoices", en:"Choir · “aah”", es:"Coro · “aa”", gain:1.257, rev:0.25, stand:"string"},
+  choir_uu:{grp:"grpVoices", en:"Choir · “ooh”", es:"Coro · “uu”", gain:1.256, rev:0.25, stand:"string"},
+  /* AOG-BAND-CHOIR-V2 (2026-10-27): three more vowels, and the women and the men on their own */
+  choir_oh:{grp:"grpVoices", en:"Choir · “oh”", es:"Coro · “oh”", gain:1.328, rev:0.25, stand:"string"},
+  choir_eh:{grp:"grpVoices", en:"Choir · “eh”", es:"Coro · “e”", gain:1.299, rev:0.25, stand:"string"},
+  choir_ee:{grp:"grpVoices", en:"Choir · “ee”", es:"Coro · “i”", gain:1.456, rev:0.25, stand:"string"},
+  choir_w:{grp:"grpVoices", en:"Women’s choir · “aah”", es:"Coro de mujeres · “aa”", gain:1.405, rev:0.25, stand:"string"},
+  choir_m:{grp:"grpVoices", en:"Men’s choir · “oh”", es:"Coro de hombres · “oh”", gain:1.311, rev:0.25, stand:"string"},
+  gospel_choir:{grp:"grpVoices", en:"Gospel Choir · 16 samples", es:"Coro góspel · 16 muestras", parts:["choir_aa"], gain:1.257, rev:0.25, stand:"string", gos:"39-gospel-choir.mp3"},
+  jubilee:{grp:"grpVoices", en:"Jubilee Voices · 16 samples", es:"Voces del jubileo · 16 muestras", parts:["choir_aa"], gain:1.257, rev:0.25, stand:"string", gos:"40-jubilee-voices.mp3"}
 });
-Object.assign(PLAYER, {choir_aa:1, choir_uu:1});
-Object.assign(BOWED, {choir_aa:1, choir_uu:1});
+Object.assign(PLAYER, {choir_aa:1, choir_uu:1, choir_oh:1, choir_eh:1, choir_ee:1, choir_w:1, choir_m:1});
+Object.assign(BOWED, {choir_aa:1, choir_uu:1, choir_oh:1, choir_eh:1, choir_ee:1, choir_w:1, choir_m:1});
 Object.assign(STR, {
   grpVoices:{en:"Voices",es:"Voces"},
   creditVoices:{en:"The singers come from VocalSet by Julia Wilkins, Prem Seetharaman, Alison Wahl and Bryan Pardo (CC BY 4.0). We cut, tuned and moved their notes.",
