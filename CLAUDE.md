@@ -433,6 +433,11 @@ by CSS, no pictures to fetch.
 Sixteen pads to start (Jimmy, 2026-10-27: "make the drum machine 16 pads again with the option of making it 24 … the pads can
 be a bit bigger"; AOG-PADS-16-V1): the four by four (pads 1 to 16, bigger); Pads 16 | 24 beside "Play on the whole screen"
 brings back pads 17 to 24 (and their kit menu), kept on the device (`S.np`). Hits on 17 to 24 play either way.
+Stage mode (Jimmy, 2026-10-27: "use this on stage in front of an audience and make live beats"; AOG-PADS-STAGE-V1): 🎤 Stage
+in the whole-screen view shows the four banks as buttons (one tap, the loop goes on; an exception to the drop-down rule, as on
+stage one tap matters), an On/Off for each layer of the loop, four scenes (bank and layers, `S.scenes`), Stop all, and Lock
+(Close waits for a hold). The screen stays awake while Stage is open. On/Off and Lock end when the whole screen closes.
+Sideways, the pads fill the screen (AOG-PADS-WIDE-V1).
 
 ## No floating My notes button (Jimmy, 2026-10-18: "I don't like the my notes button. Please remove that")
 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- AOG-FAST-BUILD-V1 source:980519fd066ecf76 · MADE BY tools/build-fast.py from music-pads.html: edit music-pads.html, then run it. -->
+<!-- AOG-FAST-BUILD-V1 source:de3a90525d186607 · MADE BY tools/build-fast.py from music-pads.html: edit music-pads.html, then run it. -->
 <html lang="en">
 <head>
 <script>/* AOG-STUDIO-ONLY-V1 (Jimmy, 2026-10-10: "one location for all the instruments … and that is the studio"): opened on its own address, this room opens inside the Studio instead, at this exact address (its lesson, take or link). Inside the Studio's frame, and for the site's own checks, it stays. */(function(){try{if(window.top!==window||navigator.webdriver)return;var M={"music-pads":"pads","drum-machine":"pads","beat-lab":"pads","music-kit":"kit","drum-kit":"kit","music-piano":"piano","piano":"piano","keys":"piano","music-guitar":"guitar","guitar":"guitar","music-bass":"bass","bass":"bass","music-band":"band","band":"band","music-decks":"decks","decks":"decks","turntables":"decks","music-vocal":"vocal","vocal-booth":"vocal","vocal":"vocal","booth":"vocal","music-studio":"studio","studio":"studio","mixing-desk":"studio"},f=(location.pathname.split("/").pop()||"").replace(/\.html$/,""),r=M[f];if(!r)return;var F={pads:"music-pads",kit:"music-kit",piano:"music-piano",guitar:"music-guitar",bass:"music-bass",band:"music-band",decks:"music-decks",vocal:"music-vocal",studio:"music-studio"};location.replace("/the-studio.html?at="+encodeURIComponent("/"+F[r]+".html"+location.search+location.hash)+"#"+r);}catch(e){}})();</script>
@@ -225,6 +225,21 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
 #padView .pads{max-width:none;margin:0;width:min(calc(100vw - 28px),calc((100dvh - 96px) * 1.5))}   /* six across, four down */
 #padView .pads.np16{width:min(calc(100vw - 28px),calc(100dvh - 110px))}   /* AOG-PADS-16-V1: four across, four down: as wide as it is tall, so all four rows fit (Jimmy's iPad, 2026-10-27: "The top and bottom rows are cut off") */
 #padView .pad{min-height:0}
+/* AOG-PADS-STAGE-V1: Stage mode (Jimmy, 2026-10-27: "use this on stage in front of an audience and make live beats") */
+#padView .pv-st,#padView .pv-stage{display:none}
+#padView.onstage .pv-st{display:inline-flex} #padView.onstage .pv-stage{display:flex} #padView.onstage #pvBank{display:none}
+#padView .pv-stage{flex-wrap:wrap;align-items:center;gap:8px 14px;flex:0 0 auto;margin:0 0 8px}
+#padView .pv-banks,#padView .pv-scenes{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+#padView .pv-bk{display:inline-flex;gap:2px}
+#padView .pv-bk .pm-b:first-child{border-radius:12px 0 0 12px} #padView .pv-bk .pm-b:last-child{border-radius:0 12px 12px 0;min-width:64px;padding:0 .6rem}
+#padView .pv-mute[aria-pressed="true"]{background:#ff7a6e;border-color:#ff7a6e;color:#1f0806}
+#padView .pv-scn{position:relative;min-width:52px}
+#padView .pv-scn.kept::after{content:"";position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:50%;background:#5fe08f}
+#padView .pv-scn.kept[aria-pressed="true"]::after{background:#1f1206}
+#padView .pv-keep[aria-pressed="true"]{background:#8fe6d4;border-color:#8fe6d4;color:#06201b}
+#padView .pv-lab{font:800 .85rem/1 var(--sans);color:#d9cfbb}
+@media (max-height:500px){#padView .pv-bn,#padView .pv-lab{display:none}#padView .pv-bk .pm-b:last-child{min-width:48px}#padView .pv-stage{gap:6px 10px}}   /* a phone turned sideways: the letters only, one row */
+#padView.locked #pvClose{background:#2b2410;border-color:#ffd36b;color:#ffe9b0}
 /* AOG-PADS-WIDE-V1: turned sideways, the pads fill the whole screen (Jimmy's iPad, 2026-10-27: "The pads in horizontal mode are much smaller and don't take up the whole screen") */
 @media (orientation:landscape){#padView .pv-grids{align-items:stretch}#padView .pads,#padView .pads.np16{width:100%;height:100%;grid-template-rows:repeat(4,minmax(0,1fr))}#padView .pad{aspect-ratio:auto}}
 #padView .pad .pn{font-size:clamp(14px,2.4vmin,22px)}
@@ -479,12 +494,16 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
   <div class="pv-bar">
     <button type="button" class="pm-b" id="pvClose"></button>
     <select class="pm-sel" id="pvBank"></select>
+    <button type="button" class="pm-b" id="pvStage" aria-pressed="false"></button><!-- AOG-PADS-STAGE-V1 -->
     <span class="pv-sp"></span>
+    <button type="button" class="pm-b pv-st" id="pvStop"></button>
+    <button type="button" class="pm-b pv-st" id="pvLock" aria-pressed="false"></button>
     <button type="button" class="pm-b" id="pvPlay" aria-pressed="false"></button>
     <button type="button" class="pm-b rec" id="pvRec" aria-pressed="false"></button>
   </div>
+  <div class="pv-stage" id="pvStageRow"><div class="pv-banks" id="pvBanks"></div><div class="pv-scenes" id="pvScenes"></div></div>
   <div class="pv-grids" id="pvGrid"></div>
 </div>
-<script src="/front/3f75f34c36ec.js"></script>
+<script src="/front/a3176e25ee2b.js"></script>
 </body>
 </html>
