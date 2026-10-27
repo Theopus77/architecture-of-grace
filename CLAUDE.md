@@ -426,6 +426,10 @@ One case with a maker's plate (AoG · 24), a backlit screen (`#pmLcd`: tempo, ba
 playing, the pad), Play and Record with their own lights, a light on every step and the sixteen steps across the foot of the
 unit, and Shift (Shift and a step: an accent; again: off; Undo takes it back). A skin and a small script in `music-pads.html`
 over the parts that were there: the screen is written only when what it says changes; nothing moves on a hit.
+In real materials (Jimmy, 2026-10-27: "Make them look more real and less 'fake!'"; AOG-PADS-REAL-V1): brushed aluminium,
+slotted screws, a backlit LCD with its pixel grid and glare, matte rubber pads with printed names, dark plastic buttons whose
+lights (not their colour) show Play, Record and Shift, and the 808's step keys (red, orange, yellow, cream in fours). All drawn
+by CSS, no pictures to fetch.
 
 ## No floating My notes button (Jimmy, 2026-10-18: "I don't like the my notes button. Please remove that")
 

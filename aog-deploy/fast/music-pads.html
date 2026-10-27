@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- AOG-FAST-BUILD-V1 source:cc67732b2f8f31a2 · MADE BY tools/build-fast.py from music-pads.html: edit music-pads.html, then run it. -->
+<!-- AOG-FAST-BUILD-V1 source:2ad3142cff1ef458 · MADE BY tools/build-fast.py from music-pads.html: edit music-pads.html, then run it. -->
 <html lang="en">
 <head>
 <script>/* AOG-STUDIO-ONLY-V1 (Jimmy, 2026-10-10: "one location for all the instruments … and that is the studio"): opened on its own address, this room opens inside the Studio instead, at this exact address (its lesson, take or link). Inside the Studio's frame, and for the site's own checks, it stays. */(function(){try{if(window.top!==window||navigator.webdriver)return;var M={"music-pads":"pads","drum-machine":"pads","beat-lab":"pads","music-kit":"kit","drum-kit":"kit","music-piano":"piano","piano":"piano","keys":"piano","music-guitar":"guitar","guitar":"guitar","music-bass":"bass","bass":"bass","music-band":"band","band":"band","music-decks":"decks","decks":"decks","turntables":"decks","music-vocal":"vocal","vocal-booth":"vocal","vocal":"vocal","booth":"vocal","music-studio":"studio","studio":"studio","mixing-desk":"studio"},f=(location.pathname.split("/").pop()||"").replace(/\.html$/,""),r=M[f];if(!r)return;var F={pads:"music-pads",kit:"music-kit",piano:"music-piano",guitar:"music-guitar",bass:"music-bass",band:"music-band",decks:"music-decks",vocal:"music-vocal",studio:"music-studio"};location.replace("/the-studio.html?at="+encodeURIComponent("/"+F[r]+".html"+location.search+location.hash)+"#"+r);}catch(e){}})();</script>
@@ -31,6 +31,47 @@
 .st::before{content:"";position:absolute;top:4px;left:50%;width:6px;height:6px;margin-left:-3px;border-radius:50%;background:#15171b}
 .st[aria-pressed="true"]::before{background:#ff6b4a;box-shadow:0 0 4px #ff6b4a}
 .st.now::before{background:#ffd36b;box-shadow:0 0 6px #ffd36b}
+
+/* ══ AOG-PADS-REAL-V1 (2026-10-27) — Jimmy: "Make them look more real and less 'fake!'" The unit in real materials, drawn by
+   the page (no pictures to fetch): a brushed aluminium case with bevelled edges and slotted screws; a backlit LCD with its
+   pixel grid, a little glass glare and a dark bezel; matte rubber pads with their names printed in small capitals; dark
+   plastic buttons whose lights, not their colour, say Play and Record; and the TR-808's step keys, red, orange, yellow and
+   cream in fours, a key with a hit bright with its light on. Still nothing moves on a press (AOG-STILL-HIT-V1). ══ */
+.pm{background:repeating-linear-gradient(90deg,rgba(255,255,255,.022) 0 1px,transparent 1px 3px),linear-gradient(#383b41,#202226 60%,#1a1c1f);
+  border:1px solid #070809;box-shadow:inset 0 1px 0 rgba(255,255,255,.16),inset 0 -2px 0 rgba(0,0,0,.55),inset 1px 0 0 rgba(255,255,255,.05),0 10px 24px rgba(0,0,0,.45)}
+.pm::before,.pm::after{width:11px;height:11px;background:linear-gradient(45deg,transparent 43%,#16171a 43% 57%,transparent 57%),radial-gradient(circle at 35% 30%,#b9bec6,#5d6168 60%,#2f3236);
+  box-shadow:inset 0 0 0 1px #0d0e10,0 1px 0 rgba(255,255,255,.08)}
+.pm-plate{color:#d9d3c5;text-shadow:0 1px 0 #000}
+.pm-plate b{color:#f2c75c}
+.pm-lcd{border:3px solid #08090a;border-radius:6px;color:#1a2410;text-shadow:1px 1px 0 rgba(26,36,16,.16);
+  background:linear-gradient(160deg,rgba(255,255,255,.22) 0%,rgba(255,255,255,0) 32%),
+    repeating-linear-gradient(0deg,rgba(0,0,0,.045) 0 1px,transparent 1px 3px),repeating-linear-gradient(90deg,rgba(0,0,0,.045) 0 1px,transparent 1px 3px),
+    radial-gradient(ellipse at 50% 35%,#d4e2a8 0%,#bccd8b 60%,#a4b673 100%);
+  box-shadow:inset 0 3px 8px rgba(0,0,0,.42),inset 0 0 0 1px rgba(0,0,0,.25),0 1px 0 rgba(255,255,255,.08)}
+#pads .pad:not(.hit):not(.down){background:radial-gradient(120% 95% at 50% 0%,#4a4d53 0%,#34363b 52%,#27292d 100%);border:1px solid #0c0d0f;border-radius:11px}
+#pads .pad:not(.hit):not(.down):not(.sel){box-shadow:inset 0 1px 0 rgba(255,255,255,.13),inset 0 -3px 4px rgba(0,0,0,.5),0 2px 0 #08090a,0 0 0 2px #121316}
+#pads .pad .pn{text-transform:uppercase;letter-spacing:.05em;font-size:clamp(11px,2.7vw,14px);color:#ece6d8}
+#pads .pad .pi,#pads .pad .pk{color:#bdb5a4}
+.pm .pm-b{background:linear-gradient(#41444a,#25272b);border:1px solid #0b0c0e;box-shadow:inset 0 1px 0 rgba(255,255,255,.14),inset 0 -2px 2px rgba(0,0,0,.4),0 2px 0 #08090a;color:#f1ebdf}
+.pm #playBtn[aria-pressed="true"],.pm #loopRec[aria-pressed="true"],.pm #pmShift[aria-pressed="true"],#pvPlay[aria-pressed="true"],#pvRec[aria-pressed="true"]{
+  background:linear-gradient(#2d3035,#1c1e22);color:#fff6e3;border-color:#0b0c0e;box-shadow:inset 0 2px 4px rgba(0,0,0,.55),0 1px 0 rgba(255,255,255,.06)}
+#playBtn::before,#loopRec::before,#pvPlay::before,#pvRec::before,#pmShift::before{background:radial-gradient(circle at 40% 35%,#5a5f66,#26292d);box-shadow:inset 0 0 0 1px #08090a}
+#playBtn[aria-pressed="true"]::before,#pvPlay[aria-pressed="true"]::before{background:radial-gradient(circle at 40% 35%,#d6ffe4,#45d97f 55%,#1f8a4b);box-shadow:0 0 8px #45d97f}
+#loopRec[aria-pressed="true"]::before,#pvRec[aria-pressed="true"]::before{background:radial-gradient(circle at 40% 35%,#ffd9d4,#ff4a3d 55%,#a3150c);box-shadow:0 0 8px #ff4a3d}
+#pmShift[aria-pressed="true"]::before{background:radial-gradient(circle at 40% 35%,#fff3cf,#ffc93d 55%,#a8730b);box-shadow:0 0 8px #ffc93d}
+/* the 808's keys: red, orange, yellow, cream, four of each; dull until a hit lights them */
+#steps .st{border:1px solid #0b0c0e;border-radius:6px;box-shadow:inset 0 1px 0 rgba(255,255,255,.14),inset 0 -2px 2px rgba(0,0,0,.35),0 2px 0 #08090a}
+#steps .st:nth-child(16n+1),#steps .st:nth-child(16n+2),#steps .st:nth-child(16n+3),#steps .st:nth-child(16n+4){--key:#c63f2b;--dim:#5a2620}
+#steps .st:nth-child(16n+5),#steps .st:nth-child(16n+6),#steps .st:nth-child(16n+7),#steps .st:nth-child(16n+8){--key:#e27a28;--dim:#5e3519}
+#steps .st:nth-child(16n+9),#steps .st:nth-child(16n+10),#steps .st:nth-child(16n+11),#steps .st:nth-child(16n+12){--key:#e8c547;--dim:#5a4e1f}
+#steps .st:nth-child(16n+13),#steps .st:nth-child(16n+14),#steps .st:nth-child(16n+15),#steps .st:nth-child(16n+16){--key:#ece6d6;--dim:#4d4b45}
+#steps .st,#steps .st.beat{background:linear-gradient(rgba(255,255,255,.06),rgba(0,0,0,.12)),var(--dim);color:#f1ebdf}
+#steps .st[aria-pressed="true"],#steps .st.q[aria-pressed="true"],#steps .st.h[aria-pressed="true"]{background:linear-gradient(rgba(255,255,255,.22),rgba(0,0,0,.08)),var(--key);border-color:#0b0c0e;color:#170f07}
+#steps .st.q[aria-pressed="true"]{opacity:.82}
+#steps .st.h[aria-pressed="true"]{box-shadow:inset 0 0 0 2px #fff7e2,inset 0 -2px 2px rgba(0,0,0,.3),0 2px 0 #08090a}
+#steps .st::before{background:radial-gradient(circle at 40% 35%,#4f5359,#1d1f23)}
+#steps .st[aria-pressed="true"]::before{background:radial-gradient(circle at 40% 35%,#ffe1d8,#ff4a3d 55%,#9c140b);box-shadow:0 0 5px #ff4a3d}
+#steps .st.now::before{background:radial-gradient(circle at 40% 35%,#fff6d8,#ffd36b 55%,#a87b12);box-shadow:0 0 7px #ffd36b}
 </style><script>/* AOG-LIGHT-START-V1 — light unless this site was switched to dark. */(function(){var h=document.documentElement;if(!h.getAttribute("data-theme"))h.setAttribute("data-theme","light");})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <script>
