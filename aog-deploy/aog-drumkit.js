@@ -330,31 +330,30 @@
     clap: ["STACK", [1, 2, 2], "Stack (two cymbals, short and trashy)", "Stack (dos platillos, corto y sucio)", { look: "cym" }], tom: ["TOM", [2, 2, 2], "Tom", "Tom"],
     rim: ["FLAM", [1, 2, 2], "Flam (two sticks, one just before the other)", "Flam (dos baquetas, una justo antes que la otra)"], bell: ["CRASH", [1, 2, 2], "Crash", "Crash"] }));
   IDS.push("OR", "ME", "SB", "BP", "GS", "MT", "DS", "PK", "PO", "JG", "RG", "TR", "TH", "BM", "BR", "GR", "PP", "HL");
-  /* ══ AOG-DRUM-SHELF-V1 (2026-10-27) — Jimmy: "Let's get different types of bass, high hats, cymbals, closed hats, etc…" ══
-     One sound, many kinds: kits whose eight pads are eight kinds of one sound (kicks, 808 bass, snares, closed hi-hats,
-     open hi-hats, cymbals, claps), to put beside a drum set in the Drum Machine's other two kits. Each pad borrows a
-     real recording from another kit (from: that kit), plays its files from that kit's folder and plays as loud as it does
-     at home (each room's trim for the pad's own kit: AOGDrumKit.from). The 808s are made here (an 808 is electronic on
-     the real machine too; music-handoff/tools/drumkits/kits_808.py), tuned to C, as loud as the trap kit's 808 boom (lvl:
-     the kit whose trim it takes). The Drum Kit leaves these kits out: it draws a drum set, not eight kicks. */
+  /* ══ AOG-DRUM-SHELF-V1 (2026-10-27) — Jimmy: "Let's get different types of bass, high hats, cymbals, closed hats, etc…",
+     then "Bass meaning bass drums." One sound, many kinds: kits whose eight pads are eight kinds of one sound (bass drums
+     twice over, snares, closed hi-hats, open hi-hats, cymbals, claps), to put beside a drum set in the Drum Machine's
+     other two kits. Each pad borrows a real recording from another kit (from: that kit), plays its files from that kit's
+     folder and plays at that kit's level in each room (AOGDrumKit.from), evened with the kit's other pads (db). Borrow
+     only from a kit the Drum Machine offers (with its own trim; the 909, kit L, has none). The Drum Kit leaves these kits
+     out: it draws a drum set, not eight bass drums. */
   /* db: how much it is lifted or lowered so the eight pads of a kit are as loud as each other (each brought to the kit's
      middle pad, measured through the Drum Machine: a hit at normal strength, K-weighted, the loudest 400 ms) */
   function SH(from, id, en, es, db) {
     var src = KITS[from].pads[id], o = {}; for (var k in src) if (k !== "en" && k !== "es") o[k] = src[k];
     o.from = from; o.en = en; o.es = es; if (db) o.db = db; return o; }
-  function SK(dir, en, es, pads, lvl) { return { dir: dir, en: en, es: es, hand: 1, grp: "shelf", pads: pads, lvl: lvl || "" }; }
+  function SK(dir, en, es, pads) { return { dir: dir, en: en, es: es, hand: 1, grp: "shelf", pads: pads }; }
   GROUPS.splice(1, 0, { id: "shelf", en: "One sound, many kinds", es: "Un sonido, muchos tipos" });
-  KITS.KK = SK("", "Kicks · 8 kinds", "Bombos · 8 tipos", {
+  KITS.KK = SK("", "Bass drums · 8 kinds", "Bombos · 8 tipos", {
     kick: SH("P", "kick", "Kick · studio", "Bombo · estudio", 1.5), snare: SH("Q", "kick", "Kick · big room", "Bombo · sala grande", -2.0),
     ch: SH("U", "kick", "Kick · jazz, small", "Bombo · jazz, pequeño", -0.7), oh: SH("T", "kick", "Kick · metal click", "Bombo · metal con clic", -0.6),
     clap: SH("E", "kick", "Kick · boom bap", "Bombo · boom bap", -1.3), tom: SH("RG", "kick", "Kick · reggaeton", "Bombo · reguetón", 0.3),
     rim: SH("TR", "kick", "Kick · 808", "Bombo · 808", 1.8), bell: SH("BR", "kick", "Kick · 1960s", "Bombo · años 60", 0.8) });
-  function B8(name, en, es) { return W2(name, [1, 1, 1], en, es); }
-  KITS.BS = SK("808s", "808 bass · 8 kinds", "Bajo 808 · 8 tipos", {
-    kick: B8("LONG", "808 · long", "808 · largo"), snare: B8("SHORT", "808 · short", "808 · corto"),
-    ch: B8("PUNCH", "808 · punchy", "808 · con golpe"), oh: B8("DIST", "808 · dirty", "808 · sucio"),
-    clap: B8("SUB", "808 · sub", "808 · sub"), tom: B8("SLIDE", "808 · slide", "808 · baja"),
-    rim: B8("GLIDE", "808 · rise", "808 · sube"), bell: B8("WARM", "808 · warm", "808 · cálido") }, "TR");
+  KITS.BD = SK("", "Bass drums · 8 more", "Bombos · 8 más", {
+    kick: SH("OR", "kick", "Bass drum · orchestra", "Bombo · orquesta", 1.5), snare: SH("O", "kick", "Bass drum · marching", "Bombo · banda de marcha", -0.7),
+    ch: SH("DS", "kick", "Kick · disco", "Bombo · disco", 1.5), oh: SH("GR", "kick", "Kick · 1970s room", "Bombo · sala de los 70", 0.4),
+    clap: SH("W", "kick", "Kick · funk", "Bombo · funk", -0.5), tom: SH("JG", "kick", "Kick · jungle", "Bombo · jungle", 0.8),
+    rim: SH("PO", "kick", "Kick · 1980s", "Bombo · años 80", 1.8), bell: SH("HL", "kick", "Kick · fat and round", "Bombo · grueso y redondo", 1.1) });
   KITS.SN = SK("", "Snares · 8 kinds", "Cajas · 8 tipos", {
     kick: SH("P", "snare", "Snare · studio", "Caja · estudio", -4.6), snare: SH("Q", "snare", "Snare · big room", "Caja · sala grande", 2.4),
     ch: SH("PO", "snare", "Snare · big 1980s", "Caja · grande de los 80", -2.8), oh: SH("V", "snare", "Snare · brushes", "Caja · escobillas", 2.9),
@@ -380,9 +379,9 @@
     ch: SH("GS", "clap", "Claps · church", "Palmas · iglesia", 2.0), oh: SH("PO", "clap", "Claps · 1980s", "Palmas · años 80", -2.0),
     clap: SH("DS", "clap", "Claps · disco", "Palmas · disco", 0.6), tom: SH("MT", "clap", "Claps · soul", "Palmas · soul", 5.6),
     rim: SH("TR", "tom", "Finger snap", "Chasquido de dedos", 0.6), bell: SH("P", "clap", "Cross-stick", "Aro cruzado", -5.2) });
-  IDS.push("KK", "BS", "SN", "CH", "OH", "CY", "CL");
-  /* the kit whose level a pad plays at in each room: its own kit for a borrowed pad, the kit's lvl, else none ("") */
-  function from(b, id) { var k = KITS[b], p = k && k.pads[id]; return (p && p.from) || (k && k.lvl) || ""; }
+  IDS.push("KK", "BD", "SN", "CH", "OH", "CY", "CL");
+  /* the kit whose level a pad plays at in each room: its own kit for a borrowed pad, else none ("") */
+  function from(b, id) { var k = KITS[b], p = k && k.pads[id]; return (p && p.from) || ""; }
   var LAYERS = ["s", "m", "h"];
   function made(b, id) { var k = KITS[b], p = k && k.pads[id]; return !!(p && p.made); }
 
