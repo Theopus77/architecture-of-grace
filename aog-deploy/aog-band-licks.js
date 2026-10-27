@@ -47,7 +47,8 @@ const REACH={
   piccolo:[79,100], flute:[60,93], flute_vib:[60,93], clarinet:[50,88], oboe:[58,88], oboe_vib:[58,88],
   bassoon:[34,72], bassoon_vib:[43,72], sax:[49,80], tenor:[44,77], tenor_vib:[46,77], soprano:[58,87],
   recorder:[72,96], recorder_alto:[65,88], harmonica:[60,93], melodica:[53,89], panflute:[55,88],
-  voice_f_aa:[57,81], voice_f_uu:[57,81], voice_m_aa:[45,66], voice_m_uu:[45,66]
+  voice_f_aa:[57,81], voice_f_uu:[57,81], voice_m_aa:[45,66], voice_m_uu:[45,66],
+  choir_aa:[45,81], choir_uu:[45,81]   /* AOG-BAND-CHOIR-V1 */
 };
 const NO_LICKS={kit:1, timpani:1, didgeridoo:1, didgeridoo_rhythm:1, bagpipe_drones:1, bagpipe:1};
 /* the notes a player is given a lick in: its REACH inside its recordings (sus: the recorded notes, low to high) */

@@ -14,6 +14,9 @@ const srv=require("../srv.js")(9334);
 const fs=require("fs"), MEASURE=(0,eval)(fs.readFileSync(__dirname+"/measure.inc","utf8").replace(/^const MEASURE=/,""));
 let fails=0; const ok=(c,m)=>{ console.log((c?"PASS ":"FAIL ")+m); if(!c) fails++; };
 const VOICES=["voice_f_aa","voice_f_uu","voice_m_aa","voice_m_uu"];
+/* AOG-BAND-CHOIR-V1 (2026-10-27): the Band's choir on "aah" and "ooh" (six singers a note) joins the four, and the menu ends
+   with the two gospel records, which play the choir on the keys and open their samples. The Drum Machine keeps the four. */
+const PLAYERS=VOICES.concat(["choir_aa","choir_uu"]), MENU=PLAYERS.concat(["gospel_choir","jubilee"]);
 const PITCH=`
 window.__yinWin=function(x,s,m,W,SR){ const f=440*Math.pow(2,(m-69)/12), P=SR/f, lo=Math.floor(P*Math.pow(2,-1.5/12))-1, hi=Math.floor(P*Math.pow(2,1.5/12))+2;
   if(s+W+hi+1>x.length) return null; const d=new Float64Array(hi-lo+1);
@@ -50,7 +53,7 @@ window.__note=async function(id,m,secs){ const SR=32000; S.sound=id; await loadS
   await p.route(/^https?:\/\/(?!localhost)/, r=>r.abort());
   await p.goto("http://localhost:9334/music-band.html"); await p.waitForTimeout(800);
   await p.addScriptTag({content:MEASURE}); await p.addScriptTag({content:PITCH});
-  const mine=()=>reqs.filter(u=>VOICES.some(f=>u.indexOf(f+"/")===0));
+  const mine=()=>reqs.filter(u=>PLAYERS.some(f=>u.indexOf(f+"/")===0));
   const take=()=>reqs.splice(0, reqs.length);
   const pick=async(id)=>{ take(); await p.selectOption("#soundSel", id); await p.waitForFunction(id=>soundReady(id) && setsOf(id).every(k=>SETS[k].done===SETS[k].total), id, {timeout:90000}).catch(()=>{});
     await p.waitForTimeout(150); return {ready:await p.evaluate(id=>soundReady(id), id), sets:await p.evaluate(()=>Object.keys(SETS).sort().join(",")), got:take()}; };
@@ -59,13 +62,13 @@ window.__note=async function(id,m,secs){ const SR=32000; S.sound=id; await loadS
   await p.waitForFunction(()=>soundReady(S.sound) && setsOf(S.sound).every(k=>SETS[k].done===SETS[k].total), null, {timeout:60000});   /* the trumpet's short notes too, so a busy machine's late ones are not counted as a singer's */
   const menu=()=>p.evaluate(()=>[...document.querySelectorAll("#soundSel optgroup")].map(o=>[o.label, [...o.querySelectorAll("option")].map(x=>[x.value, x.textContent])]));
   let m=await menu(), g=m.find(x=>x[0]==="Voices");
-  ok(g && JSON.stringify(g[1].map(x=>x[0]))===JSON.stringify(VOICES), "a Voices group holds the four: "+(g?g[1].map(x=>x[1]).join(" | "):"none"));
-  ok(g && g[1].map(x=>x[1]).join("|")==="Voice · “aah”, a woman|Voice · “ooh”, a woman|Voice · “aah”, a man|Voice · “ooh”, a man", "their English names");
+  ok(g && JSON.stringify(g[1].map(x=>x[0]))===JSON.stringify(MENU), "a Voices group holds the four, the choir and the gospel records: "+(g?g[1].map(x=>x[1]).join(" | "):"none"));
+  ok(g && g[1].map(x=>x[1]).join("|")==="Voice · “aah”, a woman|Voice · “ooh”, a woman|Voice · “aah”, a man|Voice · “ooh”, a man|Choir · “aah”|Choir · “ooh”|Gospel Choir · 16 samples|Jubilee Voices · 16 samples", "their English names");
   let foot=await p.textContent("#foot");
   ok(/VocalSet by Julia Wilkins, Prem Seetharaman, Alison Wahl and Bryan Pardo \(CC BY 4\.0\)/.test(foot), "the credits name VocalSet and its licence");
   await p.evaluate(()=>document.getElementById("langBtn").click()); await p.waitForTimeout(300);
   m=await menu(); g=m.find(x=>x[0]==="Voces");
-  ok(g && g[1].map(x=>x[1]).join("|")==="Voz · “aa”, una mujer|Voz · “uu”, una mujer|Voz · “aa”, un hombre|Voz · “uu”, un hombre", "in Spanish, Voces: "+(g?g[1].map(x=>x[1]).join(" | "):m.map(x=>x[0]).join(", ")));
+  ok(g && g[1].map(x=>x[1]).join("|")==="Voz · “aa”, una mujer|Voz · “uu”, una mujer|Voz · “aa”, un hombre|Voz · “uu”, un hombre|Coro · “aa”|Coro · “uu”|Coro góspel · 16 muestras|Voces del jubileo · 16 muestras", "in Spanish, Voces: "+(g?g[1].map(x=>x[1]).join(" | "):m.map(x=>x[0]).join(", ")));
   foot=await p.textContent("#foot");
   ok(/VocalSet de Julia Wilkins, Prem Seetharaman, Alison Wahl y Bryan Pardo \(CC BY 4\.0\)/.test(foot), "the credits in Spanish name VocalSet and its licence");
   await p.evaluate(()=>document.getElementById("langBtn").click()); await p.waitForTimeout(250);
@@ -73,18 +76,18 @@ window.__note=async function(id,m,secs){ const SR=32000; S.sound=id; await loadS
   /* 2 · loaded only when picked */
   ok(mine().length===0, "the page opens and fetches none of them: "+mine().slice(0,3).join(", "));
   const man=await p.evaluate(()=>MAN);
-  for(const id of VOICES){ const r=await pick(id), got=new Set(r.got.filter(u=>u.indexOf(id+"/")===0));
+  for(const id of PLAYERS){ const r=await pick(id), got=new Set(r.got.filter(u=>u.indexOf(id+"/")===0));
     ok(r.ready && r.sets===id && got.size===man[id].sus.length && r.got.every(u=>u.indexOf(id+"/")===0), `${id}: picked, it fetches its own ${got.size} files and nothing else (sets ${r.sets})`);
     const line=await p.textContent("#loadLine"); ok(/^Ready/.test(line), `${id}: the line says "${line}"`); }
-  let r=await pick("trumpet"); ok(r.ready && r.sets==="trumpet" && !r.got.some(u=>VOICES.some(f=>u.indexOf(f+"/")===0)), "back on the trumpet, none of them is kept or fetched: "+r.sets);
+  let r=await pick("trumpet"); ok(r.ready && r.sets==="trumpet" && !r.got.some(u=>PLAYERS.some(f=>u.indexOf(f+"/")===0)), "back on the trumpet, none of them is kept or fetched: "+r.sets);
 
   /* 3 · in tune; the ranges */
-  const tun=await p.evaluate(async(VOICES)=>{ const out={};
-    for(const id of VOICES){ const sus=MAN[id].sus, notes=[sus[0], sus[sus.length>>1], sus[sus.length-1], sus[sus.length>>1]+1].filter((m,i,a)=>a.indexOf(m)===i), rows=[];
+  const tun=await p.evaluate(async(PLAYERS)=>{ const out={};
+    for(const id of PLAYERS){ const sus=MAN[id].sus, notes=[sus[0], sus[sus.length>>1], sus[sus.length-1], sus[sus.length>>1]+1].filter((m,i,a)=>a.indexOf(m)===i), rows=[];
       for(const m of notes){ const x=await __note(id,m,3.0); rows.push({m, c: x ? +__held(x,m,32000,0.25,2.5).toFixed(1) : null}); }
       out[id]={rows, range:rangeOf(id)}; }
-    return out; }, VOICES);
-  for(const id of VOICES){ const rows=tun[id].rows, off=rows.filter(q=>q.c==null || Math.abs(q.c)>10);
+    return out; }, PLAYERS);
+  for(const id of PLAYERS){ const rows=tun[id].rows, off=rows.filter(q=>q.c==null || Math.abs(q.c)>10);
     ok(!off.length, `${id}: notes ${rows.map(q=>q.m+" "+q.c+"c").join(", ")} all within 10 cents`); }
   ok(tun.voice_f_aa.range[0]>=55 && tun.voice_f_aa.range[1]<=82 && tun.voice_m_aa.range[0]>=44 && tun.voice_m_aa.range[1]<=67,
     "the woman sings "+tun.voice_f_aa.range.join("-")+", the man "+tun.voice_m_aa.range.join("-")+" (MIDI)");
@@ -95,18 +98,18 @@ window.__note=async function(id,m,secs){ const SR=32000; S.sound=id; await loadS
       ch.pre.disconnect(); ch.master.disconnect(); ch.pre.connect(oc.destination); const c={off:0,q:"maj"}; S.key=0;
       chordParts(c, voicing(c,null)).filter(q=>!q.dup).forEach(q=>{ const vc=makeVoice(oc,ch,q.inst,q.m,0.74*(q.bass?0.85:1),0.05,"sus"); if(vc) vc.stop(2.05, vc.tau); });
       out[id]=+__kw(await oc.startRendering()).toFixed(2); }
-    return out; }, VOICES);
+    return out; }, MENU);
   ok(!Object.keys(lv).filter(k=>Math.abs(lv[k]-grand)>0.75).length, "each C chord within 0.75 dB of the grand's "+grand.toFixed(2)+" dB: "+JSON.stringify(lv));
 
   /* 5 · hold, and a gentle release */
-  const lp=await p.evaluate(async(VOICES)=>{ const out={};
-    for(const id of VOICES){ await loadSound(id); const set=SETS[setKey(id, id)], files=Object.keys(set.buf);
+  const lp=await p.evaluate(async(PLAYERS)=>{ const out={};
+    for(const id of PLAYERS){ await loadSound(id); const set=SETS[setKey(id, id)], files=Object.keys(set.buf);
       const SR=44100, m=MAN[id].sus[MAN[id].sus.length>>1]+1, oc=new OfflineAudioContext(1, SR*14, SR), g=oc.createGain(); g.connect(oc.destination); S.sound=id;
       const vc=makeVoice(oc, {c:oc, bus:g, send:oc.createGain()}, id, m, 0.74, 0.05, "sus"); vc.stop(12.2, vc.tau);
       const d=(await oc.startRendering()).getChannelData(0), rms=(x,z)=>{ let e=0; for(let i=Math.floor(x*SR);i<Math.floor(z*SR);i++) e+=d[i]*d[i]; return +(10*Math.log10(e/((z-x)*SR)+1e-12)).toFixed(1); };
       out[id]={files:files.length, loops:files.filter(f=>set.loop[f]).length, held:rms(1,2), late:rms(10.5,11.5), after:rms(12.22,12.27), gone:rms(13.7,13.95), bowed:!!BOWED[id]}; }
-    return out; }, VOICES);
-  for(const id of VOICES){ const v=lp[id];
+    return out; }, PLAYERS);
+  for(const id of PLAYERS){ const v=lp[id];
     ok(v.files && v.loops===v.files && v.bowed, `${id}: every held recording loops (${v.loops}/${v.files}) and it lets go as a bow does`);
     ok(v.late>-50 && v.late-v.held>-6 && v.late-v.held<4, `${id}: a 12 s note still sounds at 11 s (${v.late} dB against ${v.held} dB at 1-2 s)`);
     ok(v.after-v.late>-12 && v.gone-v.late<-40, `${id}: let go, it fades gently (${v.after} dB just after, ${v.gone} dB 1.5 s later)`); }
