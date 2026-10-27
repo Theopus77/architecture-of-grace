@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- AOG-FAST-BUILD-V1 source:2ad3142cff1ef458 · MADE BY tools/build-fast.py from music-pads.html: edit music-pads.html, then run it. -->
+<!-- AOG-FAST-BUILD-V1 source:b71391b929a08ea1 · MADE BY tools/build-fast.py from music-pads.html: edit music-pads.html, then run it. -->
 <html lang="en">
 <head>
 <script>/* AOG-STUDIO-ONLY-V1 (Jimmy, 2026-10-10: "one location for all the instruments … and that is the studio"): opened on its own address, this room opens inside the Studio instead, at this exact address (its lesson, take or link). Inside the Studio's frame, and for the site's own checks, it stays. */(function(){try{if(window.top!==window||navigator.webdriver)return;var M={"music-pads":"pads","drum-machine":"pads","beat-lab":"pads","music-kit":"kit","drum-kit":"kit","music-piano":"piano","piano":"piano","keys":"piano","music-guitar":"guitar","guitar":"guitar","music-bass":"bass","bass":"bass","music-band":"band","band":"band","music-decks":"decks","decks":"decks","turntables":"decks","music-vocal":"vocal","vocal-booth":"vocal","vocal":"vocal","booth":"vocal","music-studio":"studio","studio":"studio","mixing-desk":"studio"},f=(location.pathname.split("/").pop()||"").replace(/\.html$/,""),r=M[f];if(!r)return;var F={pads:"music-pads",kit:"music-kit",piano:"music-piano",guitar:"music-guitar",bass:"music-bass",band:"music-band",decks:"music-decks",vocal:"music-vocal",studio:"music-studio"};location.replace("/the-studio.html?at="+encodeURIComponent("/"+F[r]+".html"+location.search+location.hash)+"#"+r);}catch(e){}})();</script>
@@ -72,6 +72,18 @@
 #steps .st::before{background:radial-gradient(circle at 40% 35%,#4f5359,#1d1f23)}
 #steps .st[aria-pressed="true"]::before{background:radial-gradient(circle at 40% 35%,#ffe1d8,#ff4a3d 55%,#9c140b);box-shadow:0 0 5px #ff4a3d}
 #steps .st.now::before{background:radial-gradient(circle at 40% 35%,#fff6d8,#ffd36b 55%,#a87b12);box-shadow:0 0 7px #ffd36b}
+
+/* ══ AOG-PADS-16-V1 (2026-10-27) — Jimmy: "make the drum machine 16 pads again with the option of making it 24 … the pads can
+   be a bit bigger". 16 is the start: the classic four by four (pads 1 to 16), each pad bigger; Pads 24 brings back the two
+   columns on the right. Hits on pads 17 to 24 keep playing in the loop either way. ══ */
+#pads.np16{grid-template-columns:repeat(4,minmax(0,1fr));max-width:600px;gap:10px}
+#pads.np16 .pad:is([data-p="16"],[data-p="17"],[data-p="18"],[data-p="19"],[data-p="20"],[data-p="21"],[data-p="22"],[data-p="23"]){display:none}
+#pads.np16 .pad .pn{font-size:clamp(13px,3.6vw,18px)}
+#setRow.np16 .pm-f:has(> #fKitC){display:none}
+.pm-np{display:inline-flex;align-items:center;gap:6px;margin-left:auto}
+.pm-np .pm-np-l{font:800 11px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:#c9bfae}
+.pm-np .pm-b{min-width:52px}
+.pm-bigrow{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
 </style><script>/* AOG-LIGHT-START-V1 — light unless this site was switched to dark. */(function(){var h=document.documentElement;if(!h.getAttribute("data-theme"))h.setAttribute("data-theme","light");})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <script>
@@ -470,6 +482,6 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
   </div>
   <div class="pv-grids" id="pvGrid"></div>
 </div>
-<script src="/front/b517bdb0a46e.js"></script>
+<script src="/front/9b100faa48eb.js"></script>
 </body>
 </html>

@@ -11,7 +11,7 @@
  * Bump by REPLACING the CACHE line. Don't keep the old one as a comment: every byte here is
  * downloaded again on each update check. Old lines live in tools/sw-cache-history.txt and git log.
  */
-const CACHE = 'aog-cache-2026.10.27.m7605'   // THE DRUM MACHINE IN REAL MATERIALS: BRUSHED CASE, BACKLIT LCD, RUBBER PADS, LIT BUTTONS, THE 808'S COLOURED STEP KEYS (AOG-PADS-REAL-V1)
+const CACHE = 'aog-cache-2026.10.27.m7606'   // THE DRUM MACHINE STARTS ON 16 BIGGER PADS (FOUR BY FOUR); PADS 24 BRINGS BACK THE OTHER EIGHT (AOG-PADS-16-V1)
 
 // Same-origin essentials — reliable to precache at install.
 /* AOG-SW-LIGHT-V1 (2026-10-01) — Jimmy: "Why is it taking so long for the website to load on my phone now?"
