@@ -453,6 +453,10 @@ Brake knobs (how long the platter takes to come up to speed, 0.2–3 s, and to s
 `torque` message in `aog-vinyl-worklet.js`). The strobe dots stand still at exactly 0 % and drift as the pitch moves, as the
 real lamp shows them. The Studio's compact sizes in `aog-labdoors.js` leave `.t12` alone; on a short screen the plate makes
 itself smaller so the room stays within two screens (`music-handoff/tests/rooms/compact.js`).
+The pitch fader follows the finger itself (`.t12-fd`; an iPad would not slide the turned input and scrolled the page), and
+changes speed and pitch together as on a Technics: KEY starts off and each deck remembers it once turned on
+(`aog.decks.key.v1`; Jimmy, 2026-10-28: "Messing the the pitch does nothing … nothing with the music and the screen moves";
+AOG-DECKS-PITCH-V1).
 
 Whole albums on one record (Jimmy, 2026-10-28: "play multiple songs on a record … upload whole albums to play on vinyl, just
 for a nostalgia / cool factor"; AOG-DECKS-ALBUM-V1): + A whole album in Load a song takes many songs at once, reads each one's
