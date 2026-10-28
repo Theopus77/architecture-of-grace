@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- AOG-FAST-BUILD-V1 source:58b353e31d9862b4 · MADE BY tools/build-fast.py from music-pads.html: edit music-pads.html, then run it. -->
+<!-- AOG-FAST-BUILD-V1 source:4e4cb4ee60b0c45c · MADE BY tools/build-fast.py from music-pads.html: edit music-pads.html, then run it. -->
 <html lang="en">
 <head>
 <script>/* AOG-STUDIO-ONLY-V1 (Jimmy, 2026-10-10: "one location for all the instruments … and that is the studio"): opened on its own address, this room opens inside the Studio instead, at this exact address (its lesson, take or link). Inside the Studio's frame, and for the site's own checks, it stays. */(function(){try{if(window.top!==window||navigator.webdriver)return;var M={"music-pads":"pads","drum-machine":"pads","beat-lab":"pads","music-kit":"kit","drum-kit":"kit","music-piano":"piano","piano":"piano","keys":"piano","music-guitar":"guitar","guitar":"guitar","music-bass":"bass","bass":"bass","music-band":"band","band":"band","music-decks":"decks","decks":"decks","turntables":"decks","music-vocal":"vocal","vocal-booth":"vocal","vocal":"vocal","booth":"vocal","music-studio":"studio","studio":"studio","mixing-desk":"studio"},f=(location.pathname.split("/").pop()||"").replace(/\.html$/,""),r=M[f];if(!r)return;var F={pads:"music-pads",kit:"music-kit",piano:"music-piano",guitar:"music-guitar",bass:"music-bass",band:"music-band",decks:"music-decks",vocal:"music-vocal",studio:"music-studio"};location.replace("/the-studio.html?at="+encodeURIComponent("/"+F[r]+".html"+location.search+location.hash)+"#"+r);}catch(e){}})();</script>
@@ -267,6 +267,14 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
 #padView .pv-scn.kept[aria-pressed="true"]::after{background:#1f1206}
 #padView .pv-keep[aria-pressed="true"]{background:#8fe6d4;border-color:#8fe6d4;color:#06201b}
 #padView .pv-lab{font:800 .85rem/1 var(--sans);color:#d9cfbb}
+@media (max-width:560px){   /* AOG-STUDIO-WHOLE-V1: a phone held upright: smaller keys, the bank letters only, so the pads keep most of the screen */
+  #padView .pv-bar{gap:6px;margin-bottom:6px} #padView .pv-bar .pm-b{min-height:40px;padding:0 .55rem;font-size:.82rem}
+  #padView .pv-sp{display:none} #padView .pv-bn,#padView .pv-lab{display:none}
+  #padView .pv-stage{gap:6px 8px;margin-bottom:6px} #padView .pv-bk .pm-b{min-height:40px;font-size:.85rem}
+  #padView .pv-bk .pm-b{min-width:40px;padding:0 .6rem} #padView .pv-bk .pm-b:last-child{min-width:40px;padding:0 .45rem}
+  #padView .pv-grids{align-items:stretch} #padView .pads,#padView .pads.np16{width:100%;height:100%;grid-template-rows:repeat(4,minmax(0,1fr))} #padView .pad{aspect-ratio:auto} #padView .pv-scn{min-width:42px} #padView .pv-scenes .pm-b{min-height:40px}
+  #padView .pm-knobs{margin:0 0 6px;gap:6px 10px} #padView .pm-knob{width:42px;height:42px} #padView .pm-knob::before{inset:5px}
+  #padView .pm-knob::after{top:6px;height:10px;transform-origin:50% 15px} #padView .pm-kn{min-width:52px;gap:1px} #padView .pm-kl{font-size:.68rem}}
 @media (max-height:500px){#padView .pv-bn,#padView .pv-lab{display:none}#padView .pv-bk .pm-b:last-child{min-width:48px}#padView .pv-stage{gap:6px 10px}}   /* a phone turned sideways: the letters only, one row */
 #padView.locked #pvClose{background:#2b2410;border-color:#ffd36b;color:#ffe9b0}
 /* AOG-PADS-WIDE-V1: turned sideways, the pads fill the whole screen (Jimmy's iPad, 2026-10-27: "The pads in horizontal mode are much smaller and don't take up the whole screen") */
@@ -534,6 +542,6 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
   <div class="pv-stage" id="pvStageRow"><div class="pv-banks" id="pvBanks"></div><div class="pv-scenes" id="pvScenes"></div></div>
   <div class="pv-grids" id="pvGrid"></div>
 </div>
-<script src="/front/36f9be018462.js"></script>
+<script src="/front/725031b5179c.js"></script>
 </body>
 </html>

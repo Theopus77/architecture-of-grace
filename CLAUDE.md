@@ -443,6 +443,10 @@ the unit plays, `S.mvol`; a bounce is not changed) and Pad (the picked pad's lev
 keys. No jog wheel (Jimmy, the same day: "I do not like the knobs related to choosing a bank"); the menus choose banks, sounds
 and beats. The knobs come into the whole screen and Stage too (🎛 Knobs there hides them, `S.pvKn`): a column beside the pads
 when sideways, a row above them upright. The pads always fit the room left.
+Inside the Studio the whole screen is the whole screen (Jimmy, 2026-10-28, iPhone: "the full screen in the iPhone is not 'full
+screen'"; AOG-STUDIO-WHOLE-V1): the room asks `AOGStudioShell.whole(on, window)` and the Studio's frame covers the screen (inside
+the safe area) until it closes; a room arriving or a door taken always ends it. On an upright phone Stage is compact (bank
+letters, smaller keys and knobs) and the pads fill the height.
 
 ## The Turntables as Technics SL-1210 MK7s (Jimmy, 2026-10-28: "MIMIC the great TECHNICS sl-1210 MKX or better"; AOG-DECKS-1210-V1)
 

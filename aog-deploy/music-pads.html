@@ -266,6 +266,14 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
 #padView .pv-scn.kept[aria-pressed="true"]::after{background:#1f1206}
 #padView .pv-keep[aria-pressed="true"]{background:#8fe6d4;border-color:#8fe6d4;color:#06201b}
 #padView .pv-lab{font:800 .85rem/1 var(--sans);color:#d9cfbb}
+@media (max-width:560px){   /* AOG-STUDIO-WHOLE-V1: a phone held upright: smaller keys, the bank letters only, so the pads keep most of the screen */
+  #padView .pv-bar{gap:6px;margin-bottom:6px} #padView .pv-bar .pm-b{min-height:40px;padding:0 .55rem;font-size:.82rem}
+  #padView .pv-sp{display:none} #padView .pv-bn,#padView .pv-lab{display:none}
+  #padView .pv-stage{gap:6px 8px;margin-bottom:6px} #padView .pv-bk .pm-b{min-height:40px;font-size:.85rem}
+  #padView .pv-bk .pm-b{min-width:40px;padding:0 .6rem} #padView .pv-bk .pm-b:last-child{min-width:40px;padding:0 .45rem}
+  #padView .pv-grids{align-items:stretch} #padView .pads,#padView .pads.np16{width:100%;height:100%;grid-template-rows:repeat(4,minmax(0,1fr))} #padView .pad{aspect-ratio:auto} #padView .pv-scn{min-width:42px} #padView .pv-scenes .pm-b{min-height:40px}
+  #padView .pm-knobs{margin:0 0 6px;gap:6px 10px} #padView .pm-knob{width:42px;height:42px} #padView .pm-knob::before{inset:5px}
+  #padView .pm-knob::after{top:6px;height:10px;transform-origin:50% 15px} #padView .pm-kn{min-width:52px;gap:1px} #padView .pm-kl{font-size:.68rem}}
 @media (max-height:500px){#padView .pv-bn,#padView .pv-lab{display:none}#padView .pv-bk .pm-b:last-child{min-width:48px}#padView .pv-stage{gap:6px 10px}}   /* a phone turned sideways: the letters only, one row */
 #padView.locked #pvClose{background:#2b2410;border-color:#ffd36b;color:#ffe9b0}
 /* AOG-PADS-WIDE-V1: turned sideways, the pads fill the whole screen (Jimmy's iPad, 2026-10-27: "The pads in horizontal mode are much smaller and don't take up the whole screen") */
@@ -2083,6 +2091,9 @@ function pvZoom(on){   /* as the piano does (AOG-PLAY-ZOOM-V1): the page holds s
   clearTimeout(PV.zt); m.setAttribute("content", PV.base+", maximum-scale=1, user-scalable=no");
   if(!on) PV.zt=setTimeout(()=>m.setAttribute("content", PV.base), 600);
 }
+/* AOG-STUDIO-WHOLE-V1 (2026-10-28) — Jimmy, iPhone: "the full screen in the iPhone is not 'full screen'". Inside the Studio the
+   whole screen really is the whole screen: the Studio puts its bars away while it is open. */
+function pvWhole(on){ try{ const sh=window.parent!==window && window.parent.AOGStudioShell; if(sh && sh.whole) sh.whole(on, window); }catch(e){} }
 function pvOpen(on){
   if(on===PV.on) return;
   const pads=$("pads"); [...DOWN.keys()].forEach(release);
@@ -2090,9 +2101,11 @@ function pvOpen(on){
     PV.on=true; PV.y=window.scrollY||0;
     PV.back=document.createComment("pads"); pads.parentNode.insertBefore(PV.back, pads); $("pvGrid").appendChild(pads);
     pvZoom(true); document.body.classList.add("aog-play"); stWake(!!S.stageOn); if(window.pvKnobsPlace) pvKnobsPlace();
+    pvWhole(true);
   } else {
     PV.on=false; document.body.classList.remove("aog-play"); pvZoom(false);
     STAGE.mute=[false,false,false,false]; STAGE.lock=false; STAGE.arm=false; stWake(false);   /* the page outside always plays every layer */
+    pvWhole(false);
     if(window.pvKnobsPlace) pvKnobsPlace();
     if(PV.back && PV.back.parentNode) PV.back.parentNode.replaceChild(pads, PV.back); PV.back=null;
   }
