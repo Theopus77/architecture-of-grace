@@ -223,6 +223,7 @@ const STR = {
   madeFail:{en:"That record could not be made on this device.",es:"Ese disco no se pudo hacer en este aparato."},
   /* AOG-DJ-DESK-V1 */
   pairLab:{en:"Decks on the desk",es:"Platos en la mesa"},
+  oneDeck:{en:"One deck",es:"Un plato"}, oneLab:{en:"The deck on the screen",es:"El plato en la pantalla"},   /* AOG-DECKS-ONE-V1 */
   waiting:{en:"%d is waiting · ",es:"%d espera · "},
   more:{en:"Loops, tap and more",es:"Bucles, tap y más"},
   recSide:{en:"SIDE %d · 33⅓",es:"CARA %d · 33⅓"}
@@ -236,6 +237,10 @@ const DEG_PER_SEC = 200;
 
 let actx, master, comp, OUT = null, LIMIT = null, workletReady = null, eqScope = null;
 const IDS = ["A","B","C"];
+/* AOG-DECKS-PITCH-V1 (2026-10-28) — Jimmy: "Messing the the pitch does nothing … nothing with the music". As on a Technics, the
+   pitch fader changes the speed and the pitch together; KEY (hold the key while the speed moves) starts off and each deck
+   remembers it when it is turned on (aog.decks.key.v1). */
+let KEYS0 = {}; try{ KEYS0 = JSON.parse(localStorage.getItem("aog.decks.key.v1") || "{}") || {}; }catch(e){ KEYS0 = {}; }
 const decks = IDS.map(makeDeck);
 let curve = "smooth", noiseOn = true, masterId = null;
 /* AOG-DECKS-TOUCH-V1 (2026-09-23) — Jimmy: "when you're scratching it seems to
@@ -300,7 +305,7 @@ function makeDeck(id){
            rot:0, level:0, held:false, wide:false, pending:[],
            bpm:0, beat0:0, bands:null, cues:[null,null,null,null,null,null,null,null], loopBeats:0, loopOn:false,
            loopA:0, loopB:0, cueHeld:false, revOn:false,
-           keyOn:true, slipOn:true, syncLock:false, taps:[], trackKey:"", made:"", lufs:null, gain0:1,
+           keyOn:KEYS0[id] === true, slipOn:true, syncLock:false, taps:[], trackKey:"", made:"", lufs:null, gain0:1,
            side: id==="A" ? "L" : id==="B" ? "R" : "N", eqv:{high:0,mid:0,low:0}, filtv:0,
            fxType:"echo", fxBeats:{echo:0.75, reverb:2, flanger:16}, fxAmt:0, fxSent:"",
            snap:1, erase:false, slipPos:0, div:false, pend:false, lastJump:null, jumps:0, wraps:0,
@@ -1715,7 +1720,32 @@ function setPair(p, quiet){
   setMix(); paintPair();
   decks.forEach(d=>{ d.waveDirty = true; });
 }
+/* ══ AOG-DECKS-ONE-V1 (2026-10-28) — Jimmy: "Can the option of having one turn table on screen as an option?" On an iPad or a
+   computer, One deck puts a single deck on the screen (A, B or C), bigger, with the mixer bay and the crossfader put away; the
+   deck plays straight to the speakers (its crossfader side is Thru while it is alone, and goes back after). The decks off the
+   screen are only hidden, as before. Kept on the device (aog.decks.one). A phone already shows one deck at a time. ══ */
+let ONE = "", ONE_SIDE = {};
+try{ const v = localStorage.getItem("aog.decks.one"); if(IDS.indexOf(v) >= 0) ONE = v; }catch(e){}
+function setOne(id){
+  ONE = IDS.indexOf(id) >= 0 ? id : "";
+  try{ localStorage.setItem("aog.decks.one", ONE); }catch(e){}
+  if(ONE) document.body.setAttribute("data-one", ONE); else document.body.removeAttribute("data-one");
+  decks.forEach(d=>{ if(ONE_SIDE[d.id] != null){ d.side = ONE_SIDE[d.id]; delete ONE_SIDE[d.id]; } });
+  setPair(PAIR, true);
+  if(ONE){ const d = decks.find(x=>x.id === ONE); ONE_SIDE[d.id] = d.side; d.side = "N"; setMix(); }
+  decks.forEach(d=>{ d.waveDirty = true; d.$ = null; });
+  paintPair();
+}
+function paintOne(){
+  const b = document.getElementById("oneBtn"), g = document.getElementById("ones"), pr = document.getElementById("pairs"), w = document.getElementById("waiting");
+  if(!b) return;
+  if(b.textContent !== t("oneDeck")) b.textContent = t("oneDeck");
+  b.setAttribute("aria-pressed", ONE ? "true" : "false"); b.classList.toggle("on", !!ONE);
+  g.hidden = !ONE; pr.hidden = !!ONE; if(w) w.hidden = !!ONE; g.setAttribute("aria-label", t("oneLab"));
+  g.querySelectorAll("[data-one]").forEach(x=>{ const on = x.getAttribute("data-one") === ONE; x.classList.toggle("on", on); x.setAttribute("aria-pressed", on ? "true" : "false"); });
+}
 function paintPair(){
+  paintOne();
   document.querySelectorAll("[data-pair]").forEach(b=>{ if(b === document.body) return; const on = b.getAttribute("data-pair") === PAIR; b.classList.toggle("on", on); b.setAttribute("aria-pressed", on?"true":"false"); });
   const g = document.getElementById("pairs"); if(g) g.setAttribute("aria-label", t("pairLab"));
   const off = IDS.find(x=>PAIR.indexOf(x) < 0), d = decks.find(x=>x.id === off), w = document.getElementById("waiting");
@@ -1776,6 +1806,8 @@ function bindBay(){
   paintBay();
 }
 document.querySelectorAll("#pairs [data-pair]").forEach(b=>b.onclick=()=>setPair(b.getAttribute("data-pair")));
+document.getElementById("oneBtn").onclick = ()=>setOne(ONE ? "" : PAIR[0]);
+document.querySelectorAll("#ones [data-one]").forEach(b=>b.onclick=()=>setOne(b.getAttribute("data-one")));
 function shell(){
   { const xf = document.getElementById("xf"), home = document.querySelector("div.xfade"); if(xf && home && xf.parentNode !== home) home.appendChild(xf); }   /* keep the crossfader out of the rebuild */
   document.getElementById("decks").innerHTML = decks.map(deckHTML).join("") + bayHTML();
@@ -2470,6 +2502,7 @@ function bind(){
       const d = deckOf(btn, "data-key");
       d.keyOn = !d.keyOn; ctx(); await ensureNode(d);
       send(d, { t:"key", on:d.keyOn }); btn.classList.toggle("on", d.keyOn); btn.setAttribute("aria-pressed", d.keyOn);
+      KEYS0[d.id] = d.keyOn; try{ localStorage.setItem("aog.decks.key.v1", JSON.stringify(KEYS0)); }catch(e){}
     };
   });
   /* SLIP — the record keeps turning under the scratch. Let go, and you are
@@ -3032,7 +3065,7 @@ function paintLessons(){
      ${done ? `<p class="lok">${all ? lessonsT("All seventeen done. You can run a set.", "Las diecisiete hechas. Ya puedes tocar un set.") : lessonsT("Lesson done.", "Lección hecha.")} ${next}</p>` : ""}`;
   const nb = document.getElementById("lNext"); if(nb) nb.onclick = ()=>{ S.lessonSel = cur+1; lessonsSave(); paintLessons(); };
 }
-setPair(PAIR, true); paintChrome(); shell(); paintLessons(); requestAnimationFrame(loop);
+setPair(PAIR, true); if(ONE) setOne(ONE); paintChrome(); shell(); paintLessons(); requestAnimationFrame(loop);
 checkBench();
 crateOpen();
 try{ AOGHandoff.listen(function(key){ if(SHELF.some(s=>s.key===key)) checkBench(); }); }catch(e){}

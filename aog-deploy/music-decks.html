@@ -382,10 +382,10 @@ footer a{color:inherit}
 .t12-pitch{flex:0 0 66px;display:flex;flex-direction:column;align-items:center;gap:6px;padding:4px 0}
 .t12-ph{font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#f0c26e}
 .t12-pitch .readout{font-size:.8rem;color:#f4e2b0;font-variant-numeric:tabular-nums}
-.t12-fd{position:relative;width:46px;height:clamp(110px,calc(100cqw - 236px),160px);border-radius:6px;background:#111214;
+.t12-fd{touch-action:none;cursor:ns-resize;position:relative;width:46px;height:clamp(110px,calc(100cqw - 236px),160px);border-radius:6px;background:#111214;
   box-shadow:inset 0 1px 3px rgba(0,0,0,.8),0 1px 0 rgba(255,255,255,.07)}
 .t12-fd input{position:absolute;left:50%;top:50%;width:clamp(110px,calc(100cqw - 236px),160px);height:46px;margin:0;
-  transform:translate(-50%,-50%) rotate(90deg);-webkit-appearance:none;appearance:none;background:transparent;touch-action:none}
+  transform:translate(-50%,-50%) rotate(90deg);-webkit-appearance:none;appearance:none;background:transparent;touch-action:none;pointer-events:none}
 .t12-fd input::-webkit-slider-runnable-track{height:6px;border-radius:3px;background:#050506;box-shadow:inset 0 1px 2px #000}
 .t12-fd input::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:40px;margin-top:-17px;border-radius:3px;border:1px solid #08090a;
   background:repeating-linear-gradient(90deg,#c9ccd1 0 2px,#8f939a 2px 4px);box-shadow:0 2px 4px rgba(0,0,0,.6)}
@@ -1050,6 +1050,10 @@ const DEG_PER_SEC = 200;
 
 let actx, master, comp, OUT = null, LIMIT = null, workletReady = null, eqScope = null;
 const IDS = ["A","B","C"];
+/* AOG-DECKS-PITCH-V1 (2026-10-28) — Jimmy: "Messing the the pitch does nothing … nothing with the music". As on a Technics, the
+   pitch fader changes the speed and the pitch together; KEY (hold the key while the speed moves) starts off and each deck
+   remembers it when it is turned on (aog.decks.key.v1). */
+let KEYS0 = {}; try{ KEYS0 = JSON.parse(localStorage.getItem("aog.decks.key.v1") || "{}") || {}; }catch(e){ KEYS0 = {}; }
 const decks = IDS.map(makeDeck);
 let curve = "smooth", noiseOn = true, masterId = null;
 /* AOG-DECKS-TOUCH-V1 (2026-09-23) — Jimmy: "when you're scratching it seems to
@@ -1114,7 +1118,7 @@ function makeDeck(id){
            rot:0, level:0, held:false, wide:false, pending:[],
            bpm:0, beat0:0, bands:null, cues:[null,null,null,null,null,null,null,null], loopBeats:0, loopOn:false,
            loopA:0, loopB:0, cueHeld:false, revOn:false,
-           keyOn:true, slipOn:true, syncLock:false, taps:[], trackKey:"", made:"", lufs:null, gain0:1,
+           keyOn:KEYS0[id] === true, slipOn:true, syncLock:false, taps:[], trackKey:"", made:"", lufs:null, gain0:1,
            side: id==="A" ? "L" : id==="B" ? "R" : "N", eqv:{high:0,mid:0,low:0}, filtv:0,
            fxType:"echo", fxBeats:{echo:0.75, reverb:2, flanger:16}, fxAmt:0, fxSent:"",
            snap:1, erase:false, slipPos:0, div:false, pend:false, lastJump:null, jumps:0, wraps:0,
@@ -3311,6 +3315,7 @@ function bind(){
       const d = deckOf(btn, "data-key");
       d.keyOn = !d.keyOn; ctx(); await ensureNode(d);
       send(d, { t:"key", on:d.keyOn }); btn.classList.toggle("on", d.keyOn); btn.setAttribute("aria-pressed", d.keyOn);
+      KEYS0[d.id] = d.keyOn; try{ localStorage.setItem("aog.decks.key.v1", JSON.stringify(KEYS0)); }catch(e){}
     };
   });
   /* SLIP — the record keeps turning under the scratch. Let go, and you are
@@ -4108,6 +4113,19 @@ window.addEventListener("focus", checkBench);
     else if(b.hasAttribute("data-tl")){ const on = b.getAttribute("aria-pressed") !== "true"; b.setAttribute("aria-pressed", String(on)); const pl = b.closest(".t12-pl"); if(pl) pl.classList.toggle("lit", on); }
     else { const d = decks.find(x=>x.id === b.getAttribute("data-wide")); if(d) led(d); }
   });
+  /* AOG-DECKS-PITCH-V1: the pitch fader follows the finger up and down itself (an iPad does not slide a turned slider, and
+     scrolled the page instead); the input underneath keeps the value, the keys and everything that listens to it */
+  let fdrag = null;
+  const fset = (e)=>{ const f = fdrag, r = f.fd.getBoundingClientRect(), mn = +f.inp.min, mx = +f.inp.max, st = +f.inp.step || 0.005;
+    let v = mn + Math.max(0, Math.min(1, (e.clientY - r.top - 10)/(r.height - 20))) * (mx - mn);
+    v = Math.round((v - mn)/st)*st + mn; v = +v.toFixed(4);
+    if(Math.abs(v - +f.inp.value) > 1e-6){ f.inp.value = String(v); f.inp.dispatchEvent(new Event("input")); } };
+  document.addEventListener("pointerdown", e=>{ const fd = e.target.closest && e.target.closest(".t12-fd"); if(!fd) return;
+    const inp = fd.querySelector("input"); if(!inp) return; fdrag = { fd, inp, p:e.pointerId };
+    try{ fd.setPointerCapture(e.pointerId); }catch(x){} e.preventDefault(); fset(e); });
+  document.addEventListener("pointermove", e=>{ if(fdrag && e.pointerId === fdrag.p){ e.preventDefault(); fset(e); } });
+  ["pointerup","pointercancel"].forEach(t=>document.addEventListener(t, e=>{ if(fdrag && e.pointerId === fdrag.p) fdrag = null; }));
+  document.addEventListener("touchstart", e=>{ if(e.target.closest && e.target.closest(".t12-fd, .t12-k") && e.cancelable) e.preventDefault(); }, { passive:false });
   let drag = null;
   document.addEventListener("pointerdown", e=>{ const k = e.target.closest && e.target.closest(".t12-k"); if(!k) return;
     const id = k.getAttribute("data-tk"), w = k.getAttribute("data-w"); drag = { k, id, w, y:e.clientY, v:val(id, w), p:e.pointerId };
