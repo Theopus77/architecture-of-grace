@@ -329,6 +329,13 @@ button.file{min-height:44px;border-radius:999px;padding:0 .9rem;display:inline-f
 .dsong{min-height:44px;border-radius:10px;border:1px solid #5a4630;background:#2a2016;color:#f4ecdc;font-weight:700;text-align:left;padding:.4rem .7rem;overflow:hidden}
 .dsong span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .dsong.rm{border-color:#c0523a;background:#3a1e16}
+/* AOG-DECKS-MIX-V1: songs picked for a record, numbered in the order they play */
+.dsong.pk{border-color:#f0c26e;background:#3a2c14}
+.dsong[data-n]::before{content:attr(data-n);display:inline-flex;align-items:center;justify-content:center;width:1.5em;height:1.5em;margin-right:.4em;
+  border-radius:50%;background:#f0c26e;color:#2a1a08;font-weight:800;font-size:.85em;vertical-align:.05em}
+.mkbar{display:flex;flex-wrap:wrap;align-items:center;gap:.45rem;margin:.2rem 0 .5rem;padding:.5rem;border-radius:10px;background:#1f1912;border:1px solid #5a4630}
+.mkbar p{margin:0;flex:1 1 100%;color:#f4ecdc;font-size:.92rem}
+.mkbar input{flex:1 1 10rem;min-height:44px;font-size:16px;border-radius:8px;border:1px solid #5a4630;background:#120e09;color:#f4ecdc;padding:0 .6rem}
 .dsong.rm span::before{content:"";display:inline-block;width:.9em;height:.9em;margin-right:.3em;vertical-align:-.1em;background:url(/img/sketch/2715.webp) center/contain no-repeat;filter:invert(1) brightness(1.9)} /* pencil cross */
 .dockrow{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.6rem}
 .ithelp{margin-top:.7rem;color:#efe8dc;font-size:.92rem;line-height:1.45}
@@ -798,14 +805,18 @@ const STR = {
   dockNone:{en:"No songs yet. Add one from this device and it stays here.",es:"Aún no hay canciones. Agrega una de este aparato y se queda aquí."},
   dockAdd:{en:"+ From this device",es:"+ De este aparato"},
   /* AOG-DECKS-ALBUM-V1 */
-  dockAlbum:{en:"+ A whole album",es:"+ Un álbum entero"}, albumsH:{en:"Your albums. Tap one to put it on.",es:"Tus álbumes. Toca uno para ponerlo."},
+  dockAlbum:{en:"+ A whole album",es:"+ Un álbum entero"}, albumsH:{en:"Your records. Tap one to put it on.",es:"Tus discos. Toca uno para ponerlo."},
   albMaking:{en:"Putting the album on: song %i of %n …",es:"Poniendo el álbum: canción %i de %n …"},
   albSide:{en:"Side %s",es:"Cara %s"}, albOf:{en:"song %i of %n",es:"canción %i de %n"},
   albPrev:{en:"⏮ Back",es:"⏮ Atrás"}, albNext:{en:"Next ⏭",es:"Siguiente ⏭"}, albFlip:{en:"Flip the record",es:"Dale la vuelta al disco"},
   albList:{en:"Songs on this side",es:"Canciones de esta cara"},
   albOver:{en:"Side A is over. Flip the record to hear Side B.",es:"Terminó la cara A. Dale la vuelta al disco para oír la cara B."},
-  albDone:{en:"That is the whole album. Flip the record to start again.",es:"Ese es el álbum entero. Dale la vuelta al disco para volver a empezar."},
+  albDone:{en:"That is the whole record. Flip it to play it again.",es:"Ese es el disco entero. Dale la vuelta para oírlo otra vez."},
   albMine:{en:"My album",es:"Mi álbum"},
+  /* AOG-DECKS-MIX-V1 */
+  mkRec:{en:"+ Make a record",es:"+ Hacer un disco"}, mkHint:{en:"Tap 2 to 10 songs, in the order they play.",es:"Toca de 2 a 10 canciones, en el orden en que suenan."},
+  mkCount:{en:"%n chosen",es:"%n elegidas"}, mkName:{en:"Name of the record",es:"Nombre del disco"}, mkGo:{en:"Put it on",es:"Ponerlo"},
+  mkCancel:{en:"Cancel",es:"Cancelar"}, mkMine:{en:"My record",es:"Mi disco"},
   pickFile:{en:"On an iPad or iPhone, pick Choose File, then your song.",es:"En un iPad o iPhone, elige Elegir archivo y luego tu canción."},
   /* AOG-DECKS-ITUNES-V1 (2026-10-06) — Jimmy: "can a section to grab music from iTunes be accessible?" A web page cannot open
      the Music app or an iTunes library (Apple keeps it to the device), so this says how to bring a song in as a file. */
@@ -3887,7 +3898,7 @@ window.addEventListener("focus", checkBench);
   /* an album's songs are never pushed out of the library by new ones */
   function keepLib(){ const held = new Set(); CRATE.albums.forEach(a=>a.tracks.forEach(x=>held.add(x.id)));
     let free = 0; CRATE.lib = CRATE.lib.filter(r=>held.has(r.id) || ++free <= 60); }
-  const sides = a=>{ const n = a.tracks.length; if(n < 4) return [[0, n]]; const h = Math.ceil(n/2); return [[0, h], [h, n]]; };
+  const sides = a=>{ const n = a.tracks.length; if(n < 4 || a.mix) return [[0, n]];   /* AOG-DECKS-MIX-V1: a record you made plays straight through */ const h = Math.ceil(n/2); return [[0, h], [h, n]]; };
   const keyOf = d=>"aog.decks.alb."+d.id;
   function grooves(n){ if(n < 2) return ""; const c = "var(--gapc,#1f1f1f)", g = [];
     for(let k = 1; k < n; k++){ const p = 93 - 46*k/n; g.push(`transparent 0 ${p.toFixed(1)}%, ${c} ${(p+.4).toFixed(1)}% ${(p+1.2).toFixed(1)}%, transparent ${(p+1.6).toFixed(1)}%`); }
@@ -3932,7 +3943,7 @@ window.addEventListener("focus", checkBench);
   const hr = window.hear; if(typeof hr === "function") window.hear = function(d, m){ const was = d.motor; const r = hr.apply(this, arguments);
     if(was && !d.motor && m && m.ended && d.album && !d.album.over && performance.now() - (d._albAt || 0) > 600){ const A = d.album, al = CRATE.albums.find(x=>x.id === A.id);
       if(al){ const [, b] = sides(al)[A.side]; clearTimeout(ALB.adv[d.id]);
-        if(A.i + 1 < b) ALB.adv[d.id] = setTimeout(()=>{ if(d.album === A && !d.motor) play(d, al, A.side, A.i + 1, true); }, 1800);
+        if(A.i + 1 < b) ALB.adv[d.id] = setTimeout(()=>{ if(d.album === A && !d.motor) play(d, al, A.side, A.i + 1, true); }, al.mix ? 700 : 1800);
         else { A.over = true; paintAlb(d); } } }
     return r; };
   /* any other record put on this deck takes the album off it */
@@ -3975,8 +3986,40 @@ window.addEventListener("focus", checkBench);
         b.onclick = ()=>{ const al = CRATE.albums[+b.getAttribute("data-dalb")]; if(!al) return;
           if(box.classList.contains("editing")){ CRATE.albums = CRATE.albums.filter(x=>x !== al); cratePut("albums", CRATE.albums); decks.forEach(x=>{ if(x.album && x.album.id === al.id) forget(x); }); paintDocks(); return; }
           dockShut(id); play(d, al, 0, sides(al)[0][0], false); }; });
-      const inp = box.querySelector("[data-albload]"); if(inp) inp.onchange = ()=>{ const fs = [...(inp.files || [])]; inp.value = ""; addAlbum(d, fs, box); }; });
+      const inp = box.querySelector("[data-albload]"); if(inp) inp.onchange = ()=>{ const fs = [...(inp.files || [])]; inp.value = ""; addAlbum(d, fs, box); };
+      mixDock(box, d); });
     return r; };
+  /* ══ AOG-DECKS-MIX-V1 (2026-10-28) — Jimmy: "more than one song to play as a option on a 'record' … 5-10 songs a record (as a
+     mix more or less)". + Make a record: tap 2 to 10 of your songs in the order they play, give it a name if you like, Put it
+     on. It is kept with your albums and plays straight through on one side, the needle running on with a short gap. ══ */
+  function mixDock(box, d){
+    const row = box.querySelector(".dockrow"); if(!row) return;
+    if(!box.querySelector("[data-mkrec]")){ const b = document.createElement("button"); b.type = "button"; b.className = "ghost"; b.setAttribute("data-mkrec", "1"); b.textContent = t("mkRec");
+      b.onclick = ()=>{ box.classList.remove("editing"); box._pick = []; box.classList.add("picking"); paintDocks(); }; row.appendChild(b); }
+    if(!box.classList.contains("picking")) return;
+    const pick = box._pick || (box._pick = []);
+    box.querySelectorAll("[data-dsong]").forEach(b=>{ const r = CRATE.lib[+b.getAttribute("data-dsong")]; if(!r) return;
+      const k = pick.indexOf(r.id); b.classList.toggle("pk", k >= 0); if(k >= 0) b.setAttribute("data-n", k + 1); else b.removeAttribute("data-n");
+      b.setAttribute("aria-pressed", String(k >= 0));
+      b.onclick = ()=>{ const j = pick.indexOf(r.id); if(j >= 0) pick.splice(j, 1); else if(pick.length < 10) pick.push(r.id); paintDocks(); }; });
+    const list = box.querySelector(".docklist"); if(!list) return;
+    const bar = document.createElement("div"); bar.className = "mkbar";
+    bar.innerHTML = `<p>${esc(t("mkHint"))} <b>${esc(t("mkCount").replace("%n", pick.length))}</b></p><input type="text" data-mkname maxlength="40" placeholder="${esc(t("mkName"))}" aria-label="${esc(t("mkName"))}" value="${esc(box._mkName || "")}">`
+      + `<button type="button" class="go" data-mkgo${pick.length < 2 ? " disabled" : ""}>${esc(t("mkGo"))}</button><button type="button" class="ghost" data-mkx>${esc(t("mkCancel"))}</button>`;
+    list.before(bar);
+    const nm = bar.querySelector("[data-mkname]"); nm.oninput = ()=>{ box._mkName = nm.value; };
+    bar.querySelector("[data-mkx]").onclick = ()=>{ box.classList.remove("picking"); box._pick = []; box._mkName = ""; paintDocks(); };
+    bar.querySelector("[data-mkgo]").onclick = async ()=>{ if(pick.length < 2) return;
+      const recs = pick.map(id=>CRATE.lib.find(r=>r.id === id)).filter(Boolean), titles = [];
+      for(const r of recs){ const g = await tagsOf(r.blob); titles.push(g.title || bare(r.name)); }
+      const n = (CRATE.albums || []).filter(a=>a.mix).length + 1;
+      const al = { id:"mx" + Date.now().toString(36), name:(box._mkName || "").trim() || (t("mkMine") + " " + n), artist:"", mix:true, at:Date.now(),
+                   tracks:recs.map((r, k)=>({ id:r.id, title:titles[k] })) };
+      CRATE.albums = [al].concat(CRATE.albums); keepLib(); await cratePut("albums", CRATE.albums);
+      box.classList.remove("picking"); box._pick = []; box._mkName = ""; box.hidden = true;
+      const tg = document.querySelector(`[data-dock="${d.id}"]`); if(tg) tg.setAttribute("aria-expanded", "false");
+      paintDocks(); play(d, al, 0, 0, false); };
+  }
   document.addEventListener("click", e=>{ const b = e.target.closest && e.target.closest(".albbar button, .albbar summary"); if(!b) return;
     const bar = b.closest(".albbar"), d = decks.find(x=>x.id === bar.getAttribute("data-alb")); if(!d || !d.album) return;
     if(b.tagName === "SUMMARY"){ setTimeout(()=>{ const dt = bar.querySelector("details"); bar._open = !!(dt && dt.open); }, 0); return; }
