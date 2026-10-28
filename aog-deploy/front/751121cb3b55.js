@@ -14,6 +14,19 @@ const STR = {
   dockH:{en:"Your songs. Tap one to put it on.",es:"Tus canciones. Toca una para ponerla."},
   dockNone:{en:"No songs yet. Add one from this device and it stays here.",es:"Aún no hay canciones. Agrega una de este aparato y se queda aquí."},
   dockAdd:{en:"+ From this device",es:"+ De este aparato"},
+  /* AOG-DECKS-ALBUM-V1 */
+  dockAlbum:{en:"+ A whole album",es:"+ Un álbum entero"}, albumsH:{en:"Your records. Tap one to put it on.",es:"Tus discos. Toca uno para ponerlo."},
+  albMaking:{en:"Putting the album on: song %i of %n …",es:"Poniendo el álbum: canción %i de %n …"},
+  albSide:{en:"Side %s",es:"Cara %s"}, albOf:{en:"song %i of %n",es:"canción %i de %n"},
+  albPrev:{en:"⏮ Back",es:"⏮ Atrás"}, albNext:{en:"Next ⏭",es:"Siguiente ⏭"}, albFlip:{en:"Flip the record",es:"Dale la vuelta al disco"},
+  albList:{en:"Songs on this side",es:"Canciones de esta cara"},
+  albOver:{en:"Side A is over. Flip the record to hear Side B.",es:"Terminó la cara A. Dale la vuelta al disco para oír la cara B."},
+  albDone:{en:"That is the whole record. Flip it to play it again.",es:"Ese es el disco entero. Dale la vuelta para oírlo otra vez."},
+  albMine:{en:"My album",es:"Mi álbum"},
+  /* AOG-DECKS-MIX-V1 */
+  mkRec:{en:"+ Make a record",es:"+ Hacer un disco"}, mkHint:{en:"Tap 2 to 10 songs, in the order they play.",es:"Toca de 2 a 10 canciones, en el orden en que suenan."},
+  mkCount:{en:"%n chosen",es:"%n elegidas"}, mkName:{en:"Name of the record",es:"Nombre del disco"}, mkGo:{en:"Put it on",es:"Ponerlo"},
+  mkCancel:{en:"Cancel",es:"Cancelar"}, mkMine:{en:"My record",es:"Mi disco"},
   pickFile:{en:"On an iPad or iPhone, pick Choose File, then your song.",es:"En un iPad o iPhone, elige Elegir archivo y luego tu canción."},
   /* AOG-DECKS-ITUNES-V1 (2026-10-06) — Jimmy: "can a section to grab music from iTunes be accessible?" A web page cannot open
      the Music app or an iTunes library (Apple keeps it to the device), so this says how to bring a song in as a file. */
@@ -1828,6 +1841,7 @@ function deckHTML(d){
         <span class="t12-ks">${["up","down"].map(k=>`<span class="t12-kn"><span class="t12-k" role="slider" tabindex="0" data-tk="${id}" data-w="${k}" aria-label="${t(k==="up"?"t12up":"t12down")}"></span><span class="t12-kl">${t(k==="up"?"t12up":"t12down")}</span><b class="t12-kv" data-tkv="${id}${k}"></b></span>`).join("")}</span>
        </div>
       </div>
+      <div class="albbar" data-alb="${id}" hidden></div><!-- AOG-DECKS-ALBUM-V1 -->
       <div class="meter" aria-hidden="true"><i></i></div>
       <div class="row">
         <button type="button" class="file" data-dock="${id}" aria-expanded="false">${t("load")}</button>
@@ -1915,19 +1929,19 @@ function stripHTML(d){
 /* AOG-DJ-RECORD-ART-V1 — the pressing and the label of the record on a deck */
 function recLook(d){
   if(!d.buf) return null;
-  const m = d.made && MADE.find(x=>x.id===d.made), h = m && m.hue != null ? m.hue : hueOf(d.name || "");
+  const m = d.made && MADE.find(x=>x.id===d.made), h = m && m.hue != null ? m.hue : hueOf((d.album && d.album.name) || d.name || "");
   return { h, style:["solid","swirl"][Math.floor(h / 15) % 2] };
 }
 function paintRecord(d){
   const el = document.getElementById("deck"+d.id); if(!el) return;
   const v = el.querySelector(".vinyl"), lab = el.querySelector(".label"); if(!v || !lab) return;
-  const L = recLook(d), key = L ? [L.h, L.style, d.name, S.lang].join("|") : "";
+  const L = recLook(d), key = L ? [L.h, L.style, d.name, S.lang, d.album ? d.album.id+d.album.side+d.album.n : ""].join("|") : "";
   if(v._rk === key) return; v._rk = key;
   v.classList.remove("v-solid","v-swirl"); lab.classList.toggle("printed", !!L);
   if(!L){ v.style.removeProperty("--vh"); lab.style.removeProperty("--vh"); lab.innerHTML = ""; return; }
   v.classList.add("v-"+L.style); v.style.setProperty("--vh", L.h); lab.style.setProperty("--vh", L.h);
   lab.innerHTML = `<div class="rl" aria-hidden="true"><span class="rl-logo"><i>G</i><span>GRACE<small>RECORDS</small></span></span>
-    <span class="rl-low"><span class="rl-name">${esc((d.name || "").replace(/\.[^.]+$/,""))}</span><span class="rl-side">${esc(t("recSide").replace("%d", d.id))}</span></span></div>`;
+    <span class="rl-low"><span class="rl-name">${esc(d.album ? d.album.name : (d.name || "").replace(/\.[^.]+$/,""))}</span><span class="rl-side">${esc(t("recSide").replace("%d", d.album ? "AB"[d.album.side] : d.id))}</span></span></div>`;
 }
 function paintStrips(){
   decks.forEach(d=>{
@@ -1942,7 +1956,9 @@ function paintStrips(){
 function dockHTML(id){
   return `<div class="dockhd"><p class="dockh">${t("dockH")}</p><button type="button" class="dockx" data-dockclose="${id}">✕ ${t("dockClose")}</button></div>
     ${CRATE.lib.length ? `<div class="docklist">${CRATE.lib.map((r,i)=>`<button type="button" class="dsong" data-dsong="${i}" title="${esc(r.name)}"><span>${esc(r.name.replace(/\.[^.]+$/,""))}</span></button>`).join("")}</div>` : `<p class="dockempty">${t("dockNone")}</p>`}
+    ${(CRATE.albums||[]).length ? `<p class="dockh dockh2">${t("albumsH")}</p><div class="docklist">${CRATE.albums.map((a,i)=>`<button type="button" class="dsong dalb" data-dalb="${i}" title="${esc(a.name)}"><span>💿 ${esc(a.name)} · ${a.tracks.length}</span></button>`).join("")}</div>` : ""}
     <div class="dockrow"><label class="file">${t("dockAdd")}<input type="file" data-dockload="${id}" accept="${AUDIO_ONLY || "audio/*,.mp3,.m4a,.m4b,.aac,.wav,.wave,.aif,.aiff,.aifc,.ogg,.oga,.opus,.flac,.caf,.amr,.wma,.mid,.midi"}"></label>
+    <label class="file">${t("dockAlbum")}<input type="file" multiple data-albload="${id}" accept="${AUDIO_ONLY || "audio/*,.mp3,.m4a,.aac,.wav,.wave,.aif,.aiff,.ogg,.opus,.flac"}"></label>
     ${CRATE.lib.length ? `<button type="button" class="ghost" data-dockedit="${id}">${t("dockEdit")}</button>` : ""}</div>${IOS ? `<p class="rechint" style="margin:.3rem 0 0">${t("pickFile")}</p>` : ""}
     <details class="ithelp"><summary>${t("itH")}</summary><p>${t("it1")}</p><ul><li>${t("it2")}</li><li>${t("it3")}</li><li>${t("it4")}</li></ul></details>`;
 }

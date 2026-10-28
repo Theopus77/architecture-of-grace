@@ -462,6 +462,9 @@ or more), a gap in the grooves between songs (`--gaps` on `.vinyl`), the arm mov
 side on the label. The needle runs on into the next song after a short quiet groove; at the end of a side the record stops and
 asks to be flipped. Back, Next, Flip the record and the side's song list sit under the plate (`.albbar`). Only the song playing
 is opened in memory. Any other record put on the deck takes the album off.
+Make a record (Jimmy, 2026-10-28: "more than one song … on a 'record' … 5-10 songs a record (as a mix more or less)";
+AOG-DECKS-MIX-V1): + Make a record in Load a song; tap 2 to 10 of your songs in the order they play, name it if you like, Put it
+on. It is kept with the albums (`mix:true`) and plays straight through on one side with a short gap between songs.
 
 ## No floating My notes button (Jimmy, 2026-10-18: "I don't like the my notes button. Please remove that")
 
