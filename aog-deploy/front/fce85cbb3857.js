@@ -289,6 +289,7 @@ function ceiling(c){
    bass". The machine's master, one builder for the live sound and for Bounce (renderLoop): every pad → bus → the drum bus
    effects (aog-amp.js, kind "drums": Punch, Tape, Filter, Crush, the compressor, the echo, the reverb) → limiter → ceiling.
    The recorder listens at the ceiling, so a take carries the effects. With every effect off the rig is a straight wire. */
+function mvol(){ const v=S.mvol==null ? 100 : +S.mvol; return Math.max(0, Math.min(150, v))/100; }   /* AOG-PADS-KNOBS-V1: how loud the unit plays (not what a bounce writes) */
 function master(c){
   const m={c:c};
   m.lim=c.createDynamicsCompressor(); m.lim.threshold.value=-3; m.lim.knee.value=2; m.lim.ratio.value=20; m.lim.attack.value=0.002; m.lim.release.value=0.12;
@@ -308,7 +309,7 @@ function ctx(){
     const AC=window.AudioContext||window.webkitAudioContext;
     try{ if(navigator.audioSession) navigator.audioSession.type="playback"; }catch(e){}
     ac=new AC({latencyHint:"interactive"});
-    LIVE_M=master(ac); lim=LIVE_M.lim; bus=LIVE_M.bus; clip=LIVE_M.clip;
+    LIVE_M=master(ac); lim=LIVE_M.lim; bus=LIVE_M.bus; clip=LIVE_M.clip; bus.gain.value=0.9*mvol();   /* AOG-PADS-KNOBS-V1: the Volume knob */
   }
   if(ac.state==="suspended") ac.resume();
   return ac;
@@ -774,6 +775,7 @@ function flash(bi, pi, when, vel){
 /* ══ the loop ══ */
 const PPQ=96;
 const SEQ={on:false, rec:false, t0:0, abs:0, timer:0, map:null, undo:[]};
+const STAGE={mute:[false,false,false,false], lock:false, arm:false, wl:null, hold:0};   /* AOG-PADS-STAGE-V1 */
 function spt(){ return 60/S.bpm/PPQ; }
 function loopLen(){ return S.bars*4*PPQ; }
 function evMap(){
@@ -804,6 +806,7 @@ function pump(){
       const abs=SEQ.abs, tk=abs%L, when=SEQ.t0+abs*sp, pass=Math.floor(abs/L), list=m.get(tk);
       if(list) list.forEach(e=>{
         if(e._skip===pass){ delete e._skip; return; }
+        if(STAGE.mute[e.b]) return;   /* AOG-PADS-STAGE-V1: a muted layer sits out */
         const hw=feelWhen(e.b, e.p, when); const v=trigger(e.b, e.p, e.v, hw); flash(e.b, e.p, hw, e.v);
         if(v && gated(e.b)) v.stop(hw+Math.max(12, e.len||48)*sp); /* AOG-PADS-FEEL-V1 */
       });
@@ -1526,14 +1529,18 @@ window.addEventListener("pagehide", ()=>{ if(paintFx.t){ clearTimeout(paintFx.t)
    bank, Play and Record. Close, or Esc, brings the page back where it was. ══ */
 const PV={on:false, back:null, y:0};
 function pvWords(){ const es=S0.lang==="es"; return {big:es?"⤢ Tocar en toda la pantalla":"⤢ Play on the whole screen", close:es?"✕ Cerrar":"✕ Close",
-  region:es?"Los pads, en toda la pantalla":"The pads, on the whole screen"}; }
+  region:es?"Los pads, en toda la pantalla":"The pads, on the whole screen",
+  stage:es?"🎤 Escenario":"🎤 Stage", stop:es?"■ Parar todo":"■ Stop all", lock:es?"🔒 Bloquear":"🔒 Lock", unlock:es?"🔒 Mantén para abrir":"🔒 Hold to unlock",
+  on:es?"Suena":"On", off:es?"Callado":"Off", mute:es?"Silenciar":"Mute", scene:es?"Escena":"Scene", keep:es?"＋ Guardar":"＋ Keep",
+  keepNow:es?"Toca una escena para guardarla ahí":"Tap a scene to keep this there"}; }
 function pvPaint(){
   if(!$("padView")) return; const W=pvWords();
-  $("bigBtn").textContent=W.big; $("pvClose").textContent=W.close; $("padView").setAttribute("aria-label", W.region);
+  $("bigBtn").textContent=W.big; $("pvClose").textContent=STAGE.lock ? W.unlock : W.close; $("padView").setAttribute("aria-label", W.region);
   if(!PV.on) return;
   $("pvBank").innerHTML=[0,1,2,3].map(i=>opt(i, esc(bankLabel(i)), S.bank)).join(""); $("pvBank").setAttribute("aria-label", t("bankLab"));
   $("pvPlay").textContent=$("playBtn").textContent; $("pvPlay").setAttribute("aria-pressed", $("playBtn").getAttribute("aria-pressed")||"false");
   $("pvRec").textContent=$("loopRec").textContent; $("pvRec").setAttribute("aria-pressed", $("loopRec").getAttribute("aria-pressed")||"false");
+  stPaint();
 }
 function pvZoom(on){   /* as the piano does (AOG-PLAY-ZOOM-V1): the page holds still at its own size while the pads fill it */
   const m=document.querySelector('meta[name="viewport"]'); if(!m) return;
@@ -1547,19 +1554,73 @@ function pvOpen(on){
   if(on){
     PV.on=true; PV.y=window.scrollY||0;
     PV.back=document.createComment("pads"); pads.parentNode.insertBefore(PV.back, pads); $("pvGrid").appendChild(pads);
-    pvZoom(true); document.body.classList.add("aog-play");
+    pvZoom(true); document.body.classList.add("aog-play"); stWake(!!S.stageOn);
   } else {
     PV.on=false; document.body.classList.remove("aog-play"); pvZoom(false);
+    STAGE.mute=[false,false,false,false]; STAGE.lock=false; STAGE.arm=false; stWake(false);   /* the page outside always plays every layer */
     if(PV.back && PV.back.parentNode) PV.back.parentNode.replaceChild(pads, PV.back); PV.back=null;
   }
   paintPads();
   if(on) $("pvClose").focus(); else { window.scrollTo(0, PV.y); $("bigBtn").focus(); }
+  pvPaint();
+}
+/* ══ AOG-PADS-STAGE-V1 (2026-10-27) — Jimmy: "use this on stage in front of an audience and make live beats, with chords,
+   notes, chops etc…". Stage, inside the whole screen: the four banks as buttons (one tap, the loop goes on), each with its
+   own On/Off (a layer of the loop sits out while it is Off; a pad tapped still sounds), four scenes (which bank and which
+   layers are on, kept on the device), Stop all (the loop, every held pad and every ringing note, at once), Lock (Close and
+   Esc wait until Close is held for a moment) and the screen kept awake while Stage is open. On/Off and Lock end when the
+   whole screen closes. Nothing runs while nobody touches it. ══ */
+async function stWake(on){
+  try{
+    if(on && !STAGE.wl && navigator.wakeLock && document.visibilityState==="visible"){ const w=await navigator.wakeLock.request("screen"); if(!(PV.on && S.stageOn)){ w.release(); return; } STAGE.wl=w; w.addEventListener("release",()=>{ if(STAGE.wl===w) STAGE.wl=null; }); }
+    else if(!on && STAGE.wl){ const w=STAGE.wl; STAGE.wl=null; w.release(); }
+  }catch(e){}
+}
+function stPaint(){
+  const W=pvWords(), pv=$("padView"); pv.classList.toggle("onstage", !!S.stageOn); pv.classList.toggle("locked", STAGE.lock);
+  $("pvStage").textContent=W.stage; $("pvStage").setAttribute("aria-pressed", S.stageOn?"true":"false");
+  $("pvStop").textContent=W.stop; $("pvLock").textContent=W.lock; $("pvLock").setAttribute("aria-pressed", STAGE.lock?"true":"false");
+  if(!S.stageOn) return;
+  const bk=[0,1,2,3].map(i=>`<span class="pv-bk"><button type="button" class="pm-b" data-bk="${i}" aria-pressed="${S.bank===i}" aria-label="${esc(bankLabel(i))}">${"ABCD"[i]}<span class="pv-bn">${esc(" · "+t("t_"+S.banks[i].type))}</span></button><button type="button" class="pm-b pv-mute" data-mu="${i}" aria-pressed="${STAGE.mute[i]}" aria-label="${esc(W.mute+" "+bankLabel(i))}">${STAGE.mute[i]?"🔇":"🔊"}<span class="pv-bn">${esc(STAGE.mute[i]?W.off:W.on)}</span></button></span>`).join("");
+  if($("pvBanks").innerHTML!==bk) $("pvBanks").innerHTML=bk;
+  const sc=S.scenes||[], cur=sc.findIndex(x=>x && x.bank===S.bank && x.mute.every((m,i)=>m===STAGE.mute[i]));
+  const sn=`<span class="pv-lab">${esc(W.scene)}</span>`+[0,1,2,3].map(i=>`<button type="button" class="pm-b pv-scn${sc[i]?" kept":""}" data-sc="${i}" aria-pressed="${cur===i}" aria-label="${esc(W.scene+" "+(i+1))}">${i+1}</button>`).join("")
+    +`<button type="button" class="pm-b pv-keep" id="pvKeep" aria-pressed="${STAGE.arm}">${esc(STAGE.arm ? W.keepNow : W.keep)}</button>`;
+  if($("pvScenes").innerHTML!==sn) $("pvScenes").innerHTML=sn;
+}
+function stBank(i){ if(i===S.bank) return; const bs=$("bankSel"); bs.value=String(i); bs.onchange(); }
+function stScene(i){
+  const sc=S.scenes||(S.scenes=[null,null,null,null]);
+  if(STAGE.arm || !sc[i]){ sc[i]={bank:S.bank, mute:STAGE.mute.slice()}; STAGE.arm=false; save(); stPaint(); return; }
+  STAGE.mute=sc[i].mute.slice(); if(sc[i].bank!==S.bank) stBank(sc[i].bank); stPaint();
+}
+function stStopAll(){
+  stop(); RPT.clear(); [...DOWN.keys()].forEach(release);
+  if(ac){ const c=ac, t0=c.currentTime; RING.splice(0).forEach(v=>letGo(v, c));
+    LIVE.chop.forEach((v,i)=>{ if(v){ try{ v.g.gain.cancelScheduledValues(t0); v.g.gain.setTargetAtTime(0, t0, 0.01); v.s.stop(t0+0.06); }catch(e){} LIVE.chop[i]=null; } });
+    LIVE.open.forEach(a=>a.splice(0).forEach(o=>{ try{ o.gain.gain.setTargetAtTime(0, t0, 0.01); o.src.stop(t0+0.06); }catch(e){} }));
+    if(bus){ const g=bus.gain, was=0.9*mvol(); g.cancelScheduledValues(t0); g.setTargetAtTime(0, t0, 0.01); g.setTargetAtTime(was, t0+0.25, 0.01); } }
+  paintTransport();
+}
+function stInit(){
+  $("pvStage").onclick=()=>{ S.stageOn=!S.stageOn; save(); stWake(S.stageOn); pvPaint(); };
+  $("pvStop").onclick=stStopAll;
+  $("pvLock").onclick=()=>{ STAGE.lock=!STAGE.lock; pvPaint(); };
+  $("pvBanks").addEventListener("click",(e)=>{ const b=e.target.closest("button"); if(!b) return;
+    if(b.dataset.bk!=null) stBank(+b.dataset.bk); else if(b.dataset.mu!=null){ const i=+b.dataset.mu; STAGE.mute[i]=!STAGE.mute[i]; stPaint(); } });
+  $("pvScenes").addEventListener("click",(e)=>{ const b=e.target.closest("button"); if(!b) return;
+    if(b.id==="pvKeep"){ STAGE.arm=!STAGE.arm; stPaint(); } else if(b.dataset.sc!=null) stScene(+b.dataset.sc); });
+  const cl=$("pvClose"), done=()=>{ clearTimeout(STAGE.hold); STAGE.hold=0; };
+  cl.addEventListener("pointerdown",()=>{ STAGE.freed=false; if(!STAGE.lock) return; done(); STAGE.hold=setTimeout(()=>{ STAGE.hold=0; STAGE.lock=false; STAGE.freed=true; pvPaint(); }, 800); });
+  ["pointerup","pointerleave","pointercancel"].forEach(ev=>cl.addEventListener(ev, done));
+  document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible" && PV.on && S.stageOn) stWake(true); });
 }
 function pvInit(){
   if(!$("padView")) return;
   $("bigBtn").onclick=()=>pvOpen(true);
-  $("pvClose").onclick=()=>pvOpen(false);
-  document.addEventListener("keydown",(e)=>{ if(PV.on && e.key==="Escape"){ e.preventDefault(); pvOpen(false); } });
+  $("pvClose").onclick=()=>{ if(STAGE.freed){ STAGE.freed=false; return; } if(!STAGE.lock) pvOpen(false); };   /* the hold that unlocks does not also close */
+  document.addEventListener("keydown",(e)=>{ if(PV.on && e.key==="Escape"){ e.preventDefault(); if(!STAGE.lock) pvOpen(false); } });
+  stInit();
   $("pvPlay").onclick=()=>{ $("playBtn").click(); pvPaint(); };
   $("pvRec").onclick=()=>{ $("loopRec").click(); pvPaint(); };
   $("pvBank").onchange=()=>{ const bs=$("bankSel"); bs.value=$("pvBank").value; bs.onchange(); };
@@ -1829,5 +1890,79 @@ async function takeIn(){
   ["paintPads","paintSetRow"].forEach(n=>{ const f=window[n]; if(typeof f==="function") window[n]=function(){ const r=f.apply(this, arguments); applyNp(); return r; }; });
   applyNp();
   lcd();
+})();
+/* ══ AOG-PADS-KNOBS-V1 (2026-10-28) — Jimmy: "the knobs and jog wheel". Under the unit's screen: Tempo, Swing, Volume (how loud
+   the unit plays) and Pad level (the picked pad), turned by a drag up or down (or the arrow keys); and a jog wheel that turns
+   through the banks, the sounds or the beats. A turn of Bank lands at once; a sound or a beat is shown as the wheel turns and
+   lands when the finger lets go (or half a second after the last key), so nothing loads on the way. The menus stay where they
+   were. The knobs and the wheel are written only when what they show changes; nothing runs while nobody touches them. ══ */
+(function(){
+  const lcdEl=$("pmLcd"); if(!lcdEl) return;
+  const WD={en:{tempo:"Tempo",swing:"Swing",vol:"Volume",pad:"Pad",off:"Off",bank:"Bank",sound:"Sound",beat:"Beat",jog:"Jog wheel",
+                knobs:"Knobs",turn:"Turn to choose"},
+            es:{tempo:"Tempo",swing:"Swing",vol:"Volumen",pad:"Pad",off:"No",bank:"Banco",sound:"Sonido",beat:"Ritmo",jog:"Rueda",
+                knobs:"Perillas",turn:"Gira para elegir"}};
+  const w=k=>(WD[S0.lang]||WD.en)[k];
+  const SW=[50,54,58,62,66];
+  const K=[
+    {id:"tempo", min:60, max:180, step:1, px:2, get:()=>S.bpm, set:v=>{ retime(v); }, txt:v=>String(Math.round(v))},
+    {id:"swing", min:0, max:4, step:1, px:28, get:()=>Math.max(0, SW.indexOf(S.swing)), set:v=>{ const el=$("swSel"); el.value=String(SW[v]); el.dispatchEvent(new Event("change")); },
+      txt:v=>v===0 ? w("off") : SW[v]+"%"},
+    {id:"vol", min:0, max:150, step:5, px:6, get:()=>S.mvol==null ? 100 : S.mvol, set:v=>{ S.mvol=v; if(bus && ac) bus.gain.setTargetAtTime(0.9*mvol(), ac.currentTime, 0.02); save(); }, txt:v=>v+"%"},
+    {id:"pad", min:0, max:150, step:5, px:6, get:()=>{ const el=$("vol"); return el ? +el.value : 100; }, set:v=>{ const el=$("vol"); if(!el) return; el.value=String(v); el.dispatchEvent(new Event("input")); }, txt:v=>v+"%"}];
+  const box=document.createElement("div"); box.className="pm-knobs"; box.id="pmKnobs";
+  box.innerHTML='<div class="pm-kgrp" role="group" id="pmKgrp">'+K.map(k=>`<div class="pm-kn"><div class="pm-knob" id="kn_${k.id}" role="slider" tabindex="0" aria-valuemin="${k.min}" aria-valuemax="${k.max}"></div><span class="pm-kl" id="knl_${k.id}"></span><span class="pm-kv" id="knv_${k.id}"></span></div>`).join("")+'</div>'
+    +'<div class="pm-jog"><div class="pm-jogside"><div class="pm-jogmodes" role="group" id="pmJogModes"><button type="button" class="pm-b" data-jm="bank"></button><button type="button" class="pm-b" data-jm="sound"></button><button type="button" class="pm-b" data-jm="beat"></button></div>'
+    +'<div class="pm-jogscr" id="pmJogScr" aria-live="polite"></div></div><div class="pm-wheel" id="pmWheel" role="slider" tabindex="0"></div></div>';
+  lcdEl.after(box);
+  const last={};
+  const put=(el, k, v)=>{ if(last[k]===v) return false; last[k]=v; return true; };
+  function knobPaint(){
+    K.forEach(k=>{ const v=k.get(), t=k.txt(v), el=$("kn_"+k.id), key=k.id+"|"+v+"|"+t+"|"+S0.lang; if(!put(el, k.id, key)) return;
+      el.style.setProperty("--a", (-135+270*(v-k.min)/(k.max-k.min))+"deg"); el.setAttribute("aria-valuenow", String(v)); el.setAttribute("aria-valuetext", t);
+      el.setAttribute("aria-label", w(k.id)); $("knl_"+k.id).textContent=w(k.id); $("knv_"+k.id).textContent=t; });
+    jogPaint();
+  }
+  function knobTo(k, v){ v=Math.max(k.min, Math.min(k.max, Math.round(v/k.step)*k.step)); if(v===k.get()) return; k.set(v); knobPaint(); }
+  K.forEach(k=>{ const el=$("kn_"+k.id); let y0=0, v0=0, id=null;
+    el.addEventListener("pointerdown", e=>{ id=e.pointerId; y0=e.clientY; v0=k.get(); try{ el.setPointerCapture(id); }catch(x){} e.preventDefault(); });
+    el.addEventListener("pointermove", e=>{ if(e.pointerId!==id) return; knobTo(k, v0+Math.trunc((y0-e.clientY)/k.px)*k.step); });
+    const up=e=>{ if(e.pointerId===id) id=null; }; el.addEventListener("pointerup", up); el.addEventListener("pointercancel", up);
+    el.addEventListener("keydown", e=>{ const d={ArrowUp:1,ArrowRight:1,ArrowDown:-1,ArrowLeft:-1,PageUp:10,PageDown:-10}[e.key]; if(!d) return; e.preventDefault(); knobTo(k, k.get()+d*k.step); }); });
+  /* the jog wheel */
+  const J={mode:"bank", pend:null, t:0};
+  const soundSel=()=>{ const ty=S.banks[S.bank].type; return $(ty==="drums" ? "fKitA" : ty==="chops" ? "fRec" : "fInst"); };
+  const choices=()=>{ if(J.mode==="bank") return [0,1,2,3].map(i=>({v:i, n:bankLabel(i)}));
+    if(J.mode==="beat") return beatFlat().map(x=>({v:x.b.id, n:L(x.b)+(x.b.bpm?" · "+x.b.bpm:"")}));
+    const sel=soundSel(); return sel ? [...sel.options].filter(o=>!o.disabled).map(o=>({v:o.value, n:o.textContent})) : []; };
+  const curIdx=(L)=>{ const v=J.mode==="bank" ? S.bank : J.mode==="beat" ? (S.beat && S.beat.id) : (soundSel()||{}).value; return L.findIndex(x=>String(x.v)===String(v)); };
+  function jogPaint(){
+    document.querySelectorAll("#pmJogModes [data-jm]").forEach(b=>{ const on=b.dataset.jm===J.mode; if(b.textContent!==w(b.dataset.jm)) b.textContent=w(b.dataset.jm); if(b.getAttribute("aria-pressed")!==String(on)) b.setAttribute("aria-pressed", String(on)); });
+    const L=choices(), i=J.pend!=null ? J.pend : curIdx(L), n=L[i] ? L[i].n : w("turn"), scr=$("pmJogScr"), txt=w(J.mode)+": "+n;
+    if(scr.textContent!==txt) scr.textContent=txt;
+    const wh=$("pmWheel"); if(wh.getAttribute("aria-valuetext")!==n){ wh.setAttribute("aria-valuetext", n); wh.setAttribute("aria-label", w("jog")+" · "+w(J.mode)); }
+  }
+  function land(){ clearTimeout(J.t); J.t=0; if(J.pend==null) return; const L=choices(), x=L[J.pend]; J.pend=null; if(!x){ jogPaint(); return; }
+    if(J.mode==="beat") startBeat(x.v);
+    else { const sel=soundSel(); if(sel && sel.value!==x.v){ sel.value=x.v; sel.dispatchEvent(new Event("change")); } }
+    knobPaint(); }
+  function jog(d){
+    const L=choices(); if(!L.length) return; const i=J.pend!=null ? J.pend : Math.max(0, curIdx(L)), j=Math.max(0, Math.min(L.length-1, i+d)); if(j===i) return;
+    if(J.mode==="bank"){ const bs=$("bankSel"); bs.value=String(L[j].v); bs.dispatchEvent(new Event("change")); knobPaint(); return; }
+    J.pend=j; jogPaint();
+  }
+  $("pmJogModes").addEventListener("click", e=>{ const b=e.target.closest("[data-jm]"); if(!b) return; land(); J.mode=b.dataset.jm; jogPaint(); });
+  const wh=$("pmWheel"); let a0=null, acc=0, rot=0, pid=null;
+  const ang=e=>{ const r=wh.getBoundingClientRect(); return Math.atan2(e.clientY-(r.top+r.height/2), e.clientX-(r.left+r.width/2))*180/Math.PI; };
+  wh.addEventListener("pointerdown", e=>{ pid=e.pointerId; a0=ang(e); acc=0; try{ wh.setPointerCapture(pid); }catch(x){} e.preventDefault(); });
+  wh.addEventListener("pointermove", e=>{ if(e.pointerId!==pid || a0==null) return; const a=ang(e); let d=a-a0; if(d>180) d-=360; if(d<-180) d+=360; a0=a; acc+=d; rot+=d;
+    wh.style.setProperty("--a", rot.toFixed(1)+"deg");
+    while(acc>=24){ acc-=24; jog(1); } while(acc<=-24){ acc+=24; jog(-1); } });
+  const wup=e=>{ if(e.pointerId!==pid) return; pid=null; a0=null; land(); }; wh.addEventListener("pointerup", wup); wh.addEventListener("pointercancel", wup);
+  wh.addEventListener("keydown", e=>{ const d={ArrowUp:1,ArrowRight:1,ArrowDown:-1,ArrowLeft:-1}[e.key]; if(e.key==="Enter"){ e.preventDefault(); land(); return; } if(!d) return; e.preventDefault();
+    rot+=d*24; wh.style.setProperty("--a", rot+"deg"); jog(d); if(J.mode!=="bank"){ clearTimeout(J.t); J.t=setTimeout(land, 500); } });
+  $("pmKgrp").setAttribute("aria-label", w("knobs"));
+  ["paintAll","paintControls","paintSel","paintTransport"].forEach(n=>{ const f=window[n]; if(typeof f==="function") window[n]=function(){ const r=f.apply(this, arguments); knobPaint(); return r; }; });
+  knobPaint();
 })();
 init();
