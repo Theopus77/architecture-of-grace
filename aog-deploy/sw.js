@@ -11,7 +11,7 @@
  * Bump by REPLACING the CACHE line. Don't keep the old one as a comment: every byte here is
  * downloaded again on each update check. Old lines live in tools/sw-cache-history.txt and git log.
  */
-const CACHE = 'aog-cache-2026.10.28.m7611'   // THE DRUM MACHINE GETS FOUR KNOBS AND A JOG WHEEL (AOG-PADS-KNOBS-V1)
+const CACHE = 'aog-cache-2026.10.28.m7612'   // THE KNOBS AND JOG WHEEL COME INTO THE DRUM MACHINE'S WHOLE SCREEN AND STAGE MODE (AOG-PADS-KNOBS-V1)
 
 // Same-origin essentials — reliable to precache at install.
 /* AOG-SW-LIGHT-V1 (2026-10-01) — Jimmy: "Why is it taking so long for the website to load on my phone now?"
