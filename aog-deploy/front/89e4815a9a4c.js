@@ -8,7 +8,7 @@
    the album's name on the label. At the end of a song the needle runs on into the next one; at the end of a side the record
    stops and asks to be flipped. Only the song playing is opened in memory. ══ */
 (function(){
-  const ALB = { loading:false, ready:null, adv:{} };
+  const ALB = { loading:false, ready:null, adv:{}, busy:{}, want:{}, err:{} };
   CRATE.albums = [];
   const nat = (a, b)=>String(a).localeCompare(String(b), undefined, { numeric:true, sensitivity:"base" });
   const bare = n=>String(n || "").replace(/\.[^.]+$/, "").replace(/^\s*\d{1,3}\s*[-._)]?\s+/, "").trim() || String(n || "");
@@ -61,23 +61,37 @@
     const A = d.album; if(!A){ if(!bar.hidden){ bar.hidden = true; bar.innerHTML = ""; } return; }
     const al = CRATE.albums.find(x=>x.id === A.id); if(!al){ d.album = null; paintAlb(d); return; }
     const [a, b] = sides(al)[A.side], n = b - a, two = sides(al).length > 1;
-    const say = A.over ? (A.side === 0 && two ? t("albOver") : t("albDone")) : "";
+    const busy = ALB.busy[d.id], err = ALB.err[d.id];
+    const say = busy ? t("albPutting").replace("%s", busy.t) : err ? err : A.over ? (A.side === 0 && two ? t("albOver") : t("albDone")) : "";
+    const cur = busy ? busy.i : A.i;
     const tr = al.tracks[A.i] || {};
     const h = `<p class="albnow">💿 <b>${esc(al.name)}</b>${al.artist ? " · " + esc(al.artist) : ""}<br>${two ? esc(t("albSide").replace("%s", "AB"[A.side])) + " · " : ""}${esc(t("albOf").replace("%i", A.i - a + 1).replace("%n", n))} · ${esc(tr.title || "")}</p>`
       + (say ? `<p class="albsay" aria-live="polite">${esc(say)}</p>` : "")
       + `<div class="row"><button type="button" class="ghost sm" data-albgo="-1">${t("albPrev")}</button><button type="button" class="ghost sm" data-albgo="1">${t("albNext")}</button>`
       + `${two || A.over ? `<button type="button" class="ghost sm" data-albflip="1">${t("albFlip")}</button>` : ""}</div>`
-      + `<details${bar._open ? " open" : ""}><summary>${t("albList")}</summary><div class="albtr">${al.tracks.slice(a, b).map((x, k)=>`<button type="button" data-albtr="${a + k}"${a + k === A.i ? ' aria-current="true"' : ""}>${a + k - a + 1}. ${esc(x.title)}</button>`).join("")}</div></details>`;
+      + `<details${bar._open ? " open" : ""}><summary>${t("albList")}</summary><div class="albtr">${al.tracks.slice(a, b).map((x, k)=>`<button type="button" data-albtr="${a + k}"${a + k === cur ? ' aria-current="true"' : ""}>${a + k - a + 1}. ${esc(x.title)}</button>`).join("")}</div></details>`;
     if(bar._h !== h){ bar._h = h; bar.innerHTML = h; }
     bar.hidden = false;
     const v = document.querySelector("#deck"+d.id+" .vinyl"); if(v){ const g = grooves(n); if(v._g !== g){ v._g = g; if(g) v.style.setProperty("--gaps", g); else v.style.removeProperty("--gaps"); } }
   }
   function forget(d){ d.album = null; try{ localStorage.removeItem(keyOf(d)); }catch(e){} const v = document.querySelector("#deck"+d.id+" .vinyl"); if(v){ v._g = ""; v.style.removeProperty("--gaps"); } paintAlb(d); }
+  /* AOG-DECKS-ALBUM-PICK-V1 (2026-10-28) — Jimmy, on his iPad: "I am unable to choose one of the songs after loading them."
+     An iPad takes a few seconds to open a whole song, and nothing near the finger said so. Now the song tapped is marked at
+     once with "Putting on …"; the needle lifts first, so the song before lets go of its memory before the next is opened;
+     a second tap while one is opening is kept, and the last one tapped is the one that plays; a song that cannot be opened
+     says so here. */
   async function play(d, al, side, i, go){
-    const rec = CRATE.lib.find(r=>r.id === al.tracks[i].id); if(!rec){ d.note = t("nope").replace("%s", al.tracks[i].title); paintDeck(d); return; }
-    clearTimeout(ALB.adv[d.id]); ALB.loading = true;
-    try{ await loadFile(d, crateFile(rec)); }finally{ ALB.loading = false; }
-    if(!d.buf) return;
+    const rec = CRATE.lib.find(r=>r.id === al.tracks[i].id);
+    if(!rec){ ALB.err[d.id] = t("nope").replace("%s", al.tracks[i].title); paintAlb(d); return; }
+    if(ALB.busy[d.id]){ ALB.want[d.id] = [al, side, i, go]; ALB.busy[d.id] = { i, t:al.tracks[i].title }; paintAlb(d); return; }
+    clearTimeout(ALB.adv[d.id]);
+    ALB.busy[d.id] = { i, t:al.tracks[i].title }; ALB.err[d.id] = ""; paintAlb(d);
+    if(d.buf){ stopDeck(d, true); send(d, { t:"clear" }); d.buf = null; d.peaks = null; d.zpk = null; d.pos = 0; d.rate = 0; d.level = 0; }
+    ALB.loading = true;
+    try{ await loadFile(d, crateFile(rec)); }finally{ ALB.loading = false; delete ALB.busy[d.id]; }
+    const w = ALB.want[d.id]; delete ALB.want[d.id];
+    if(w && !(w[0] === al && w[1] === side && w[2] === i)) return play(d, w[0], w[1], w[2], w[3] || go);
+    if(!d.buf){ ALB.err[d.id] = d.note || t("nope").replace("%s", al.tracks[i].title); paintAlb(d); return; }
     d.album = { id:al.id, name:al.name, side, i, n:sides(al)[side][1] - sides(al)[side][0], over:false };
     try{ localStorage.setItem(keyOf(d), JSON.stringify({ id:al.id, side, i })); }catch(e){}
     const v = document.querySelector("#deck"+d.id+" .vinyl"); if(v) v._rk = "";
@@ -210,6 +224,19 @@
     else if(b.hasAttribute("data-tl")){ const on = b.getAttribute("aria-pressed") !== "true"; b.setAttribute("aria-pressed", String(on)); const pl = b.closest(".t12-pl"); if(pl) pl.classList.toggle("lit", on); }
     else { const d = decks.find(x=>x.id === b.getAttribute("data-wide")); if(d) led(d); }
   });
+  /* AOG-DECKS-PITCH-V1: the pitch fader follows the finger up and down itself (an iPad does not slide a turned slider, and
+     scrolled the page instead); the input underneath keeps the value, the keys and everything that listens to it */
+  let fdrag = null;
+  const fset = (e)=>{ const f = fdrag, r = f.fd.getBoundingClientRect(), mn = +f.inp.min, mx = +f.inp.max, st = +f.inp.step || 0.005;
+    let v = mn + Math.max(0, Math.min(1, (e.clientY - r.top - 10)/(r.height - 20))) * (mx - mn);
+    v = Math.round((v - mn)/st)*st + mn; v = +v.toFixed(4);
+    if(Math.abs(v - +f.inp.value) > 1e-6){ f.inp.value = String(v); f.inp.dispatchEvent(new Event("input")); } };
+  document.addEventListener("pointerdown", e=>{ const fd = e.target.closest && e.target.closest(".t12-fd"); if(!fd) return;
+    const inp = fd.querySelector("input"); if(!inp) return; fdrag = { fd, inp, p:e.pointerId };
+    try{ fd.setPointerCapture(e.pointerId); }catch(x){} e.preventDefault(); fset(e); });
+  document.addEventListener("pointermove", e=>{ if(fdrag && e.pointerId === fdrag.p){ e.preventDefault(); fset(e); } });
+  ["pointerup","pointercancel"].forEach(t=>document.addEventListener(t, e=>{ if(fdrag && e.pointerId === fdrag.p) fdrag = null; }));
+  document.addEventListener("touchstart", e=>{ if(e.target.closest && e.target.closest(".t12-fd, .t12-k") && e.cancelable) e.preventDefault(); }, { passive:false });
   let drag = null;
   document.addEventListener("pointerdown", e=>{ const k = e.target.closest && e.target.closest(".t12-k"); if(!k) return;
     const id = k.getAttribute("data-tk"), w = k.getAttribute("data-w"); drag = { k, id, w, y:e.clientY, v:val(id, w), p:e.pointerId };
