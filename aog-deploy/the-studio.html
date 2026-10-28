@@ -427,6 +427,15 @@ main.sh-main { grid-area:room; min-width:0; margin:0; }
   main.sh-main { padding:0; }
   .sh-room { border:0; border-radius:0; box-shadow:none; }
 }
+/* AOG-STUDIO-WHOLE-V1 (2026-10-28) — Jimmy, iPhone: "the full screen in the iPhone is not 'full screen'". A room that opens
+   its own whole-screen view asks the Studio to step aside: the room's frame covers the whole screen until it closes. */
+html.room-whole .sh-room { position:fixed; top:env(safe-area-inset-top,0px); right:env(safe-area-inset-right,0px); bottom:env(safe-area-inset-bottom,0px); left:env(safe-area-inset-left,0px);
+  width:calc(100vw - env(safe-area-inset-left,0px) - env(safe-area-inset-right,0px));
+  height:calc(100vh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px)) !important;
+  height:calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px)) !important;
+  min-height:0; z-index:9999; border:0; border-radius:0; box-shadow:none; }
+html.room-whole, html.room-whole body { background:#0e0f12; }
+html.room-whole body { overflow:hidden; }
 /* AOG-STUDIO-WOW-V1: on a phone the instrument fills what the one row of doors leaves */
 @media (max-width:699px) {
   .sh-room { height:calc(100svh - 148px); min-height:420px; }
@@ -639,7 +648,7 @@ main.sh-main { grid-area:room; min-width:0; margin:0; }
     if (id === cur && fr.getAttribute("src")) return;
     if (push) steps++;
     TP.back = id === "studio" ? (cur && cur !== "studio" ? cur : TP.back) : "";   /* AOG-STUDIO-LISTEN-V1: the way back from the desk */
-    cur = id;
+    cur = id; D.documentElement.classList.remove("room-whole");   /* AOG-STUDIO-WHOLE-V1 */
     appFor(id);   /* AOG-PADS-APP-V1 */
     try { localStorage.setItem(KEY, id); } catch (e) {}
     if (location.hash !== "#" + id) { try { history[push ? "pushState" : "replaceState"](null, "", "#" + id); } catch (e) { location.hash = id; } }
@@ -1108,10 +1117,12 @@ main.sh-main { grid-area:room; min-width:0; margin:0; }
     backing: backing, over: overGet,   /* AOG-OVERDUB-V1 */
     along: function () { return { on: PA.on, busy: PA.busy, ac: PA.ac && PA.ac.state, loop: !!(PA.src && PA.src.loop), line: TP.line }; },   /* AOG-PLAY-ALONG-V1, read only */
     alongToggle: function () { alongToggle(); },   /* AOG-PLAY-ALONG-V1: a room's own button (its whole-screen menu) */
+    whole: function (on, w) { if (w && fr.contentWindow !== w) return; D.documentElement.classList.toggle("room-whole", !!on); size(); },   /* AOG-STUDIO-WHOLE-V1 */
     listenBack: function () { listenBack(); },   /* AOG-LISTENBACK-V1 */
     renderNotes: renderNotes, roomSounds: roomSounds,   /* AOG-NOTES-V1 */
     withRoom: withRoom, wake: alongWake, line: function (en, es) { TPW.qs = [en, es]; say("qs"); },   /* AOG-QUICKSTART-V1 */
     arrived: function (id, w) { if (w && fr.contentWindow !== w) return;   /* AOG-STUDIO-KEEP-V1: a room out of sight never takes the screen */
+      D.documentElement.classList.remove("room-whole");   /* AOG-STUDIO-WHOLE-V1: a room that arrives starts in the Studio */
       if (room(id) && id !== cur) {
         /* the room in sight opened another room in its own frame: the frame is now kept under that room's name */
         for (var k in LIVE) if (LIVE[k] === fr) delete LIVE[k];
