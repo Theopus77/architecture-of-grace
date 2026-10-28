@@ -20,6 +20,7 @@ const STR = {
   albSide:{en:"Side %s",es:"Cara %s"}, albOf:{en:"song %i of %n",es:"canción %i de %n"},
   albPrev:{en:"⏮ Back",es:"⏮ Atrás"}, albNext:{en:"Next ⏭",es:"Siguiente ⏭"}, albFlip:{en:"Flip the record",es:"Dale la vuelta al disco"},
   albList:{en:"Songs on this side",es:"Canciones de esta cara"},
+  albPutting:{en:"Putting on %s …",es:"Poniendo %s …"},
   albOver:{en:"Side A is over. Flip the record to hear Side B.",es:"Terminó la cara A. Dale la vuelta al disco para oír la cara B."},
   albDone:{en:"That is the whole record. Flip it to play it again.",es:"Ese es el disco entero. Dale la vuelta para oírlo otra vez."},
   albMine:{en:"My album",es:"Mi álbum"},
@@ -242,7 +243,9 @@ const IDS = ["A","B","C"];
    remembers it when it is turned on (aog.decks.key.v1). */
 let KEYS0 = {}; try{ KEYS0 = JSON.parse(localStorage.getItem("aog.decks.key.v1") || "{}") || {}; }catch(e){ KEYS0 = {}; }
 const decks = IDS.map(makeDeck);
-let curve = "smooth", noiseOn = true, masterId = null;
+/* AOG-DECKS-HIFI-V1: the record's own sound first; the hiss and crackle are one tap away and the deck remembers the choice */
+let curve = "smooth", noiseOn = (()=>{ try{ return localStorage.getItem("aog.decks.noise") === "1"; }catch(e){ return false; } })(), masterId = null;
+const MAKEUP = 2.3;   /* AOG-DECKS-HIFI-V1: as loud as the old squeeze made it, within about half a dB, with the peaks left alone */
 /* AOG-DECKS-TOUCH-V1 (2026-09-23) — Jimmy: "when you're scratching it seems to
    be going a bit too fast, so when you try to slow it down to make the vocals
    sound interesting it is too fast."
@@ -274,10 +277,13 @@ function ctx(){
     /* AOG-DECKS-LOUDNESS-V1 — the same treatment the drum machine got: a normal
        level with a real limiter behind it, so three loud songs at once still
        cannot clip. The last 6% is deliberately left alone. */
+    /* AOG-DECKS-HIFI-V1 (2026-10-28) — Jimmy: "exceptional quality". The always-on squeeze (a compressor at -12 dB and the
+       browser's hard limiter behind it) is gone: the decks meet on a clean bus with a little gain, and the true-peak wall in
+       the worklet (aog-djlimit) is the only thing that touches level, and only above -1 dBTP. The browser's limiter stands
+       in just until the worklet is in, or for good where there is no worklet. */
     master = actx.createGain(); master.gain.value = 0.94;
-    comp = actx.createDynamicsCompressor();
-    comp.threshold.value = -12; comp.ratio.value = 2.5; comp.knee.value = 10;
-    const makeup = actx.createGain(); makeup.gain.value = 1.6;
+    comp = actx.createGain();                     /* the bus the decks meet on (the name stays: everything connects to it) */
+    const makeup = actx.createGain(); makeup.gain.value = MAKEUP;
     const limiter = actx.createDynamicsCompressor();
     limiter.threshold.value = -3; limiter.knee.value = 0; limiter.ratio.value = 20;
     limiter.attack.value = 0.002; limiter.release.value = 0.09;
@@ -289,7 +295,8 @@ function ctx(){
       workletReady = actx.audioWorklet
         .addModule(new URL("aog-vinyl-worklet.js", document.baseURI).href)
         .then(()=>{ try{ const lim = new AudioWorkletNode(actx, "aog-djlimit", { numberOfInputs:1, numberOfOutputs:1, outputChannelCount:[2] });
-                         master.disconnect(OUT); master.connect(lim); lim.connect(OUT); LIMIT = lim; }catch(e){} })
+                         master.disconnect(OUT); master.connect(lim); lim.connect(OUT); LIMIT = lim;
+                         makeup.disconnect(); limiter.disconnect(); makeup.connect(master); }catch(e){} })
         .catch((err)=>{ workletReady = null; try{ console.warn("vinyl worklet unavailable — falling back", err); }catch(e){} });
     }
     eqScope = actx.createAnalyser(); eqScope.fftSize = 2048; eqScope.smoothingTimeConstant = 0.72;
@@ -350,7 +357,7 @@ async function ensureNode(d){
        after both faders so an echo rings on once the record is cut. */
     d.trim = actx.createGain(); d.trim.gain.value = d.gain0;
     d.eq = AOGDJ.isolator(actx);
-    d.lp = biq("lowpass", Math.min(20000, actx.sampleRate*0.45), -3.01);
+    d.lp = biq("lowpass", actx.sampleRate/2, -3.01);   /* AOG-DECKS-HIFI-V1: open */
     d.hp = biq("highpass", 10, -3.01);
     d.gain = actx.createGain(); d.gain.gain.value = chanGain(d);
     d.xg = actx.createGain(); d.xg.gain.value = 1;
@@ -1394,7 +1401,9 @@ function paintSides(){
 function applyFilter(d){
   if(!d.lp || !actx) return;
   const v = d.filtv, top = Math.min(20000, actx.sampleRate*0.45);
-  const lpF = v < -0.03 ? Math.max(60, top*Math.pow(60/top, Math.min(1, (-v-0.03)/0.97))) : top;
+  /* AOG-DECKS-HIFI-V1: in the middle the low-pass opens all the way (at half the sample rate a low-pass is a plain wire),
+     where it used to sit at 20 kHz and take 1.5 dB off 16 kHz */
+  const lpF = v < -0.03 ? Math.max(60, top*Math.pow(60/top, Math.min(1, (-v-0.03)/0.97))) : actx.sampleRate/2;
   const hpF = v > 0.03 ? 18*Math.pow(9000/18, Math.min(1, (v-0.03)/0.97)) : 10;
   const qdb = -3.01 + 7.5*Math.min(1, Math.abs(v)*2.5);   /* a little resonance as it moves: the DJ filter's "zing" */
   ramp(d.lp.frequency, lpF, 0.012); ramp(d.hp.frequency, hpF, 0.012);
@@ -2851,7 +2860,7 @@ document.getElementById("touchBtn").onclick = ()=>{
 };
 document.getElementById("curveBtn").onclick = ()=>{ curve = curve==="smooth"?"sharp":"smooth"; setMix(); paintChrome(); };
 document.getElementById("noiseBtn").onclick = ()=>{
-  noiseOn = !noiseOn;
+  noiseOn = !noiseOn; try{ localStorage.setItem("aog.decks.noise", noiseOn ? "1" : "0"); }catch(e){}
   decks.forEach(d=>send(d, { t:"noise", v: noiseOn?0.5:0 }));
   paintChrome();
 };

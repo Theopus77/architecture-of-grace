@@ -21,7 +21,7 @@ const DECKTAPE = `window.deckTape = async (id, ms) => {
   const { b, p, errs } = await open(9931);
   await p.evaluate(DECKTAPE);
   await load(p, { A: "house" });
-  await p.evaluate(() => { document.getElementById("noiseBtn").click(); });         /* vinyl noise off: every run the same */
+  await p.evaluate(() => { if (noiseOn) document.getElementById("noiseBtn").click(); });   /* vinyl noise off (it starts off since AOG-DECKS-HIFI-V1): every run the same */
   const g = await p.evaluate(() => { const d = decks[0]; return { sr: d.buf.sampleRate, csr: actx.sampleRate, beat: beatLen(d), g0: grid0(d) }; });
   const bar = 4 * g.beat;
   /* ── 1 · the loop is exactly N beats, on a beat ── */

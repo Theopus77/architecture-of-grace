@@ -103,6 +103,7 @@
        all four together, to the sample. The rest is the record minus the three. Each part's level glides (8 ms), so a
        mute never clicks; with every level at full the record plays exactly as it is. */
     this.P = null; this.pg = [1, 1, 1, 1]; this.pc = [1, 1, 1, 1]; this.pOn = false;
+    this.hq = 0; this._hqWant = 0; this.sT = null; this.sC = 0;   /* AOG-DECKS-HIFI-V1 */
     this.pk = 1 - Math.exp(-1 / (0.008 * this.sr)); this.oL = 0; this.oR = 0; this.preq = null;
   }
 
@@ -159,6 +160,11 @@
        down over tDown (1.3 s by default, up to 6 s: the long power-down). */
     if (this.motorOn && !this.handOn && Math.abs(this.rate) < 0.25) this._up = true;
     if (this._up && (!this.motorOn || this.handOn || Math.abs(this.rate - this._target) < 0.03 * Math.abs(this._target))) this._up = false;
+    /* AOG-DECKS-HIFI-V1: the sinc's corner, from how many record samples pass per output sample */
+    var sp = Math.abs(this.rate || this._target || 1), cut = 0.985 * (sp > 1 ? 1 / sp : 1);
+    if (cut < 0.08) cut = 0.08;
+    if (!this.sT || Math.abs(cut - this.sC) > 0.0024) { this.sC = cut; this.sT = sincTable(cut); }
+    this._hqWant = (!this.handOn && !this.pOn && sp > 0.2 && sp < 2.5) ? 1 : 0;
     var tau = this.handOn ? 0.008
             : (this.motorOn ? (this._up ? (this.tUp || 0.167) : 0.14) : (this.tDown || 0.42));
     this._k = 1 - Math.exp(-1 / (tau * this.sr));
@@ -343,6 +349,35 @@
     }
   };
 
+  /* ══ AOG-DECKS-HIFI-V1 (2026-10-28) — Jimmy: "make the sound output on the turntables to be exceptional quality". A record
+     that plays (not under a hand) is read with a 64-tap windowed sinc (Kaiser, beta 8.5: about -85 dB of aliasing), the
+     way a mastering resampler reads between samples, instead of a cubic curve that took 2.7 dB off at 16 kHz. Its corner
+     follows the speed (a faster record is band-limited before it is read, so speed never folds into gravel), and each of
+     its 256 phases is blended with the next, so the timing between samples is exact. Every row sums to one, so the level
+     is exactly the record's. A scratch, the parts and keylock's grains keep the cubic read; the two cross over in 5 ms. ══ */
+  var SN = 64, SH = 32, SPH = 256, SWIN = null, STAB = {};
+  function besselI0(x) { var s = 1, t = 1, q = x * x / 4; for (var k = 1; k < 50; k++) { t *= q / (k * k); s += t; if (t < 1e-12 * s) break; } return s; }
+  function sincTable(c) {
+    var key = Math.round(c * 400); if (STAB[key]) return STAB[key];
+    c = key / 400;
+    if (!SWIN) { SWIN = new Float32Array((SPH + 1) * SN); var ib = 1 / besselI0(8.5);
+      for (var p = 0; p <= SPH; p++) for (var j = 0; j < SN; j++) { var x = (j - (SH - 1)) - p / SPH, r = x / SH;
+        SWIN[p * SN + j] = r <= -1 || r >= 1 ? 0 : besselI0(8.5 * Math.sqrt(1 - r * r)) * ib; } }
+    var T = new Float32Array((SPH + 1) * SN);
+    for (var p2 = 0; p2 <= SPH; p2++) { var sum = 0, o = p2 * SN;
+      for (var j2 = 0; j2 < SN; j2++) { var x2 = (j2 - (SH - 1)) - p2 / SPH;
+        var v = (x2 === 0 ? c : Math.sin(Math.PI * c * x2) / (Math.PI * x2)) * SWIN[o + j2]; T[o + j2] = v; sum += v; }
+      for (var j3 = 0; j3 < SN; j3++) T[o + j3] /= sum; }
+    var keys = Object.keys(STAB); if (keys.length > 12) delete STAB[keys[0]];
+    return (STAB[key] = T);
+  }
+  VinylCore.prototype.rdHQ = function (i1, f) {
+    var T = this.sT, fp = f * SPH, ph = fp | 0, fr = fp - ph, o0 = ph * SN, o1 = o0 + SN, L = this.L, R = this.R, b = i1 - (SH - 1), aL = 0, aR = 0;
+    if (R === L) { for (var j = 0; j < SN; j++) { var c0 = T[o0 + j]; aL += (c0 + fr * (T[o1 + j] - c0)) * L[b + j]; } aR = aL; }
+    else for (var j4 = 0; j4 < SN; j4++) { var c1 = T[o0 + j4], cc = c1 + fr * (T[o1 + j4] - c1); aL += cc * L[b + j4]; aR += cc * R[b + j4]; }
+    this.oL = aL; this.oR = aR;
+  };
+
   /* one sample, cubic between neighbors */
   function hermite(ch, i, f) {
     var y0 = ch[i - 1] || 0, y1 = ch[i] || 0, y2 = ch[i + 1] || 0, y3 = ch[i + 2] || 0;
@@ -454,8 +489,14 @@
 
       var i1 = p | 0, f = p - i1;
       if (this.pOn) this.glide();
-      this.rd(i1, f);
-      var sL = this.oL, sR = this.oR;
+      /* AOG-DECKS-HIFI-V1: the sinc read for a record that plays; the cubic for a hand, the parts and the very edges */
+      this.hq += ((this._hqWant && !servo ? 1 : 0) - this.hq) * 0.004;
+      var edge = i1 < SH || i1 + SH + 1 >= this.len;
+      var sL, sR;
+      if (this.hq > 0.999 && !edge) { this.rdHQ(i1, f); sL = this.oL; sR = this.oR; }
+      else if (this.hq > 0.001 && !edge) { this.rdHQ(i1, f); var hL = this.oL, hR = this.oR; this.rd(i1, f);
+        sL = this.oL + (hL - this.oL) * this.hq; sR = this.oR + (hR - this.oR) * this.hq; }
+      else { this.rd(i1, f); sL = this.oL; sR = this.oR; }
       if (this.xf > 0) {                     /* the old place, fading out under the new one */
         var gp = this.xfPos; if (gp < 1) gp = 1; if (gp > last) gp = last;
         var gi = gp | 0, gf = gp - gi;
@@ -496,7 +537,7 @@
 
       /* fast passes get filtered, so speed never turns into gravel */
       var fc = 0.45 * sr / Math.max(1, v);
-      var a = 1 - Math.exp(-6.2831853 * Math.min(fc, 0.45 * sr) / sr);
+      var a = (v <= 1 || this.hq > 0.5) ? 1 : 1 - Math.exp(-6.2831853 * Math.min(fc, 0.45 * sr) / sr);   /* AOG-DECKS-HIFI-V1: no treble taken at normal speed */
       this.lpL += a * (sL - this.lpL);
       this.lpR += a * (sR - this.lpR);
       var yL = this.lpL * g, yR = this.lpR * g;
@@ -533,12 +574,12 @@
       }
 
       /* DC blocker — a held record must not leave a step on the output */
-      this.dcYL = yL - this.dcXL + 0.9975 * this.dcYL; this.dcXL = yL;
+      this.dcYL = yL - this.dcXL + 0.9975 * this.dcYL; this.dcXL = yL;   /* a rumble filter at 19 Hz, where a club deck's phono stage puts its own */
       this.dcYR = yR - this.dcXR + 0.9975 * this.dcYR; this.dcXR = yR;
       outL[i] = this.dcYL; outR[i] = this.dcYR;
       if (this.dcYL > peak) peak = this.dcYL; else if (-this.dcYL > peak) peak = -this.dcYL;
 
-      this.pos += this.rate * (servo || !this.motorOn ? 1 : (1 + 0.0011 * Math.sin((this._wow = (this._wow || 0) + 1) * 0.0027)));
+      this.pos += this.rate * (servo || !this.motorOn ? 1 : (1 + 0.00012 * Math.sin((this._wow = (this._wow || 0) + 1) * 0.0027)));
       if (this.slip && this.div) {
         this.slipPos += runRate;          /* ⚠ the shadow always runs FORWARD */
         if (this.slipPos > last) this.slipPos = last;
@@ -724,21 +765,43 @@
      BEFORE a peak arrives and have it all the way down AT the peak: no sample
      leaves above the ceiling (-1 dBFS), and nothing is clipped or squared off. The
      gain comes back over 60 ms, too slow to wobble the bass. */
+  /* AOG-DECKS-HIFI-V1 (2026-10-28): a true-peak wall. It listens between the samples too (four times over, through a 16-tap
+     windowed sinc), so a peak that only forms when the speaker's converter joins the dots is caught (-1 dBTP, as mastering
+     asks); it looks 3 ms ahead, so the gain bends down smoothly before a peak; and it lets go over 100 ms (it was 60), slow
+     enough that it does not shape a bass wave. With the mix below the ceiling it is a straight wire. */
+  var TPN = 16, TPK = null;
+  function tpKernels() {
+    if (TPK) return TPK; TPK = [];
+    for (var ph = 1; ph <= 3; ph++) { var fr = ph / 4, k = new Float32Array(TPN), sum = 0;
+      for (var t = 0; t < TPN; t++) { var x = (t - 7) - fr, r = x / 8.5, w = r <= -1 || r >= 1 ? 0 : besselI0(6 * Math.sqrt(1 - r * r)) / besselI0(6);
+        k[t] = (x === 0 ? 1 : Math.sin(Math.PI * x) / (Math.PI * x)) * w; sum += k[t]; }
+      for (var t2 = 0; t2 < TPN; t2++) k[t2] /= sum; TPK.push(k); }
+    return TPK;
+  }
   function DJLimitCore(sampleRate, ceiling) {
     var sr = this.sr = sampleRate || 44100;
     this.ceil = ceiling || 0.891;
-    var L = this.L = Math.max(16, Math.round(sr * 0.0013));
-    this.dl = new Float32Array(L); this.dr = new Float32Array(L); this.dw = 0;           /* the look-ahead: exactly L samples */
-        this.dqI = new Float64Array(L + 2); this.dqV = new Float64Array(L + 2); this.dh = 0; this.dt = 0; this.n = 0;
+    var L = this.W = Math.max(16, Math.round(sr * 0.003));                             /* the look-ahead */
+    var D = this.L = L + 8;                                                              /* … plus the true-peak ear: the whole delay */
+    this.dl = new Float32Array(D); this.dr = new Float32Array(D); this.dw = 0;
+    this.hl = new Float32Array(TPN); this.hr = new Float32Array(TPN); this.hw = 0; this.K = tpKernels();
+    this.dqI = new Float64Array(L + 2); this.dqV = new Float64Array(L + 2); this.dh = 0; this.dt = 0; this.n = 0;
     this.avg = new Float64Array(L); this.aw = 0; this.sum = L;                          /* the running mean */
     for (var i = 0; i < L; i++) this.avg[i] = 1;
-    this.g = 1; this.rel = 1 - Math.exp(-1 / (0.06 * sr));
+    this.g = 1; this.rel = 1 - Math.exp(-1 / (0.1 * sr));
     this.minGain = 1;
   }
   DJLimitCore.prototype.process = function (inL, inR, outL, outR, n) {
-    var L = this.L, ceil = this.ceil, dqI = this.dqI, dqV = this.dqV, cap = L + 2;
+    var L = this.W, D = this.L, ceil = this.ceil, dqI = this.dqI, dqV = this.dqV, cap = L + 2, hl = this.hl, hr = this.hr, K = this.K;
     for (var i = 0; i < n; i++) {
-      var xl = inL[i], xr = inR[i], pk = Math.max(xl < 0 ? -xl : xl, xr < 0 ? -xr : xr);
+      var xl = inL[i], xr = inR[i];
+      var hw = this.hw; hl[hw] = xl; hr[hw] = xr; this.hw = (hw + 1) & (TPN - 1);
+      /* the sample 8 back, and the three places between it and the next */
+      var c = (this.hw + 7) & (TPN - 1), a0 = hl[c], b0 = hr[c];
+      var pk = Math.max(a0 < 0 ? -a0 : a0, b0 < 0 ? -b0 : b0);
+      if (pk > ceil * 0.5) for (var q = 0; q < 3; q++) { var k = K[q], sl = 0, srr = 0;
+        for (var t = 0; t < TPN; t++) { var o = (this.hw + t) & (TPN - 1); sl += k[t] * hl[o]; srr += k[t] * hr[o]; }
+        if (sl < 0) sl = -sl; if (srr < 0) srr = -srr; if (sl > pk) pk = sl; if (srr > pk) pk = srr; }
       var r = pk > ceil ? ceil / pk : 1, idx = this.n++;
       /* the smallest gain asked for in the last L+1 samples (a sliding minimum) */
       while (this.dt !== this.dh && dqV[(this.dt - 1 + cap) % cap] >= r) this.dt = (this.dt - 1 + cap) % cap;
@@ -750,9 +813,9 @@
       var a = this.sum / L; if (a > 1) a = 1;
       var g = this.g + this.rel * (1 - this.g); if (g > a) g = a;
       this.g = g; if (g < this.minGain) this.minGain = g;
-      /* out goes the sample from L ago, at that gain */
+      /* out goes the sample from D ago, at that gain */
       var ow = this.dw, ol = this.dl[ow], or = this.dr[ow];
-      this.dl[ow] = xl; this.dr[ow] = xr; this.dw = (ow + 1) % L;
+      this.dl[ow] = xl; this.dr[ow] = xr; this.dw = (ow + 1) % D;
       var yl = ol * g, yr = or * g;
       if (yl > ceil) yl = ceil; else if (yl < -ceil) yl = -ceil;   /* never reached: a guard against rounding */
       if (yr > ceil) yr = ceil; else if (yr < -ceil) yr = -ceil;
