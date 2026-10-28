@@ -20,6 +20,7 @@ const STR = {
   albSide:{en:"Side %s",es:"Cara %s"}, albOf:{en:"song %i of %n",es:"canción %i de %n"},
   albPrev:{en:"⏮ Back",es:"⏮ Atrás"}, albNext:{en:"Next ⏭",es:"Siguiente ⏭"}, albFlip:{en:"Flip the record",es:"Dale la vuelta al disco"},
   albList:{en:"Songs on this side",es:"Canciones de esta cara"},
+  albPutting:{en:"Putting on %s …",es:"Poniendo %s …"},
   albOver:{en:"Side A is over. Flip the record to hear Side B.",es:"Terminó la cara A. Dale la vuelta al disco para oír la cara B."},
   albDone:{en:"That is the whole record. Flip it to play it again.",es:"Ese es el disco entero. Dale la vuelta para oírlo otra vez."},
   albMine:{en:"My album",es:"Mi álbum"},
@@ -237,6 +238,10 @@ const DEG_PER_SEC = 200;
 
 let actx, master, comp, OUT = null, LIMIT = null, workletReady = null, eqScope = null;
 const IDS = ["A","B","C"];
+/* AOG-DECKS-PITCH-V1 (2026-10-28) — Jimmy: "Messing the the pitch does nothing … nothing with the music". As on a Technics, the
+   pitch fader changes the speed and the pitch together; KEY (hold the key while the speed moves) starts off and each deck
+   remembers it when it is turned on (aog.decks.key.v1). */
+let KEYS0 = {}; try{ KEYS0 = JSON.parse(localStorage.getItem("aog.decks.key.v1") || "{}") || {}; }catch(e){ KEYS0 = {}; }
 const decks = IDS.map(makeDeck);
 let curve = "smooth", noiseOn = true, masterId = null;
 /* AOG-DECKS-TOUCH-V1 (2026-09-23) — Jimmy: "when you're scratching it seems to
@@ -301,7 +306,7 @@ function makeDeck(id){
            rot:0, level:0, held:false, wide:false, pending:[],
            bpm:0, beat0:0, bands:null, cues:[null,null,null,null,null,null,null,null], loopBeats:0, loopOn:false,
            loopA:0, loopB:0, cueHeld:false, revOn:false,
-           keyOn:true, slipOn:true, syncLock:false, taps:[], trackKey:"", made:"", lufs:null, gain0:1,
+           keyOn:KEYS0[id] === true, slipOn:true, syncLock:false, taps:[], trackKey:"", made:"", lufs:null, gain0:1,
            side: id==="A" ? "L" : id==="B" ? "R" : "N", eqv:{high:0,mid:0,low:0}, filtv:0,
            fxType:"echo", fxBeats:{echo:0.75, reverb:2, flanger:16}, fxAmt:0, fxSent:"",
            snap:1, erase:false, slipPos:0, div:false, pend:false, lastJump:null, jumps:0, wraps:0,
@@ -2498,6 +2503,7 @@ function bind(){
       const d = deckOf(btn, "data-key");
       d.keyOn = !d.keyOn; ctx(); await ensureNode(d);
       send(d, { t:"key", on:d.keyOn }); btn.classList.toggle("on", d.keyOn); btn.setAttribute("aria-pressed", d.keyOn);
+      KEYS0[d.id] = d.keyOn; try{ localStorage.setItem("aog.decks.key.v1", JSON.stringify(KEYS0)); }catch(e){}
     };
   });
   /* SLIP — the record keeps turning under the scratch. Let go, and you are
