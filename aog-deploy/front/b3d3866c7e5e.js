@@ -289,6 +289,7 @@ function ceiling(c){
    bass". The machine's master, one builder for the live sound and for Bounce (renderLoop): every pad → bus → the drum bus
    effects (aog-amp.js, kind "drums": Punch, Tape, Filter, Crush, the compressor, the echo, the reverb) → limiter → ceiling.
    The recorder listens at the ceiling, so a take carries the effects. With every effect off the rig is a straight wire. */
+function mvol(){ const v=S.mvol==null ? 100 : +S.mvol; return Math.max(0, Math.min(150, v))/100; }   /* AOG-PADS-KNOBS-V1: how loud the unit plays (not what a bounce writes) */
 function master(c){
   const m={c:c};
   m.lim=c.createDynamicsCompressor(); m.lim.threshold.value=-3; m.lim.knee.value=2; m.lim.ratio.value=20; m.lim.attack.value=0.002; m.lim.release.value=0.12;
@@ -308,7 +309,7 @@ function ctx(){
     const AC=window.AudioContext||window.webkitAudioContext;
     try{ if(navigator.audioSession) navigator.audioSession.type="playback"; }catch(e){}
     ac=new AC({latencyHint:"interactive"});
-    LIVE_M=master(ac); lim=LIVE_M.lim; bus=LIVE_M.bus; clip=LIVE_M.clip;
+    LIVE_M=master(ac); lim=LIVE_M.lim; bus=LIVE_M.bus; clip=LIVE_M.clip; bus.gain.value=0.9*mvol();   /* AOG-PADS-KNOBS-V1: the Volume knob */
   }
   if(ac.state==="suspended") ac.resume();
   return ac;
@@ -1553,10 +1554,11 @@ function pvOpen(on){
   if(on){
     PV.on=true; PV.y=window.scrollY||0;
     PV.back=document.createComment("pads"); pads.parentNode.insertBefore(PV.back, pads); $("pvGrid").appendChild(pads);
-    pvZoom(true); document.body.classList.add("aog-play"); stWake(!!S.stageOn);
+    pvZoom(true); document.body.classList.add("aog-play"); stWake(!!S.stageOn); if(window.pvKnobsPlace) pvKnobsPlace();
   } else {
     PV.on=false; document.body.classList.remove("aog-play"); pvZoom(false);
     STAGE.mute=[false,false,false,false]; STAGE.lock=false; STAGE.arm=false; stWake(false);   /* the page outside always plays every layer */
+    if(window.pvKnobsPlace) pvKnobsPlace();
     if(PV.back && PV.back.parentNode) PV.back.parentNode.replaceChild(pads, PV.back); PV.back=null;
   }
   paintPads();
@@ -1598,7 +1600,7 @@ function stStopAll(){
   if(ac){ const c=ac, t0=c.currentTime; RING.splice(0).forEach(v=>letGo(v, c));
     LIVE.chop.forEach((v,i)=>{ if(v){ try{ v.g.gain.cancelScheduledValues(t0); v.g.gain.setTargetAtTime(0, t0, 0.01); v.s.stop(t0+0.06); }catch(e){} LIVE.chop[i]=null; } });
     LIVE.open.forEach(a=>a.splice(0).forEach(o=>{ try{ o.gain.gain.setTargetAtTime(0, t0, 0.01); o.src.stop(t0+0.06); }catch(e){} }));
-    if(bus){ const g=bus.gain, was=0.9; g.cancelScheduledValues(t0); g.setTargetAtTime(0, t0, 0.01); g.setTargetAtTime(was, t0+0.25, 0.01); } }
+    if(bus){ const g=bus.gain, was=0.9*mvol(); g.cancelScheduledValues(t0); g.setTargetAtTime(0, t0, 0.01); g.setTargetAtTime(was, t0+0.25, 0.01); } }
   paintTransport();
 }
 function stInit(){
@@ -1889,5 +1891,92 @@ async function takeIn(){
   ["paintPads","paintSetRow"].forEach(n=>{ const f=window[n]; if(typeof f==="function") window[n]=function(){ const r=f.apply(this, arguments); applyNp(); return r; }; });
   applyNp();
   lcd();
+})();
+/* ══ AOG-PADS-KNOBS-V1 (2026-10-28) — Jimmy: "the knobs and jog wheel". Under the unit's screen: Tempo, Swing, Volume (how loud
+   the unit plays) and Pad level (the picked pad), turned by a drag up or down (or the arrow keys); and a jog wheel that turns
+   through the banks, the sounds or the beats. A turn of Bank lands at once; a sound or a beat is shown as the wheel turns and
+   lands when the finger lets go (or half a second after the last key), so nothing loads on the way. The menus stay where they
+   were. The knobs and the wheel are written only when what they show changes; nothing runs while nobody touches them. ══ */
+(function(){
+  const lcdEl=$("pmLcd"); if(!lcdEl) return;
+  const WD={en:{tempo:"Tempo",swing:"Swing",vol:"Volume",pad:"Pad",off:"Off",bank:"Bank",sound:"Sound",beat:"Beat",jog:"Jog wheel",
+                knobs:"Knobs",turn:"Turn to choose"},
+            es:{tempo:"Tempo",swing:"Swing",vol:"Volumen",pad:"Pad",off:"No",bank:"Banco",sound:"Sonido",beat:"Ritmo",jog:"Rueda",
+                knobs:"Perillas",turn:"Gira para elegir"}};
+  const w=k=>(WD[S0.lang]||WD.en)[k];
+  const SW=[50,54,58,62,66];
+  const K=[
+    {id:"tempo", min:60, max:180, step:1, px:2, get:()=>S.bpm, set:v=>{ retime(v); }, txt:v=>String(Math.round(v))},
+    {id:"swing", min:0, max:4, step:1, px:28, get:()=>Math.max(0, SW.indexOf(S.swing)), set:v=>{ const el=$("swSel"); el.value=String(SW[v]); el.dispatchEvent(new Event("change")); },
+      txt:v=>v===0 ? w("off") : SW[v]+"%"},
+    {id:"vol", min:0, max:150, step:5, px:6, get:()=>S.mvol==null ? 100 : S.mvol, set:v=>{ S.mvol=v; if(bus && ac) bus.gain.setTargetAtTime(0.9*mvol(), ac.currentTime, 0.02); save(); }, txt:v=>v+"%"},
+    {id:"pad", min:0, max:150, step:5, px:6, get:()=>{ const el=$("vol"); return el ? +el.value : 100; }, set:v=>{ const el=$("vol"); if(!el) return; el.value=String(v); el.dispatchEvent(new Event("input")); }, txt:v=>v+"%"}];
+  const box=document.createElement("div"); box.className="pm-knobs"; box.id="pmKnobs";
+  box.innerHTML='<div class="pm-kgrp" role="group" id="pmKgrp">'+K.map(k=>`<div class="pm-kn"><div class="pm-knob" id="kn_${k.id}" role="slider" tabindex="0" aria-valuemin="${k.min}" aria-valuemax="${k.max}"></div><span class="pm-kl" id="knl_${k.id}"></span><span class="pm-kv" id="knv_${k.id}"></span></div>`).join("")+'</div>'
+    +'<div class="pm-jog"><div class="pm-jogside"><div class="pm-jogmodes" role="group" id="pmJogModes"><button type="button" class="pm-b" data-jm="bank"></button><button type="button" class="pm-b" data-jm="sound"></button><button type="button" class="pm-b" data-jm="beat"></button></div>'
+    +'<div class="pm-jogscr" id="pmJogScr" aria-live="polite"></div></div><div class="pm-wheel" id="pmWheel" role="slider" tabindex="0"></div></div>';
+  lcdEl.after(box);
+  const last={};
+  const put=(el, k, v)=>{ if(last[k]===v) return false; last[k]=v; return true; };
+  function knobPaint(){
+    K.forEach(k=>{ const v=k.get(), t=k.txt(v), el=$("kn_"+k.id), key=k.id+"|"+v+"|"+t+"|"+S0.lang; if(!put(el, k.id, key)) return;
+      el.style.setProperty("--a", (-135+270*(v-k.min)/(k.max-k.min))+"deg"); el.setAttribute("aria-valuenow", String(v)); el.setAttribute("aria-valuetext", t);
+      el.setAttribute("aria-label", w(k.id)); $("knl_"+k.id).textContent=w(k.id); $("knv_"+k.id).textContent=t; });
+    jogPaint();
+  }
+  function knobTo(k, v){ v=Math.max(k.min, Math.min(k.max, Math.round(v/k.step)*k.step)); if(v===k.get()) return; k.set(v); knobPaint(); }
+  K.forEach(k=>{ const el=$("kn_"+k.id); let y0=0, v0=0, id=null;
+    el.addEventListener("pointerdown", e=>{ id=e.pointerId; y0=e.clientY; v0=k.get(); try{ el.setPointerCapture(id); }catch(x){} e.preventDefault(); });
+    el.addEventListener("pointermove", e=>{ if(e.pointerId!==id) return; knobTo(k, v0+Math.trunc((y0-e.clientY)/k.px)*k.step); });
+    const up=e=>{ if(e.pointerId===id) id=null; }; el.addEventListener("pointerup", up); el.addEventListener("pointercancel", up);
+    el.addEventListener("keydown", e=>{ const d={ArrowUp:1,ArrowRight:1,ArrowDown:-1,ArrowLeft:-1,PageUp:10,PageDown:-10}[e.key]; if(!d) return; e.preventDefault(); knobTo(k, k.get()+d*k.step); }); });
+  /* the jog wheel */
+  const J={mode:"bank", pend:null, t:0};
+  const soundSel=()=>{ const ty=S.banks[S.bank].type; return $(ty==="drums" ? "fKitA" : ty==="chops" ? "fRec" : "fInst"); };
+  const choices=()=>{ if(J.mode==="bank") return [0,1,2,3].map(i=>({v:i, n:bankLabel(i)}));
+    if(J.mode==="beat") return beatFlat().map(x=>({v:x.b.id, n:L(x.b)+(x.b.bpm?" · "+x.b.bpm:"")}));
+    const sel=soundSel(); return sel ? [...sel.options].filter(o=>!o.disabled).map(o=>({v:o.value, n:o.textContent})) : []; };
+  const curIdx=(L)=>{ const v=J.mode==="bank" ? S.bank : J.mode==="beat" ? (S.beat && S.beat.id) : (soundSel()||{}).value; return L.findIndex(x=>String(x.v)===String(v)); };
+  function jogPaint(){
+    document.querySelectorAll("#pmJogModes [data-jm]").forEach(b=>{ const on=b.dataset.jm===J.mode; if(b.textContent!==w(b.dataset.jm)) b.textContent=w(b.dataset.jm); if(b.getAttribute("aria-pressed")!==String(on)) b.setAttribute("aria-pressed", String(on)); });
+    const L=choices(), i=J.pend!=null ? J.pend : curIdx(L), n=L[i] ? L[i].n : w("turn"), scr=$("pmJogScr"), txt=w(J.mode)+": "+n;
+    if(scr.textContent!==txt) scr.textContent=txt;
+    const wh=$("pmWheel"); if(wh.getAttribute("aria-valuetext")!==n){ wh.setAttribute("aria-valuetext", n); wh.setAttribute("aria-label", w("jog")+" · "+w(J.mode)); }
+  }
+  function land(){ clearTimeout(J.t); J.t=0; if(J.pend==null) return; const L=choices(), x=L[J.pend]; J.pend=null; if(!x){ jogPaint(); return; }
+    if(J.mode==="beat") startBeat(x.v);
+    else { const sel=soundSel(); if(sel && sel.value!==x.v){ sel.value=x.v; sel.dispatchEvent(new Event("change")); } }
+    knobPaint(); }
+  function jog(d){
+    const L=choices(); if(!L.length) return; const i=J.pend!=null ? J.pend : Math.max(0, curIdx(L)), j=Math.max(0, Math.min(L.length-1, i+d)); if(j===i) return;
+    if(J.mode==="bank"){ const bs=$("bankSel"); bs.value=String(L[j].v); bs.dispatchEvent(new Event("change")); knobPaint(); return; }
+    J.pend=j; jogPaint();
+  }
+  $("pmJogModes").addEventListener("click", e=>{ const b=e.target.closest("[data-jm]"); if(!b) return; land(); J.mode=b.dataset.jm; jogPaint(); });
+  const wh=$("pmWheel"); let a0=null, acc=0, rot=0, pid=null;
+  const ang=e=>{ const r=wh.getBoundingClientRect(); return Math.atan2(e.clientY-(r.top+r.height/2), e.clientX-(r.left+r.width/2))*180/Math.PI; };
+  wh.addEventListener("pointerdown", e=>{ pid=e.pointerId; a0=ang(e); acc=0; try{ wh.setPointerCapture(pid); }catch(x){} e.preventDefault(); });
+  wh.addEventListener("pointermove", e=>{ if(e.pointerId!==pid || a0==null) return; const a=ang(e); let d=a-a0; if(d>180) d-=360; if(d<-180) d+=360; a0=a; acc+=d; rot+=d;
+    wh.style.setProperty("--a", rot.toFixed(1)+"deg");
+    while(acc>=24){ acc-=24; jog(1); } while(acc<=-24){ acc+=24; jog(-1); } });
+  const wup=e=>{ if(e.pointerId!==pid) return; pid=null; a0=null; land(); }; wh.addEventListener("pointerup", wup); wh.addEventListener("pointercancel", wup);
+  wh.addEventListener("keydown", e=>{ const d={ArrowUp:1,ArrowRight:1,ArrowDown:-1,ArrowLeft:-1}[e.key]; if(e.key==="Enter"){ e.preventDefault(); land(); return; } if(!d) return; e.preventDefault();
+    rot+=d*24; wh.style.setProperty("--a", rot+"deg"); jog(d); if(J.mode!=="bank"){ clearTimeout(J.t); J.t=setTimeout(land, 500); } });
+  $("pmKgrp").setAttribute("aria-label", w("knobs"));
+  ["paintAll","paintControls","paintSel","paintTransport"].forEach(n=>{ const f=window[n]; if(typeof f==="function") window[n]=function(){ const r=f.apply(this, arguments); knobPaint(); return r; }; });
+  /* in the whole screen too (Jimmy, 2026-10-28: "Sure"): 🎛 Knobs there shows or hides them, kept on the device (S.pvKn) */
+  let back=null;
+  window.pvKnobsPlace=function(){
+    const pv=$("padView"), grid=$("pvGrid"), bt=$("pvKnobs"); if(!pv || !grid) return;
+    const show=PV.on && S.pvKn!==false, inPv=box.parentNode===pv;
+    if(show && !inPv){ back=document.createComment("knobs"); box.before(back); pv.insertBefore(box, grid); }
+    else if(!show && inPv && back && back.parentNode){ back.replaceWith(box); back=null; }
+    pv.classList.toggle("kn", box.parentNode===pv);
+    if(bt){ const tx=S0.lang==="es" ? "🎛 Perillas" : "🎛 Knobs"; if(bt.textContent!==tx) bt.textContent=tx; bt.setAttribute("aria-pressed", String(S.pvKn!==false)); }
+  };
+  const kb=$("pvKnobs"); if(kb) kb.onclick=()=>{ S.pvKn=S.pvKn===false; save(); pvKnobsPlace(); };
+  const pp=window.pvPaint; if(typeof pp==="function") window.pvPaint=function(){ const r=pp.apply(this, arguments); pvKnobsPlace(); return r; };
+  pvKnobsPlace();
+  knobPaint();
 })();
 init();

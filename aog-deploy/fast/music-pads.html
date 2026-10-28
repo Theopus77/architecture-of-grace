@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- AOG-FAST-BUILD-V1 source:3b574ec649c616b9 · MADE BY tools/build-fast.py from music-pads.html: edit music-pads.html, then run it. -->
+<!-- AOG-FAST-BUILD-V1 source:12521441a379c50d · MADE BY tools/build-fast.py from music-pads.html: edit music-pads.html, then run it. -->
 <html lang="en">
 <head>
 <script>/* AOG-STUDIO-ONLY-V1 (Jimmy, 2026-10-10: "one location for all the instruments … and that is the studio"): opened on its own address, this room opens inside the Studio instead, at this exact address (its lesson, take or link). Inside the Studio's frame, and for the site's own checks, it stays. */(function(){try{if(window.top!==window||navigator.webdriver)return;var M={"music-pads":"pads","drum-machine":"pads","beat-lab":"pads","music-kit":"kit","drum-kit":"kit","music-piano":"piano","piano":"piano","keys":"piano","music-guitar":"guitar","guitar":"guitar","music-bass":"bass","bass":"bass","music-band":"band","band":"band","music-decks":"decks","decks":"decks","turntables":"decks","music-vocal":"vocal","vocal-booth":"vocal","vocal":"vocal","booth":"vocal","music-studio":"studio","studio":"studio","mixing-desk":"studio"},f=(location.pathname.split("/").pop()||"").replace(/\.html$/,""),r=M[f];if(!r)return;var F={pads:"music-pads",kit:"music-kit",piano:"music-piano",guitar:"music-guitar",bass:"music-bass",band:"music-band",decks:"music-decks",vocal:"music-vocal",studio:"music-studio"};location.replace("/the-studio.html?at="+encodeURIComponent("/"+F[r]+".html"+location.search+location.hash)+"#"+r);}catch(e){}})();</script>
@@ -224,6 +224,9 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
 #padView .pv-grids{flex:1 1 auto;min-height:0;display:flex;align-items:center;justify-content:center}
 #padView .pads{max-width:none;margin:0;width:min(calc(100vw - 28px),calc((100dvh - 96px) * 1.5))}   /* six across, four down */
 #padView .pads.np16{width:min(calc(100vw - 28px),calc(100dvh - 110px))}   /* AOG-PADS-16-V1: four across, four down: as wide as it is tall, so all four rows fit (Jimmy's iPad, 2026-10-27: "The top and bottom rows are cut off") */
+@supports (container-type:size){   /* the pads fit the room left under the bars (inside the Studio too), never past the foot */
+  #padView .pv-grids{container-type:size}
+  #padView .pads{width:min(100cqw,calc((100cqh - 24px) * 1.5 + 40px))} #padView .pads.np16{width:min(100cqw,100cqh)}}
 #padView .pad{min-height:0}
 /* AOG-PADS-KNOBS-V1: four knobs and a jog wheel under the screen (Jimmy, 2026-10-28: "the knobs and jog wheel") */
 .pm-knobs{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 18px;margin:0 0 12px}
@@ -252,6 +255,20 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
 .pm-wheel::after{content:"";position:absolute;left:50%;top:50%;width:18px;height:18px;margin:-9px;border-radius:50%;background:radial-gradient(circle at 45% 40%,#15161a,#2e3136);
   box-shadow:inset 0 2px 3px rgba(0,0,0,.7);transform:rotate(var(--a)) translateY(-32px)}
 .pm-wheel:focus-visible{outline:3px solid #ffd36b;outline-offset:3px}
+#padView .pm-knobs{flex:0 0 auto;margin:0 0 8px;gap:8px 16px}   /* in the whole screen: a little smaller, so the pads keep their room */
+#padView .pm-knob{width:50px;height:50px} #padView .pm-knob::after{top:7px;height:12px;transform-origin:50% 18px}
+#padView .pm-knob::before{inset:6px} #padView .pm-wheel{width:92px;height:92px} #padView .pm-wheel::before{inset:17px}
+#padView .pm-wheel::after{transform:rotate(var(--a)) translateY(-25px)} #padView .pm-kn{min-width:56px}
+/* sideways, the knobs and the wheel stand in a column beside the pads, so the pads keep their height */
+@media (orientation:landscape){
+  body.aog-play #padView.kn{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto minmax(0,1fr);column-gap:12px}
+  #padView.kn .pv-bar,#padView.kn .pv-stage{grid-column:1/-1} #padView.kn .pv-bar{grid-row:1} #padView.kn .pv-stage{grid-row:2}
+  #padView.kn .pv-grids{grid-column:1;grid-row:3;min-height:0}
+  #padView.kn .pm-knobs{grid-column:2;grid-row:3;flex-direction:column;flex-wrap:nowrap;justify-content:center;margin:0;width:200px}
+  #padView.kn .pm-kgrp{display:grid;grid-template-columns:repeat(2,auto);gap:10px 18px;justify-content:center}
+  #padView.kn .pm-jog{flex-direction:column;gap:8px} #padView.kn .pm-jogscr{max-width:196px}}
+@media (orientation:landscape) and (max-height:520px){   /* a phone turned sideways: the knobs only, so the pads stay playable */
+  #padView.kn .pm-jog{display:none} #padView.kn .pm-knobs{width:auto}}
 @media (max-width:520px){.pm-knobs{justify-content:center}.pm-kgrp{gap:8px;justify-content:center}.pm-kn{min-width:60px}}
 /* AOG-PADS-STAGE-V1: Stage mode (Jimmy, 2026-10-27: "use this on stage in front of an audience and make live beats") */
 #padView .pv-st,#padView .pv-stage{display:none}
@@ -523,6 +540,7 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
     <button type="button" class="pm-b" id="pvClose"></button>
     <select class="pm-sel" id="pvBank"></select>
     <button type="button" class="pm-b" id="pvStage" aria-pressed="false"></button><!-- AOG-PADS-STAGE-V1 -->
+    <button type="button" class="pm-b" id="pvKnobs" aria-pressed="true"></button><!-- AOG-PADS-KNOBS-V1: the knobs and the wheel come along -->
     <span class="pv-sp"></span>
     <button type="button" class="pm-b pv-st" id="pvStop"></button>
     <button type="button" class="pm-b pv-st" id="pvLock" aria-pressed="false"></button>
@@ -532,6 +550,6 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
   <div class="pv-stage" id="pvStageRow"><div class="pv-banks" id="pvBanks"></div><div class="pv-scenes" id="pvScenes"></div></div>
   <div class="pv-grids" id="pvGrid"></div>
 </div>
-<script src="/front/fce85cbb3857.js"></script>
+<script src="/front/b3d3866c7e5e.js"></script>
 </body>
 </html>
