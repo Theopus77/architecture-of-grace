@@ -438,11 +438,11 @@ in the whole-screen view shows the four banks as buttons (one tap, the loop goes
 stage one tap matters), an On/Off for each layer of the loop, four scenes (bank and layers, `S.scenes`), Stop all, and Lock
 (Close waits for a hold). The screen stays awake while Stage is open. On/Off and Lock end when the whole screen closes.
 Sideways, the pads fill the screen (AOG-PADS-WIDE-V1).
-Knobs and a jog wheel (Jimmy, 2026-10-28: "the knobs and jog wheel"; AOG-PADS-KNOBS-V1): under the screen, Tempo, Swing,
-Volume (how loud the unit plays, `S.mvol`; a bounce is not changed) and Pad (the picked pad's level), turned by a drag up or
-down or the arrow keys; and a wheel with Bank, Sound and Beat. Bank lands at once; a sound or a beat lands when the finger lets
-go, so nothing loads on the way. The menus stay. They come into the whole screen and Stage too (🎛 Knobs there hides them,
-`S.pvKn`): a column beside the pads when sideways (knobs only on a phone), a row above them upright. The pads always fit the room left.
+Knobs (Jimmy, 2026-10-28: "the knobs and jog wheel"; AOG-PADS-KNOBS-V1): under the screen, Tempo, Swing, Volume (how loud
+the unit plays, `S.mvol`; a bounce is not changed) and Pad (the picked pad's level), turned by a drag up or down or the arrow
+keys. No jog wheel (Jimmy, the same day: "I do not like the knobs related to choosing a bank"); the menus choose banks, sounds
+and beats. The knobs come into the whole screen and Stage too (🎛 Knobs there hides them, `S.pvKn`): a column beside the pads
+when sideways, a row above them upright. The pads always fit the room left.
 
 ## No floating My notes button (Jimmy, 2026-10-18: "I don't like the my notes button. Please remove that")
 

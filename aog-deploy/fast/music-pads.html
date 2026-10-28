@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- AOG-FAST-BUILD-V1 source:04e859f0ae2daa94 · MADE BY tools/build-fast.py from music-pads.html: edit music-pads.html, then run it. -->
+<!-- AOG-FAST-BUILD-V1 source:58b353e31d9862b4 · MADE BY tools/build-fast.py from music-pads.html: edit music-pads.html, then run it. -->
 <html lang="en">
 <head>
 <script>/* AOG-STUDIO-ONLY-V1 (Jimmy, 2026-10-10: "one location for all the instruments … and that is the studio"): opened on its own address, this room opens inside the Studio instead, at this exact address (its lesson, take or link). Inside the Studio's frame, and for the site's own checks, it stays. */(function(){try{if(window.top!==window||navigator.webdriver)return;var M={"music-pads":"pads","drum-machine":"pads","beat-lab":"pads","music-kit":"kit","drum-kit":"kit","music-piano":"piano","piano":"piano","keys":"piano","music-guitar":"guitar","guitar":"guitar","music-bass":"bass","bass":"bass","music-band":"band","band":"band","music-decks":"decks","decks":"decks","turntables":"decks","music-vocal":"vocal","vocal-booth":"vocal","vocal":"vocal","booth":"vocal","music-studio":"studio","studio":"studio","mixing-desk":"studio"},f=(location.pathname.split("/").pop()||"").replace(/\.html$/,""),r=M[f];if(!r)return;var F={pads:"music-pads",kit:"music-kit",piano:"music-piano",guitar:"music-guitar",bass:"music-bass",band:"music-band",decks:"music-decks",vocal:"music-vocal",studio:"music-studio"};location.replace("/the-studio.html?at="+encodeURIComponent("/"+F[r]+".html"+location.search+location.hash)+"#"+r);}catch(e){}})();</script>
@@ -228,7 +228,7 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
   #padView .pv-grids{container-type:size}
   #padView .pads{width:min(100cqw,calc((100cqh - 24px) * 1.5 + 40px))} #padView .pads.np16{width:min(100cqw,100cqh)}}
 #padView .pad{min-height:0}
-/* AOG-PADS-KNOBS-V1: four knobs and a jog wheel under the screen (Jimmy, 2026-10-28: "the knobs and jog wheel") */
+/* AOG-PADS-KNOBS-V1: four knobs under the screen (Jimmy, 2026-10-28: "the knobs and jog wheel"; the wheel taken out the same day: "I do not like the knobs related to choosing a bank") */
 .pm-knobs{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 18px;margin:0 0 12px}
 .pm-kgrp{display:flex;gap:14px;flex-wrap:wrap}
 .pm-kn{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:64px}
@@ -242,33 +242,17 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
 .pm-knob:focus-visible{outline:3px solid #ffd36b;outline-offset:3px}
 .pm-kl{font:800 .78rem/1.1 var(--sans);letter-spacing:.06em;text-transform:uppercase;color:#e8dfc9}
 .pm-kv{font:700 .85rem/1.1 ui-monospace,"SF Mono",Menlo,monospace;color:#ffe3a0}
-.pm-jog{display:flex;align-items:center;gap:12px;flex:1 1 20rem;justify-content:flex-end;min-width:0}
-.pm-jogside{display:flex;flex-direction:column;gap:6px;min-width:0;flex:0 1 24rem}
-.pm-jogmodes{display:flex;gap:6px}
-.pm-jogmodes .pm-b{min-height:40px;min-width:0;padding:0 .7rem;font-size:.85rem}
-.pm-jogscr{padding:6px 10px;min-height:calc(2 * 1.3em + 12px);box-sizing:border-box;overflow-wrap:anywhere;   /* the whole name, on two lines or three (Jimmy, 2026-10-28) */border-radius:5px;border:2px solid #08090a;background:#c7d59c;color:#16200e;
-  font:700 14px/1.3 ui-monospace,"SF Mono",Menlo,Consolas,monospace;box-shadow:inset 0 2px 5px rgba(0,0,0,.35)}
-.pm-wheel{--a:0deg;width:118px;height:118px;flex:0 0 auto;border-radius:50%;position:relative;cursor:grab;touch-action:none;border:1px solid #070809;
-  background:repeating-conic-gradient(from var(--a),#2a2d32 0 4deg,#202226 4deg 8deg);box-shadow:0 4px 8px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.12)}
-.pm-wheel::before{content:"";position:absolute;inset:22px;border-radius:50%;background:radial-gradient(circle at 40% 32%,#4a4e55,#232529 60%,#18191c);
-  border:1px solid #08090a;box-shadow:inset 0 1px 0 rgba(255,255,255,.14)}
-.pm-wheel::after{content:"";position:absolute;left:50%;top:50%;width:18px;height:18px;margin:-9px;border-radius:50%;background:radial-gradient(circle at 45% 40%,#15161a,#2e3136);
-  box-shadow:inset 0 2px 3px rgba(0,0,0,.7);transform:rotate(var(--a)) translateY(-32px)}
-.pm-wheel:focus-visible{outline:3px solid #ffd36b;outline-offset:3px}
 #padView .pm-knobs{flex:0 0 auto;margin:0 0 8px;gap:8px 16px}   /* in the whole screen: a little smaller, so the pads keep their room */
 #padView .pm-knob{width:50px;height:50px} #padView .pm-knob::after{top:7px;height:12px;transform-origin:50% 18px}
-#padView .pm-knob::before{inset:6px} #padView .pm-wheel{width:92px;height:92px} #padView .pm-wheel::before{inset:17px}
-#padView .pm-wheel::after{transform:rotate(var(--a)) translateY(-25px)} #padView .pm-kn{min-width:56px}
-/* sideways, the knobs and the wheel stand in a column beside the pads, so the pads keep their height */
+#padView .pm-knob::before{inset:6px}
+#padView .pm-kn{min-width:56px}
+/* sideways, the knobs stand in a column beside the pads, so the pads keep their height */
 @media (orientation:landscape){
   body.aog-play #padView.kn{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto minmax(0,1fr);column-gap:12px}
   #padView.kn .pv-bar,#padView.kn .pv-stage{grid-column:1/-1} #padView.kn .pv-bar{grid-row:1} #padView.kn .pv-stage{grid-row:2}
   #padView.kn .pv-grids{grid-column:1;grid-row:3;min-height:0}
-  #padView.kn .pm-knobs{grid-column:2;grid-row:3;flex-direction:column;flex-wrap:nowrap;justify-content:center;margin:0;width:200px}
-  #padView.kn .pm-kgrp{display:grid;grid-template-columns:repeat(2,auto);gap:10px 18px;justify-content:center}
-  #padView.kn .pm-jog{flex-direction:column;gap:8px} #padView.kn .pm-jogscr{width:196px}}
-@media (orientation:landscape) and (max-height:520px){   /* a phone turned sideways: the knobs only, so the pads stay playable */
-  #padView.kn .pm-jog{display:none} #padView.kn .pm-knobs{width:auto}}
+  #padView.kn .pm-knobs{grid-column:2;grid-row:3;flex-direction:column;flex-wrap:nowrap;justify-content:center;margin:0;width:auto}
+  #padView.kn .pm-kgrp{display:grid;grid-template-columns:repeat(2,auto);gap:10px 18px;justify-content:center}}
 @media (max-width:520px){.pm-knobs{justify-content:center}.pm-kgrp{gap:8px;justify-content:center}.pm-kn{min-width:60px}}
 /* AOG-PADS-STAGE-V1: Stage mode (Jimmy, 2026-10-27: "use this on stage in front of an audience and make live beats") */
 #padView .pv-st,#padView .pv-stage{display:none}
@@ -540,7 +524,7 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
     <button type="button" class="pm-b" id="pvClose"></button>
     <select class="pm-sel" id="pvBank"></select>
     <button type="button" class="pm-b" id="pvStage" aria-pressed="false"></button><!-- AOG-PADS-STAGE-V1 -->
-    <button type="button" class="pm-b" id="pvKnobs" aria-pressed="true"></button><!-- AOG-PADS-KNOBS-V1: the knobs and the wheel come along -->
+    <button type="button" class="pm-b" id="pvKnobs" aria-pressed="true"></button><!-- AOG-PADS-KNOBS-V1: the knobs come along -->
     <span class="pv-sp"></span>
     <button type="button" class="pm-b pv-st" id="pvStop"></button>
     <button type="button" class="pm-b pv-st" id="pvLock" aria-pressed="false"></button>
@@ -550,6 +534,6 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
   <div class="pv-stage" id="pvStageRow"><div class="pv-banks" id="pvBanks"></div><div class="pv-scenes" id="pvScenes"></div></div>
   <div class="pv-grids" id="pvGrid"></div>
 </div>
-<script src="/front/b3d3866c7e5e.js"></script>
+<script src="/front/36f9be018462.js"></script>
 </body>
 </html>
