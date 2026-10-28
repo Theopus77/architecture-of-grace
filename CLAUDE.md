@@ -438,6 +438,10 @@ in the whole-screen view shows the four banks as buttons (one tap, the loop goes
 stage one tap matters), an On/Off for each layer of the loop, four scenes (bank and layers, `S.scenes`), Stop all, and Lock
 (Close waits for a hold). The screen stays awake while Stage is open. On/Off and Lock end when the whole screen closes.
 Sideways, the pads fill the screen (AOG-PADS-WIDE-V1).
+Knobs and a jog wheel (Jimmy, 2026-10-28: "the knobs and jog wheel"; AOG-PADS-KNOBS-V1): under the screen, Tempo, Swing,
+Volume (how loud the unit plays, `S.mvol`; a bounce is not changed) and Pad (the picked pad's level), turned by a drag up or
+down or the arrow keys; and a wheel with Bank, Sound and Beat. Bank lands at once; a sound or a beat lands when the finger lets
+go, so nothing loads on the way. The menus stay.
 
 ## No floating My notes button (Jimmy, 2026-10-18: "I don't like the my notes button. Please remove that")
 
