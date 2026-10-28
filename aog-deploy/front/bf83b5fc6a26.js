@@ -15,14 +15,18 @@ const STR = {
   dockNone:{en:"No songs yet. Add one from this device and it stays here.",es:"Aún no hay canciones. Agrega una de este aparato y se queda aquí."},
   dockAdd:{en:"+ From this device",es:"+ De este aparato"},
   /* AOG-DECKS-ALBUM-V1 */
-  dockAlbum:{en:"+ A whole album",es:"+ Un álbum entero"}, albumsH:{en:"Your albums. Tap one to put it on.",es:"Tus álbumes. Toca uno para ponerlo."},
+  dockAlbum:{en:"+ A whole album",es:"+ Un álbum entero"}, albumsH:{en:"Your records. Tap one to put it on.",es:"Tus discos. Toca uno para ponerlo."},
   albMaking:{en:"Putting the album on: song %i of %n …",es:"Poniendo el álbum: canción %i de %n …"},
   albSide:{en:"Side %s",es:"Cara %s"}, albOf:{en:"song %i of %n",es:"canción %i de %n"},
   albPrev:{en:"⏮ Back",es:"⏮ Atrás"}, albNext:{en:"Next ⏭",es:"Siguiente ⏭"}, albFlip:{en:"Flip the record",es:"Dale la vuelta al disco"},
   albList:{en:"Songs on this side",es:"Canciones de esta cara"},
   albOver:{en:"Side A is over. Flip the record to hear Side B.",es:"Terminó la cara A. Dale la vuelta al disco para oír la cara B."},
-  albDone:{en:"That is the whole album. Flip the record to start again.",es:"Ese es el álbum entero. Dale la vuelta al disco para volver a empezar."},
+  albDone:{en:"That is the whole record. Flip it to play it again.",es:"Ese es el disco entero. Dale la vuelta para oírlo otra vez."},
   albMine:{en:"My album",es:"Mi álbum"},
+  /* AOG-DECKS-MIX-V1 */
+  mkRec:{en:"+ Make a record",es:"+ Hacer un disco"}, mkHint:{en:"Tap 2 to 10 songs, in the order they play.",es:"Toca de 2 a 10 canciones, en el orden en que suenan."},
+  mkCount:{en:"%n chosen",es:"%n elegidas"}, mkName:{en:"Name of the record",es:"Nombre del disco"}, mkGo:{en:"Put it on",es:"Ponerlo"},
+  mkCancel:{en:"Cancel",es:"Cancelar"}, mkMine:{en:"My record",es:"Mi disco"},
   pickFile:{en:"On an iPad or iPhone, pick Choose File, then your song.",es:"En un iPad o iPhone, elige Elegir archivo y luego tu canción."},
   /* AOG-DECKS-ITUNES-V1 (2026-10-06) — Jimmy: "can a section to grab music from iTunes be accessible?" A web page cannot open
      the Music app or an iTunes library (Apple keeps it to the device), so this says how to bring a song in as a file. */
@@ -219,6 +223,7 @@ const STR = {
   madeFail:{en:"That record could not be made on this device.",es:"Ese disco no se pudo hacer en este aparato."},
   /* AOG-DJ-DESK-V1 */
   pairLab:{en:"Decks on the desk",es:"Platos en la mesa"},
+  oneDeck:{en:"One deck",es:"Un plato"}, oneLab:{en:"The deck on the screen",es:"El plato en la pantalla"},   /* AOG-DECKS-ONE-V1 */
   waiting:{en:"%d is waiting · ",es:"%d espera · "},
   more:{en:"Loops, tap and more",es:"Bucles, tap y más"},
   recSide:{en:"SIDE %d · 33⅓",es:"CARA %d · 33⅓"}
@@ -1711,7 +1716,32 @@ function setPair(p, quiet){
   setMix(); paintPair();
   decks.forEach(d=>{ d.waveDirty = true; });
 }
+/* ══ AOG-DECKS-ONE-V1 (2026-10-28) — Jimmy: "Can the option of having one turn table on screen as an option?" On an iPad or a
+   computer, One deck puts a single deck on the screen (A, B or C), bigger, with the mixer bay and the crossfader put away; the
+   deck plays straight to the speakers (its crossfader side is Thru while it is alone, and goes back after). The decks off the
+   screen are only hidden, as before. Kept on the device (aog.decks.one). A phone already shows one deck at a time. ══ */
+let ONE = "", ONE_SIDE = {};
+try{ const v = localStorage.getItem("aog.decks.one"); if(IDS.indexOf(v) >= 0) ONE = v; }catch(e){}
+function setOne(id){
+  ONE = IDS.indexOf(id) >= 0 ? id : "";
+  try{ localStorage.setItem("aog.decks.one", ONE); }catch(e){}
+  if(ONE) document.body.setAttribute("data-one", ONE); else document.body.removeAttribute("data-one");
+  decks.forEach(d=>{ if(ONE_SIDE[d.id] != null){ d.side = ONE_SIDE[d.id]; delete ONE_SIDE[d.id]; } });
+  setPair(PAIR, true);
+  if(ONE){ const d = decks.find(x=>x.id === ONE); ONE_SIDE[d.id] = d.side; d.side = "N"; setMix(); }
+  decks.forEach(d=>{ d.waveDirty = true; d.$ = null; });
+  paintPair();
+}
+function paintOne(){
+  const b = document.getElementById("oneBtn"), g = document.getElementById("ones"), pr = document.getElementById("pairs"), w = document.getElementById("waiting");
+  if(!b) return;
+  if(b.textContent !== t("oneDeck")) b.textContent = t("oneDeck");
+  b.setAttribute("aria-pressed", ONE ? "true" : "false"); b.classList.toggle("on", !!ONE);
+  g.hidden = !ONE; pr.hidden = !!ONE; if(w) w.hidden = !!ONE; g.setAttribute("aria-label", t("oneLab"));
+  g.querySelectorAll("[data-one]").forEach(x=>{ const on = x.getAttribute("data-one") === ONE; x.classList.toggle("on", on); x.setAttribute("aria-pressed", on ? "true" : "false"); });
+}
 function paintPair(){
+  paintOne();
   document.querySelectorAll("[data-pair]").forEach(b=>{ if(b === document.body) return; const on = b.getAttribute("data-pair") === PAIR; b.classList.toggle("on", on); b.setAttribute("aria-pressed", on?"true":"false"); });
   const g = document.getElementById("pairs"); if(g) g.setAttribute("aria-label", t("pairLab"));
   const off = IDS.find(x=>PAIR.indexOf(x) < 0), d = decks.find(x=>x.id === off), w = document.getElementById("waiting");
@@ -1772,6 +1802,8 @@ function bindBay(){
   paintBay();
 }
 document.querySelectorAll("#pairs [data-pair]").forEach(b=>b.onclick=()=>setPair(b.getAttribute("data-pair")));
+document.getElementById("oneBtn").onclick = ()=>setOne(ONE ? "" : PAIR[0]);
+document.querySelectorAll("#ones [data-one]").forEach(b=>b.onclick=()=>setOne(b.getAttribute("data-one")));
 function shell(){
   { const xf = document.getElementById("xf"), home = document.querySelector("div.xfade"); if(xf && home && xf.parentNode !== home) home.appendChild(xf); }   /* keep the crossfader out of the rebuild */
   document.getElementById("decks").innerHTML = decks.map(deckHTML).join("") + bayHTML();
@@ -3028,7 +3060,7 @@ function paintLessons(){
      ${done ? `<p class="lok">${all ? lessonsT("All seventeen done. You can run a set.", "Las diecisiete hechas. Ya puedes tocar un set.") : lessonsT("Lesson done.", "Lección hecha.")} ${next}</p>` : ""}`;
   const nb = document.getElementById("lNext"); if(nb) nb.onclick = ()=>{ S.lessonSel = cur+1; lessonsSave(); paintLessons(); };
 }
-setPair(PAIR, true); paintChrome(); shell(); paintLessons(); requestAnimationFrame(loop);
+setPair(PAIR, true); if(ONE) setOne(ONE); paintChrome(); shell(); paintLessons(); requestAnimationFrame(loop);
 checkBench();
 crateOpen();
 try{ AOGHandoff.listen(function(key){ if(SHELF.some(s=>s.key===key)) checkBench(); }); }catch(e){}

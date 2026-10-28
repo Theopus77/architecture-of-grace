@@ -421,6 +421,22 @@ footer a{color:inherit}
   .t12-foot .rpmb{padding:0 .55rem;min-width:0} .deck .platter-wrap.t12 .revc{min-width:0;padding:0 .6rem}
   .t12-ks{gap:4px} .t12-kn{min-width:40px} .t12-k{width:34px;height:34px} .t12-kl{font-size:.6rem}
   .t12-ph{display:none} .t12-pitch{gap:4px;padding:0} .t12-pl{padding:2px 0}}   /* the readout's sign says it is the pitch */
+/* AOG-DECKS-ONE-V1: one deck on the screen (an iPad or a computer) */
+@media (min-width:701px){
+  body[data-one] #deckA,body[data-one] #deckB,body[data-one] #deckC,
+  body[data-one] #stripA,body[data-one] #stripB,body[data-one] #stripC{display:none}
+  body[data-one="A"] #deckA,body[data-one="B"] #deckB,body[data-one="C"] #deckC{display:block;grid-column:1 / -1}
+  body[data-one="A"] #stripA,body[data-one="B"] #stripB,body[data-one="C"] #stripC{display:block;grid-column:1 / -1}
+  body[data-one] .decks{grid-template-columns:minmax(0,1fr)}
+  body[data-one] .decks.stage{grid-template-columns:minmax(0,1fr)}
+  body[data-one] .decks .deck{width:100%;max-width:720px;margin:0 auto}
+  body[data-one] .bay,body[data-one] .xfade{display:none!important}
+  body[data-one] .deck .t12 .platter,body[data-one] .decks .deck .t12 .platter{width:max(170px,min(380px,calc(100cqw - 124px),calc(100vh - 330px)))}
+  body[data-one] .t12-fd,body[data-one] .t12-fd input{height:max(110px,min(230px,calc(100vh - 430px)))}
+  body[data-one] .t12-fd input{width:max(110px,min(230px,calc(100vh - 430px)));height:46px}
+}
+.onebtn{margin-left:.4rem}
+.pairbar .pairs[hidden],.pairbar .waiting[hidden]{display:none}
 @media (orientation:landscape) and (max-height:500px){   /* a phone on its side: a smaller record, so Start·Stop is in sight */
   .deck .t12 .platter,.decks .deck .t12 .platter{width:min(150px,calc(100cqw - 124px))}
   .t12-fd,.t12-fd input{height:96px} .t12-fd input{width:96px;height:46px}}
@@ -735,6 +751,13 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
       <button type="button" class="pill" data-pair="AC">A · C</button>
       <button type="button" class="pill" data-pair="BC">B · C</button>
     </span>
+    <!-- AOG-DECKS-ONE-V1: one deck on the screen, A, B or C -->
+    <button type="button" class="pill onebtn" id="oneBtn" aria-pressed="false"></button>
+    <span class="pairs" role="group" id="ones" hidden>
+      <button type="button" class="pill" data-one="A">A</button>
+      <button type="button" class="pill" data-one="B">B</button>
+      <button type="button" class="pill" data-one="C">C</button>
+    </span>
     <p class="waiting" id="waiting" aria-live="polite"></p>
   </div>
   <div class="decks stage" id="decks"></div>
@@ -1013,6 +1036,7 @@ const STR = {
   madeFail:{en:"That record could not be made on this device.",es:"Ese disco no se pudo hacer en este aparato."},
   /* AOG-DJ-DESK-V1 */
   pairLab:{en:"Decks on the desk",es:"Platos en la mesa"},
+  oneDeck:{en:"One deck",es:"Un plato"}, oneLab:{en:"The deck on the screen",es:"El plato en la pantalla"},   /* AOG-DECKS-ONE-V1 */
   waiting:{en:"%d is waiting · ",es:"%d espera · "},
   more:{en:"Loops, tap and more",es:"Bucles, tap y más"},
   recSide:{en:"SIDE %d · 33⅓",es:"CARA %d · 33⅓"}
@@ -2505,7 +2529,32 @@ function setPair(p, quiet){
   setMix(); paintPair();
   decks.forEach(d=>{ d.waveDirty = true; });
 }
+/* ══ AOG-DECKS-ONE-V1 (2026-10-28) — Jimmy: "Can the option of having one turn table on screen as an option?" On an iPad or a
+   computer, One deck puts a single deck on the screen (A, B or C), bigger, with the mixer bay and the crossfader put away; the
+   deck plays straight to the speakers (its crossfader side is Thru while it is alone, and goes back after). The decks off the
+   screen are only hidden, as before. Kept on the device (aog.decks.one). A phone already shows one deck at a time. ══ */
+let ONE = "", ONE_SIDE = {};
+try{ const v = localStorage.getItem("aog.decks.one"); if(IDS.indexOf(v) >= 0) ONE = v; }catch(e){}
+function setOne(id){
+  ONE = IDS.indexOf(id) >= 0 ? id : "";
+  try{ localStorage.setItem("aog.decks.one", ONE); }catch(e){}
+  if(ONE) document.body.setAttribute("data-one", ONE); else document.body.removeAttribute("data-one");
+  decks.forEach(d=>{ if(ONE_SIDE[d.id] != null){ d.side = ONE_SIDE[d.id]; delete ONE_SIDE[d.id]; } });
+  setPair(PAIR, true);
+  if(ONE){ const d = decks.find(x=>x.id === ONE); ONE_SIDE[d.id] = d.side; d.side = "N"; setMix(); }
+  decks.forEach(d=>{ d.waveDirty = true; d.$ = null; });
+  paintPair();
+}
+function paintOne(){
+  const b = document.getElementById("oneBtn"), g = document.getElementById("ones"), pr = document.getElementById("pairs"), w = document.getElementById("waiting");
+  if(!b) return;
+  if(b.textContent !== t("oneDeck")) b.textContent = t("oneDeck");
+  b.setAttribute("aria-pressed", ONE ? "true" : "false"); b.classList.toggle("on", !!ONE);
+  g.hidden = !ONE; pr.hidden = !!ONE; if(w) w.hidden = !!ONE; g.setAttribute("aria-label", t("oneLab"));
+  g.querySelectorAll("[data-one]").forEach(x=>{ const on = x.getAttribute("data-one") === ONE; x.classList.toggle("on", on); x.setAttribute("aria-pressed", on ? "true" : "false"); });
+}
 function paintPair(){
+  paintOne();
   document.querySelectorAll("[data-pair]").forEach(b=>{ if(b === document.body) return; const on = b.getAttribute("data-pair") === PAIR; b.classList.toggle("on", on); b.setAttribute("aria-pressed", on?"true":"false"); });
   const g = document.getElementById("pairs"); if(g) g.setAttribute("aria-label", t("pairLab"));
   const off = IDS.find(x=>PAIR.indexOf(x) < 0), d = decks.find(x=>x.id === off), w = document.getElementById("waiting");
@@ -2566,6 +2615,8 @@ function bindBay(){
   paintBay();
 }
 document.querySelectorAll("#pairs [data-pair]").forEach(b=>b.onclick=()=>setPair(b.getAttribute("data-pair")));
+document.getElementById("oneBtn").onclick = ()=>setOne(ONE ? "" : PAIR[0]);
+document.querySelectorAll("#ones [data-one]").forEach(b=>b.onclick=()=>setOne(b.getAttribute("data-one")));
 function shell(){
   { const xf = document.getElementById("xf"), home = document.querySelector("div.xfade"); if(xf && home && xf.parentNode !== home) home.appendChild(xf); }   /* keep the crossfader out of the rebuild */
   document.getElementById("decks").innerHTML = decks.map(deckHTML).join("") + bayHTML();
@@ -3822,7 +3873,7 @@ function paintLessons(){
      ${done ? `<p class="lok">${all ? lessonsT("All seventeen done. You can run a set.", "Las diecisiete hechas. Ya puedes tocar un set.") : lessonsT("Lesson done.", "Lección hecha.")} ${next}</p>` : ""}`;
   const nb = document.getElementById("lNext"); if(nb) nb.onclick = ()=>{ S.lessonSel = cur+1; lessonsSave(); paintLessons(); };
 }
-setPair(PAIR, true); paintChrome(); shell(); paintLessons(); requestAnimationFrame(loop);
+setPair(PAIR, true); if(ONE) setOne(ONE); paintChrome(); shell(); paintLessons(); requestAnimationFrame(loop);
 checkBench();
 crateOpen();
 try{ AOGHandoff.listen(function(key){ if(SHELF.some(s=>s.key===key)) checkBench(); }); }catch(e){}

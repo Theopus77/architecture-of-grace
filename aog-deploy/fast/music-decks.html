@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- AOG-FAST-BUILD-V1 source:221e3fc4b68b8cce · MADE BY tools/build-fast.py from music-decks.html: edit music-decks.html, then run it. -->
+<!-- AOG-FAST-BUILD-V1 source:acc89e128615e707 · MADE BY tools/build-fast.py from music-decks.html: edit music-decks.html, then run it. -->
 <html lang="en">
 <head>
 <script>/* AOG-STUDIO-ONLY-V1 (Jimmy, 2026-10-10: "one location for all the instruments … and that is the studio"): opened on its own address, this room opens inside the Studio instead, at this exact address (its lesson, take or link). Inside the Studio's frame, and for the site's own checks, it stays. */(function(){try{if(window.top!==window||navigator.webdriver)return;var M={"music-pads":"pads","drum-machine":"pads","beat-lab":"pads","music-kit":"kit","drum-kit":"kit","music-piano":"piano","piano":"piano","keys":"piano","music-guitar":"guitar","guitar":"guitar","music-bass":"bass","bass":"bass","music-band":"band","band":"band","music-decks":"decks","decks":"decks","turntables":"decks","music-vocal":"vocal","vocal-booth":"vocal","vocal":"vocal","booth":"vocal","music-studio":"studio","studio":"studio","mixing-desk":"studio"},f=(location.pathname.split("/").pop()||"").replace(/\.html$/,""),r=M[f];if(!r)return;var F={pads:"music-pads",kit:"music-kit",piano:"music-piano",guitar:"music-guitar",bass:"music-bass",band:"music-band",decks:"music-decks",vocal:"music-vocal",studio:"music-studio"};location.replace("/the-studio.html?at="+encodeURIComponent("/"+F[r]+".html"+location.search+location.hash)+"#"+r);}catch(e){}})();</script>
@@ -422,6 +422,22 @@ footer a{color:inherit}
   .t12-foot .rpmb{padding:0 .55rem;min-width:0} .deck .platter-wrap.t12 .revc{min-width:0;padding:0 .6rem}
   .t12-ks{gap:4px} .t12-kn{min-width:40px} .t12-k{width:34px;height:34px} .t12-kl{font-size:.6rem}
   .t12-ph{display:none} .t12-pitch{gap:4px;padding:0} .t12-pl{padding:2px 0}}   /* the readout's sign says it is the pitch */
+/* AOG-DECKS-ONE-V1: one deck on the screen (an iPad or a computer) */
+@media (min-width:701px){
+  body[data-one] #deckA,body[data-one] #deckB,body[data-one] #deckC,
+  body[data-one] #stripA,body[data-one] #stripB,body[data-one] #stripC{display:none}
+  body[data-one="A"] #deckA,body[data-one="B"] #deckB,body[data-one="C"] #deckC{display:block;grid-column:1 / -1}
+  body[data-one="A"] #stripA,body[data-one="B"] #stripB,body[data-one="C"] #stripC{display:block;grid-column:1 / -1}
+  body[data-one] .decks{grid-template-columns:minmax(0,1fr)}
+  body[data-one] .decks.stage{grid-template-columns:minmax(0,1fr)}
+  body[data-one] .decks .deck{width:100%;max-width:720px;margin:0 auto}
+  body[data-one] .bay,body[data-one] .xfade{display:none!important}
+  body[data-one] .deck .t12 .platter,body[data-one] .decks .deck .t12 .platter{width:max(170px,min(380px,calc(100cqw - 124px),calc(100vh - 330px)))}
+  body[data-one] .t12-fd,body[data-one] .t12-fd input{height:max(110px,min(230px,calc(100vh - 430px)))}
+  body[data-one] .t12-fd input{width:max(110px,min(230px,calc(100vh - 430px)));height:46px}
+}
+.onebtn{margin-left:.4rem}
+.pairbar .pairs[hidden],.pairbar .waiting[hidden]{display:none}
 @media (orientation:landscape) and (max-height:500px){   /* a phone on its side: a smaller record, so Start·Stop is in sight */
   .deck .t12 .platter,.decks .deck .t12 .platter{width:min(150px,calc(100cqw - 124px))}
   .t12-fd,.t12-fd input{height:96px} .t12-fd input{width:96px;height:46px}}
@@ -736,6 +752,13 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
       <button type="button" class="pill" data-pair="AC">A · C</button>
       <button type="button" class="pill" data-pair="BC">B · C</button>
     </span>
+    <!-- AOG-DECKS-ONE-V1: one deck on the screen, A, B or C -->
+    <button type="button" class="pill onebtn" id="oneBtn" aria-pressed="false"></button>
+    <span class="pairs" role="group" id="ones" hidden>
+      <button type="button" class="pill" data-one="A">A</button>
+      <button type="button" class="pill" data-one="B">B</button>
+      <button type="button" class="pill" data-one="C">C</button>
+    </span>
     <p class="waiting" id="waiting" aria-live="polite"></p>
   </div>
   <div class="decks stage" id="decks"></div>
@@ -789,7 +812,7 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
 <script src="aog-eq.js"></script>
 <script src="aog-vinyl-worklet.js"></script>
 <script src="aog-dj.js"></script>
-<script src="/front/751121cb3b55.js"></script>
+<script src="/front/bf83b5fc6a26.js"></script>
 <script>
 /* AOG-PGPANEL-V1 - the guide loads only when the bar is opened, and the frame is
    grown to its content so the panel scrolls with the page instead of inside itself. */
