@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- AOG-FAST-BUILD-V1 source:1d040e337b2129ca · MADE BY tools/build-fast.py from music-decks.html: edit music-decks.html, then run it. -->
+<!-- AOG-FAST-BUILD-V1 source:952329bacacb36b0 · MADE BY tools/build-fast.py from music-decks.html: edit music-decks.html, then run it. -->
 <html lang="en">
 <head>
 <script>/* AOG-STUDIO-ONLY-V1 (Jimmy, 2026-10-10: "one location for all the instruments … and that is the studio"): opened on its own address, this room opens inside the Studio instead, at this exact address (its lesson, take or link). Inside the Studio's frame, and for the site's own checks, it stays. */(function(){try{if(window.top!==window||navigator.webdriver)return;var M={"music-pads":"pads","drum-machine":"pads","beat-lab":"pads","music-kit":"kit","drum-kit":"kit","music-piano":"piano","piano":"piano","keys":"piano","music-guitar":"guitar","guitar":"guitar","music-bass":"bass","bass":"bass","music-band":"band","band":"band","music-decks":"decks","decks":"decks","turntables":"decks","music-vocal":"vocal","vocal-booth":"vocal","vocal":"vocal","booth":"vocal","music-studio":"studio","studio":"studio","mixing-desk":"studio"},f=(location.pathname.split("/").pop()||"").replace(/\.html$/,""),r=M[f];if(!r)return;var F={pads:"music-pads",kit:"music-kit",piano:"music-piano",guitar:"music-guitar",bass:"music-bass",band:"music-band",decks:"music-decks",vocal:"music-vocal",studio:"music-studio"};location.replace("/the-studio.html?at="+encodeURIComponent("/"+F[r]+".html"+location.search+location.hash)+"#"+r);}catch(e){}})();</script>
@@ -233,8 +233,8 @@ body[data-pair="AB"] [data-bch="C"],body[data-pair="AC"] [data-bch="B"],body[dat
   position:absolute;inset:7%;border-radius:50%;
   background:
     radial-gradient(circle closest-side, transparent 0 41%, rgba(255,255,255,.05) 41.5% 43.5%, transparent 44%),
-    radial-gradient(circle closest-side, transparent 0 56%, #1f1f1f 56.4% 57.6%, transparent 58%,
-      transparent 0 69%, #1f1f1f 69.4% 70.4%, transparent 70.8%, transparent 0 82%, #1f1f1f 82.4% 83.2%, transparent 83.6%),
+    var(--gaps, radial-gradient(circle closest-side, transparent 0 56%, #1f1f1f 56.4% 57.6%, transparent 58%,
+      transparent 0 69%, #1f1f1f 69.4% 70.4%, transparent 70.8%, transparent 0 82%, #1f1f1f 82.4% 83.2%, transparent 83.6%)),
     radial-gradient(circle closest-side, #121212 0 44%, transparent 44% 95%, #1c1c1c 95.5% 98.2%, #060606 99%, transparent 100%),
     repeating-radial-gradient(circle at 50% 50%, #0a0a0a 0 1px, #171717 1px 2px, #0d0d0d 2px 3px);
   box-shadow:inset 0 0 10px 2px rgba(0,0,0,.7),0 0 0 1px #050505;   /* even all round, so it reads the same at any turn */
@@ -254,12 +254,13 @@ body[data-pair="AB"] [data-bch="C"],body[data-pair="AC"] [data-bch="B"],body[dat
   --c1:hsl(var(--vh),78%,52%);--c2:hsl(var(--vh),72%,34%);--c3:hsl(calc(var(--vh) + 150),80%,62%);
   background:
     radial-gradient(circle closest-side, transparent 0 41%, rgba(255,255,255,.14) 41.5% 43.5%, transparent 44%),
-    radial-gradient(circle closest-side, transparent 0 56%, rgba(0,0,0,.35) 56.4% 57.6%, transparent 58%,
-      transparent 0 69%, rgba(0,0,0,.35) 69.4% 70.4%, transparent 70.8%, transparent 0 82%, rgba(0,0,0,.35) 82.4% 83.2%, transparent 83.6%),
+    var(--gaps, radial-gradient(circle closest-side, transparent 0 56%, rgba(0,0,0,.35) 56.4% 57.6%, transparent 58%,
+      transparent 0 69%, rgba(0,0,0,.35) 69.4% 70.4%, transparent 70.8%, transparent 0 82%, rgba(0,0,0,.35) 82.4% 83.2%, transparent 83.6%)),
     radial-gradient(circle closest-side, rgba(255,255,255,.18) 0 44%, transparent 44% 95%, rgba(255,255,255,.22) 95.5% 98.2%, rgba(0,0,0,.55) 99%, transparent 100%),
     repeating-radial-gradient(circle at 50% 50%, rgba(0,0,0,.26) 0 1px, rgba(255,255,255,.06) 1px 2px, rgba(0,0,0,.12) 2px 3px),
     var(--press);
 }
+.vinyl.v-solid,.vinyl.v-swirl{--gapc:rgba(0,0,0,.35)}   /* AOG-DECKS-ALBUM-V1: the gaps between an album's songs */
 .vinyl.v-solid{--press:radial-gradient(circle closest-side, var(--c1), var(--c2) 100%)}
 .vinyl.v-swirl{--press:conic-gradient(from 20deg, var(--c1), var(--c3) 14%, var(--c2) 30%, var(--c1) 46%, var(--c3) 60%, var(--c2) 78%, var(--c1))}
 .label.printed{background:#f6efdf;box-shadow:inset 0 0 0 3px hsl(var(--vh),70%,40%),inset 0 0 0 5px #f6efdf,inset 0 0 0 6px hsl(var(--vh),60%,30%);
@@ -313,6 +314,19 @@ button.file{min-height:44px;border-radius:999px;padding:0 .9rem;display:inline-f
 .dockx{flex:none;min-height:44px;padding:.4rem .9rem;border-radius:999px;border:1px solid #8a6d4a;background:#2a2016;color:#f5ead8;font:inherit;font-weight:700;cursor:pointer}
 .dockh,.dockempty{margin:0 0 .5rem;color:#efe8dc;font-size:.95rem}
 .docklist{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.45rem;max-height:260px;overflow-y:auto;overscroll-behavior:contain}
+/* AOG-DECKS-ALBUM-V1: an album on the record */
+.dockh2{margin:.6rem 0 .3rem}
+.dalb{border-color:#7a5a2c;background:#2f2414}
+.albbar{margin:.2rem 0 .4rem;padding:8px 10px;border-radius:10px;background:#16171a;border:1px solid #2c2e33}
+.albbar .albnow{margin:0;font-size:.92rem;color:#f4ecdc;line-height:1.35}
+.albbar .albnow b{color:#f0c26e;font-weight:800;letter-spacing:.04em}
+.albbar .albsay{margin:.3rem 0 0;font-size:.9rem;color:#f4e2b0}
+.albbar .row{margin-top:.4rem}
+.albbar details{margin-top:.35rem}
+.albbar summary{cursor:pointer;min-height:40px;display:flex;align-items:center;font-size:.82rem;font-weight:700;color:#d8cdb8}
+.albbar .albtr{display:flex;flex-direction:column;gap:4px}
+.albbar .albtr button{min-height:40px;text-align:left;border-radius:8px;border:1px solid #3a3326;background:#211b13;color:#f4ecdc;padding:.3rem .6rem;font-weight:600}
+.albbar .albtr button[aria-current="true"]{border-color:#f0c26e;background:#3a2c14}
 .dsong{min-height:44px;border-radius:10px;border:1px solid #5a4630;background:#2a2016;color:#f4ecdc;font-weight:700;text-align:left;padding:.4rem .7rem;overflow:hidden}
 .dsong span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .dsong.rm{border-color:#c0523a;background:#3a1e16}
@@ -768,7 +782,7 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
 <script src="aog-eq.js"></script>
 <script src="aog-vinyl-worklet.js"></script>
 <script src="aog-dj.js"></script>
-<script src="/front/610d65bdbf25.js"></script>
+<script src="/front/8628de8fbac3.js"></script>
 <script>
 /* AOG-PGPANEL-V1 - the guide loads only when the bar is opened, and the frame is
    grown to its content so the panel scrolls with the page instead of inside itself. */
@@ -786,6 +800,6 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
   var t; window.addEventListener("resize", function(){ clearTimeout(t); t=setTimeout(fit,150); });
 })();
 </script>
-<script src="/front/70050c503648.js"></script>
+<script src="/front/f25b69b5b0e4.js"></script>
 </body>
 </html>

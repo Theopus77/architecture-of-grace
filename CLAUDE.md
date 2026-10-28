@@ -454,6 +454,15 @@ Brake knobs (how long the platter takes to come up to speed, 0.2–3 s, and to s
 real lamp shows them. The Studio's compact sizes in `aog-labdoors.js` leave `.t12` alone; on a short screen the plate makes
 itself smaller so the room stays within two screens (`music-handoff/tests/rooms/compact.js`).
 
+Whole albums on one record (Jimmy, 2026-10-28: "play multiple songs on a record … upload whole albums to play on vinyl, just
+for a nostalgia / cool factor"; AOG-DECKS-ALBUM-V1): + A whole album in Load a song takes many songs at once, reads each one's
+title, album, artist and number from its MP3 or iTunes AAC tags (file names otherwise), and keeps the album (`albums` in the
+crate's IndexedDB; an album's songs are never pushed out of the library). It plays as one record: Side A and Side B (four songs
+or more), a gap in the grooves between songs (`--gaps` on `.vinyl`), the arm moving in across the side, the album's name and
+side on the label. The needle runs on into the next song after a short quiet groove; at the end of a side the record stops and
+asks to be flipped. Back, Next, Flip the record and the side's song list sit under the plate (`.albbar`). Only the song playing
+is opened in memory. Any other record put on the deck takes the album off.
+
 ## No floating My notes button (Jimmy, 2026-10-18: "I don't like the my notes button. Please remove that")
 
 `aog-markup.js` no longer puts the floating My notes button on any page. Highlights and notes still work, and a tap on

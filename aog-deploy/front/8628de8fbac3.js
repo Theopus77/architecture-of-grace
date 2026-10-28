@@ -14,6 +14,15 @@ const STR = {
   dockH:{en:"Your songs. Tap one to put it on.",es:"Tus canciones. Toca una para ponerla."},
   dockNone:{en:"No songs yet. Add one from this device and it stays here.",es:"Aún no hay canciones. Agrega una de este aparato y se queda aquí."},
   dockAdd:{en:"+ From this device",es:"+ De este aparato"},
+  /* AOG-DECKS-ALBUM-V1 */
+  dockAlbum:{en:"+ A whole album",es:"+ Un álbum entero"}, albumsH:{en:"Your albums. Tap one to put it on.",es:"Tus álbumes. Toca uno para ponerlo."},
+  albMaking:{en:"Putting the album on: song %i of %n …",es:"Poniendo el álbum: canción %i de %n …"},
+  albSide:{en:"Side %s",es:"Cara %s"}, albOf:{en:"song %i of %n",es:"canción %i de %n"},
+  albPrev:{en:"⏮ Back",es:"⏮ Atrás"}, albNext:{en:"Next ⏭",es:"Siguiente ⏭"}, albFlip:{en:"Flip the record",es:"Dale la vuelta al disco"},
+  albList:{en:"Songs on this side",es:"Canciones de esta cara"},
+  albOver:{en:"Side A is over. Flip the record to hear Side B.",es:"Terminó la cara A. Dale la vuelta al disco para oír la cara B."},
+  albDone:{en:"That is the whole album. Flip the record to start again.",es:"Ese es el álbum entero. Dale la vuelta al disco para volver a empezar."},
+  albMine:{en:"My album",es:"Mi álbum"},
   pickFile:{en:"On an iPad or iPhone, pick Choose File, then your song.",es:"En un iPad o iPhone, elige Elegir archivo y luego tu canción."},
   /* AOG-DECKS-ITUNES-V1 (2026-10-06) — Jimmy: "can a section to grab music from iTunes be accessible?" A web page cannot open
      the Music app or an iTunes library (Apple keeps it to the device), so this says how to bring a song in as a file. */
@@ -45,6 +54,8 @@ const STR = {
   smooth:{en:"Blend",es:"Mezcla"},
   sharp:{en:"Cut",es:"Corte"},
   rpm:{en:"Speed",es:"Velocidad"},
+  t12tl:{en:"Light on the needle",es:"Luz sobre la aguja"}, t12reset:{en:"Reset",es:"A cero"},   /* AOG-DECKS-1210-V1 */
+  t12up:{en:"Start",es:"Arranque"}, t12down:{en:"Brake",es:"Freno"},
   noiseOn:{en:"Vinyl noise: on",es:"Ruido de vinilo: sí"},
   noiseOff:{en:"Vinyl noise: off",es:"Ruido de vinilo: no"},
   drag:{en:"Drag the record to scratch.",es:"Arrastra el disco para rayar."},
@@ -1563,7 +1574,7 @@ function paintDeck(d){
   const recA = ((d.rot % 360) + 360) % 360;
   const platA = ((d.platterRot == null ? d.rot : d.platterRot) % 360 + 360) % 360;
   setA(M.vinyl, STILL ? 0 : Math.round(recA * 10) * 100);
-  setA(M.strobe, STILL ? 0 : Math.round((((platA - recA) % 360) + 360) % 360 * 10) * 100);
+  setA(M.strobe, STILL ? 0 : Math.round((((platA - (d.nomA || 0) - recA) % 360) + 360) % 360 * 10) * 100);
   setA(M.arm, d.buf ? Math.round((16 + 13*Math.min(1, d.pos/d.buf.length))*10)*100 : 16000);
   if((FRAME & 1) === 0 || d.level === 0){            /* the meters, every other frame: the eye cannot tell */
     setA(M.meter, Math.round(Math.min(1, d.level*1.4)*100)*10);
@@ -1656,6 +1667,9 @@ function loop(){
       d._pW = d._pW == null ? wantW : d._pW + (wantW - d._pW) * Math.min(1, dt / 0.05);
       if (d.platterRot == null) d.platterRot = d.rot;
       d.platterRot += d._pW * dt;
+      /* AOG-DECKS-1210-V1: the strobe lamp flashes in step with the motor's exact speed, so the dots stand still at 0 % and
+         drift forward or back as the pitch moves (stopped, they ride the platter) */
+      d.nomA = (d.nomA || 0) + (d.motor ? (d.revOn ? -1 : 1) * (d.rpm || 1) * DEG_PER_SEC : d._pW) * dt;
       /* a held hand that stops moving is a hand holding the record still */
       if(d.held && performance.now() - d.lastMove > 40){ d.handRate *= 0.45; send(d, { t:"hand", on:true, rate:d.handRate, x:d.handX || 0, v:0, still:true }); d.lastMove = performance.now(); }
     }
@@ -1785,7 +1799,12 @@ function deckHTML(d){
       <p class="song">${esc(d.note||d.name||t("none"))}</p>
       <div class="wave" id="wave${id}" aria-hidden="true"><img class="wimg" alt="" draggable="false"><i class="wloop"></i><i class="wslip"></i><i class="whead"></i></div>
       <div class="zoom" id="zoom${id}" aria-hidden="true"><img class="zimg" alt="" draggable="false"><i class="zhead"></i></div>
-      <div class="platter-wrap">
+      <!-- AOG-DECKS-1210-V1 (2026-10-28) — Jimmy: "upgrade to MIMIC the great TECHNICS sl-1210 MKX or better". The deck's top
+           plate: the platter with its strobe lamp and the needle light, the long pitch fader on the right (− at the top, + toward
+           you), the pitch-zero light and Reset, and along the front Start·Stop, 33 / 45, REV and the Start and Brake knobs. -->
+      <div class="platter-wrap t12">
+       <div class="t12-top">
+        <div class="t12-pl">
         <div class="platter" data-deck="${id}" role="slider" aria-label="${t("drag")}" tabindex="0">
           <div class="vinyl">
             <div class="strobe"></div>
@@ -1796,8 +1815,29 @@ function deckHTML(d){
           <div class="hole"></div>
           <div class="arm"></div>
         </div>
+        <i class="t12-lamp" aria-hidden="true"></i>
+        <button type="button" class="t12-tl" data-tl="${id}" aria-pressed="false" aria-label="${t("t12tl")}"></button>
+        </div>
+        <div class="t12-pitch">
+          <span class="t12-ph">${t("speed")}</span>
+          <b class="readout" data-pitchout="${id}">${pitchText(d)}</b>
+          <div class="t12-fd"><span class="t12-sc" aria-hidden="true"><i>−</i><i>0</i><i>+</i></span><input type="range" min="${d.wide?0.5:0.92}" max="${d.wide?1.5:1.08}" step="${d.wide?0.01:0.005}" value="${d.pitch}" data-speed="${id}" aria-label="${t("speed")}"></div>
+          <span class="t12-q"><i class="t12-led${Math.abs(d.pitch-1)<1e-6?" on":""}" data-pled="${id}"></i>0</span>
+          <button type="button" class="tiny" data-preset="${id}">${t("t12reset")}</button>
+          <button type="button" class="tiny${d.wide?" on":""}" data-wide="${id}">${t("wide")}</button>
+        </div>
+       </div>
+       <div class="t12-foot">
+        <button type="button" class="go t12-ss" data-play="${id}">${t("play")}</button>
+        <span class="rpm t12-rpm" role="group" aria-label="${t("rpm")}">
+          <button type="button" class="ghost rpmb${d.rpm===1?" on":""}" data-rpm="${id}" data-v="1">33</button>
+          <button type="button" class="ghost rpmb${d.rpm!==1?" on":""}" data-rpm="${id}" data-v="1.35">45</button>
+        </span>
         <button type="button" class="ghost sm revc" data-rev="${id}">${t("rev")}</button>
+        <span class="t12-ks">${["up","down"].map(k=>`<span class="t12-kn"><span class="t12-k" role="slider" tabindex="0" data-tk="${id}" data-w="${k}" aria-label="${t(k==="up"?"t12up":"t12down")}"></span><span class="t12-kl">${t(k==="up"?"t12up":"t12down")}</span><b class="t12-kv" data-tkv="${id}${k}"></b></span>`).join("")}</span>
+       </div>
       </div>
+      <div class="albbar" data-alb="${id}" hidden></div><!-- AOG-DECKS-ALBUM-V1 -->
       <div class="meter" aria-hidden="true"><i></i></div>
       <div class="row">
         <button type="button" class="file" data-dock="${id}" aria-expanded="false">${t("load")}</button>
@@ -1805,15 +1845,10 @@ function deckHTML(d){
       </div>
       <div class="dock" id="dock${id}" hidden></div>
       <div class="row">
-        <button type="button" class="go" data-play="${id}">${t("play")}</button>
         <button type="button" class="ghost" data-cue="${id}">${t("cueHold")}</button>
         <button type="button" class="ghost" data-setcue="${id}">${t("setCue")}</button>
         <span class="time">0:00</span>
       </div>
-      <label class="knob">${t("speed")}
-        <b class="readout" data-pitchout="${id}">${pitchText(d)}</b>
-        <button type="button" class="tiny${d.wide?" on":""}" data-wide="${id}">${t("wide")}</button>
-        <input type="range" min="${d.wide?0.5:0.92}" max="${d.wide?1.5:1.08}" step="${d.wide?0.01:0.005}" value="${d.pitch}" data-speed="${id}"></label>
       <!-- AOG-DJ-DESK-V1 — the row Jimmy could not find, above the pads: SYNC, KEY, SLIP, Chop 8 -->
       <div class="row tr perf">
         <button type="button" class="ghost sm" data-sync="${id}" aria-pressed="false">${t("sync")}</button>
@@ -1854,10 +1889,6 @@ function deckHTML(d){
         <div class="row nud">
           <button type="button" class="ghost" data-nudge="${id}" data-dir="-1">− ${t("nudge")}</button>
           <button type="button" class="ghost" data-nudge="${id}" data-dir="1">+ ${t("nudge")}</button>
-          <span class="rpm" role="group" aria-label="${t("rpm")}">
-            <button type="button" class="ghost rpmb${d.rpm===1?" on":""}" data-rpm="${id}" data-v="1">33⅓</button>
-            <button type="button" class="ghost rpmb${d.rpm!==1?" on":""}" data-rpm="${id}" data-v="1.35">45</button>
-          </span>
         </div>
       </details>
     </section>`;
@@ -1894,19 +1925,19 @@ function stripHTML(d){
 /* AOG-DJ-RECORD-ART-V1 — the pressing and the label of the record on a deck */
 function recLook(d){
   if(!d.buf) return null;
-  const m = d.made && MADE.find(x=>x.id===d.made), h = m && m.hue != null ? m.hue : hueOf(d.name || "");
+  const m = d.made && MADE.find(x=>x.id===d.made), h = m && m.hue != null ? m.hue : hueOf((d.album && d.album.name) || d.name || "");
   return { h, style:["solid","swirl"][Math.floor(h / 15) % 2] };
 }
 function paintRecord(d){
   const el = document.getElementById("deck"+d.id); if(!el) return;
   const v = el.querySelector(".vinyl"), lab = el.querySelector(".label"); if(!v || !lab) return;
-  const L = recLook(d), key = L ? [L.h, L.style, d.name, S.lang].join("|") : "";
+  const L = recLook(d), key = L ? [L.h, L.style, d.name, S.lang, d.album ? d.album.id+d.album.side+d.album.n : ""].join("|") : "";
   if(v._rk === key) return; v._rk = key;
   v.classList.remove("v-solid","v-swirl"); lab.classList.toggle("printed", !!L);
   if(!L){ v.style.removeProperty("--vh"); lab.style.removeProperty("--vh"); lab.innerHTML = ""; return; }
   v.classList.add("v-"+L.style); v.style.setProperty("--vh", L.h); lab.style.setProperty("--vh", L.h);
   lab.innerHTML = `<div class="rl" aria-hidden="true"><span class="rl-logo"><i>G</i><span>GRACE<small>RECORDS</small></span></span>
-    <span class="rl-low"><span class="rl-name">${esc((d.name || "").replace(/\.[^.]+$/,""))}</span><span class="rl-side">${esc(t("recSide").replace("%d", d.id))}</span></span></div>`;
+    <span class="rl-low"><span class="rl-name">${esc(d.album ? d.album.name : (d.name || "").replace(/\.[^.]+$/,""))}</span><span class="rl-side">${esc(t("recSide").replace("%d", d.album ? "AB"[d.album.side] : d.id))}</span></span></div>`;
 }
 function paintStrips(){
   decks.forEach(d=>{
@@ -1921,7 +1952,9 @@ function paintStrips(){
 function dockHTML(id){
   return `<div class="dockhd"><p class="dockh">${t("dockH")}</p><button type="button" class="dockx" data-dockclose="${id}">✕ ${t("dockClose")}</button></div>
     ${CRATE.lib.length ? `<div class="docklist">${CRATE.lib.map((r,i)=>`<button type="button" class="dsong" data-dsong="${i}" title="${esc(r.name)}"><span>${esc(r.name.replace(/\.[^.]+$/,""))}</span></button>`).join("")}</div>` : `<p class="dockempty">${t("dockNone")}</p>`}
+    ${(CRATE.albums||[]).length ? `<p class="dockh dockh2">${t("albumsH")}</p><div class="docklist">${CRATE.albums.map((a,i)=>`<button type="button" class="dsong dalb" data-dalb="${i}" title="${esc(a.name)}"><span>💿 ${esc(a.name)} · ${a.tracks.length}</span></button>`).join("")}</div>` : ""}
     <div class="dockrow"><label class="file">${t("dockAdd")}<input type="file" data-dockload="${id}" accept="${AUDIO_ONLY || "audio/*,.mp3,.m4a,.m4b,.aac,.wav,.wave,.aif,.aiff,.aifc,.ogg,.oga,.opus,.flac,.caf,.amr,.wma,.mid,.midi"}"></label>
+    <label class="file">${t("dockAlbum")}<input type="file" multiple data-albload="${id}" accept="${AUDIO_ONLY || "audio/*,.mp3,.m4a,.aac,.wav,.wave,.aif,.aiff,.ogg,.opus,.flac"}"></label>
     ${CRATE.lib.length ? `<button type="button" class="ghost" data-dockedit="${id}">${t("dockEdit")}</button>` : ""}</div>${IOS ? `<p class="rechint" style="margin:.3rem 0 0">${t("pickFile")}</p>` : ""}
     <details class="ithelp"><summary>${t("itH")}</summary><p>${t("it1")}</p><ul><li>${t("it2")}</li><li>${t("it3")}</li><li>${t("it4")}</li></ul></details>`;
 }
