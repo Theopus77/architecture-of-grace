@@ -11,7 +11,7 @@
  * Bump by REPLACING the CACHE line. Don't keep the old one as a comment: every byte here is
  * downloaded again on each update check. Old lines live in tools/sw-cache-history.txt and git log.
  */
-const CACHE = 'aog-cache-2026.10.28.m7615'   // THE TURNTABLES BECOME TECHNICS SL-1210 MK7 DECKS: TOP PLATE, LONG PITCH FADER, STROBE, START AND BRAKE (AOG-DECKS-1210-V1)
+const CACHE = 'aog-cache-2026.10.28.m7616'   // THE TURNTABLES PLAY WHOLE ALBUMS ON ONE RECORD: SIDE A, SIDE B, FLIP (AOG-DECKS-ALBUM-V1)
 
 // Same-origin essentials — reliable to precache at install.
 /* AOG-SW-LIGHT-V1 (2026-10-01) — Jimmy: "Why is it taking so long for the website to load on my phone now?"
