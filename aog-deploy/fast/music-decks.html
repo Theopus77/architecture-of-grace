@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- AOG-FAST-BUILD-V1 source:f07a46b32bb7b153 · MADE BY tools/build-fast.py from music-decks.html: edit music-decks.html, then run it. -->
+<!-- AOG-FAST-BUILD-V1 source:1d040e337b2129ca · MADE BY tools/build-fast.py from music-decks.html: edit music-decks.html, then run it. -->
 <html lang="en">
 <head>
 <script>/* AOG-STUDIO-ONLY-V1 (Jimmy, 2026-10-10: "one location for all the instruments … and that is the studio"): opened on its own address, this room opens inside the Studio instead, at this exact address (its lesson, take or link). Inside the Studio's frame, and for the site's own checks, it stays. */(function(){try{if(window.top!==window||navigator.webdriver)return;var M={"music-pads":"pads","drum-machine":"pads","beat-lab":"pads","music-kit":"kit","drum-kit":"kit","music-piano":"piano","piano":"piano","keys":"piano","music-guitar":"guitar","guitar":"guitar","music-bass":"bass","bass":"bass","music-band":"band","band":"band","music-decks":"decks","decks":"decks","turntables":"decks","music-vocal":"vocal","vocal-booth":"vocal","vocal":"vocal","booth":"vocal","music-studio":"studio","studio":"studio","mixing-desk":"studio"},f=(location.pathname.split("/").pop()||"").replace(/\.html$/,""),r=M[f];if(!r)return;var F={pads:"music-pads",kit:"music-kit",piano:"music-piano",guitar:"music-guitar",bass:"music-bass",band:"music-band",decks:"music-decks",vocal:"music-vocal",studio:"music-studio"};location.replace("/the-studio.html?at="+encodeURIComponent("/"+F[r]+".html"+location.search+location.hash)+"#"+r);}catch(e){}})();</script>
@@ -342,6 +342,68 @@ footer a{color:inherit}
   mask:radial-gradient(circle closest-side, transparent 0 95%, #000 95.6% 99%, transparent 99.6%);opacity:.8}
 .deck.spinning .platter{box-shadow:0 16px 18px rgba(0,0,0,.55),0 4px 0 #120e0a,0 0 0 2px rgba(244,226,176,.18)}
 .rpm{display:inline-flex;gap:.25rem}
+/* AOG-DECKS-1210-V1 — the top plate of a Technics SL-1210 MK7: satin black, the platter, the strobe lamp and the needle light,
+   the long pitch fader, and the front row (Start·Stop, 33 / 45, REV, Start and Brake). Drawn by CSS, nothing to fetch. */
+.deck .platter-wrap.t12,.decks .deck .platter-wrap.t12{display:block;width:auto;margin:.6rem 0 .5rem;padding:12px 12px 10px;border-radius:10px;
+  background:repeating-linear-gradient(90deg,rgba(255,255,255,.022) 0 1px,transparent 1px 3px),linear-gradient(#2b2d31,#17181b);
+  border:1px solid #08090a;box-shadow:inset 0 1px 0 rgba(255,255,255,.09),0 6px 12px rgba(0,0,0,.45)}
+.t12-top{display:flex;align-items:stretch;gap:10px}
+.t12-pl{position:relative;flex:1 1 auto;min-width:0;display:flex;justify-content:center;align-items:center;padding:6px 0}
+.deck .t12 .platter,.decks .deck .t12 .platter{width:min(240px,calc(100cqw - 124px))}
+.t12-lamp{position:absolute;left:0;bottom:4px;width:16px;height:22px;border-radius:4px 4px 3px 3px;pointer-events:none;
+  background:radial-gradient(circle at 50% 30%,#ffd2a1,#ff8a3d 45%,#7a2a08);border:1px solid #0a0a0a;box-shadow:0 0 10px rgba(255,138,61,.55)}
+.t12 .strobe{background:repeating-conic-gradient(from 0deg,#ffc795 0deg 2.2deg,transparent 2.2deg 9deg);opacity:.9}
+.t12-tl{position:absolute;left:0;top:2px;width:30px;height:30px;min-width:0;min-height:0;padding:0;border-radius:50%;cursor:pointer;
+  background:radial-gradient(circle at 40% 35%,#f4f4f2,#9da0a6 48%,#3d4045);border:1px solid #08090a;box-shadow:0 2px 3px rgba(0,0,0,.5)}
+.t12-tl::after{content:"";position:absolute;left:50%;top:50%;width:10px;height:10px;margin:-5px;border-radius:50%;background:#3a3d42;box-shadow:inset 0 1px 2px #000}
+.t12-tl[aria-pressed="true"]::after{background:#fffdf3;box-shadow:0 0 9px 2px rgba(255,250,230,.8)}
+.t12-pl.lit .platter::after{content:"";position:absolute;inset:0;border-radius:50%;pointer-events:none;z-index:4;
+  background:radial-gradient(circle at 66% 60%,rgba(255,250,232,.26),rgba(255,250,232,0) 26%)}
+.t12-pitch{flex:0 0 66px;display:flex;flex-direction:column;align-items:center;gap:6px;padding:4px 0}
+.t12-ph{font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#f0c26e}
+.t12-pitch .readout{font-size:.8rem;color:#f4e2b0;font-variant-numeric:tabular-nums}
+.t12-fd{position:relative;width:46px;height:clamp(110px,calc(100cqw - 236px),160px);border-radius:6px;background:#111214;
+  box-shadow:inset 0 1px 3px rgba(0,0,0,.8),0 1px 0 rgba(255,255,255,.07)}
+.t12-fd input{position:absolute;left:50%;top:50%;width:clamp(110px,calc(100cqw - 236px),160px);height:46px;margin:0;
+  transform:translate(-50%,-50%) rotate(90deg);-webkit-appearance:none;appearance:none;background:transparent;touch-action:none}
+.t12-fd input::-webkit-slider-runnable-track{height:6px;border-radius:3px;background:#050506;box-shadow:inset 0 1px 2px #000}
+.t12-fd input::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:40px;margin-top:-17px;border-radius:3px;border:1px solid #08090a;
+  background:repeating-linear-gradient(90deg,#c9ccd1 0 2px,#8f939a 2px 4px);box-shadow:0 2px 4px rgba(0,0,0,.6)}
+.t12-fd input::-moz-range-track{height:6px;border-radius:3px;background:#050506}
+.t12-fd input::-moz-range-thumb{width:16px;height:40px;border-radius:3px;border:1px solid #08090a;background:repeating-linear-gradient(90deg,#c9ccd1 0 2px,#8f939a 2px 4px)}
+.t12-sc{position:absolute;left:-14px;top:0;bottom:0;display:flex;flex-direction:column;justify-content:space-between;pointer-events:none;
+  font:700 11px/1 ui-monospace,Menlo,monospace;color:#d8cdb8}
+.t12-q{display:inline-flex;align-items:center;gap:4px;font:700 11px/1 ui-monospace,Menlo,monospace;color:#d8cdb8}
+.t12-led{width:8px;height:8px;border-radius:50%;background:#1d2b1f;box-shadow:inset 0 0 0 1px #000}
+.t12-led.on{background:#5fe08f;box-shadow:0 0 6px #5fe08f}
+.t12-pitch .tiny{min-width:0;padding:0 .5rem}
+.t12-foot{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:10px}
+.deck .t12-foot .go.t12-ss{min-width:92px;min-height:48px;border-radius:6px;background:linear-gradient(#3b3e43,#212327);color:#f6efdf;
+  border:1px solid #08090a;box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 2px 0 #060708;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+.deck.spinning .t12-foot .go.t12-ss{box-shadow:inset 0 1px 0 rgba(255,255,255,.14),inset 0 -3px 0 #c4452a,0 2px 0 #060708}
+.deck .platter-wrap.t12 .revc,.decks .deck .platter-wrap.t12 .revc{position:static;margin:0;align-self:auto}
+.t12-ks{display:inline-flex;gap:10px;margin-left:auto}
+.t12-kn{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:48px}
+.t12-k{--a:-135deg;width:38px;height:38px;border-radius:50%;position:relative;cursor:grab;touch-action:none;
+  background:repeating-conic-gradient(from -135deg,#8b8f96 0 2deg,transparent 2deg 30deg)}
+.t12-k::before{content:"";position:absolute;inset:5px;border-radius:50%;border:1px solid #08090a;
+  background:radial-gradient(circle at 38% 30%,#5c6068,#2a2c31 55%,#17181b);box-shadow:0 2px 4px rgba(0,0,0,.55)}
+.t12-k::after{content:"";position:absolute;left:50%;top:7px;width:3px;height:9px;margin-left:-1.5px;border-radius:2px;background:#f4e2b0;
+  transform-origin:50% 12px;transform:rotate(var(--a))}
+.t12-k:focus-visible{outline:3px solid #f0c26e;outline-offset:3px}
+.t12-kl{font-size:.66rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#d8cdb8}
+.t12-kv{font:700 .72rem/1 ui-monospace,Menlo,monospace;color:#f4e2b0}
+@media (min-width:701px) and (max-height:860px){   /* an iPad on its side: the plate keeps to the height the record had, the front row in one line */
+  .deck .t12 .platter,.decks .deck .t12 .platter{width:min(158px,calc(100cqw - 124px))}
+  .t12-fd,.t12-fd input{height:100px} .t12-fd input{width:100px;height:46px}
+  .deck .platter-wrap.t12,.decks .deck .platter-wrap.t12{padding:8px 10px 8px;margin:.35rem 0 .3rem}
+  .t12-foot{flex-wrap:nowrap;gap:6px;margin-top:6px} .deck .t12-foot .go.t12-ss{min-width:0;padding:0 .7rem}
+  .t12-foot .rpmb{padding:0 .55rem;min-width:0} .deck .platter-wrap.t12 .revc{min-width:0;padding:0 .6rem}
+  .t12-ks{gap:4px} .t12-kn{min-width:40px} .t12-k{width:34px;height:34px} .t12-kl{font-size:.6rem}
+  .t12-ph{display:none} .t12-pitch{gap:4px;padding:0} .t12-pl{padding:2px 0}}   /* the readout's sign says it is the pitch */
+@media (orientation:landscape) and (max-height:500px){   /* a phone on its side: a smaller record, so Start·Stop is in sight */
+  .deck .t12 .platter,.decks .deck .t12 .platter{width:min(150px,calc(100cqw - 124px))}
+  .t12-fd,.t12-fd input{height:96px} .t12-fd input{width:96px;height:46px}}
 .rpmb{min-height:44px;padding:0 .7rem}
 .rpmb.on{background:#efe8dc;color:#1a140e;border-color:#efe8dc}
 .knob .readout{color:#f4e2b0;font-variant-numeric:tabular-nums;margin-left:.35rem}
@@ -706,7 +768,7 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
 <script src="aog-eq.js"></script>
 <script src="aog-vinyl-worklet.js"></script>
 <script src="aog-dj.js"></script>
-<script src="/front/3ea780fd146b.js"></script>
+<script src="/front/610d65bdbf25.js"></script>
 <script>
 /* AOG-PGPANEL-V1 - the guide loads only when the bar is opened, and the frame is
    grown to its content so the panel scrolls with the page instead of inside itself. */
@@ -724,13 +786,6 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
   var t; window.addEventListener("resize", function(){ clearTimeout(t); t=setTimeout(fit,150); });
 })();
 </script>
-<script>/* AOG-MUSIC-TOUCH-V1 — wake Safari's audio on the first touch, every time it sleeps */
-(function(){ function wake(){ try{ if(typeof actx!=="undefined"&&actx&&actx.state!=="running") actx.resume(); }catch(e){} }
-  ["touchstart","pointerdown","keydown"].forEach(function(t){ document.addEventListener(t, wake, {capture:true, passive:true}); }); })();
-/* AOG-SOUND-HANDOFF-V1 — a sound sent from the oscilloscope goes into Up next */
-(function(){ if(!/[?&]take=1/.test(location.search)||!window.aogHandoffTake) return;
-  setTimeout(function(){ window.aogHandoffTake().then(function(v){ if(!v||!v.blob) return; const f=new File([v.blob], v.name||"scope.wav", {type:"audio/wav"});
-    CRATE.next.push({ id:crateId(f), name:f.name, blob:f, at:Date.now() }); cratePut("next", CRATE.next); paintCrate(); }); }, 1200); })();
-</script>
+<script src="/front/70050c503648.js"></script>
 </body>
 </html>
