@@ -444,6 +444,16 @@ keys. No jog wheel (Jimmy, the same day: "I do not like the knobs related to cho
 and beats. The knobs come into the whole screen and Stage too (🎛 Knobs there hides them, `S.pvKn`): a column beside the pads
 when sideways, a row above them upright. The pads always fit the room left.
 
+## The Turntables as Technics SL-1210 MK7s (Jimmy, 2026-10-28: "MIMIC the great TECHNICS sl-1210 MKX or better"; AOG-DECKS-1210-V1)
+
+Each deck in `music-decks.html` has the 1210's top plate (`.platter-wrap.t12`): satin black, the platter with an orange strobe
+lamp, a needle light, the long pitch fader on the right (− at the top, + toward you, the same `[data-speed]` input turned on
+its side), a light that shows when the pitch is on 0, Reset, and along the front Start·Stop, 33 / 45, REV and the Start and
+Brake knobs (how long the platter takes to come up to speed, 0.2–3 s, and to stop, 0.2–6 s; `aog.decks.t12.v1`; the engine's
+`torque` message in `aog-vinyl-worklet.js`). The strobe dots stand still at exactly 0 % and drift as the pitch moves, as the
+real lamp shows them. The Studio's compact sizes in `aog-labdoors.js` leave `.t12` alone; on a short screen the plate makes
+itself smaller so the room stays within two screens (`music-handoff/tests/rooms/compact.js`).
+
 ## No floating My notes button (Jimmy, 2026-10-18: "I don't like the my notes button. Please remove that")
 
 `aog-markup.js` no longer puts the floating My notes button on any page. Highlights and notes still work, and a tap on

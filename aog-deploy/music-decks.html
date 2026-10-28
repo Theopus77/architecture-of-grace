@@ -341,6 +341,68 @@ footer a{color:inherit}
   mask:radial-gradient(circle closest-side, transparent 0 95%, #000 95.6% 99%, transparent 99.6%);opacity:.8}
 .deck.spinning .platter{box-shadow:0 16px 18px rgba(0,0,0,.55),0 4px 0 #120e0a,0 0 0 2px rgba(244,226,176,.18)}
 .rpm{display:inline-flex;gap:.25rem}
+/* AOG-DECKS-1210-V1 — the top plate of a Technics SL-1210 MK7: satin black, the platter, the strobe lamp and the needle light,
+   the long pitch fader, and the front row (Start·Stop, 33 / 45, REV, Start and Brake). Drawn by CSS, nothing to fetch. */
+.deck .platter-wrap.t12,.decks .deck .platter-wrap.t12{display:block;width:auto;margin:.6rem 0 .5rem;padding:12px 12px 10px;border-radius:10px;
+  background:repeating-linear-gradient(90deg,rgba(255,255,255,.022) 0 1px,transparent 1px 3px),linear-gradient(#2b2d31,#17181b);
+  border:1px solid #08090a;box-shadow:inset 0 1px 0 rgba(255,255,255,.09),0 6px 12px rgba(0,0,0,.45)}
+.t12-top{display:flex;align-items:stretch;gap:10px}
+.t12-pl{position:relative;flex:1 1 auto;min-width:0;display:flex;justify-content:center;align-items:center;padding:6px 0}
+.deck .t12 .platter,.decks .deck .t12 .platter{width:min(240px,calc(100cqw - 124px))}
+.t12-lamp{position:absolute;left:0;bottom:4px;width:16px;height:22px;border-radius:4px 4px 3px 3px;pointer-events:none;
+  background:radial-gradient(circle at 50% 30%,#ffd2a1,#ff8a3d 45%,#7a2a08);border:1px solid #0a0a0a;box-shadow:0 0 10px rgba(255,138,61,.55)}
+.t12 .strobe{background:repeating-conic-gradient(from 0deg,#ffc795 0deg 2.2deg,transparent 2.2deg 9deg);opacity:.9}
+.t12-tl{position:absolute;left:0;top:2px;width:30px;height:30px;min-width:0;min-height:0;padding:0;border-radius:50%;cursor:pointer;
+  background:radial-gradient(circle at 40% 35%,#f4f4f2,#9da0a6 48%,#3d4045);border:1px solid #08090a;box-shadow:0 2px 3px rgba(0,0,0,.5)}
+.t12-tl::after{content:"";position:absolute;left:50%;top:50%;width:10px;height:10px;margin:-5px;border-radius:50%;background:#3a3d42;box-shadow:inset 0 1px 2px #000}
+.t12-tl[aria-pressed="true"]::after{background:#fffdf3;box-shadow:0 0 9px 2px rgba(255,250,230,.8)}
+.t12-pl.lit .platter::after{content:"";position:absolute;inset:0;border-radius:50%;pointer-events:none;z-index:4;
+  background:radial-gradient(circle at 66% 60%,rgba(255,250,232,.26),rgba(255,250,232,0) 26%)}
+.t12-pitch{flex:0 0 66px;display:flex;flex-direction:column;align-items:center;gap:6px;padding:4px 0}
+.t12-ph{font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#f0c26e}
+.t12-pitch .readout{font-size:.8rem;color:#f4e2b0;font-variant-numeric:tabular-nums}
+.t12-fd{position:relative;width:46px;height:clamp(110px,calc(100cqw - 236px),160px);border-radius:6px;background:#111214;
+  box-shadow:inset 0 1px 3px rgba(0,0,0,.8),0 1px 0 rgba(255,255,255,.07)}
+.t12-fd input{position:absolute;left:50%;top:50%;width:clamp(110px,calc(100cqw - 236px),160px);height:46px;margin:0;
+  transform:translate(-50%,-50%) rotate(90deg);-webkit-appearance:none;appearance:none;background:transparent;touch-action:none}
+.t12-fd input::-webkit-slider-runnable-track{height:6px;border-radius:3px;background:#050506;box-shadow:inset 0 1px 2px #000}
+.t12-fd input::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:40px;margin-top:-17px;border-radius:3px;border:1px solid #08090a;
+  background:repeating-linear-gradient(90deg,#c9ccd1 0 2px,#8f939a 2px 4px);box-shadow:0 2px 4px rgba(0,0,0,.6)}
+.t12-fd input::-moz-range-track{height:6px;border-radius:3px;background:#050506}
+.t12-fd input::-moz-range-thumb{width:16px;height:40px;border-radius:3px;border:1px solid #08090a;background:repeating-linear-gradient(90deg,#c9ccd1 0 2px,#8f939a 2px 4px)}
+.t12-sc{position:absolute;left:-14px;top:0;bottom:0;display:flex;flex-direction:column;justify-content:space-between;pointer-events:none;
+  font:700 11px/1 ui-monospace,Menlo,monospace;color:#d8cdb8}
+.t12-q{display:inline-flex;align-items:center;gap:4px;font:700 11px/1 ui-monospace,Menlo,monospace;color:#d8cdb8}
+.t12-led{width:8px;height:8px;border-radius:50%;background:#1d2b1f;box-shadow:inset 0 0 0 1px #000}
+.t12-led.on{background:#5fe08f;box-shadow:0 0 6px #5fe08f}
+.t12-pitch .tiny{min-width:0;padding:0 .5rem}
+.t12-foot{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:10px}
+.deck .t12-foot .go.t12-ss{min-width:92px;min-height:48px;border-radius:6px;background:linear-gradient(#3b3e43,#212327);color:#f6efdf;
+  border:1px solid #08090a;box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 2px 0 #060708;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+.deck.spinning .t12-foot .go.t12-ss{box-shadow:inset 0 1px 0 rgba(255,255,255,.14),inset 0 -3px 0 #c4452a,0 2px 0 #060708}
+.deck .platter-wrap.t12 .revc,.decks .deck .platter-wrap.t12 .revc{position:static;margin:0;align-self:auto}
+.t12-ks{display:inline-flex;gap:10px;margin-left:auto}
+.t12-kn{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:48px}
+.t12-k{--a:-135deg;width:38px;height:38px;border-radius:50%;position:relative;cursor:grab;touch-action:none;
+  background:repeating-conic-gradient(from -135deg,#8b8f96 0 2deg,transparent 2deg 30deg)}
+.t12-k::before{content:"";position:absolute;inset:5px;border-radius:50%;border:1px solid #08090a;
+  background:radial-gradient(circle at 38% 30%,#5c6068,#2a2c31 55%,#17181b);box-shadow:0 2px 4px rgba(0,0,0,.55)}
+.t12-k::after{content:"";position:absolute;left:50%;top:7px;width:3px;height:9px;margin-left:-1.5px;border-radius:2px;background:#f4e2b0;
+  transform-origin:50% 12px;transform:rotate(var(--a))}
+.t12-k:focus-visible{outline:3px solid #f0c26e;outline-offset:3px}
+.t12-kl{font-size:.66rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#d8cdb8}
+.t12-kv{font:700 .72rem/1 ui-monospace,Menlo,monospace;color:#f4e2b0}
+@media (min-width:701px) and (max-height:860px){   /* an iPad on its side: the plate keeps to the height the record had, the front row in one line */
+  .deck .t12 .platter,.decks .deck .t12 .platter{width:min(158px,calc(100cqw - 124px))}
+  .t12-fd,.t12-fd input{height:100px} .t12-fd input{width:100px;height:46px}
+  .deck .platter-wrap.t12,.decks .deck .platter-wrap.t12{padding:8px 10px 8px;margin:.35rem 0 .3rem}
+  .t12-foot{flex-wrap:nowrap;gap:6px;margin-top:6px} .deck .t12-foot .go.t12-ss{min-width:0;padding:0 .7rem}
+  .t12-foot .rpmb{padding:0 .55rem;min-width:0} .deck .platter-wrap.t12 .revc{min-width:0;padding:0 .6rem}
+  .t12-ks{gap:4px} .t12-kn{min-width:40px} .t12-k{width:34px;height:34px} .t12-kl{font-size:.6rem}
+  .t12-ph{display:none} .t12-pitch{gap:4px;padding:0} .t12-pl{padding:2px 0}}   /* the readout's sign says it is the pitch */
+@media (orientation:landscape) and (max-height:500px){   /* a phone on its side: a smaller record, so Start·Stop is in sight */
+  .deck .t12 .platter,.decks .deck .t12 .platter{width:min(150px,calc(100cqw - 124px))}
+  .t12-fd,.t12-fd input{height:96px} .t12-fd input{width:96px;height:46px}}
 .rpmb{min-height:44px;padding:0 .7rem}
 .rpmb.on{background:#efe8dc;color:#1a140e;border-color:#efe8dc}
 .knob .readout{color:#f4e2b0;font-variant-numeric:tabular-nums;margin-left:.35rem}
@@ -752,6 +814,8 @@ const STR = {
   smooth:{en:"Blend",es:"Mezcla"},
   sharp:{en:"Cut",es:"Corte"},
   rpm:{en:"Speed",es:"Velocidad"},
+  t12tl:{en:"Light on the needle",es:"Luz sobre la aguja"}, t12reset:{en:"Reset",es:"A cero"},   /* AOG-DECKS-1210-V1 */
+  t12up:{en:"Start",es:"Arranque"}, t12down:{en:"Brake",es:"Freno"},
   noiseOn:{en:"Vinyl noise: on",es:"Ruido de vinilo: sí"},
   noiseOff:{en:"Vinyl noise: off",es:"Ruido de vinilo: no"},
   drag:{en:"Drag the record to scratch.",es:"Arrastra el disco para rayar."},
@@ -2270,7 +2334,7 @@ function paintDeck(d){
   const recA = ((d.rot % 360) + 360) % 360;
   const platA = ((d.platterRot == null ? d.rot : d.platterRot) % 360 + 360) % 360;
   setA(M.vinyl, STILL ? 0 : Math.round(recA * 10) * 100);
-  setA(M.strobe, STILL ? 0 : Math.round((((platA - recA) % 360) + 360) % 360 * 10) * 100);
+  setA(M.strobe, STILL ? 0 : Math.round((((platA - (d.nomA || 0) - recA) % 360) + 360) % 360 * 10) * 100);
   setA(M.arm, d.buf ? Math.round((16 + 13*Math.min(1, d.pos/d.buf.length))*10)*100 : 16000);
   if((FRAME & 1) === 0 || d.level === 0){            /* the meters, every other frame: the eye cannot tell */
     setA(M.meter, Math.round(Math.min(1, d.level*1.4)*100)*10);
@@ -2363,6 +2427,9 @@ function loop(){
       d._pW = d._pW == null ? wantW : d._pW + (wantW - d._pW) * Math.min(1, dt / 0.05);
       if (d.platterRot == null) d.platterRot = d.rot;
       d.platterRot += d._pW * dt;
+      /* AOG-DECKS-1210-V1: the strobe lamp flashes in step with the motor's exact speed, so the dots stand still at 0 % and
+         drift forward or back as the pitch moves (stopped, they ride the platter) */
+      d.nomA = (d.nomA || 0) + (d.motor ? (d.revOn ? -1 : 1) * (d.rpm || 1) * DEG_PER_SEC : d._pW) * dt;
       /* a held hand that stops moving is a hand holding the record still */
       if(d.held && performance.now() - d.lastMove > 40){ d.handRate *= 0.45; send(d, { t:"hand", on:true, rate:d.handRate, x:d.handX || 0, v:0, still:true }); d.lastMove = performance.now(); }
     }
@@ -2492,7 +2559,12 @@ function deckHTML(d){
       <p class="song">${esc(d.note||d.name||t("none"))}</p>
       <div class="wave" id="wave${id}" aria-hidden="true"><img class="wimg" alt="" draggable="false"><i class="wloop"></i><i class="wslip"></i><i class="whead"></i></div>
       <div class="zoom" id="zoom${id}" aria-hidden="true"><img class="zimg" alt="" draggable="false"><i class="zhead"></i></div>
-      <div class="platter-wrap">
+      <!-- AOG-DECKS-1210-V1 (2026-10-28) — Jimmy: "upgrade to MIMIC the great TECHNICS sl-1210 MKX or better". The deck's top
+           plate: the platter with its strobe lamp and the needle light, the long pitch fader on the right (− at the top, + toward
+           you), the pitch-zero light and Reset, and along the front Start·Stop, 33 / 45, REV and the Start and Brake knobs. -->
+      <div class="platter-wrap t12">
+       <div class="t12-top">
+        <div class="t12-pl">
         <div class="platter" data-deck="${id}" role="slider" aria-label="${t("drag")}" tabindex="0">
           <div class="vinyl">
             <div class="strobe"></div>
@@ -2503,7 +2575,27 @@ function deckHTML(d){
           <div class="hole"></div>
           <div class="arm"></div>
         </div>
+        <i class="t12-lamp" aria-hidden="true"></i>
+        <button type="button" class="t12-tl" data-tl="${id}" aria-pressed="false" aria-label="${t("t12tl")}"></button>
+        </div>
+        <div class="t12-pitch">
+          <span class="t12-ph">${t("speed")}</span>
+          <b class="readout" data-pitchout="${id}">${pitchText(d)}</b>
+          <div class="t12-fd"><span class="t12-sc" aria-hidden="true"><i>−</i><i>0</i><i>+</i></span><input type="range" min="${d.wide?0.5:0.92}" max="${d.wide?1.5:1.08}" step="${d.wide?0.01:0.005}" value="${d.pitch}" data-speed="${id}" aria-label="${t("speed")}"></div>
+          <span class="t12-q"><i class="t12-led${Math.abs(d.pitch-1)<1e-6?" on":""}" data-pled="${id}"></i>0</span>
+          <button type="button" class="tiny" data-preset="${id}">${t("t12reset")}</button>
+          <button type="button" class="tiny${d.wide?" on":""}" data-wide="${id}">${t("wide")}</button>
+        </div>
+       </div>
+       <div class="t12-foot">
+        <button type="button" class="go t12-ss" data-play="${id}">${t("play")}</button>
+        <span class="rpm t12-rpm" role="group" aria-label="${t("rpm")}">
+          <button type="button" class="ghost rpmb${d.rpm===1?" on":""}" data-rpm="${id}" data-v="1">33</button>
+          <button type="button" class="ghost rpmb${d.rpm!==1?" on":""}" data-rpm="${id}" data-v="1.35">45</button>
+        </span>
         <button type="button" class="ghost sm revc" data-rev="${id}">${t("rev")}</button>
+        <span class="t12-ks">${["up","down"].map(k=>`<span class="t12-kn"><span class="t12-k" role="slider" tabindex="0" data-tk="${id}" data-w="${k}" aria-label="${t(k==="up"?"t12up":"t12down")}"></span><span class="t12-kl">${t(k==="up"?"t12up":"t12down")}</span><b class="t12-kv" data-tkv="${id}${k}"></b></span>`).join("")}</span>
+       </div>
       </div>
       <div class="meter" aria-hidden="true"><i></i></div>
       <div class="row">
@@ -2512,15 +2604,10 @@ function deckHTML(d){
       </div>
       <div class="dock" id="dock${id}" hidden></div>
       <div class="row">
-        <button type="button" class="go" data-play="${id}">${t("play")}</button>
         <button type="button" class="ghost" data-cue="${id}">${t("cueHold")}</button>
         <button type="button" class="ghost" data-setcue="${id}">${t("setCue")}</button>
         <span class="time">0:00</span>
       </div>
-      <label class="knob">${t("speed")}
-        <b class="readout" data-pitchout="${id}">${pitchText(d)}</b>
-        <button type="button" class="tiny${d.wide?" on":""}" data-wide="${id}">${t("wide")}</button>
-        <input type="range" min="${d.wide?0.5:0.92}" max="${d.wide?1.5:1.08}" step="${d.wide?0.01:0.005}" value="${d.pitch}" data-speed="${id}"></label>
       <!-- AOG-DJ-DESK-V1 — the row Jimmy could not find, above the pads: SYNC, KEY, SLIP, Chop 8 -->
       <div class="row tr perf">
         <button type="button" class="ghost sm" data-sync="${id}" aria-pressed="false">${t("sync")}</button>
@@ -2561,10 +2648,6 @@ function deckHTML(d){
         <div class="row nud">
           <button type="button" class="ghost" data-nudge="${id}" data-dir="-1">− ${t("nudge")}</button>
           <button type="button" class="ghost" data-nudge="${id}" data-dir="1">+ ${t("nudge")}</button>
-          <span class="rpm" role="group" aria-label="${t("rpm")}">
-            <button type="button" class="ghost rpmb${d.rpm===1?" on":""}" data-rpm="${id}" data-v="1">33⅓</button>
-            <button type="button" class="ghost rpmb${d.rpm!==1?" on":""}" data-rpm="${id}" data-v="1.35">45</button>
-          </span>
         </div>
       </details>
     </section>`;
@@ -3728,6 +3811,46 @@ window.addEventListener("focus", checkBench);
 <script>/* AOG-MUSIC-TOUCH-V1 — wake Safari's audio on the first touch, every time it sleeps */
 (function(){ function wake(){ try{ if(typeof actx!=="undefined"&&actx&&actx.state!=="running") actx.resume(); }catch(e){} }
   ["touchstart","pointerdown","keydown"].forEach(function(t){ document.addEventListener(t, wake, {capture:true, passive:true}); }); })();
+/* ══ AOG-DECKS-1210-V1 (2026-10-28) — the 1210's own controls: Reset puts the pitch back on 0 (its light shows when it is
+   there), the needle light, and the Start and Brake knobs (how long the platter takes to come up to speed, and to stop;
+   kept on the device). Nothing here runs until a hand touches it. ══ */
+(function(){
+  const KEY = "aog.decks.t12.v1", R = { up:[0.2, 3, 0.5], down:[0.2, 6, 1.3] };   /* seconds: least, most, as it comes */
+  let T = {}; try{ T = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; }catch(e){ T = {}; }
+  const val = (id, w)=>{ const v = T[id] && +T[id][w]; return v > 0 ? v : R[w][2]; };
+  const torque = (d)=>send(d, { t:"torque", up:val(d.id, "up")/3, down:val(d.id, "down")/3 });
+  decks.forEach(d=>{ if(T[d.id]) torque(d); });
+  function led(d){ const el = document.querySelector('[data-pled="'+d.id+'"]'); if(el) el.classList.toggle("on", Math.abs(d.pitch - 1) < 1e-6); }
+  function knobs(){
+    document.querySelectorAll(".t12-k").forEach(k=>{ const id = k.getAttribute("data-tk"), w = k.getAttribute("data-w"), v = val(id, w), r = R[w];
+      k.style.setProperty("--a", (-135 + 270*(v - r[0])/(r[1] - r[0])) + "deg");
+      k.setAttribute("aria-valuemin", r[0]); k.setAttribute("aria-valuemax", r[1]); k.setAttribute("aria-valuenow", v); k.setAttribute("aria-valuetext", v.toFixed(1) + " s");
+      const o = document.querySelector('[data-tkv="'+id+w+'"]'); if(o && o.textContent !== v.toFixed(1)+" s") o.textContent = v.toFixed(1) + " s"; });
+    decks.forEach(led);
+  }
+  function setK(id, w, v){ const r = R[w]; v = Math.round(Math.max(r[0], Math.min(r[1], v))*10)/10; if(v === val(id, w)) return;
+    (T[id] = T[id] || {})[w] = v; try{ localStorage.setItem(KEY, JSON.stringify(T)); }catch(e){}
+    const d = decks.find(x=>x.id === id); if(d) torque(d); knobs(); }
+  const sp = window.setPitch; if(typeof sp === "function") window.setPitch = function(d){ const r = sp.apply(this, arguments); led(d); return r; };
+  const bd = window.bind; if(typeof bd === "function") window.bind = function(){ const r = bd.apply(this, arguments); knobs(); return r; };
+  document.addEventListener("click", e=>{
+    const b = e.target.closest && e.target.closest("[data-preset],[data-tl],[data-wide]"); if(!b) return;
+    if(b.hasAttribute("data-preset")){ const inp = document.querySelector('[data-speed="'+b.getAttribute("data-preset")+'"]'); if(inp){ inp.value = "1"; inp.dispatchEvent(new Event("input")); } }
+    else if(b.hasAttribute("data-tl")){ const on = b.getAttribute("aria-pressed") !== "true"; b.setAttribute("aria-pressed", String(on)); const pl = b.closest(".t12-pl"); if(pl) pl.classList.toggle("lit", on); }
+    else { const d = decks.find(x=>x.id === b.getAttribute("data-wide")); if(d) led(d); }
+  });
+  let drag = null;
+  document.addEventListener("pointerdown", e=>{ const k = e.target.closest && e.target.closest(".t12-k"); if(!k) return;
+    const id = k.getAttribute("data-tk"), w = k.getAttribute("data-w"); drag = { k, id, w, y:e.clientY, v:val(id, w), p:e.pointerId };
+    try{ k.setPointerCapture(e.pointerId); }catch(x){} e.preventDefault(); });
+  document.addEventListener("pointermove", e=>{ if(!drag || e.pointerId !== drag.p) return; const r = R[drag.w];
+    setK(drag.id, drag.w, drag.v + (drag.y - e.clientY)/140*(r[1] - r[0])); });
+  ["pointerup","pointercancel"].forEach(t=>document.addEventListener(t, e=>{ if(drag && e.pointerId === drag.p) drag = null; }));
+  document.addEventListener("keydown", e=>{ const k = e.target.closest && e.target.closest(".t12-k"); if(!k) return;
+    const d = {ArrowUp:1, ArrowRight:1, ArrowDown:-1, ArrowLeft:-1}[e.key]; if(!d) return; e.preventDefault();
+    const id = k.getAttribute("data-tk"), w = k.getAttribute("data-w"); setK(id, w, val(id, w) + d*0.1); });
+  knobs();
+})();
 /* AOG-SOUND-HANDOFF-V1 — a sound sent from the oscilloscope goes into Up next */
 (function(){ if(!/[?&]take=1/.test(location.search)||!window.aogHandoffTake) return;
   setTimeout(function(){ window.aogHandoffTake().then(function(v){ if(!v||!v.blob) return; const f=new File([v.blob], v.name||"scope.wav", {type:"audio/wav"});

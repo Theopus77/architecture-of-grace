@@ -154,8 +154,13 @@
        Off the hand, the slipmat lets the record slide back onto a platter already
        turning (140 ms), a dead stop still has to spin the platter up (380 ms),
        and a stopped deck coasts down (420 ms). */
+    /* AOG-DECKS-1210-V1: the Start and Brake knobs, as on a Technics SL-1210 MK7. From a dead stop the motor pulls the
+       platter up over tUp (a third of the time to full speed, 0.5 s by default) until it is there; a stopped deck coasts
+       down over tDown (1.3 s by default, up to 6 s: the long power-down). */
+    if (this.motorOn && !this.handOn && Math.abs(this.rate) < 0.25) this._up = true;
+    if (this._up && (!this.motorOn || this.handOn || Math.abs(this.rate - this._target) < 0.03 * Math.abs(this._target))) this._up = false;
     var tau = this.handOn ? 0.008
-            : (this.motorOn ? (Math.abs(this.rate) < 0.25 ? 0.38 : 0.14) : 0.42);
+            : (this.motorOn ? (this._up ? (this.tUp || 0.167) : 0.14) : (this.tDown || 0.42));
     this._k = 1 - Math.exp(-1 / (tau * this.sr));
   };
   /* every jump goes through here: the old place keeps sounding for 4 ms while
@@ -213,6 +218,7 @@
         break;
       case "pitch": this.pitch = m.v; break;
       case "rpm":   this.rpm = m.v; break;
+      case "torque": if (m.up > 0) this.tUp = m.up; if (m.down > 0) this.tDown = m.down; break;   /* AOG-DECKS-1210-V1 */
       case "bend":  this.bend = m.v > 0.5 && m.v < 1.5 ? m.v : 1; break;
       case "noise": this.noiseAmt = m.v; break;
       /* a seek on a turning record is a jump (it keeps its speed); on a still one

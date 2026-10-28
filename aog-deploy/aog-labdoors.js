@@ -512,16 +512,17 @@
     "html.in-studio.aog-compact .pm-cols>div:first-child>.pm-line,html.in-studio.aog-compact .pm-cols>div:first-child>.pm-now{order:0;margin:.1rem 0 .3rem;font-size:.9rem}" +
     "html.in-studio.aog-compact .pm-cols>div:first-child>#pads{order:1}html.in-studio.aog-compact .pm-cols .pm-bigrow{order:2;float:none;justify-content:flex-start;margin:8px 0 0}}" +
     /* the Drum Kit: the kit as big as the screen allows, with its menu, Record and More under it */
+    /* AOG-DECKS-1210-V1: the 1210 top plate (.t12) sizes itself, so these older record sizes leave it alone */
     /* the Turntables: a card with nothing open in it steps aside; on a short screen the record is a little smaller, with
        REV beside it, and the pitch on one line; on a phone on its side the record and Start come first */
     "html.in-studio.aog-compact #cratecard:not(:has([data-aog-on])){display:none!important}" +
-    "@media (max-width:700px){html.in-studio.aog-compact .deck .platter-wrap{width:min(190px,64%);margin:.3rem auto;position:relative}html.in-studio.aog-compact .deck .platter-wrap .platter{width:100%}" +
-    "html.in-studio.aog-compact .deck .platter-wrap .revc{position:absolute;left:calc(100% + 10px);bottom:0;margin:0}html.in-studio.aog-compact .deck .wave{height:40px}}" +
-    "@media (min-width:701px) and (max-height:860px){html.in-studio.aog-compact .decks .deck .platter-wrap{width:min(172px,100%);position:relative;margin:.35rem auto .3rem}" +
-    "html.in-studio.aog-compact .decks .deck .platter-wrap .revc{position:absolute;left:calc(100% + 14px);bottom:0;margin:0}html.in-studio.aog-compact .deck .wave{height:40px}" +
+    "@media (max-width:700px){html.in-studio.aog-compact .deck .platter-wrap:not(.t12){width:min(190px,64%);margin:.3rem auto;position:relative}html.in-studio.aog-compact .deck .platter-wrap:not(.t12) .platter{width:100%}" +
+    "html.in-studio.aog-compact .deck .platter-wrap:not(.t12) .revc{position:absolute;left:calc(100% + 10px);bottom:0;margin:0}html.in-studio.aog-compact .deck .wave{height:40px}}" +
+    "@media (min-width:701px) and (max-height:860px){html.in-studio.aog-compact .decks .deck .platter-wrap:not(.t12){width:min(172px,100%);position:relative;margin:.35rem auto .3rem}" +
+    "html.in-studio.aog-compact .decks .deck .platter-wrap:not(.t12) .revc{position:absolute;left:calc(100% + 14px);bottom:0;margin:0}html.in-studio.aog-compact .deck .wave{height:40px}" +
     "html.in-studio.aog-compact .deck>label.knob{display:grid;grid-template-columns:auto auto auto minmax(0,1fr);align-items:center;gap:.5rem}html.in-studio.aog-compact .deck>label.knob input{margin:0}}" +
     "@media (orientation:landscape) and (max-height:500px){html.in-studio.aog-compact .deck{display:flex;flex-direction:column}html.in-studio.aog-compact .deck>*{order:3}" +
-    "html.in-studio.aog-compact .deck>.dhead{order:0}html.in-studio.aog-compact .decks .deck>.platter-wrap{order:1;width:min(128px,100%);margin:.2rem auto}html.in-studio.aog-compact .deck>.row:has([data-play]){order:2}" +
+    "html.in-studio.aog-compact .deck>.dhead{order:0}html.in-studio.aog-compact .decks .deck>.platter-wrap{order:1}html.in-studio.aog-compact .decks .deck>.platter-wrap:not(.t12){width:min(128px,100%);margin:.2rem auto}html.in-studio.aog-compact .deck>.row:has([data-play]){order:2}" +
     "html.in-studio.aog-compact .wrap{padding-top:.4rem}html.in-studio.aog-compact .pairbar{margin-top:0}" +
     "html.in-studio.aog-compact .xfade.xf-top{position:relative;padding:.1rem 2.6rem;margin:0 0 .5rem}html.in-studio.aog-compact .xf-top .xends{position:absolute;left:.8rem;right:.8rem;top:50%;transform:translateY(-50%);pointer-events:none}" +
     "html.in-studio.aog-compact .xf-top .xends>:not(:first-child):not(:last-child){visibility:hidden}}" +
