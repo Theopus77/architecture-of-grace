@@ -465,6 +465,9 @@ is opened in memory. Any other record put on the deck takes the album off.
 Make a record (Jimmy, 2026-10-28: "more than one song … on a 'record' … 5-10 songs a record (as a mix more or less)";
 AOG-DECKS-MIX-V1): + Make a record in Load a song; tap 2 to 10 of your songs in the order they play, name it if you like, Put it
 on. It is kept with the albums (`mix:true`) and plays straight through on one side with a short gap between songs.
+One deck (Jimmy, 2026-10-28: "the option of having one turn table on screen"; AOG-DECKS-ONE-V1): on an iPad or a computer,
+One deck beside A · B, A · C, B · C shows a single deck (A, B or C), bigger, with the bay and crossfader put away; that deck
+plays Thru while it is alone and its side goes back after (`aog.decks.one`, `body[data-one]`). A phone already shows one deck.
 
 ## No floating My notes button (Jimmy, 2026-10-18: "I don't like the my notes button. Please remove that")
 
