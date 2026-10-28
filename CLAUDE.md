@@ -457,6 +457,12 @@ The pitch fader follows the finger itself (`.t12-fd`; an iPad would not slide th
 changes speed and pitch together as on a Technics: KEY starts off and each deck remembers it once turned on
 (`aog.decks.key.v1`; Jimmy, 2026-10-28: "Messing the the pitch does nothing … nothing with the music and the screen moves";
 AOG-DECKS-PITCH-V1).
+Sound (Jimmy, 2026-10-28: "exceptional quality. WORLD REKNOW QUALITY"; AOG-DECKS-HIFI-V1): a playing record is read with a
+64-tap windowed sinc whose corner follows the speed (flat to 20 kHz; the cubic read took 2.7 dB off 16 kHz); a hand, the parts
+and keylock keep the cubic read. The channel low-pass is a plain wire in the middle (sample rate / 2). No always-on compressor:
+the decks meet on a clean bus (MAKEUP) and the worklet's true-peak limiter (aog-djlimit: 4× between-sample ears, 3 ms
+look-ahead, 100 ms release, -1 dBTP) is the only thing on level. The motor's wow is 0.012 % (a 1210 is about 0.01 %); the
+rumble filter stays at 19 Hz. Vinyl noise starts off and is remembered (`aog.decks.noise`). Keep it measuring flat.
 
 Whole albums on one record (Jimmy, 2026-10-28: "play multiple songs on a record … upload whole albums to play on vinyl, just
 for a nostalgia / cool factor"; AOG-DECKS-ALBUM-V1): + A whole album in Load a song takes many songs at once, reads each one's
