@@ -64,20 +64,21 @@
     function applyAudioBlend(t) {
       const S = window.S;
       if (!S || !stateA || !stateB) return;
-      const aGain = 1 - t;
-      const bGain = t;
+      // Ease the crossfade so the change feels continuous
+      const ease = t * t * (3 - 2 * t); // smoothstep
+      const aGain = 1 - ease;
+      const bGain = ease;
       const blended = [];
       stateA.forEach(e => {
         const v = (e.v == null ? 0.8 : e.v) * aGain;
-        if (v > 0.02) blended.push({ b: e.b, p: e.p, t: e.t, v: v, len: e.len || 0 });
+        if (v > 0.015) blended.push({ b: e.b, p: e.p, t: e.t, v: v, len: e.len || 0 });
       });
       stateB.forEach(e => {
         const v = (e.v == null ? 0.8 : e.v) * bGain;
-        if (v > 0.02) blended.push({ b: e.b, p: e.p, t: e.t, v: v, len: e.len || 0 });
+        if (v > 0.015) blended.push({ b: e.b, p: e.p, t: e.t, v: v, len: e.len || 0 });
       });
       S.ev = blended;
       if (typeof window.paintSteps === "function") window.paintSteps();
-      if (typeof window.paintAll === "function") window.paintAll();
     }
 
     function ensureButtons() {
@@ -113,10 +114,12 @@
 
     ensureButtons();
 
+    let raf = 0;
     slider.addEventListener("input", () => {
       const t = slider.value / 100;
       valEl.textContent = slider.value + "%";
-      applyAudioBlend(t);
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => applyAudioBlend(t));
     });
 
     // Restore original pattern when slider returns to 0 if we have a snapshot
@@ -124,7 +127,6 @@
       if (+slider.value === 0 && originalEv && window.S) {
         window.S.ev = cloneEv(originalEv);
         if (typeof window.paintSteps === "function") window.paintSteps();
-        if (typeof window.paintAll === "function") window.paintAll();
       }
     });
   }, 200);
