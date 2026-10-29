@@ -1,5 +1,6 @@
-/* AOG-WOW-MORPH-V3 — Self-injecting Morph control + full A/B crossfade
-   Jimmy Project. Injects the Morph UI if missing, then handles Snap A/B and blending.
+/* AOG-WOW-MORPH-V4 — Morph blends the actual audio
+   Snap A/B stores the real sequencer events. The slider crossfades their
+   velocities so both patterns play at once, with A fading out and B fading in.
 */
 (function(){
   function injectMorph() {
@@ -45,36 +46,38 @@
   const wait = setInterval(() => {
     const slider = document.getElementById("morphSlider");
     const valEl = document.getElementById("morphVal");
-    const stepsContainer = document.getElementById("steps");
-    if (!slider || !valEl || !stepsContainer) return;
+    if (!slider || !valEl) return;
     clearInterval(wait);
 
     let stateA = null;
     let stateB = null;
+    let originalEv = null;
 
-    function snapshot() {
-      const steps = Array.from(stepsContainer.querySelectorAll(".st"));
-      return steps.map(st => ({
-        pressed: st.getAttribute("aria-pressed") === "true",
-        accent: st.classList.contains("h"),
-        quiet: st.classList.contains("q")
-      }));
+    function getEv() {
+      try { return window.S && Array.isArray(window.S.ev) ? window.S.ev : null; } catch(e) { return null; }
     }
 
-    function applyBlend(t) {
-      if (!stateA || !stateB || stateA.length !== stateB.length) return;
-      const steps = Array.from(stepsContainer.querySelectorAll(".st"));
-      steps.forEach((st, i) => {
-        const a = stateA[i];
-        const b = stateB[i];
-        if (!a || !b) return;
-        const intensity = 0.55 + (t * 0.45);
-        st.style.opacity = intensity.toFixed(2);
-        st.style.filter = `brightness(${0.85 + t * 0.3})`;
-        const showPressed = t > 0.5 ? b.pressed : a.pressed;
-        if (showPressed) st.setAttribute("aria-pressed", "true");
-        else st.removeAttribute("aria-pressed");
+    function cloneEv(arr) {
+      return arr.map(e => ({ b: e.b, p: e.p, t: e.t, v: e.v, len: e.len || 0 }));
+    }
+
+    function applyAudioBlend(t) {
+      const S = window.S;
+      if (!S || !stateA || !stateB) return;
+      const aGain = 1 - t;
+      const bGain = t;
+      const blended = [];
+      stateA.forEach(e => {
+        const v = (e.v == null ? 0.8 : e.v) * aGain;
+        if (v > 0.02) blended.push({ b: e.b, p: e.p, t: e.t, v: v, len: e.len || 0 });
       });
+      stateB.forEach(e => {
+        const v = (e.v == null ? 0.8 : e.v) * bGain;
+        if (v > 0.02) blended.push({ b: e.b, p: e.p, t: e.t, v: v, len: e.len || 0 });
+      });
+      S.ev = blended;
+      if (typeof window.paintSteps === "function") window.paintSteps();
+      if (typeof window.paintAll === "function") window.paintAll();
     }
 
     function ensureButtons() {
@@ -89,31 +92,40 @@
       btnB.textContent = "Snap B"; btnB.style.cssText = "font-size:11px;padding:4px 8px";
       morphBox.appendChild(btnA);
       morphBox.appendChild(btnB);
+
       btnA.addEventListener("click", () => {
-        stateA = snapshot();
+        const ev = getEv();
+        if (!ev) return;
+        if (!originalEv) originalEv = cloneEv(ev);
+        stateA = cloneEv(ev);
         btnA.textContent = "A ✓";
         setTimeout(() => btnA.textContent = "Snap A", 800);
       });
       btnB.addEventListener("click", () => {
-        stateB = snapshot();
+        const ev = getEv();
+        if (!ev) return;
+        if (!originalEv) originalEv = cloneEv(ev);
+        stateB = cloneEv(ev);
         btnB.textContent = "B ✓";
         setTimeout(() => btnB.textContent = "Snap B", 800);
       });
     }
 
-    slider.addEventListener("input", function() {
-      const p = +this.value;
-      const t = p / 100;
-      valEl.textContent = p + "%";
-      document.documentElement.style.setProperty("--morph", t.toFixed(3));
-      applyBlend(t);
+    ensureButtons();
+
+    slider.addEventListener("input", () => {
+      const t = slider.value / 100;
+      valEl.textContent = slider.value + "%";
+      applyAudioBlend(t);
     });
 
-    setTimeout(() => {
-      ensureButtons();
-      stateA = snapshot();
-      stateB = snapshot();
-    }, 400);
-  }, 150);
+    // Restore original pattern when slider returns to 0 if we have a snapshot
+    slider.addEventListener("change", () => {
+      if (+slider.value === 0 && originalEv && window.S) {
+        window.S.ev = cloneEv(originalEv);
+        if (typeof window.paintSteps === "function") window.paintSteps();
+        if (typeof window.paintAll === "function") window.paintAll();
+      }
+    });
+  }, 200);
 })();
-/* Morph deploy trigger 2026-10-29T21:12:16Z */
