@@ -24,6 +24,23 @@
     const style = document.createElement("style");
     style.id = "aog-wow-styles";
     style.textContent = `
+      .pm {
+        background: repeating-linear-gradient(90deg, rgba(255,255,255,.018) 0 1px, transparent 1px 4px),
+                    linear-gradient(180deg, #3a3d44 0%, #2a2c31 40%, #1e2024 100%) !important;
+        border: 1px solid #050607 !important;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.12), inset 0 -3px 0 rgba(0,0,0,.5), 0 12px 28px rgba(0,0,0,.5) !important;
+      }
+      .pm-lcd {
+        background: linear-gradient(160deg, rgba(255,255,255,.18) 0%, transparent 30%),
+                    repeating-linear-gradient(0deg, rgba(0,0,0,.04) 0 1px, transparent 1px 3px),
+                    radial-gradient(ellipse at 50% 40%, #d8e6b0 0%, #c0d090 55%, #a8bc78 100%) !important;
+        border: 3px solid #060708 !important;
+        box-shadow: inset 0 2px 6px rgba(0,0,0,.35), 0 1px 0 rgba(255,255,255,.06) !important;
+      }
+      #pads .pad:not(.hit):not(.down) {
+        background: radial-gradient(130% 100% at 50% 0%, #52555c 0%, #3a3c41 50%, #2a2c30 100%) !important;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.1), inset 0 -2px 3px rgba(0,0,0,.4), 0 2px 0 #08090a, 0 0 0 1px #0e0f11 !important;
+      }
       .pm-morph {
         display: flex; align-items: center; gap: 12px; margin: 10px 0 6px;
         padding: 8px 14px; background: #1a1c20; border-radius: 8px; border: 1px solid #0d0f12;
