@@ -127,7 +127,7 @@
       pads: { kick: P("KICK", [1, 2, 2]), snare: P("SNARE", [1, 2, 2]), ch: P("HAT", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
               clap: P("XSTICK", [1, 2, 1]), tom: P("TOM", [1, 1, 1]), rim: P("FLOOR", [1, 1, 1]), bell: P("CRASH", [1, 1, 1]) } }
   };
-  var IDS = ["D", "E", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "LS", "WD", "IN", "CB"];
+  var IDS = ["D", "E", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "LS", "DB", "WD", "IN", "CB", "BR", "ME2"];
   /* ══ AOG-DRUM-PERC-V1 (2026-10-13) — HAND PERCUSSION, HAND DRUMS AND THE TABLA ══════════════════════════════════════
      Jimmy: "DO them all." Four recorded kits, eight pads each (music-handoff/tools/drumkits/kits_perc.py): the school's
      hand percussion; the djembe and cajón (with maracas, hand claps and the bell of a djembe group); the congas and
@@ -139,6 +139,22 @@
      and CREDITS.txt says which. A kit downloads only when it is picked, like every recorded kit. */
   function W2(name, n, en, es, extra) { var o = { en: en, es: es }; if (extra) for (var k in extra) o[k] = extra[k]; return P(name, n, o); }
   
+  
+  KITS.DB = K("electronic", "boombap2", "Deep Bass", "Bajo profundo", DK({
+    kick: ["KICK", [1, 2, 2], "Deep kick", "Bombo profundo"], snare: ["SNARE", [1, 2, 2], "Low snare", "Caja grave"],
+    ch: ["HAT", [1, 2, 1], "Hat", "Charles"], oh: ["OPEN", [1, 1, 1], "Open hat", "Charles abierto"],
+    clap: ["CLAP", [1, 2, 1], "Clap", "Palmas"], tom: ["LOWTOM", [1, 1, 1], "Sub tom", "Tom subgrave"],
+    rim: ["STICK", [1, 1, 1], "Click", "Clic"], bell: ["SCRTCH", [1, 2, 1], "Rumble", "Retumbo"] }));
+  KITS.BR = K("world", "latin2", "Brazilian · samba", "Brasil · samba", DK({
+    kick: ["BOMBO", [1, 2, 1], "Surdo", "Surdo"], snare: ["TIMBAL", [1, 2, 1], "Caixa", "Caixa"],
+    ch: ["GUIRO", [1, 1, 1], "Ganzá", "Ganzá"], oh: ["SHAKER", [1, 1, 1], "Chocalho", "Chocalho"],
+    clap: ["CLAP", [1, 1, 1], "Palmas", "Palmas"], tom: ["TOM", [1, 1, 1], "Repinique", "Repinique"],
+    rim: ["RIM", [1, 1, 1], "Tamborim", "Tamborim"], bell: ["BELL", [1, 1, 1], "Agogô", "Agogó"] }));
+  KITS.ME2 = K("world", "handdrums", "Middle Eastern · frame", "Medio Oriente · pandero", DK({
+    kick: ["KICK", [1, 2, 2], "Doum", "Doum"], snare: ["SNARE", [1, 2, 2], "Tek", "Tek"],
+    ch: ["HAT", [1, 2, 1], "Pa", "Pa"], oh: ["OPEN", [1, 1, 1], "Shaker", "Chasquido"],
+    clap: ["CLAP", [1, 2, 1], "Clap", "Palmas"], tom: ["TOM", [1, 1, 1], "Frame", "Pandero"],
+    rim: ["RIM", [1, 1, 1], "Rim", "Aro"], bell: ["BELL", [1, 2, 1], "Zill", "Zill"] }));
   KITS.WD = K("world", "handdrums", "West African · djembe", "África occidental · yembé", DK({
     kick: ["KICK", [1, 2, 2], "Djembe bass", "Yembé grave"], snare: ["SNARE", [1, 2, 2], "Djembe tone", "Yembé tono"],
     ch: ["HAT", [1, 2, 1], "Djembe slap", "Yembé slap"], oh: ["OPEN", [1, 1, 1], "Shaker", "Chasquido"],
