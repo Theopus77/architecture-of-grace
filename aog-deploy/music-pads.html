@@ -1391,7 +1391,7 @@ function pump(){
       if(list) list.forEach(e=>{
         if(e._skip===pass){ delete e._skip; return; }
         if(STAGE.mute[e.b]) return;   /* AOG-PADS-STAGE-V1: a muted layer sits out */
-        const P=padSet(e.b, e.p); if(P.chance<100 && Math.random()*100 > P.chance) continue;
+        const P=padSet(e.b, e.p); if(P.chance<100 && Math.random()*100 > P.chance) return;
         const hw=feelWhen(e.b, e.p, when)+(P.micro||0)/1000; const v=trigger(e.b, e.p, e.v, hw); flash(e.b, e.p, hw, e.v);
         if(v && gated(e.b)) v.stop(hw+Math.max(12, e.len||48)*sp); /* AOG-PADS-FEEL-V1 */
       });
