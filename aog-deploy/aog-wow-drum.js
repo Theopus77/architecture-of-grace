@@ -386,3 +386,14 @@
     idleT = setTimeout(rest, 8000);
   }, {passive: true});
 })();
+
+/* AOG-PADS-SAFETY: if the pad grid is empty after load, ask the page to paint it */
+setTimeout(function(){
+  var pads = document.getElementById("pads");
+  if (pads && !pads.children.length && typeof window.paintPads === "function") {
+    try { window.paintPads(); } catch(e) {}
+  }
+  if (typeof window.paintAll === "function") {
+    try { window.paintAll(); } catch(e) {}
+  }
+}, 500);
