@@ -64,11 +64,15 @@
         box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 3px 6px rgba(0,0,0,.4);
       }
       .pm-morph {
-        display: flex; align-items: center; gap: 8px; margin: 6px 0 4px;
+        display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 6px 0 4px;
         padding: 6px 10px; background: #1a1c20; border-radius: 8px; border: 1px solid #0d0f12;
-        flex: 0 0 auto; height: auto; max-height: 48px; overflow: hidden;
+        flex: 0 0 auto; height: auto; max-height: 72px; overflow: hidden;
       }
-      #patSlots { display: none !important; }
+      #patSlots { display: flex !important; flex-wrap: wrap; gap: 4px; margin-top: 4px; max-height: 32px; overflow: hidden; }
+      @media (max-width: 520px) {
+        #shapeRow, #extraRow { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+        #shapeRow .pm-f, #extraRow .pm-f { min-width: 0; }
+      }
       .pm-morph label { font: 700 12px/1 var(--sans); letter-spacing: .12em; color: #c9bfae; text-transform: uppercase; }
       .pm-morph input[type=range] { flex: 1; accent-color: #ffd36b; height: 6px; }
       .pm-morph .morph-val { font: 700 14px/1 ui-monospace, monospace; color: #ffd36b; min-width: 40px; text-align: right; }
