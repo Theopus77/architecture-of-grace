@@ -82,17 +82,22 @@
     style.id = "aog-wow-styles";
     style.textContent = `
       .pm {
-        background: repeating-linear-gradient(90deg, rgba(255,255,255,.018) 0 1px, transparent 1px 4px),
-                    linear-gradient(180deg, #3a3d44 0%, #2a2c31 40%, #1e2024 100%) !important;
-        border: 1px solid #050607 !important;
-        box-shadow: inset 0 1px 0 rgba(255,255,255,.12), inset 0 -3px 0 rgba(0,0,0,.5), 0 12px 28px rgba(0,0,0,.5) !important;
+        background: repeating-linear-gradient(90deg, rgba(255,255,255,.015) 0 1px, transparent 1px 3px),
+                    linear-gradient(180deg, #3e4249 0%, #2c2e33 35%, #1c1e22 100%) !important;
+        border: 2px solid #08090a !important;
+        border-radius: 16px !important;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.1), inset 0 -4px 0 rgba(0,0,0,.4),
+                    0 16px 32px rgba(0,0,0,.6), 0 2px 0 #0a0b0d !important;
       }
       .pm-lcd {
-        background: linear-gradient(160deg, rgba(255,255,255,.18) 0%, transparent 30%),
-                    repeating-linear-gradient(0deg, rgba(0,0,0,.04) 0 1px, transparent 1px 3px),
-                    radial-gradient(ellipse at 50% 40%, #d8e6b0 0%, #c0d090 55%, #a8bc78 100%) !important;
-        border: 3px solid #060708 !important;
-        box-shadow: inset 0 2px 6px rgba(0,0,0,.35), 0 1px 0 rgba(255,255,255,.06) !important;
+        background: linear-gradient(165deg, rgba(255,255,255,.2) 0%, transparent 25%),
+                    repeating-linear-gradient(0deg, rgba(0,0,0,.03) 0 1px, transparent 1px 2px),
+                    radial-gradient(ellipse at 50% 35%, #e0eec0 0%, #c8d898 50%, #b0c480 100%) !important;
+        border: 4px solid #050607 !important;
+        border-radius: 6px !important;
+        box-shadow: inset 0 3px 8px rgba(0,0,0,.4), inset 0 0 0 1px rgba(0,0,0,.2),
+                    0 1px 0 rgba(255,255,255,.05) !important;
+        font-family: ui-monospace, "SF Mono", Menlo, monospace !important;
       }
       #pads .pad:not(.hit):not(.down) {
         background: radial-gradient(140% 110% at 50% 0%, #5a5d64 0%, #3e4148 45%, #2c2e33 100%) !important;
