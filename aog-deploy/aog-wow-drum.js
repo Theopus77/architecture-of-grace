@@ -49,8 +49,16 @@
         box-shadow: inset 0 2px 6px rgba(0,0,0,.35), 0 1px 0 rgba(255,255,255,.06) !important;
       }
       #pads .pad:not(.hit):not(.down) {
-        background: radial-gradient(130% 100% at 50% 0%, #52555c 0%, #3a3c41 50%, #2a2c30 100%) !important;
-        box-shadow: inset 0 1px 0 rgba(255,255,255,.1), inset 0 -2px 3px rgba(0,0,0,.4), 0 2px 0 #08090a, 0 0 0 1px #0e0f11 !important;
+        background: radial-gradient(140% 110% at 50% 0%, #5a5d64 0%, #3e4148 45%, #2c2e33 100%) !important;
+        border: 1px solid #0a0b0d !important;
+        border-radius: 12px !important;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.12), inset 0 -3px 5px rgba(0,0,0,.45),
+                    0 3px 0 #08090a, 0 0 0 1px #121316, 0 4px 8px rgba(0,0,0,.3) !important;
+      }
+      #pads .pad .pn { font-weight: 700; letter-spacing: .04em; }
+      #pads .pad.hit {
+        background: radial-gradient(circle at 50% 45%, #ffe9a8 0%, #ffd36b 50%, #e8a020 100%) !important;
+        box-shadow: inset 0 0 12px rgba(255,211,107,.6), 0 0 8px rgba(255,211,107,.3) !important;
       }
       .pm-knob {
         background: radial-gradient(circle at 50% 50%, transparent 0 30px, #0a0b0d 30px 31px, transparent 31px),
