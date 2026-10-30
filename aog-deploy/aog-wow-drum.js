@@ -1,3 +1,10 @@
+/* AOG-IOS-CACHE-V1
+   iPhone Safari holds the service worker cache hard. After any kit or layout change:
+   1. Bump the CACHE name in sw.js (aog-cache-YYYY.MM.DD.tag).
+   2. Tell the user to hard-refresh, or close the tab and reopen.
+   3. If still stale: Settings → Safari → Advanced → Website Data → remove architectureofgrace.com.
+   The kits live in aog-drumkit.js. A change there is invisible until the cache name changes.
+*/
 /* AOG-WOW-PERMANENT-V1
    Permanent constraints for this file and the Drum Machine:
    1. Morph bar must stay compact (max-height ~72px, flex:0 0 auto). Never let it grow to fill the screen.
