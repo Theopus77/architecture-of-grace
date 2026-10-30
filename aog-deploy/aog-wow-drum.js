@@ -80,13 +80,19 @@
         box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 3px 6px rgba(0,0,0,.4);
       }
       .pm-morph {
-        display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 6px 0 4px;
+        display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 6px 0 4px;
         padding: 6px 10px; background: linear-gradient(180deg, #22252b, #1a1c20);
         border-radius: 10px; border: 1px solid #0d0f12;
-        box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 2px 6px rgba(0,0,0,.3);
-        flex: 0 0 auto; height: auto; max-height: none; overflow: visible; grid-column: 1 / -1;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+        flex: 0 0 auto; width: 100%; box-sizing: border-box;
       }
-      .pm-morph button { flex: 0 0 auto; font-size: 11px; padding: 4px 8px; }
+      .pm-morph label { flex: 0 0 auto; }
+      .pm-morph input[type=range] { flex: 1 1 80px; min-width: 60px; }
+      .pm-morph button { flex: 0 0 auto; font-size: 11px; padding: 5px 8px; min-height: 32px; }
+      @media (max-width: 400px) {
+        .pm-morph { gap: 4px; }
+        .pm-morph button { font-size: 10px; padding: 4px 6px; }
+      }
       #patSlots { display: flex !important; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
       .pm-morph label { color: #e8dfc9; letter-spacing: .14em; }
       .pm-morph .morph-val { color: #ffd36b; font-weight: 700; }
