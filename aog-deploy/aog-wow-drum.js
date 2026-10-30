@@ -35,6 +35,42 @@
       <span class="morph-val" id="morphVal">0%</span>
     `;
     lcd.parentNode.insertBefore(box, lcd.nextSibling);
+    injectTransport(box);
+  }
+
+  function injectTransport(morph) {
+    if (document.getElementById("pmQuick")) return;
+    const row = document.createElement("div");
+    row.id = "pmQuick";
+    row.className = "pm-quick";
+    row.innerHTML = `
+      <button type="button" class="pm-q" id="qPlay">▶</button>
+      <button type="button" class="pm-q rec" id="qRec">●</button>
+      <button type="button" class="pm-q" id="qDown">−</button>
+      <span class="pm-qtempo" id="qTempo">90</span>
+      <button type="button" class="pm-q" id="qUp">+</button>
+    `;
+    morph.parentNode.insertBefore(row, morph.nextSibling);
+    setTimeout(() => {
+      const play = document.getElementById("playBtn");
+      const rec = document.getElementById("loopRec");
+      const tempo = document.getElementById("tempo");
+      const down = document.getElementById("tDown");
+      const up = document.getElementById("tUp");
+      const qPlay = document.getElementById("qPlay");
+      const qRec = document.getElementById("qRec");
+      const qTempo = document.getElementById("qTempo");
+      const qDown = document.getElementById("qDown");
+      const qUp = document.getElementById("qUp");
+      if (qPlay && play) qPlay.onclick = () => play.click();
+      if (qRec && rec) qRec.onclick = () => rec.click();
+      if (qDown && down) qDown.onclick = () => down.click();
+      if (qUp && up) qUp.onclick = () => up.click();
+      const sync = () => { if (tempo && qTempo) qTempo.textContent = tempo.value || "90"; };
+      sync();
+      if (tempo) tempo.addEventListener("change", sync);
+      setInterval(sync, 500);
+    }, 200);
   }
 
   function injectStyles() {
@@ -96,6 +132,12 @@
       .pm-morph label { flex: 0 0 auto; }
       .pm-morph input[type=range] { flex: 1 1 80px; min-width: 60px; }
       .pm-morph button { flex: 0 0 auto; font-size: 11px; padding: 5px 8px; min-height: 32px; }
+      .pm-quick { display: flex; align-items: center; gap: 6px; margin: 4px 0 6px; padding: 4px 8px;
+        background: #1a1c20; border-radius: 8px; border: 1px solid #0d0f12; }
+      .pm-q { min-width: 36px; min-height: 32px; border-radius: 6px; border: 1px solid #0a0b0d;
+        background: #2a2c31; color: #e8e0d0; font-weight: 700; }
+      .pm-q.rec { color: #ff6a5a; }
+      .pm-qtempo { font: 700 14px/1 ui-monospace, monospace; color: #ffd36b; min-width: 36px; text-align: center; }
       @media (max-width: 400px) {
         .pm-morph { gap: 4px; }
         .pm-morph button { font-size: 10px; padding: 4px 6px; }
