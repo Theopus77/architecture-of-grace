@@ -56,10 +56,7 @@
                     0 3px 0 #08090a, 0 0 0 1px #121316, 0 4px 8px rgba(0,0,0,.3) !important;
       }
       #pads .pad .pn { font-weight: 700; letter-spacing: .04em; }
-      #pads .pad.hit {
-        background: radial-gradient(circle at 50% 45%, #ffe9a8 0%, #ffd36b 50%, #e8a020 100%) !important;
-        box-shadow: inset 0 0 12px rgba(255,211,107,.6), 0 0 8px rgba(255,211,107,.3) !important;
-      }
+
       .pm-knob {
         background: radial-gradient(circle at 50% 50%, transparent 0 30px, #0a0b0d 30px 31px, transparent 31px),
                     repeating-conic-gradient(from -135deg, #9aa0a8 0 1.2deg, #6a6e76 1.2deg 2deg, transparent 2deg 26deg) !important;
