@@ -41,6 +41,28 @@
         background: radial-gradient(130% 100% at 50% 0%, #52555c 0%, #3a3c41 50%, #2a2c30 100%) !important;
         box-shadow: inset 0 1px 0 rgba(255,255,255,.1), inset 0 -2px 3px rgba(0,0,0,.4), 0 2px 0 #08090a, 0 0 0 1px #0e0f11 !important;
       }
+      .pm-knob {
+        background: radial-gradient(circle at 50% 50%, transparent 0 30px, #0a0b0d 30px 31px, transparent 31px),
+                    repeating-conic-gradient(from -135deg, #9aa0a8 0 1.2deg, #6a6e76 1.2deg 2deg, transparent 2deg 26deg) !important;
+        box-shadow: 0 4px 8px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.15) !important;
+      }
+      .pm-knob::before {
+        background: radial-gradient(circle at 35% 28%, #6a6e76, #2e3036 50%, #141518) !important;
+        box-shadow: 0 3px 6px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.2), inset 0 -1px 2px rgba(0,0,0,.4) !important;
+      }
+      #ampBox, #pedalsNear {
+        background: linear-gradient(180deg, #2a2c30, #1a1c20);
+        border-radius: 10px;
+        padding: 8px;
+        border: 1px solid #0d0f12;
+      }
+      #ampBox .pedal, #pedalsNear .pedal {
+        background: repeating-linear-gradient(90deg, rgba(255,255,255,.03) 0 1px, transparent 1px 3px),
+                    linear-gradient(180deg, #3a3d44, #25272c);
+        border: 1px solid #0a0b0d;
+        border-radius: 8px;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 3px 6px rgba(0,0,0,.4);
+      }
       .pm-morph {
         display: flex; align-items: center; gap: 12px; margin: 10px 0 6px;
         padding: 8px 14px; background: #1a1c20; border-radius: 8px; border: 1px solid #0d0f12;
