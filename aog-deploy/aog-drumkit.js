@@ -127,7 +127,7 @@
       pads: { kick: P("KICK", [1, 2, 2]), snare: P("SNARE", [1, 2, 2]), ch: P("HAT", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
               clap: P("XSTICK", [1, 2, 1]), tom: P("TOM", [1, 1, 1]), rim: P("FLOOR", [1, 1, 1]), bell: P("CRASH", [1, 1, 1]) } }
   };
-  var IDS = ["D", "E", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y"];
+  var IDS = ["D", "E", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "LS"];
   /* ══ AOG-DRUM-PERC-V1 (2026-10-13) — HAND PERCUSSION, HAND DRUMS AND THE TABLA ══════════════════════════════════════
      Jimmy: "DO them all." Four recorded kits, eight pads each (music-handoff/tools/drumkits/kits_perc.py): the school's
      hand percussion; the djembe and cajón (with maracas, hand claps and the bell of a djembe group); the congas and
@@ -294,6 +294,11 @@
     ch: ["HAT", [2, 3, 2], "Hi-hat", "Charles"], oh: ["OPEN", [1, 2, 2], "Open hi-hat", "Charles abierto"],
     clap: ["CHINA", [1, 2, 2], "China cymbal", "Platillo china"], tom: ["TOM", [2, 2, 2], "Tom", "Tom"],
     rim: ["RIDE", [2, 2, 2], "Ride (its bell on an accent)", "Ride (la campana con acento)"], bell: ["CRASH", [1, 2, 2], "Crash", "Crash"] }));
+  KITS.LS = K("electronic", "boombap2", "Loop Stack Boom Bap", "Boom Bap apilado", DK({
+    kick: ["KICK", [1, 2, 2], "Kick (stacked)", "Bombo (apilado)"], snare: ["SNARE", [1, 2, 2], "Snare (stacked)", "Caja (apilada)"],
+    ch: ["HAT", [1, 2, 1], "Hi-hat", "Charles"], oh: ["OPEN", [1, 1, 1], "Open hi-hat", "Charles abierto"],
+    clap: ["CLAP", [1, 2, 1], "Clap", "Palmas"], tom: ["LOWTOM", [1, 1, 1], "Low tom", "Tom grave"],
+    rim: ["STICK", [1, 1, 1], "Stick", "Baquetas"], bell: ["SCRTCH", [1, 2, 1], "Scratch", "Scratch"] }));
   KITS.BM = K("electronic", "crunch", "Crunchy beat machine", "Caja de ritmos crujiente", DK({
     kick: ["KICK", [1, 2, 2], "Kick", "Bombo"], snare: ["SNARE", [1, 2, 2], "Snare", "Caja"],
     ch: ["HAT", [1, 2, 2], "Hi-hat", "Charles"], oh: ["OPEN", [1, 2, 2], "Open hi-hat", "Charles abierto"],
