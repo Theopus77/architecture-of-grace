@@ -134,6 +134,16 @@
       .pm-morph button { flex: 0 0 auto; font-size: 11px; padding: 5px 8px; min-height: 32px; }
       .pm-quick { display: flex; align-items: center; gap: 6px; margin: 4px 0 6px; padding: 4px 8px;
         background: #1a1c20; border-radius: 8px; border: 1px solid #0d0f12; }
+      .pm-q, .pm-b, .pm-morph button {
+        min-width: 36px; min-height: 34px; border-radius: 6px; border: 1px solid #0a0b0d;
+        background: linear-gradient(180deg, #3a3d44, #25272c); color: #e8e0d0;
+        font-weight: 700; box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 1px 0 #08090a;
+      }
+      .pm-q:active, .pm-b:active { transform: translateY(1px); }
+      #ampBox select, .pm-sel {
+        background: linear-gradient(180deg, #2a2c31, #1a1c20); color: #e8e0d0;
+        border: 1px solid #0d0f12; border-radius: 8px;
+      }
       .pm-q { min-width: 36px; min-height: 32px; border-radius: 6px; border: 1px solid #0a0b0d;
         background: #2a2c31; color: #e8e0d0; font-weight: 700; }
       .pm-q.rec { color: #ff6a5a; }
