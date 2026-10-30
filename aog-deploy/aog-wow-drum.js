@@ -1,6 +1,7 @@
-/* AOG-WOW-MORPH-V5 — Morph blends audio without fighting the fast path
-   No heavy pad CSS. The existing flash/hit system stays as-is.
-   Snap A/B stores events. The slider crossfades their velocities.
+/* AOG-WOW-MORPH-V6 — Full morph: hits + pad character
+   Snap A/B stores the sequencer events and the per-pad volume, tune, and pan.
+   The slider crossfades both, so the sound character changes with the pattern.
+   Light: no heavy CSS, no paint on every frame unless the value moved.
 */
 (function(){
   function injectMorph() {
@@ -46,36 +47,71 @@
     let stateA = null;
     let stateB = null;
     let originalEv = null;
+    let originalPads = null;
     let lastT = -1;
 
     function getEv() {
       try { return window.S && Array.isArray(window.S.ev) ? window.S.ev : null; } catch(e) { return null; }
     }
 
+    function getPads(bank) {
+      const S = window.S;
+      if (!S || !S.pads) return {};
+      const out = {};
+      for (let pi = 0; pi < 24; pi++) {
+        const k = bank + ":" + pi;
+        const o = S.pads[k];
+        if (o) out[pi] = { vol: o.vol == null ? 100 : o.vol, tune: o.tune || 0, pan: o.pan || 0 };
+      }
+      return out;
+    }
+
     function cloneEv(arr) {
       return arr.map(e => ({ b: e.b, p: e.p, t: e.t, v: e.v, len: e.len || 0 }));
     }
 
-    function applyAudioBlend(t) {
+    function lerp(a, b, t) { return a + (b - a) * t; }
+
+    function applyMorph(t) {
       const S = window.S;
       if (!S || !stateA || !stateB || t === lastT) return;
       lastT = t;
       const ease = t * t * (3 - 2 * t);
       const aGain = 1 - ease;
       const bGain = ease;
+
+      // Events
       const blended = [];
-      for (let i = 0; i < stateA.length; i++) {
-        const e = stateA[i];
+      for (let i = 0; i < stateA.ev.length; i++) {
+        const e = stateA.ev[i];
         const v = (e.v == null ? 0.8 : e.v) * aGain;
         if (v > 0.015) blended.push({ b: e.b, p: e.p, t: e.t, v: v, len: e.len || 0 });
       }
-      for (let i = 0; i < stateB.length; i++) {
-        const e = stateB[i];
+      for (let i = 0; i < stateB.ev.length; i++) {
+        const e = stateB.ev[i];
         const v = (e.v == null ? 0.8 : e.v) * bGain;
         if (v > 0.015) blended.push({ b: e.b, p: e.p, t: e.t, v: v, len: e.len || 0 });
       }
       S.ev = blended;
+
+      // Pad character (vol, tune, pan) for the current bank
+      const bank = S.bank;
+      for (let pi = 0; pi < 24; pi++) {
+        const a = stateA.pads[pi] || { vol: 100, tune: 0, pan: 0 };
+        const b = stateB.pads[pi] || { vol: 100, tune: 0, pan: 0 };
+        const k = bank + ":" + pi;
+        const vol = Math.round(lerp(a.vol, b.vol, ease) / 5) * 5;
+        const tune = Math.round(lerp(a.tune, b.tune, ease));
+        const pan = Math.round(lerp(a.pan, b.pan, ease) / 10) * 10;
+        if (vol === 100 && tune === 0 && pan === 0) {
+          if (S.pads[k]) delete S.pads[k];
+        } else {
+          S.pads[k] = { vol: vol, tune: tune, pan: pan };
+        }
+      }
+
       if (typeof window.paintSteps === "function") window.paintSteps();
+      if (typeof window.paintPadSet === "function") window.paintPadSet();
     }
 
     function ensureButtons() {
@@ -94,16 +130,20 @@
       btnA.addEventListener("click", () => {
         const ev = getEv();
         if (!ev) return;
+        const bank = window.S ? window.S.bank : 0;
         if (!originalEv) originalEv = cloneEv(ev);
-        stateA = cloneEv(ev);
+        if (!originalPads) originalPads = getPads(bank);
+        stateA = { ev: cloneEv(ev), pads: getPads(bank) };
         btnA.textContent = "A ✓";
         setTimeout(() => btnA.textContent = "Snap A", 800);
       });
       btnB.addEventListener("click", () => {
         const ev = getEv();
         if (!ev) return;
+        const bank = window.S ? window.S.bank : 0;
         if (!originalEv) originalEv = cloneEv(ev);
-        stateB = cloneEv(ev);
+        if (!originalPads) originalPads = getPads(bank);
+        stateB = { ev: cloneEv(ev), pads: getPads(bank) };
         btnB.textContent = "B ✓";
         setTimeout(() => btnB.textContent = "Snap B", 800);
       });
@@ -116,14 +156,24 @@
       const t = slider.value / 100;
       valEl.textContent = slider.value + "%";
       cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(() => applyAudioBlend(t));
+      raf = requestAnimationFrame(() => applyMorph(t));
     });
 
     slider.addEventListener("change", () => {
       if (+slider.value === 0 && originalEv && window.S) {
         window.S.ev = cloneEv(originalEv);
+        if (originalPads) {
+          const bank = window.S.bank;
+          for (let pi = 0; pi < 24; pi++) {
+            const k = bank + ":" + pi;
+            const p = originalPads[pi];
+            if (p) window.S.pads[k] = { vol: p.vol, tune: p.tune, pan: p.pan };
+            else if (window.S.pads[k]) delete window.S.pads[k];
+          }
+        }
         lastT = -1;
         if (typeof window.paintSteps === "function") window.paintSteps();
+        if (typeof window.paintPadSet === "function") window.paintPadSet();
       }
     });
   }, 200);
