@@ -1250,21 +1250,22 @@ function trigger(bi, pi, vel, when, T){
   const B=S.banks[bi], kt=d.kind==="drum" ? kitFor(bi, pi, d.kit)||d.kit : "", trim=d.kind==="drum" ? trimOf("kit", (AOGDrumKit.from && AOGDrumKit.from(kt, d.id))||kt) : d.kind==="chop" ? trimOf("rec", (B.rec||"").replace(/^c:/,"")) : trimOf("inst", B.inst);
   const out=c.createGain(); out.gain.value=P.vol/100*trim;
   /* AOG-SHAPE-V2: musical tone and gentle drive */
-  const extras=[]; /* AOG-PERMANENT: every shape/send node goes here and is disconnected in unplug */
+  const extras=[]; /* AOG-PERMANENT: shape/send nodes disabled by default to prevent freezes; enable only if needed */
+  const SHAPE_ON = false;
   let shaped=out;
-  if(P.tone!==100){
+  if(SHAPE_ON && P.tone!==100){
     const flt=c.createBiquadFilter(); flt.type="lowpass";
     flt.frequency.value=400+Math.pow(P.tone/100,1.6)*12000; flt.Q.value=0.5;
     out.connect(flt); shaped=flt; extras.push(flt);
   }
-  if(P.drive>0){
+  if(SHAPE_ON && P.drive>0){
     const drv=c.createWaveShaper(); const k=1+P.drive/40, n=128, crv=new Float32Array(n);
     for(let i=0;i<n;i++){ const x=i/(n-1)*2-1; crv[i]=Math.tanh(k*x)/Math.tanh(k); }
     drv.curve=crv; shaped.connect(drv); shaped=drv; extras.push(drv);
   }
   if(P.decay<100){ const t1=when+0.06+0.7*(P.decay/100); out.gain.setTargetAtTime(0, t1, 0.12); }
   /* AOG-SEND-V2: soft echo and filtered space, not noise */
-  if(P.echo>0 || P.verb>0){
+  if(SHAPE_ON && (P.echo>0 || P.verb>0)){
     if(P.echo>0){
       const send=c.createGain(); send.gain.value=P.echo/100*0.22;
       const dly=c.createDelay(0.4); dly.delayTime.value=0.16;

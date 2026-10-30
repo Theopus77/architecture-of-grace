@@ -132,7 +132,9 @@
     bind("drive", "drive");
   }
 
+  let waits = 0;
   const wait = setInterval(() => {
+    if (++waits > 50) { clearInterval(wait); return; }
     const slider = document.getElementById("morphSlider");
     const valEl = document.getElementById("morphVal");
     if (!slider || !valEl) return;
