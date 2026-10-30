@@ -60,13 +60,13 @@
     D: { dir: "dusty2", en: "Kit D · dusty breaks", es: "Kit D · breaks polvorientos",
       pads: { kick: P("THUMP", [1, 2, 2]), snare: P("CRACK", [1, 2, 2]), ch: P("SHAKER", [1, 2, 1]), oh: P("TAMB", [1, 1, 1]),
               clap: P("CLAP", [1, 1, 1]), tom: P("TIMBAL", [1, 2, 1]), rim: P("BLOCK", [1, 2, 1]), bell: P("TRIANG", [1, 1, 1]) } },
-    E: { dir: "boombap2", en: "Kit E · boom bap", es: "Kit E · boom bap",
+    E: { dir: "boombap2", en: "Boom Bap", es: "Kit E · boom bap",
       pads: { kick: P("KICK", [1, 2, 2]), snare: P("SNARE", [1, 2, 2]), ch: P("HAT", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
               clap: P("CLAP", [1, 2, 1]), tom: P("LOWTOM", [1, 1, 1]), rim: P("STICK", [1, 1, 1]), bell: P("SCRTCH", [1, 2, 1]) } },
     G: { dir: "lofi", en: "Kit G · lo-fi", es: "Kit G · lo-fi",
       pads: { kick: P("SOFT", [1, 2, 1]), snare: P("BRUSH", [1, 2, 1]), ch: P("TICK", [1, 2, 1]), oh: P("SIZZLE", [1, 1, 1]),
               clap: P("CLAP", [1, 1, 1]), tom: P("TOM", [1, 1, 1]), rim: P("RIM", [1, 1, 1]), bell: P("KEYS", [1, 1, 1]) } },
-    H: { dir: "latin2", en: "Kit H · Latin percussion", es: "Kit H · percusión latina",
+    H: { dir: "latin2", en: "Latin Percussion", es: "Kit H · percusión latina",
       pads: { kick: P("BOMBO", [1, 2, 1]), snare: P("TIMBAL", [1, 2, 1]), ch: P("GUIRO", [1, 1, 1]), oh: P("SHAKER", [1, 1, 1]),
               clap: P("CLAVE", [1, 2, 1]), tom: P("CONGA", [1, 2, 1]), rim: P("BONGO", [1, 2, 1]), bell: P("AGOGO", [1, 1, 1]) } },
     I: { dir: "live2", en: "Kit I · live drums", es: "Kit I · batería en vivo",
@@ -86,10 +86,10 @@
     L: { dir: "house909", en: "Kit L · 909 house", es: "Kit L · house 909", machine: 1,
       pads: { kick: P("909", [1, 2, 1]), snare: P("SNARE", [1, 2, 1]), ch: P("HAT", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
               clap: P("CLAP", [1, 2, 1]), tom: P("TOM", [1, 1, 1]), rim: P("RIDE", [1, 2, 1]), bell: P("STAB", null, { made: 1 }) } },
-    M: { dir: "reggae2", en: "Kit M · reggae and dub", es: "Kit M · reggae y dub",
+    M: { dir: "reggae2", en: "Reggae & Dub", es: "Kit M · reggae y dub",
       pads: { kick: P("KICK", [1, 2, 2]), snare: P("SNARE", [1, 2, 1]), ch: P("HAT", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
               clap: P("SYNTOM", null, { made: 1 }), tom: P("TOM", [1, 1, 1]), rim: P("XSTICK", [1, 2, 1]), bell: P("SKANK", [1, 2, 1]) } },
-    N: { dir: "afrobeat2", en: "Kit N · afrobeat", es: "Kit N · afrobeat",
+    N: { dir: "afrobeat2", en: "Afrobeat", es: "Kit N · afrobeat",
       pads: { kick: P("KICK", [1, 2, 1]), snare: P("SNARE", [1, 2, 1]), ch: P("SHAKER", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
               clap: P("DJEMBE", [1, 2, 1]), tom: P("CONGA", [1, 2, 1]), rim: P("STICKS", [1, 1, 1]), bell: P("BELL", [1, 1, 1]) } },
     O: { dir: "marching2", en: "Kit O · marching band", es: "Kit O · banda de marcha",
@@ -123,11 +123,11 @@
     X: { dir: "vintage70-2", en: "Kit X · 1970s vintage", es: "Kit X · vintage de los años 70",
       pads: { kick: P("KICK", [1, 2, 2]), snare: P("SNARE", [1, 2, 2]), ch: P("HAT", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
               clap: P("TOM", [1, 1, 1]), tom: P("FLOOR", [1, 1, 1]), rim: P("PEDAL", [1, 2, 1], { hat: 1 }), bell: P("CRASH", [1, 1, 1]) } },
-    Y: { dir: "break2", en: "Kit Y · hip-hop break", es: "Kit Y · break de hip-hop",
+    Y: { dir: "break2", en: "Hip-Hop Break", es: "Kit Y · break de hip-hop",
       pads: { kick: P("KICK", [1, 2, 2]), snare: P("SNARE", [1, 2, 2]), ch: P("HAT", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
               clap: P("XSTICK", [1, 2, 1]), tom: P("TOM", [1, 1, 1]), rim: P("FLOOR", [1, 1, 1]), bell: P("CRASH", [1, 1, 1]) } }
   };
-  var IDS = ["D", "E", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "LS"];
+  var IDS = ["D", "E", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "LS", "WD", "IN", "CB"];
   /* ══ AOG-DRUM-PERC-V1 (2026-10-13) — HAND PERCUSSION, HAND DRUMS AND THE TABLA ══════════════════════════════════════
      Jimmy: "DO them all." Four recorded kits, eight pads each (music-handoff/tools/drumkits/kits_perc.py): the school's
      hand percussion; the djembe and cajón (with maracas, hand claps and the bell of a djembe group); the congas and
@@ -138,6 +138,22 @@
      strokes (via Sonic Pi). The few strokes no free recording has are shaped here from the same drum's recordings,
      and CREDITS.txt says which. A kit downloads only when it is picked, like every recorded kit. */
   function W2(name, n, en, es, extra) { var o = { en: en, es: es }; if (extra) for (var k in extra) o[k] = extra[k]; return P(name, n, o); }
+  
+  KITS.WD = K("world", "handdrums", "West African · djembe", "África occidental · yembé", DK({
+    kick: ["KICK", [1, 2, 2], "Djembe bass", "Yembé grave"], snare: ["SNARE", [1, 2, 2], "Djembe tone", "Yembé tono"],
+    ch: ["HAT", [1, 2, 1], "Djembe slap", "Yembé slap"], oh: ["OPEN", [1, 1, 1], "Shaker", "Chasquido"],
+    clap: ["CLAP", [1, 2, 1], "Clap", "Palmas"], tom: ["TOM", [1, 1, 1], "Cajón", "Cajón"],
+    rim: ["RIM", [1, 1, 1], "Rim", "Aro"], bell: ["BELL", [1, 2, 1], "Bell", "Campana"] }));
+  KITS.IN = K("world", "tabla", "Indian · tabla", "India · tabla", DK({
+    kick: ["KICK", [1, 2, 2], "Bayan", "Bayan"], snare: ["SNARE", [1, 2, 2], "Dayan", "Dayan"],
+    ch: ["HAT", [1, 2, 1], "Na", "Na"], oh: ["OPEN", [1, 1, 1], "Tin", "Tin"],
+    clap: ["CLAP", [1, 2, 1], "Te", "Te"], tom: ["TOM", [1, 1, 1], "Dha", "Dha"],
+    rim: ["RIM", [1, 1, 1], "Ka", "Ka"], bell: ["BELL", [1, 2, 1], "Tun", "Tun"] }));
+  KITS.CB = K("world", "congas", "Caribbean · congas", "Caribe · congas", DK({
+    kick: ["KICK", [1, 2, 2], "Conga open", "Conga abierto"], snare: ["SNARE", [1, 2, 2], "Conga slap", "Conga slap"],
+    ch: ["HAT", [1, 2, 1], "Conga muted", "Conga tapado"], oh: ["OPEN", [1, 1, 1], "Bongo", "Bongó"],
+    clap: ["CLAP", [1, 2, 1], "Clave", "Clave"], tom: ["TOM", [1, 1, 1], "Timbale", "Timbal"],
+    rim: ["RIM", [1, 1, 1], "Rim", "Aro"], bell: ["BELL", [1, 2, 1], "Cowbell", "Cencerro"] }));
   KITS.HP = { dir: "handperc", en: "Hand percussion", es: "Percusión de mano", hand: 1,
     pads: { kick: W2("WBLOW", [3, 3, 3], "Woodblock · low", "Bloque de madera · grave", { look: "small" }),
             snare: W2("TAMBHIT", [2, 2, 2], "Tambourine · hit", "Pandereta · golpe"),
