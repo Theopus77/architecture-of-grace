@@ -1,6 +1,6 @@
-/* AOG-WOW-MORPH-V4 — Morph blends the actual audio
-   Snap A/B stores the real sequencer events. The slider crossfades their
-   velocities so both patterns play at once, with A fading out and B fading in.
+/* AOG-WOW-MORPH-V5 — Morph blends audio without fighting the fast path
+   No heavy pad CSS. The existing flash/hit system stays as-is.
+   Snap A/B stores events. The slider crossfades their velocities.
 */
 (function(){
   function injectMorph() {
@@ -23,12 +23,6 @@
     const style = document.createElement("style");
     style.id = "aog-wow-styles";
     style.textContent = `
-      #pads .pad.hit {
-        background: radial-gradient(circle at 50% 40%, #ffe9a8 0%, #ffd36b 40%, #e8a020 100%) !important;
-        box-shadow: inset 0 0 22px rgba(255, 211, 107, 0.85), 0 0 20px #ffd36b, 0 0 36px rgba(255, 211, 107, 0.45) !important;
-        color: #1a1204 !important;
-      }
-      #pads .pad.hit .pn, #pads .pad.hit .pi, #pads .pad.hit .pk { color: #1a1204 !important; }
       .pm-morph {
         display: flex; align-items: center; gap: 12px; margin: 10px 0 6px;
         padding: 8px 14px; background: #1a1c20; border-radius: 8px; border: 1px solid #0d0f12;
@@ -52,6 +46,7 @@
     let stateA = null;
     let stateB = null;
     let originalEv = null;
+    let lastT = -1;
 
     function getEv() {
       try { return window.S && Array.isArray(window.S.ev) ? window.S.ev : null; } catch(e) { return null; }
@@ -63,20 +58,22 @@
 
     function applyAudioBlend(t) {
       const S = window.S;
-      if (!S || !stateA || !stateB) return;
-      // Ease the crossfade so the change feels continuous
-      const ease = t * t * (3 - 2 * t); // smoothstep
+      if (!S || !stateA || !stateB || t === lastT) return;
+      lastT = t;
+      const ease = t * t * (3 - 2 * t);
       const aGain = 1 - ease;
       const bGain = ease;
       const blended = [];
-      stateA.forEach(e => {
+      for (let i = 0; i < stateA.length; i++) {
+        const e = stateA[i];
         const v = (e.v == null ? 0.8 : e.v) * aGain;
         if (v > 0.015) blended.push({ b: e.b, p: e.p, t: e.t, v: v, len: e.len || 0 });
-      });
-      stateB.forEach(e => {
+      }
+      for (let i = 0; i < stateB.length; i++) {
+        const e = stateB[i];
         const v = (e.v == null ? 0.8 : e.v) * bGain;
         if (v > 0.015) blended.push({ b: e.b, p: e.p, t: e.t, v: v, len: e.len || 0 });
-      });
+      }
       S.ev = blended;
       if (typeof window.paintSteps === "function") window.paintSteps();
     }
@@ -122,10 +119,10 @@
       raf = requestAnimationFrame(() => applyAudioBlend(t));
     });
 
-    // Restore original pattern when slider returns to 0 if we have a snapshot
     slider.addEventListener("change", () => {
       if (+slider.value === 0 && originalEv && window.S) {
         window.S.ev = cloneEv(originalEv);
+        lastT = -1;
         if (typeof window.paintSteps === "function") window.paintSteps();
       }
     });
