@@ -99,7 +99,7 @@
       for (let pi = 0; pi < 24; pi++) {
         const k = bank + ":" + pi;
         const o = S.pads[k];
-        if (o) out[pi] = { vol: o.vol == null ? 100 : o.vol, tune: o.tune || 0, pan: o.pan || 0, decay: o.decay == null ? 100 : o.decay, tone: o.tone == null ? 100 : o.tone, drive: o.drive || 0 };
+        if (o) out[pi] = { vol: o.vol == null ? 100 : o.vol, tune: o.tune || 0, pan: o.pan || 0, decay: o.decay == null ? 100 : o.decay, tone: o.tone == null ? 100 : o.tone, drive: o.drive || 0, echo: o.echo || 0, verb: o.verb || 0, chance: o.chance == null ? 100 : o.chance, micro: o.micro || 0, alt: o.alt || 0 };
       }
       return out;
     }
@@ -135,8 +135,8 @@
       // Pad character (vol, tune, pan) for the current bank
       const bank = S.bank;
       for (let pi = 0; pi < 24; pi++) {
-        const a = stateA.pads[pi] || { vol: 100, tune: 0, pan: 0, decay: 100, tone: 100, drive: 0 };
-        const b = stateB.pads[pi] || { vol: 100, tune: 0, pan: 0, decay: 100, tone: 100, drive: 0 };
+        const a = stateA.pads[pi] || { vol: 100, tune: 0, pan: 0, decay: 100, tone: 100, drive: 0, echo: 0, verb: 0, chance: 100, micro: 0, alt: 0 };
+        const b = stateB.pads[pi] || { vol: 100, tune: 0, pan: 0, decay: 100, tone: 100, drive: 0, echo: 0, verb: 0, chance: 100, micro: 0, alt: 0 };
         const k = bank + ":" + pi;
         const vol = Math.round(lerp(a.vol, b.vol, ease) / 5) * 5;
         const tune = Math.round(lerp(a.tune, b.tune, ease));
@@ -144,10 +144,15 @@
         const decay = Math.round(lerp(a.decay, b.decay, ease));
         const tone = Math.round(lerp(a.tone, b.tone, ease));
         const drive = Math.round(lerp(a.drive, b.drive, ease));
-        if (vol === 100 && tune === 0 && pan === 0 && decay === 100 && tone === 100 && drive === 0) {
+        const echo = Math.round(lerp(a.echo, b.echo, ease));
+        const verb = Math.round(lerp(a.verb, b.verb, ease));
+        const chance = Math.round(lerp(a.chance, b.chance, ease));
+        const micro = Math.round(lerp(a.micro, b.micro, ease));
+        const alt = ease > 0.5 ? b.alt : a.alt;
+        if (vol === 100 && tune === 0 && pan === 0 && decay === 100 && tone === 100 && drive === 0 && echo === 0 && verb === 0 && chance === 100 && micro === 0 && !alt) {
           if (S.pads[k]) delete S.pads[k];
         } else {
-          S.pads[k] = { vol: vol, tune: tune, pan: pan, decay: decay, tone: tone, drive: drive };
+          S.pads[k] = { vol: vol, tune: tune, pan: pan, decay: decay, tone: tone, drive: drive, echo: echo, verb: verb, chance: chance, micro: micro, alt: alt };
         }
       }
 
@@ -218,4 +223,80 @@
       }
     });
   }, 200);
+})();
+
+/* AOG-FULL-V1: pattern slots, probability, microtiming, alt, Morph filter/sends */
+(function(){
+  setTimeout(function(){
+    // Pattern slots
+    if (!document.getElementById("patSlots")) {
+      const morph = document.getElementById("pmMorph");
+      if (morph) {
+        const row = document.createElement("div");
+        row.id = "patSlots";
+        row.style.cssText = "display:flex;gap:4px;margin-top:6px;flex-wrap:wrap";
+        for (let i = 0; i < 8; i++) {
+          const b = document.createElement("button");
+          b.type = "button"; b.className = "pm-b"; b.textContent = "P" + (i+1);
+          b.style.cssText = "font-size:11px;padding:3px 6px";
+          b.dataset.slot = i;
+          row.appendChild(b);
+        }
+        morph.appendChild(row);
+        const slots = new Array(8).fill(null);
+        row.addEventListener("click", e => {
+          const b = e.target.closest("button");
+          if (!b) return;
+          const i = +b.dataset.slot;
+          const S = window.S;
+          if (!S) return;
+          if (e.shiftKey || slots[i] == null) {
+            slots[i] = S.ev.map(x => ({b:x.b,p:x.p,t:x.t,v:x.v,len:x.len||0}));
+            b.textContent = "P" + (i+1) + "✓";
+            setTimeout(() => b.textContent = "P" + (i+1), 600);
+          } else {
+            S.ev = slots[i].map(x => ({b:x.b,p:x.p,t:x.t,v:x.v,len:x.len||0}));
+            if (typeof window.paintSteps === "function") window.paintSteps();
+          }
+        });
+      }
+    }
+
+    // Extra pad controls: Echo, Verb, Chance, Micro, Alt
+    if (!document.getElementById("extraRow") && document.getElementById("shapeRow")) {
+      const shape = document.getElementById("shapeRow");
+      const row = document.createElement("div");
+      row.className = "pm-row";
+      row.id = "extraRow";
+      row.style.marginTop = "8px";
+      row.innerHTML = `
+        <label class="pm-f"><span>Echo · <span class="pm-val" id="echoVal">0</span></span><input class="pm-range" id="echo" type="range" min="0" max="100" step="5" value="0"></label>
+        <label class="pm-f"><span>Verb · <span class="pm-val" id="verbVal">0</span></span><input class="pm-range" id="verb" type="range" min="0" max="100" step="5" value="0"></label>
+        <label class="pm-f"><span>Chance · <span class="pm-val" id="chanceVal">100</span></span><input class="pm-range" id="chance" type="range" min="0" max="100" step="5" value="100"></label>
+        <label class="pm-f"><span>Micro · <span class="pm-val" id="microVal">0</span></span><input class="pm-range" id="micro" type="range" min="-15" max="15" step="1" value="0"></label>
+        <label class="pm-f"><span>Alt</span><input type="checkbox" id="altPad"></label>
+      `;
+      shape.parentNode.insertBefore(row, shape.nextSibling);
+      function bind(id, key, isCheck) {
+        const el = document.getElementById(id);
+        const val = document.getElementById(id + "Val");
+        if (!el) return;
+        const fn = () => {
+          const S = window.S; if (!S) return;
+          const k = S.bank + ":" + S.sel;
+          const o = Object.assign({}, S.pads[k] || {});
+          o[key] = isCheck ? (el.checked ? 1 : 0) : +el.value;
+          S.pads[k] = o;
+          if (val && !isCheck) val.textContent = el.value;
+          if (typeof window.paintPadSet === "function") window.paintPadSet();
+        };
+        el.addEventListener(isCheck ? "change" : "input", fn);
+      }
+      bind("echo", "echo");
+      bind("verb", "verb");
+      bind("chance", "chance");
+      bind("micro", "micro");
+      bind("altPad", "alt", true);
+    }
+  }, 300);
 })();

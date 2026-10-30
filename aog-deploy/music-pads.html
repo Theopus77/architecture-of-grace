@@ -1112,7 +1112,7 @@ function canPlay(bi){
 }
 
 /* ══ playing one pad ══ */
-function padSet(bi, pi){ const o=S.pads[bi+":"+pi]||{}; return {vol:o.vol==null?100:o.vol, tune:o.tune||0, pan:o.pan||0, nudge:+o.nudge||0, cut:o.cut==null?-1:+o.cut, decay:o.decay==null?100:o.decay, tone:o.tone==null?100:o.tone, drive:o.drive==null?0:o.drive}; } /* AOG-PADS-FEEL-V1 + shape */
+function padSet(bi, pi){ const o=S.pads[bi+":"+pi]||{}; return {vol:o.vol==null?100:o.vol, tune:o.tune||0, pan:o.pan||0, nudge:+o.nudge||0, cut:o.cut==null?-1:+o.cut, decay:o.decay==null?100:o.decay, tone:o.tone==null?100:o.tone, drive:o.drive==null?0:o.drive, echo:o.echo||0, verb:o.verb||0, chance:o.chance==null?100:o.chance, micro:o.micro||0, alt:o.alt||0}; } /* AOG-PADS-FEEL-V1 + shape */
 function feelWhen(bi, pi, when){ const n=padSet(bi, pi).nudge; return n ? when+n/1000 : when; }
 /* AOG-PADS-LEVEL-V1 (2026-10-05) — Jimmy: "all the instruments don't start at the same volume." Each sound is brought to the
    grand piano's level on the piano page (the level every music tool is set to), measured as the ear hears it (K-weighted,
@@ -1257,6 +1257,16 @@ function trigger(bi, pi, vel, when, T){
     }
   }
   if(P.decay<100){ const t1=when+0.04+0.6*(P.decay/100); out.gain.setTargetAtTime(0, t1, 0.08); }
+  /* AOG-SEND-V1: per-pad echo and reverb sends */
+  if(P.echo>0 || P.verb>0){
+    const send=c.createGain(); send.gain.value=(P.echo||0)/100*0.4;
+    const dly=c.createDelay(1.0); dly.delayTime.value=0.22;
+    const fb=c.createGain(); fb.gain.value=0.35;
+    shaped.connect(send); send.connect(dly); dly.connect(fb); fb.connect(dly); dly.connect(T.dest);
+    if(P.verb>0){ const v=c.createConvolver(); /* simple reverb via short noise if no IR */ const len=c.sampleRate*0.4, buf=c.createBuffer(2,len,c.sampleRate);
+      for(let ch=0;ch<2;ch++){ const d=buf.getChannelData(ch); for(let i=0;i<len;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.2); }
+      v.buffer=buf; const vg=c.createGain(); vg.gain.value=(P.verb||0)/100*0.35; shaped.connect(vg); vg.connect(v); v.connect(T.dest); }
+  }
   /* AOG-PADS-VOICES-V1 (2026-10-11) — Jimmy, on his iPad: "after like 5-6 chords it froze up, same with the bank c the
      notes". A pad in the middle needs no panner (most pads); every part of a sound is unplugged the moment it ends, so
      the sound engine never carries old chords; and no more than MAXV notes ring at once, the oldest let go quickly. */
@@ -1362,7 +1372,8 @@ function pump(){
       if(list) list.forEach(e=>{
         if(e._skip===pass){ delete e._skip; return; }
         if(STAGE.mute[e.b]) return;   /* AOG-PADS-STAGE-V1: a muted layer sits out */
-        const hw=feelWhen(e.b, e.p, when); const v=trigger(e.b, e.p, e.v, hw); flash(e.b, e.p, hw, e.v);
+        const P=padSet(e.b, e.p); if(P.chance<100 && Math.random()*100 > P.chance) continue;
+        const hw=feelWhen(e.b, e.p, when)+(P.micro||0)/1000; const v=trigger(e.b, e.p, e.v, hw); flash(e.b, e.p, hw, e.v);
         if(v && gated(e.b)) v.stop(hw+Math.max(12, e.len||48)*sp); /* AOG-PADS-FEEL-V1 */
       });
       if(S.click && tk%PPQ===0) blip(when, tk===0);
