@@ -57,25 +57,25 @@
   /* the recorded kits. P to T and U to Y follow the drummers Jimmy named; on screen they go by style, never by player */
   var KITS = {
     /* AOG-DRUM-REAL-V2: the kits that used to be made on the page, now recorded (same letter, name and character) */
-    D: { dir: "dusty2", en: "Kit D · dusty breaks", es: "Kit D · breaks polvorientos",
+    D: { dir: "dusty2", en: "Dusty Breaks", es: "Kit D · breaks polvorientos",
       pads: { kick: P("THUMP", [1, 2, 2]), snare: P("CRACK", [1, 2, 2]), ch: P("SHAKER", [1, 2, 1]), oh: P("TAMB", [1, 1, 1]),
               clap: P("CLAP", [1, 1, 1]), tom: P("TIMBAL", [1, 2, 1]), rim: P("BLOCK", [1, 2, 1]), bell: P("TRIANG", [1, 1, 1]) } },
     E: { dir: "boombap2", en: "Boom Bap", es: "Kit E · boom bap",
       pads: { kick: P("KICK", [1, 2, 2]), snare: P("SNARE", [1, 2, 2]), ch: P("HAT", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
               clap: P("CLAP", [1, 2, 1]), tom: P("LOWTOM", [1, 1, 1]), rim: P("STICK", [1, 1, 1]), bell: P("SCRTCH", [1, 2, 1]) } },
-    G: { dir: "lofi", en: "Kit G · lo-fi", es: "Kit G · lo-fi",
+    G: { dir: "lofi", en: "Lo-Fi", es: "Kit G · lo-fi",
       pads: { kick: P("SOFT", [1, 2, 1]), snare: P("BRUSH", [1, 2, 1]), ch: P("TICK", [1, 2, 1]), oh: P("SIZZLE", [1, 1, 1]),
               clap: P("CLAP", [1, 1, 1]), tom: P("TOM", [1, 1, 1]), rim: P("RIM", [1, 1, 1]), bell: P("KEYS", [1, 1, 1]) } },
     H: { dir: "latin2", en: "Latin Percussion", es: "Kit H · percusión latina",
       pads: { kick: P("BOMBO", [1, 2, 1]), snare: P("TIMBAL", [1, 2, 1]), ch: P("GUIRO", [1, 1, 1]), oh: P("SHAKER", [1, 1, 1]),
               clap: P("CLAVE", [1, 2, 1]), tom: P("CONGA", [1, 2, 1]), rim: P("BONGO", [1, 2, 1]), bell: P("AGOGO", [1, 1, 1]) } },
-    I: { dir: "live2", en: "Kit I · live drums", es: "Kit I · batería en vivo",
+    I: { dir: "live2", en: "Live Drums", es: "Kit I · batería en vivo",
       pads: { kick: P("KICK", [1, 2, 2]), snare: P("SNARE", [1, 2, 2]), ch: P("HAT", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
               clap: P("XSTICK", [1, 2, 1]), tom: P("FLOOR", [1, 1, 1]), rim: P("RIDE", [1, 2, 1]), bell: P("CRASH", [1, 1, 1]) } },
-    J: { dir: "arena2", en: "Kit J · rock arena", es: "Kit J · rock de estadio",
+    J: { dir: "arena2", en: "Rock Arena", es: "Kit J · rock de estadio",
       pads: { kick: P("KICK", [1, 2, 2]), snare: P("SNARE", [1, 2, 2]), ch: P("HAT", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
               clap: P("CLAPS", [1, 2, 1]), tom: P("TOM", [1, 1, 1]), rim: P("STOMP", [1, 2, 1]), bell: P("CRASH", [1, 1, 1]) } },
-    K: { dir: "jazzbrush2", en: "Kit K · jazz brushes", es: "Kit K · jazz con escobillas",
+    K: { dir: "jazzbrush2", en: "Jazz Brushes", es: "Kit K · jazz con escobillas",
       pads: { kick: P("KICK", [1, 2, 1]), snare: P("BRUSH", [1, 2, 1]), ch: P("CHICK", [1, 2, 1]), oh: P("SWISH", [1, 2, 1]),
               clap: P("SLAP", [1, 2, 1]), tom: P("TOM", [1, 1, 1]), rim: P("RIDE", [1, 2, 1]), bell: P("BASS", [1, 2, 1]) } },
     /* AOG-DRUM-909-V1 (2026-10-05) — Jimmy: "REAL EVERYTHING if possible". Kit L is a real drum machine now: a Roland
@@ -83,7 +83,7 @@
        CC BY 4.0). Each pad sits where its page-made sound sat (its hats and ride a little louder, so they are heard). The
        machine has no chord, so STAB is still drawn by the page. machine:1 = a drum machine, recorded: it stays under the
        drum machine heading in the Sounds menu. */
-    L: { dir: "house909", en: "Kit L · 909 house", es: "Kit L · house 909", machine: 1,
+    L: { dir: "house909", en: "909 House", es: "Kit L · house 909", machine: 1,
       pads: { kick: P("909", [1, 2, 1]), snare: P("SNARE", [1, 2, 1]), ch: P("HAT", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
               clap: P("CLAP", [1, 2, 1]), tom: P("TOM", [1, 1, 1]), rim: P("RIDE", [1, 2, 1]), bell: P("STAB", null, { made: 1 }) } },
     M: { dir: "reggae2", en: "Reggae & Dub", es: "Kit M · reggae y dub",
@@ -92,35 +92,35 @@
     N: { dir: "afrobeat2", en: "Afrobeat", es: "Kit N · afrobeat",
       pads: { kick: P("KICK", [1, 2, 1]), snare: P("SNARE", [1, 2, 1]), ch: P("SHAKER", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
               clap: P("DJEMBE", [1, 2, 1]), tom: P("CONGA", [1, 2, 1]), rim: P("STICKS", [1, 1, 1]), bell: P("BELL", [1, 1, 1]) } },
-    O: { dir: "marching2", en: "Kit O · marching band", es: "Kit O · banda de marcha",
+    O: { dir: "marching2", en: "Marching Band", es: "Kit O · banda de marcha",
       pads: { kick: P("BASS", [1, 2, 1]), snare: P("SNARE", [1, 2, 1]), ch: P("CLICK", [1, 1, 1]), oh: P("CYMBAL", [1, 1, 1]),
               clap: P("ROLL", [1, 2, 1]), tom: P("TENOR", [1, 2, 1]), rim: P("RIM", [1, 1, 1]), bell: P("BELLS", [1, 1, 1]) } },
-    P: { dir: "studio2", en: "Kit P · studio session, dry", es: "Kit P · sesión de estudio, seca",
+    P: { dir: "studio2", en: "Studio Dry", es: "Kit P · sesión de estudio, seca",
       pads: { kick: P("KICK", [1, 2, 2]), snare: P("SNARE", [1, 2, 2]), ch: P("HAT", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
               clap: P("XSTICK", [1, 1, 1]), tom: P("FLOOR", [1, 1, 1]), rim: P("RIDE", [1, 2, 1]), bell: P("CRASH", [1, 1, 1]) } },
-    Q: { dir: "bigroom2", en: "Kit Q · big room rock", es: "Kit Q · rock en sala grande",
+    Q: { dir: "bigroom2", en: "Big Room Rock", es: "Kit Q · rock en sala grande",
       pads: { kick: P("KICK", [1, 2, 2]), snare: P("SNARE", [1, 2, 2]), ch: P("HAT", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
               clap: P("HITOM", [1, 1, 1]), tom: P("FLOOR", [1, 1, 1]), rim: P("RIDE", [1, 2, 1]), bell: P("CRASH", [1, 1, 1]) } },
-    R: { dir: "bigband2", en: "Kit R · big-band swing", es: "Kit R · swing de big band",
+    R: { dir: "bigband2", en: "Big Band Swing", es: "Kit R · swing de big band",
       pads: { kick: P("KICK", [1, 2, 2]), snare: P("SNARE", [1, 2, 2]), ch: P("HAT", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
               clap: P("PEDAL", [1, 2, 1], { hat: 1 }), tom: P("TOM", [1, 1, 1]), rim: P("RIDE", [1, 2, 1]), bell: P("SIZZLE", [1, 1, 1]) } },
-    S: { dir: "prog2", en: "Kit S · prog rock, many toms", es: "Kit S · rock progresivo, muchos toms",
+    S: { dir: "prog2", en: "Prog Rock", es: "Kit S · rock progresivo, muchos toms",
       pads: { kick: P("KICK", [1, 2, 2]), snare: P("SNARE", [1, 2, 2]), ch: P("HAT", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
               clap: P("HITOM", [1, 1, 1]), tom: P("MIDTOM", [1, 1, 1]), rim: P("FLOOR", [1, 1, 1]), bell: P("CRASH", [1, 1, 1]) } },
-    T: { dir: "groovemetal", en: "Kit T · groove metal", es: "Kit T · groove metal",
+    T: { dir: "groovemetal", en: "Groove Metal", es: "Kit T · groove metal",
       pads: { kick: P("KICK", [1, 4, 2]), snare: P("SNARE", [1, 2, 2]), ch: P("HAT", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
               clap: P("CHINA", [1, 1, 1]), tom: P("TOM", [1, 1, 1]), rim: P("RIDE", [1, 2, 1]), bell: P("CRASH", [1, 1, 1]) } },
     /* AOG-DRUM-REAL-V2: five more kits after Jimmy's drummers (U Buddy Rich, W Jeff Porcaro, X John Bonham) */
-    U: { dir: "jazzclub2", en: "Kit U · jazz club", es: "Kit U · club de jazz",
+    U: { dir: "jazzclub2", en: "Jazz Club", es: "Kit U · club de jazz",
       pads: { kick: P("KICK", [1, 2, 2]), snare: P("SNARE", [1, 2, 2]), ch: P("HAT", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
               clap: P("PEDAL", [1, 2, 1], { hat: 1 }), tom: P("TOM", [1, 1, 1]), rim: P("RIDE", [1, 2, 1]), bell: P("CRASH", [1, 1, 1]) } },
-    V: { dir: "brushes", en: "Kit V · brush ballad", es: "Kit V · balada con escobillas",
+    V: { dir: "brushes", en: "Brush Ballad", es: "Kit V · balada con escobillas",
       pads: { kick: P("KICK", [1, 2, 1]), snare: P("SNARE", [1, 2, 1]), ch: P("CHICK", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
               clap: P("STIR", [1, 2, 1]), tom: P("TOM", [1, 1, 1]), rim: P("RIDE", [1, 2, 1]), bell: P("FLUTTR", [1, 1, 1]) } },
-    W: { dir: "funk2", en: "Kit W · studio funk", es: "Kit W · funk de estudio",
+    W: { dir: "funk2", en: "Studio Funk", es: "Kit W · funk de estudio",
       pads: { kick: P("KICK", [1, 2, 2]), snare: P("SNARE", [1, 2, 2]), ch: P("HAT", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
               clap: P("XSTICK", [1, 2, 1]), tom: P("TOM", [1, 1, 1]), rim: P("RIDE", [1, 2, 1]), bell: P("CRASH", [1, 1, 1]) } },
-    X: { dir: "vintage70-2", en: "Kit X · 1970s vintage", es: "Kit X · vintage de los años 70",
+    X: { dir: "vintage70-2", en: "1970s Vintage", es: "Kit X · vintage de los años 70",
       pads: { kick: P("KICK", [1, 2, 2]), snare: P("SNARE", [1, 2, 2]), ch: P("HAT", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
               clap: P("TOM", [1, 1, 1]), tom: P("FLOOR", [1, 1, 1]), rim: P("PEDAL", [1, 2, 1], { hat: 1 }), bell: P("CRASH", [1, 1, 1]) } },
     Y: { dir: "break2", en: "Hip-Hop Break", es: "Kit Y · break de hip-hop",
@@ -219,7 +219,7 @@
     { id: "orch", en: "Orchestra and marching", es: "Orquesta y banda de marcha" },
     { id: "hand", en: "Hand percussion", es: "Percusión de mano" }
   ];
-  var GROUP_OF = { H: "world", N: "world", O: "orch", L: "electronic", HP: "hand", HD: "hand", HC: "hand", TB: "hand" };
+  var GROUP_OF = { D: "electronic", E: "electronic", G: "electronic", Y: "electronic", L: "electronic", H: "world", N: "world", M: "world", O: "orch", HP: "hand", HD: "hand", HC: "hand", TB: "hand" };
   function group(b) { var k = KITS[b]; return !k ? "" : (k.grp || GROUP_OF[b] || "drums"); }
   /* the grooves of the new kits sit in the beat menus under the same kinds of name */
   var BEAT_GROUPS = {
