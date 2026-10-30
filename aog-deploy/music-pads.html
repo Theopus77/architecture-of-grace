@@ -835,11 +835,15 @@ function ceiling(c){
 function mvol(){ const v=S.mvol==null ? 100 : +S.mvol; return Math.max(0, Math.min(150, v))/100; }   /* AOG-PADS-KNOBS-V1: how loud the unit plays (not what a bounce writes) */
 function master(c){
   const m={c:c};
-  m.lim=c.createDynamicsCompressor(); m.lim.threshold.value=-3; m.lim.knee.value=2; m.lim.ratio.value=20; m.lim.attack.value=0.002; m.lim.release.value=0.12;
-  m.bus=c.createGain(); m.bus.gain.value=0.9; m.clip=ceiling(c);
+  /* AOG-STUDIO-V1: clean high-pass, gentle glue, then the existing limiter and ceiling */
+  m.hp=c.createBiquadFilter(); m.hp.type="highpass"; m.hp.frequency.value=28; m.hp.Q.value=0.7;
+  m.glue=c.createDynamicsCompressor(); m.glue.threshold.value=-12; m.glue.knee.value=8; m.glue.ratio.value=2.2; m.glue.attack.value=0.01; m.glue.release.value=0.18;
+  m.lim=c.createDynamicsCompressor(); m.lim.threshold.value=-2; m.lim.knee.value=1; m.lim.ratio.value=12; m.lim.attack.value=0.003; m.lim.release.value=0.1;
+  m.bus=c.createGain(); m.bus.gain.value=0.85; m.clip=ceiling(c);
   m.rig=window.AOGAmp ? AOGAmp.create(c, {kind:"drums", state:fxState()}) : null;
-  if(m.rig){ m.bus.connect(m.rig.input); m.rig.output.connect(m.lim); } else m.bus.connect(m.lim);
-  m.lim.connect(m.clip); m.clip.connect(c.destination);
+  m.bus.connect(m.hp);
+  if(m.rig){ m.hp.connect(m.rig.input); m.rig.output.connect(m.glue); } else m.hp.connect(m.glue);
+  m.glue.connect(m.lim); m.lim.connect(m.clip); m.clip.connect(c.destination);
   return m;
 }
 const FXKEY="aog.pads.fx.v1";
