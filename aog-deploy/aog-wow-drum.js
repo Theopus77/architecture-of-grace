@@ -151,18 +151,11 @@
         background: #2a2c31; color: #e8e0d0; font-weight: 700; }
       .pm-q.rec { color: #ff6a5a; }
       .pm-qtempo { font: 700 14px/1 ui-monospace, monospace; color: #ffd36b; min-width: 36px; text-align: center; }
-      .pm-rotary { display: flex; align-items: center; gap: 10px; margin: 4px 0; }
-      .pm-dial { --a: -135deg; width: 56px; height: 56px; border-radius: 50%; cursor: grab; touch-action: none;
-        background: radial-gradient(circle at 38% 32%, #4a4e56, #2a2c31 55%, #16181c);
-        border: 2px solid #0a0b0d;
-        box-shadow: inset 0 1px 0 rgba(255,255,255,.15), 0 3px 6px rgba(0,0,0,.5);
-        position: relative; }
-      .pm-dial::before { content: ""; position: absolute; inset: 8px; border-radius: 50%;
-        border: 1px solid #0a0b0d; background: radial-gradient(circle at 40% 30%, #3a3d44, #1a1c20); }
-      .pm-dial::after { content: ""; position: absolute; left: 50%; top: 8px; width: 3px; height: 14px; margin-left: -1.5px;
-        background: #ffd36b; border-radius: 2px; transform-origin: 50% 20px; transform: rotate(var(--a));
-        box-shadow: 0 0 4px rgba(255,211,107,.4); }
-      #pmDialTarget { flex: 1; min-height: 36px; font-size: 13px; }
+      
+      
+      
+      
+      
       @media (max-width: 400px) {
         .pm-morph { gap: 4px; }
         .pm-morph button { font-size: 10px; padding: 4px 6px; }
@@ -485,50 +478,3 @@ setTimeout(function(){
   }
 }, 500);
 
-/* AOG-ROTARY-V1: one dial that drives the selected control */
-(function(){
-  setTimeout(function(){
-    if (document.getElementById("pmRotary")) return;
-    const morph = document.getElementById("pmMorph");
-    if (!morph) return;
-    const box = document.createElement("div");
-    box.id = "pmRotary";
-    box.className = "pm-rotary";
-    box.innerHTML = `
-      <div class="pm-dial" id="pmDial" role="slider" aria-label="Rotary" tabindex="0"></div>
-      <select id="pmDialTarget" class="pm-sel" aria-label="What the dial controls">
-        <option value="tempo">Tempo</option>
-        <option value="swing">Swing</option>
-        <option value="mvol">Volume</option>
-        <option value="pad">Pad</option>
-      </select>
-    `;
-    morph.parentNode.insertBefore(box, morph.nextSibling);
-    const dial = document.getElementById("pmDial");
-    const sel = document.getElementById("pmDialTarget");
-    let angle = -135, lastY = 0, dragging = false;
-    function paint(){ dial.style.setProperty("--a", angle + "deg"); }
-    function apply(delta){
-      const id = sel.value;
-      const el = document.getElementById(id === "tempo" ? "tempo" : id === "swing" ? "swSel" : id === "mvol" ? "mvol" : "padVol");
-      if (!el) return;
-      if (el.tagName === "SELECT") {
-        const i = el.selectedIndex + (delta > 0 ? 1 : -1);
-        if (i >= 0 && i < el.options.length) { el.selectedIndex = i; el.dispatchEvent(new Event("change")); }
-      } else {
-        const step = +(el.step || 1);
-        el.value = Math.max(+el.min, Math.min(+el.max, +el.value + (delta > 0 ? step : -step)));
-        el.dispatchEvent(new Event("change"));
-        el.dispatchEvent(new Event("input"));
-      }
-    }
-    dial.addEventListener("pointerdown", e => { dragging = true; lastY = e.clientY; dial.setPointerCapture(e.pointerId); });
-    dial.addEventListener("pointermove", e => {
-      if (!dragging) return;
-      const dy = lastY - e.clientY;
-      if (Math.abs(dy) > 8) { angle = Math.max(-135, Math.min(135, angle + dy * 2)); paint(); apply(dy); lastY = e.clientY; }
-    });
-    dial.addEventListener("pointerup", () => dragging = false);
-    paint();
-  }, 400);
-})();
