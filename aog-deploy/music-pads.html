@@ -1245,36 +1245,41 @@ function trigger(bi, pi, vel, when, T){
   /* AOG-DRUM-SHELF-V1: a pad borrowed from another kit (eight kicks, eight cymbals …) plays at its own kit's level */
   const B=S.banks[bi], kt=d.kind==="drum" ? kitFor(bi, pi, d.kit)||d.kit : "", trim=d.kind==="drum" ? trimOf("kit", (AOGDrumKit.from && AOGDrumKit.from(kt, d.id))||kt) : d.kind==="chop" ? trimOf("rec", (B.rec||"").replace(/^c:/,"")) : trimOf("inst", B.inst);
   const out=c.createGain(); out.gain.value=P.vol/100*trim;
-  /* AOG-SHAPE-V1: per-pad decay, tone, drive — nodes are tracked and released */
+  /* AOG-SHAPE-V2: musical tone and gentle drive */
   const extras=[];
   let shaped=out;
-  if(P.tone!==100 || P.drive>0){
-    const flt=c.createBiquadFilter(); flt.type="lowpass"; flt.frequency.value=200+Math.pow(P.tone/100,2)*14000; flt.Q.value=0.7;
+  if(P.tone!==100){
+    const flt=c.createBiquadFilter(); flt.type="lowpass";
+    flt.frequency.value=400+Math.pow(P.tone/100,1.6)*12000; flt.Q.value=0.5;
     out.connect(flt); shaped=flt; extras.push(flt);
-    if(P.drive>0){
-      const drv=c.createWaveShaper(); const k=1+P.drive/20, n=64, crv=new Float32Array(n);
-      for(let i=0;i<n;i++){ const x=i/(n-1)*2-1; crv[i]=(1+k)*x/(1+k*Math.abs(x)); }
-      drv.curve=crv; flt.connect(drv); shaped=drv; extras.push(drv);
-    }
   }
-  if(P.decay<100){ const t1=when+0.04+0.6*(P.decay/100); out.gain.setTargetAtTime(0, t1, 0.08); }
-  /* AOG-SEND-V1: shared reverb buffer, tracked delay/send nodes */
+  if(P.drive>0){
+    const drv=c.createWaveShaper(); const k=1+P.drive/40, n=128, crv=new Float32Array(n);
+    for(let i=0;i<n;i++){ const x=i/(n-1)*2-1; crv[i]=Math.tanh(k*x)/Math.tanh(k); }
+    drv.curve=crv; shaped.connect(drv); shaped=drv; extras.push(drv);
+  }
+  if(P.decay<100){ const t1=when+0.06+0.7*(P.decay/100); out.gain.setTargetAtTime(0, t1, 0.12); }
+  /* AOG-SEND-V2: soft echo and filtered space, not noise */
   if(P.echo>0 || P.verb>0){
-    if(!window.__aogVerbBuf){ const len=c.sampleRate*0.3, buf=c.createBuffer(2,len,c.sampleRate);
-      for(let ch=0;ch<2;ch++){ const d=buf.getChannelData(ch); for(let i=0;i<len;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.2); }
-      window.__aogVerbBuf=buf; }
     if(P.echo>0){
-      const send=c.createGain(); send.gain.value=P.echo/100*0.35;
-      const dly=c.createDelay(0.5); dly.delayTime.value=0.18;
-      const fb=c.createGain(); fb.gain.value=0.28;
-      shaped.connect(send); send.connect(dly); dly.connect(fb); fb.connect(dly); dly.connect(T.dest);
-      extras.push(send, dly, fb);
+      const send=c.createGain(); send.gain.value=P.echo/100*0.22;
+      const dly=c.createDelay(0.4); dly.delayTime.value=0.16;
+      const fb=c.createGain(); fb.gain.value=0.18;
+      const fbFlt=c.createBiquadFilter(); fbFlt.type="lowpass"; fbFlt.frequency.value=2800;
+      shaped.connect(send); send.connect(dly); dly.connect(fbFlt); fbFlt.connect(fb); fb.connect(dly); dly.connect(T.dest);
+      extras.push(send, dly, fb, fbFlt);
     }
     if(P.verb>0){
-      const v=c.createConvolver(); v.buffer=window.__aogVerbBuf;
-      const vg=c.createGain(); vg.gain.value=P.verb/100*0.3;
-      shaped.connect(vg); vg.connect(v); v.connect(T.dest);
-      extras.push(vg, v);
+      /* short filtered delays instead of a noise convolver */
+      const vg=c.createGain(); vg.gain.value=P.verb/100*0.18;
+      const d1=c.createDelay(0.08); d1.delayTime.value=0.023;
+      const d2=c.createDelay(0.08); d2.delayTime.value=0.037;
+      const f1=c.createBiquadFilter(); f1.type="lowpass"; f1.frequency.value=4200;
+      const f2=c.createBiquadFilter(); f2.type="lowpass"; f2.frequency.value=3200;
+      shaped.connect(vg);
+      vg.connect(d1); d1.connect(f1); f1.connect(T.dest);
+      vg.connect(d2); d2.connect(f2); f2.connect(T.dest);
+      extras.push(vg, d1, d2, f1, f2);
     }
   }
   /* AOG-PADS-VOICES-V1 (2026-10-11) — Jimmy, on his iPad: "after like 5-6 chords it froze up, same with the bank c the
