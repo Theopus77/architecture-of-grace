@@ -79,7 +79,7 @@
         padding: 8px 12px; background: linear-gradient(180deg, #22252b, #1a1c20);
         border-radius: 10px; border: 1px solid #0d0f12;
         box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 2px 6px rgba(0,0,0,.3);
-        flex: 0 0 auto; height: auto; max-height: 72px; overflow: hidden;
+        flex: 0 0 auto; height: auto; max-height: 56px; overflow: hidden; grid-column: 1 / -1;
       }
       .pm-morph label { color: #e8dfc9; letter-spacing: .14em; }
       .pm-morph .morph-val { color: #ffd36b; font-weight: 700; }
