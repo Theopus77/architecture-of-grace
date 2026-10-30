@@ -1,3 +1,14 @@
+/* AOG-WOW-PERMANENT-V1
+   Permanent constraints for this file and the Drum Machine:
+   1. Morph bar must stay compact (max-height ~72px, flex:0 0 auto). Never let it grow to fill the screen.
+   2. Pattern slots (P1-P8) sit in a second row under the slider; keep them capped so they cannot push the pads off.
+   3. Per-pad shape (Decay/Tone/Drive/Echo/Verb/Chance/Micro) is injected into the pad panel. On small screens it uses a 2-column grid.
+   4. Audio nodes created per hit (filter, drive, delay, verb) MUST be pushed to the extras array and disconnected in unplug(). Never leave them connected.
+   5. Never use continue inside a forEach callback (the sequencer uses forEach). Use return to skip a hit.
+   6. The master chain is: bus → high-pass (28 Hz) → effects → glue compressor → limiter → ceiling. Do not remove the high-pass or glue.
+   7. Loop Stack Boom Bap kit id is "LS" and is registered in AOGDrumKit.ids.
+   These rules exist because earlier versions froze the page or hid the pads. Keep them.
+*/
 /* AOG-WOW-MORPH-V6 — Full morph: hits + pad character
    Snap A/B stores the sequencer events and the per-pad volume, tune, and pan.
    The slider crossfades both, so the sound character changes with the pattern.
