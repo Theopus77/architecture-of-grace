@@ -37,6 +37,44 @@
 
   injectStyles();
   setTimeout(injectMorph, 100);
+  setTimeout(injectShape, 150);
+
+  function injectShape() {
+    if (document.getElementById("shapeRow")) return;
+    const padSet = document.getElementById("padSet");
+    if (!padSet) return;
+    const row = document.createElement("div");
+    row.className = "pm-row";
+    row.id = "shapeRow";
+    row.style.marginTop = "8px";
+    row.innerHTML = `
+      <label class="pm-f"><span>Decay · <span class="pm-val" id="decayVal">100</span></span><input class="pm-range" id="decay" type="range" min="20" max="100" step="5" value="100"></label>
+      <label class="pm-f"><span>Tone · <span class="pm-val" id="toneVal">100</span></span><input class="pm-range" id="tone" type="range" min="0" max="100" step="5" value="100"></label>
+      <label class="pm-f"><span>Drive · <span class="pm-val" id="driveVal">0</span></span><input class="pm-range" id="drive" type="range" min="0" max="40" step="2" value="0"></label>
+    `;
+    const firstRow = padSet.querySelector(".pm-row");
+    if (firstRow && firstRow.nextSibling) firstRow.parentNode.insertBefore(row, firstRow.nextSibling);
+    else padSet.appendChild(row);
+
+    function bind(id, key) {
+      const el = document.getElementById(id);
+      const val = document.getElementById(id + "Val");
+      if (!el) return;
+      el.addEventListener("input", () => {
+        const S = window.S;
+        if (!S) return;
+        const k = S.bank + ":" + S.sel;
+        const o = Object.assign({}, S.pads[k] || {});
+        o[key] = +el.value;
+        S.pads[k] = o;
+        if (val) val.textContent = el.value;
+        if (typeof window.paintPadSet === "function") window.paintPadSet();
+      });
+    }
+    bind("decay", "decay");
+    bind("tone", "tone");
+    bind("drive", "drive");
+  }
 
   const wait = setInterval(() => {
     const slider = document.getElementById("morphSlider");
@@ -61,7 +99,7 @@
       for (let pi = 0; pi < 24; pi++) {
         const k = bank + ":" + pi;
         const o = S.pads[k];
-        if (o) out[pi] = { vol: o.vol == null ? 100 : o.vol, tune: o.tune || 0, pan: o.pan || 0 };
+        if (o) out[pi] = { vol: o.vol == null ? 100 : o.vol, tune: o.tune || 0, pan: o.pan || 0, decay: o.decay == null ? 100 : o.decay, tone: o.tone == null ? 100 : o.tone, drive: o.drive || 0 };
       }
       return out;
     }
@@ -97,16 +135,19 @@
       // Pad character (vol, tune, pan) for the current bank
       const bank = S.bank;
       for (let pi = 0; pi < 24; pi++) {
-        const a = stateA.pads[pi] || { vol: 100, tune: 0, pan: 0 };
-        const b = stateB.pads[pi] || { vol: 100, tune: 0, pan: 0 };
+        const a = stateA.pads[pi] || { vol: 100, tune: 0, pan: 0, decay: 100, tone: 100, drive: 0 };
+        const b = stateB.pads[pi] || { vol: 100, tune: 0, pan: 0, decay: 100, tone: 100, drive: 0 };
         const k = bank + ":" + pi;
         const vol = Math.round(lerp(a.vol, b.vol, ease) / 5) * 5;
         const tune = Math.round(lerp(a.tune, b.tune, ease));
         const pan = Math.round(lerp(a.pan, b.pan, ease) / 10) * 10;
-        if (vol === 100 && tune === 0 && pan === 0) {
+        const decay = Math.round(lerp(a.decay, b.decay, ease));
+        const tone = Math.round(lerp(a.tone, b.tone, ease));
+        const drive = Math.round(lerp(a.drive, b.drive, ease));
+        if (vol === 100 && tune === 0 && pan === 0 && decay === 100 && tone === 100 && drive === 0) {
           if (S.pads[k]) delete S.pads[k];
         } else {
-          S.pads[k] = { vol: vol, tune: tune, pan: pan };
+          S.pads[k] = { vol: vol, tune: tune, pan: pan, decay: decay, tone: tone, drive: drive };
         }
       }
 

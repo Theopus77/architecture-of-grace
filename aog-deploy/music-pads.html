@@ -1112,7 +1112,7 @@ function canPlay(bi){
 }
 
 /* ══ playing one pad ══ */
-function padSet(bi, pi){ const o=S.pads[bi+":"+pi]||{}; return {vol:o.vol==null?100:o.vol, tune:o.tune||0, pan:o.pan||0, nudge:+o.nudge||0, cut:o.cut==null?-1:+o.cut}; } /* AOG-PADS-FEEL-V1 */
+function padSet(bi, pi){ const o=S.pads[bi+":"+pi]||{}; return {vol:o.vol==null?100:o.vol, tune:o.tune||0, pan:o.pan||0, nudge:+o.nudge||0, cut:o.cut==null?-1:+o.cut, decay:o.decay==null?100:o.decay, tone:o.tone==null?100:o.tone, drive:o.drive==null?0:o.drive}; } /* AOG-PADS-FEEL-V1 + shape */
 function feelWhen(bi, pi, when){ const n=padSet(bi, pi).nudge; return n ? when+n/1000 : when; }
 /* AOG-PADS-LEVEL-V1 (2026-10-05) — Jimmy: "all the instruments don't start at the same volume." Each sound is brought to the
    grand piano's level on the piano page (the level every music tool is set to), measured as the ear hears it (K-weighted,
@@ -1245,11 +1245,23 @@ function trigger(bi, pi, vel, when, T){
   /* AOG-DRUM-SHELF-V1: a pad borrowed from another kit (eight kicks, eight cymbals …) plays at its own kit's level */
   const B=S.banks[bi], kt=d.kind==="drum" ? kitFor(bi, pi, d.kit)||d.kit : "", trim=d.kind==="drum" ? trimOf("kit", (AOGDrumKit.from && AOGDrumKit.from(kt, d.id))||kt) : d.kind==="chop" ? trimOf("rec", (B.rec||"").replace(/^c:/,"")) : trimOf("inst", B.inst);
   const out=c.createGain(); out.gain.value=P.vol/100*trim;
+  /* AOG-SHAPE-V1: per-pad decay, tone, drive — only when non-default */
+  let shaped=out;
+  if(P.tone!==100 || P.drive>0){
+    const flt=c.createBiquadFilter(); flt.type="lowpass"; flt.frequency.value=200+Math.pow(P.tone/100,2)*14000; flt.Q.value=0.7;
+    out.connect(flt); shaped=flt;
+    if(P.drive>0){
+      const drv=c.createWaveShaper(); const k=1+P.drive/20, n=256, crv=new Float32Array(n);
+      for(let i=0;i<n;i++){ const x=i/(n-1)*2-1; crv[i]=(1+k)*x/(1+k*Math.abs(x)); }
+      drv.curve=crv; drv.oversample="2x"; flt.connect(drv); shaped=drv;
+    }
+  }
+  if(P.decay<100){ const t1=when+0.04+0.6*(P.decay/100); out.gain.setTargetAtTime(0, t1, 0.08); }
   /* AOG-PADS-VOICES-V1 (2026-10-11) — Jimmy, on his iPad: "after like 5-6 chords it froze up, same with the bank c the
      notes". A pad in the middle needs no panner (most pads); every part of a sound is unplugged the moment it ends, so
      the sound engine never carries old chords; and no more than MAXV notes ring at once, the oldest let go quickly. */
   let pn=null;
-  if(P.pan && c.createStereoPanner){ pn=c.createStereoPanner(); pn.pan.value=P.pan/100; out.connect(pn); pn.connect(T.dest); } else out.connect(T.dest);
+  if(P.pan && c.createStereoPanner){ pn=c.createStereoPanner(); pn.pan.value=P.pan/100; shaped.connect(pn); pn.connect(T.dest); } else shaped.connect(T.dest);
   const live=T===LIVE, unplug=()=>{ try{ out.disconnect(); }catch(e){} if(pn) try{ pn.disconnect(); }catch(e){} };
   /* AOG-PADS-MONO-V1 (2026-10-11): a panner in the middle sends a one-microphone recording to each speaker at 0.71 (equal
      power), and LEVEL was measured so; with the panner skipped for a centred pad (AOG-PADS-VOICES-V1) such a recording
