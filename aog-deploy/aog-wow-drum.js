@@ -358,3 +358,25 @@
     }
   }, 300);
 })();
+
+/* AOG-IDLE-V1: stop work when the page is hidden or nothing is playing */
+(function(){
+  let idleT = 0;
+  function rest(){
+    try {
+      if (window.SEQ && !window.SEQ.on && window.ac && window.ac.state === "running") {
+        window.ac.suspend();
+      }
+    } catch(e) {}
+  }
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      clearTimeout(idleT);
+      rest();
+    }
+  });
+  document.addEventListener("pointerdown", () => {
+    clearTimeout(idleT);
+    idleT = setTimeout(rest, 8000);
+  }, {passive: true});
+})();

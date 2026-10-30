@@ -1408,7 +1408,7 @@ function startTimer(){ if(!SEQ.timer) SEQ.timer=setInterval(pump, 25); pump(); }
 function stopTimer(){ clearInterval(SEQ.timer); SEQ.timer=0; }
 function prepUsed(){ new Set(S.ev.map(e=>e.b)).forEach(b=>{ if(b>=0 && b<4) prep(b); }); }
 function play(){ LES.mark("play1"); if(S.swing>50) LES.mark("playsw"); prepUsed(); const c=ctx(); SEQ.on=true; SEQ.t0=c.currentTime+0.08; SEQ.abs=0; SEQ.map=null; SV.follow=true; startTimer(); paintTransport(); }
-function stop(){ if(SEQ.on) LES.mark("stop1"); SEQ.on=false; if(SEQ.rec){ SEQ.rec=false; say(t("recOff")); } S.ev.forEach(e=>{ delete e._skip; }); stepNow=-1; const o=$("steps").querySelector(".st.now"); if(o) o.classList.remove("now"); barPlaying(-1); paintTransport(); }
+function stop(){ if(SEQ.on) LES.mark("stop1"); SEQ.on=false; stopTimer(); if(SEQ.rec){ SEQ.rec=false; say(t("recOff")); } S.ev.forEach(e=>{ delete e._skip; }); stepNow=-1; const o=$("steps").querySelector(".st.now"); if(o) o.classList.remove("now"); barPlaying(-1); paintTransport(); }
 function retime(bpm){
   bpm=clamp(Math.round(+bpm||90), 60, 180); if(bpm===S.bpm) return;
   LES.mark("tempo1"); if(bpm>=120) LES.mark("tfast"); if(bpm<=80) LES.mark("tslow");
