@@ -75,10 +75,16 @@
         box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 3px 6px rgba(0,0,0,.4);
       }
       .pm-morph {
-        display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 6px 0 4px;
-        padding: 6px 10px; background: #1a1c20; border-radius: 8px; border: 1px solid #0d0f12;
+        display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 8px 0 6px;
+        padding: 8px 12px; background: linear-gradient(180deg, #22252b, #1a1c20);
+        border-radius: 10px; border: 1px solid #0d0f12;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 2px 6px rgba(0,0,0,.3);
         flex: 0 0 auto; height: auto; max-height: 72px; overflow: hidden;
       }
+      .pm-morph label { color: #e8dfc9; letter-spacing: .14em; }
+      .pm-morph .morph-val { color: #ffd36b; font-weight: 700; }
+      #pads .pad { transition: none; }
+      #pads .pad.sel { box-shadow: 0 0 0 2px #ffd36b, inset 0 1px 0 rgba(255,255,255,.1) !important; }
       #patSlots { display: flex !important; flex-wrap: wrap; gap: 4px; margin-top: 4px; max-height: 32px; overflow: hidden; }
       @media (max-width: 520px) {
         #shapeRow, #extraRow { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
