@@ -249,36 +249,70 @@ const hub = new THREE.MeshStandardMaterial({ color: 0x2A241C, metalness: 0.8, ro
 
 function createGear(radius, thickness, teeth, material) {
   const group = new THREE.Group();
-  // Main body
-  const body = new THREE.Mesh(new THREE.CylinderGeometry(radius * 0.78, radius * 0.78, thickness, 48), material);
+  // Involute-style tooth profile (more authentic than triangles)
+  const toothShape = new THREE.Shape();
+  const pitch = (Math.PI * 2 * radius) / teeth;
+  const tw = pitch * 0.42;
+  const th = pitch * 0.85;
+  toothShape.moveTo(-tw * 0.55, 0);
+  toothShape.lineTo(-tw * 0.28, th * 0.35);
+  toothShape.lineTo(-tw * 0.12, th * 0.78);
+  toothShape.lineTo(0, th);
+  toothShape.lineTo(tw * 0.12, th * 0.78);
+  toothShape.lineTo(tw * 0.28, th * 0.35);
+  toothShape.lineTo(tw * 0.55, 0);
+  toothShape.closePath();
+  const toothGeo = new THREE.ExtrudeGeometry(toothShape, { depth: thickness * 0.92, bevelEnabled: true, bevelThickness: 0.008, bevelSize: 0.008, bevelSegments: 1 });
+  // Body with slight rim
+  const body = new THREE.Mesh(new THREE.CylinderGeometry(radius * 0.74, radius * 0.74, thickness * 0.85, 64), material);
   body.rotation.x = Math.PI / 2;
   group.add(body);
-  // More authentic triangular-ish teeth
-  const toothShape = new THREE.Shape();
-  const tw = radius * 0.14;
-  const th = radius * 0.22;
-  toothShape.moveTo(-tw / 2, 0);
-  toothShape.lineTo(tw / 2, 0);
-  toothShape.lineTo(0, th);
-  toothShape.closePath();
-  const toothGeo = new THREE.ExtrudeGeometry(toothShape, { depth: thickness * 0.95, bevelEnabled: false });
+  const rim = new THREE.Mesh(new THREE.TorusGeometry(radius * 0.74, thickness * 0.12, 8, 48), material);
+  rim.rotation.x = Math.PI / 2;
+  group.add(rim);
   for (let i = 0; i < teeth; i++) {
     const a = (i / teeth) * Math.PI * 2;
     const tooth = new THREE.Mesh(toothGeo, material);
-    tooth.position.set(Math.cos(a) * radius * 0.82, 0, Math.sin(a) * radius * 0.82);
+    tooth.position.set(Math.cos(a) * radius * 0.78, 0, Math.sin(a) * radius * 0.78);
     tooth.rotation.y = -a;
     tooth.rotation.x = Math.PI / 2;
     group.add(tooth);
   }
-  // Hub with slight rim
-  const h = new THREE.Mesh(new THREE.CylinderGeometry(radius * 0.16, radius * 0.16, thickness + 0.06, 16), hub);
-  h.rotation.x = Math.PI / 2;
-  group.add(h);
-  const rim = new THREE.Mesh(new THREE.TorusGeometry(radius * 0.22, thickness * 0.08, 8, 16), hub);
-  rim.rotation.x = Math.PI / 2;
-  group.add(rim);
+  // Hub, spokes hint, and central bore
+  const hubMesh = new THREE.Mesh(new THREE.CylinderGeometry(radius * 0.18, radius * 0.18, thickness + 0.04, 24), hub);
+  hubMesh.rotation.x = Math.PI / 2;
+  group.add(hubMesh);
+  const bore = new THREE.Mesh(new THREE.CylinderGeometry(radius * 0.06, radius * 0.06, thickness + 0.08, 12), hub);
+  bore.rotation.x = Math.PI / 2;
+  group.add(bore);
   return group;
 }
+
+// Wooden case
+const caseMat = new THREE.MeshStandardMaterial({ color: 0xC4A574, roughness: 0.7, metalness: 0.05 });
+const caseGroup = new THREE.Group();
+const base = new THREE.Mesh(new THREE.BoxGeometry(10.2, 0.35, 6.2), caseMat);
+base.position.y = -0.55;
+caseGroup.add(base);
+const wallT = 0.18;
+[[0, 0, -3.1, 10.2, 1.1, wallT], [0, 0, 3.1, 10.2, 1.1, wallT],
+ [-5.1, 0, 0, wallT, 1.1, 6.2], [5.1, 0, 0, wallT, 1.1, 6.2]].forEach(w => {
+  const m = new THREE.Mesh(new THREE.BoxGeometry(w[3], w[4], w[5]), caseMat);
+  m.position.set(w[0], w[1] - 0.1, w[2]);
+  caseGroup.add(m);
+});
+scene.add(caseGroup);
+
+// Front dial plate (zodiac / lunar)
+const dialMat = new THREE.MeshStandardMaterial({ color: 0xE8DCC8, roughness: 0.6, metalness: 0.1 });
+const dial = new THREE.Mesh(new THREE.CylinderGeometry(1.6, 1.6, 0.06, 48), dialMat);
+dial.rotation.x = Math.PI / 2;
+dial.position.set(0, 0.35, 1.8);
+scene.add(dial);
+const dialRing = new THREE.Mesh(new THREE.TorusGeometry(1.55, 0.04, 8, 48), brass);
+dialRing.rotation.x = Math.PI / 2;
+dialRing.position.set(0, 0.38, 1.8);
+scene.add(dialRing);
 
 // More authentic tooth counts drawn from Freeth reconstructions
 const mainGear = createGear(2.4, 0.32, 48, brass);   // visual proxy for main drive
