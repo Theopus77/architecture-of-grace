@@ -58,6 +58,12 @@ li { margin: 4px 0; }
   .controls, #view, .sections-nav, .panel { margin-left: 16px; margin-right: 16px; }
   #view { height: 420px; }
 }
+
+.fine-controls {
+  display: flex; flex-wrap: wrap; gap: 6px; justify-content: center;
+  margin: 0 24px 12px; max-width: 980px;
+}
+.fine-controls button { min-height: 40px; padding: 6px 12px; font-size: 0.9rem; }
 </style>
 </head>
 <body>
@@ -68,10 +74,18 @@ li { margin: 4px 0; }
 </header>
 
 <div class="controls">
-  <label for="day">Days from today</label>
-  <input type="range" id="day" min="-6939" max="6939" value="0" step="1" aria-label="Days from today">
+  <label for="day">Move through time</label>
+  <input type="range" id="day" min="-6939" max="6939" value="0" step="7" aria-label="Days from today, in weeks">
   <span class="date-display" id="dateDisplay">Today</span>
   <button type="button" id="resetBtn">Today</button>
+</div>
+<div class="fine-controls">
+  <button type="button" data-d="-1">−1 day</button>
+  <button type="button" data-d="1">+1 day</button>
+  <button type="button" data-d="-7">−7 days</button>
+  <button type="button" data-d="7">+7 days</button>
+  <button type="button" data-d="-30">−30 days</button>
+  <button type="button" data-d="30">+30 days</button>
 </div>
 
 <div id="view" role="img" aria-label="Interactive 3D model of Antikythera gear train"></div>
@@ -506,6 +520,15 @@ document.getElementById('resetBtn').addEventListener('click', () => {
   offsetDays = 0;
   updateDateLabel();
   updateGears();
+});
+document.querySelectorAll('.fine-controls button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const d = +btn.dataset.d;
+    offsetDays = Math.max(-6939, Math.min(6939, offsetDays + d));
+    daySlider.value = offsetDays;
+    updateDateLabel();
+    updateGears();
+  });
 });
 
 document.querySelectorAll('.nav-btn').forEach(btn => {
