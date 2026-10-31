@@ -1445,6 +1445,9 @@ function velAt(el, x, y){
   const dx=(x-(r.left+r.width/2))/(r.width/2), dy=(y-(r.top+r.height/2))/(r.height/2), d=Math.min(1, Math.sqrt(dx*dx+dy*dy)/1.2);
   return Math.round((1-0.55*d)*100)/100;
 }
+/* AOG-PAD-RESPONSIVE-V1 (2026-10-31): same rule for every bank, including C (Notes) and D (Chops).
+   Sound and the down class must run on the pointerdown path; lesson, save, and paint work stay deferred.
+   Future agents: never put heavy DOM or lesson work before noteOn/trigger on any bank. */
 /* AOG-PADS-QUICK-V1 (2026-10-05) — Jimmy: "When the drum kits are playing in the beat pad, when I hit the pads they are
    delayed." A tap sounds first and the page redraws after (the picked pad's steps on the next frame); with Repeat on, the
    first hit sounds at once even while the loop plays, and the repeats then fall on the beat. A phone's own delay to the
@@ -1466,7 +1469,9 @@ function press(id, pi, vel){
   }
   const h=hitPad(bi, pi, vel, c.currentTime, false);
   DOWN.set(id, {bi:bi, pi:pi, v:h.v, e:h.e, at:c.currentTime});
-  selectSoon(pi); lessonTap(bi, pi, vel);
+  selectSoon(pi);
+  /* AOG-PAD-RESPONSIVE-V1: lesson work deferred so banks C (Notes) and D (Chops) stay instant while a loop plays */
+  queueMicrotask(()=>lessonTap(bi, pi, vel));
 }
 function release(id){
   RPT.delete(id);
