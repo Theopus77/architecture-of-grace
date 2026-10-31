@@ -323,6 +323,62 @@ const dialRing = new THREE.Mesh(new THREE.TorusGeometry(1.78, 0.045, 10, 64), br
 dialRing.rotation.x = Math.PI / 2;
 dialRing.position.set(0.2, 0.26, 2.1);
 scene.add(dialRing);
+
+// ── Back plate: Metonic and Saros spirals (museum reconstruction) ──
+const backPlate = new THREE.Mesh(
+  new THREE.BoxGeometry(9.8, 0.08, 5.8),
+  new THREE.MeshStandardMaterial({ color: 0xEDE4D4, roughness: 0.65, metalness: 0.06 })
+);
+backPlate.position.set(0.1, -0.32, -0.2);
+scene.add(backPlate);
+
+// Metonic spiral (upper left, 5-turn)
+function makeSpiral(cx, cy, cz, turns, radius, color) {
+  const pts = [];
+  const steps = turns * 48;
+  for (let i = 0; i <= steps; i++) {
+    const t = i / steps;
+    const a = t * turns * Math.PI * 2;
+    const r = radius * (0.18 + 0.82 * t);
+    pts.push(new THREE.Vector3(cx + Math.cos(a) * r, cy, cz + Math.sin(a) * r));
+  }
+  const curve = new THREE.CatmullRomCurve3(pts);
+  const tube = new THREE.Mesh(new THREE.TubeGeometry(curve, steps, 0.018, 6, false), new THREE.MeshStandardMaterial({ color: color, metalness: 0.7, roughness: 0.3 }));
+  return tube;
+}
+scene.add(makeSpiral(-2.4, -0.26, -1.6, 5, 1.55, 0xC4A574));
+scene.add(makeSpiral(2.6, -0.26, -1.5, 4, 1.45, 0x8B7355));
+
+// Metonic pointer
+const metPointer = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.03, 0.05), brass);
+metPointer.position.set(-2.4, -0.22, -1.6);
+scene.add(metPointer);
+
+// Saros pointer
+const sarPointer = new THREE.Mesh(new THREE.BoxGeometry(1.1, 0.03, 0.05), brassAged);
+sarPointer.position.set(2.6, -0.22, -1.5);
+scene.add(sarPointer);
+
+// Subsidiary dials
+function smallDial(x, z, r) {
+  const d = new THREE.Mesh(new THREE.CylinderGeometry(r, r, 0.04, 32), dialMat);
+  d.rotation.x = Math.PI / 2;
+  d.position.set(x, -0.24, z);
+  scene.add(d);
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(r * 0.92, 0.02, 6, 32), brass);
+  ring.rotation.x = Math.PI / 2;
+  ring.position.set(x, -0.21, z);
+  scene.add(ring);
+}
+smallDial(-3.8, 1.4, 0.55);  // Callippic
+smallDial(0.1, 1.6, 0.48);   // Games
+smallDial(3.9, 1.5, 0.52);   // Exeligmos
+
+// Back plate frame
+const backFrame = new THREE.Mesh(new THREE.BoxGeometry(10.2, 0.12, 6.1), wood);
+backFrame.position.set(0.1, -0.38, -0.2);
+scene.add(backFrame);
+
 // Pointer
 const pointer = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.04, 0.06), brass);
 pointer.position.set(0.2, 0.32, 2.1);
