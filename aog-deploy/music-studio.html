@@ -240,11 +240,21 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
 .st-sl{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:0 .4rem;min-width:0;margin:0}
 .st-sl .st-lab{margin:0;font-size:.68rem;letter-spacing:.1em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .st-sl output{font:800 .85rem/1 var(--sans);color:#ffe2a8;font-variant-numeric:tabular-nums;white-space:nowrap}
-.st-sl input[type=range]{grid-column:1/-1;width:100%;height:32px;margin:0;touch-action:pan-y;
-  -webkit-appearance:none;appearance:none;background:linear-gradient(#1a1c20,#0e1012);border-radius:4px;border:1px solid #0a0b0d;
-  box-shadow:inset 0 1px 2px rgba(0,0,0,.5)}
-.st-sl input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:34px;border-radius:3px;
-  background:linear-gradient(180deg,#e8e0d0,#b8b0a0);border:1px solid #0a0b0d;box-shadow:0 1px 2px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.3)}
+.st-sl input[type=range]{grid-column:1/-1;width:100%;height:36px;margin:0;touch-action:pan-y;
+  -webkit-appearance:none;appearance:none;
+  background:
+    linear-gradient(180deg,transparent 0 14px,#2a2c31 14px 15px,transparent 15px 21px,#2a2c31 21px 22px,transparent 22px),
+    linear-gradient(90deg,#0a0b0d,#1a1c20 8px,#0e1012 calc(100% - 8px),#0a0b0d);
+  border-radius:6px;border:1px solid #08090a;
+  box-shadow:inset 0 2px 4px rgba(0,0,0,.65),inset 0 -1px 0 rgba(255,255,255,.04)}
+.st-sl input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:38px;border-radius:3px;
+  background:linear-gradient(90deg,#f6f3ec 0%,#cfcac0 38%,#6f6b64 50%,#cfcac0 62%,#a9a49a 100%);
+  border:1px solid #1b1b1b;
+  box-shadow:0 2px 3px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.45),inset 0 -1px 0 rgba(0,0,0,.2);
+  margin-top:-1px}
+.st-sl.eq input[type=range]::-webkit-slider-thumb{background:linear-gradient(90deg,#e8f5e8 0%,#9fd4a0 38%,#4a7a52 50%,#9fd4a0 62%,#6faa78 100%)}
+.st-sl.ma input[type=range]::-webkit-slider-thumb{background:linear-gradient(90deg,#fff1c6 0%,#e6bd62 38%,#7a5516 50%,#e6bd62 62%,#c2913a 100%)}
+.st-sl.pu input[type=range]::-webkit-slider-thumb{background:linear-gradient(90deg,#ffe8d4 0%,#f4a37a 38%,#8a4a2a 50%,#f4a37a 62%,#c47a50 100%)}
 .st-sl.eq input{accent-color:#9fd4a0}
 .st-sl.pu input{accent-color:#f4a37a}
 .st-sl.fx input{accent-color:#7fc7f5}
