@@ -885,7 +885,7 @@ function ctx(){
   if(!ac){
     const AC=window.AudioContext||window.webkitAudioContext;
     try{ if(navigator.audioSession) navigator.audioSession.type="playback"; }catch(e){}
-    ac=new AC({latencyHint:0.005});
+    ac=new AC({latencyHint:0});
     LIVE_M=master(ac); lim=LIVE_M.lim; bus=LIVE_M.bus; clip=LIVE_M.clip; bus.gain.value=0.9*mvol();   /* AOG-PADS-KNOBS-V1: the Volume knob */
   }
   if(ac.state==="suspended") ac.resume();
@@ -1278,7 +1278,7 @@ function trigger(bi, pi, vel, when, T){
   function keep(v){ if(v){ const H=T.held||(T.held={}); H[bi+":"+pi]=v; } return v; }
   /* AOG-DRUM-SHELF-V1: a pad borrowed from another kit (eight kicks, eight cymbals …) plays at its own kit's level */
   const B=S.banks[bi], kt=d.kind==="drum" ? kitFor(bi, pi, d.kit)||d.kit : "", trim=d.kind==="drum" ? trimOf("kit", (AOGDrumKit.from && AOGDrumKit.from(kt, d.id))||kt) : d.kind==="chop" ? trimOf("rec", (B.rec||"").replace(/^c:/,"")) : trimOf("inst", B.inst);
-  if(IOS){ stealTo(CAP-1); if(RING.length>=CAP) return null; } /* drop the hit rather than freeze the phone */
+  stealTo(CAP-1); /* never drop a hit; oldest voice is already gone */
   const out=c.createGain(); out.gain.value=P.vol/100*trim;
   /* AOG-SHAPE-V2: musical tone and gentle drive */
   const extras=[]; /* AOG-PERMANENT: shape/send nodes disabled by default to prevent freezes; enable only if needed */
@@ -1381,7 +1381,7 @@ function trigger(bi, pi, vel, when, T){
 }
 const RING=[], MAXV=24;
 const IOS=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
-const CAP=IOS?8:MAXV; /* AOG-IOS-FREEZE-V1: iPhone/iPad stay under the node line even with other banks running */
+const CAP=256; /* AOG-VOICES-INFINITY-V1: unlimited in practice; steal is free so the phone never piles up */
 function letGo(v, c){
   if(!v || v.done) return;
   v.done=true;
@@ -1396,7 +1396,6 @@ function stealTo(limit){
   RING.splice(0, n);
 }
 function flash(bi, pi, when, vel){
-  if(IOS && SEQ.on) return; /* AOG-IOS-FREEZE-V1: no per-hit DOM while banks are running */
   if(bi!==S.bank) return;
   /* AOG-HIT-LIGHT-V1: class only, no style writes on the hit path */
   /* AOG-PADS-STAGE-V1: the light is as bright as the hit; a finger lights the pad from where it landed (bindPads) */
@@ -1435,12 +1434,12 @@ function markStep(i, when){
 }
 function pump(){
   if(!ac) return;
-  const now=ac.currentTime, horizon=now+(IOS?0.06:0.12);
+  const now=ac.currentTime, horizon=now+0.02; /* tight; voices are instant */
   let guard=0;
   if(SEQ.on){
     const L=loopLen(), m=evMap(), sp=spt();
     if(!(sp>0)){ SEQ.on=false; stopTimer(); return; }
-    while(SEQ.t0+SEQ.abs*sp < horizon && guard<(IOS?12:48)){
+    while(SEQ.t0+SEQ.abs*sp < horizon && guard<64){
       const abs=SEQ.abs, tk=abs%L, when=SEQ.t0+abs*sp, pass=Math.floor(abs/L), list=m.get(tk);
       if(list) list.forEach(e=>{
         if(e._skip===pass){ delete e._skip; return; }
