@@ -1085,7 +1085,7 @@ function ctx(){
   if(actx && actx.state!=="running"){ try{ actx.resume(); }catch(e){} }
   if(!actx){
     const AC = window.AudioContext||window.webkitAudioContext;
-    actx = new AC({ latencyHint:"interactive" });
+    actx = new AC({ latencyHint:0.005 }); /* AOG-DECKS-INSTANT-V1: same 5 ms as the Drum Machine */
     try{ if(window.AOGVU && AOGVU.own) AOGVU.own(actx); }catch(e){}   /* AOG-SILENT-V1: the Studio's hush pauses it too */
     /* AOG-DECKS-LOUDNESS-V1 — the same treatment the drum machine got: a normal
        level with a real limiter behind it, so three loud songs at once still
@@ -1154,7 +1154,7 @@ async function ensureNode(d){
     if(!d.node){
       /* no AudioWorklet (old Safari): the same core, on the old processor */
       d.core = new self.AOGVinylCore(actx.sampleRate);
-      const n = actx.createScriptProcessor(512, 0, 2);
+      const n = actx.createScriptProcessor(128, 0, 2); /* smaller quantum = tighter scratch */
       n.onaudioprocess = (e)=>{
         const o = e.outputBuffer, c = d.core;
         c.frame = Math.round((e.playbackTime || actx.currentTime) * actx.sampleRate);
@@ -3557,7 +3557,7 @@ function bind(){
          keep their sharp edges instead of smearing. */
       const now = performance.now();
       const absInst = Math.abs(deck.handRate);
-      const win = absInst > 1.2 ? 28 : absInst > 0.4 ? 45 : 70;
+      const win = absInst > 1.2 ? 8 : absInst > 0.4 ? 12 : 20; /* AOG-DECKS-INSTANT-V1: near-zero lag */
       while(trail.length > 2 && now - trail[0].t > win) trail.shift();
       const first = trail[0], last = trail[trail.length-1];
       const dt = Math.max(0.008, (last.t - first.t)/1000);
