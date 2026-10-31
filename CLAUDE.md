@@ -19,11 +19,13 @@ overrides it in the same conversation.
 (`music-pads.html`) and every other music room that plays sounds must stay instant
 no matter how many kits, notes, chords or voices are in use.
 
-- Hits are answered at once. Audio context latency is 5 ms or lower. No fade, no
-  ramp, no extra nodes on the hit path unless Jimmy asks for them.
-- Voices feel unlimited. A soft cap (currently 64) is only a safety net. When a
-  new hit would pass it, the oldest voice is stopped and disconnected immediately
-  (`letGo` / `stealTo`). Never let voices pile up until the page freezes.
+- Hits are answered at once. Audio context latency is 0 (as low as the browser
+  allows). Lookahead stays tight (~20 ms). No fade, no ramp, no extra nodes on
+  the hit path unless Jimmy asks for them.
+- Voices are unlimited. No low cap on iPhone, iPad or anywhere else. A soft
+  safety of 256 exists only so a runaway loop cannot freeze the page; the oldest
+  voice is stopped and disconnected immediately (`letGo` / `stealTo`) and the new
+  hit always plays. Never drop a hit. Never re-introduce an 8-voice or similar cap.
 - Drums, notes and chords share the same stealer. A new room that plays samples
   joins that stealer or does the same instant release.
 - Do not re-introduce a low hard cap, a long release, or shape/filter nodes on
