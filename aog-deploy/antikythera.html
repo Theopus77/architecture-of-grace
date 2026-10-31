@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>The Antikythera Mechanism · Lab Bench — Architecture of Grace</title>
+<style>
+:root {
+  --paper: #F4F0E6;
+  --ink: #1A232C;
+  --brass: #C4A574;
+  --brass-dark: #8B6B3A;
+  --rule: #D4CBB8;
+  --soft: #F8F6F0;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: var(--paper); color: var(--ink); font-family: "Iowan Old Style", Palatino, Georgia, serif; }
+body { min-height: 100vh; }
+header { padding: 20px 24px 8px; max-width: 980px; margin: 0 auto; }
+h1 { font-size: 1.75rem; margin: 0 0 6px; letter-spacing: 0.01em; font-weight: 600; }
+.subtitle { font-size: 0.95rem; color: #4a5560; margin: 0 0 4px; letter-spacing: 0.04em; text-transform: uppercase; }
+.lede { font-size: 1.05rem; margin: 0 0 16px; line-height: 1.5; max-width: 62ch; }
+.controls {
+  display: flex; flex-wrap: wrap; gap: 14px; align-items: center;
+  background: #fff; border: 1px solid var(--rule); border-radius: 12px;
+  padding: 14px 18px; margin: 0 24px 14px; box-shadow: 0 1px 2px rgba(26,35,44,0.04);
+}
+.controls label { font-weight: 600; font-size: 0.95rem; }
+input[type="range"] { flex: 1; min-width: 200px; height: 28px; accent-color: var(--brass); }
+.date-display { font-variant-numeric: tabular-nums; font-weight: 600; min-width: 220px; font-size: 0.98rem; }
+button, .nav-btn {
+  padding: 7px 12px; border: 1.5px solid var(--brass); background: #fff; color: var(--ink);
+  border-radius: 8px; font: inherit; font-weight: 600; cursor: pointer;
+}
+button:hover, .nav-btn:hover { background: var(--soft); }
+.nav-btn.active { background: var(--brass); color: #fff; }
+#view {
+  height: 480px; background: #fff; border: 1px solid var(--rule);
+  margin: 0 24px 16px; border-radius: 12px; overflow: hidden;
+  box-shadow: 0 1px 3px rgba(26,35,44,0.05);
+}
+.sections-nav {
+  display: flex; flex-wrap: wrap; gap: 8px; margin: 0 24px 12px; max-width: 980px;
+}
+.panel {
+  display: none; max-width: 980px; margin: 0 auto 24px; padding: 0 24px;
+  font-size: 0.98rem; line-height: 1.55;
+}
+.panel.active { display: block; }
+.panel h2 { font-size: 1.2rem; margin: 0 0 10px; font-weight: 600; }
+.panel h3 { font-size: 1.05rem; margin: 16px 0 6px; }
+.note { font-size: 0.9rem; color: #4a5560; margin-top: 10px; }
+ul { margin: 8px 0; padding-left: 1.2em; }
+li { margin: 4px 0; }
+@media (max-width: 640px) {
+  header { padding: 16px 16px 6px; }
+  h1 { font-size: 1.45rem; }
+  .controls, #view, .sections-nav, .panel { margin-left: 16px; margin-right: 16px; }
+  #view { height: 340px; }
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="subtitle">Lab Bench · Science</div>
+  <h1>The Antikythera Mechanism</h1>
+  <p class="lede">An ancient Greek astronomical calculator, about 100 BCE. This 3D model shows a simplified gear train drawn from the surviving fragments. Move through time; the gears respond according to the known period relations.</p>
+</header>
+
+<div class="controls">
+  <label for="day">Days from today</label>
+  <input type="range" id="day" min="-6939" max="6939" value="0" step="1" aria-label="Days from today">
+  <span class="date-display" id="dateDisplay">Today</span>
+  <button type="button" id="resetBtn">Today</button>
+</div>
+
+<div id="view" role="img" aria-label="Interactive 3D model of Antikythera gear train"></div>
+
+<div class="sections-nav">
+  <button class="nav-btn active" data-panel="purpose">Purpose</button>
+  <button class="nav-btn" data-panel="history">History</button>
+  <button class="nav-btn" data-panel="facts">Facts</button>
+  <button class="nav-btn" data-panel="build">Build & reconstruction</button>
+  <button class="nav-btn" data-panel="ratios">Gear ratios</button>
+  <button class="nav-btn" data-panel="model">About this model</button>
+</div>
+
+<div id="purpose" class="panel active">
+  <h2>Purpose</h2>
+  <p>The Antikythera Mechanism was a hand-cranked astronomical calculator. It displayed the positions of the Sun and Moon, the lunar phase, and the timing of certain astronomical cycles. It could also indicate possible eclipse months and the schedule of major Greek athletic games.</p>
+  <p>A user turned a side crank to move a date pointer. Linked gears then drove pointers on the front and back dials. The device reconciled the solar year with the lunar month and predicted repeating patterns that ancient astronomers had already recorded in arithmetic cycles.</p>
+  <h3>What the dials showed</h3>
+  <ul>
+    <li>Front: a zodiac ring and a calendar ring. Brass pointer for the Sun (one turn per tropical year). Blue pointer for the Moon (sidereal month, with a small variation from the pin-and-slot device). A small ball on the Moon pointer showed phase from the synodic month.</li>
+    <li>Upper back: a five-turn spiral for the Metonic cycle (19 tropical years = 235 synodic months). A subsidiary dial tracked the 76-year Callippic cycle and another tracked the four-year cycle of Panhellenic games (Olympic, Nemean, Pythian, Isthmian).</li>
+    <li>Lower back: a four-turn spiral for the Saros cycle (223 synodic months). Cells were marked with eclipse glyphs. A subsidiary dial showed the Exeligmos (three Saros cycles) so the time of day of an eclipse could be estimated.</li>
+  </ul>
+  <p>The mechanism did not merely display mean motions. The lunar train included a pin-and-slot arrangement that reproduced the Moon’s varying speed, matching the theory associated with Hipparchus. Planetary positions were almost certainly intended as well, though those gears do not survive.</p>
+</div>
+
+<div id="history" class="panel">
+  <h2>History</h2>
+  <p>The mechanism was recovered in 1901 from a Roman-era shipwreck near the Greek island of Antikythera. Sponge divers found bronze fragments mixed with statues, pottery, glass, and other cargo from a ship that sank around 70–60 BCE. At first the pieces looked like a lump of corroded metal with gears inside.</p>
+  <p>Early study was limited by the state of the fragments. In the 1950s and 1960s Derek de Solla Price examined the largest fragment with X-rays and published a major reconstruction in 1974. His work established that the device was an astronomical calculator, though some of his gear arrangements later proved incorrect.</p>
+  <p>From the 1990s onward Michael Wright produced more accurate physical models and argued that the back dials were spirals. The decisive advance came from the Antikythera Mechanism Research Project (2005–2006). High-resolution X-ray computed tomography and surface imaging revealed hidden gears, tooth counts, and more than 3,000 characters of previously unread inscriptions. Subsequent papers by Freeth, Bitsakis, Moussas, Seiradakis, and others completed the modern consensus on the calendar, lunar, and eclipse functions.</p>
+  <p class="note">The device is dated to roughly 100 BCE, possibly as early as the second century BCE. It was already an old and sophisticated instrument when it was lost. Nothing of comparable mechanical complexity is known from the ancient world until the medieval astronomical clocks of the fourteenth century.</p>
+</div>
+
+<div id="facts" class="panel">
+  <h2>Facts</h2>
+  <ul>
+    <li>Approximately 30–37 gears survived in the fragments. Reconstructions suggest the complete device had more, possibly including planetary trains that do not survive. The largest fragment (Fragment A) contains most of the surviving gearing.</li>
+    <li>The Metonic cycle equates 19 tropical years with 235 synodic months (to within about two hours). The upper back dial was a five-turn spiral with 235 cells, one for each lunar month, inscribed with Corinthian month names.</li>
+    <li>The Saros cycle is 223 synodic months (about 18 years and 11 days). The lower back dial was a four-turn spiral. Surviving eclipse glyphs on the spiral listed the month, day, and hour of possible solar and lunar eclipses.</li>
+    <li>A pin-and-slot device mounted on gears e3/e4 produced the Moon’s varying angular speed (the lunar anomaly). The arrangement is mathematically equivalent to the eccentric model associated with Hipparchus.</li>
+    <li>Inscriptions on the front and back door plates and on the dial plates listed cycles, instructions, and astronomical data. More than 3,000 characters have been read from the tomography data.</li>
+    <li>The wooden case was roughly the size of a shoebox (about 33 × 18 × 10 cm). A crank on the side drove the main gear (often labeled b1). Pointers followed grooves in the spiral scales so the user could read the correct turn.</li>
+    <li>Subsidiary dials tracked the four-year Games cycle (Olympic, Nemean, Pythian, Isthmian, plus local festivals), the 76-year Callippic cycle, and the 54-year Exeligmos (three Saros cycles).</li>
+    <li>The mechanism used whole-number gear ratios derived from Babylonian period relations that Greek astronomers had adopted and refined.</li>
+  </ul>
+</div>
+
+<div id="build" class="panel">
+  <h2>Build & reconstruction</h2>
+  <p>The original was made of bronze gears and plates mounted on shafts inside a wooden case. Teeth were cut by hand with a file or similar tool; pitch and tooth form vary slightly from gear to gear. The surviving fragments are heavily corroded, calcified, and incomplete. Many gears are broken, and several shafts are missing.</p>
+  <p>Modern reconstructions rest on three kinds of evidence: the physical fragments (especially Fragment A), high-resolution X-ray computed tomography that reveals internal gearing and tooth counts, and the inscriptions on the dials and door plates. Tooth-count estimates are made by fitting regular models to the surviving arcs and accounting for corrosion and missing sections.</p>
+  <h3>Key surviving trains</h3>
+  <ul>
+    <li>Main drive (large gear, often called b1, roughly 223–224 teeth in some counts) advances with the year. It is driven by a crown gear from the side crank.</li>
+    <li>A train through gears of approximately 38, 48, 24, and 127 teeth produces the sidereal month for the Moon pointer. The 127-tooth gear is particularly important for the lunar period.</li>
+    <li>Further gears (including the 53-tooth and 188/223-tooth pairs) drive the Metonic and Saros spiral pointers and the subsidiary dials (Callippic, Games, Exeligmos).</li>
+    <li>The pin-and-slot lunar anomaly mechanism is mounted on gears e3 and e4. A pin on one gear rides in a slot on another, producing a variable rotation rate that matches the Moon’s known inequality.</li>
+  </ul>
+  <p>Planetary displays for Mercury, Venus, and possibly the outer planets have been proposed on the basis of the inscriptions and the empty space inside the case. No planetary gears survive, so those trains remain hypothetical. The calendar, lunar, and eclipse functions are securely reconstructed.</p>
+</div>
+
+<div id="ratios" class="panel">
+  <h2>Gear ratios</h2>
+  <p>The ratios below come from the Freeth et al. reconstructions (2006 and later) based on X-ray tomography of the surviving fragments. They implement the Babylonian period relations used by Greek astronomers. Many tooth counts have small uncertainties from corrosion; the functional ratios for the known trains are secure. Planetary trains are hypothesized and do not survive.</p>
+  <h3>Core period relations</h3>
+  <ul>
+    <li>Metonic: 19 tropical years = 235 synodic months</li>
+    <li>Saros: 223 synodic months (eclipse cycle)</li>
+    <li>Sidereal month ≈ 27.3217 days</li>
+    <li>Synodic month ≈ 29.5306 days</li>
+  </ul>
+  <h3>Lunar train (sidereal month)</h3>
+  <p>The key ratio that produces approximately 254 sidereal months in 19 years:</p>
+  <p class="note" style="font-family:ui-monospace,monospace;background:#f8f6f0;padding:8px;border-radius:6px;">64/38 × 48/24 × 127/32 = 254/19 ≈ 13.36842</p>
+  <p>Modern value is ≈ 13.368267. Path: b2 (64) → c1 (38) → c2 (48) → d1 (24) → d2 (127) and further gears to the Moon pointer. A pin-and-slot device on e3/e4 adds the lunar anomaly.</p>
+  <h3>Key gear tooth counts (accepted / best-fit)</h3>
+  <ul>
+    <li>b1 — 223–224 teeth — main drive (one turn per tropical year)</li>
+    <li>b2 — 64 — start of lunar and calendar trains</li>
+    <li>c1 — 38 — lunar train</li>
+    <li>c2 — 48 — lunar train</li>
+    <li>d1 — 24 — lunar train</li>
+    <li>d2 — 127 — lunar train (critical for sidereal month)</li>
+    <li>e3 — ~223 — lunar anomaly / Saros</li>
+    <li>e4 — ~188 — lunar anomaly / Saros</li>
+    <li>l1 — 38 — Metonic start</li>
+    <li>l2 — 53 — Metonic</li>
+    <li>m1 — 96 — Metonic</li>
+    <li>f1 — 53 — Saros</li>
+  </ul>
+  <p class="note">The 3D model above uses simplified visual gears whose relative speeds follow these period relations. It does not yet implement the full pin-and-slot anomaly mechanism or the complete Metonic and Saros spiral gearing.</p>
+</div>
+
+<div id="model" class="panel">
+  <h2>About this model</h2>
+  <p>The 3D view above shows a refined gear train based on the surviving bronze fragments. Teeth are modeled with a more triangular profile closer to hand-cut ancient gears. Materials use aged bronze and brass tones. The layout includes the main drive, intermediate gears, the lunar train segment, and an additional gear for visual density. Ratios follow the known period relations. Drag to orbit; scroll or pinch to zoom. The slider is centered on today’s date and spans roughly one Metonic cycle in each direction.</p>
+  <p>The model uses a fixed J2000 epoch plus the day offset so that gear angles remain continuous and consistent as you move through past and future dates. The tropical year constant is 365.24219 days. Lunar ratios are taken from the known period relations used in the Freeth and Wright reconstructions.</p>
+  <p class="note">Full planetary gearing and the precise pin-and-slot lunar anomaly are not modeled in this view. The original device also carried the zodiac and calendar dials on the front and the Metonic and Saros spiral dials on the back, with subsidiary dials for the Games cycle, Callippic cycle, and Exeligmos. Those dials are described in the sections above but are not rendered here.</p>
+</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+const container = document.getElementById('view');
+const daySlider = document.getElementById('day');
+const dateDisplay = document.getElementById('dateDisplay');
+
+const TROPICAL_YEAR = 365.24219;
+const EPOCH = new Date(Date.UTC(2000, 0, 1, 12, 0, 0));
+const today = new Date();
+let offsetDays = 0;
+
+function daysSinceEpoch(date) {
+  return (date - EPOCH) / (1000 * 60 * 60 * 24);
+}
+
+function formatDate(d) {
+  return d.toLocaleDateString(undefined, { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
+}
+
+function updateDateLabel() {
+  const target = new Date(today.getTime() + offsetDays * 86400000);
+  let label;
+  if (offsetDays === 0) {
+    label = 'Today · ' + formatDate(target);
+  } else {
+    const sign = offsetDays > 0 ? '+' : '';
+    label = formatDate(target) + ' (' + sign + offsetDays + ' d)';
+  }
+  dateDisplay.textContent = label;
+}
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xF4F0E6);
+
+const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 100);
+camera.position.set(5.5, 3.6, 7.2);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+container.appendChild(renderer.domElement);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+controls.target.set(0.2, 0, 0);
+controls.minDistance = 3;
+controls.maxDistance = 18;
+
+scene.add(new THREE.AmbientLight(0xffffff, 0.55));
+const key = new THREE.DirectionalLight(0xffffff, 0.85);
+key.position.set(6, 9, 5);
+scene.add(key);
+const fill = new THREE.DirectionalLight(0xE8DCC8, 0.3);
+fill.position.set(-5, 3, -2);
+scene.add(fill);
+const rim = new THREE.DirectionalLight(0xC4A574, 0.15);
+rim.position.set(0, 2, -6);
+scene.add(rim);
+
+const brass = new THREE.MeshStandardMaterial({ color: 0xB8956A, metalness: 0.75, roughness: 0.28 });
+const brassAged = new THREE.MeshStandardMaterial({ color: 0x8A6A42, metalness: 0.7, roughness: 0.35 });
+const bronze = new THREE.MeshStandardMaterial({ color: 0x6B5A3A, metalness: 0.65, roughness: 0.4 });
+const hub = new THREE.MeshStandardMaterial({ color: 0x2A241C, metalness: 0.8, roughness: 0.3 });
+
+function createGear(radius, thickness, teeth, material) {
+  const group = new THREE.Group();
+  // Main body
+  const body = new THREE.Mesh(new THREE.CylinderGeometry(radius * 0.78, radius * 0.78, thickness, 48), material);
+  body.rotation.x = Math.PI / 2;
+  group.add(body);
+  // More authentic triangular-ish teeth
+  const toothShape = new THREE.Shape();
+  const tw = radius * 0.14;
+  const th = radius * 0.22;
+  toothShape.moveTo(-tw / 2, 0);
+  toothShape.lineTo(tw / 2, 0);
+  toothShape.lineTo(0, th);
+  toothShape.closePath();
+  const toothGeo = new THREE.ExtrudeGeometry(toothShape, { depth: thickness * 0.95, bevelEnabled: false });
+  for (let i = 0; i < teeth; i++) {
+    const a = (i / teeth) * Math.PI * 2;
+    const tooth = new THREE.Mesh(toothGeo, material);
+    tooth.position.set(Math.cos(a) * radius * 0.82, 0, Math.sin(a) * radius * 0.82);
+    tooth.rotation.y = -a;
+    tooth.rotation.x = Math.PI / 2;
+    group.add(tooth);
+  }
+  // Hub with slight rim
+  const h = new THREE.Mesh(new THREE.CylinderGeometry(radius * 0.16, radius * 0.16, thickness + 0.06, 16), hub);
+  h.rotation.x = Math.PI / 2;
+  group.add(h);
+  const rim = new THREE.Mesh(new THREE.TorusGeometry(radius * 0.22, thickness * 0.08, 8, 16), hub);
+  rim.rotation.x = Math.PI / 2;
+  group.add(rim);
+  return group;
+}
+
+// More authentic tooth counts drawn from Freeth reconstructions
+const mainGear = createGear(2.4, 0.32, 48, brass);   // visual proxy for main drive
+mainGear.position.set(-2.8, 0, 0);
+scene.add(mainGear);
+
+const midGear = createGear(1.35, 0.28, 38, brassAged); // c1-style
+midGear.position.set(-0.5, 0.1, 0);
+scene.add(midGear);
+
+const moonGear = createGear(1.8, 0.28, 32, bronze);    // closer to lunar output
+moonGear.position.set(2.0, 0, 0);
+scene.add(moonGear);
+
+const smallGear = createGear(0.95, 0.24, 24, brassAged);
+smallGear.position.set(3.7, 0.06, 0);
+scene.add(smallGear);
+
+const extraGear = createGear(0.7, 0.22, 53, bronze);   // 53-tooth style
+extraGear.position.set(1.1, -0.15, 0);
+scene.add(extraGear);
+
+function addShaft(x, y, z, len) {
+  const s = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, len, 12), hub);
+  s.rotation.x = Math.PI / 2;
+  s.position.set(x, y, z);
+  scene.add(s);
+}
+addShaft(-2.8, 0, 0, 0.6);
+addShaft(-0.5, 0.1, 0, 0.6);
+addShaft(2.0, 0, 0, 0.6);
+addShaft(3.7, 0.06, 0, 0.45);
+addShaft(1.1, -0.15, 0, 0.4);
+
+// Subtle base plate for context
+const plate = new THREE.Mesh(
+  new THREE.BoxGeometry(9, 0.08, 5.5),
+  new THREE.MeshStandardMaterial({ color: 0xE8E0D0, roughness: 0.8, metalness: 0.05 })
+);
+plate.position.set(0.5, -0.35, 0);
+scene.add(plate);
+
+function updateGears() {
+  const totalDays = daysSinceEpoch(today) + offsetDays;
+  const mainAngle = (totalDays / TROPICAL_YEAR) * Math.PI * 2;
+  mainGear.rotation.z = mainAngle;
+
+  // Ratios drawn from the known lunar train (64/38 × 48/24 × 127/32 lineage)
+  const midAngle = mainAngle * (64 / 38);
+  midGear.rotation.z = -midAngle;
+
+  const moonAngle = midAngle * (48 / 24) * (127 / 32) * 0.15; // scaled for visual clarity
+  moonGear.rotation.z = moonAngle;
+
+  const smallAngle = moonAngle * (32 / 24);
+  smallGear.rotation.z = -smallAngle;
+
+  const extraAngle = midAngle * (53 / 96);
+  extraGear.rotation.z = extraAngle;
+}
+
+function resize() {
+  const w = container.clientWidth;
+  const h = container.clientHeight;
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+  renderer.setSize(w, h);
+}
+
+function animate() {
+  requestAnimationFrame(animate);
+  controls.update();
+  renderer.render(scene, camera);
+}
+
+daySlider.addEventListener('input', () => {
+  offsetDays = +daySlider.value;
+  updateDateLabel();
+  updateGears();
+});
+
+document.getElementById('resetBtn').addEventListener('click', () => {
+  daySlider.value = 0;
+  offsetDays = 0;
+  updateDateLabel();
+  updateGears();
+});
+
+document.querySelectorAll('.nav-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.panel).classList.add('active');
+  });
+});
+
+window.addEventListener('resize', resize);
+resize();
+updateDateLabel();
+updateGears();
+animate();
+</script>
+</body>
+</html>
