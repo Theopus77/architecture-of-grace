@@ -13,6 +13,24 @@ If a rule conflicts with a request, the standing rule wins unless Jimmy explicit
 overrides it in the same conversation.
 
 
+
+## Instant scratches on the turntables (standing order from Jimmy, 2026-10-31)
+
+"Now the turn table js lagging. Make sure the scratches are instant and make sure
+it sounds as real as real can get. Make sure this is in the directions that it
+gets the same treatment as the drum machines."
+
+The Turntables (`music-decks.html`, /decks) get the same instant treatment as
+the Drum Machine:
+
+- Scratches answer at once. Audio context latency is 5 ms. The ScriptProcessor
+  quantum is 128 samples. The scratch velocity window is 8–20 ms, not 28–70.
+- The vinyl engine stays real: platter with mass, groove velocity is the signal,
+  surface noise and crackle ride the speed, cubic interpolation, no gravel.
+  Do not replace it with a rate switch or a jump-once-per-event playhead.
+- After any change to the decks, run `python3 tools/build-fast.py` so the fast
+  copy and its front script match the source. The site serves the fast copy.
+
 ## Instant voices, any number of sounds (standing order from Jimmy, 2026-10-31)
 
 "Make this even faster and make this becomes a standing rule." The Drum Machine
