@@ -12,6 +12,29 @@ contrast checks, studio-only rooms, drop-downs, and every other order below.
 If a rule conflicts with a request, the standing rule wins unless Jimmy explicitly
 overrides it in the same conversation.
 
+
+## Instant voices, any number of sounds (standing order from Jimmy, 2026-10-31)
+
+"Make this even faster and make this becomes a standing rule." The Drum Machine
+(`music-pads.html`) and every other music room that plays sounds must stay instant
+no matter how many kits, notes, chords or voices are in use.
+
+- Hits are answered at once. Audio context latency is 5 ms or lower. No fade, no
+  ramp, no extra nodes on the hit path unless Jimmy asks for them.
+- Voices feel unlimited. A soft cap (currently 64) is only a safety net. When a
+  new hit would pass it, the oldest voice is stopped and disconnected immediately
+  (`letGo` / `stealTo`). Never let voices pile up until the page freezes.
+- Drums, notes and chords share the same stealer. A new room that plays samples
+  joins that stealer or does the same instant release.
+- Do not re-introduce a low hard cap, a long release, or shape/filter nodes on
+  the default path. Those caused freezes. Shape stays off unless explicitly
+  requested and proven not to lock a phone.
+- Gold chord highlight (notes that match the sounding chord, or any chord in a
+  selected progression) stays visible. The gold bar is a solid stripe that later
+  box-shadow rules cannot wipe.
+- After any change to a music room, run `python3 tools/build-fast.py` so the
+  fast copy the site serves matches the source.
+
 ## The address is architectureofgrace.com (standing order from Jimmy, 2026-10-10)
 
 "IT will always be .com from now on unless other wise noted." Every link, canonical tag,
