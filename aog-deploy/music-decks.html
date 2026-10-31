@@ -2883,8 +2883,38 @@ function holdable(btn, down, up){
 }
 /* Start, or Stop. A deck synced to a playing MASTER does not spin up from still: it
    starts at full speed on the master's next beat, booked to the exact frame. */
-async function startDeck(d, from){
+async 
+/* AOG-NEEDLE-V1: a short low thump and a tiny burst of noise when the needle drops. Quiet enough for a room. */
+let NEEDLE = null;
+function needleBuf(){
+  if(NEEDLE || !actx) return NEEDLE;
+  const n = Math.floor(actx.sampleRate * 0.18);
+  const b = actx.createBuffer(1, n, actx.sampleRate);
+  const d = b.getChannelData(0);
+  for(let i=0;i<n;i++){
+    const t = i / actx.sampleRate;
+    const env = Math.exp(-t * 28);
+    d[i] = (Math.sin(2*Math.PI*55*t) * 0.35 + (Math.random()*2-1) * 0.08) * env;
+  }
+  NEEDLE = b;
+  return b;
+}
+function needleDrop(deck){
+  if(!actx || !deck) return;
+  try{
+    const src = actx.createBufferSource();
+    src.buffer = needleBuf();
+    const g = actx.createGain();
+    g.gain.value = 0.22;
+    src.connect(g);
+    g.connect(deck.gain || bus || actx.destination);
+    src.start();
+    src.onended = ()=>{ try{ src.disconnect(); g.disconnect(); }catch(e){} };
+  }catch(e){}
+}
+function startDeck(d, from){
   if(!d.buf) return;
+  const wasOff = !d.motor;
   ctx(); await ensureNode(d);
   const m = masterDeck();
   if(from != null){ d.pos = from; }
@@ -2899,7 +2929,7 @@ async function startDeck(d, from){
     const P = Math.max(1, grid0(d) + is*beatLen(d));
     send(d, { t:"sched", frame:Math.round(Fb), m:{ t:"start", pos:P } });
     d._startAt = Math.round(Fb); d._aligned = performance.now() + Math.max(0, (Fb - nowFrame())/sr*1000);
-    d.motor = true; LX.startPos[d.id] = P;
+    d.motor = true; LX.startPos[d.id] = P; if(wasOff) needleDrop(d);
   } else {
     if(from != null) send(d, { t:"seek", v:from, park:true });
     d.motor = true; LX.startPos[d.id] = d.pos;
@@ -3546,6 +3576,11 @@ function bind(){
       ctx(); await ensureNode(deck);
       lastAng = angleOf(e); lastT = performance.now();
       spun = 0; trail = [{ t:lastT, a:0 }];
+      /* AOG-DECKS-ZONES-V1: outer rim is a sharp scratch, center label is a heavy drag */
+      const rr = p.getBoundingClientRect();
+      const dx = e.clientX - (rr.left + rr.width/2), dy = e.clientY - (rr.top + rr.height/2);
+      const rad = Math.sqrt(dx*dx + dy*dy) / (Math.min(rr.width, rr.height)/2);
+      deck._zone = rad > 0.62 ? "rim" : "label";
       LX.flips[deck.id] = 0; deck._sgn = 0;
       deck.held = true; deck.lastMove = lastT;
       deck.handRate = deck.rate;                    /* you catch it at the speed it is turning */
@@ -3575,11 +3610,12 @@ function bind(){
          keep their sharp edges instead of smearing. */
       const now = performance.now();
       const absInst = Math.abs(deck.handRate);
-      const win = absInst > 1.2 ? 8 : absInst > 0.4 ? 12 : 20; /* AOG-DECKS-INSTANT-V1: near-zero lag */
+      const rim = deck._zone === "rim";
+      const win = rim ? (absInst > 1.2 ? 6 : 10) : (absInst > 0.4 ? 18 : 28); /* rim instant, label heavy */
       while(trail.length > 2 && now - trail[0].t > win) trail.shift();
       const first = trail[0], last = trail[trail.length-1];
       const dt = Math.max(0.008, (last.t - first.t)/1000);
-      let inst = ((last.a - first.a)/dt) / DEG_PER_SEC * TOUCH[touch];
+      let inst = ((last.a - first.a)/dt) / DEG_PER_SEC * TOUCH[touch] * (deck._zone === "rim" ? 1.15 : 0.55);
       /* non-linear: small motions stay fine, larger motions get more authority */
       const sign = inst < 0 ? -1 : 1;
       const mag = Math.abs(inst);
