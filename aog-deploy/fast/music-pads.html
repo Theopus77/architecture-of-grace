@@ -290,7 +290,9 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
    chord playing now get a gold bar. Both stay still: nothing blinks or moves. */
 .pad .po{position:absolute;top:4px;right:5px;font:800 11px/1 var(--sans);color:#1f1206;background:#ffd36b;border-radius:9px;padding:3px 6px}
 .pad.inpat{border-color:#ffd36b}
-.pad.fit{border-color:#ffd36b;box-shadow:inset 0 -5px 0 #ffd36b}
+.pad.fit{border-color:#ffd36b;box-shadow:inset 0 -6px 0 #ffd36b,0 0 0 1px #ffd36b}
+#pads .pad.fit,#padView .pad.fit{border-color:#ffd36b !important;box-shadow:inset 0 -6px 0 #ffd36b,0 0 0 1px #ffd36b !important}
+.pad.fit:not(.hit):not(.down){box-shadow:inset 0 -6px 0 #ffd36b,0 0 0 1px #ffd36b !important}
 .pad.hit .po{background:#1f1206;color:#ffd36b}
 
 /* the steps of the picked pad: 8 to a row on a phone, 16 where the sequencer itself is wide (AOG-PADS-16BARS-V1: its own
@@ -1387,23 +1389,32 @@ function markStep(i, when){
 function pump(){
   if(!ac) return;
   const now=ac.currentTime, horizon=now+0.12;
+  let guard=0;
   if(SEQ.on){
     const L=loopLen(), m=evMap(), sp=spt();
-    while(SEQ.t0+SEQ.abs*sp < horizon){
+    if(!(sp>0)){ SEQ.on=false; stopTimer(); return; }
+    while(SEQ.t0+SEQ.abs*sp < horizon && guard<48){
       const abs=SEQ.abs, tk=abs%L, when=SEQ.t0+abs*sp, pass=Math.floor(abs/L), list=m.get(tk);
       if(list) list.forEach(e=>{
         if(e._skip===pass){ delete e._skip; return; }
         if(STAGE.mute[e.b]) return;   /* AOG-PADS-STAGE-V1: a muted layer sits out */
         const P=padSet(e.b, e.p); if(P.chance<100 && Math.random()*100 > P.chance) return; /* AOG-PERMANENT: return, never continue, inside forEach */
-        const hw=feelWhen(e.b, e.p, when)+(P.micro||0)/1000; const v=trigger(e.b, e.p, e.v, hw); flash(e.b, e.p, hw, e.v);
-        if(v && gated(e.b)) v.stop(hw+Math.max(12, e.len||48)*sp); /* AOG-PADS-FEEL-V1 */
+        try{
+          const hw=feelWhen(e.b, e.p, when)+(P.micro||0)/1000; const v=trigger(e.b, e.p, e.v, hw); flash(e.b, e.p, hw, e.v);
+          if(v && gated(e.b)) v.stop(hw+Math.max(12, e.len||48)*sp); /* AOG-PADS-FEEL-V1 */
+        }catch(err){ /* one bad hit must not lock the thread */ }
       });
       if(S.click && tk%PPQ===0) blip(when, tk===0);
       if(tk%24===0) markStep(tk/24, when);
       SEQ.abs++;
+      guard++;
     }
+    if(guard>=48){ const left=horizon-(SEQ.t0+SEQ.abs*sp); if(left>0) SEQ.abs+=Math.ceil(left/sp)||1; }
   }
-  RPT.forEach(r=>{ while(r.next<horizon){ hitPad(r.bi, r.pi, r.vel, r.next, true); r.next+=r.step; if(++r.n>=4) LES.mark("rptroll"); } });
+  RPT.forEach(r=>{
+    let rg=0;
+    while(r.next<horizon && rg<16){ try{ hitPad(r.bi, r.pi, r.vel, r.next, true); }catch(e){} r.next+=Math.max(0.01,r.step); if(++r.n>=4) LES.mark("rptroll"); rg++; }
+  });
   if(!SEQ.on && !RPT.size) stopTimer();
 }
 function startTimer(){ if(!SEQ.timer) SEQ.timer=setInterval(pump, 25); pump(); }
@@ -1840,7 +1851,11 @@ function chordNow(d, when){
 function paintFit(){
   const B=S.banks[S.bank]; if(B.type!=="notes") return;
   const defs=padDefs(S.bank);
-  document.querySelectorAll("#pads .pad").forEach(el=>{ const d=defs[+el.dataset.p]; el.classList.toggle("fit", !!(NOWCH && d && d.notes && NOWCH.pcs.has(d.notes[0]%12))); });
+  document.querySelectorAll("#pads .pad, #padView .pad").forEach(el=>{
+    const d=defs[+el.dataset.p];
+    const on=!!(NOWCH && d && d.notes && d.notes.length && NOWCH.pcs.has(d.notes[0]%12));
+    el.classList.toggle("fit", on);
+  });
   $("guideNow").innerHTML=NOWCH ? t("fitNow",{name:esc(NOWCH.name), notes:esc(NOWCH.notes)}) : esc(t("fitWait"));
 }
 
