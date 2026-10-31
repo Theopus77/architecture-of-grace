@@ -1850,18 +1850,30 @@ function patToLoop(B){
 }
 let NOWCH=null;   /* the chord heard last: its pitch classes and its name */
 function chordNow(d, when){
-  const go=()=>{ NOWCH={pcs:new Set(d.notes.map(m=>m%12)), name:d.name, notes:d.notes.map(m=>keyName(m)).join(" ")}; paintFit(); };
+  /* AOG-FIT-ANY-V1: every chord, live or sequenced, from any chords bank, lights its notes. No special cases. */
+  const go=()=>{
+    if(!d || !d.notes || !d.notes.length) return;
+    NOWCH={pcs:new Set(d.notes.map(m=>m%12)), name:d.name||"chord", notes:d.notes.map(m=>keyName(m)).join(" ")};
+    paintFit();
+  };
   const ms=ac ? (when-ac.currentTime)*1000 : 0; if(ms>8) setTimeout(go, ms); else go();
 }
 function paintFit(){
-  const B=S.banks[S.bank]; if(B.type!=="notes") return;
-  const defs=padDefs(S.bank);
-  document.querySelectorAll("#pads .pad, #padView .pad").forEach(el=>{
-    const d=defs[+el.dataset.p];
-    const on=!!(NOWCH && d && d.notes && d.notes.length && NOWCH.pcs.has(d.notes[0]%12));
-    el.classList.toggle("fit", on);
+  /* Always light the notes-bank pads that belong to the chord that is playing now, whatever bank is on screen. */
+  const notesBi=S.banks.findIndex(b=>b.type==="notes");
+  if(notesBi<0) return;
+  const defs=padDefs(notesBi);
+  const boxes=[document.querySelector("#pads"), document.querySelector("#padView .pads"), document.querySelector("#padView .pv-grids")].filter(Boolean);
+  boxes.forEach(box=>{
+    box.querySelectorAll(".pad").forEach(el=>{
+      const d=defs[+el.dataset.p];
+      const on=!!(NOWCH && d && d.notes && d.notes.length && NOWCH.pcs.has(d.notes[0]%12));
+      el.classList.toggle("fit", on);
+    });
   });
-  $("guideNow").innerHTML=NOWCH ? t("fitNow",{name:esc(NOWCH.name), notes:esc(NOWCH.notes)}) : esc(t("fitWait"));
+  if(S.banks[S.bank].type==="notes"){
+    $("guideNow").innerHTML=NOWCH ? t("fitNow",{name:esc(NOWCH.name), notes:esc(NOWCH.notes)}) : esc(t("fitWait"));
+  }
 }
 
 /* ══ the page ══ */
@@ -1950,6 +1962,7 @@ function paintPads(){
   paintTubes(box, bk, defs);   /* AOG-PADS-CLASSROOM-V1 */
   box.setAttribute("aria-label", t("padsLab"));
   pvPaint();
+  if(typeof paintFit==="function") paintFit();
 }
 function paintSel(){ document.querySelectorAll("#pads .pad").forEach(el=>el.classList.toggle("sel", +el.dataset.p===S.sel)); paintSteps(); paintPadSet(); }
 /* ══ AOG-PADS-16BARS-V1 (2026-10-18) — Jimmy: "Can we get 8 bars in the recording studio as an option? Even 16 bars." The
