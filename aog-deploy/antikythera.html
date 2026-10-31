@@ -35,7 +35,7 @@ button, .nav-btn {
 button:hover, .nav-btn:hover { background: var(--soft); }
 .nav-btn.active { background: var(--brass); color: #fff; }
 #view {
-  height: 480px; background: #fff; border: 1px solid var(--rule);
+  height: 520px; background: #fff; border: 1px solid var(--rule);
   margin: 0 24px 16px; border-radius: 12px; overflow: hidden;
   box-shadow: 0 1px 3px rgba(26,35,44,0.05);
 }
@@ -56,7 +56,7 @@ li { margin: 4px 0; }
   header { padding: 16px 16px 6px; }
   h1 { font-size: 1.45rem; }
   .controls, #view, .sections-nav, .panel { margin-left: 16px; margin-right: 16px; }
-  #view { height: 340px; }
+  #view { height: 420px; }
 }
 </style>
 </head>
@@ -75,6 +75,7 @@ li { margin: 4px 0; }
 </div>
 
 <div id="view" role="img" aria-label="Interactive 3D model of Antikythera gear train"></div>
+<p class="museum-hint" style="text-align:center;font-size:0.85rem;color:#5c6670;margin:0 24px 12px;">Drag to orbit · Pinch to zoom · Slide the days to see the gears turn</p>
 
 <div class="sections-nav">
   <button class="nav-btn active" data-panel="purpose">Purpose</button>
@@ -440,8 +441,8 @@ function updateGears() {
   const smallAngle = moonAngle * (32 / 24);
   smallGear.rotation.z = -smallAngle;
 
-  const extraAngle = midAngle * (53 / 96);
-  extraGear.rotation.z = extraAngle;
+  const extraAngle = midAngle * (53 / 96); // lunar subsidiary
+  lunarGear.rotation.z = extraAngle;
 }
 
 function resize() {
@@ -457,6 +458,9 @@ function animate() {
   controls.update();
   renderer.render(scene, camera);
 }
+resize();
+updateGears();
+animate();
 
 daySlider.addEventListener('input', () => {
   offsetDays = +daySlider.value;
