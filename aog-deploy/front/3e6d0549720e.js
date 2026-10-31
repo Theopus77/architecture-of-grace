@@ -102,7 +102,7 @@ const STR = {
   padsT:{en:"From the drum machine",es:"De la caja de ritmos"}, padsGo:{en:"Open the drum machine",es:"Abrir la caja de ritmos"},   /* AOG-PADS-STUDIO-V1 */
   crateNext:{en:"Up next",es:"Lo que sigue"},
   crateNextNone:{en:"Your songs wait here.",es:"Tus canciones esperan aquí."},
-  crateAdd:{en:"Add songs",es:"Agregar canciones"},
+  crateAdd:{en:"Add songs",es:"Agregar canciones"},importVinyl:{en:"Import vinyl",es:"Importar vinilo"},importVinylTip:{en:"Load a real vinyl sound file from this computer. Nothing is uploaded.",es:"Carga un archivo de vinilo real desde este equipo. Nada se sube."},
   starterH:{en:"Starter crate",es:"Caja inicial"},
   starterLead:{en:"Eleven practice tracks, 80 to 128 BPM.",es:"Once pistas para practicar, de 80 a 128 BPM."},
   starterGo:{en:"Load the starter crate",es:"Cargar la caja inicial"},
@@ -1803,7 +1803,7 @@ function paintBay(){
     const i = f.querySelector("input"); if(i && +i.value !== d.vol) i.value = d.vol;
   });
 }
-function bindBay(){
+function bindImport(){document.querySelectorAll("[data-import]").forEach(b=>{if(b._wired)return;b._wired=true;b.onclick=()=>{const id=b.getAttribute("data-import");const d=DECKS.find(x=>x.id===id);if(!d)return;const inp=document.createElement("input");inp.type="file";inp.accept="audio/*,.mp3,.m4a,.aac,.wav,.aif,.aiff,.ogg,.opus,.flac";inp.onchange=()=>{const f=inp.files&&inp.files[0];if(f)loadFile(d,f);};inp.click();};});}function bindBay(){
   document.querySelectorAll("#bay [data-bfader]").forEach(f=>{
     const d = deckOf(f, "data-bfader"), inp = f.querySelector("input");
     const at = (ev)=>{ const r = f.getBoundingClientRect(); setVol(d, 1 - (ev.clientY - r.top - 9)/Math.max(1, r.height - 18)); };
@@ -1821,7 +1821,7 @@ function shell(){
   { const xf = document.getElementById("xf"), home = document.querySelector("div.xfade"); if(xf && home && xf.parentNode !== home) home.appendChild(xf); }   /* keep the crossfader out of the rebuild */
   document.getElementById("decks").innerHTML = decks.map(deckHTML).join("") + bayHTML();
   document.getElementById("strips").innerHTML = decks.map(stripHTML).join("");
-  placeXf(); bindBay(); paintPair();
+  placeXf(); bindBay(); bindImport(); paintPair();
   decks.forEach(d=>{ d._sig = ""; d.waveDirty = true; d.$ = deckParts(d);
     if(RO && d.$){ RO.observe(d.$.wave); RO.observe(d.$.zoom); } });
   if(RO){ const eqc = document.getElementById("eqCurve"); if(eqc) RO.observe(eqc); }
@@ -1838,7 +1838,7 @@ function deckHTML(d){
     <section class="deck" id="deck${id}" aria-label="${t("deck")} ${id}">
       <div class="dhead">
         <h2>${t("deck")} ${id}</h2>
-        <button type="button" class="tiny mst" data-master="${id}" aria-pressed="false" title="${t("masterTip")}">${t("master")}</button>
+        <button type="button" class="tiny mst" data-master="${id}" aria-pressed="false" title="${t("masterTip")}">${t("master")}</button><button type="button" class="tiny" data-import="${id}" title="${t("importVinylTip")}">${t("importVinyl")}</button>
         <span class="bpm" data-bpm="${id}"></span>
       </div>
       <p class="song">${esc(d.note||d.name||t("none"))}</p>
