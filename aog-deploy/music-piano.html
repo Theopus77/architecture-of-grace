@@ -2124,19 +2124,27 @@ function setSus(on, fromPedal){
 
 /* ══════════════════════════════════════════════════════════════════════════
    CHORDS — pads, the pattern, and the player
+   AOG-PAD-RESPONSIVE-V1 (2026-10-31): chord pads must stay instant while a drum
+   loop or Play along is running. Never do expensive DOM or set rebuilds on every
+   animation frame, and never block the pointerdown path with paint/save/lesson
+   work. Future agents: keep visual feedback and note-on synchronous; defer the rest.
    ══════════════════════════════════════════════════════════════════════════ */
 const padHeld={};
 function padDown(i, v){
-  const c=allPads()[i]; if(!c) return;   /* AOG-CHORDS-12-V1: 6 to 11 are the chord strip's six more */
+  /* AOG-PAD-RESPONSIVE-V1: visual feedback and note-on first, before any paint or save.
+     Heavy work (wheel, progress, lessons) is deferred so a tap is never blocked while drums play. */
+  const c=allPads()[i]; if(!c) return;
+  const el=document.querySelector('.pad[data-i="'+i+'"]'); if(el) el.classList.add("hit");
   const vo=voicing(c, lastVoicing); lastVoicing=vo;
   const notes=vo.concat([bassOf(c)]);
   padUp(i);
   padHeld[i]=notes;
   notes.forEach((m,j)=>noteOn("p", m, (v||0.72)*(j===notes.length-1?0.85:1)));
-  const el=document.querySelector('.pad[data-i="'+i+'"]'); if(el) el.classList.add("hit");
-  paintWheelState();   /* AOG-PIANO-WHEEL-V2 */
-  if(S.own && S.prog.length<8){ S.prog.push({off:c.off, q:c.q}); S.preset=""; save(); paintProg(); paintProgSel(); }
-  if(i<6) onPad(i, c);   /* AOG-PIANO-LESSONS-V1 */
+  queueMicrotask(()=>{
+    paintWheelState();
+    if(S.own && S.prog.length<8){ S.prog.push({off:c.off, q:c.q}); S.preset=""; save(); paintProg(); paintProgSel(); }
+    if(i<6) onPad(i, c);
+  });
 }
 function padUp(i){
   const notes=padHeld[i]; if(!notes) return;
@@ -2240,7 +2248,7 @@ function tick(){
   }
   const cur=Math.floor((now-PLAY.t0)/PLAY.barSec);
   if(cur>=0 && cur!==PLAY.cur){ PLAY.cur=cur; paintNow(); litKeys(); onBar(); }
-  else if([...sounding()].sort((a,b)=>a-b).join(",")!==PLAY.sig) litKeys();   /* the orange keys follow each note */
+  else if(PLAY._litDue){ PLAY._litDue=false; litKeys(); }   /* AOG-PAD-RESPONSIVE-V1: do not rebuild the sounding set every frame while drums play */   /* the orange keys follow each note */
   PLAY.raf=requestAnimationFrame(tick);
 }
 
