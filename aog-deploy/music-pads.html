@@ -1241,7 +1241,9 @@ function padEven(inst, url, d){
 function trigger(bi, pi, vel, when, T){
   if(T ? !isReady(bi) : !canPlay(bi)) return null;   /* a file of the loop waits for every sound; live playing does not */
   const d=padDefs(bi)[pi]; if(!d) return null;
-  if(!T){ T=LIVE; T.c=ctx(); T.dest=bus; if(S.banks[bi].type==="chords") chordNow(d, when); }
+  if(!T){ T=LIVE; T.c=ctx(); T.dest=bus; }
+  /* AOG-BANKC-FIT-V1: any chord from Bank B (live or from the pattern) updates the notes Bank C lights */
+  if(S.banks[bi].type==="chords") chordNow(d, when);
   const c=T.c, P=padSet(bi, pi), R=READY[bi], OPEN=T.open, CHOP=T.chop;
   when=Math.max(when||0, c.currentTime);
   if(P.cut>=0 && P.cut!==pi && T.held){ const prev=T.held[bi+":"+P.cut]; if(prev && prev.stop) prev.stop(when, true); } /* AOG-PADS-FEEL-V1 */
