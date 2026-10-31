@@ -36,7 +36,7 @@ li { margin:6px 0; }
 .main-graphic img { width: 100%; height: auto; border-radius: 12px; border: 1px solid var(--rule); display: block; }
 .main-graphic figcaption { font-size: 0.85rem; color: #5c6670; margin-top: 6px; text-align: center; }
 @media (max-width:640px) { .main-graphic { margin-left: 16px; margin-right: 16px; } }
-</style>
+.view-fallback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#5c6670;font-size:0.95rem;pointer-events:none;}</style>
 </head>
 <body>
 <header>
@@ -54,7 +54,7 @@ li { margin:6px 0; }
 </figure>
 
 
-<div id="view" role="img" aria-label="Layered diagram of heavenly and lower realms in ancient texts"></div>
+<div id="view" role="img" aria-label="Layered diagram of heavenly and lower realms in ancient texts">><p class="view-fallback">Loading model…</p></div>
 <p class="museum-hint">Drag to examine the layers described in the texts</p>
 
 <div class="sections-nav">
@@ -181,8 +181,7 @@ function makeLabel(text, x, y, z) {
   c.width = 512; c.height = 128;
   const ctx = c.getContext('2d');
   ctx.fillStyle = 'rgba(26,35,44,0.92)';
-  ctx.roundRect(8, 16, 496, 96, 16);
-  ctx.fill();
+  ctx.fillRect(8, 16, 496, 96);
   ctx.fillStyle = '#F4F0E6';
   ctx.font = '600 40px Iowan Old Style, Palatino, Georgia, serif';
   ctx.textAlign = 'center';
