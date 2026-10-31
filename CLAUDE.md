@@ -2,6 +2,7 @@
 
 The site is static and lives in `aog-deploy/` (Netlify publishes that folder).
 
+
 ## Read these rules first (standing order from Jimmy, 2026-10-31)
 
 Any future agent must read this file (CLAUDE.md) in full before applying any change,
@@ -272,4 +273,239 @@ grey). A released row eases into place with a small settle, and a quick flick (o
 finishes a turn short of 12°; a slow drag never does (AOG-CUBE-SETTLE-V1).
 
 The easiest way (Jimmy, 2026-10-22: "I would like the easiest instructions on how to solve it … I am 42 and would love to be
-able to solve it without help"; AOG-CUBE-EASY-V1). The beginner's
+able to solve it without help"; AOG-CUBE-EASY-V1). The beginner's way leans on one 4-move trick, R U R' U' (called "the
+trick" everywhere): white corners, the yellow cross (F, the trick, F'), and twisting the last corners (cube upside down,
+the corner at the front-right bottom, the trick until yellow faces down, only the bottom turning between corners). The
+other sets are short: the middle layer's right and left moves, the yellow edges (R U R' U R U2 R' U, matched edges at
+the back and right) and the corners into their spots (U R U' L' U R' U' L). No headlights or edge cycle in the beginner's
+way. The stages are cross, corners, middle, ycross, yedges, yplace, done (aog-cube.js); keep its own test passing.
+
+## Skateboarding (Jimmy, 2026-10-11: "a history of skateboarding curriculum … k12 and adult … how to do tricks, grinds … from a science perspective")
+
+- The course is `_work/skt` (id `skt`, 18 units in six bands: K–2 … 11–12 and **Adult**, the first course with an
+  Adult band), built like every other course; Daily Practice is the `skate` book (`_work/ddworld/skt.py`).
+  Unlike Sports History it **teaches technique**, always safety first (helmet, pads, a safe place, a grown-up near
+  children; never stairs, rails, traffic or holding onto a vehicle). Directions say front foot and back foot.
+- Only the course and its Daily Practice book are kept (Jimmy, 2026-10-13: "Except for the course itself (the
+  written material), get rid of everything else that is skateboarding related"; then "The daily practice you may
+  keep"). The Skate Lab (/skate), its 3D trick book, the front-page Skateboarding door and the top bar's skate door are gone; /skate and /skate-lab send
+  to the course (/skateboarding). Don't add them back unless Jimmy asks.
+
+## The Microscope Lab, in depth (Jimmy, 2026-10-12: "a quantum leap forward in the Micro")
+
+`science-microscope.html` (/microscope, a Home Screen app) and its depth engine `aog-micro-3d.js` (AOG-MICRO-DEPTH-V1,
+WebGL2, no three.js). Nine slides are built in depth (`DEPTH_SPECS`: onion, cheek, elodea, pond, blood, pollen, section,
+yeast, crystal): the fine knob moves a thin sharp slice through them, with depth of field from the objective's NA. The
+optics are worked out live: finest detail λ/(NA + NA of the condenser), λ/2NA with the iris open; brightfield, phase
+contrast, darkfield, slit, polarized light (with the red plate) and fluorescence. Pond water and elodea move only after
+Play and stop by themselves after 45 seconds. The depth engine loads only when a depth slide opens and lets go of the
+graphics chip when you leave it. After any change to either file, run
+
+    node tools/check-microscope.js
+
+It checks every original slide at every objective, focusing through depth, the Abbe numbers and bar test, every light,
+Play, silence while idle, the Home Screen links, and iPhone and iPad in English and Spanish. Do not push while it fails.
+
+## The Telescope, with the real sky (Jimmy, 2026-10-12: "a quantum leap forward … the telescope")
+
+`telescope.html` (/telescope; `science-telescope.html` is an old orphan copy). The bench and eyepiece open as before
+with nothing extra loaded. "Real sky" and the star map (`#sky`) load `aog-telescope-astro.js` (Sun, Moon, planets,
+Jupiter's moons, Saturn's rings, rise and set, after Meeus and JPL), `aog-telescope-catalog.js` and `data/sky/`
+(8,874 stars, 88 constellations, 139 deep-sky objects; built by `data/sky/source/make_sky.py` from d3-celestial,
+BSD-3-Clause, license beside it), `aog-telescope-real.js` (the eyepiece as it looks tonight) and
+`aog-telescope-map.js` (the WebGL star map; "Point the telescope" turns it once). Location only on tap; Chicago by
+default. Four telescopes (90 mm, 130 mm, 8-inch Dobsonian, 1 m), the air and sky glow change what shows. After any
+change to these files, run
+
+    node tools/check-telescope.js
+
+It checks the sky against cited textbook values, every original target and lesson button, the map loading only on
+demand and staying still, pointing, and iPhone and iPad in English and Spanish. Do not push while it fails.
+
+## Silent until used (standing order from Jimmy, 2026-10-12)
+
+"This has to be silent when not being used … lighting fast connectivity." Every page, now and later: nothing moves,
+redraws or makes a sound while nobody touches it, and a page that is not itself a 3D room loads no 3D or heavy engine
+(three.js, `aog-*3d.js`, `aog-figure3d.js`, `aog-3dkit.js`, `aog-micro-3d.js`, star catalogues) until someone taps for
+it. The 3D rooms (the Dojo, the Kitchen, the Sewing Room) may build their scene as they open, then must be still. Leaving 3D frees the graphics
+chip. After any change to a page with animation, 3D or sound, run
+
+    node tools/check-silent.js <the pages you changed>     # or with no pages, every page in its list
+
+and add new pages and rooms to its PAGES list. Do not push while it fails.
+
+A room may build its sound engine before the first tap, so the first note is quick (AOG-AUDIO-WARM-V1, `aog-labdoors.js`),
+but it builds it inside `AOGVU.quietly()` (so the meters stay asleep) and then pauses it: the engine rests until a tap or a
+note wakes it (every room's `ctx()` resumes it). The check passes an engine that stays paused and fails one left running,
+even a silent one (Jimmy, 2026-10-20: "the test needs to learn"; AOG-WARM-QUIET-V1). The Studio and its nine rooms are in
+its PAGES list.
+
+## The silent treatment: light speed (standing order from Jimmy, 2026-10-12)
+
+"Make sure everything that has been built and will continue to be built has the silent treatment as I want this website
+LIGHT SPEED!!" Every feature, now and later:
+
+- Loads nothing until it is needed. A room's new script is `defer`. A heavy engine, worker, model or big file is fetched on
+  the first press that needs it, never as the page opens.
+- Is silent and still out of sight. Every AudioContext a page makes goes through `AOGVU.own(ctx)`, so the Studio's hush pauses
+  it. Players, the mic, timers, rAF and polling stop on the `aog-hush` event (`detail.on`) and when the tab is hidden. They wake
+  only what they paused (AOG-SILENT-V1, `aog-vu.js`).
+- Rests when idle: no timer, loop or rAF while nothing plays, listens or is dragged. A paused player suspends its engine.
+- Does heavy work in a Worker, or in slices of 12 ms or less.
+- Never slows the note path: tap-to-sound stays 10–25 ms on a phone.
+- Never makes the page re-check itself on every change (Jimmy, 2026-10-22: the front page froze ~2 s as it loaded).
+  No `:has()` that searches the whole page (`body:has(...)`, `html:has(...)`) in a shared stylesheet or the front page:
+  scope it (`#aog-main:has(> …)`) or set a class. Observers look only at the part that changed, and a loop that sets
+  words (`data-en`/`data-es`) writes only when they differ.
+- Rooms and the front page are built with `python3 tools/build-fast.py`. Big new code goes in its own file, loaded when used.
+
+## The Dojo and Practice the Moves (Jimmy, 2026-10-12: "instructions on how to learn moves with this engine showing the person the moves")
+
+- The Dojo is `dojo.html` (/dojo): the site's figure (`aog-figure3d.js`, outfit "gi") shows the 36 moves in
+  `aog-dojo-moves.js` (ids fixed in `_work/engine3d/CONTRACT.md`) step by step in 3D (`aog-dojo3d.js`, `aog-3dkit.js`).
+  `/dojo#<id>` opens a move; `/dojo?side=left#<id>` and `/dojo#<id>?side=left` the other side. Words show at once, the
+  3D loads right after, and it draws only when a step plays or the view is dragged. After any change, run
+  `node tools/check-dojo.js`.
+- The Measured Step (martial-arts history) now ends every unit with Practice the Moves: safe, solo basics into the
+  air, numbered steps, What helps, Stay safe and a Watch it in 3D button. The history lessons stay history-only. The
+  practice lessons live in `_work/mar/mar_practice.py` (assemble.py adds them); after a change, rebuild the course and
+  run `node tools/check-mar-practice.js`.
+
+## The Kitchen and the Sewing Room (Jimmy, 2026-10-12: "take this amazement to FACS for cooking and sewing lessons")
+
+- The 3D Kitchen is `kitchen.html` at **/kitchen-lab** (/kitchen stays the older "Kitchen & the Sewing Table" page,
+  `fcs-shop.html`). The site's figure (outfit "apron") cooks the 9 recipes in `aog-kitchen-recipes.js` and any recipe a
+  person types or pastes in (read on the device, English or Spanish, scaled ½×–3×, saved on the device), and shows the
+  28 skills one at a time: `/kitchen-lab#<recipe>`, `/kitchen-lab#skill-<id>`, `/kitchen-lab#plug-in`. After any change,
+  run `node tools/check-kitchen.js`.
+- The 3D Sewing Room is `sewing.html` at **/sewing-lab** (also /sewing): 20 moves in `aog-sewing-moves.js` — hand
+  stitches whose thread really goes through the cloth (front and back), buttons, cutting, the machine and pressing.
+  `/sewing-lab#<id>` opens a move. After any change, run `node tools/check-sewing.js`.
+- FACS lessons and room pages link into both (`_work/fcs/practice3d.py`, `add_3d.py`, `add_3d_rooms.py`); after a
+  change run `node tools/check-facs-3d.js`. The ids are fixed in `_work/engine3d/CONTRACT.md`.
+
+## Piano licks, ready for a song (Jimmy, 2026-10-19: piano licks "that follow the same style of the guitar and bass licks"; "I could use them for in making a song")
+
+- Licks to try sits right under the Piano's keys, closed (`#pkLicks`, class `aog-licks-near`; `aog-labdoors.js` keeps it
+  there in the Studio). Opening it loads `aog-piano-licks.js`: 154 licks in 22 groups, written against chords like the
+  Guitar's and the Bass's (the format is in its header). A new lick joins `RAW` and `W` there.
+- Each lick is whole bars from beat 1, plays at the song's tempo (`AOGSong`) in the room's key, lights each key as it
+  sounds (blue right hand, purple left) and widens the keys in view while it plays (`AOG_PKV` in `buildKeys`).
+  Fit to my chords puts it on the room's chord pattern; Repeat 1, 2, 4; ● Record this lick makes a take through
+  `REC.addTake` (`aog-recorder.js`), so + Add to My Track and Send to the drum machine take it. Keep these words the
+  same in every room that has licks.
+- After any change, run `node music-handoff/tests/solo/pianolicks.js` (the numbers in all 24 keys and fitted to other
+  chords, a render with no clicks, iPhone and iPad). Do not push while it fails.
+
+## The Band's licks (Jimmy, 2026-10-19: "piano and band licks … the same style of the guitar and bass licks")
+
+`aog-band-licks.js` (154 licks in 22 groups), loaded the first time "Licks to try" under the Band's keys is opened. Written
+against chords like the guitar's and bass's; `reach()` there says where each player plays them. Fit to my chords, Repeat
+1/2/4 and ● Record this lick (a normal take, `REC.addTake`) as in the other rooms (AOG-LICKS-SONG-V1). The block's source is
+`_work/music/band_head.html` and `band_script.js`; build, then run `node music-handoff/tests/solo/bandlicks.js`.
+
+## Gospel voices (Jimmy, 2026-10-26: "Can you make gospel vocal samples for the studio"; AOG-GOSPEL-V1)
+
+Two records in the turntables' crate (`audio/crate/crate.json`, kind "gospel"), sixteen samples each, one on each pad:
+`39-gospel-choir.mp3` (a choir in C sung by VocalSet's twenty real singers, CC BY 4.0: hits, swells, the Amen chords, a
+walk-up) and `40-jubilee-voices.mp3` (a line from sixteen spirituals by the Fisk Jubilee Singers, 1909–1924, public domain).
+The Turntables show them in their own Gospel voices box; the Drum Machine plays them on bank D (trims in LEVEL.rec); the
+Band has them with its Voices (Jimmy, 2026-10-27: "Put them in the Vocals in the band room"; AOG-BAND-GOSPEL-V1): pick a
+voice and Gospel samples opens under the instrument menu, 32 tap pads through the band's pedals into ● Record
+(`/the-studio#band … ?at=music-band.html#gospel` opens it; level in GOS_GAIN, `band_script.js`). The Band's Voices also
+have a real choir (Jimmy, 2026-10-27: "I only have 4 sound in the voices. I lost the choir voices as well"; AOG-BAND-CHOIR-V1):
+Choir · "aah", "ooh", "oh", "eh", "ee", Women's choir · "aah" and Men's choir · "oh" (players choir_*: six VocalSet singers a
+note, every note set in tune, `music-handoff/tools/band/choir.py`; Jimmy, 2026-10-27, chose the vowels, the women's and men's
+choirs and "the choir in the Piano room": AOG-BAND-CHOIR-V2, AOG-PIANO-CHOIR-V1), and Gospel Choir and Jubilee Voices as menu
+entries that play the choir and open their samples. The Piano (`ch_*` sets, the Band's files) and the Drum Machine
+(`b:choir_*`) have the same seven; the Piano's old one-singer Choir stays as Choir · one singer. `bandt/voices.js` checks them. Built
+by `_work/gospel` (read its README); credits in `audio/crate/CREDITS.txt`, and the CC BY credit must stay there.
+
+## One sound, many kinds (Jimmy, 2026-10-27: "Let's get different types of bass, high hats, cymbals, closed hats, etc…", then "Bass meaning bass drums."; AOG-DRUM-SHELF-V1)
+
+Seven Drum Machine kits in their own group of the kit menus, each eight kinds of one sound: Bass drums (KK) and Bass
+drums · 8 more (BD), Snares (SN), Closed hi-hats (CH), Open hi-hats (OH), Cymbals (CY), Claps and snaps (CL), in
+`aog-drumkit.js`. A pad borrows another kit's recording (`SH(kit, pad, en, es, db)`: its files come from that kit's
+folder, it plays at that kit's trim through `AOGDrumKit.from`, and db evens it with the kit's other pads). Borrow only
+from a kit the Drum Machine itself offers (one with a trim in LEVEL.kit: the 909, kit L, has none). The Drum Kit leaves
+these kits out.
+
+## The Drum Machine as a unit (Jimmy, 2026-10-27: "make it feel more real and separate from the computer? Almost like a stand alone unit"; AOG-PADS-UNIT-V1)
+
+One case with a maker's plate (AoG · 24), a backlit screen (`#pmLcd`: tempo, bars, play/stop/record, bank and kit, the bar
+playing, the pad), Play and Record with their own lights, a light on every step and the sixteen steps across the foot of the
+unit, and Shift (Shift and a step: an accent; again: off; Undo takes it back). A skin and a small script in `music-pads.html`
+over the parts that were there: the screen is written only when what it says changes; nothing moves on a hit.
+In real materials (Jimmy, 2026-10-27: "Make them look more real and less 'fake!'"; AOG-PADS-REAL-V1): brushed aluminium,
+slotted screws, a backlit LCD with its pixel grid and glare, matte rubber pads with printed names, dark plastic buttons whose
+lights (not their colour) show Play, Record and Shift, and the 808's step keys (red, orange, yellow, cream in fours). All drawn
+by CSS, no pictures to fetch.
+Sixteen pads to start (Jimmy, 2026-10-27: "make the drum machine 16 pads again with the option of making it 24 … the pads can
+be a bit bigger"; AOG-PADS-16-V1): the four by four (pads 1 to 16, bigger); Pads 16 | 24 beside "Play on the whole screen"
+brings back pads 17 to 24 (and their kit menu), kept on the device (`S.np`). Hits on 17 to 24 play either way.
+Stage mode (Jimmy, 2026-10-27: "use this on stage in front of an audience and make live beats"; AOG-PADS-STAGE-V1): 🎤 Stage
+in the whole-screen view shows the four banks as buttons (one tap, the loop goes on; an exception to the drop-down rule, as on
+stage one tap matters), an On/Off for each layer of the loop, four scenes (bank and layers, `S.scenes`), Stop all, and Lock
+(Close waits for a hold). The screen stays awake while Stage is open. On/Off and Lock end when the whole screen closes.
+Sideways, the pads fill the screen (AOG-PADS-WIDE-V1).
+Knobs (Jimmy, 2026-10-28: "the knobs and jog wheel"; AOG-PADS-KNOBS-V1): under the screen, Tempo, Swing, Volume (how loud
+the unit plays, `S.mvol`; a bounce is not changed) and Pad (the picked pad's level), turned by a drag up or down or the arrow
+keys. No jog wheel (Jimmy, the same day: "I do not like the knobs related to choosing a bank"); the menus choose banks, sounds
+and beats. The knobs come into the whole screen and Stage too (🎛 Knobs there hides them, `S.pvKn`): a column beside the pads
+when sideways, a row above them upright. The pads always fit the room left.
+Inside the Studio the whole screen is the whole screen (Jimmy, 2026-10-28, iPhone: "the full screen in the iPhone is not 'full
+screen'"; AOG-STUDIO-WHOLE-V1): the room asks `AOGStudioShell.whole(on, window)` and the Studio's frame covers the screen (inside
+the safe area) until it closes; a room arriving or a door taken always ends it. On an upright phone Stage is compact (bank
+letters, smaller keys and knobs) and the pads fill the height.
+
+## The Turntables as Technics SL-1210 MK7s (Jimmy, 2026-10-28: "MIMIC the great TECHNICS sl-1210 MKX or better"; AOG-DECKS-1210-V1)
+
+Each deck in `music-decks.html` has the 1210's top plate (`.platter-wrap.t12`): satin black, the platter with an orange strobe
+lamp, a needle light, the long pitch fader on the right (− at the top, + toward you, the same `[data-speed]` input turned on
+its side), a light that shows when the pitch is on 0, Reset, and along the front Start·Stop, 33 / 45, REV and the Start and
+Brake knobs (how long the platter takes to come up to speed, 0.2–3 s, and to stop, 0.2–6 s; `aog.decks.t12.v1`; the engine's
+`torque` message in `aog-vinyl-worklet.js`). The strobe dots stand still at exactly 0 % and drift as the pitch moves, as the
+real lamp shows them. The Studio's compact sizes in `aog-labdoors.js` leave `.t12` alone; on a short screen the plate makes
+itself smaller so the room stays within two screens (`music-handoff/tests/rooms/compact.js`).
+The pitch fader follows the finger itself (`.t12-fd`; an iPad would not slide the turned input and scrolled the page), and
+changes speed and pitch together as on a Technics: KEY starts off and each deck remembers it once turned on
+(`aog.decks.key.v1`; Jimmy, 2026-10-28: "Messing the the pitch does nothing … nothing with the music and the screen moves";
+AOG-DECKS-PITCH-V1).
+Sound (Jimmy, 2026-10-28: "exceptional quality. WORLD REKNOW QUALITY"; AOG-DECKS-HIFI-V1): a playing record is read with a
+64-tap windowed sinc whose corner follows the speed (flat to 20 kHz; the cubic read took 2.7 dB off 16 kHz); a hand, the parts
+and keylock keep the cubic read. The channel low-pass is a plain wire in the middle (sample rate / 2). No always-on compressor:
+the decks meet on a clean bus (MAKEUP) and the worklet's true-peak limiter (aog-djlimit: 4× between-sample ears, 3 ms
+look-ahead, 100 ms release, -1 dBTP) is the only thing on level. The motor's wow is 0.012 % (a 1210 is about 0.01 %); the
+rumble filter stays at 19 Hz. Vinyl noise starts off and is remembered (`aog.decks.noise`). Keep it measuring flat.
+
+Whole albums on one record (Jimmy, 2026-10-28: "play multiple songs on a record … upload whole albums to play on vinyl, just
+for a nostalgia / cool factor"; AOG-DECKS-ALBUM-V1): + A whole album in Load a song takes many songs at once, reads each one's
+title, album, artist and number from its MP3 or iTunes AAC tags (file names otherwise), and keeps the album (`albums` in the
+crate's IndexedDB; an album's songs are never pushed out of the library). It plays as one record: Side A and Side B (four songs
+or more), a gap in the grooves between songs (`--gaps` on `.vinyl`), the arm moving in across the side, the album's name and
+side on the label. The needle runs on into the next song after a short quiet groove; at the end of a side the record stops and
+asks to be flipped. Back, Next, Flip the record and the side's song list sit under the plate (`.albbar`). Only the song playing
+is opened in memory. Any other record put on the deck takes the album off.
+Make a record (Jimmy, 2026-10-28: "more than one song … on a 'record' … 5-10 songs a record (as a mix more or less)";
+AOG-DECKS-MIX-V1): + Make a record in Load a song; tap 2 to 10 of your songs in the order they play, name it if you like, Put it
+on. It is kept with the albums (`mix:true`) and plays straight through on one side with a short gap between songs.
+One deck (Jimmy, 2026-10-28: "the option of having one turn table on screen"; AOG-DECKS-ONE-V1): on an iPad or a computer,
+One deck beside A · B, A · C, B · C shows a single deck (A, B or C), bigger, with the bay and crossfader put away; that deck
+plays Thru while it is alone and its side goes back after (`aog.decks.one`, `body[data-one]`). A phone already shows one deck.
+
+## No floating My notes button (Jimmy, 2026-10-18: "I don't like the my notes button. Please remove that")
+
+`aog-markup.js` no longer puts the floating My notes button on any page. Highlights and notes still work, and a tap on
+a highlight still edits or removes it. Don't add the button back unless Jimmy asks.
+
+## Housekeeping
+
+- Bump `const CACHE` in `aog-deploy/sw.js` whenever a page changes, so browsers
+  pick up the new version. Replace the line; never keep the old one as a comment.
+  Phones download sw.js again on every update check, and 469 old lines had made it
+  886 KB (2026-10-22). The history is in git log and `tools/sw-cache-history.txt`.
+- Never erase the saved Sheet connection (`aog.sync.url`, `aog.sync.key`,
+  `aog.sync.writekey`) outside Disconnect and Delete everything.
+- Never erase the Studio's locker (`aog.studio.locker.v1`: its web address and
+  key) outside the Studio's own Disconnect. Every clear, reset or Delete
+  everything keeps it, and no backup file or Sheet send may carry it.
