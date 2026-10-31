@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Geocentric and Heliocentric · Lab Bench — Architecture of Grace</title>
+<style>
+:root { --paper:#F4F0E6; --ink:#1A232C; --brass:#C4A574; --rule:#D4CBB8; --soft:#F8F6F0; }
+* { box-sizing: border-box; }
+html, body { margin:0; padding:0; background:var(--paper); color:var(--ink); font-family:"Iowan Old Style",Palatino,Georgia,serif; }
+body { min-height:100vh; }
+header { padding:20px 24px 8px; max-width:980px; margin:0 auto; }
+h1 { font-size:1.75rem; margin:0 0 6px; font-weight:600; }
+.subtitle { font-size:0.95rem; color:#4a5560; margin:0 0 4px; letter-spacing:0.04em; text-transform:uppercase; }
+.lede { font-size:1.05rem; margin:0 0 16px; line-height:1.5; max-width:68ch; }
+#view { height:480px; background:#fff; border:1px solid var(--rule); margin:0 24px 12px; border-radius:12px; overflow:hidden; }
+.museum-hint { text-align:center; font-size:0.85rem; color:#5c6670; margin:0 24px 12px; }
+.sections-nav { display:flex; flex-wrap:wrap; gap:8px; margin:0 24px 12px; max-width:980px; }
+.nav-btn { padding:7px 12px; border:1.5px solid var(--brass); background:#fff; color:var(--ink); border-radius:8px; font:inherit; font-weight:600; cursor:pointer; }
+.nav-btn.active { background:var(--brass); color:#fff; }
+.panel { display:none; max-width:980px; margin:0 auto 24px; padding:0 24px; font-size:0.98rem; line-height:1.55; }
+.panel.active { display:block; }
+.panel h2 { font-size:1.2rem; margin:0 0 10px; font-weight:600; }
+.panel h3 { font-size:1.05rem; margin:16px 0 6px; }
+.note { font-size:0.9rem; color:#4a5560; margin-top:10px; }
+ul { margin:8px 0; padding-left:1.2em; }
+li { margin:4px 0; }
+table { width:100%; border-collapse:collapse; margin:12px 0; font-size:0.95rem; }
+th, td { border:1px solid var(--rule); padding:8px 10px; text-align:left; vertical-align:top; }
+th { background:#fff; font-weight:600; }
+@media (max-width:640px) {
+  header { padding:16px 16px 6px; } h1 { font-size:1.45rem; }
+  #view, .sections-nav, .panel { margin-left:16px; margin-right:16px; }
+  #view { height:380px; }
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="subtitle">Lab Bench · History of Astronomy</div>
+  <h1>Geocentric and Heliocentric</h1>
+  <p class="lede">A comparison of the two great models of the planetary system as they appear in the surviving documents. The sources cited are held by named libraries, museums, and academies. This page does not claim access to restricted government archives.</p>
+</header>
+
+<div id="view" role="img" aria-label="Side-by-side geocentric and heliocentric models"></div>
+<p class="museum-hint">Drag to orbit · The left model is geocentric; the right is heliocentric</p>
+
+<div class="sections-nav">
+  <button class="nav-btn active" data-panel="models">The two models</button>
+  <button class="nav-btn" data-panel="documents">Primary documents</button>
+  <button class="nav-btn" data-panel="institutions">Institutions</button>
+  <button class="nav-btn" data-panel="shift">The shift</button>
+  <button class="nav-btn" data-panel="labs">Related labs</button>
+</div>
+
+<div id="models" class="panel active">
+  <h2>The two models</h2>
+  <table>
+    <tr><th></th><th>Geocentric</th><th>Heliocentric</th></tr>
+    <tr><td>Center</td><td>Earth fixed (or near-center with equant)</td><td>Sun fixed (or near-center)</td></tr>
+    <tr><td>Earth’s motion</td><td>None</td><td>Daily rotation and annual orbit</td></tr>
+    <tr><td>Planetary motion</td><td>Deferents, epicycles, equant</td><td>Orbits (later ellipses) around the Sun</td></tr>
+    <tr><td>Retrograde</td><td>Produced by epicycle</td><td>Apparent, from Earth’s faster inner orbit</td></tr>
+    <tr><td>Key texts</td><td>Aristotle, Ptolemy’s <em>Almagest</em></td><td>Copernicus, Kepler, Galileo</td></tr>
+    <tr><td>Predictive power</td><td>High for centuries with Ptolemy’s parameters</td><td>Higher once elliptical orbits and later Newtonian gravity were added</td></tr>
+  </table>
+  <p>Both models were mathematical tools fitted to observations. The geocentric system of Ptolemy could predict planetary positions accurately for more than a thousand years. The heliocentric system became superior once Kepler replaced circles with ellipses and Newton supplied a physical cause.</p>
+</div>
+
+<div id="documents" class="panel">
+  <h2>Primary documents</h2>
+  <p>The comparison rests on texts and instruments that survive in public collections. No claim is made here about documents held in closed government vaults.</p>
+  <ul>
+    <li><strong>Ptolemy, <em>Almagest</em></strong> (c. 150 CE) — the complete geocentric system of deferents, epicycles, and the equant. Greek manuscripts survive; the standard critical edition is Heiberg’s. Early printed editions and Arabic translations are held by major research libraries.</li>
+    <li><strong>Copernicus, <em>De revolutionibus orbium coelestium</em></strong> (1543) — the first full mathematical heliocentric system in print. The Nuremberg first edition and annotated copies (including those associated with the Wittenberg circle) are catalogued in European and American rare-book collections.</li>
+    <li><strong>Kepler, <em>Astronomia nova</em></strong> (1609) and <em>Harmonices mundi</em> (1619) — elliptical orbits and the harmonic law. Kepler’s manuscripts and correspondence are preserved chiefly in archives in Russia (Pulkovo / St. Petersburg holdings of earlier collections) and in European libraries.</li>
+    <li><strong>Galileo, <em>Sidereus nuncius</em></strong> (1610) and the later <em>Dialogo</em> (1632) — telescopic evidence and the defense of Copernicanism. The Vatican Library and the Archivio Segreto Vaticano hold trial documents; Galileo’s own papers are largely in the Biblioteca Nazionale Centrale di Firenze.</li>
+    <li><strong>Antikythera fragments</strong> — National Archaeological Museum, Athens. The geared calculator embodies period relations used in geocentric astronomy; it does not decide between the two later models.</li>
+  </ul>
+</div>
+
+<div id="institutions" class="panel">
+  <h2>Institutions that hold the sources</h2>
+  <ul>
+    <li><strong>National Archaeological Museum, Athens</strong> — Antikythera mechanism fragments.</li>
+    <li><strong>Vatican Library and Archivio Apostolico Vaticano</strong> — Galileo trial records and related correspondence (publicly catalogued; many items digitized).</li>
+    <li><strong>Biblioteca Nazionale Centrale di Firenze</strong> — Galileo’s manuscripts.</li>
+    <li><strong>British Library</strong> — early printed editions of Ptolemy, Copernicus, and Kepler; ancient Near Eastern tablets.</li>
+    <li><strong>Bibliothèque nationale de France</strong> — Greek and Arabic astronomical manuscripts.</li>
+    <li><strong>Bodleian Library, Oxford</strong> and <strong>Cambridge University Library</strong> — medieval and early-modern astronomical codices.</li>
+    <li><strong>Smithsonian National Air and Space Museum</strong> and <strong>Museum of the History of Science, Oxford</strong> — instruments and teaching models.</li>
+    <li><strong>International Astronomical Union</strong> and national academies (Royal Society, Académie des sciences, Leopoldina) — modern historical commissions and published critical editions, not secret holdings.</li>
+  </ul>
+  <p class="note">References here are to publicly described collections. Claims of hidden governmental vaults of suppressed cosmological documents are not supported by the published catalogues of these institutions.</p>
+</div>
+
+<div id="shift" class="panel">
+  <h2>The shift</h2>
+  <p>The ancient Near Eastern layered cosmos (see the related lab) placed a fixed earth under a vault. Greek mathematical astronomy kept the earth central but replaced the vault with circles that could be calculated. Ptolemy’s system remained the working standard in the Islamic world and in Latin Europe for more than a millennium.</p>
+  <p>Copernicus offered a heliocentric alternative that simplified some motions but still used circles and epicycles. Kepler’s ellipses removed the need for most epicycles. Galileo’s telescopic discoveries (phases of Venus, moons of Jupiter) removed key objections but did not by themselves prove the earth’s motion. Newton’s <em>Principia</em> (1687) supplied the physical law that made the heliocentric (more precisely, barycentric) system the simpler and more predictive account.</p>
+  <p>The change was gradual, documented in printed books, correspondence, and institutional records that are available to researchers. It was not the sudden release of a single hidden document.</p>
+</div>
+
+<div id="labs" class="panel">
+  <h2>Related labs</h2>
+  <ul>
+    <li><a href="/ancient-cosmos">The Ancient Eastern Cosmos</a> — the layered, earth-centered picture in Near Eastern texts.</li>
+    <li><a href="/antikythera">The Antikythera Mechanism</a> — a geared calculator that implements the period relations of geocentric astronomy.</li>
+    <li>This page — the later mathematical comparison of geocentric and heliocentric systems and the institutions that preserve the documents.</li>
+  </ul>
+</div>
+
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
+import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js';
+
+const container = document.getElementById('view');
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xF4F0E6);
+const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 100);
+camera.position.set(0, 3.5, 11);
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+container.appendChild(renderer.domElement);
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.target.set(0, 0.5, 0);
+
+scene.add(new THREE.AmbientLight(0xffffff, 0.7));
+const key = new THREE.DirectionalLight(0xffffff, 0.6);
+key.position.set(4, 6, 5);
+scene.add(key);
+
+const brass = new THREE.MeshStandardMaterial({ color: 0xC4A574, metalness: 0.5, roughness: 0.4 });
+const earthMat = new THREE.MeshStandardMaterial({ color: 0x6B8BA4, roughness: 0.6 });
+const sunMat = new THREE.MeshStandardMaterial({ color: 0xE8C070, emissive: 0xC4A574, emissiveIntensity: 0.5 });
+
+function orbitRing(r, x) {
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(r, 0.015, 8, 64), brass);
+  ring.rotation.x = Math.PI / 2;
+  ring.position.x = x;
+  scene.add(ring);
+}
+
+// Geocentric (left)
+const earthG = new THREE.Mesh(new THREE.SphereGeometry(0.35, 24, 24), earthMat);
+earthG.position.set(-3.2, 0.4, 0);
+scene.add(earthG);
+orbitRing(1.1, -3.2);
+orbitRing(1.7, -3.2);
+const sunG = new THREE.Mesh(new THREE.SphereGeometry(0.12, 16, 16), sunMat);
+sunG.position.set(-2.1, 0.4, 0);
+scene.add(sunG);
+
+// Heliocentric (right)
+const sunH = new THREE.Mesh(new THREE.SphereGeometry(0.28, 24, 24), sunMat);
+sunH.position.set(3.2, 0.4, 0);
+scene.add(sunH);
+orbitRing(1.0, 3.2);
+orbitRing(1.6, 3.2);
+const earthH = new THREE.Mesh(new THREE.SphereGeometry(0.16, 16, 16), earthMat);
+earthH.position.set(4.2, 0.4, 0);
+scene.add(earthH);
+
+function makeLabel(text, x, y, z) {
+  const c = document.createElement('canvas');
+  c.width = 512; c.height = 128;
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = 'rgba(26,35,44,0.92)';
+  ctx.roundRect(8, 16, 496, 96, 16);
+  ctx.fill();
+  ctx.fillStyle = '#F4F0E6';
+  ctx.font = '600 42px Iowan Old Style, Palatino, Georgia, serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(text, 256, 64);
+  const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(c), transparent: true, depthTest: false }));
+  sprite.position.set(x, y, z);
+  sprite.scale.set(2.4, 0.6, 1);
+  scene.add(sprite);
+}
+makeLabel('Geocentric', -3.2, 2.4, 0);
+makeLabel('Heliocentric', 3.2, 2.4, 0);
+makeLabel('Earth', -3.2, 0.9, 0);
+makeLabel('Sun', 3.2, 1.0, 0);
+
+function resize() {
+  const w = container.clientWidth, h = container.clientHeight;
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+  renderer.setSize(w, h);
+}
+function animate() {
+  requestAnimationFrame(animate);
+  controls.update();
+  renderer.render(scene, camera);
+}
+resize();
+animate();
+window.addEventListener('resize', resize);
+
+document.querySelectorAll('.nav-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.panel).classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
