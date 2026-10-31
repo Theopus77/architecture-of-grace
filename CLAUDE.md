@@ -30,8 +30,8 @@ no matter how many kits, notes, chords or voices are in use.
   the default path. Those caused freezes. Shape stays off unless explicitly
   requested and proven not to lock a phone.
 - Gold chord highlight (notes that match the sounding chord, or any chord in a
-  selected progression) stays visible. The gold bar is a solid stripe that later
-  box-shadow rules cannot wipe.
+  selected progression) stays visible. Gold frames the whole pad (inset border),
+  never a line only at the bottom. Later box-shadow rules must not wipe it.
 - After any change to a music room, run `python3 tools/build-fast.py` so the
   fast copy the site serves matches the source.
 
