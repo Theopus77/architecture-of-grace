@@ -860,7 +860,7 @@ function ctx(){
   if(!ac){
     const AC=window.AudioContext||window.webkitAudioContext;
     try{ if(navigator.audioSession) navigator.audioSession.type="playback"; }catch(e){}
-    ac=new AC({latencyHint:0.01});
+    ac=new AC({latencyHint:0.005});
     LIVE_M=master(ac); lim=LIVE_M.lim; bus=LIVE_M.bus; clip=LIVE_M.clip; bus.gain.value=0.9*mvol();   /* AOG-PADS-KNOBS-V1: the Volume knob */
   }
   if(ac.state==="suspended") ac.resume();
@@ -1353,19 +1353,20 @@ function trigger(bi, pi, vel, when, T){
   return keep({parts:vs.map(v=>v.url), stop(at, force){ if(!force && (INST[B.inst]||{}).ring) return; const t0=Math.max(at||0, c.currentTime);   /* AOG-PADS-CLASSROOM-V1: a pluck rings out. AOG-PADS-FEEL-V1: a paired pad cuts it anyway */
     vs.forEach(v=>{ try{ v.g.gain.cancelScheduledValues(t0); v.g.gain.setTargetAtTime(0, t0, 0.07); v.s.stop(t0+0.6); }catch(e){} }); }});
 }
-const RING=[], MAXV=96; /* AOG-VOICES-UNLIMITED-V1: high soft cap, instant steal so any number of kits/sounds stay instant */
+const RING=[], MAXV=64; /* AOG-VOICES-INSTANT-V1: soft cap high enough for any kit stack, steal is free and immediate */
 function letGo(v, c){
-  if(!v) return;
-  try{
-    const t0=c ? c.currentTime : (ac?ac.currentTime:0);
-    if(v.g){ v.g.gain.cancelScheduledValues(t0); v.g.gain.setValueAtTime(0, t0); }
-    if(v.s){ v.s.stop(t0); v.s.disconnect(); }
-    if(v.g) v.g.disconnect();
-  }catch(e){}
+  if(!v || v.done) return;
   v.done=true;
+  try{
+    const t0=0; /* stop now; no ramp, no schedule */
+    if(v.s){ try{ v.s.stop(t0); }catch(e){} try{ v.s.disconnect(); }catch(e){} }
+    if(v.g){ try{ v.g.disconnect(); }catch(e){} }
+  }catch(e){}
 }
 function stealTo(limit){
-  while(RING.length>limit){ const v=RING.shift(); letGo(v, ac); }
+  const n=RING.length-limit; if(n<=0) return;
+  for(let i=0;i<n;i++){ const v=RING[i]; if(v) letGo(v, ac); }
+  RING.splice(0, n);
 }
 function flash(bi, pi, when, vel){
   if(bi!==S.bank) return;
