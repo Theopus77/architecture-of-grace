@@ -290,9 +290,10 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
    chord playing now get a gold bar. Both stay still: nothing blinks or moves. */
 .pad .po{position:absolute;top:4px;right:5px;font:800 11px/1 var(--sans);color:#1f1206;background:#ffd36b;border-radius:9px;padding:3px 6px}
 .pad.inpat{border-color:#ffd36b}
-.pad.fit{border-color:#ffd36b;box-shadow:inset 0 -6px 0 #ffd36b,0 0 0 1px #ffd36b}
-#pads .pad.fit,#padView .pad.fit{border-color:#ffd36b !important;box-shadow:inset 0 -6px 0 #ffd36b,0 0 0 1px #ffd36b !important}
-.pad.fit:not(.hit):not(.down){box-shadow:inset 0 -6px 0 #ffd36b,0 0 0 1px #ffd36b !important}
+.pad.fit{border-color:#ffd36b}
+.pad.fit::before{content:"";position:absolute;left:0;right:0;bottom:0;height:7px;background:#ffd36b;pointer-events:none;z-index:2}
+#pads .pad.fit,#padView .pad.fit{border-color:#ffd36b !important}
+.pad.fit::before{height:7px;background:#ffd36b}
 .pad.hit .po{background:#1f1206;color:#ffd36b}
 
 /* the steps of the picked pad: 8 to a row on a phone, 16 where the sequencer itself is wide (AOG-PADS-16BARS-V1: its own
@@ -1348,7 +1349,7 @@ function trigger(bi, pi, vel, when, T){
   return keep({parts:vs.map(v=>v.url), stop(at, force){ if(!force && (INST[B.inst]||{}).ring) return; const t0=Math.max(at||0, c.currentTime);   /* AOG-PADS-CLASSROOM-V1: a pluck rings out. AOG-PADS-FEEL-V1: a paired pad cuts it anyway */
     vs.forEach(v=>{ try{ v.g.gain.cancelScheduledValues(t0); v.g.gain.setTargetAtTime(0, t0, 0.07); v.s.stop(t0+0.6); }catch(e){} }); }});
 }
-const RING=[], MAXV=32;   /* AOG-PADS-VOICES-V1: the notes ringing now, the oldest first */
+const RING=[], MAXV=12; /* tighter on phones so voices cannot pile up */   /* AOG-PADS-VOICES-V1: the notes ringing now, the oldest first */
 function letGo(v, c){ if(!v) return; try{ const t0=c.currentTime; v.g.gain.cancelScheduledValues(t0); v.g.gain.setTargetAtTime(0, t0, 0.012); v.s.stop(t0+0.06); }catch(e){} }
 function flash(bi, pi, when, vel){
   if(bi!==S.bank) return;
@@ -1824,7 +1825,14 @@ function paintGuide(){
       if(P){ const sc=patMinor(B)?"minor":"major";
         /* the Notes bank follows, so every note of every chord in the pattern has a pad */
         const N=S.banks.find(x=>x.type==="notes"), ok={major:["major","pmaj"], minor:["minor","pmin","blues","dorian"]}[sc];
-        if(N && (N.key!==B.key || ok.indexOf(N.scale)<0)){ N.key=B.key; if(ok.indexOf(N.scale)<0) N.scale=sc; } }
+        if(N && (N.key!==B.key || ok.indexOf(N.scale)<0)){ N.key=B.key; if(ok.indexOf(N.scale)<0) N.scale=sc; }
+        /* AOG-FIT-PROG-V1: the moment a progression is chosen, every note that belongs to any of its chords lights gold */
+        const pcs=new Set();
+        (P.chords||[]).forEach(c=>{ const iv=window.AOGChords&&AOGChords.KINDS[c.q]?AOGChords.KINDS[c.q].iv:({maj:[0,4,7],min:[0,3,7],dim:[0,3,6],dom7:[0,4,7,10],m7:[0,3,7,10],maj7:[0,4,7,11],m7b5:[0,3,6,10]})[c.q]||[0,4,7];
+          iv.forEach(i=>pcs.add(((c.off+i)%12+12)%12)); });
+        NOWCH={pcs:pcs, name:L(P), notes:"progression"};
+        paintFit();
+      } else { NOWCH=null; paintFit(); }
       save(); paintAll(); };
     const lb=$("fPatLoop"); if(lb) lb.onclick=()=>patToLoop(B);
     if(cur){ const lay=patLayout(cur), pp=lay.pads;
@@ -1841,7 +1849,7 @@ function patToLoop(B){
   const pb=patBeats(pp.length); S.bars=pb.bars;   /* AOG-PADS-ALLPATS-V1: 4 bars, or 3 for the 12-bar blues */
   let at=0; const ev=pb.idx.map((ci,j)=>{ const len=pb.beats[j]*PPQ, e={b:bi, p:pp[ci], t:at, v:0.8, len:len-12}; at+=len; return e; });
   S.ev=S.ev.filter(e=>e.b!==bi).concat(ev);
-  prep(bi); changed(); paintAll(); say(t("patDone",{n:pb.bars}), 6000);
+  prep(bi); changed(); paintAll(); if(typeof paintFit==="function") paintFit(); say(t("patDone",{n:pb.bars}), 6000);
 }
 let NOWCH=null;   /* the chord heard last: its pitch classes and its name */
 function chordNow(d, when){
