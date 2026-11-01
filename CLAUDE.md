@@ -47,9 +47,11 @@ the Drum Machine. Updated 2026-10-31 with the craftsman pass:
   downloading also saves it as an album under Your records, with your tracks
   in order, so a tap puts that record back on a deck. Nothing is uploaded. Nothing is uploaded. The song leaves only when
   the person chooses to send it. The live site serves this from the front script.
-- Full screen: a Full screen button in the top tools takes the decks to
-  full screen (and back). It uses the standard and webkit fullscreen APIs so
-  it works on a computer and on iPad.
+- Full screen: a Full screen button sits on each deck head (next to Import
+  vinyl), not only in the page header the Studio can hide. It uses the
+  standard and webkit fullscreen APIs so it works on a computer and on iPad.
+- Share and Download offer WAV, MP3, and MP4. WAV is encoded on the page.
+  MP3 and MP4 use the browser's recorder. Nothing is uploaded.
 - The label and vinyl rotate from the playhead, including a backspin. The
   crossfader already has Blend and Cut. Leave both.
 - Output is 48 kHz with a 3 ms latency hint. The decks meet on a clean bus.
