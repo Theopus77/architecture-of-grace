@@ -761,7 +761,7 @@ function paintBench(){
      with the same records on, parked where you left them;
    · the last eight records you played, one tap to put any back on a deck;
    · UP NEXT — songs you line up before the set, played in order. ══════════ */
-const CRATE = { db:"aog-crate", store:"crate", prev:[], next:[], lib:[], max:8 };
+const CRATE = { db:"aog-crate", store:"crate", prev:[], next:[], lib:[], albums:[], max:8 };
 /* AOG-DJ-AUDIO-ONLY-V1 (Jimmy, 2026-10-10: "The photo and video is suppose to be gone … I am uploading music"): on an
    iPhone or iPad, .m4a, .m4b, .aac and .amr count as MPEG-4 video, so Safari offered Photo Library and Take Video.
    There the song boxes ask for audio only; audio/* still takes .m4a, .mp3, .wav and the rest from Files. */
@@ -828,6 +828,7 @@ async function crateOpen(){
   CRATE.prev = (await crateGet("prev")) || [];
   CRATE.next = (await crateGet("next")) || [];
   CRATE.lib = (await crateGet("lib")) || [];
+  CRATE.albums = (await crateGet("albums")) || [];
   /* songs saved before the library existed join it */
   CRATE.next.concat(CRATE.prev).forEach(r=>{ if(r && r.blob && !CRATE.lib.some(x=>x.id===r.id)) CRATE.lib.push(r); });
   paintCrate(); paintDocks();
@@ -2045,6 +2046,36 @@ function paintDocks(){
         loadFile(decks.find(x=>x.id===id), crateFile(r));
       };
     });
+    box.querySelectorAll("[data-dalb]").forEach(b=>{
+      b.onclick = async ()=>{
+        const a = (CRATE.albums||[])[+b.getAttribute("data-dalb")]; if(!a) return;
+        const d = decks.find(x=>x.id===id); if(!d) return;
+        const recs = a.tracks.map(tr=>CRATE.lib.find(r=>r.id===tr.id)).filter(Boolean);
+        if(recs.length<1) return;
+        ctx(); await ensureNode(d);
+        const bufs = [];
+        for(const r of recs){
+          const f = crateFile(r);
+          const arr = await f.arrayBuffer();
+          const buf = await new Promise((ok,no)=>{ const p = actx.decodeAudioData(arr.slice(0), ok, no); if(p&&p.then) p.then(ok,no); });
+          bufs.push(buf);
+        }
+        const sr = actx.sampleRate, gap = Math.floor(sr*0.35);
+        const total = bufs.reduce((n,b)=>n + Math.floor(b.duration*sr), 0) + gap*Math.max(0,bufs.length-1);
+        const out = actx.createBuffer(2, total, sr);
+        const L = out.getChannelData(0), R = out.getChannelData(1);
+        let at = 0;
+        for(const b of bufs){
+          const bl = b.getChannelData(0), br = b.numberOfChannels>1 ? b.getChannelData(1) : bl;
+          const n = bl.length;
+          for(let i=0;i<n && at+i<total;i++){ L[at+i]=bl[i]; R[at+i]=br[i]; }
+          at += n + gap;
+        }
+        putOn(d, out, Float32Array.from(L), Float32Array.from(R), { name:a.name });
+        box.hidden = true;
+        const tg=document.querySelector(`[data-dock="${id}"]`); if(tg) tg.setAttribute("aria-expanded","false");
+      };
+    });
     /* AOG-MAKE-RECORD-V1: pick 2 to 10 songs, stitch them into one record on this deck */
     if(!box.querySelector("[data-mkrec]")){
       const row = box.querySelector(".dockrow") || box;
@@ -2067,7 +2098,7 @@ function paintDocks(){
       const bar = document.createElement("div"); bar.className = "mkbar";
       bar.innerHTML = `<p>Tap 2 to 10 songs, in order. <b>${pick.length} chosen</b></p>`
         + `<button type="button" class="go" data-mkgo ${pick.length<2?"disabled":""}>Put it on</button>`
-        + `<button type="button" class="ghost" data-mksend ${pick.length<2?"disabled":""}>Send to a friend</button>`
+        + `<button type="button" class="ghost" data-mksend ${pick.length<2?"disabled":""}>Share</button>`
         + `<button type="button" class="ghost" data-mkdl ${pick.length<2?"disabled":""}>Download</button>`
         + `<button type="button" class="ghost" data-mkx>Cancel</button>`;
       list.before(bar);
@@ -2096,12 +2127,19 @@ function paintDocks(){
           at += n + gap;
         }
         putOn(d, out, Float32Array.from(L), Float32Array.from(R), { name:(box._mkName||"My record") });
+        const al = { id:"mx"+Date.now().toString(36), name:(box._mkName||"My record"), tracks:recs.map(r=>({id:r.id, name:r.name})) };
+        CRATE.albums = [al].concat(CRATE.albums||[]).slice(0, 24);
+        cratePut("albums", CRATE.albums);
         box.classList.remove("picking"); box._pick=[]; box.hidden=true;
         const tg=document.querySelector(`[data-dock="${id}"]`); if(tg) tg.setAttribute("aria-expanded","false");
         paintDocks();
       };
       bar.querySelector("[data-mksend]").onclick = async ()=>{
         if(pick.length<2) return;
+        const recs0 = pick.map(pid=>CRATE.lib.find(r=>r.id===pid)).filter(Boolean);
+        const al = { id:"mx"+Date.now().toString(36), name:(box._mkName||"My record"), tracks:recs0.map(r=>({id:r.id, name:r.name})) };
+        CRATE.albums = [al].concat(CRATE.albums||[]).slice(0, 24);
+        cratePut("albums", CRATE.albums);
         const recs = pick.map(pid=>CRATE.lib.find(r=>r.id===pid)).filter(Boolean);
         ctx();
         const bufs = [];
