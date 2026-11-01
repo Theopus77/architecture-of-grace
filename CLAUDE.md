@@ -21,15 +21,34 @@ it sounds as real as real can get. Make sure this is in the directions that it
 gets the same treatment as the drum machines."
 
 The Turntables (`music-decks.html`, /decks) get the same instant treatment as
-the Drum Machine:
+the Drum Machine. Updated 2026-10-31 with the craftsman pass:
 
-- Scratches answer at once. Audio context latency is 5 ms. The ScriptProcessor
-  quantum is 128 samples. The scratch velocity window is 8–20 ms, not 28–70.
+- Scratches answer at once. Audio context latency is 3 ms. The ScriptProcessor
+  quantum is 64 samples. Rim window is 4 ms. Label window is 12 ms.
+- Rim and label are different. Outside about 62% of the platter radius is a
+  sharp scratch (shorter window, a little more authority). The center is a
+  heavy drag (longer window, about half the gain). Do not flatten them into
+  one feel.
 - The vinyl engine stays real: platter with mass, groove velocity is the signal,
-  surface noise and crackle ride the speed, cubic interpolation, no gravel.
-  Do not replace it with a rate switch or a jump-once-per-event playhead.
+  cubic interpolation, no gravel. Do not replace it with a rate switch or a
+  jump-once-per-event playhead.
+- Realistic scratches: vinyl texture (noise and crackle) stays on under the
+  hand. A fast move adds a bright cartridge zip. A slow drag stays quieter.
+  Do not turn the texture off while scratching.
+- Needle-drop: when a deck starts from stopped, a short low thump and a tiny
+  burst of noise play once through that deck's gain, then disconnect. Quiet
+  enough for a room.
+- Import vinyl: each deck has an Import vinyl button. It loads a local audio
+  file onto that deck. Nothing is uploaded. The crate remembers it.
+- Make a record: in a deck's crate, pick 2 to 10 songs in order and Put it on.
+  They are stitched into one continuous, scratchable record on that deck, with
+  a short gap between songs. The live site serves this from the front script.
+- The label and vinyl rotate from the playhead, including a backspin. The
+  crossfader already has Blend and Cut. Leave both.
 - After any change to the decks, run `python3 tools/build-fast.py` so the fast
   copy and its front script match the source. The site serves the fast copy.
+  If you cannot run the build, patch the front script the page loads as well
+  as the source, or the live site will not change.
 
 ## Instant voices, any number of sounds (standing order from Jimmy, 2026-10-31)
 
