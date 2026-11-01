@@ -2027,6 +2027,60 @@ function paintDocks(){
         loadFile(decks.find(x=>x.id===id), crateFile(r));
       };
     });
+    /* AOG-MAKE-RECORD-V1: pick 2 to 10 songs, stitch them into one record on this deck */
+    if(!box.querySelector("[data-mkrec]")){
+      const row = box.querySelector(".dockrow") || box;
+      const b = document.createElement("button");
+      b.type = "button"; b.className = "ghost"; b.setAttribute("data-mkrec","1");
+      b.textContent = (typeof t==="function" && t("mkRec")) || "+ Make a record";
+      b.onclick = ()=>{ box.classList.add("picking"); box._pick = box._pick || []; paintDocks(); };
+      row.appendChild(b);
+    }
+    if(box.classList.contains("picking")){
+      const pick = box._pick || (box._pick = []);
+      box.querySelectorAll("[data-dsong]").forEach(b=>{
+        const r = CRATE.lib[+b.getAttribute("data-dsong")]; if(!r) return;
+        const k = pick.indexOf(r.id);
+        b.classList.toggle("pk", k>=0);
+        if(k>=0) b.setAttribute("data-n", String(k+1)); else b.removeAttribute("data-n");
+        b.onclick = ()=>{ const j = pick.indexOf(r.id); if(j>=0) pick.splice(j,1); else if(pick.length<10) pick.push(r.id); paintDocks(); };
+      });
+      const list = box.querySelector(".docklist") || box;
+      const bar = document.createElement("div"); bar.className = "mkbar";
+      bar.innerHTML = `<p>Tap 2 to 10 songs, in order. <b>${pick.length} chosen</b></p>`
+        + `<button type="button" class="go" data-mkgo ${pick.length<2?"disabled":""}>Put it on</button>`
+        + `<button type="button" class="ghost" data-mkx>Cancel</button>`;
+      list.before(bar);
+      bar.querySelector("[data-mkx]").onclick = ()=>{ box.classList.remove("picking"); box._pick=[]; paintDocks(); };
+      bar.querySelector("[data-mkgo]").onclick = async ()=>{
+        if(pick.length<2) return;
+        const d = decks.find(x=>x.id===id); if(!d) return;
+        const recs = pick.map(pid=>CRATE.lib.find(r=>r.id===pid)).filter(Boolean);
+        ctx(); await ensureNode(d);
+        const bufs = [];
+        for(const r of recs){
+          const f = crateFile(r);
+          const arr = await f.arrayBuffer();
+          const buf = await new Promise((ok,no)=>{ const p = actx.decodeAudioData(arr.slice(0), ok, no); if(p&&p.then) p.then(ok,no); });
+          bufs.push(buf);
+        }
+        const sr = actx.sampleRate, gap = Math.floor(sr*0.35);
+        const total = bufs.reduce((n,b)=>n + Math.floor(b.duration*sr), 0) + gap*(bufs.length-1);
+        const out = actx.createBuffer(2, total, sr);
+        const L = out.getChannelData(0), R = out.getChannelData(1);
+        let at = 0;
+        for(const b of bufs){
+          const bl = b.getChannelData(0), br = b.numberOfChannels>1 ? b.getChannelData(1) : bl;
+          const n = bl.length;
+          for(let i=0;i<n && at+i<total;i++){ L[at+i]=bl[i]; R[at+i]=br[i]; }
+          at += n + gap;
+        }
+        putOn(d, out, Float32Array.from(L), Float32Array.from(R), { name:(box._mkName||"My record") });
+        box.classList.remove("picking"); box._pick=[]; box.hidden=true;
+        const tg=document.querySelector(`[data-dock="${id}"]`); if(tg) tg.setAttribute("aria-expanded","false");
+        paintDocks();
+      };
+    }
     const cl = box.querySelector("[data-dockclose]");
     if(cl) cl.onclick = ()=>dockShut(id, true);
     const ed = box.querySelector("[data-dockedit]");
