@@ -272,7 +272,8 @@ function ctx(){
   if(actx && actx.state!=="running"){ try{ actx.resume(); }catch(e){} }
   if(!actx){
     const AC = window.AudioContext||window.webkitAudioContext;
-    actx = new AC({ latencyHint:0.003 }); /* AOG-DECKS-RESPONSIVE-V1 */
+    actx = new AC({ latencyHint:0.003, sampleRate:48000 }); /* AOG-DECKS-HIFI-OUT-V1 */
+    try{ if(navigator.audioSession) navigator.audioSession.type = "playback"; }catch(e){}
     try{ if(window.AOGVU && AOGVU.own) AOGVU.own(actx); }catch(e){}   /* AOG-SILENT-V1: the Studio's hush pauses it too */
     /* AOG-DECKS-LOUDNESS-V1 — the same treatment the drum machine got: a normal
        level with a real limiter behind it, so three loud songs at once still
@@ -291,6 +292,9 @@ function ctx(){
     /* AOG-DJ-LIMIT-V1 — OUT is the very end: what the speakers, the tape and the curve all hear.
        Once the worklet is in, a look-ahead wall sits just before it, so nothing leaves above -1 dBFS. */
     OUT = actx.createGain(); master.connect(OUT); OUT.connect(actx.destination);
+    try{ if("mediaSession" in navigator){ navigator.mediaSession.playbackState = "playing"; navigator.mediaSession.metadata = new MediaMetadata({ title:"The Turntables", artist:"Architecture of Grace" }); } }catch(e){}
+    document.addEventListener("visibilitychange", ()=>{ if(actx && actx.state==="suspended") actx.resume(); });
+
     if(actx.audioWorklet){
       workletReady = actx.audioWorklet
         .addModule(new URL("aog-vinyl-worklet.js", document.baseURI).href)
