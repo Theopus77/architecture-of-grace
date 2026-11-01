@@ -1823,38 +1823,70 @@ function paintBay(){
   });
 }
 
+async function ensureLame(){
+  if(window.lamejs) return window.lamejs;
+  await new Promise((ok, no)=>{
+    const s = document.createElement("script");
+    s.src = "/lame.min.js"; s.onload = ok; s.onerror = no;
+    document.head.appendChild(s);
+  });
+  return window.lamejs;
+}
 function mkEncode(buf, kind){
-  return new Promise((ok, no)=>{
-    if(kind==="wav"){
-      const sr = buf.sampleRate, n = buf.length;
-      const L = buf.getChannelData(0), R = buf.numberOfChannels>1?buf.getChannelData(1):L;
-      const bytes = n*4, ab = new ArrayBuffer(44+bytes), dv = new DataView(ab);
-      const w=(o,s)=>{ for(let i=0;i<s.length;i++) dv.setUint8(o+i,s.charCodeAt(i)); };
-      w(0,"RIFF"); dv.setUint32(4,36+bytes,true); w(8,"WAVE"); w(12,"fmt ");
-      dv.setUint32(16,16,true); dv.setUint16(20,1,true); dv.setUint16(22,2,true);
-      dv.setUint32(24,sr,true); dv.setUint32(28,sr*4,true); dv.setUint16(32,4,true); dv.setUint16(34,16,true);
-      w(36,"data"); dv.setUint32(40,bytes,true);
-      let p=44;
-      for(let i=0;i<n;i++){
-        const l=Math.max(-1,Math.min(1,L[i])), r=Math.max(-1,Math.min(1,R[i]));
-        dv.setInt16(p, l<0?l*0x8000:l*0x7FFF, true); p+=2;
-        dv.setInt16(p, r<0?r*0x8000:r*0x7FFF, true); p+=2;
+  return new Promise(async (ok, no)=>{
+    try{
+      if(kind==="wav"){
+        const sr = buf.sampleRate, n = buf.length;
+        const L = buf.getChannelData(0), R = buf.numberOfChannels>1?buf.getChannelData(1):L;
+        const bytes = n*4, ab = new ArrayBuffer(44+bytes), dv = new DataView(ab);
+        const w=(o,s)=>{ for(let i=0;i<s.length;i++) dv.setUint8(o+i,s.charCodeAt(i)); };
+        w(0,"RIFF"); dv.setUint32(4,36+bytes,true); w(8,"WAVE"); w(12,"fmt ");
+        dv.setUint32(16,16,true); dv.setUint16(20,1,true); dv.setUint16(22,2,true);
+        dv.setUint32(24,sr,true); dv.setUint32(28,sr*4,true); dv.setUint16(32,4,true); dv.setUint16(34,16,true);
+        w(36,"data"); dv.setUint32(40,bytes,true);
+        let p=44;
+        for(let i=0;i<n;i++){
+          const l=Math.max(-1,Math.min(1,L[i])), r=Math.max(-1,Math.min(1,R[i]));
+          dv.setInt16(p, l<0?l*0x8000:l*0x7FFF, true); p+=2;
+          dv.setInt16(p, r<0?r*0x8000:r*0x7FFF, true); p+=2;
+        }
+        ok(new Blob([ab],{type:"audio/wav"})); return;
       }
-      ok(new Blob([ab],{type:"audio/wav"})); return;
-    }
-    const mime = kind==="mp3" ? "audio/mpeg" : "audio/mp4";
-    const dest = actx.createMediaStreamDestination();
-    const src = actx.createBufferSource(); src.buffer = buf; src.connect(dest);
-    const rec = new MediaRecorder(dest.stream, MediaRecorder.isTypeSupported(mime)?{mimeType:mime}:{});
-    const parts = [];
-    rec.ondataavailable = e=>{ if(e.data&&e.data.size) parts.push(e.data); };
-    rec.onstop = ()=>ok(new Blob(parts,{type:rec.mimeType||mime}));
-    rec.onerror = no;
-    rec.start(); src.start();
-    src.onended = ()=>{ setTimeout(()=>{ try{ rec.stop(); }catch(e){} }, 200); };
+      if(kind==="mp3"){
+        const lame = await ensureLame();
+        const sr = buf.sampleRate, n = buf.length;
+        const L = buf.getChannelData(0), R = buf.numberOfChannels>1?buf.getChannelData(1):L;
+        const enc = new lame.Mp3Encoder(2, sr, 192);
+        const block = 1152, parts = [];
+        const l16 = new Int16Array(block), r16 = new Int16Array(block);
+        for(let i=0;i<n;i+=block){
+          const len = Math.min(block, n-i);
+          for(let j=0;j<len;j++){
+            const a = Math.max(-1, Math.min(1, L[i+j])), b = Math.max(-1, Math.min(1, R[i+j]));
+            l16[j] = a<0 ? a*0x8000 : a*0x7FFF;
+            r16[j] = b<0 ? b*0x8000 : b*0x7FFF;
+          }
+          const chunk = enc.encodeBuffer(l16.subarray(0,len), r16.subarray(0,len));
+          if(chunk.length) parts.push(chunk);
+        }
+        const end = enc.flush(); if(end.length) parts.push(end);
+        ok(new Blob(parts,{type:"audio/mpeg"})); return;
+      }
+      /* mp4: the browser records it. Safari and iPad give a real audio/mp4. */
+      const mime = MediaRecorder.isTypeSupported("audio/mp4") ? "audio/mp4" : (MediaRecorder.isTypeSupported("audio/webm") ? "audio/webm" : "");
+      const dest = actx.createMediaStreamDestination();
+      const src = actx.createBufferSource(); src.buffer = buf; src.connect(dest);
+      const rec = new MediaRecorder(dest.stream, mime?{mimeType:mime}:{});
+      const parts = [];
+      rec.ondataavailable = e=>{ if(e.data&&e.data.size) parts.push(e.data); };
+      rec.onstop = ()=>ok(new Blob(parts,{type:rec.mimeType||"audio/mp4"}));
+      rec.onerror = no;
+      rec.start(); src.start();
+      src.onended = ()=>{ setTimeout(()=>{ try{ rec.stop(); }catch(e){} }, 250); };
+    }catch(e){ no(e); }
   });
 }
-async function mkFile(pick, box, kind){
+function mkFile(pick, box, kind){
   const recs = pick.map(pid=>CRATE.lib.find(r=>r.id===pid)).filter(Boolean);
   ctx();
   const bufs = [];
@@ -2299,8 +2331,13 @@ function paintDocks(){
         const file = await mkFile(pick, box, kind);
         const al = { id:"mx"+Date.now().toString(36), name:(box._mkName||"My record"), tracks:pick.map(pid=>{const r=CRATE.lib.find(x=>x.id===pid); return r?{id:r.id,name:r.name}:null;}).filter(Boolean) };
         CRATE.albums = [al].concat(CRATE.albums||[]).slice(0,24); cratePut("albums", CRATE.albums);
-        const a = document.createElement("a"); a.href = URL.createObjectURL(file); a.download = file.name; a.click();
-        setTimeout(()=>URL.revokeObjectURL(a.href), 4000);
+        const url = URL.createObjectURL(file);
+        const a = document.createElement("a"); a.href = url; a.download = file.name;
+        document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(()=>URL.revokeObjectURL(url), 8000);
+        if(/iPad|iPhone/.test(navigator.userAgent) && navigator.share && navigator.canShare && navigator.canShare({files:[file]})){
+          try{ await navigator.share({files:[file], title:file.name}); }catch(e){}
+        }
       };
       const mp3 = bar.querySelector("[data-mkmp3]"); if(mp3) mp3.onclick = ()=>saveAs("mp3");
       const mp4 = bar.querySelector("[data-mkmp4]"); if(mp4) mp4.onclick = ()=>saveAs("mp4");
@@ -2310,8 +2347,13 @@ function paintDocks(){
         if(navigator.share && navigator.canShare && navigator.canShare({files:[file]})){
           try{ await navigator.share({files:[file], title:file.name}); return; }catch(e){}
         }
-        const a = document.createElement("a"); a.href = URL.createObjectURL(file); a.download = file.name; a.click();
-        setTimeout(()=>URL.revokeObjectURL(a.href), 4000);
+        const url = URL.createObjectURL(file);
+        const a = document.createElement("a"); a.href = url; a.download = file.name;
+        document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(()=>URL.revokeObjectURL(url), 8000);
+        if(/iPad|iPhone/.test(navigator.userAgent) && navigator.share && navigator.canShare && navigator.canShare({files:[file]})){
+          try{ await navigator.share({files:[file], title:file.name}); }catch(e){}
+        }
       };
       const s3 = bar.querySelector("[data-mkshare3]"); if(s3) s3.onclick = ()=>shareAs("mp3");
       const s4 = bar.querySelector("[data-mkshare4]"); if(s4) s4.onclick = ()=>shareAs("mp4");
