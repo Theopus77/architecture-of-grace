@@ -42,7 +42,10 @@ the Drum Machine. Updated 2026-10-31 with the craftsman pass:
   file onto that deck. Nothing is uploaded. The crate remembers it.
 - Make a record: in a deck's crate, pick 2 to 10 songs in order and Put it on.
   They are stitched into one continuous, scratchable record on that deck, with
-  a short gap between songs. The live site serves this from the front script.
+  a short gap between songs. Send to a friend makes the same record into a
+  .wav and opens the share sheet (Messages, AirDrop, Mail), or downloads it
+  if there is no share sheet. Nothing is uploaded. The song leaves only when
+  the person chooses to send it. The live site serves this from the front script.
 - Full screen: a Full screen button in the top tools takes the decks to
   full screen (and back). It uses the standard and webkit fullscreen APIs so
   it works on a computer and on iPad.
