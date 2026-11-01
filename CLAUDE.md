@@ -45,6 +45,12 @@ the Drum Machine. Updated 2026-10-31 with the craftsman pass:
   a short gap between songs. The live site serves this from the front script.
 - The label and vinyl rotate from the playhead, including a backspin. The
   crossfader already has Blend and Cut. Leave both.
+- Output is 48 kHz with a 3 ms latency hint. The decks meet on a clean bus.
+  The only level touch is the true-peak wall at -1 dBTP. No always-on
+  compressor. On iOS the audio session is set to playback.
+- Keep playing when minimized: Media Session is set so the OS treats it as
+  media, and a visibility change resumes the context if the browser suspended
+  it. A phone may still stop audio when the screen locks; that is the OS.
 - After any change to the decks, run `python3 tools/build-fast.py` so the fast
   copy and its front script match the source. The site serves the fast copy.
   If you cannot run the build, patch the front script the page loads as well
