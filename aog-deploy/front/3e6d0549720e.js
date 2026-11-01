@@ -1873,13 +1873,13 @@ function mkEncode(buf, kind){
         ok(new Blob(parts,{type:"audio/mpeg"})); return;
       }
       /* mp4: the browser records it. Safari and iPad give a real audio/mp4. */
-      const mime = MediaRecorder.isTypeSupported("audio/mp4") ? "audio/mp4" : (MediaRecorder.isTypeSupported("audio/webm") ? "audio/webm" : "");
+      const mime = MediaRecorder.isTypeSupported("audio/mp4") ? "audio/mp4" : "";
       const dest = actx.createMediaStreamDestination();
       const src = actx.createBufferSource(); src.buffer = buf; src.connect(dest);
       const rec = new MediaRecorder(dest.stream, mime?{mimeType:mime}:{});
       const parts = [];
       rec.ondataavailable = e=>{ if(e.data&&e.data.size) parts.push(e.data); };
-      rec.onstop = ()=>ok(new Blob(parts,{type:rec.mimeType||"audio/mp4"}));
+      rec.onstop = ()=>ok(new Blob(parts,{type:"audio/mp4"}));
       rec.onerror = no;
       rec.start(); src.start();
       src.onended = ()=>{ setTimeout(()=>{ try{ rec.stop(); }catch(e){} }, 250); };
@@ -2198,10 +2198,10 @@ function paintDocks(){
         + `<button type="button" class="go" data-mkgo ${pick.length<2?"disabled":""}>Put it on</button>`
         + `<button type="button" class="ghost" data-mksend ${pick.length<2?"disabled":""}>Share WAV</button>`
         + `<button type="button" class="ghost" data-mkshare3 ${pick.length<2?"disabled":""}>Share MP3</button>`
-        + `<button type="button" class="ghost" data-mkshare4 ${pick.length<2?"disabled":""}>Share MP4</button>`
+        + `<button type="button" class="ghost" data-mkshare4 ${pick.length<2?"disabled":""}>Share M4A</button>`
         + `<button type="button" class="ghost" data-mkdl ${pick.length<2?"disabled":""}>Download WAV</button>`
         + `<button type="button" class="ghost" data-mkmp3 ${pick.length<2?"disabled":""}>Download MP3</button>`
-        + `<button type="button" class="ghost" data-mkmp4 ${pick.length<2?"disabled":""}>Download MP4</button>`
+        + `<button type="button" class="ghost" data-mkmp4 ${pick.length<2?"disabled":""}>Download M4A</button>`
         + `<button type="button" class="ghost" data-mkx>Cancel</button>`;
       list.before(bar);
       bar.querySelector("[data-mkx]").onclick = ()=>{ box.classList.remove("picking"); box._pick=[]; paintDocks(); };
