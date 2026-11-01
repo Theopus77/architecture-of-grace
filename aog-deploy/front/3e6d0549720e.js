@@ -292,8 +292,22 @@ function ctx(){
     /* AOG-DJ-LIMIT-V1 — OUT is the very end: what the speakers, the tape and the curve all hear.
        Once the worklet is in, a look-ahead wall sits just before it, so nothing leaves above -1 dBFS. */
     OUT = actx.createGain(); master.connect(OUT); OUT.connect(actx.destination);
-    try{ if("mediaSession" in navigator){ navigator.mediaSession.playbackState = "playing"; navigator.mediaSession.metadata = new MediaMetadata({ title:"The Turntables", artist:"Architecture of Grace" }); } }catch(e){}
-    document.addEventListener("visibilitychange", ()=>{ if(actx && actx.state==="suspended") actx.resume(); });
+    /* AOG-DECKS-IPAD-V1: keep playing on iPad when the app is backgrounded or Stage Manager hides the window.
+       audioSession playback is what iPadOS uses for music. Locking the screen or closing Safari still stops it; that is the iPad. */
+    try{
+      if("mediaSession" in navigator){
+        navigator.mediaSession.playbackState = "playing";
+        navigator.mediaSession.metadata = new MediaMetadata({ title:"The Turntables", artist:"Architecture of Grace" });
+        const wake = ()=>{ if(actx && actx.state!=="running") actx.resume(); };
+        try{ navigator.mediaSession.setActionHandler("play", wake); }catch(e){}
+        try{ navigator.mediaSession.setActionHandler("pause", ()=>{}); }catch(e){}
+      }
+    }catch(e){}
+    const wake = ()=>{ if(actx && actx.state==="suspended") actx.resume(); };
+    document.addEventListener("visibilitychange", wake);
+    window.addEventListener("pageshow", wake);
+    window.addEventListener("focus", wake);
+    document.addEventListener("resume", wake);
 
     if(actx.audioWorklet){
       workletReady = actx.audioWorklet
