@@ -48,9 +48,11 @@ the Drum Machine. Updated 2026-10-31 with the craftsman pass:
 - Output is 48 kHz with a 3 ms latency hint. The decks meet on a clean bus.
   The only level touch is the true-peak wall at -1 dBTP. No always-on
   compressor. On iOS the audio session is set to playback.
-- Keep playing when minimized: Media Session is set so the OS treats it as
-  media, and a visibility change resumes the context if the browser suspended
-  it. A phone may still stop audio when the screen locks; that is the OS.
+- Keep playing when minimized, including on iPad. The audio session is
+  playback (what iPadOS uses for music). Media Session is set, and the engine
+  resumes on visibility change, pageshow, focus, and resume. Switching apps or
+  hiding the window in Stage Manager should keep the music. Locking the iPad
+  or closing Safari still stops it; that is the iPad, not the page.
 - After any change to the decks, run `python3 tools/build-fast.py` so the fast
   copy and its front script match the source. The site serves the fast copy.
   If you cannot run the build, patch the front script the page loads as well
