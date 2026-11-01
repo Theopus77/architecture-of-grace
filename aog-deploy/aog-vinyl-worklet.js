@@ -559,9 +559,15 @@
         this.popDecay = 1;
       }
       this._wasMoving = moving;
-      if (this.noiseAmt > 0 && moving && !this.handOn) {
+      /* AOG-SCRATCH-REAL-V1: a scratch is a needle in a groove. Texture stays on under the hand,
+         and a fast move adds the bright zip a real cartridge makes. */
+      if (this.noiseAmt > 0 && moving) {
         this.nz += 0.22 * ((Math.random() * 2 - 1) - this.nz);
         var hiss = this.nz * 0.012 * this.noiseAmt * Math.min(1, v);
+        if (this.handOn && v > 0.3) {
+          var zip = (Math.random() * 2 - 1) * 0.04 * this.noiseAmt * Math.min(1, (v - 0.3) * 0.5);
+          hiss += zip;
+        }
         if (this.popDecay > 0) { this.popDecay *= 0.86; } else if (Math.random() < 0.000025 * Math.min(2, v)) {
           this.pop = (Math.random() * 2 - 1) * 0.18 * this.noiseAmt; this.popDecay = 1;
         }
