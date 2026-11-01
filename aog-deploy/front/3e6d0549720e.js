@@ -1822,7 +1822,73 @@ function paintBay(){
     const i = f.querySelector("input"); if(i && +i.value !== d.vol) i.value = d.vol;
   });
 }
-function bindFull(){const b=document.getElementById("fullBtn");if(!b||b._wired)return;b._wired=true;const on=()=>document.fullscreenElement||document.webkitFullscreenElement;const paint=()=>{b.textContent=on()?t("fullOff"):t("full");b.setAttribute("aria-pressed",on()?"true":"false");};b.onclick=()=>{const root=document.querySelector("main")||document.documentElement;if(on()){(document.exitFullscreen||document.webkitExitFullscreen).call(document);}else{const go=root.requestFullscreen||root.webkitRequestFullscreen;if(go)go.call(root);}};document.addEventListener("fullscreenchange",paint);document.addEventListener("webkitfullscreenchange",paint);paint();}function bindImport(){document.querySelectorAll("[data-import]").forEach(b=>{if(b._wired)return;b._wired=true;b.onclick=()=>{const id=b.getAttribute("data-import");const d=DECKS.find(x=>x.id===id);if(!d)return;const inp=document.createElement("input");inp.type="file";inp.accept="audio/*,.mp3,.m4a,.aac,.wav,.aif,.aiff,.ogg,.opus,.flac";inp.onchange=()=>{const f=inp.files&&inp.files[0];if(f)loadFile(d,f);};inp.click();};});}function bindBay(){
+
+function mkEncode(buf, kind){
+  return new Promise((ok, no)=>{
+    if(kind==="wav"){
+      const sr = buf.sampleRate, n = buf.length;
+      const L = buf.getChannelData(0), R = buf.numberOfChannels>1?buf.getChannelData(1):L;
+      const bytes = n*4, ab = new ArrayBuffer(44+bytes), dv = new DataView(ab);
+      const w=(o,s)=>{ for(let i=0;i<s.length;i++) dv.setUint8(o+i,s.charCodeAt(i)); };
+      w(0,"RIFF"); dv.setUint32(4,36+bytes,true); w(8,"WAVE"); w(12,"fmt ");
+      dv.setUint32(16,16,true); dv.setUint16(20,1,true); dv.setUint16(22,2,true);
+      dv.setUint32(24,sr,true); dv.setUint32(28,sr*4,true); dv.setUint16(32,4,true); dv.setUint16(34,16,true);
+      w(36,"data"); dv.setUint32(40,bytes,true);
+      let p=44;
+      for(let i=0;i<n;i++){
+        const l=Math.max(-1,Math.min(1,L[i])), r=Math.max(-1,Math.min(1,R[i]));
+        dv.setInt16(p, l<0?l*0x8000:l*0x7FFF, true); p+=2;
+        dv.setInt16(p, r<0?r*0x8000:r*0x7FFF, true); p+=2;
+      }
+      ok(new Blob([ab],{type:"audio/wav"})); return;
+    }
+    const mime = kind==="mp3" ? "audio/mpeg" : "audio/mp4";
+    const dest = actx.createMediaStreamDestination();
+    const src = actx.createBufferSource(); src.buffer = buf; src.connect(dest);
+    const rec = new MediaRecorder(dest.stream, MediaRecorder.isTypeSupported(mime)?{mimeType:mime}:{});
+    const parts = [];
+    rec.ondataavailable = e=>{ if(e.data&&e.data.size) parts.push(e.data); };
+    rec.onstop = ()=>ok(new Blob(parts,{type:rec.mimeType||mime}));
+    rec.onerror = no;
+    rec.start(); src.start();
+    src.onended = ()=>{ setTimeout(()=>{ try{ rec.stop(); }catch(e){} }, 200); };
+  });
+}
+async function mkFile(pick, box, kind){
+  const recs = pick.map(pid=>CRATE.lib.find(r=>r.id===pid)).filter(Boolean);
+  ctx();
+  const bufs = [];
+  for(const r of recs){
+    const f = crateFile(r); const arr = await f.arrayBuffer();
+    const buf = await new Promise((ok,no)=>{ const p = actx.decodeAudioData(arr.slice(0), ok, no); if(p&&p.then) p.then(ok,no); });
+    bufs.push(buf);
+  }
+  const sr = actx.sampleRate, gap = Math.floor(sr*0.35);
+  const total = bufs.reduce((n,b)=>n+Math.floor(b.duration*sr),0) + gap*Math.max(0,bufs.length-1);
+  const out = actx.createBuffer(2, total, sr);
+  const L = out.getChannelData(0), R = out.getChannelData(1);
+  let at = 0;
+  for(const b of bufs){
+    const bl = b.getChannelData(0), br = b.numberOfChannels>1?b.getChannelData(1):bl;
+    for(let i=0;i<bl.length && at+i<total;i++){ L[at+i]=bl[i]; R[at+i]=br[i]; }
+    at += bl.length + gap;
+  }
+  const ext = kind==="mp3"?"mp3":kind==="mp4"?"m4a":"wav";
+  const name = ((box._mkName||"My record").replace(/[^\w .-]/g,"")||"My record")+"."+ext;
+  const blob = await mkEncode(out, kind);
+  return new File([blob], name, {type:blob.type||"audio/"+ext});
+}
+function bindFull(){
+  document.querySelectorAll("[data-fulldeck]").forEach(b=>{
+    if(b._wired) return; b._wired = true;
+    b.onclick = ()=>{
+      const root = document.querySelector("main") || document.documentElement;
+      const on = document.fullscreenElement || document.webkitFullscreenElement;
+      if(on){ (document.exitFullscreen||document.webkitExitFullscreen).call(document); }
+      else { const go = root.requestFullscreen || root.webkitRequestFullscreen; if(go) go.call(root); }
+    };
+  });
+  const b=document.getElementById("fullBtn");if(!b||b._wired)return;b._wired=true;const on=()=>document.fullscreenElement||document.webkitFullscreenElement;const paint=()=>{b.textContent=on()?t("fullOff"):t("full");b.setAttribute("aria-pressed",on()?"true":"false");};b.onclick=()=>{const root=document.querySelector("main")||document.documentElement;if(on()){(document.exitFullscreen||document.webkitExitFullscreen).call(document);}else{const go=root.requestFullscreen||root.webkitRequestFullscreen;if(go)go.call(root);}};document.addEventListener("fullscreenchange",paint);document.addEventListener("webkitfullscreenchange",paint);paint();}function bindImport(){document.querySelectorAll("[data-import]").forEach(b=>{if(b._wired)return;b._wired=true;b.onclick=()=>{const id=b.getAttribute("data-import");const d=DECKS.find(x=>x.id===id);if(!d)return;const inp=document.createElement("input");inp.type="file";inp.accept="audio/*,.mp3,.m4a,.aac,.wav,.aif,.aiff,.ogg,.opus,.flac";inp.onchange=()=>{const f=inp.files&&inp.files[0];if(f)loadFile(d,f);};inp.click();};});}function bindBay(){
   document.querySelectorAll("#bay [data-bfader]").forEach(f=>{
     const d = deckOf(f, "data-bfader"), inp = f.querySelector("input");
     const at = (ev)=>{ const r = f.getBoundingClientRect(); setVol(d, 1 - (ev.clientY - r.top - 9)/Math.max(1, r.height - 18)); };
@@ -1857,7 +1923,7 @@ function deckHTML(d){
     <section class="deck" id="deck${id}" aria-label="${t("deck")} ${id}">
       <div class="dhead">
         <h2>${t("deck")} ${id}</h2>
-        <button type="button" class="tiny mst" data-master="${id}" aria-pressed="false" title="${t("masterTip")}">${t("master")}</button><button type="button" class="tiny" data-import="${id}" title="${t("importVinylTip")}">${t("importVinyl")}</button>
+        <button type="button" class="tiny mst" data-master="${id}" aria-pressed="false" title="${t("masterTip")}">${t("master")}</button><button type="button" class="tiny" data-import="${id}" title="${t("importVinylTip")}">${t("importVinyl")}</button><button type="button" class="tiny" data-fulldeck="1">Full screen</button>
         <span class="bpm" data-bpm="${id}"></span>
       </div>
       <p class="song">${esc(d.note||d.name||t("none"))}</p>
@@ -2098,8 +2164,12 @@ function paintDocks(){
       const bar = document.createElement("div"); bar.className = "mkbar";
       bar.innerHTML = `<p>Tap 2 to 10 songs, in order. <b>${pick.length} chosen</b></p>`
         + `<button type="button" class="go" data-mkgo ${pick.length<2?"disabled":""}>Put it on</button>`
-        + `<button type="button" class="ghost" data-mksend ${pick.length<2?"disabled":""}>Share</button>`
-        + `<button type="button" class="ghost" data-mkdl ${pick.length<2?"disabled":""}>Download</button>`
+        + `<button type="button" class="ghost" data-mksend ${pick.length<2?"disabled":""}>Share WAV</button>`
+        + `<button type="button" class="ghost" data-mkshare3 ${pick.length<2?"disabled":""}>Share MP3</button>`
+        + `<button type="button" class="ghost" data-mkshare4 ${pick.length<2?"disabled":""}>Share MP4</button>`
+        + `<button type="button" class="ghost" data-mkdl ${pick.length<2?"disabled":""}>Download WAV</button>`
+        + `<button type="button" class="ghost" data-mkmp3 ${pick.length<2?"disabled":""}>Download MP3</button>`
+        + `<button type="button" class="ghost" data-mkmp4 ${pick.length<2?"disabled":""}>Download MP4</button>`
         + `<button type="button" class="ghost" data-mkx>Cancel</button>`;
       list.before(bar);
       bar.querySelector("[data-mkx]").onclick = ()=>{ box.classList.remove("picking"); box._pick=[]; paintDocks(); };
@@ -2224,6 +2294,27 @@ function paintDocks(){
         a.href = URL.createObjectURL(new Blob([ab], { type:"audio/wav" })); a.download = name; a.click();
         setTimeout(()=>URL.revokeObjectURL(a.href), 4000);
       };
+      const saveAs = async (kind)=>{
+        if(pick.length<2) return;
+        const file = await mkFile(pick, box, kind);
+        const al = { id:"mx"+Date.now().toString(36), name:(box._mkName||"My record"), tracks:pick.map(pid=>{const r=CRATE.lib.find(x=>x.id===pid); return r?{id:r.id,name:r.name}:null;}).filter(Boolean) };
+        CRATE.albums = [al].concat(CRATE.albums||[]).slice(0,24); cratePut("albums", CRATE.albums);
+        const a = document.createElement("a"); a.href = URL.createObjectURL(file); a.download = file.name; a.click();
+        setTimeout(()=>URL.revokeObjectURL(a.href), 4000);
+      };
+      const mp3 = bar.querySelector("[data-mkmp3]"); if(mp3) mp3.onclick = ()=>saveAs("mp3");
+      const mp4 = bar.querySelector("[data-mkmp4]"); if(mp4) mp4.onclick = ()=>saveAs("mp4");
+      const shareAs = async (kind)=>{
+        if(pick.length<2) return;
+        const file = await mkFile(pick, box, kind);
+        if(navigator.share && navigator.canShare && navigator.canShare({files:[file]})){
+          try{ await navigator.share({files:[file], title:file.name}); return; }catch(e){}
+        }
+        const a = document.createElement("a"); a.href = URL.createObjectURL(file); a.download = file.name; a.click();
+        setTimeout(()=>URL.revokeObjectURL(a.href), 4000);
+      };
+      const s3 = bar.querySelector("[data-mkshare3]"); if(s3) s3.onclick = ()=>shareAs("mp3");
+      const s4 = bar.querySelector("[data-mkshare4]"); if(s4) s4.onclick = ()=>shareAs("mp4");
     }
     const cl = box.querySelector("[data-dockclose]");
     if(cl) cl.onclick = ()=>dockShut(id, true);
