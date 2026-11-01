@@ -102,7 +102,7 @@ const STR = {
   padsT:{en:"From the drum machine",es:"De la caja de ritmos"}, padsGo:{en:"Open the drum machine",es:"Abrir la caja de ritmos"},   /* AOG-PADS-STUDIO-V1 */
   crateNext:{en:"Up next",es:"Lo que sigue"},
   crateNextNone:{en:"Your songs wait here.",es:"Tus canciones esperan aquí."},
-  crateAdd:{en:"Add songs",es:"Agregar canciones"},importVinyl:{en:"Import vinyl",es:"Importar vinilo"},importVinylTip:{en:"Load a real vinyl sound file from this computer. Nothing is uploaded.",es:"Carga un archivo de vinilo real desde este equipo. Nada se sube."},
+  crateAdd:{en:"Add songs",es:"Agregar canciones"},importVinyl:{en:"Import vinyl",es:"Importar vinilo"},full:{en:"Full screen",es:"Pantalla completa"},fullOff:{en:"Leave full screen",es:"Salir de pantalla completa"},importVinylTip:{en:"Load a real vinyl sound file from this computer. Nothing is uploaded.",es:"Carga un archivo de vinilo real desde este equipo. Nada se sube."},
   starterH:{en:"Starter crate",es:"Caja inicial"},
   starterLead:{en:"Eleven practice tracks, 80 to 128 BPM.",es:"Once pistas para practicar, de 80 a 128 BPM."},
   starterGo:{en:"Load the starter crate",es:"Cargar la caja inicial"},
@@ -1821,7 +1821,7 @@ function paintBay(){
     const i = f.querySelector("input"); if(i && +i.value !== d.vol) i.value = d.vol;
   });
 }
-function bindImport(){document.querySelectorAll("[data-import]").forEach(b=>{if(b._wired)return;b._wired=true;b.onclick=()=>{const id=b.getAttribute("data-import");const d=DECKS.find(x=>x.id===id);if(!d)return;const inp=document.createElement("input");inp.type="file";inp.accept="audio/*,.mp3,.m4a,.aac,.wav,.aif,.aiff,.ogg,.opus,.flac";inp.onchange=()=>{const f=inp.files&&inp.files[0];if(f)loadFile(d,f);};inp.click();};});}function bindBay(){
+function bindFull(){const b=document.getElementById("fullBtn");if(!b||b._wired)return;b._wired=true;const on=()=>document.fullscreenElement||document.webkitFullscreenElement;const paint=()=>{b.textContent=on()?t("fullOff"):t("full");b.setAttribute("aria-pressed",on()?"true":"false");};b.onclick=()=>{const root=document.querySelector("main")||document.documentElement;if(on()){(document.exitFullscreen||document.webkitExitFullscreen).call(document);}else{const go=root.requestFullscreen||root.webkitRequestFullscreen;if(go)go.call(root);}};document.addEventListener("fullscreenchange",paint);document.addEventListener("webkitfullscreenchange",paint);paint();}function bindImport(){document.querySelectorAll("[data-import]").forEach(b=>{if(b._wired)return;b._wired=true;b.onclick=()=>{const id=b.getAttribute("data-import");const d=DECKS.find(x=>x.id===id);if(!d)return;const inp=document.createElement("input");inp.type="file";inp.accept="audio/*,.mp3,.m4a,.aac,.wav,.aif,.aiff,.ogg,.opus,.flac";inp.onchange=()=>{const f=inp.files&&inp.files[0];if(f)loadFile(d,f);};inp.click();};});}function bindBay(){
   document.querySelectorAll("#bay [data-bfader]").forEach(f=>{
     const d = deckOf(f, "data-bfader"), inp = f.querySelector("input");
     const at = (ev)=>{ const r = f.getBoundingClientRect(); setVol(d, 1 - (ev.clientY - r.top - 9)/Math.max(1, r.height - 18)); };
@@ -1839,7 +1839,7 @@ function shell(){
   { const xf = document.getElementById("xf"), home = document.querySelector("div.xfade"); if(xf && home && xf.parentNode !== home) home.appendChild(xf); }   /* keep the crossfader out of the rebuild */
   document.getElementById("decks").innerHTML = decks.map(deckHTML).join("") + bayHTML();
   document.getElementById("strips").innerHTML = decks.map(stripHTML).join("");
-  placeXf(); bindBay(); bindImport(); paintPair();
+  placeXf(); bindBay(); bindImport(); bindFull(); paintPair();
   decks.forEach(d=>{ d._sig = ""; d.waveDirty = true; d.$ = deckParts(d);
     if(RO && d.$){ RO.observe(d.$.wave); RO.observe(d.$.zoom); } });
   if(RO){ const eqc = document.getElementById("eqCurve"); if(eqc) RO.observe(eqc); }
@@ -2886,7 +2886,7 @@ function paintChrome(){
   document.getElementById("recHint").textContent = t("recHint");
   paintTape();
   document.getElementById("langBtn").textContent = S.lang==="es"?"EN":"ES";
-  document.getElementById("themeBtn").textContent = S.theme==="dark"?t("light"):t("dark");
+  document.getElementById("themeBtn").textContent = S.theme==="dark"?t("light"):t("dark");const fb=document.getElementById("fullBtn");if(fb)fb.textContent=(document.fullscreenElement||document.webkitFullscreenElement)?t("fullOff"):t("full");
   document.getElementById("foot").innerHTML = `<p>${t("foot")}</p><p><a href="music-pads.html">${t("drums")}</a> · <a href="music-piano.html">Piano</a> · <a href="/science">${t("sci")}</a></p>`;
   document.documentElement.setAttribute("data-theme", S.theme);
   document.documentElement.classList.toggle("dark", S.theme==="dark");
