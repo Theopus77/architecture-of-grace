@@ -489,6 +489,7 @@ html.room-whole body { overflow:hidden; }
   <button type="button" class="sh-ms" id="msTop" aria-haspopup="dialog" aria-expanded="false"></button>
   <p class="sh-tag"><span data-en="Play · Record · Listen · Mix · Send it out" data-es="Toca · Graba · Escucha · Mezcla · Compártela">Play · Record · Listen · Mix · Send it out</span></p>
   <div class="sh-bridge"><span class="tp-vu" id="tpVu"></span></div>
+  <button type="button" class="sh-qs" id="fullBtn" style="min-height:44px">Full screen</button>
   <div class="sh-lang" role="group" aria-label="Language · Idioma"><button type="button" data-lang="en" lang="en">EN</button><button type="button" data-lang="es" lang="es">ES</button></div>
 </div>
 <nav class="sh-doors" aria-label="Rooms · Salas"><ul>
@@ -1295,5 +1296,18 @@ if ("serviceWorker" in navigator) window.addEventListener("load", function () {
   navigator.serviceWorker.register("/sw.js").catch(function () {});
 });
 </script>
-</body>
+<script>
+(function(){
+  const b = document.getElementById("fullBtn"); if(!b) return;
+  const on = ()=> document.fullscreenElement || document.webkitFullscreenElement;
+  const paint = ()=>{ b.textContent = on() ? "Leave" : "Full screen"; };
+  b.onclick = ()=>{
+    const root = document.querySelector("main") || document.documentElement;
+    if(on()){ (document.exitFullscreen||document.webkitExitFullscreen).call(document); }
+    else { const go = root.requestFullscreen || root.webkitRequestFullscreen; if(go) go.call(root); }
+  };
+  document.addEventListener("fullscreenchange", paint);
+  document.addEventListener("webkitfullscreenchange", paint);
+})();
+</script></body>
 </html>
