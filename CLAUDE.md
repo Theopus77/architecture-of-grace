@@ -51,7 +51,10 @@ the Drum Machine. Updated 2026-10-31 with the craftsman pass:
   vinyl), not only in the page header the Studio can hide. It uses the
   standard and webkit fullscreen APIs so it works on a computer and on iPad.
 - Share and Download offer WAV, MP3, and MP4. WAV is encoded on the page.
-  MP3 and MP4 use the browser's recorder. Nothing is uploaded.
+  MP3 is a real 192 kbps file from lamejs (loaded from /lame.min.js).
+  MP4 is recorded by the browser (audio/mp4 on iPad). The download
+  appends a real link so the file lands, and on iPad also offers the share
+  sheet so it can go to Files. Nothing is uploaded.
 - The label and vinyl rotate from the playhead, including a backspin. The
   crossfader already has Blend and Cut. Leave both.
 - Output is 48 kHz with a 3 ms latency hint. The decks meet on a clean bus.
