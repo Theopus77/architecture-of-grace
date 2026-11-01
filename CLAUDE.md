@@ -43,6 +43,9 @@ the Drum Machine. Updated 2026-10-31 with the craftsman pass:
 - Make a record: in a deck's crate, pick 2 to 10 songs in order and Put it on.
   They are stitched into one continuous, scratchable record on that deck, with
   a short gap between songs. The live site serves this from the front script.
+- Full screen: a Full screen button in the top tools takes the decks to
+  full screen (and back). It uses the standard and webkit fullscreen APIs so
+  it works on a computer and on iPad.
 - The label and vinyl rotate from the playhead, including a backspin. The
   crossfader already has Blend and Cut. Leave both.
 - Output is 48 kHz with a 3 ms latency hint. The decks meet on a clean bus.
