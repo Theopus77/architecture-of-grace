@@ -47,8 +47,8 @@ the Drum Machine. Updated 2026-10-31 with the craftsman pass:
   downloading also saves it as an album under Your records, with your tracks
   in order, so a tap puts that record back on a deck. Nothing is uploaded. Nothing is uploaded. The song leaves only when
   the person chooses to send it. The live site serves this from the front script.
-- Full screen: a Full screen button sits on each deck head (next to Import
-  vinyl), not only in the page header the Studio can hide. It uses the
+- Full screen: a Full screen button sits on the Studio bar (next to the
+  language buttons), where it is visible, and also on each deck head. It uses the
   standard and webkit fullscreen APIs so it works on a computer and on iPad.
 - Share and Download offer WAV, MP3, and MP4. WAV is encoded on the page.
   MP3 is a real 192 kbps audio file from lamejs. M4A is audio only
