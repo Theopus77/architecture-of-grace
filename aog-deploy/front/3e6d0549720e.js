@@ -2068,6 +2068,7 @@ function paintDocks(){
       bar.innerHTML = `<p>Tap 2 to 10 songs, in order. <b>${pick.length} chosen</b></p>`
         + `<button type="button" class="go" data-mkgo ${pick.length<2?"disabled":""}>Put it on</button>`
         + `<button type="button" class="ghost" data-mksend ${pick.length<2?"disabled":""}>Send to a friend</button>`
+        + `<button type="button" class="ghost" data-mkdl ${pick.length<2?"disabled":""}>Download</button>`
         + `<button type="button" class="ghost" data-mkx>Cancel</button>`;
       list.before(bar);
       bar.querySelector("[data-mkx]").onclick = ()=>{ box.classList.remove("picking"); box._pick=[]; paintDocks(); };
@@ -2143,6 +2144,46 @@ function paintDocks(){
         }
         const a = document.createElement("a");
         a.href = URL.createObjectURL(file); a.download = name; a.click();
+        setTimeout(()=>URL.revokeObjectURL(a.href), 4000);
+      };
+      bar.querySelector("[data-mkdl]").onclick = async ()=>{
+        if(pick.length<2) return;
+        const recs = pick.map(pid=>CRATE.lib.find(r=>r.id===pid)).filter(Boolean);
+        ctx();
+        const bufs = [];
+        for(const r of recs){
+          const f = crateFile(r);
+          const arr = await f.arrayBuffer();
+          const buf = await new Promise((ok,no)=>{ const p = actx.decodeAudioData(arr.slice(0), ok, no); if(p&&p.then) p.then(ok,no); });
+          bufs.push(buf);
+        }
+        const sr = actx.sampleRate, gap = Math.floor(sr*0.35);
+        const total = bufs.reduce((n,b)=>n + Math.floor(b.duration*sr), 0) + gap*(bufs.length-1);
+        const Lch = new Float32Array(total), Rch = new Float32Array(total);
+        let at = 0;
+        for(const b of bufs){
+          const bl = b.getChannelData(0), br = b.numberOfChannels>1 ? b.getChannelData(1) : bl;
+          const n = bl.length;
+          for(let i=0;i<n && at+i<total;i++){ Lch[at+i]=bl[i]; Rch[at+i]=br[i]; }
+          at += n + gap;
+        }
+        const bytes = total * 4;
+        const ab = new ArrayBuffer(44 + bytes);
+        const dv = new DataView(ab);
+        const w = (o,s)=>{ for(let i=0;i<s.length;i++) dv.setUint8(o+i, s.charCodeAt(i)); };
+        w(0,"RIFF"); dv.setUint32(4, 36+bytes, true); w(8,"WAVE"); w(12,"fmt ");
+        dv.setUint32(16, 16, true); dv.setUint16(20, 1, true); dv.setUint16(22, 2, true);
+        dv.setUint32(24, sr, true); dv.setUint32(28, sr*4, true); dv.setUint16(32, 4, true); dv.setUint16(34, 16, true);
+        w(36,"data"); dv.setUint32(40, bytes, true);
+        let p = 44;
+        for(let i=0;i<total;i++){
+          const l = Math.max(-1, Math.min(1, Lch[i])), r = Math.max(-1, Math.min(1, Rch[i]));
+          dv.setInt16(p, l<0 ? l*0x8000 : l*0x7FFF, true); p+=2;
+          dv.setInt16(p, r<0 ? r*0x8000 : r*0x7FFF, true); p+=2;
+        }
+        const name = ((box._mkName||"My record").replace(/[^\w .-]/g,"") || "My record") + ".wav";
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(new Blob([ab], { type:"audio/wav" })); a.download = name; a.click();
         setTimeout(()=>URL.revokeObjectURL(a.href), 4000);
       };
     }
