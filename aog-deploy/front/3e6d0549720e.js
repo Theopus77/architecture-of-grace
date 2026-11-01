@@ -272,7 +272,7 @@ function ctx(){
   if(actx && actx.state!=="running"){ try{ actx.resume(); }catch(e){} }
   if(!actx){
     const AC = window.AudioContext||window.webkitAudioContext;
-    actx = new AC({ latencyHint:0.005 }); /* AOG-DECKS-INSTANT-V1 */
+    actx = new AC({ latencyHint:0.003 }); /* AOG-DECKS-RESPONSIVE-V1 */
     try{ if(window.AOGVU && AOGVU.own) AOGVU.own(actx); }catch(e){}   /* AOG-SILENT-V1: the Studio's hush pauses it too */
     /* AOG-DECKS-LOUDNESS-V1 — the same treatment the drum machine got: a normal
        level with a real limiter behind it, so three loud songs at once still
@@ -341,7 +341,7 @@ async function ensureNode(d){
     if(!d.node){
       /* no AudioWorklet (old Safari): the same core, on the old processor */
       d.core = new self.AOGVinylCore(actx.sampleRate);
-      const n = actx.createScriptProcessor(128, 0, 2); /* tighter scratch */
+      const n = actx.createScriptProcessor(64, 0, 2); /* AOG-DECKS-RESPONSIVE-V1 */
       n.onaudioprocess = (e)=>{
         const o = e.outputBuffer, c = d.core;
         c.frame = Math.round((e.playbackTime || actx.currentTime) * actx.sampleRate);
@@ -2803,7 +2803,7 @@ function bind(){
       const now = performance.now();
       const absInst = Math.abs(deck.handRate);
       const rim = deck._zone === "rim";
-      const win = rim ? (absInst > 1.2 ? 6 : 10) : (absInst > 0.4 ? 18 : 28);
+      const win = rim ? 4 : 12; /* AOG-DECKS-RESPONSIVE-V1: follow the finger */
       while(trail.length > 2 && now - trail[0].t > win) trail.shift();
       const first = trail[0], last = trail[trail.length-1];
       const dt = Math.max(0.008, (last.t - first.t)/1000);
