@@ -2435,7 +2435,7 @@ function init(){
   S.banks.forEach(B=>{ if(!INST[B.inst]) B.inst="k:grand"; if(KITS().length && KITS().indexOf(B.kitC)<0) B.kitC=KITS()[Math.min(2, KITS().length-1)]; });
   bindPads();
   /* AOG-KIT-INSTANT-V1: one-sound kits are in before the first tap */
-  if(window.AOGDrumKit){ ["K1","S1","H1","C1","R1","T1","K9","KA","ST","SL","HG","CR"].forEach(k=>AOGDrumKit.load(k,{},{},x=>x,null,{hiOnly:true})); } bindBounce(); pvInit();
+  if(window.AOGDrumKit){ ["K1","S1","H1","C1","R1","T1"].forEach(k=>AOGDrumKit.load(k,{},{},x=>x,null,{hiOnly:true})); } bindBounce(); pvInit();
   bindMidi();   /* AOG-MIDI-V1 */
   $("guideLink").addEventListener("click",()=>LES.mark("guide1"));
   $("takeBtn").addEventListener("click",()=>{ LES.mark($("takeBtn").getAttribute("aria-pressed")==="true" ? "take2" : "take1"); }, true);   /* before the recorder: pressed = it is about to stop */
