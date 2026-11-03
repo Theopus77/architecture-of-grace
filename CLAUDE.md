@@ -75,7 +75,11 @@ the Drum Machine. Updated 2026-10-31 with the craftsman pass:
 - Full screen: a Full screen button sits on the Studio bar (next to the
   language buttons), where it is visible, and also on each deck head. It
   fullscreens the room itself, not the chrome around it. A scratch does not
-  leave full screen. Only the Full screen / Leave button does. It uses the
+  leave full screen. Only the Full screen / Leave button does. The deck's
+  Full screen button asks the Studio to take the room full screen, because a
+  room inside the Studio cannot do it itself on an iPad.
+- Load a track (was Import vinyl) puts a song from this device on that deck.
+  Nothing is uploaded. It uses the
   standard and webkit fullscreen APIs so it works on a computer and on iPad.
 - Share and Download offer WAV, MP3, and MP4. WAV is encoded on the page.
   MP3 is a real 192 kbps audio file from lamejs. M4A is audio only
