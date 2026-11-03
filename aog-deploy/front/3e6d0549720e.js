@@ -1912,17 +1912,33 @@ async function mkFile(pick, box, kind){
   const blob = await mkEncode(out, kind);
   return new File([blob], name, {type:blob.type||"audio/"+ext});
 }
+let _scratching = false;
 function bindFull(){
   document.querySelectorAll("[data-fulldeck]").forEach(b=>{
     if(b._wired) return; b._wired = true;
-    b.onclick = ()=>{
-      const root = document.querySelector("main") || document.documentElement;
+    b.onclick = (e)=>{
+      e.stopPropagation();
+      const root = document.documentElement;
       const on = document.fullscreenElement || document.webkitFullscreenElement;
       if(on){ (document.exitFullscreen||document.webkitExitFullscreen).call(document); }
       else { const go = root.requestFullscreen || root.webkitRequestFullscreen; if(go) go.call(root); }
     };
   });
-  const b=document.getElementById("fullBtn");if(!b||b._wired)return;b._wired=true;const on=()=>document.fullscreenElement||document.webkitFullscreenElement;const paint=()=>{b.textContent=on()?t("fullOff"):t("full");b.setAttribute("aria-pressed",on()?"true":"false");};b.onclick=()=>{const root=document.querySelector("main")||document.documentElement;if(on()){(document.exitFullscreen||document.webkitExitFullscreen).call(document);}else{const go=root.requestFullscreen||root.webkitRequestFullscreen;if(go)go.call(root);}};document.addEventListener("fullscreenchange",paint);document.addEventListener("webkitfullscreenchange",paint);paint();}function bindImport(){document.querySelectorAll("[data-import]").forEach(b=>{if(b._wired)return;b._wired=true;b.onclick=()=>{const id=b.getAttribute("data-import");const d=DECKS.find(x=>x.id===id);if(!d)return;const inp=document.createElement("input");inp.type="file";inp.accept="audio/*,.mp3,.m4a,.aac,.wav,.aif,.aiff,.ogg,.opus,.flac";inp.onchange=()=>{const f=inp.files&&inp.files[0];if(f)loadFile(d,f);};inp.click();};});}function bindBay(){
+  const b=document.getElementById("fullBtn");if(!b||b._wired)return;b._wired=true;const on=()=>document.fullscreenElement||document.webkitFullscreenElement;const paint=()=>{b.textContent=on()?t("fullOff"):t("full");b.setAttribute("aria-pressed",on()?"true":"false");};b.onclick=()=>{const root=document.querySelector("main")||document.documentElement;if(on()){(document.exitFullscreen||document.webkitExitFullscreen).call(document);}else{const go=root.requestFullscreen||root.webkitRequestFullscreen;if(go)go.call(root);}};document.addEventListener("fullscreenchange",paint);document.addEventListener("webkitfullscreenchange",paint);paint();}
+document.addEventListener("pointerup", ()=>setTimeout(()=>{ _scratching = false; }, 500), true);
+document.addEventListener("fullscreenchange", ()=>{
+  if(_scratching && !(document.fullscreenElement||document.webkitFullscreenElement)){
+    const go = document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen;
+    if(go) go.call(document.documentElement);
+  }
+});
+document.addEventListener("webkitfullscreenchange", ()=>{
+  if(_scratching && !(document.fullscreenElement||document.webkitFullscreenElement)){
+    const go = document.documentElement.webkitRequestFullscreen;
+    if(go) go.call(document.documentElement);
+  }
+});
+function bindImport(){document.querySelectorAll("[data-import]").forEach(b=>{if(b._wired)return;b._wired=true;b.onclick=()=>{const id=b.getAttribute("data-import");const d=DECKS.find(x=>x.id===id);if(!d)return;const inp=document.createElement("input");inp.type="file";inp.accept="audio/*,.mp3,.m4a,.aac,.wav,.aif,.aiff,.ogg,.opus,.flac";inp.onchange=()=>{const f=inp.files&&inp.files[0];if(f)loadFile(d,f);};inp.click();};});}function bindBay(){
   document.querySelectorAll("#bay [data-bfader]").forEach(f=>{
     const d = deckOf(f, "data-bfader"), inp = f.querySelector("input");
     const at = (ev)=>{ const r = f.getBoundingClientRect(); setVol(d, 1 - (ev.clientY - r.top - 9)/Math.max(1, r.height - 18)); };
@@ -3050,7 +3066,8 @@ function bind(){
     }
     p.onpointerdown = async (e)=>{
       const deck = d(); if(!deck || !deck.buf) return;
-      e.preventDefault();
+      e.preventDefault(); e.stopPropagation();
+      _scratching = true;
       try{ p.setPointerCapture(e.pointerId); }catch(err){}
       ctx(); await ensureNode(deck);
       lastAng = angleOf(e); lastT = performance.now();
