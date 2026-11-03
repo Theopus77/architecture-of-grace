@@ -808,7 +808,8 @@ async function crateCopy(file, arr){
   return new Blob([buf.slice ? buf.slice(0) : buf], { type:file.type||"" });
 }
 async function crateInstall(file, arr){
-  const rec = { id:crateId(file), name:file.name, blob:await crateCopy(file, arr), at:Date.now() };
+  let id = crateId(file); if(CRATE.lib.some(x=>x.id===id)) id = id+"·"+Date.now().toString(36);
+  const rec = { id:id, name:file.name, blob:await crateCopy(file, arr), at:Date.now() };
   CRATE.lib = [rec].concat(CRATE.lib.filter(x=>x.id!==rec.id)).slice(0, 60);
   cratePut("lib", CRATE.lib); paintDocks();
   return rec;
@@ -1887,7 +1888,8 @@ function mkEncode(buf, kind){
   });
 }
 async function mkFile(pick, box, kind){
-  const recs = pick.map(pid=>CRATE.lib.find(r=>r.id===pid)).filter(Boolean);
+  const recs = pick.map(pid=>CRATE.lib.find(r=>r.id===pid)).filter(r=>r&&r.blob);
+  if(recs.length<2) throw new Error("songs not in the crate");
   ctx();
   const bufs = [];
   for(const r of recs){
@@ -2131,6 +2133,7 @@ document.addEventListener("keydown", ev=>{
   if(ev.key !== "Escape") return;
   document.querySelectorAll(".dock:not([hidden])").forEach(box=>dockShut(box.id.slice(4), true));
 });
+window._mkPick = window._mkPick || {};
 function paintDocks(){
   document.querySelectorAll(".dock").forEach(box=>{
     const id = box.id.slice(4), editing = box.classList.contains("editing");
@@ -2148,8 +2151,9 @@ function paintDocks(){
       b.onclick = async ()=>{
         const a = (CRATE.albums||[])[+b.getAttribute("data-dalb")]; if(!a) return;
         const d = decks.find(x=>x.id===id); if(!d) return;
-        const recs = a.tracks.map(tr=>CRATE.lib.find(r=>r.id===tr.id)).filter(Boolean);
-        if(recs.length<1) return;
+        const recs = [], miss = [];
+        a.tracks.forEach(tr=>{ const r = CRATE.lib.find(x=>x.id===tr.id); if(r&&r.blob) recs.push(r); else miss.push(tr.name||tr.id); });
+        if(miss.length){ alert("Not in the crate: " + miss.join(", ")); if(recs.length<1) return; }
         ctx(); await ensureNode(d);
         const bufs = [];
         for(const r of recs){
@@ -2180,11 +2184,11 @@ function paintDocks(){
       const b = document.createElement("button");
       b.type = "button"; b.className = "ghost"; b.setAttribute("data-mkrec","1");
       b.textContent = (typeof t==="function" && t("mkRec")) || "+ Make a record";
-      b.onclick = ()=>{ box.classList.add("picking"); box._pick = box._pick || []; paintDocks(); };
+      b.onclick = ()=>{ box.classList.add("picking"); box._pick = window._mkPick[id] || box._pick || []; window._mkPick[id]=box._pick; paintDocks(); };
       row.appendChild(b);
     }
     if(box.classList.contains("picking")){
-      const pick = box._pick || (box._pick = []);
+      const pick = window._mkPick[id] || box._pick || (window._mkPick[id] = box._pick = []); box._pick = pick; window._mkPick[id] = pick;
       box.querySelectorAll("[data-dsong]").forEach(b=>{
         const r = CRATE.lib[+b.getAttribute("data-dsong")]; if(!r) return;
         const k = pick.indexOf(r.id);
@@ -2208,7 +2212,10 @@ function paintDocks(){
       bar.querySelector("[data-mkgo]").onclick = async ()=>{
         if(pick.length<2) return;
         const d = decks.find(x=>x.id===id); if(!d) return;
-        const recs = pick.map(pid=>CRATE.lib.find(r=>r.id===pid)).filter(Boolean);
+        const recs = [], missing = [];
+        pick.forEach(pid=>{ const r = CRATE.lib.find(x=>x.id===pid); if(r && r.blob) recs.push(r); else missing.push(pid); });
+        if(missing.length){ bar.querySelector("p").textContent = "Not in the crate: " + missing.length + " song" + (missing.length>1?"s":"") + ". They may have been replaced. Pick them again."; return; }
+        if(recs.length<2){ bar.querySelector("p").textContent = "Need at least 2 songs still in the crate."; return; }
         ctx(); await ensureNode(d);
         const bufs = [];
         for(const r of recs){
@@ -2242,7 +2249,8 @@ function paintDocks(){
         const al = { id:"mx"+Date.now().toString(36), name:(box._mkName||"My record"), tracks:recs0.map(r=>({id:r.id, name:r.name})) };
         CRATE.albums = [al].concat(CRATE.albums||[]).slice(0, 24);
         cratePut("albums", CRATE.albums);
-        const recs = pick.map(pid=>CRATE.lib.find(r=>r.id===pid)).filter(Boolean);
+        const recs = pick.map(pid=>CRATE.lib.find(r=>r.id===pid)).filter(r=>r&&r.blob);
+  if(recs.length<2) throw new Error("songs not in the crate");
         ctx();
         const bufs = [];
         for(const r of recs){
@@ -2288,7 +2296,8 @@ function paintDocks(){
       };
       bar.querySelector("[data-mkdl]").onclick = async ()=>{
         if(pick.length<2) return;
-        const recs = pick.map(pid=>CRATE.lib.find(r=>r.id===pid)).filter(Boolean);
+        const recs = pick.map(pid=>CRATE.lib.find(r=>r.id===pid)).filter(r=>r&&r.blob);
+  if(recs.length<2) throw new Error("songs not in the crate");
         ctx();
         const bufs = [];
         for(const r of recs){
