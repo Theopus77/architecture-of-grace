@@ -1914,7 +1914,7 @@ async function mkFile(pick, box, kind){
 }
 let _scratching = false;
 function bindFull(){
-  if(!document.getElementById("deckFill")){ const st=document.createElement("style"); st.id="deckFill"; st.textContent="body.deck-fill{position:fixed;inset:0;z-index:80;width:100vw;height:100vh;background:#12141a;overflow:auto}"; document.head.appendChild(st); }
+  if(!document.getElementById("deckFill")){ const st=document.createElement("style"); st.id="deckFill"; st.textContent="body.deck-fill{position:fixed;inset:0;z-index:80;width:100vw;height:100vh;background:#12141a;overflow:auto}body.deck-fill .decks{height:100%;align-content:center}body.deck-fill .platter,body.deck-fill .deck .t12 .platter{width:min(70vh,86vw)!important;max-width:none}"; document.head.appendChild(st); }
   document.querySelectorAll("[data-fulldeck]").forEach(b=>{
     if(b._wired) return; b._wired = true;
     b.onclick = (e)=>{
