@@ -75,6 +75,24 @@
     T1: { dir: "boombap2", grp: "onesound", en: "Tom", es: "Tom",
       pads: { kick: P("LOWTOM", [1, 1, 1]), snare: P("LOWTOM", [1, 1, 1]), ch: P("LOWTOM", [1, 1, 1]), oh: P("LOWTOM", [1, 1, 1]),
               clap: P("LOWTOM", [1, 1, 1]), tom: P("LOWTOM", [1, 1, 1]), rim: P("LOWTOM", [1, 1, 1]), bell: P("LOWTOM", [1, 1, 1]) } },
+    K9: { dir: "house909", grp: "onesound", en: "909 Kick", es: "Bombo 909",
+      pads: { kick: P("909", [2, 2, 1]), snare: P("909", [2, 2, 1]), ch: P("909", [2, 2, 1]), oh: P("909", [2, 2, 1]),
+              clap: P("909", [2, 2, 1]), tom: P("909", [2, 2, 1]), rim: P("909", [2, 2, 1]), bell: P("909", [2, 2, 1]) } },
+    KA: { dir: "arena2", grp: "onesound", en: "Arena Kick", es: "Bombo de estadio",
+      pads: { kick: P("KICK", [2, 2, 1]), snare: P("KICK", [2, 2, 1]), ch: P("KICK", [2, 2, 1]), oh: P("KICK", [2, 2, 1]),
+              clap: P("KICK", [2, 2, 1]), tom: P("KICK", [2, 2, 1]), rim: P("KICK", [2, 2, 1]), bell: P("KICK", [2, 2, 1]) } },
+    ST: { dir: "trap", grp: "onesound", en: "Trap Clap", es: "Palmada trap",
+      pads: { kick: P("CLAP", [2, 2, 2]), snare: P("CLAP", [2, 2, 2]), ch: P("CLAP", [2, 2, 2]), oh: P("CLAP", [2, 2, 2]),
+              clap: P("CLAP", [2, 2, 2]), tom: P("CLAP", [2, 2, 2]), rim: P("CLAP", [2, 2, 2]), bell: P("CLAP", [2, 2, 2]) } },
+    SL: { dir: "live2", grp: "onesound", en: "Live Snare", es: "Caja en vivo",
+      pads: { kick: P("SNARE", [2, 2, 1]), snare: P("SNARE", [2, 2, 1]), ch: P("SNARE", [2, 2, 1]), oh: P("SNARE", [2, 2, 1]),
+              clap: P("SNARE", [2, 2, 1]), tom: P("SNARE", [2, 2, 1]), rim: P("SNARE", [2, 2, 1]), bell: P("SNARE", [2, 2, 1]) } },
+    HG: { dir: "gospel", grp: "onesound", en: "Gospel Hat", es: "Charles gospel",
+      pads: { kick: P("HAT", [2, 2, 1]), snare: P("HAT", [2, 2, 1]), ch: P("HAT", [2, 2, 1]), oh: P("OPEN", [1, 1, 1]),
+              clap: P("HAT", [2, 2, 1]), tom: P("HAT", [2, 2, 1]), rim: P("HAT", [2, 2, 1]), bell: P("HAT", [2, 2, 1]) } },
+    CR: { dir: "arena2", grp: "onesound", en: "Crash", es: "Crash",
+      pads: { kick: P("CRASH", [1, 1, 1]), snare: P("CRASH", [1, 1, 1]), ch: P("CRASH", [1, 1, 1]), oh: P("CRASH", [1, 1, 1]),
+              clap: P("CRASH", [1, 1, 1]), tom: P("CRASH", [1, 1, 1]), rim: P("CRASH", [1, 1, 1]), bell: P("CRASH", [1, 1, 1]) } },
     /* AOG-DRUM-REAL-V2: the kits that used to be made on the page, now recorded (same letter, name and character) */
     D: { dir: "dusty2", en: "Dusty Breaks", es: "Kit D · breaks polvorientos",
       pads: { kick: P("THUMP", [1, 2, 2]), snare: P("CRACK", [1, 2, 2]), ch: P("SHAKER", [1, 2, 1]), oh: P("TAMB", [1, 1, 1]),
@@ -146,7 +164,7 @@
       pads: { kick: P("KICK", [1, 2, 2]), snare: P("SNARE", [1, 2, 2]), ch: P("HAT", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
               clap: P("XSTICK", [1, 2, 1]), tom: P("TOM", [1, 1, 1]), rim: P("FLOOR", [1, 1, 1]), bell: P("CRASH", [1, 1, 1]) } }
   };
-  var IDS = ["K1", "S1", "H1", "C1", "R1", "T1", "D", "E", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "LS", "DB", "WD", "IN", "CB", "BR", "ME2"];
+  var IDS = ["K1", "S1", "H1", "C1", "R1", "T1", "K9", "KA", "ST", "SL", "HG", "CR", "D", "E", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "LS", "DB", "WD", "IN", "CB", "BR", "ME2"];
   /* ══ AOG-DRUM-PERC-V1 (2026-10-13) — HAND PERCUSSION, HAND DRUMS AND THE TABLA ══════════════════════════════════════
      Jimmy: "DO them all." Four recorded kits, eight pads each (music-handoff/tools/drumkits/kits_perc.py): the school's
      hand percussion; the djembe and cajón (with maracas, hand claps and the bell of a djembe group); the congas and
