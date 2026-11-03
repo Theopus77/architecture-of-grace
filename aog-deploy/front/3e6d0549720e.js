@@ -1918,14 +1918,20 @@ function bindFull(){
     if(b._wired) return; b._wired = true;
     b.onclick = (e)=>{
       e.stopPropagation();
-      if(window.parent && window.parent!==window){ window.parent.postMessage({t:"aog-full"}, "*"); return; }
       const root = document.documentElement;
       const on = document.fullscreenElement || document.webkitFullscreenElement;
-      if(on){ (document.exitFullscreen||document.webkitExitFullscreen).call(document); }
-      else { const go = root.requestFullscreen || root.webkitRequestFullscreen; if(go) go.call(root); }
+      if(on){ window._wantFull=false; (document.exitFullscreen||document.webkitExitFullscreen).call(document); }
+      else { window._wantFull=true; const go = root.requestFullscreen || root.webkitRequestFullscreen; if(go) go.call(root); }
     };
   });
   const b=document.getElementById("fullBtn");if(!b||b._wired)return;b._wired=true;const on=()=>document.fullscreenElement||document.webkitFullscreenElement;const paint=()=>{b.textContent=on()?t("fullOff"):t("full");b.setAttribute("aria-pressed",on()?"true":"false");};b.onclick=()=>{const root=document.querySelector("main")||document.documentElement;if(on()){(document.exitFullscreen||document.webkitExitFullscreen).call(document);}else{const go=root.requestFullscreen||root.webkitRequestFullscreen;if(go)go.call(root);}};document.addEventListener("fullscreenchange",paint);document.addEventListener("webkitfullscreenchange",paint);paint();}
+window.addEventListener("message",(e)=>{
+  if(!e.data || e.data.t!=="aog-full-in") return;
+  const root = document.documentElement;
+  const on = document.fullscreenElement || document.webkitFullscreenElement;
+  if(on){ window._wantFull=false; (document.exitFullscreen||document.webkitExitFullscreen).call(document); }
+  else { window._wantFull=true; const go = root.requestFullscreen || root.webkitRequestFullscreen; if(go) go.call(root); }
+});
 document.addEventListener("pointerup", ()=>setTimeout(()=>{ _scratching = false; }, 500), true);
 document.addEventListener("fullscreenchange", ()=>{
   if(_scratching && !(document.fullscreenElement||document.webkitFullscreenElement)){
@@ -1939,7 +1945,7 @@ document.addEventListener("webkitfullscreenchange", ()=>{
     if(go) go.call(document.documentElement);
   }
 });
-function bindImport(){document.querySelectorAll("[data-import]").forEach(b=>{if(b._wired)return;b._wired=true;b.onclick=()=>{const id=b.getAttribute("data-import");const d=DECKS.find(x=>x.id===id);if(!d)return;const inp=document.createElement("input");inp.type="file";inp.accept="audio/*,.mp3,.m4a,.aac,.wav,.aif,.aiff,.ogg,.opus,.flac";inp.onchange=()=>{const f=inp.files&&inp.files[0];if(f)loadFile(d,f);};inp.click();};});}function bindBay(){
+function bindImport(){document.querySelectorAll("[data-import]").forEach(b=>{if(b._wired)return;b._wired=true;b.onclick=()=>{const id=b.getAttribute("data-import");const deck=DECKS.find(x=>x.id===id);if(!deck)return;const inp=document.createElement("input");inp.type="file";inp.accept="audio/*";inp.style.cssText="position:fixed;left:0;top:0;width:1px;height:1px;opacity:0";document.body.appendChild(inp);inp.onchange=()=>{const f=inp.files&&inp.files[0];if(f)loadFile(deck,f);inp.remove();};inp.click();};});}function bindBay(){
   document.querySelectorAll("#bay [data-bfader]").forEach(f=>{
     const d = deckOf(f, "data-bfader"), inp = f.querySelector("input");
     const at = (ev)=>{ const r = f.getBoundingClientRect(); setVol(d, 1 - (ev.clientY - r.top - 9)/Math.max(1, r.height - 18)); };
@@ -3069,6 +3075,10 @@ function bind(){
       const deck = d(); if(!deck || !deck.buf) return;
       e.preventDefault(); e.stopPropagation();
       _scratching = true;
+      if(window._wantFull && !(document.fullscreenElement||document.webkitFullscreenElement)){
+        const go = document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen;
+        if(go) go.call(document.documentElement);
+      }
       try{ p.setPointerCapture(e.pointerId); }catch(err){}
       ctx(); await ensureNode(deck);
       lastAng = angleOf(e); lastT = performance.now();
