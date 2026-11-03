@@ -102,7 +102,7 @@ const STR = {
   padsT:{en:"From the drum machine",es:"De la caja de ritmos"}, padsGo:{en:"Open the drum machine",es:"Abrir la caja de ritmos"},   /* AOG-PADS-STUDIO-V1 */
   crateNext:{en:"Up next",es:"Lo que sigue"},
   crateNextNone:{en:"Your songs wait here.",es:"Tus canciones esperan aquí."},
-  crateAdd:{en:"Add songs",es:"Agregar canciones"},importVinyl:{en:"Import vinyl",es:"Importar vinilo"},full:{en:"Full screen",es:"Pantalla completa"},fullOff:{en:"Leave full screen",es:"Salir de pantalla completa"},importVinylTip:{en:"Load a real vinyl sound file from this computer. Nothing is uploaded.",es:"Carga un archivo de vinilo real desde este equipo. Nada se sube."},
+  crateAdd:{en:"Add songs",es:"Agregar canciones"},importVinyl:{en:"Load a track",es:"Cargar una pista"},full:{en:"Full screen",es:"Pantalla completa"},fullOff:{en:"Leave full screen",es:"Salir de pantalla completa"},importVinylTip:{en:"Put a song from this iPad on this deck. Nothing is uploaded.",es:"Carga un archivo de vinilo real desde este equipo. Nada se sube."},
   starterH:{en:"Starter crate",es:"Caja inicial"},
   starterLead:{en:"Eleven practice tracks, 80 to 128 BPM.",es:"Once pistas para practicar, de 80 a 128 BPM."},
   starterGo:{en:"Load the starter crate",es:"Cargar la caja inicial"},
@@ -1918,6 +1918,7 @@ function bindFull(){
     if(b._wired) return; b._wired = true;
     b.onclick = (e)=>{
       e.stopPropagation();
+      if(window.parent && window.parent!==window){ window.parent.postMessage({t:"aog-full"}, "*"); return; }
       const root = document.documentElement;
       const on = document.fullscreenElement || document.webkitFullscreenElement;
       if(on){ (document.exitFullscreen||document.webkitExitFullscreen).call(document); }
