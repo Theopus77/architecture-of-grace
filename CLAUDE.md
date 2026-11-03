@@ -80,6 +80,8 @@ the Drum Machine. Updated 2026-10-31 with the craftsman pass:
   the whole screen and the Studio hides its chrome. A scratch cannot leave
   it, because nothing was asked of the iPad. Load a track is a real file
   button the finger hits. A made-up click is ignored on an iPad.
+- Pause stops the record where it is and the button says Resume. It does not
+  send the needle back to the start.
 - Load a track (was Import vinyl) puts a song from this device on that deck.
   Nothing is uploaded. It uses the
   standard and webkit fullscreen APIs so it works on a computer and on iPad.
