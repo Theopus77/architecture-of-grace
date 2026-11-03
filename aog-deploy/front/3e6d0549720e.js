@@ -1914,14 +1914,14 @@ async function mkFile(pick, box, kind){
 }
 let _scratching = false;
 function bindFull(){
+  if(!document.getElementById("deckFill")){ const st=document.createElement("style"); st.id="deckFill"; st.textContent="body.deck-fill{position:fixed;inset:0;z-index:80;width:100vw;height:100vh;background:#12141a;overflow:auto}"; document.head.appendChild(st); }
   document.querySelectorAll("[data-fulldeck]").forEach(b=>{
     if(b._wired) return; b._wired = true;
     b.onclick = (e)=>{
       e.stopPropagation();
-      const root = document.documentElement;
-      const on = document.fullscreenElement || document.webkitFullscreenElement;
-      if(on){ window._wantFull=false; (document.exitFullscreen||document.webkitExitFullscreen).call(document); }
-      else { window._wantFull=true; const go = root.requestFullscreen || root.webkitRequestFullscreen; if(go) go.call(root); }
+      const on = document.body.classList.toggle("deck-fill");
+      b.textContent = on ? "Leave" : "Full screen";
+      if(window.parent && window.parent!==window) window.parent.postMessage({t: on?"aog-fill":"aog-fill-off"}, "*");
     };
   });
   const b=document.getElementById("fullBtn");if(!b||b._wired)return;b._wired=true;const on=()=>document.fullscreenElement||document.webkitFullscreenElement;const paint=()=>{b.textContent=on()?t("fullOff"):t("full");b.setAttribute("aria-pressed",on()?"true":"false");};b.onclick=()=>{const root=document.querySelector("main")||document.documentElement;if(on()){(document.exitFullscreen||document.webkitExitFullscreen).call(document);}else{const go=root.requestFullscreen||root.webkitRequestFullscreen;if(go)go.call(root);}};document.addEventListener("fullscreenchange",paint);document.addEventListener("webkitfullscreenchange",paint);paint();}
@@ -1945,7 +1945,7 @@ document.addEventListener("webkitfullscreenchange", ()=>{
     if(go) go.call(document.documentElement);
   }
 });
-function bindImport(){document.querySelectorAll("[data-import]").forEach(b=>{if(b._wired)return;b._wired=true;b.onclick=()=>{const id=b.getAttribute("data-import");const deck=DECKS.find(x=>x.id===id);if(!deck)return;const inp=document.createElement("input");inp.type="file";inp.accept="audio/*";inp.style.cssText="position:fixed;left:0;top:0;width:1px;height:1px;opacity:0";document.body.appendChild(inp);inp.onchange=()=>{const f=inp.files&&inp.files[0];if(f)loadFile(deck,f);inp.remove();};inp.click();};});}function bindBay(){
+function bindImport(){document.querySelectorAll("[data-load]").forEach(inp=>{if(inp._wired)return;inp._wired=true;inp.addEventListener("change",()=>{const deck=DECKS.find(x=>x.id===inp.getAttribute("data-load"));const f=inp.files&&inp.files[0];if(deck&&f)loadFile(deck,f);inp.value="";});});}function bindBay(){
   document.querySelectorAll("#bay [data-bfader]").forEach(f=>{
     const d = deckOf(f, "data-bfader"), inp = f.querySelector("input");
     const at = (ev)=>{ const r = f.getBoundingClientRect(); setVol(d, 1 - (ev.clientY - r.top - 9)/Math.max(1, r.height - 18)); };
@@ -1980,7 +1980,7 @@ function deckHTML(d){
     <section class="deck" id="deck${id}" aria-label="${t("deck")} ${id}">
       <div class="dhead">
         <h2>${t("deck")} ${id}</h2>
-        <button type="button" class="tiny mst" data-master="${id}" aria-pressed="false" title="${t("masterTip")}">${t("master")}</button><button type="button" class="tiny" data-import="${id}" title="${t("importVinylTip")}">${t("importVinyl")}</button><button type="button" class="tiny" data-fulldeck="1">Full screen</button>
+        <button type="button" class="tiny mst" data-master="${id}" aria-pressed="false" title="${t("masterTip")}">${t("master")}</button><label class="tiny" title="${t("importVinylTip")}" style="position:relative;overflow:hidden">${t("importVinyl")}<input type="file" accept="audio/*,.mp3,.m4a,.wav,.aiff,.aac" data-load="${id}" style="position:absolute;inset:0;opacity:0;font-size:40px"></label><button type="button" class="tiny" data-fulldeck="1">Full screen</button>
         <span class="bpm" data-bpm="${id}"></span>
       </div>
       <p class="song">${esc(d.note||d.name||t("none"))}</p>
