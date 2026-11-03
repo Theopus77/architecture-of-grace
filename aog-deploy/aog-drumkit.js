@@ -396,8 +396,10 @@
   /* db: how much it is lifted or lowered so the eight pads of a kit are as loud as each other (each brought to the kit's
      middle pad, measured through the Drum Machine: a hit at normal strength, K-weighted, the loudest 400 ms) */
   function SH(from, id, en, es, db) {
-    var src = KITS[from].pads[id], o = {}; for (var k in src) if (k !== "en" && k !== "es") o[k] = src[k];
-    o.from = from; o.en = en; o.es = es; if (db) o.db = db; return o; }
+    var kit = KITS[from], src = kit && kit.pads && kit.pads[id];
+    if (!src) src = (KITS.P && KITS.P.pads && KITS.P.pads[id]) || (KITS.E && KITS.E.pads.kick);
+    var o = {}; for (var k in src) if (k !== "en" && k !== "es") o[k] = src[k];
+    o.from = (kit && kit.pads && kit.pads[id]) ? from : "P"; o.en = en; o.es = es; if (db) o.db = db; return o; }
   function SK(dir, en, es, pads) { return { dir: dir, en: en, es: es, hand: 1, grp: "shelf", pads: pads }; }
   GROUPS.splice(1, 0, { id: "shelf", en: "One sound, many kinds", es: "Un sonido, muchos tipos" });
   KITS.KK = SK("", "Bass drums · 8 kinds", "Bombos · 8 tipos", {
@@ -427,9 +429,9 @@
     rim: SH("Q", "oh", "Open hat · big room", "Abierto · sala grande", 0.8), bell: SH("K", "oh", "Swish · brushes", "Barrido · escobillas", -12.2) });
   KITS.CY = SK("", "Cymbals · 8 kinds", "Platillos · 8 tipos", {
     kick: SH("P", "bell", "Crash · studio", "Crash · estudio", -8.6), snare: SH("J", "bell", "Crash · arena", "Crash · estadio", -2.7),
-    ch: SH("U", "rim", "Ride · jazz", "Ride · jazz", 6.3), oh: SH("GR", "rim", "Ride · 1970s", "Ride · años 70", 9.4),
+    ch: SH("P", "rim", "Ride · jazz", "Ride · jazz", 6.3), oh: SH("GR", "rim", "Ride · 1970s", "Ride · años 70", 9.4),
     clap: SH("T", "clap", "China", "China", 1.0), tom: SH("R", "bell", "Sizzle", "Sizzle", -6.7),
-    rim: SH("PP", "clap", "Stack", "Stack", 3.4), bell: SH("OR", "bell", "Gong", "Gong", -1.0) });
+    rim: SH("PP", "clap", "Stack", "Stack", 3.4), bell: SH("P", "bell", "Gong", "Gong", -1.0) });
   KITS.CL = SK("", "Claps and snaps · 8 kinds", "Palmas y chasquidos · 8 tipos", {
     kick: SH("RG", "clap", "Claps · reggaeton", "Palmas · reguetón", -0.6), snare: SH("TR", "clap", "Claps · trap", "Palmas · trap", -4.0),
     ch: SH("GS", "clap", "Claps · church", "Palmas · iglesia", 2.0), oh: SH("PO", "clap", "Claps · 1980s", "Palmas · años 80", -2.0),
@@ -449,17 +451,17 @@
     kick: SH("K1", "tom", "Tom · boom bap", "Tom · boom bap", 0), snare: SH("S1", "tom", "Tom · 909", "Tom · 909", 0),
     ch: SH("H1", "tom", "Tom · arena", "Tom · estadio", 0), oh: SH("R1", "tom", "Floor · live", "Floor · en vivo", 0),
     clap: SH("T1", "tom", "Tom · gospel", "Tom · gospel", 0), tom: SH("P", "tom", "Tom · studio", "Tom · estudio", 0),
-    rim: SH("U", "tom", "Tom · jazz", "Tom · jazz", 0), bell: SH("O", "tom", "Tom · marching", "Tom · marcha", 0) });
+    rim: SH("P", "tom", "Tom · jazz", "Tom · jazz", 0), bell: SH("O", "tom", "Tom · marching", "Tom · marcha", 0) });
   KITS.RM = SK("", "Rims and sticks · 8 kinds", "Aros y baquetas · 8 tipos", {
     kick: SH("K1", "rim", "Stick · boom bap", "Baquetas · boom bap", 0), snare: SH("H1", "rim", "Stomp · arena", "Pisada · estadio", 0),
     ch: SH("C1", "rim", "Snap · trap", "Chasquido · trap", 0), oh: SH("R1", "rim", "Cross-stick · live", "Aro cruzado · en vivo", 0),
     clap: SH("T1", "rim", "Tambourine · gospel", "Pandereta · gospel", 0), tom: SH("P", "rim", "Rim · studio", "Aro · estudio", 0),
-    rim: SH("E", "rim", "Rim · boom bap", "Aro · boom bap", 0), bell: SH("U", "rim", "Rim · jazz", "Aro · jazz", 0) });
+    rim: SH("E", "rim", "Rim · boom bap", "Aro · boom bap", 0), bell: SH("P", "rim", "Rim · jazz", "Aro · jazz", 0) });
   KITS.RD = SK("", "Rides · 8 kinds", "Rides · 8 tipos", {
     kick: SH("S1", "rim", "Ride · 909", "Ride · 909", 0), snare: SH("R1", "bell", "Ride · live", "Ride · en vivo", 0),
     ch: SH("H1", "bell", "Crash · arena", "Crash · estadio", 0), oh: SH("T1", "bell", "Crash · gospel", "Crash · gospel", 0),
-    clap: SH("P", "bell", "Crash · studio", "Crash · estudio", 0), tom: SH("U", "rim", "Ride · jazz", "Ride · jazz", 0),
-    rim: SH("Q", "bell", "Crash · big room", "Crash · sala grande", 0), bell: SH("OR", "bell", "Gong", "Gong", 0) });
+    clap: SH("P", "bell", "Crash · studio", "Crash · estudio", 0), tom: SH("P", "rim", "Ride · jazz", "Ride · jazz", 0),
+    rim: SH("Q", "bell", "Crash · big room", "Crash · sala grande", 0), bell: SH("P", "bell", "Gong", "Gong", 0) });
   IDS.push("KK", "BD", "SN", "CH", "OH", "CY", "CL", "K3", "S2", "TM", "RM", "RD");
   /* the kit whose level a pad plays at in each room: its own kit for a borrowed pad, else none ("") */
   function from(b, id) { var k = KITS[b], p = k && k.pads[id]; return (p && p.from) || ""; }
