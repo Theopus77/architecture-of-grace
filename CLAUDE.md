@@ -14,6 +14,21 @@ overrides it in the same conversation.
 
 
 
+
+## Flawless music rooms (standing order from Jimmy, 2026-11-02)
+
+"This needs to be flawless. This whole operation needs and will be one of the best html accessible products on the internet."
+
+These hold at all times. A future agent reads them before any music-room change.
+
+- The Turntables must load. After any edit to the decks front script, run a syntax check (`node --check`) before pushing. A stray `async` or an `await` outside an async function takes the whole page down, and the decks disappear.
+- Instant pads, no lag, no freezes, on every device, in every mode, including fullscreen and landscape. Hits answer at once. The stealer runs before the hit and after it. Every voice path (drums, notes, chords, chops) joins RING and is stolen. `letGo` stops and disconnects immediately. Never a fade on the steal path. Never a low cap.
+- Fullscreen landscape: the 24 pads fill the screen, 6 across and 4 down, no leftover gaps, no overflow. The grid uses the full width and height of the play view.
+- Chops of a record go up to 8 bars (32 beats). The choices are 1 beat, 2 beats, 1 bar, 2 bars, 4 bars, 8 bars. Do not leave the maximum at 2 beats or 1 bar.
+- Sounds are from real instruments. A synthesized stand-in is not acceptable for guitar, bass, piano, drums or voice. If a room still uses a generated tone, say so and replace it with a recorded sample. Do not ship a fake guitar.
+- One-sound drum kits (a single real hit, not a full set) are grouped at the top of the kit list, above Drum sets.
+- After any music-room change, update the fast copy the site serves, or the live page will not change.
+
 ## Instant scratches on the turntables (standing order from Jimmy, 2026-10-31)
 
 "Now the turn table js lagging. Make sure the scratches are instant and make sure
