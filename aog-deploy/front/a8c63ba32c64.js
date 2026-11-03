@@ -255,7 +255,26 @@ const SOUNDS={
   brass:  {grp:"grpSynth",  en:"'80s synth brass",      es:"Metales de sintetizador de los 80", kind:"sample", set:"brass", tone:"pipe", made:{kind:"brass", gain:2.168}, tau:0.1, gain:1.604, rev:0.15,
            ready:{en:"Ready. Every note is a real synthesizer from 1983, playing brass.",es:"Listo. Cada nota es un sintetizador de verdad de 1983, tocando metales."}},
   lead:   {grp:"grpSynth",  en:"Synth lead",            es:"Sintetizador solista",       kind:"sample", set:"lead", tone:"pipe", made:{kind:"lead", gain:2.163}, tau:0.07, gain:1.685, rev:0.12,
-           ready:{en:"Ready. Every note is a real synthesizer from 1983.",es:"Listo. Cada nota es un sintetizador de verdad de 1983."}}
+           ready:{en:"Ready. Every note is a real synthesizer from 1983.",es:"Listo. Cada nota es un sintetizador de verdad de 1983."}},
+  /* AOG-MORE-REAL-V1: more recorded instruments already on the site */
+  accord: {grp:"grpPiano", en:"Accordion", es:"Acordeón", kind:"sample", set:"accordion2", gain:1.2, rev:0.12,
+           ready:{en:"Ready. Every note is a real accordion.",es:"Listo. Cada nota es un acordeón de verdad."}},
+  harp:   {grp:"grpPiano", en:"Harp", es:"Arpa", kind:"sample", set:"harp2", gain:1.1, rev:0.18,
+           ready:{en:"Ready. Every note is a real harp.",es:"Listo. Cada nota es un arpa de verdad."}},
+  harpsi: {grp:"grpPiano", en:"Harpsichord", es:"Clavecín", kind:"sample", set:"harpsichord2", gain:1.0, rev:0.14,
+           ready:{en:"Ready. Every note is a real harpsichord.",es:"Listo. Cada nota es un clavecín de verdad."}},
+  clav:   {grp:"grpEp", en:"Clavinet", es:"Clavinet", kind:"sample", set:"clav", gain:1.1, rev:0.08,
+           ready:{en:"Ready. Every note is a real clavinet.",es:"Listo. Cada nota es un clavinet de verdad."}},
+  pipe:   {grp:"grpPiano", en:"Pipe organ", es:"Órgano de tubos", kind:"sample", set:"pipeorgan2", gain:0.9, rev:0.28,
+           ready:{en:"Ready. Every note is a real pipe organ.",es:"Listo. Cada nota es un órgano de tubos de verdad."}},
+  celesta:{grp:"grpPiano", en:"Celesta", es:"Celesta", kind:"sample", set:"celesta", gain:1.0, rev:0.16,
+           ready:{en:"Ready. Every note is a real celesta.",es:"Listo. Cada nota es una celesta de verdad."}},
+  kalimba:{grp:"grpPiano", en:"Kalimba", es:"Kalimba", kind:"sample", set:"kalimba2", gain:1.3, rev:0.1,
+           ready:{en:"Ready. Every note is a real kalimba.",es:"Listo. Cada nota es una kalimba de verdad."}},
+  marimba:{grp:"grpPiano", en:"Marimba", es:"Marimba", kind:"sample", set:"marimba2", gain:1.1, rev:0.16,
+           ready:{en:"Ready. Every note is a real marimba.",es:"Listo. Cada nota es una marimba de verdad."}},
+  glock:  {grp:"grpPiano", en:"Glockenspiel", es:"Glockenspiel", kind:"sample", set:"glockenspiel2", gain:0.8, rev:0.2,
+           ready:{en:"Ready. Every note is a real glockenspiel.",es:"Listo. Cada nota es un glockenspiel de verdad."}}
 };
 function soundName(id){ const s=SOUNDS[id]; return s? (S.lang==="es"?s.es:s.en) : id; }
 
