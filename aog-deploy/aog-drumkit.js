@@ -829,6 +829,7 @@
         seen[key] = jb; jobs.push(jb);
       }); });
     });
+    jobs.sort(function(a,b){ return (a.lay==="h"?0:1)-(b.lay==="h"?0:1); });
     var OC = root.OfflineAudioContext || root.webkitOfflineAudioContext;
     if (!OC || !root.fetch) { setState(b, { state: "failed", got: 0, total: jobs.length }); return Promise.resolve(); }
     var decHi = new OC(1, 1, HI), decLo = hiOnly ? null : new OC(1, 1, LO);
@@ -850,12 +851,21 @@
           if (db) { var g = Math.pow(10, db / 20); ["h", "l", "h2", "l2"].forEach(function (c) { var a = o[c]; if (a) for (var i = 0; i < a.length; i++) a[i] *= g; }); }
           got[jb.id + "/" + jb.lay + "/" + jb.j] = o;
           (jb.also||[]).forEach(function(a){ got[a.id + "/" + a.lay + "/" + a.j] = o; });
+          if (jb.lay === "h") {
+            var early = DATA[b] || {};
+            var ids = [jb.id].concat((jb.also||[]).map(function(a){ return a.id; }));
+            ids.forEach(function(id){
+              var g = got[id + "/h/0"]; if (!g) return;
+              early[id] = { h: [{ hi: g.h, hi2: g.h2 || null, lo: null }] };
+            });
+            DATA[b] = early;
+          }
         })
         .catch(function () { bad++; })
         .then(function () { n++; if (STATE[b]) STATE[b].got = n; return worker(); });
     }
     var job = Promise.all([worker(), worker(), worker(), worker(), worker(), worker()]).then(function () {
-      if (bad) { forget(b); setState(b, { state: "failed", got: n - bad, total: jobs.length }); return; }
+      /* AOG-KIT-INSTANT-V1: a missing file does not throw the kit away */
       /* AOG-DRUM-REAL-V2: the pads the page draws itself, before the kit counts as ready */
       var mine = Object.keys(kit.pads).filter(function (id) { return kit.pads[id].made; });
       return Promise.all(mine.map(function (id) {
@@ -918,8 +928,10 @@
   var RR = {};
   function layerOf(accent) { return (accent === 2 || accent === true) ? "h" : accent === 3 ? "s" : "m"; }
   function pick(b, id, accent) {
-    var lay = layerOf(accent), p = KITS[b].pads[id], n = p ? p.n[LAYERS.indexOf(lay)] : 0;
-    if (!n) { lay = "m"; n = p ? p.n[1] : 1; }
+    var lay = layerOf(accent), p = KITS[b].pads[id], d = DATA[b] && DATA[b][id];
+    if (d && !d[lay]) lay = d.h ? "h" : (d.m ? "m" : "s");
+    var n = (d && d[lay]) ? d[lay].length : (p ? p.n[LAYERS.indexOf(lay)] : 1);
+    if (!n) { lay = "h"; n = (d && d.h) ? d.h.length : 1; }
     var key = b + id + lay, j = (RR[key] || 0) % n; RR[key] = j + 1;
     return { lay: lay, j: j };
   }
