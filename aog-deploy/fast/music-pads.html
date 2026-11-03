@@ -429,7 +429,7 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
 <script src="/aog-recorder.js"></script>
 <script src="/aog-song.js"></script><!-- AOG-SONG-V1: one tempo and key for the whole song -->
 <script src="/aog-amp.js"></script><!-- AOG-ROOM-PEDALS-V1: the pedalboard, the same panel as the guitar has -->
-<script src="aog-drumkit.js?v=kinds3"></script>
+<script src="aog-drumkit.js?v=fix1"></script>
 <script src="aog-beats.js"></script>
 <script src="aog-beats-pro.js" defer></script><!-- AOG-BEATS-ELITE-V1: the newer beats, after the page is read -->
 <script src="/aog-lessons.js"></script>
@@ -2444,8 +2444,7 @@ function init(){
   S.banks.forEach(B=>{ if(!INST[B.inst]) B.inst="k:grand"; if(KITS().length && KITS().indexOf(B.kitC)<0) B.kitC=KITS()[Math.min(2, KITS().length-1)]; });
   bindPads();
   /* AOG-KIT-INSTANT-V1: one-sound kits are in before the first tap */
-  if(window.AOGDrumKit && AOGDrumKit.ids){ AOGDrumKit.ids().forEach(k=>AOGDrumKit.load(k,{},{},x=>x,null,{hiOnly:true})); }
-  else if(window.AOGDrumKit){ ["KK","BD","K3","SN","S2","CH","OH","CY","CL","TM","RM","RD","K1","S1","H1","C1","R1","T1","D","E","P","Q"].forEach(k=>AOGDrumKit.load(k,{},{},x=>x,null,{hiOnly:true})); } bindBounce(); pvInit();
+  if(window.AOGDrumKit){ ["K1","S1","H1","KK","BD","SN","CH","OH"].forEach(k=>AOGDrumKit.load(k,{},{},x=>x,null,{hiOnly:true})); } bindBounce(); pvInit();
   bindMidi();   /* AOG-MIDI-V1 */
   $("guideLink").addEventListener("click",()=>LES.mark("guide1"));
   $("takeBtn").addEventListener("click",()=>{ LES.mark($("takeBtn").getAttribute("aria-pressed")==="true" ? "take2" : "take1"); }, true);   /* before the recorder: pressed = it is about to stop */
