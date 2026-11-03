@@ -127,7 +127,7 @@
       pads: { kick: P("KICK", [1, 2, 2]), snare: P("SNARE", [1, 2, 2]), ch: P("HAT", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
               clap: P("XSTICK", [1, 2, 1]), tom: P("TOM", [1, 1, 1]), rim: P("FLOOR", [1, 1, 1]), bell: P("CRASH", [1, 1, 1]) } }
   };
-  var IDS = ["K1", "S1", "H1", "C1", "R1", "T1", "D", "E", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "LS", "DB", "WD", "IN", "CB", "BR", "ME2"];
+  var IDS = ["C1", "R1", "T1", "D", "E", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "LS", "DB", "WD", "IN", "CB", "BR", "ME2"];
   /* ══ AOG-DRUM-PERC-V1 (2026-10-13) — HAND PERCUSSION, HAND DRUMS AND THE TABLA ══════════════════════════════════════
      Jimmy: "DO them all." Four recorded kits, eight pads each (music-handoff/tools/drumkits/kits_perc.py): the school's
      hand percussion; the djembe and cajón (with maracas, hand claps and the bell of a djembe group); the congas and
@@ -213,7 +213,6 @@
      grp: the kit's group (a kit without one is a drum set; the older kits are placed by GROUP_OF). A kit with hand:1 is a
      kit of its own: its grooves bring it, and the retired classic machine leaves it out. */
   var GROUPS = [
-    { id: "onesound", en: "One kind, many sounds", es: "Un tipo, muchos sonidos" },
     { id: "drums", en: "Drum sets", es: "Baterías" },
     { id: "electronic", en: "Electronic", es: "Electrónica" },
     { id: "world", en: "World", es: "Del mundo" },
@@ -422,22 +421,22 @@
     clap: SH("DS", "clap", "Claps · disco", "Palmas · disco", 0.6), tom: SH("MT", "clap", "Claps · soul", "Palmas · soul", 5.6),
     rim: SH("TR", "tom", "Finger snap", "Chasquido de dedos", 0.6), bell: SH("P", "clap", "Cross-stick", "Aro cruzado", -5.2) });
   KITS.K3 = SK("", "Bass drums · 8 more", "Bombos · 8 más", {
-    kick: SH("K1", "kick", "Kick · boom bap", "Bombo · boom bap", 0), snare: SH("S1", "kick", "Kick · 909", "Bombo · 909", 0),
+    kick: SH("E", "kick", "Kick · boom bap", "Bombo · boom bap", 0), snare: SH("S1", "kick", "Kick · 909", "Bombo · 909", 0),
     ch: SH("H1", "kick", "Kick · arena", "Bombo · estadio", 0), oh: SH("C1", "kick", "Kick · trap", "Bombo · trap", 0),
     clap: SH("R1", "kick", "Kick · live", "Bombo · en vivo", 0), tom: SH("T1", "kick", "Kick · gospel", "Bombo · gospel", 0),
     rim: SH("J", "kick", "Kick · arena rock", "Bombo · rock de estadio", 0), bell: SH("L", "kick", "Kick · live room", "Bombo · sala en vivo", 0) });
   KITS.S2 = SK("", "Snares · 8 more", "Cajas · 8 más", {
-    kick: SH("K1", "snare", "Snare · boom bap", "Caja · boom bap", 0), snare: SH("S1", "snare", "Snare · 909", "Caja · 909", 0),
+    kick: SH("E", "snare", "Snare · boom bap", "Caja · boom bap", 0), snare: SH("S1", "snare", "Snare · 909", "Caja · 909", 0),
     ch: SH("H1", "snare", "Snare · arena", "Caja · estadio", 0), oh: SH("C1", "snare", "Snare · trap", "Caja · trap", 0),
     clap: SH("R1", "snare", "Snare · live", "Caja · en vivo", 0), tom: SH("T1", "snare", "Snare · gospel", "Caja · gospel", 0),
     rim: SH("I", "snare", "Snare · indie", "Caja · indie", 0), bell: SH("N", "snare", "Snare · tight", "Caja · precisa", 0) });
   KITS.TM = SK("", "Toms · 8 kinds", "Toms · 8 tipos", {
-    kick: SH("K1", "tom", "Tom · boom bap", "Tom · boom bap", 0), snare: SH("S1", "tom", "Tom · 909", "Tom · 909", 0),
+    kick: SH("P", "tom", "Tom · boom bap", "Tom · boom bap", 0), snare: SH("S1", "tom", "Tom · 909", "Tom · 909", 0),
     ch: SH("H1", "tom", "Tom · arena", "Tom · estadio", 0), oh: SH("R1", "tom", "Floor · live", "Floor · en vivo", 0),
     clap: SH("T1", "tom", "Tom · gospel", "Tom · gospel", 0), tom: SH("P", "tom", "Tom · studio", "Tom · estudio", 0),
     rim: SH("P", "tom", "Tom · jazz", "Tom · jazz", 0), bell: SH("O", "tom", "Tom · marching", "Tom · marcha", 0) });
   KITS.RM = SK("", "Rims and sticks · 8 kinds", "Aros y baquetas · 8 tipos", {
-    kick: SH("K1", "rim", "Stick · boom bap", "Baquetas · boom bap", 0), snare: SH("H1", "rim", "Stomp · arena", "Pisada · estadio", 0),
+    kick: SH("E", "rim", "Stick · boom bap", "Baquetas · boom bap", 0), snare: SH("H1", "rim", "Stomp · arena", "Pisada · estadio", 0),
     ch: SH("C1", "rim", "Snap · trap", "Chasquido · trap", 0), oh: SH("R1", "rim", "Cross-stick · live", "Aro cruzado · en vivo", 0),
     clap: SH("T1", "rim", "Tambourine · gospel", "Pandereta · gospel", 0), tom: SH("P", "rim", "Rim · studio", "Aro · estudio", 0),
     rim: SH("E", "rim", "Rim · boom bap", "Aro · boom bap", 0), bell: SH("P", "rim", "Rim · jazz", "Aro · jazz", 0) });
@@ -446,22 +445,6 @@
     ch: SH("H1", "bell", "Crash · arena", "Crash · estadio", 0), oh: SH("T1", "bell", "Crash · gospel", "Crash · gospel", 0),
     clap: SH("P", "bell", "Crash · studio", "Crash · estudio", 0), tom: SH("P", "rim", "Ride · jazz", "Ride · jazz", 0),
     rim: SH("Q", "bell", "Crash · big room", "Crash · sala grande", 0), bell: SH("P", "bell", "Gong", "Gong", 0) });
-  KITS.K1 = SK("", "Kicks · 8 kinds", "Bombos · 8 tipos", {
-    kick: SH("P", "kick", "Kick · studio", "Bombo · estudio", 0), snare: SH("E", "kick", "Kick · boom bap", "Bombo · boom bap", 0),
-    ch: SH("Q", "kick", "Kick · big room", "Bombo · sala grande", 0), oh: SH("O", "kick", "Kick · marching", "Bombo · marcha", 0),
-    clap: SH("BD", "kick", "Kick · orchestra", "Bombo · orquesta", 0), tom: SH("W", "kick", "Kick · funk", "Bombo · funk", 0),
-    rim: SH("TR", "kick", "Kick · 808", "Bombo · 808", 0), bell: SH("PO", "kick", "Kick · 1980s", "Bombo · años 80", 0) });
-  KITS.S1 = SK("", "Snares · 8 kinds", "Cajas · 8 tipos", {
-    kick: SH("P", "snare", "Snare · studio", "Caja · estudio", 0), snare: SH("E", "snare", "Snare · boom bap", "Caja · boom bap", 0),
-    ch: SH("Q", "snare", "Snare · big room", "Caja · sala grande", 0), oh: SH("I", "snare", "Snare · indie", "Caja · indie", 0),
-    clap: SH("V", "snare", "Snare · brushes", "Caja · escobillas", 0), tom: SH("TR", "snare", "Snare · trap", "Caja · trap", 0),
-    rim: SH("PO", "snare", "Snare · 1980s", "Caja · años 80", 0), bell: SH("BM", "snare", "Snare · beat machine", "Caja · caja de ritmos", 0) });
-  KITS.H1 = SK("", "Hats · 8 kinds", "Charles · 8 tipos", {
-    kick: SH("P", "ch", "Hat · studio", "Charles · estudio", 0), snare: SH("E", "ch", "Hat · boom bap", "Charles · boom bap", 0),
-    ch: SH("U", "ch", "Hat · jazz", "Charles · jazz", 0), oh: SH("R", "ch", "Hat · room", "Charles · sala", 0),
-    clap: SH("BM", "ch", "Hat · beat machine", "Charles · caja de ritmos", 0), tom: SH("TR", "ch", "Hat · trap", "Charles · trap", 0),
-    rim: SH("BR", "ch", "Hat · 1960s", "Charles · años 60", 0), bell: SH("TH", "ch", "Hat · tight", "Charles · preciso", 0) });
-  KITS.K1.grp = "onesound"; KITS.S1.grp = "onesound"; KITS.H1.grp = "onesound";
   IDS.push("KK", "BD", "SN", "CH", "OH", "CY", "CL", "K3", "S2", "TM", "RM", "RD");
   /* the kit whose level a pad plays at in each room: its own kit for a borrowed pad, else none ("") */
   function from(b, id) { var k = KITS[b], p = k && k.pads[id]; return (p && p.from) || ""; }
