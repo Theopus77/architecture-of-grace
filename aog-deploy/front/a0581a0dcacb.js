@@ -1067,11 +1067,11 @@ function recPick(R, kind, m, v, s){
   const all=R.by[kind]; if(!all || !all.length) return null;
   const want=recLayer(R, v), lays=[...new Set(all.map(z=>z.v||1))];
   const lay=lays.reduce((a,b)=>{ const da=Math.abs(a-want), dbb=Math.abs(b-want); return dbb<da || (dbb===da && b<a) ? b : a; });
-  const max=R.meta.maxShift||3;
+  const max=R.meta.maxShift||7; /* AOG-GUITAR-REAL-V2: a real sample, even stretched, beats the synthesized string */
   let list=all.filter(z=>(z.v||1)===lay);
   if(s!=null){ const own=list.filter(z=>z.s===s && Math.abs(z.m-m)<=max); if(own.length) list=own; }
   let d=1e9; list.forEach(z=>{ const x=Math.abs(z.m-m); if(x<d) d=x; });
-  if(d>max) return null;
+  if(d>max && !(o && o.any)) return null;
   const near=list.filter(z=>Math.abs(z.m-m)===d), zm=Math.min.apply(null, near.map(z=>z.m)), zs=near.find(z=>z.m===zm).s;
   const takes=near.filter(z=>z.m===zm && z.s===zs).sort((a,b)=>(a.r||1)-(b.r||1));
   if(FORCE_Z!=null){ const f=FORCE_Z; FORCE_Z=null; const hit=all.find(z=>z.f===f && Math.abs(z.m-m)<=max); if(hit) return {z:hit, lay:hit.v||1}; }   /* AOG-NOTES-V1 */
@@ -1424,7 +1424,9 @@ function makeVoice0(c, ch, id, m, v, when, s, o){
   const snd=SOUNDS[id]; if(!snd || m<16 || m>100) return null;
   /* any sound can name a recorded set, a synth too (a recorded synth bass): its recordings once they are in */
   const r=recOf(id), R=r && REAL.sets[r];
-  if(R && R.state==="ready"){ const vc=snd.kind==="synth" ? recSynthVoice(c, ch, id, m, v, when, s, R) : recVoice(c, ch, id, m, v, when, s, o, R); if(vc) return vc; }
+  if(R && R.state==="ready"){ const vc=snd.kind==="synth" ? recSynthVoice(c, ch, id, m, v, when, s, R) : recVoice(c, ch, id, m, v, when, s, o, R); if(vc) return vc;
+    /* set is in but this note was out of range: play the nearest real sample anyway, never the fake string */
+    if(snd.kind!=="synth"){ const vc2=recVoice(c, ch, id, m, v, when, s, Object.assign({}, o, {any:1}), R); if(vc2) return vc2; } }
   if(snd.kind==="synth") return synthVoice(c, ch, id, m, v, when, s);
   return stringVoice(c, ch, id, m, v, when, s);
 }
