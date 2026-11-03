@@ -26,6 +26,8 @@ h1 { font-size: 1.75rem; margin: 0 0 6px; letter-spacing: 0.01em; font-weight: 6
   box-shadow: 0 1px 3px rgba(26,35,44,0.05); position: relative;
 }
 .museum-hint { text-align: center; font-size: 0.85rem; color: #5c6670; margin: 0 24px 12px; }
+.diagram{height:auto;min-height:0;background:transparent;border:none;display:flex;flex-direction:column;gap:8px;padding:8px}
+.diagram button{min-height:48px;border:1.5px solid var(--brass);background:#fff;border-radius:10px;font:inherit;font-weight:600;color:var(--ink)}
 .sections-nav { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 24px 12px; max-width: 980px; }
 .nav-btn {
   padding: 7px 12px; border: 1.5px solid var(--brass); background: #fff; color: var(--ink);
@@ -67,7 +69,12 @@ li { margin: 4px 0; }
   <figcaption>Pencil drawing, not a photograph.</figcaption>
 </figure>
 
-<div id="view" role="img" aria-label="Interactive diagram of the ancient Near Eastern cosmos"></div>
+<div id="view" class="diagram" role="img" aria-label="The layers of the ancient Near Eastern cosmos">
+  <button type="button" data-go="layers">Waters above</button>
+  <button type="button" data-go="layers">The vault of heaven</button>
+  <button type="button" data-go="geocentric">The inhabited earth</button>
+  <button type="button" data-go="layers">Waters below</button>
+</div>
 <p class="museum-hint">Tap a layer to read its name · Drag to examine</p>
 
 <div class="sections-nav">
@@ -147,7 +154,7 @@ camera.position.set(0, 4.2, 9.5);
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-container.appendChild(renderer.domElement);
+if(!container.classList.contains('diagram')) container.appendChild(renderer.domElement);
 
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
@@ -241,12 +248,13 @@ animate();
 window.addEventListener('resize', resize);
 
 // Section navigation
+document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.go;document.querySelectorAll('.nav-btn').forEach(n=>n.classList.toggle('active',n.dataset.panel===id));document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));const p=document.getElementById(id);if(p){p.classList.add('active');p.scrollIntoView({behavior:'smooth',block:'start'});}}));
 document.querySelectorAll('.nav-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     btn.classList.add('active');
-    document.getElementById(btn.dataset.panel).classList.add('active');
+    const p=document.getElementById(btn.dataset.panel);p.classList.add('active');p.scrollIntoView({behavior:'smooth',block:'start'});
   });
 });
 </script>
