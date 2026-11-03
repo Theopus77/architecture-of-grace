@@ -64,11 +64,11 @@
       pads: { kick: P("SNARE", [2, 2, 1]), snare: P("SNARE", [2, 2, 1]), ch: P("SNARE", [2, 2, 1]), oh: P("SNARE", [2, 2, 1]),
               clap: P("SNARE", [2, 2, 1]), tom: P("SNARE", [2, 2, 1]), rim: P("SNARE", [2, 2, 1]), bell: P("SNARE", [2, 2, 1]) } },
     H1: { dir: "boombap2", grp: "onesound", en: "Hat", es: "Charles",
-      pads: { kick: P("HAT", [2, 2, 1]), snare: P("HAT", [2, 2, 1]), ch: P("HAT", [2, 2, 1]), oh: P("OPEN", [1, 1, 1]),
-              clap: P("HAT", [2, 2, 1]), tom: P("HAT", [2, 2, 1]), rim: P("HAT", [2, 2, 1]), bell: P("HAT", [2, 2, 1]) } },
+      pads: { kick: P("HAT", [1, 2, 1]), snare: P("HAT", [1, 2, 1]), ch: P("HAT", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
+              clap: P("HAT", [1, 2, 1]), tom: P("HAT", [1, 2, 1]), rim: P("HAT", [1, 2, 1]), bell: P("HAT", [1, 2, 1]) } },
     C1: { dir: "boombap2", grp: "onesound", en: "Clap", es: "Palmada",
-      pads: { kick: P("CLAP", [2, 2, 1]), snare: P("CLAP", [2, 2, 1]), ch: P("CLAP", [2, 2, 1]), oh: P("CLAP", [2, 2, 1]),
-              clap: P("CLAP", [2, 2, 1]), tom: P("CLAP", [2, 2, 1]), rim: P("CLAP", [2, 2, 1]), bell: P("CLAP", [2, 2, 1]) } },
+      pads: { kick: P("CLAP", [1, 2, 1]), snare: P("CLAP", [1, 2, 1]), ch: P("CLAP", [1, 2, 1]), oh: P("CLAP", [1, 2, 1]),
+              clap: P("CLAP", [1, 2, 1]), tom: P("CLAP", [1, 2, 1]), rim: P("CLAP", [1, 2, 1]), bell: P("CLAP", [1, 2, 1]) } },
     R1: { dir: "boombap2", grp: "onesound", en: "Rim", es: "Aro",
       pads: { kick: P("STICK", [1, 1, 1]), snare: P("STICK", [1, 1, 1]), ch: P("STICK", [1, 1, 1]), oh: P("STICK", [1, 1, 1]),
               clap: P("STICK", [1, 1, 1]), tom: P("STICK", [1, 1, 1]), rim: P("STICK", [1, 1, 1]), bell: P("STICK", [1, 1, 1]) } },
@@ -76,20 +76,20 @@
       pads: { kick: P("LOWTOM", [1, 1, 1]), snare: P("LOWTOM", [1, 1, 1]), ch: P("LOWTOM", [1, 1, 1]), oh: P("LOWTOM", [1, 1, 1]),
               clap: P("LOWTOM", [1, 1, 1]), tom: P("LOWTOM", [1, 1, 1]), rim: P("LOWTOM", [1, 1, 1]), bell: P("LOWTOM", [1, 1, 1]) } },
     K9: { dir: "house909", grp: "onesound", en: "909 Kick", es: "Bombo 909",
-      pads: { kick: P("909", [2, 2, 1]), snare: P("909", [2, 2, 1]), ch: P("909", [2, 2, 1]), oh: P("909", [2, 2, 1]),
-              clap: P("909", [2, 2, 1]), tom: P("909", [2, 2, 1]), rim: P("909", [2, 2, 1]), bell: P("909", [2, 2, 1]) } },
+      pads: { kick: P("909", [1, 2, 1]), snare: P("909", [1, 2, 1]), ch: P("909", [1, 2, 1]), oh: P("909", [1, 2, 1]),
+              clap: P("909", [1, 2, 1]), tom: P("909", [1, 2, 1]), rim: P("909", [1, 2, 1]), bell: P("909", [1, 2, 1]) } },
     KA: { dir: "arena2", grp: "onesound", en: "Arena Kick", es: "Bombo de estadio",
-      pads: { kick: P("KICK", [2, 2, 1]), snare: P("KICK", [2, 2, 1]), ch: P("KICK", [2, 2, 1]), oh: P("KICK", [2, 2, 1]),
-              clap: P("KICK", [2, 2, 1]), tom: P("KICK", [2, 2, 1]), rim: P("KICK", [2, 2, 1]), bell: P("KICK", [2, 2, 1]) } },
+      pads: { kick: P("KICK", [1, 2, 2]), snare: P("KICK", [1, 2, 2]), ch: P("KICK", [1, 2, 2]), oh: P("KICK", [1, 2, 2]),
+              clap: P("KICK", [1, 2, 2]), tom: P("KICK", [1, 2, 2]), rim: P("KICK", [1, 2, 2]), bell: P("KICK", [1, 2, 2]) } },
     ST: { dir: "trap", grp: "onesound", en: "Trap Clap", es: "Palmada trap",
       pads: { kick: P("CLAP", [2, 2, 2]), snare: P("CLAP", [2, 2, 2]), ch: P("CLAP", [2, 2, 2]), oh: P("CLAP", [2, 2, 2]),
               clap: P("CLAP", [2, 2, 2]), tom: P("CLAP", [2, 2, 2]), rim: P("CLAP", [2, 2, 2]), bell: P("CLAP", [2, 2, 2]) } },
     SL: { dir: "live2", grp: "onesound", en: "Live Snare", es: "Caja en vivo",
-      pads: { kick: P("SNARE", [2, 2, 1]), snare: P("SNARE", [2, 2, 1]), ch: P("SNARE", [2, 2, 1]), oh: P("SNARE", [2, 2, 1]),
-              clap: P("SNARE", [2, 2, 1]), tom: P("SNARE", [2, 2, 1]), rim: P("SNARE", [2, 2, 1]), bell: P("SNARE", [2, 2, 1]) } },
+      pads: { kick: P("SNARE", [1, 2, 2]), snare: P("SNARE", [1, 2, 2]), ch: P("SNARE", [1, 2, 2]), oh: P("SNARE", [1, 2, 2]),
+              clap: P("SNARE", [1, 2, 2]), tom: P("SNARE", [1, 2, 2]), rim: P("SNARE", [1, 2, 2]), bell: P("SNARE", [1, 2, 2]) } },
     HG: { dir: "gospel", grp: "onesound", en: "Gospel Hat", es: "Charles gospel",
-      pads: { kick: P("HAT", [2, 2, 1]), snare: P("HAT", [2, 2, 1]), ch: P("HAT", [2, 2, 1]), oh: P("OPEN", [1, 1, 1]),
-              clap: P("HAT", [2, 2, 1]), tom: P("HAT", [2, 2, 1]), rim: P("HAT", [2, 2, 1]), bell: P("HAT", [2, 2, 1]) } },
+      pads: { kick: P("HAT", [2, 3, 2]), snare: P("HAT", [2, 3, 2]), ch: P("HAT", [2, 3, 2]), oh: P("HAT", [2, 3, 2]),
+              clap: P("HAT", [2, 3, 2]), tom: P("HAT", [2, 3, 2]), rim: P("HAT", [2, 3, 2]), bell: P("HAT", [2, 3, 2]) } },
     CR: { dir: "arena2", grp: "onesound", en: "Crash", es: "Crash",
       pads: { kick: P("CRASH", [1, 1, 1]), snare: P("CRASH", [1, 1, 1]), ch: P("CRASH", [1, 1, 1]), oh: P("CRASH", [1, 1, 1]),
               clap: P("CRASH", [1, 1, 1]), tom: P("CRASH", [1, 1, 1]), rim: P("CRASH", [1, 1, 1]), bell: P("CRASH", [1, 1, 1]) } },
@@ -818,10 +818,16 @@
     var at = ORDER.indexOf(b); if (at >= 0) ORDER.splice(at, 1); ORDER.push(b);
     if (JOBS[b]) return JOBS[b];
     var kit = KITS[b], jobs = [];
+    var seen = {};
     Object.keys(kit.pads).forEach(function (id) {
       var f = files(b, id);
-      var dir = kit.pads[id].from ? KITS[kit.pads[id].from].dir : kit.dir;   /* AOG-DRUM-SHELF-V1: a borrowed pad, from its own kit's folder */
-      LAYERS.forEach(function (lay) { f[lay].forEach(function (name, j) { jobs.push({ id: id, lay: lay, j: j, name: name, dir: dir }); }); });
+      var dir = kit.pads[id].from ? KITS[kit.pads[id].from].dir : kit.dir;
+      LAYERS.forEach(function (lay) { f[lay].forEach(function (name, j) {
+        var key = dir+"/"+name;
+        if(seen[key]){ seen[key].also.push({id:id, lay:lay, j:j}); return; }
+        var jb = { id: id, lay: lay, j: j, name: name, dir: dir, also: [] };
+        seen[key] = jb; jobs.push(jb);
+      }); });
     });
     var OC = root.OfflineAudioContext || root.webkitOfflineAudioContext;
     if (!OC || !root.fetch) { setState(b, { state: "failed", got: 0, total: jobs.length }); return Promise.resolve(); }
@@ -843,6 +849,7 @@
           var db = kit.pads[jb.id].db;
           if (db) { var g = Math.pow(10, db / 20); ["h", "l", "h2", "l2"].forEach(function (c) { var a = o[c]; if (a) for (var i = 0; i < a.length; i++) a[i] *= g; }); }
           got[jb.id + "/" + jb.lay + "/" + jb.j] = o;
+          (jb.also||[]).forEach(function(a){ got[a.id + "/" + a.lay + "/" + a.j] = o; });
         })
         .catch(function () { bad++; })
         .then(function () { n++; if (STATE[b]) STATE[b].got = n; return worker(); });
