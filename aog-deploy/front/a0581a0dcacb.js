@@ -1009,6 +1009,9 @@ function recLoad(id){
   return job;
 }
 /* the sound playing now: its level follows what plays (the recordings, once they are in) */
+/* AOG-GUITAR-REAL-V1: load the recorded set at once so a note is the real guitar, not the string made on the page */
+function warmReal(){ const r=recOf(S.sound); if(r) recLoad(r); }
+if(document.readyState==="loading") document.addEventListener("DOMContentLoaded", warmReal); else setTimeout(warmReal, 0);
 function recLive(){ try{ if(ac && LIVE_CH) LIVE_CH.trim.gain.setTargetAtTime(recTrim(S.sound), ac.currentTime, 0.03); }catch(e){} }
 /* two sets stay: the ones picked last (the sound playing now always among them), and the band's while it plays */
 function recForget(){
