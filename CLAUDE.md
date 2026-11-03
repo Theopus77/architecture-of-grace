@@ -82,6 +82,8 @@ the Drum Machine. Updated 2026-10-31 with the craftsman pass:
   button the finger hits. A made-up click is ignored on an iPad.
 - Pause stops the record where it is and the button says Resume. It does not
   send the needle back to the start.
+- Band and piano chords use the number row from 1 through the equals key.
+  Band does not stop at 6. Neither uses the backtick.
 - Load a track (was Import vinyl) puts a song from this device on that deck.
   Nothing is uploaded. It uses the
   standard and webkit fullscreen APIs so it works on a computer and on iPad.
