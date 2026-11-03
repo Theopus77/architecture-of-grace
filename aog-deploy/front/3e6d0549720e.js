@@ -1945,7 +1945,7 @@ document.addEventListener("webkitfullscreenchange", ()=>{
     if(go) go.call(document.documentElement);
   }
 });
-function bindImport(){document.querySelectorAll("[data-load]").forEach(inp=>{if(inp._wired)return;inp._wired=true;inp.addEventListener("change",()=>{const deck=DECKS.find(x=>x.id===inp.getAttribute("data-load"));const f=inp.files&&inp.files[0];if(deck&&f)loadFile(deck,f);inp.value="";});});}function bindBay(){
+function bindImport(){document.querySelectorAll("[data-load]").forEach(inp=>{if(inp._wired)return;inp._wired=true;inp.addEventListener("change",()=>{const deck=DECKS.find(x=>x.id===inp.getAttribute("data-load"));const f=inp.files&&inp.files[0];if(!f)return;if(!deck)return;loadFile(deck,f).then(()=>paintDeck(deck));inp.value="";});});}function bindBay(){
   document.querySelectorAll("#bay [data-bfader]").forEach(f=>{
     const d = deckOf(f, "data-bfader"), inp = f.querySelector("input");
     const at = (ev)=>{ const r = f.getBoundingClientRect(); setVol(d, 1 - (ev.clientY - r.top - 9)/Math.max(1, r.height - 18)); };
@@ -1980,7 +1980,7 @@ function deckHTML(d){
     <section class="deck" id="deck${id}" aria-label="${t("deck")} ${id}">
       <div class="dhead">
         <h2>${t("deck")} ${id}</h2>
-        <button type="button" class="tiny mst" data-master="${id}" aria-pressed="false" title="${t("masterTip")}">${t("master")}</button><label class="tiny" title="${t("importVinylTip")}" style="position:relative;overflow:hidden">${t("importVinyl")}<input type="file" accept="audio/*,.mp3,.m4a,.wav,.aiff,.aac" data-load="${id}" style="position:absolute;inset:0;opacity:0;font-size:40px"></label><button type="button" class="tiny" data-fulldeck="1">Full screen</button>
+        <button type="button" class="tiny mst" data-master="${id}" aria-pressed="false" title="${t("masterTip")}">${t("master")}</button><label class="tiny" title="${t("importVinylTip")}" style="position:relative;overflow:hidden">${t("importVinyl")}<input type="file" accept=".mp3,.m4a,.wav,.aiff,.aac,.caf,.flac,.ogg,audio/mpeg,audio/mp4,audio/wav,audio/aac,audio/flac" data-load="${id}" style="position:absolute;inset:0;opacity:0;font-size:40px"></label><button type="button" class="tiny" data-fulldeck="1">Full screen</button>
         <span class="bpm" data-bpm="${id}"></span>
       </div>
       <p class="song">${esc(d.note||d.name||t("none"))}</p>
