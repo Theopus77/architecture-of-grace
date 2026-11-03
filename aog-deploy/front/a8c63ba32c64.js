@@ -159,6 +159,10 @@ function t(k, vars){ let s=(STR[k]||{})[S.lang]||k; if(vars) Object.keys(vars).f
    piano's, K-weighted, the loudest 400 ms, before the compressor, within half a decibel. tau = how fast a note stops when
    it is let go; tone = how a recorded piano is voiced; ready and the = the words while a recording loads. */
 const SOUNDS={
+  trumpet: {grp:"grpBand", en:"Trumpet", es:"Trompeta", kind:"sample", set:"trumpet", gain:1.2, rev:0.14},
+  sax: {grp:"grpBand", en:"Alto saxophone", es:"Saxofón alto", kind:"sample", set:"sax", gain:1.1, rev:0.12},
+  clarinet: {grp:"grpBand", en:"Clarinet", es:"Clarinete", kind:"sample", set:"clarinet", gain:1.1, rev:0.12},
+  violin: {grp:"grpBand", en:"Violins", es:"Violines", kind:"sample", set:"violin", gain:1.0, rev:0.16},
   grand:  {grp:"grpPiano", en:"Grand piano",            es:"Piano de cola",              kind:"sample", set:"grand",   gain:0.906, rev:0.16},
   upright:{grp:"grpPiano", en:"Upright piano",          es:"Piano vertical",             kind:"sample", set:"upright", gain:1.997, rev:0.13},
   honky:  {grp:"grpPiano", en:"Honky-tonk piano",       es:"Piano honky-tonk",           kind:"sample", set:"upright", honky:true, gain:2.17, rev:0.10},
@@ -526,6 +530,12 @@ function setFx(ch, id){
 
 /* ── the recorded pianos ── */
 const SETS={
+  trumpet: {dir:"/audio/band/trumpet2/", notes:[53,57,60,63,67,70,74,77,81,84], suf:"s"},
+  sax: {dir:"/audio/band/sax2/", notes:[53,57,60,63,67,70,74], suf:"s"},
+  clarinet: {dir:"/audio/band/clarinet2/", notes:[50,53,57,60,64,67,72], suf:"s"},
+  flute: {dir:"/audio/band/flute2/", notes:[60,64,67,72,76], suf:"s"},
+  violin: {dir:"/audio/band/violins2/", notes:[55,60,64,67,72], suf:"s"},
+  
   /* AOG-GRAND-PRO-V1: six strength layers that blend, each note ringing as long as the real one (GRAND_PRO, below) */
   grand:  {dir:"/audio/piano/grand3/",   pro:true, notes:[21,24,27,30,33,36,39,42,45,48,51,54,57,60,63,66,69,72,75,78,81,84,87,90,93,96,99,102,105,108]},
   upright:{dir:"/audio/piano/upright2/", notes:[21,25,29,33,37,41,45,49,53,57,61,65,69,73,77,81,85,89,93,97,101,105,108]},
