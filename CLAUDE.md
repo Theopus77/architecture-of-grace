@@ -75,9 +75,10 @@ the Drum Machine. Updated 2026-10-31 with the craftsman pass:
 - Full screen: a Full screen button sits on the Studio bar (next to the
   language buttons), where it is visible, and also on each deck head. It
   fullscreens the room itself, not the chrome around it. A scratch does not
-  leave full screen. Only the Full screen / Leave button does. The deck's
-  Full screen button asks the Studio to take the room full screen, because a
-  room inside the Studio cannot do it itself on an iPad.
+  leave full screen. Only the Full screen / Leave button does. The deck takes full screen itself, in its own page, so a scratch on the
+  iPad does not leave it. If the iPad drops it mid-scratch, the scratch
+  takes it back. Load a track puts the file picker in the page so the iPad
+  opens it.
 - Load a track (was Import vinyl) puts a song from this device on that deck.
   Nothing is uploaded. It uses the
   standard and webkit fullscreen APIs so it works on a computer and on iPad.
