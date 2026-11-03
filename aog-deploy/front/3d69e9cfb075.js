@@ -1391,7 +1391,8 @@ function paintProgSel(){
 }
 function paintRhythm(){ $("rhythmSel").innerHTML=RHYTHMS.map(r=>`<option value="${r}"${r===S.rhythm?" selected":""}>${RHYTHM_WORDS[r][S.lang]}</option>`).join(""); }
 function paintMood(){ $("majBtn").setAttribute("aria-pressed", S.minor?"false":"true"); $("minBtn").setAttribute("aria-pressed", S.minor?"true":"false");  if(bpMode()==="harp") buildKeys(); }
-const PAD_KEYS=["1","2","3","4","5","6"];
+const PAD_KEYS=["1","2","3","4","5","6","7","8","9","0","−","="], PAD_CODES=["Digit1","Digit2","Digit3","Digit4","Digit5","Digit6","Digit7","Digit8","Digit9","Digit0","Minus","Equal"];
+function padKey(e){ const i=PAD_CODES.indexOf(e.code); return i>=0 && i<pads().length ? i : -1; }
 function paintPads(){
   $("pads").innerHTML=pads().map((c,i)=>`<button type="button" class="pad" data-i="${i}"><small>${c.n}</small>${chordName(c)}<br><kbd aria-hidden="true">${PAD_KEYS[i]}</kbd></button>`).join("");
   document.querySelectorAll(".pad").forEach(el=>{
@@ -1943,7 +1944,7 @@ document.addEventListener("keydown",(e)=>{
   if(e.code==="ShiftLeft"||e.code==="ShiftRight"){ if(!e.repeat) setSus(true); return; }   /* AOG-BAND-SUSTAIN-V1 */
   if(KEYMAP[e.code]!=null){ e.preventDefault(); if(e.repeat||HELD_KEYS.has(e.code)) return;
     const m=KB.lo+KEYMAP[e.code]; HELD_KEYS.set(e.code, m); keyOn(m, 0.7); return; }
-  const pi=PAD_KEYS.indexOf(e.key); if(pi>=0 && e.code.indexOf("Digit")===0){ e.preventDefault(); if(!e.repeat) padDown(pi, 0.74); return; }
+  const pi=padKey(e); if(pi>=0 && e.code.indexOf("Digit")===0){ e.preventDefault(); if(!e.repeat) padDown(pi, 0.74); return; }
   if(e.code==="KeyZ"||e.code==="KeyX"){ e.preventDefault(); if(!e.repeat) moveOct(e.code==="KeyZ"?-1:1); return; }
   if(e.code==="Space"){
     const b=e.target.closest && e.target.closest("button,a,summary,[role=button]");
@@ -1954,7 +1955,7 @@ document.addEventListener("keydown",(e)=>{
 document.addEventListener("keyup",(e)=>{
   if(e.code==="ShiftLeft"||e.code==="ShiftRight"){ setSus(false); return; }   /* AOG-BAND-SUSTAIN-V1 */
   if(HELD_KEYS.has(e.code)){ keyOff(HELD_KEYS.get(e.code)); HELD_KEYS.delete(e.code); return; }
-  const pi=PAD_KEYS.indexOf(e.key); if(pi>=0 && e.code.indexOf("Digit")===0) padUp(pi);
+  const pi=padKey(e); if(pi>=0 && e.code.indexOf("Digit")===0) padUp(pi);
 });
 window.addEventListener("blur",()=>{ HELD_KEYS.forEach(m=>keyOff(m)); HELD_KEYS.clear(); if(S.sus) setSus(false); });
 
