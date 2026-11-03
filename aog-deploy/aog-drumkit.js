@@ -859,6 +859,7 @@
               early[id] = { h: [{ hi: g.h, hi2: g.h2 || null, lo: null }] };
             });
             DATA[b] = early;
+            setState(b, { state: "ready", got: n, total: jobs.length });
           }
         })
         .catch(function () { bad++; })
