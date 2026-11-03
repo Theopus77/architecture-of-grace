@@ -425,13 +425,13 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
 <script src="/aog-vu.js"></script><!-- AOG-ROOM-VU-V1: before any sound, so the small VU meters hear it -->
 <script src="/aog-scales.js"></script><!-- AOG-PADS-ALLSCALES-V1: the scale library the piano, guitar, bass and band use -->
 <script src="/aog-chords.js"></script><!-- AOG-PADS-ALLSCALES-V1: the chord library, for the chords a pattern brings from outside the key -->
-<script src="/aog-handoff.js"></script>
+<script src="aog-handoff.js"></script>
 <script src="/aog-recorder.js"></script>
 <script src="/aog-song.js"></script><!-- AOG-SONG-V1: one tempo and key for the whole song -->
 <script src="/aog-amp.js"></script><!-- AOG-ROOM-PEDALS-V1: the pedalboard, the same panel as the guitar has -->
-<script src="/aog-drumkit.js?v=fix3"></script>
-<script src="/aog-beats.js"></script>
-<script src="/aog-beats-pro.js" defer></script><!-- AOG-BEATS-ELITE-V1: the newer beats, after the page is read -->
+<script src="aog-drumkit.js?v=fix1"></script>
+<script src="aog-beats.js"></script>
+<script src="aog-beats-pro.js" defer></script><!-- AOG-BEATS-ELITE-V1: the newer beats, after the page is read -->
 <script src="/aog-lessons.js"></script>
 <script src="/aog-lessons-pads.js"></script>
 <script src="/aog-midi.js"></script><!-- AOG-MIDI-V1: a MIDI keyboard, the same in every music room -->
@@ -1343,6 +1343,7 @@ function trigger(bi, pi, vel, when, T){
     const acc=vel>0.88 ? 2 : vel<0.62 ? 3 : 0;
     const kit=T===LIVE ? kitFor(bi, pi, d.kit) : d.kit; if(!kit){ if(T===LIVE) relink(bi); unplug(); return null; }
     const o=AOGDrumKit.playDirect(c, out, kit, d.id, when, acc, clamp(0.25+0.4*vel, 0, 1));
+    if(o && o.src){ const dv={s:o.src, g:o.gain, done:false}; stealTo(CAP-1); RING.push(dv); stealTo(CAP); }
     /* AOG-DRUM-PERC-V1: one drum, one ring. A new stroke on a hand drum (or a muted triangle, or the bayan's ke) stops
        the last stroke of that drum still ringing, as the hand on the skin does */
     const dg=o && AOGDrumKit.drumOf ? AOGDrumKit.drumOf(kit, d.id) : "";
@@ -1366,7 +1367,9 @@ function trigger(bi, pi, vel, when, T){
     g.gain.setValueAtTime(0, when); g.gain.linearRampToValueAtTime(lv, when+0.004);
     g.gain.setValueAtTime(lv, Math.max(when+0.005, when+dur-0.012)); g.gain.linearRampToValueAtTime(0, when+dur);
     s.start(when, ch[0], ch[1]); s.stop(when+dur+0.02);
-    const v={s:s, g:g}; CHOP[bi]=v; s.onended=()=>{ if(CHOP[bi]===v) CHOP[bi]=null; if(live){ try{ s.disconnect(); g.disconnect(); }catch(e){} unplug(); } };
+    const v={s:s, g:g, done:false}; CHOP[bi]=v;
+    stealTo(CAP-1); RING.push(v); stealTo(CAP);
+    s.onended=()=>{ if(CHOP[bi]===v) CHOP[bi]=null; v.done=true; if(live){ try{ s.disconnect(); g.disconnect(); }catch(e){} unplug(); } };
     return keep({stop(at){ const t0=Math.max(at||0, c.currentTime); try{ g.gain.cancelScheduledValues(t0); g.gain.setTargetAtTime(0, t0, 0.006); s.stop(t0+0.05); }catch(e){} }});
   }
   /* a note or a chord: it rings while the pad is held */
@@ -2637,7 +2640,7 @@ init();
 
 </script>
 
-<script src="/aog-wow-drum.js"></script>
+<script src="aog-wow-drum.js"></script>
 </body>
 </html>
 
