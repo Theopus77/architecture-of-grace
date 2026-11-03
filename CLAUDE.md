@@ -26,7 +26,7 @@ These hold at all times. A future agent reads them before any music-room change.
 - Fullscreen landscape: the 24 pads fill the screen, 6 across and 4 down, no leftover gaps, no overflow. The grid uses the full width and height of the play view.
 - Chops of a record go up to 8 bars (32 beats). The choices are 1 beat, 2 beats, 1 bar, 2 bars, 4 bars, 8 bars. Do not leave the maximum at 2 beats or 1 bar.
 - Sounds are from real instruments. A synthesized stand-in is not acceptable for guitar, bass, piano, drums or voice. If a room still uses a generated tone, say so and replace it with a recorded sample. Do not ship a fake guitar.
-- One-sound drum kits sit in a One sound group at the top of the kit list, above Drum sets. The group has Kick, Snare, Hat, Clap, Rim and Tom (real recorded hits from the Boom Bap set). Add more there, never below.
+- One-sound drum kits sit in a One sound group at the top of the kit list, above Drum sets. The group has Kick, Snare, Hat, Clap, Rim, Tom, 909 Kick, Arena Kick, Trap Clap, Live Snare, Gospel Hat and Crash. Add more there, never below.
 - The guitar plays recorded notes (steel, nylon, black hollow-body, green). The recorded set loads as soon as the page is ready. Do not leave a note on the synthesized string once the set is in.
 - After any music-room change, update the fast copy the site serves, or the live page will not change.
 
