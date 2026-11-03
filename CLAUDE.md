@@ -23,6 +23,7 @@ These hold at all times. A future agent reads them before any music-room change.
 
 - The Turntables must load. After any edit to the decks front script, run a syntax check (`node --check`) before pushing. A stray `async` or an `await` outside an async function takes the whole page down, and the decks disappear.
 - Instant pads, no lag, no freezes, on every device, in every mode, including fullscreen and landscape.
+- Every bank is on the same path: drums, notes, chords, and chops. A hit joins the one voice ring and the stealer cuts the oldest before the new one sounds. No bank has its own pile. Chops of a record follow this too.
 - Every kit preloads when the page opens, so a tap never waits on a load.
 - AOGDrumKit.ids is a list, never a function.
 - The Drum Machine loads aog-drumkit.js from the site root (`/aog-drumkit.js`), never a relative path. A relative path 404s from /fast/ and the banks disappear. The page calls .filter on it. Turning it into a function crashes the Drum Machine and the banks disappear.
