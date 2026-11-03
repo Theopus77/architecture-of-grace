@@ -56,6 +56,25 @@
   function P(name, n, extra) { var o = { name: name, n: n || [0, 0, 0] }; if (extra) for (var k in extra) o[k] = extra[k]; return o; }
   /* the recorded kits. P to T and U to Y follow the drummers Jimmy named; on screen they go by style, never by player */
   var KITS = {
+    /* AOG-ONESOUND-V1: one real hit per kit, grouped at the top */
+    K1: { dir: "boombap2", grp: "onesound", en: "Kick", es: "Bombo",
+      pads: { kick: P("KICK", [2, 2, 1]), snare: P("KICK", [2, 2, 1]), ch: P("KICK", [2, 2, 1]), oh: P("KICK", [2, 2, 1]),
+              clap: P("KICK", [2, 2, 1]), tom: P("KICK", [2, 2, 1]), rim: P("KICK", [2, 2, 1]), bell: P("KICK", [2, 2, 1]) } },
+    S1: { dir: "boombap2", grp: "onesound", en: "Snare", es: "Caja",
+      pads: { kick: P("SNARE", [2, 2, 1]), snare: P("SNARE", [2, 2, 1]), ch: P("SNARE", [2, 2, 1]), oh: P("SNARE", [2, 2, 1]),
+              clap: P("SNARE", [2, 2, 1]), tom: P("SNARE", [2, 2, 1]), rim: P("SNARE", [2, 2, 1]), bell: P("SNARE", [2, 2, 1]) } },
+    H1: { dir: "boombap2", grp: "onesound", en: "Hat", es: "Charles",
+      pads: { kick: P("HAT", [2, 2, 1]), snare: P("HAT", [2, 2, 1]), ch: P("HAT", [2, 2, 1]), oh: P("OPEN", [1, 1, 1]),
+              clap: P("HAT", [2, 2, 1]), tom: P("HAT", [2, 2, 1]), rim: P("HAT", [2, 2, 1]), bell: P("HAT", [2, 2, 1]) } },
+    C1: { dir: "boombap2", grp: "onesound", en: "Clap", es: "Palmada",
+      pads: { kick: P("CLAP", [2, 2, 1]), snare: P("CLAP", [2, 2, 1]), ch: P("CLAP", [2, 2, 1]), oh: P("CLAP", [2, 2, 1]),
+              clap: P("CLAP", [2, 2, 1]), tom: P("CLAP", [2, 2, 1]), rim: P("CLAP", [2, 2, 1]), bell: P("CLAP", [2, 2, 1]) } },
+    R1: { dir: "boombap2", grp: "onesound", en: "Rim", es: "Aro",
+      pads: { kick: P("STICK", [1, 1, 1]), snare: P("STICK", [1, 1, 1]), ch: P("STICK", [1, 1, 1]), oh: P("STICK", [1, 1, 1]),
+              clap: P("STICK", [1, 1, 1]), tom: P("STICK", [1, 1, 1]), rim: P("STICK", [1, 1, 1]), bell: P("STICK", [1, 1, 1]) } },
+    T1: { dir: "boombap2", grp: "onesound", en: "Tom", es: "Tom",
+      pads: { kick: P("LOWTOM", [1, 1, 1]), snare: P("LOWTOM", [1, 1, 1]), ch: P("LOWTOM", [1, 1, 1]), oh: P("LOWTOM", [1, 1, 1]),
+              clap: P("LOWTOM", [1, 1, 1]), tom: P("LOWTOM", [1, 1, 1]), rim: P("LOWTOM", [1, 1, 1]), bell: P("LOWTOM", [1, 1, 1]) } },
     /* AOG-DRUM-REAL-V2: the kits that used to be made on the page, now recorded (same letter, name and character) */
     D: { dir: "dusty2", en: "Dusty Breaks", es: "Kit D · breaks polvorientos",
       pads: { kick: P("THUMP", [1, 2, 2]), snare: P("CRACK", [1, 2, 2]), ch: P("SHAKER", [1, 2, 1]), oh: P("TAMB", [1, 1, 1]),
@@ -127,7 +146,7 @@
       pads: { kick: P("KICK", [1, 2, 2]), snare: P("SNARE", [1, 2, 2]), ch: P("HAT", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
               clap: P("XSTICK", [1, 2, 1]), tom: P("TOM", [1, 1, 1]), rim: P("FLOOR", [1, 1, 1]), bell: P("CRASH", [1, 1, 1]) } }
   };
-  var IDS = ["D", "E", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "LS", "DB", "WD", "IN", "CB", "BR", "ME2"];
+  var IDS = ["K1", "S1", "H1", "C1", "R1", "T1", "D", "E", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "LS", "DB", "WD", "IN", "CB", "BR", "ME2"];
   /* ══ AOG-DRUM-PERC-V1 (2026-10-13) — HAND PERCUSSION, HAND DRUMS AND THE TABLA ══════════════════════════════════════
      Jimmy: "DO them all." Four recorded kits, eight pads each (music-handoff/tools/drumkits/kits_perc.py): the school's
      hand percussion; the djembe and cajón (with maracas, hand claps and the bell of a djembe group); the congas and
@@ -213,6 +232,7 @@
      grp: the kit's group (a kit without one is a drum set; the older kits are placed by GROUP_OF). A kit with hand:1 is a
      kit of its own: its grooves bring it, and the retired classic machine leaves it out. */
   var GROUPS = [
+    { id: "onesound", en: "One sound", es: "Un sonido" },
     { id: "drums", en: "Drum sets", es: "Baterías" },
     { id: "electronic", en: "Electronic", es: "Electrónica" },
     { id: "world", en: "World", es: "Del mundo" },
