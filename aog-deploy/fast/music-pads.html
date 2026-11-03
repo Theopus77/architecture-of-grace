@@ -1959,6 +1959,7 @@ function instOptions(cur){
 }
 function field(id, lab, html, wide){ return `<label class="pm-f${wide?" wide":""}"><span>${esc(lab)}</span><select class="pm-sel" id="${id}">${html}</select></label>`; }
 function paintSetRow(){
+  if(document.activeElement && document.activeElement.tagName==="SELECT") return;
   const B=S.banks[S.bank]; let h="";
   if(B.type==="drums"){ h=field("fKitA", t("kitA"), kitOpts(B.kitA))+field("fKitB", t("kitB"), kitOpts(B.kitB))+field("fKitC", t("kitC"), kitOpts(B.kitC)); }
   else if(B.type==="chops"){
