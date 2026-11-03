@@ -47,7 +47,7 @@ const STR = {
   barsOf:{en:"%i of %n",es:"%i de %n"},
   dockDone:{en:"Done",es:"Listo"},
   none:{en:"No song yet.",es:"Aún no hay canción."},
-  play:{en:"Start",es:"Arrancar"},
+  play:{en:"Start",es:"Arrancar"},pause:{en:"Pause",es:"Pausa"},resume:{en:"Resume",es:"Seguir"},
   stop:{en:"Stop",es:"Parar"},
   cue:{en:"Return to cue",es:"Volver al cue"},
   setCue:{en:"Set cue",es:"Marcar cue"},
@@ -2015,7 +2015,7 @@ function deckHTML(d){
         </div>
        </div>
        <div class="t12-foot">
-        <button type="button" class="go t12-ss" data-play="${id}">${t("play")}</button>
+        <button type="button" class="go t12-ss" data-play="${id}">${t("play")}</button><button type="button" class="tiny" data-pause="${id}">${t("pause")}</button>
         <span class="rpm t12-rpm" role="group" aria-label="${t("rpm")}">
           <button type="button" class="ghost rpmb${d.rpm===1?" on":""}" data-rpm="${id}" data-v="1">33</button>
           <button type="button" class="ghost rpmb${d.rpm!==1?" on":""}" data-rpm="${id}" data-v="1.35">45</button>
@@ -2817,6 +2817,15 @@ function bind(){
       const d = deckOf(btn, "data-play");
       if(!d.buf) return;
       if(d.motor) stopDeck(d); else await startDeck(d);
+    };
+  });
+  root.querySelectorAll("[data-pause]").forEach(btn=>{
+    btn.onclick = async ()=>{
+      const d = deckOf(btn, "data-pause");
+      if(!d || !d.buf) return;
+      if(d.motor){ d.paused = true; stopDeck(d); }
+      else { d.paused = false; await startDeck(d); }
+      btn.textContent = d.motor ? t("pause") : t("resume");
     };
   });
   /* CUE the way a deck does it: hold to hear it from the mark, let go and the
