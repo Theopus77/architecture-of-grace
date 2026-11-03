@@ -2,259 +2,59 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Ancient Eastern Cosmos · Lab Bench — Architecture of Grace</title>
 <style>
-:root {
-  --paper: #F4F0E6;
-  --ink: #1A232C;
-  --brass: #C4A574;
-  --brass-dark: #8B6B3A;
-  --rule: #D4CBB8;
-  --soft: #F8F6F0;
-}
-* { box-sizing: border-box; }
-html, body { margin: 0; padding: 0; background: var(--paper); color: var(--ink); font-family: "Iowan Old Style", Palatino, Georgia, serif; }
-body { min-height: 100vh; }
-header { padding: 20px 24px 8px; max-width: 980px; margin: 0 auto; }
-h1 { font-size: 1.75rem; margin: 0 0 6px; letter-spacing: 0.01em; font-weight: 600; }
-.subtitle { font-size: 0.95rem; color: #4a5560; margin: 0 0 4px; letter-spacing: 0.04em; text-transform: uppercase; }
-.lede { font-size: 1.05rem; margin: 0 0 16px; line-height: 1.5; max-width: 66ch; }
-#view {
-  height: 520px; background: #fff; border: 1px solid var(--rule);
-  margin: 0 24px 12px; border-radius: 12px; overflow: hidden;
-  box-shadow: 0 1px 3px rgba(26,35,44,0.05); position: relative;
-}
-.museum-hint { text-align: center; font-size: 0.85rem; color: #5c6670; margin: 0 24px 12px; }
-.diagram{height:auto;min-height:0;background:transparent;border:none;display:flex;flex-direction:column;gap:8px;padding:8px}
-.diagram button{min-height:48px;border:1.5px solid var(--brass);background:#fff;border-radius:10px;font:inherit;font-weight:600;color:var(--ink)}
-.sections-nav { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 24px 12px; max-width: 980px; }
-.nav-btn {
-  padding: 7px 12px; border: 1.5px solid var(--brass); background: #fff; color: var(--ink);
-  border-radius: 8px; font: inherit; font-weight: 600; cursor: pointer;
-}
-.nav-btn.active { background: var(--brass); color: #fff; }
-.panel { display: none; max-width: 980px; margin: 0 auto 24px; padding: 0 24px; font-size: 0.98rem; line-height: 1.55; }
-.panel.active { display: block; }
-.panel h2 { font-size: 1.2rem; margin: 0 0 10px; font-weight: 600; }
-.panel h3 { font-size: 1.05rem; margin: 16px 0 6px; }
-.note { font-size: 0.9rem; color: #4a5560; margin-top: 10px; }
-ul { margin: 8px 0; padding-left: 1.2em; }
-li { margin: 4px 0; }
-@media (max-width: 640px) {
-  header { padding: 16px 16px 6px; }
-  h1 { font-size: 1.45rem; }
-  #view, .sections-nav, .panel { margin-left: 16px; margin-right: 16px; }
-  #view { height: 420px; }
-}
-
-.main-graphic { margin: 0 24px 16px; max-width: 980px; }
-.main-graphic img { width: 100%; height: auto; border-radius: 12px; border: 1px solid var(--rule); display: block; }
-.main-graphic figcaption { font-size: 0.85rem; color: #5c6670; margin-top: 6px; text-align: center; }
-@media (max-width:640px) { .main-graphic { margin-left: 16px; margin-right: 16px; } }
+:root { --paper:#F4F0E6; --ink:#1A232C; --brass:#C4A574; --rule:#D4CBB8; }
+* { box-sizing:border-box; }
+html, body { margin:0; background:var(--paper); color:var(--ink); font-family:"Iowan Old Style",Palatino,Georgia,serif; }
+header, .wrap { max-width:820px; margin:0 auto; padding:20px 20px 0; }
+h1 { font-size:1.7rem; margin:0 0 8px; }
+.sub { letter-spacing:.06em; text-transform:uppercase; font-size:.85rem; color:#5c6670; margin:0 0 6px; }
+.lede { font-size:1.05rem; line-height:1.55; max-width:66ch; }
+figure { margin:16px 0; }
+figure img { width:100%; height:auto; border-radius:12px; border:1px solid var(--rule); display:block; }
+figcaption, .hint { text-align:center; font-size:.85rem; color:#5c6670; }
+.box { display:flex; flex-direction:column; gap:8px; margin:12px 0 16px; }
+.box a { display:block; min-height:48px; line-height:48px; padding:0 16px; border:1.5px solid var(--brass); background:#fff; border-radius:10px; color:var(--ink); font-weight:600; text-decoration:none; }
+.nav { display:flex; flex-wrap:wrap; gap:8px; margin:8px 0 16px; }
+.nav-btn { padding:8px 14px; border:1.5px solid var(--brass); background:#fff; color:var(--ink); border-radius:8px; font:inherit; font-weight:600; text-decoration:none; min-height:44px; display:inline-flex; align-items:center; }
+.nav-btn.active, .nav-btn:target { background:var(--brass); color:#fff; }
+.panel { padding:0 0 28px; font-size:1.02rem; line-height:1.6; }
+.panel h2 { font-size:1.25rem; margin:0 0 10px; }
+.panel h3 { font-size:1.05rem; margin:16px 0 6px; }
+table { width:100%; border-collapse:collapse; background:#fff; }
+th, td { border:1px solid var(--rule); padding:8px 10px; text-align:left; vertical-align:top; }
+th { background:#fff; }
+a.inline { color:#6b4f2a; }
 </style>
+
 </head>
 <body>
 <header>
-  <div class="subtitle">Lab Bench · History</div>
+  <p class="sub">Lab Bench · History</p>
   <h1>The Ancient Eastern Cosmos</h1>
-  <p class="lede">How the peoples of the ancient Near East pictured the world: a flat earth under a solid vault, with waters above and below. This page presents that geocentric understanding as it appears in the surviving texts and art, not as a modern scientific claim.</p>
+  <p class="lede">How the peoples of the ancient Near East pictured the world: a flat earth under a solid vault, with waters above and below. This is that picture as it appears in the surviving texts and art, not a modern scientific claim.</p>
 </header>
-
-<figure class="main-graphic">
-  <picture>
-    <source type="image/webp" srcset="/img/banners/page-ancient-cosmos-pencil-900.webp">
-    <img src="/img/banners/page-ancient-cosmos-pencil-900.jpg" alt="Pencil drawing of the ancient Eastern cosmos" width="900" height="315">
-  </picture>
-  <figcaption>Pencil drawing, not a photograph.</figcaption>
-</figure>
-
-<div id="view" class="diagram" role="img" aria-label="The layers of the ancient Near Eastern cosmos">
-  <button type="button" data-go="layers">Waters above</button>
-  <button type="button" data-go="layers">The vault of heaven</button>
-  <button type="button" data-go="geocentric">The inhabited earth</button>
-  <button type="button" data-go="layers">Waters below</button>
+<div class="wrap">
+  <figure><img src="/img/banners/page-ancient-cosmos-pencil-900.webp" alt="Pencil drawing of a tablet showing the layered cosmos"><figcaption>Pencil drawing, not a photograph.</figcaption></figure>
+  <p class="hint">Tap a layer. It opens the section.</p>
+  <nav class="box" aria-label="Open a section"><a href="#layers">Waters above</a><a href="#layers">The vault of heaven</a><a href="#geocentric">The inhabited earth</a><a href="#layers">Waters below</a><a href="#texts">Key texts</a><a href="#later">Later models</a></nav>
+  <nav class="nav" aria-label="Sections"><a class="nav-btn active" href="#sources">Sources</a>
+<a class="nav-btn" href="#layers">The layers</a>
+<a class="nav-btn" href="#geocentric">A geocentric view</a>
+<a class="nav-btn" href="#texts">Key texts</a>
+<a class="nav-btn" href="#later">Later models</a></nav>
+  <section id="sources" class="panel active"><h2>Sources</h2><p>The picture here is drawn from the literature and iconography of Mesopotamia, Egypt, and the Hebrew Bible, roughly the second and first millennia BCE. It is not a single official doctrine. It is a shared set of images: a flat inhabited earth, a solid vault, waters above the vault, waters below the earth, and pillars or mountains holding it up.</p><p>Primary witnesses include the Enuma Elish, the Egyptian sky-goddess Nut arched over Geb, and the biblical firmament in Genesis 1.</p></section>
+<section id="layers" class="panel"><h2>The layers</h2><h3>Waters above</h3><p>Above the vault is a sea. Rain is that sea let through windows or sluices in the vault. Genesis 7:11 speaks of the windows of heaven opening.</p><h3>The vault</h3><p>The firmament (Hebrew <em>raqia</em>, a beaten-out plate) is solid. The sun, moon, and stars are set in it or travel under it. Nut in Egypt is the sky as a body arched over the earth.</p><h3>The earth</h3><p>The inhabited world is a disk or a rectangle, with mountains at the edges. It does not move.</p><h3>Waters below</h3><p>Under the earth is the deep. Springs and the sea come from it. In some texts the dead are there too.</p></section>
+<section id="geocentric" class="panel"><h2>A geocentric view</h2><p>Geocentric here means the inhabited earth is the fixed center and the lights move around it. That is the picture these texts draw. It is not the later Greek mathematical model of Ptolemy, and it is not a claim about modern astronomy.</p><p>See <a class="inline" href="/cosmos-comparison">Geocentric and Heliocentric</a> for the later mathematical models of the same sky.</p></section>
+<section id="texts" class="panel"><h2>Key texts</h2><h3>Enuma Elish</h3><p>After defeating Tiamat, Marduk splits her body. Half becomes the sky. He sets the stations of the gods as the stars.</p><h3>Genesis 1</h3><p>God makes the firmament to separate the waters above from the waters below, then sets the lights in the firmament.</p><h3>Egypt</h3><p>Nut, the sky, is held up over Geb, the earth. Shu, the air, stands between them. The sun travels through Nut by day and through the underworld by night.</p></section>
+<section id="later" class="panel"><h2>Later models</h2><p>Greek natural philosophers from the sixth century BCE onward proposed a spherical earth and, later, a spherical cosmos of nested shells. That is a different picture from the vault. The <a class="inline" href="/antikythera">Antikythera mechanism</a> is a geared model of that later, spherical sky.</p></section>
 </div>
-<p class="museum-hint">Tap a layer to read its name · Drag to examine</p>
-
-<div class="sections-nav">
-  <button class="nav-btn active" data-panel="sources">Sources</button>
-  <button class="nav-btn" data-panel="layers">The layers</button>
-  <button class="nav-btn" data-panel="geocentric">Geocentric view</button>
-  <button class="nav-btn" data-panel="texts">Key texts</button>
-  <button class="nav-btn" data-panel="later">Later models</button>
-</div>
-
-<div id="sources" class="panel active">
-  <h2>Sources</h2>
-  <p>The picture reconstructed here is drawn from the literature and iconography of Mesopotamia, Egypt, and the Hebrew Bible, roughly the second and first millennia BCE. It is not a single official doctrine but a shared set of assumptions visible across those cultures.</p>
-  <ul>
-    <li><strong>Enuma Elish</strong> (Babylonian creation epic, c. 12th–11th century BCE in its surviving form): Marduk splits the body of Tiamat (the salt-water chaos) to form the sky and the earth.</li>
-    <li><strong>Genesis 1</strong> (Hebrew Bible): God separates the waters above from the waters below with a firmament (<em>raqia</em>), gathers the lower waters so dry land appears, and sets the sun, moon, and stars in the vault.</li>
-    <li>Egyptian coffin texts and temple reliefs: the sky goddess Nut arched over the earth god Geb, with the sun traveling through her body or in a boat.</li>
-    <li>Assyrian and Babylonian astronomical texts and boundary stones that show the cosmos as ordered layers rather than an infinite space.</li>
-  </ul>
-  <p class="note">These texts describe how the world was ordered and maintained. They do not present a modern heliocentric or evolutionary account of planetary formation.</p>
-</div>
-
-<div id="layers" class="panel">
-  <h2>The layers</h2>
-  <p>In the common ancient Near Eastern picture the cosmos is a series of stacked regions, all centered on the inhabited earth.</p>
-  <ul>
-    <li><strong>Waters above</strong> — a cosmic ocean held back by the firmament. Rain, snow, and the flood are pictured as openings in that barrier.</li>
-    <li><strong>Firmament / vault</strong> — a solid or stretched dome (Hebrew <em>raqia</em>, “something hammered out”). The sun, moon, and stars are set in or move across it.</li>
-    <li><strong>Air / atmosphere</strong> — the space between the vault and the earth where birds fly and weather occurs.</li>
-    <li><strong>Earth</strong> — a disk or mound of dry land, often surrounded by a circular sea. Mountains at the edges or center can serve as pillars or meeting places of gods.</li>
-    <li><strong>Waters below</strong> — the freshwater deep (Hebrew <em>tehom</em>, related to Tiamat) under the earth, source of springs and rivers.</li>
-    <li><strong>Underworld</strong> — Sheol, the land of the dead, beneath or within the lower waters. In Mesopotamian texts the netherworld has its own gates and rulers.</li>
-  </ul>
-  <p>The whole arrangement is static and centered on the human world. There is no empty outer space and no orbiting planets in the later Greek sense.</p>
-</div>
-
-<div id="geocentric" class="panel">
-  <h2>A geocentric view</h2>
-  <p>“Geocentric” here means the inhabited earth is the fixed center of the ordered world. The lights in the sky move around or across it; the earth does not move.</p>
-  <p>This is not yet the later Greek mathematical geocentrism of epicycles and deferents. It is a cosmological picture in which:</p>
-  <ul>
-    <li>The earth is stable (“founded upon the seas,” “set on pillars” in poetic language).</li>
-    <li>The sun, moon, and stars are lamps or beings placed in the vault to mark times and seasons.</li>
-    <li>Direction and value radiate from the center: temple, city, or cosmic mountain.</li>
-    <li>Chaos is the unbounded water outside the ordered structure, not a vacuum.</li>
-  </ul>
-  <p>When Greek astronomers later calculated planetary positions with circles, they still placed the earth at or near the center. The ancient Eastern picture supplied the basic orientation—earth fixed, heavens moving—that those calculations refined.</p>
-</div>
-
-<div id="texts" class="panel">
-  <h2>Key texts</h2>
-  <h3>Enuma Elish</h3>
-  <p>After defeating Tiamat, Marduk splits her body “like a shellfish.” One half he sets up as the sky, the other becomes the earth. He assigns stations to the gods, fixes the year, and establishes the paths of the celestial bodies. The ordered world is the result of a divine victory over watery chaos.</p>
-  <h3>Genesis 1</h3>
-  <p>The account begins with the earth formless and the deep covered in darkness. God speaks a firmament into the midst of the waters, separates the waters above from the waters below, and names the firmament “heaven.” On the second day the dry land appears; on the fourth the lights are set in the firmament to rule day and night and to mark seasons. The structure matches the wider Near Eastern layered cosmos, while the agent and the evaluation (“it was good”) are distinctive to the Hebrew text.</p>
-  <h3>Egyptian imagery</h3>
-  <p>Nut, the sky, is shown as a woman arched on hands and feet over Geb, the earth. The sun travels through her or sails in a boat. The picture is anthropomorphic, yet the geometry is the same: a covering sky over a stable earth, with waters at the edges.</p>
-</div>
-
-<div id="later" class="panel">
-  <h2>Later models</h2>
-  <p>Greek natural philosophers from the sixth century BCE onward proposed that the earth is a sphere and that the heavens are concentric spheres. By the second century BCE, Hipparchus and others were calculating lunar and solar positions with eccentric circles. Ptolemy’s <em>Almagest</em> (second century CE) gave a full geocentric system of deferents, epicycles, and the equant that could predict planetary positions for centuries.</p>
-  <p>That mathematical geocentrism is a different achievement from the ancient Eastern layered cosmos, but it preserves the same central commitment: the earth does not move, and the lights of heaven travel around it. The shift to a moving earth came much later, with Copernicus, Kepler, and Galileo.</p>
-  <p class="note">This page describes historical cosmologies. It does not adjudicate modern scientific accounts of planetary formation or orbital mechanics.</p>
-</div>
-
-<script type="module">
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
-import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js';
-
-const container = document.getElementById('view');
-const scene = new THREE.Scene();
-scene.background = new THREE.Color(0xF4F0E6);
-
-const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 100);
-camera.position.set(0, 4.2, 9.5);
-
-const renderer = new THREE.WebGLRenderer({ antialias: true });
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-if(!container.classList.contains('diagram')) container.appendChild(renderer.domElement);
-
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true;
-controls.dampingFactor = 0.08;
-controls.target.set(0, 1.2, 0);
-controls.minDistance = 4;
-controls.maxDistance = 18;
-
-scene.add(new THREE.AmbientLight(0xffffff, 0.65));
-const key = new THREE.DirectionalLight(0xffffff, 0.7);
-key.position.set(5, 8, 6);
-scene.add(key);
-
-const brass = new THREE.MeshStandardMaterial({ color: 0xC4A574, metalness: 0.6, roughness: 0.35 });
-const water = new THREE.MeshStandardMaterial({ color: 0x6B8BA4, metalness: 0.1, roughness: 0.4, transparent: true, opacity: 0.75 });
-const earth = new THREE.MeshStandardMaterial({ color: 0x8B7355, roughness: 0.8 });
-const vault = new THREE.MeshStandardMaterial({ color: 0xE8DCC8, roughness: 0.5, transparent: true, opacity: 0.35, side: THREE.DoubleSide });
-const under = new THREE.MeshStandardMaterial({ color: 0x4A5560, roughness: 0.7 });
-
-// Waters above
-const watersAbove = new THREE.Mesh(new THREE.SphereGeometry(4.2, 48, 32, 0, Math.PI * 2, 0, Math.PI * 0.42), water);
-watersAbove.position.y = 3.2;
-scene.add(watersAbove);
-
-// Firmament
-const firmament = new THREE.Mesh(new THREE.SphereGeometry(3.6, 48, 24, 0, Math.PI * 2, 0, Math.PI * 0.48), vault);
-firmament.position.y = 2.4;
-scene.add(firmament);
-
-// Earth disk
-const earthDisk = new THREE.Mesh(new THREE.CylinderGeometry(2.4, 2.4, 0.35, 48), earth);
-earthDisk.position.y = 0.2;
-scene.add(earthDisk);
-
-// Surrounding sea
-const sea = new THREE.Mesh(new THREE.CylinderGeometry(3.3, 3.3, 0.12, 48), water);
-sea.position.y = 0.05;
-scene.add(sea);
-
-// Waters below / underworld
-const deep = new THREE.Mesh(new THREE.CylinderGeometry(2.8, 2.2, 1.4, 32), under);
-deep.position.y = -0.9;
-scene.add(deep);
-
-// Sun and moon on the vault
-const sun = new THREE.Mesh(new THREE.SphereGeometry(0.18, 16, 16), new THREE.MeshStandardMaterial({ color: 0xE8C070, emissive: 0xC4A574, emissiveIntensity: 0.4 }));
-sun.position.set(1.8, 3.6, 0.6);
-scene.add(sun);
-const moon = new THREE.Mesh(new THREE.SphereGeometry(0.14, 16, 16), new THREE.MeshStandardMaterial({ color: 0xE8E0D0, emissive: 0xC4A574, emissiveIntensity: 0.2 }));
-moon.position.set(-1.6, 3.4, -0.4);
-scene.add(moon);
-
-function makeLabel(text, x, y, z) {
-  const c = document.createElement('canvas');
-  c.width = 512; c.height = 128;
-  const ctx = c.getContext('2d');
-  ctx.fillStyle = 'rgba(26,35,44,0.92)';
-  ctx.fillRect(8, 16, 496, 96);
-  ctx.fillStyle = '#F4F0E6';
-  ctx.font = '600 40px Iowan Old Style, Palatino, Georgia, serif';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText(text, 256, 64);
-  const tex = new THREE.CanvasTexture(c);
-  const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false }));
-  sprite.position.set(x, y, z);
-  sprite.scale.set(2.2, 0.55, 1);
-  scene.add(sprite);
-}
-makeLabel('Waters above', 0, 5.4, 0);
-makeLabel('Firmament', 0, 3.9, 2.2);
-makeLabel('Earth', 0, 0.7, 2.6);
-makeLabel('Waters below', 0, -1.6, 0);
-makeLabel('Sun', 1.8, 4.1, 0.6);
-makeLabel('Moon', -1.6, 3.9, -0.4);
-
-function resize() {
-  const w = container.clientWidth;
-  const h = container.clientHeight;
-  camera.aspect = w / h;
-  camera.updateProjectionMatrix();
-  renderer.setSize(w, h);
-}
-function animate() {
-  requestAnimationFrame(animate);
-  controls.update();
-  renderer.render(scene, camera);
-}
-resize();
-animate();
-window.addEventListener('resize', resize);
-
-// Section navigation
-document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.go;document.querySelectorAll('.nav-btn').forEach(n=>n.classList.toggle('active',n.dataset.panel===id));document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));const p=document.getElementById(id);if(p){p.classList.add('active');p.scrollIntoView({behavior:'smooth',block:'start'});}}));
-document.querySelectorAll('.nav-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-    btn.classList.add('active');
-    const p=document.getElementById(btn.dataset.panel);p.classList.add('active');p.scrollIntoView({behavior:'smooth',block:'start'});
+<script>
+document.querySelectorAll(".nav a, .box a").forEach(a=>{
+  a.addEventListener("click", ()=>{
+    document.querySelectorAll(".nav a").forEach(n=>n.classList.toggle("active", n.getAttribute("href")===a.getAttribute("href")));
   });
 });
 </script>
