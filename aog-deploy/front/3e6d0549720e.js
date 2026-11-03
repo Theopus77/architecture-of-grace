@@ -1886,7 +1886,7 @@ function mkEncode(buf, kind){
     }catch(e){ no(e); }
   });
 }
-function mkFile(pick, box, kind){
+async function mkFile(pick, box, kind){
   const recs = pick.map(pid=>CRATE.lib.find(r=>r.id===pid)).filter(Boolean);
   ctx();
   const bufs = [];
@@ -2383,7 +2383,7 @@ function holdable(btn, down, up){
 }
 /* Start, or Stop. A deck synced to a playing MASTER does not spin up from still: it
    starts at full speed on the master's next beat, booked to the exact frame. */
-async let NEEDLE=null;function needleBuf(){if(NEEDLE||!actx)return NEEDLE;const n=Math.floor(actx.sampleRate*0.18);const b=actx.createBuffer(1,n,actx.sampleRate);const d=b.getChannelData(0);for(let i=0;i<n;i++){const t=i/actx.sampleRate;const env=Math.exp(-t*28);d[i]=(Math.sin(2*Math.PI*55*t)*0.35+(Math.random()*2-1)*0.08)*env;}NEEDLE=b;return b;}function needleDrop(deck){if(!actx||!deck)return;try{const src=actx.createBufferSource();src.buffer=needleBuf();const g=actx.createGain();g.gain.value=0.22;src.connect(g);g.connect(deck.gain||bus||actx.destination);src.start();src.onended=()=>{try{src.disconnect();g.disconnect();}catch(e){}};}catch(e){}}function startDeck(d, from){const wasOff=!d.motor;
+let NEEDLE=null;function needleBuf(){if(NEEDLE||!actx)return NEEDLE;const n=Math.floor(actx.sampleRate*0.18);const b=actx.createBuffer(1,n,actx.sampleRate);const d=b.getChannelData(0);for(let i=0;i<n;i++){const t=i/actx.sampleRate;const env=Math.exp(-t*28);d[i]=(Math.sin(2*Math.PI*55*t)*0.35+(Math.random()*2-1)*0.08)*env;}NEEDLE=b;return b;}function needleDrop(deck){if(!actx||!deck)return;try{const src=actx.createBufferSource();src.buffer=needleBuf();const g=actx.createGain();g.gain.value=0.22;src.connect(g);g.connect(deck.gain||bus||actx.destination);src.start();src.onended=()=>{try{src.disconnect();g.disconnect();}catch(e){}};}catch(e){}}async function startDeck(d, from){const wasOff=!d.motor;
   if(!d.buf) return;
   ctx(); await ensureNode(d);
   const m = masterDeck();
