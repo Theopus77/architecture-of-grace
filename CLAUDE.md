@@ -28,7 +28,7 @@ These hold at all times. A future agent reads them before any music-room change.
 - Chops of a record go up to 8 bars (32 beats). The choices are 1 beat, 2 beats, 1 bar, 2 bars, 4 bars, 8 bars. Do not leave the maximum at 2 beats or 1 bar.
 - The Drum Machine, the Piano and the Band hold the same instruments. A sound added to one is added to the other two. The Drum Machine notes bank is the full list; the Piano and the Band keyboards play that same catalog.
 - Sounds are from real instruments. A synthesized stand-in is not acceptable for guitar, bass, piano, drums or voice. If a room still uses a generated tone, say so and replace it with a recorded sample. Do not ship a fake guitar.
-- One-sound drum kits sit in a One sound group at the top of the kit list, above Drum sets. The group has Kick, Snare, Hat, Clap, Rim, Tom, 909 Kick, Arena Kick, Trap Clap, Live Snare, Gospel Hat and Crash. Add more there, never below.
+- One-sound drum kits sit in a One sound group at the top of the kit list, above Drum sets. The group has Kick, Snare, Hat, Clap, Rim, Tom, 909 Kick, Arena Kick, Trap Clap, Live Snare, Gospel Hat and Crash. File counts must match the real files. A one-sound kit decodes each file once and shares it across its pads, so picking it cannot freeze the page. Add more there, never below.
 - The guitar plays recorded notes (steel, nylon, black hollow-body, green). The recorded set loads as soon as the page is ready. Once it is in, every note and every chord note plays the nearest real sample, even if it must stretch. Never fall back to the synthesized string.
 - After any music-room change, update the fast copy the site serves, or the live page will not change.
 
