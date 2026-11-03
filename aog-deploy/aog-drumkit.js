@@ -1028,7 +1028,7 @@
   root.AOGDrumKit = {
     ids: IDS.slice(), starters: STARTERS, parts: parts, unparts: unparts, has: has, machine: machine, made: made, label: label, padNames: padNames, files: files,
     load: load, post: post, route: route, playDirect: playDirect, state: function (b) { return STATE[b] || null; },
-    ready: function (b) { return !!DATA[b]; }, ids: function () { return IDS.slice(); },
+    ready: function (b) { return !!DATA[b]; },
     /* AOG-DRUM-PERC-V1: a pad's own words, the drum it belongs to, how the Drum Kit draws it, and the hand-drum kits */
     padWord: padWord, drumOf: drumOf, look: look, family: family, hand: function (b) { return !!(has(b) && KITS[b].hand); },
     /* AOG-DRUM-MORE-V1: the kit menus' groups, in order, and each kit's group; the new grooves' beat-menu groups */
