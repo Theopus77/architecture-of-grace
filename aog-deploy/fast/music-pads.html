@@ -1520,7 +1520,7 @@ function selectSoon(pi){ if(S.sel===pi) return; S.sel=pi; cancelAnimationFrame(s
 function outLat(){ return ac ? Math.min(0.3, Math.max(0, (ac.outputLatency||0)+(ac.baseLatency||0))) : 0; }
 function press(id, pi, vel){
   const bi=S.bank, c=ctx();
-  if(!canPlay(bi)){ selectSoon(pi); prep(bi); return; }
+  if(!canPlay(bi)){ selectSoon(pi); const p=prep(bi); window._tapQ=window._tapQ||[]; window._tapQ.push({bi:bi,pi:pi,vel:vel,id:id}); if(p&&p.then) p.then(()=>{ const q=window._tapQ||[]; window._tapQ=[]; q.forEach(h=>{ if(canPlay(h.bi)) press(h.id,h.pi,h.vel); }); }); return; }
   if(S.rpt){
     const ticks=S.rate, step=ticks*spt(), now=c.currentTime;
     hitPad(bi, pi, vel, now, true);
@@ -2435,7 +2435,7 @@ function init(){
   S.banks.forEach(B=>{ if(!INST[B.inst]) B.inst="k:grand"; if(KITS().length && KITS().indexOf(B.kitC)<0) B.kitC=KITS()[Math.min(2, KITS().length-1)]; });
   bindPads();
   /* AOG-KIT-INSTANT-V1: one-sound kits are in before the first tap */
-  if(window.AOGDrumKit){ ["K1","S1","H1","C1","R1","T1","KK","BD","SN","CH","OH","CY","CL","K3","S2","TM","RM","RD"].forEach(k=>AOGDrumKit.load(k,{},{},x=>x,null,{hiOnly:true})); } bindBounce(); pvInit();
+  if(window.AOGDrumKit){ ["KK","BD","K3","SN","S2","CH","OH","CY","CL","TM","RM","RD"].forEach(k=>AOGDrumKit.load(k,{},{},x=>x,null,{hiOnly:true})); } bindBounce(); pvInit();
   bindMidi();   /* AOG-MIDI-V1 */
   $("guideLink").addEventListener("click",()=>LES.mark("guide1"));
   $("takeBtn").addEventListener("click",()=>{ LES.mark($("takeBtn").getAttribute("aria-pressed")==="true" ? "take2" : "take1"); }, true);   /* before the recorder: pressed = it is about to stop */
