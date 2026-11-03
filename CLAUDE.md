@@ -62,7 +62,10 @@ the Drum Machine. Updated 2026-10-31 with the craftsman pass:
   a short gap between songs. Share opens the share sheet (Messages, AirDrop, Mail) with the record
   as a .wav. Download saves that same .wav. Putting it on, sharing, or
   downloading also saves it as an album under Your records, with your tracks
-  in order, so a tap puts that record back on a deck. Nothing is uploaded. Nothing is uploaded. The song leaves only when
+  in order, so a tap puts that record back on a deck. The pick list survives
+  a repaint. If a song is no longer in the crate, the page names it instead of
+  failing with a blank. A new copy of a song already in the crate gets its own
+  id, so it does not replace the one you picked. Nothing is uploaded. Nothing is uploaded. The song leaves only when
   the person chooses to send it. The live site serves this from the front script.
 - Full screen: a Full screen button sits on the Studio bar (next to the
   language buttons), where it is visible, and also on each deck head. It uses the
