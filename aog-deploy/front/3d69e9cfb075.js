@@ -52,7 +52,7 @@ const STR={
   lead:{en:"Brass, woodwinds, strings, percussion and folk instruments, almost all recorded for real. Tap a chord, or play the keys.",es:"Metales, maderas, cuerdas, percusión e instrumentos de folk, casi todos grabados de verdad. Toca un acorde o toca las teclas."},
   drums:{en:"The drum machine",es:"La caja de ritmos"}, decks:{en:"The turntables",es:"Los tocadiscos"},
   instrument:{en:"Instrument",es:"Instrumento"},
-  grpBrass:{en:"Brass",es:"Metales"}, grpWinds:{en:"Woodwinds",es:"Maderas"},
+  grpKeys:{en:"Keys",es:"Teclas"}, grpVoices:{en:"Voices",es:"Voces"}, grpWorld:{en:"World",es:"Del mundo"}, grpBrass:{en:"Brass",es:"Metales"}, grpWinds:{en:"Woodwinds",es:"Maderas"},
   grpStrings:{en:"Strings",es:"Cuerdas"}, grpPerc:{en:"Percussion",es:"Percusión"}, grpJazz:{en:"Jazz",es:"Jazz"}, grpBands:{en:"Bands",es:"Bandas"}, grpFolk:{en:"Folk and country",es:"Folk y country"}, grpAll:{en:"Everyone",es:"Todos"},
   loadingPlayers:{en:"Getting the {name} ready · {n} of {all} players. The ready ones play now.",es:"Preparando: {name} · {n} de {all} instrumentos. Los que están listos ya suenan."},
   drumThree:{en:"A waltz counts in threes, so it plays without your four-beat drum beat.",es:"Un vals cuenta de tres en tres, así que suena sin tu ritmo de batería de cuatro."},
