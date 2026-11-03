@@ -24,7 +24,8 @@ These hold at all times. A future agent reads them before any music-room change.
 - The Turntables must load. After any edit to the decks front script, run a syntax check (`node --check`) before pushing. A stray `async` or an `await` outside an async function takes the whole page down, and the decks disappear.
 - Instant pads, no lag, no freezes, on every device, in every mode, including fullscreen and landscape.
 - Every kit preloads when the page opens, so a tap never waits on a load.
-- AOGDrumKit.ids is a list, never a function. The page calls .filter on it. Turning it into a function crashes the Drum Machine and the banks disappear.
+- AOGDrumKit.ids is a list, never a function.
+- The Drum Machine loads aog-drumkit.js from the site root (`/aog-drumkit.js`), never a relative path. A relative path 404s from /fast/ and the banks disappear. The page calls .filter on it. Turning it into a function crashes the Drum Machine and the banks disappear.
 - A kit change cuts every voice at once. No tail, no leftover noise. The glue release is short so the bus does not hold a sound after it has stopped.
 - Pads never move. A hit is a colour change only. No gradient that follows the finger, no size change, no shadow jump, no rattle. This is the neurodivergent rule: predictable, still, colour-only. Landscape pads sit in a fixed 6 by 4 grid with a 72 px floor so the grid cannot collapse and miss a tap. Hits answer at once. The stealer runs before the hit and after it. Every voice path (drums, notes, chords, chops) joins RING and is stolen. `letGo` stops and disconnects immediately. Never a fade on the steal path. Never a low cap.
 - Fullscreen landscape: the 24 pads fill the screen, 6 across and 4 down, no leftover gaps, no overflow. The grid uses the full width and height of the play view.
