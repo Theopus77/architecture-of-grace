@@ -273,6 +273,12 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
 #padView .pm-knob::before{inset:6px}
 #padView .pm-kn{min-width:56px}
 /* sideways, the knobs stand in a column beside the pads, so the pads keep their height */
+/* AOG-PADS-LAND-V1: fullscreen landscape fills the screen, 6 across, 4 down, no leftover gaps */
+@media (orientation:landscape){
+  body.aog-play #padView .pads{width:100% !important;height:100% !important;max-width:none !important;
+    grid-template-columns:repeat(6,minmax(0,1fr));grid-template-rows:repeat(4,minmax(0,1fr));gap:6px}
+  body.aog-play #padView .pads .pad{aspect-ratio:auto;min-height:0;height:100%}
+}
 @media (orientation:landscape){
   body.aog-play #padView.kn{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto minmax(0,1fr);column-gap:12px}
   #padView.kn .pv-bar,#padView.kn .pv-stage{grid-column:1/-1} #padView.kn .pv-bar{grid-row:1} #padView.kn .pv-stage{grid-row:2}
@@ -582,7 +588,7 @@ const STR={
   kitA:{en:"Pads 1 to 8",es:"Pads 1 a 8"}, kitB:{en:"Pads 9 to 16",es:"Pads 9 a 16"}, kitC:{en:"Pads 17 to 24",es:"Pads 17 a 24"},
   inst:{en:"Instrument",es:"Instrumento"}, key:{en:"Key",es:"Tono"}, scale:{en:"Scale",es:"Escala"}, oct:{en:"Range",es:"Registro"},
   lowest:{en:"Lowest",es:"Muy grave"}, low:{en:"Low",es:"Grave"}, mid:{en:"Middle",es:"Medio"}, high:{en:"High",es:"Agudo"},
-  record:{en:"Record to chop",es:"Disco para cortar"}, fromBar:{en:"Start at",es:"Empieza en"}, clen:{en:"Each pad plays",es:"Cada pad suena"}, clen1:{en:"1 beat",es:"1 tiempo"}, clen2:{en:"2 beats",es:"2 tiempos"}, clen4:{en:"1 bar",es:"1 compás"}, about:{en:"about {s} s",es:"unos {s} s"}, barN:{en:"Bar {n}",es:"Compás {n}"}, whole:{en:"The whole take",es:"Toda la toma"},
+  record:{en:"Record to chop",es:"Disco para cortar"}, fromBar:{en:"Start at",es:"Empieza en"}, clen:{en:"Each pad plays",es:"Cada pad suena"}, clen1:{en:"1 beat",es:"1 tiempo"}, clen2:{en:"2 beats",es:"2 tiempos"}, clen4:{en:"1 bar",es:"1 compás"}, clen8:{en:"2 bars",es:"2 compases"}, clen16:{en:"4 bars",es:"4 compases"}, clen32:{en:"8 bars",es:"8 compases"}, about:{en:"about {s} s",es:"unos {s} s"}, barN:{en:"Bar {n}",es:"Compás {n}"}, whole:{en:"The whole take",es:"Toda la toma"},
   matchT:{en:"Use its tempo",es:"Usar su tempo"},
   g_keys:{en:"Keys",es:"Teclados"}, g_guitar:{en:"Guitar",es:"Guitarra"}, g_bass:{en:"Bass",es:"Bajo"}, g_band:{en:"The band",es:"La banda"}, g_voices:{en:"Voices",es:"Voces"}, g_world:{en:"World",es:"Del mundo"},
   g_crate:{en:"Records from the turntables",es:"Discos de los tocadiscos"}, g_inbox:{en:"Your takes at the Mixing Desk",es:"Tus tomas en la mesa de mezclas"},
@@ -1038,7 +1044,7 @@ function chopsOf(B, buf){
   else { const d=buf.duration/16; for(let i=0;i<16;i++) add(i*d, d); for(let i=0;i<8;i++) add(2*i*d, 2*d); }
   return out;
 }
-function chopLen(B){ return B.clen===1 || B.clen===4 ? B.clen : 2; }
+function chopLen(B){ return [1,2,4,8,16,32].indexOf(B.clen)>=0 ? B.clen : 2; } /* up to 8 bars */
 
 /* ══ the four kinds of bank ══ */
 function KITS(){ return (window.AOGDrumKit ? AOGDrumKit.ids : []).filter(b=>Object.keys(AOGDrumKit.padNames(b)).every(id=>!AOGDrumKit.made(b,id))); }
@@ -1345,7 +1351,7 @@ function trigger(bi, pi, vel, when, T){
     if(o){ try{ o.src.playbackRate.value=rate; }catch(e){} if(n==="OPEN") OPEN[bi].push(o); out.gain.value*=mono(o.src.buffer);
       if(live){
         const dv={s:o.src, g:o.gain, done:false};
-        RING.push(dv); stealTo(CAP);
+        stealTo(CAP-1); RING.push(dv); stealTo(CAP); /* pre-steal so a chord stack cannot pile up */
         o.src.onended=()=>{ try{ o.src.disconnect(); o.gain.disconnect(); }catch(e){} dv.done=true; const k=RING.indexOf(dv); if(k>=0) RING.splice(k,1); unplug(); const j=OPEN[bi].indexOf(o); if(j>=0) OPEN[bi].splice(j,1); };
       } }
     else if(live) unplug();
@@ -1372,7 +1378,7 @@ function trigger(bi, pi, vel, when, T){
     s.buffer=tb.b; s.playbackRate.value=Math.pow(2, (m-z.m)/12-(Y.c||0)/1200)*rate;
     g.gain.setValueAtTime(0, when); g.gain.linearRampToValueAtTime(lv*tb.g*Y.g*mono(tb.b)*padEven(B.inst, Y.url, m-z.m), when+Math.max(0.005, tb.fade));
     s.connect(g); g.connect(out); s.start(when, tb.off); const v={s:s, g:g, url:Y.url}; vs.push(v);
-    if(live){ RING.push(v); s.onended=()=>{ try{ s.disconnect(); g.disconnect(); }catch(e){} const k=RING.indexOf(v); if(k>=0) RING.splice(k,1); v.done=true; if(vs.every(x=>x.done)) unplug(); }; }
+    if(live){ stealTo(CAP-1); RING.push(v); stealTo(CAP); s.onended=()=>{ try{ s.disconnect(); g.disconnect(); }catch(e){} const k=RING.indexOf(v); if(k>=0) RING.splice(k,1); v.done=true; if(vs.every(x=>x.done)) unplug(); }; }
     });
   });
   if(live){ if(!vs.length) unplug(); if(ac && ac.state==="suspended") ac.resume(); stealTo(CAP-1); }
@@ -1955,7 +1961,7 @@ function paintSetRow(){
     if(!(R && R.phrases)) h+=field("fBar", t("fromBar"), starts.length ? starts.map(b=>opt(b, esc(t("barN",{n:b})), B.bar)).join("") : opt(1, esc(t("whole")), 1));
     /* AOG-CHOPS-SECONDS-V1 (2026-10-12) — Jimmy: "What is a beat?" Each length also says about how long it lasts on this record */
     const secs=n=>{ if(!(R && R.bpm>0)) return ""; const v=n*60/R.bpm; return " · "+t("about").replace("{s}", (v<10 ? (Math.round(v*10)/10) : Math.round(v)).toLocaleString(S0.lang==="es"?"es":"en")); };
-    if(!(R && R.phrases)) h+=field("fClen", t("clen"), [1,2,4].map(n=>opt(n, esc(t("clen"+n)+secs(n)), chopLen(B))).join(""));
+    if(!(R && R.phrases)) h+=field("fClen", t("clen"), [1,2,4,8,16,32].map(n=>opt(n, esc(t("clen"+n)+secs(n)), chopLen(B))).join(""));
     if(R && R.bpm>0) h+=`<button type="button" class="pm-b" id="fMatch">${esc(t("matchT"))} (${Math.round(R.bpm)})</button>`;
   } else {
     h=field("fInst", t("inst"), instOptions(B.inst), true);
