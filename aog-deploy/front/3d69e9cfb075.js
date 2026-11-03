@@ -257,11 +257,12 @@ const SOUNDS={
      violins and violas hold the chord softly under the winds. It loads lean (one recording per note, only the notes it
      uses) and each player joins in as soon as its notes are in. AOG-BAND-SAX2-V1: the tenor and soprano saxophones join
      the alto, so everyone still plays. */
-  orchestra:{grp:"grpAll", en:"Orchestra", es:"Orquesta", parts:["violins","violas","cellos","contrabass"],
-    dbl:[["flute","top",12],["oboe","top",0],["clarinet","mid",0],["bassoon","b",12],["horn","mid",0],
-         ["trumpet","top",0],["trombone","lo",0],["tuba","b",0],["timpani","b",0],["harp","b",24],["glockenspiel","top",12]],
-    kit:["cy"], hold:["violins","violas"], trim:{glockenspiel:0.3, trumpet:0.55, trombone:0.5, tuba:0.45, kit:2.5}, lean:true, gain:0.514, rev:0.2, stand:"string",
-    who:{en:"strings lead, woodwinds and a little brass",es:"las cuerdas guían, maderas y un poco de metal"}}
+  orchestra:{grp:"grpAll", en:"Orchestra", es:"Orquesta", parts:["strings","violins","cellos","contrabass"],
+    dbl:[["violas","mid",0],["violins","top",12],["flute","top",12],["oboe","top",0],["clarinet","mid",0],["bassoon","lo",0],
+         ["horn","mid",0],["horn","lo",0],["timpani","b",0],["harp","mid",0]],
+    hold:["strings","violins","violas"], trim:{flute:0.4, oboe:0.45, clarinet:0.4, bassoon:0.5, horn:0.55, harp:0.35, timpani:0.6, violins:0.7},
+    lean:true, gain:0.46, rev:0.42, stand:"string",
+    who:{en:"a string section in a hall, woodwinds and horns in support",es:"una sección de cuerdas en una sala, maderas y cornos de apoyo"}}
 };
 /* AOG-BAND-BREATH-V1: with the breath in front of a wind or bowed note skipped, a chord's players reach their tone together,
    so its loudest moment is louder: the orchestra (0.59 to 0.491), the tenor sax (1.364 to 1.193) and the modal tenor
