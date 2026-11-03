@@ -22,7 +22,8 @@ overrides it in the same conversation.
 These hold at all times. A future agent reads them before any music-room change.
 
 - The Turntables must load. After any edit to the decks front script, run a syntax check (`node --check`) before pushing. A stray `async` or an `await` outside an async function takes the whole page down, and the decks disappear.
-- Instant pads, no lag, no freezes, on every device, in every mode, including fullscreen and landscape. Hits answer at once. The stealer runs before the hit and after it. Every voice path (drums, notes, chords, chops) joins RING and is stolen. `letGo` stops and disconnects immediately. Never a fade on the steal path. Never a low cap.
+- Instant pads, no lag, no freezes, on every device, in every mode, including fullscreen and landscape.
+- Pads never move. A hit is a colour change only. No gradient that follows the finger, no size change, no shadow jump, no rattle. This is the neurodivergent rule: predictable, still, colour-only. Landscape pads sit in a fixed 6 by 4 grid with a 72 px floor so the grid cannot collapse and miss a tap. Hits answer at once. The stealer runs before the hit and after it. Every voice path (drums, notes, chords, chops) joins RING and is stolen. `letGo` stops and disconnects immediately. Never a fade on the steal path. Never a low cap.
 - Fullscreen landscape: the 24 pads fill the screen, 6 across and 4 down, no leftover gaps, no overflow. The grid uses the full width and height of the play view.
 - Chops of a record go up to 8 bars (32 beats). The choices are 1 beat, 2 beats, 1 bar, 2 bars, 4 bars, 8 bars. Do not leave the maximum at 2 beats or 1 bar.
 - The Drum Machine, the Piano and the Band hold the same instruments. A sound added to one is added to the other two. The Drum Machine notes bank is the full list; the Piano and the Band keyboards play that same catalog.
