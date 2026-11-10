@@ -999,7 +999,7 @@ function bankObj(){ const o={}; BANKS.forEach(b=>o[b]={}); return o; }
 if(window.AOGDrumKit){ const own=b=>!(AOGDrumKit.hand && AOGDrumKit.hand(b)); AOGDrumKit.ids.filter(own).forEach(b=>{ if(BANKS.indexOf(b)<0) BANKS.push(b); }); AOGDrumKit.starters.filter(p=>!p.hand).forEach(p=>{ if(!STARTERS.some(x=>x.id===p.id)) STARTERS.push(p); }); }
 BEATS.forEach(p=>{ if(!STARTERS.some(x=>x.id===p.id)) STARTERS.push(p); });   /* AOG-DRUM-BEATS-V1: after the kits' beats */
 const S = { bench:(function(){ try{ return localStorage.getItem("aog.drums.bench")||"simple"; }catch(e){ return "simple"; } })(), lang: localStorage.getItem("aog.lang")==="es"?"es":"en", theme: document.documentElement.getAttribute("data-theme")||"light",
-  view:"home", bpm:96, swing:0.50, vol:0.8, outF:0.78, bit:true, sliderMode:"mix",
+  view:"home", bpm:96, swing:0.50, vol:1.0, outF:0.85, bit:true, sliderMode:"mix",
   playing:false, rec:false, metro:false, bank:"A", sel:"kick", step:0, grid: emptyGrid(), met:{}, chan: freshChans(),
   seg:0, segs:null, track:[], trackOn:false, trkI:0, tc:"1/16", trim:bankObj(), clip:null, era:1, roll:"off", starter:null, undo:null, kitUndo:null,
   stepTime:0, sixteenth:0.15625, mute:{}, solo:{}, padMode:null, erase:false,
@@ -2250,6 +2250,10 @@ function machineHtml(){
       <button type="button" class="s-play${S.playing?" go":""}" data-simple="play">${S.playing?t("sStop"):t("sPlay")}</button>
       <button type="button" class="s-clear" data-simple="clear">${t("sClear")}</button>
       <button type="button" class="s-decks" data-simple="decks">${t("sDecks")}</button>
+    </div>
+    <div class="simple-strip" style="grid-template-columns:1fr 1fr;margin-top:.4rem">
+      <button type="button" class="sp-key${S.bank==="V"?" on":""}" data-simple-bank="V" style="border-color:#c96a6a;color:#ffd0d0">VOCALS (V)</button>
+      <button type="button" class="sp-key${S.bank==="Y"?" on":""}" data-simple-bank="Y" style="border-color:#6ea56a;color:#c6f7b0">CLASSROOM (Y)</button>
     </div>
     <div class="pick-row">${starterRow()}
     <div class="simple-row"><div class="kit-src" data-aog-dropdown="${STR.kitMenu.en}|${STR.kitMenu.es}">${kitMenu().map(b=>`<button type="button" class="${S.bank===b?"on":""}" data-simple-bank="${b}">${kitName(b)}</button>`).join("")}</div>${kitBackKeys("sp-key s-reset")}</div></div>
