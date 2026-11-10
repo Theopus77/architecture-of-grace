@@ -1113,7 +1113,7 @@ let engine=null, kitReady=false, engineFailed=false, booting=null;
 const noiseCache=new WeakMap();
 /* the last 6% is left on the table on purpose: eight voices on every
    sixteenth peaked over full scale without it, which is a crackle, not volume. */
-function volGain(v){ return Math.max(0, Math.min(1, v)) * 0.94; }
+function volGain(v){ return Math.max(0.4, Math.min(1, v)) * 1.2; }
 /* a bench saved before this change kept a number on the old 0.08–0.55 knob;
    the same loudness on the new knob is a little under twice that. */
 function fixVol(v){
@@ -1157,7 +1157,7 @@ function ctx(){
     makeup.connect(limiter); limiter.connect(master);
     master.connect(actx.destination);
   }
-  if(actx.state==="suspended") actx.resume();
+  if(actx.state==="suspended"){ actx.resume(); setTimeout(()=>{ if(actx && actx.state==="suspended") actx.resume(); }, 50); }
   return actx;
 }
 function noiseBuf(ac){
@@ -1747,11 +1747,12 @@ function hit(id, time, fromSeq, accent){
     save();
   }
   if(!padHasSound(id)) return;
-  if(engine && kitReady){
+  const useProc = (S.bank==="V" || S.bank==="Y");
+  if(engine && kitReady && !useProc){
     engine.port.postMessage(chanMsg(id, t0, accent));
   } else {
-    if(realKit(S.bank) && !madePad(S.bank, id)) AOGDrumKit.playDirect(c, bus, S.bank, id, t0, accent); else renderVoice(id, t0, bus, c, S.bank);   /* AOG-DRUM-REAL-V1 */
-    bootSampler();
+    if(realKit(S.bank) && !madePad(S.bank, id)) AOGDrumKit.playDirect(c, bus, S.bank, id, t0, accent); else renderVoice(id, t0, bus, c, S.bank);
+    if(!useProc) bootSampler();
   }
 }
 let gridSoon=0;
@@ -2255,6 +2256,7 @@ function machineHtml(){
       <button type="button" class="sp-key${S.bank==="V"?" on":""}" data-simple-bank="V" style="border-color:#c96a6a;color:#ffd0d0">VOCALS (V)</button>
       <button type="button" class="sp-key${S.bank==="Y"?" on":""}" data-simple-bank="Y" style="border-color:#6ea56a;color:#c6f7b0">CLASSROOM (Y)</button>
     </div>
+    <button type="button" id="testSoundBtn" class="sp-key" style="width:100%;margin:.4rem 0;border-color:#e0a640;color:#ffe08a;min-height:48px">TEST SOUND</button>
     <div class="pick-row">${starterRow()}
     <div class="simple-row"><div class="kit-src" data-aog-dropdown="${STR.kitMenu.en}|${STR.kitMenu.es}">${kitMenu().map(b=>`<button type="button" class="${S.bank===b?"on":""}" data-simple-bank="${b}">${kitName(b)}</button>`).join("")}</div>${kitBackKeys("sp-key s-reset")}</div></div>
     ${chordRow()}${sampleRow()}
@@ -3415,6 +3417,18 @@ function bind(){
   document.querySelectorAll("[data-drumsample]").forEach(b=>b.onclick=putSample);  /* AOG-TAKE-TO-PADS-V1 */
   { const sm=document.getElementById("smPad"); if(sm) sm.onchange=()=>{ SMP.pad=sm.value; }; }
   document.querySelectorAll("[data-simple-bank]").forEach(b=>b.onclick=()=>{ const r=document.querySelector('[data-bank="'+b.getAttribute("data-simple-bank")+'"]'); if(r) r.click(); });
+  const testBtn=document.getElementById("testSoundBtn");
+  if(testBtn) testBtn.onclick=()=>{
+    const c=ctx();
+    const o=c.createOscillator(); const g=c.createGain();
+    o.type="sine"; o.frequency.value=440;
+    g.gain.setValueAtTime(0.3, c.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, c.currentTime+0.4);
+    o.connect(g); g.connect(c.destination);
+    o.start(); o.stop(c.currentTime+0.45);
+    S.lcdNote="TEST TONE";
+    refreshLcd();
+  };
   document.querySelectorAll("[data-simple-seg]").forEach(b=>b.onclick=()=>{ const r=document.querySelector('[data-seg="'+b.getAttribute("data-simple-seg")+'"]'); if(r) r.click(); document.querySelectorAll("[data-simple-seg]").forEach(x=>x.classList.toggle("on", x===b)); });
   document.querySelectorAll("[data-simple]").forEach(b=>b.onclick=()=>{ const id={play:"playBtn",clear:"clearBtn",decks:"toDecks"}[b.getAttribute("data-simple")]; const r=document.getElementById(id); if(r) r.click(); });
   const play=document.getElementById("playBtn");
