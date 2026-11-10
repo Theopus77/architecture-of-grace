@@ -50,7 +50,7 @@ header{display:flex;justify-content:space-between;align-items:center;gap:.75rem;
 .brand{font-size:.75rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);text-decoration:none}
 .tools{display:flex;gap:.5rem}
 .pill{min-height:44px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:0 .9rem;font-weight:600;display:inline-flex;align-items:center}
-button,label.file{font:inherit;cursor:pointer;touch-action:none}
+button,label.file{font:inherit;cursor:pointer;touch-action:manipulation}
 .kicker{font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--steel)}
 .lead{max-width:66ch;color:var(--muted)}
 /* AOG-DECKS-FIT-V1 (2026-09-26): Jimmy's iPhone showed Deck B wider than the
@@ -833,46 +833,53 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
 </script>
 <script src="/front/89e4815a9a4c.js"></script>
 <script>
-/* Safari touch fix: buttons and vinyl respond to finger */
+/* Safari: turn touches into the clicks and pointer events the decks expect */
 (function(){
-  var s=document.createElement("style");
-  s.textContent="button,a,label,.pill,.go{touch-action:manipulation!important;-webkit-tap-highlight-color:transparent} .platter{touch-action:none}";
-  document.head.appendChild(s);
-  function wake(){ try{ if(window.actx&&window.actx.state!=="running") window.actx.resume(); }catch(e){} }
-  document.addEventListener("touchstart",wake,{capture:true,passive:true});
-  document.addEventListener("pointerdown",wake,{capture:true,passive:true});
-  document.addEventListener("click",function(e){
-    var b=e.target.closest&&e.target.closest("button,[data-play],[data-slip],[data-chop]");
-    if(b&&!b._sf){ b._sf=1; var ev=new Event("click",{bubbles:true}); }
-  },true);
-  function armPlatter(p){
-    if(p._armed) return; p._armed=1;
-    var tid=null,lastA=0,lastT=0;
-    p.addEventListener("touchstart",function(e){
-      if(e.touches.length!==1) return;
+  var st=document.createElement("style");
+  st.textContent="button,.pill,.go,a,label{touch-action:manipulation!important;cursor:pointer} .platter{touch-action:none;cursor:grab}";
+  document.head.appendChild(st);
+
+  document.addEventListener("touchend", function(e){
+    var t=e.target;
+    var b=t.closest ? t.closest("button,a,.pill,.go,[role=button]") : null;
+    if(!b) return;
+    e.preventDefault();
+    b.click();
+  }, {capture:true, passive:false});
+
+  function arm(p){
+    if(p._sf) return; p._sf=1;
+    var id=null, la=0;
+    p.addEventListener("touchstart", function(e){
+      if(!e.touches[0]) return;
       var t=e.touches[0], r=p.getBoundingClientRect();
-      tid=t.identifier; lastA=Math.atan2(t.clientY-(r.top+r.height/2),t.clientX-(r.left+r.width/2));
-      lastT=performance.now();
-      p.style.transition="none";
-    },{passive:false});
-    p.addEventListener("touchmove",function(e){
-      if(tid==null) return;
-      var t=Array.from(e.touches).find(function(x){return x.identifier===tid});
+      id=t.identifier;
+      la=Math.atan2(t.clientY-r.top-r.height/2, t.clientX-r.left-r.width/2);
+      try{ p.dispatchEvent(new PointerEvent("pointerdown",{bubbles:true,clientX:t.clientX,clientY:t.clientY,pointerId:1})); }catch(x){}
+    }, {passive:false});
+    p.addEventListener("touchmove", function(e){
+      var t=Array.prototype.find.call(e.touches, function(x){return x.identifier===id});
       if(!t) return;
       e.preventDefault();
       var r=p.getBoundingClientRect();
-      var a=Math.atan2(t.clientY-(r.top+r.height/2),t.clientX-(r.left+r.width/2));
-      var da=a-lastA; if(da>Math.PI) da-=2*Math.PI; if(da<-Math.PI) da+=2*Math.PI;
-      lastA=a;
-      var cur=parseFloat(p.dataset.rot||"0");
-      p.dataset.rot=String(cur+da*180/Math.PI);
-      p.style.transform="rotate("+(cur+da*180/Math.PI)+"deg)";
-    },{passive:false});
-    p.addEventListener("touchend",function(){ tid=null; },{passive:true});
+      var a=Math.atan2(t.clientY-r.top-r.height/2, t.clientX-r.left-r.width/2);
+      var da=a-la; if(da>Math.PI)da-=2*Math.PI; if(da<-Math.PI)da+=2*Math.PI; la=a;
+      var rot=(parseFloat(p.dataset.r||"0")+da*57.3);
+      p.dataset.r=rot;
+      p.style.transform="rotate("+rot+"deg)";
+      try{ p.dispatchEvent(new PointerEvent("pointermove",{bubbles:true,clientX:t.clientX,clientY:t.clientY,pointerId:1})); }catch(x){}
+    }, {passive:false});
+    p.addEventListener("touchend", function(e){
+      id=null;
+      try{ p.dispatchEvent(new PointerEvent("pointerup",{bubbles:true,pointerId:1})); }catch(x){}
+    }, {passive:true});
   }
-  function scan(){ document.querySelectorAll(".platter").forEach(armPlatter); }
-  scan();
-  new MutationObserver(scan).observe(document.body,{childList:true,subtree:true});
+  function scan(){ document.querySelectorAll(".platter").forEach(arm); }
+  if(document.body) scan();
+  new MutationObserver(scan).observe(document.documentElement,{childList:true,subtree:true});
+  document.addEventListener("touchstart", function(){
+    try{ var AC=window.AudioContext||window.webkitAudioContext; if(AC && !window._ac){ window._ac=new AC(); window._ac.resume(); } }catch(e){}
+  }, {once:true, passive:true});
 })();
 </script>
 </body>
