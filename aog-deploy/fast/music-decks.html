@@ -832,5 +832,48 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
 })();
 </script>
 <script src="/front/89e4815a9a4c.js"></script>
+<script>
+/* Safari touch fix: buttons and vinyl respond to finger */
+(function(){
+  var s=document.createElement("style");
+  s.textContent="button,a,label,.pill,.go{touch-action:manipulation!important;-webkit-tap-highlight-color:transparent} .platter{touch-action:none}";
+  document.head.appendChild(s);
+  function wake(){ try{ if(window.actx&&window.actx.state!=="running") window.actx.resume(); }catch(e){} }
+  document.addEventListener("touchstart",wake,{capture:true,passive:true});
+  document.addEventListener("pointerdown",wake,{capture:true,passive:true});
+  document.addEventListener("click",function(e){
+    var b=e.target.closest&&e.target.closest("button,[data-play],[data-slip],[data-chop]");
+    if(b&&!b._sf){ b._sf=1; var ev=new Event("click",{bubbles:true}); }
+  },true);
+  function armPlatter(p){
+    if(p._armed) return; p._armed=1;
+    var tid=null,lastA=0,lastT=0;
+    p.addEventListener("touchstart",function(e){
+      if(e.touches.length!==1) return;
+      var t=e.touches[0], r=p.getBoundingClientRect();
+      tid=t.identifier; lastA=Math.atan2(t.clientY-(r.top+r.height/2),t.clientX-(r.left+r.width/2));
+      lastT=performance.now();
+      p.style.transition="none";
+    },{passive:false});
+    p.addEventListener("touchmove",function(e){
+      if(tid==null) return;
+      var t=Array.from(e.touches).find(function(x){return x.identifier===tid});
+      if(!t) return;
+      e.preventDefault();
+      var r=p.getBoundingClientRect();
+      var a=Math.atan2(t.clientY-(r.top+r.height/2),t.clientX-(r.left+r.width/2));
+      var da=a-lastA; if(da>Math.PI) da-=2*Math.PI; if(da<-Math.PI) da+=2*Math.PI;
+      lastA=a;
+      var cur=parseFloat(p.dataset.rot||"0");
+      p.dataset.rot=String(cur+da*180/Math.PI);
+      p.style.transform="rotate("+(cur+da*180/Math.PI)+"deg)";
+    },{passive:false});
+    p.addEventListener("touchend",function(){ tid=null; },{passive:true});
+  }
+  function scan(){ document.querySelectorAll(".platter").forEach(armPlatter); }
+  scan();
+  new MutationObserver(scan).observe(document.body,{childList:true,subtree:true});
+})();
+</script>
 </body>
 </html>
