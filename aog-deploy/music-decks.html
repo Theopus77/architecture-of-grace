@@ -6,6 +6,14 @@
 .dk-keys{display:none}
 @media (hover:hover) and (pointer:fine){ .dk-keys{display:block} }
 html.aog-keys .dk-keys{display:block}
+
+/* AOG-TWO-DECKS-IPHONE-V1: optional two turntables side-by-side on iPhone */
+body.two-decks .decks{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:.4rem}
+body.two-decks #deckC{display:none!important}
+body.two-decks .platter-wrap{width:min(160px,100%)!important}
+body.two-decks .viewpick{display:none}
+body.two-decks .pairbar{display:flex}
+
 </style><script>/* AOG-LIGHT-START-V1 — Jimmy: "All pages should start in light mode." Light unless this site was switched to dark. */(function(){var h=document.documentElement;if(!h.getAttribute("data-theme"))h.setAttribute("data-theme","light");})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <script>
@@ -737,6 +745,9 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
   </div>
   </div>
   <!-- AOG-DJ-LAYOUT-V1 — on a phone, one menu picks what the screen shows -->
+  
+  <button type="button" class="pill" id="twoDecksBtn" style="margin:.4rem 0">Two decks</button>
+
   <div class="viewpick no-print" id="viewpick">
     <div class="decktabs" id="decktabs" data-aog-dropdown="Show|Mostrar">
       <button type="button" class="pill on" data-decktab="A" id="decktabA">Deck A</button>
@@ -3021,9 +3032,18 @@ function padRelease(d, i){
 /* the next 8 beats, from the bar the needle is in, on pads 1 to 8 */
 function chop8(d){
   if(!d.buf || !(d.bpm > 0)) return;
-  const bl = beatLen(d), g0 = grid0(d), p = d.motor ? posAt(d, heardFrame()) : d.pos;
-  const bar0 = g0 + Math.floor((p - g0)/(4*bl) + 1e-7)*4*bl;
-  for(let i=0;i<8;i++) d.cues[i] = Math.max(1, Math.min(d.buf.length-4, bar0 + i*bl));
+  const bl = beatLen(d) || (d.buf.sampleRate * 60 / 120); // fallback ~120 BPM if beatLen fails
+  const g0 = grid0(d) || 0, p = d.motor ? posAt(d, heardFrame()) : d.pos;
+  let bar0 = g0 + Math.floor((p - g0)/(4*bl) + 1e-7)*4*bl;
+  // Ensure slices are meaningfully spaced; if they collapse, spread across ~8 seconds or available buffer
+  const minSpacing = Math.max(bl * 0.8, d.buf.sampleRate * 0.25);
+  if(bl < d.buf.sampleRate * 0.05){ // very short beat → force even spread
+    const span = Math.min(d.buf.length - 8, Math.max(d.buf.sampleRate * 8, bl * 32));
+    bar0 = Math.max(0, Math.min(d.buf.length - span - 4, p - span/2));
+    for(let i=0;i<8;i++) d.cues[i] = Math.max(1, Math.min(d.buf.length-4, bar0 + (i * span / 8)));
+  } else {
+    for(let i=0;i<8;i++) d.cues[i] = Math.max(1, Math.min(d.buf.length-4, bar0 + i*bl));
+  }
   marksSave(d); d._sig = ""; d.waveDirty = true; paintDeck(d); drawWave(d);
   LX.padSet = true;
 }
@@ -4257,5 +4277,16 @@ window.addEventListener("focus", checkBench);
   setTimeout(function(){ window.aogHandoffTake().then(function(v){ if(!v||!v.blob) return; const f=new File([v.blob], v.name||"scope.wav", {type:"audio/wav"});
     CRATE.next.push({ id:crateId(f), name:f.name, blob:f, at:Date.now() }); cratePut("next", CRATE.next); paintCrate(); }); }, 1200); })();
 </script>
+
+<script>
+document.getElementById("twoDecksBtn")?.addEventListener("click", ()=>{
+  document.body.classList.toggle("two-decks");
+  const on = document.body.classList.contains("two-decks");
+  document.getElementById("twoDecksBtn").textContent = on ? "One deck" : "Two decks";
+  try{ localStorage.setItem("aog.decks.two", on?"1":"0"); }catch(e){}
+});
+try{ if(localStorage.getItem("aog.decks.two")==="1"){ document.body.classList.add("two-decks"); document.getElementById("twoDecksBtn").textContent="One deck"; } }catch(e){}
+</script>
+
 </body>
 </html>

@@ -152,7 +152,7 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
 .krow .range{font:800 1rem/1 var(--display);color:#f1ebdf;min-width:6.5rem;text-align:center}
 .kbd{position:relative;display:flex;height:178px;border-top:7px solid #7a1e22;border-radius:4px;background:#0b0c0e;padding:0 2px 2px;
   touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
-.wk{flex:1 1 0;min-width:0;position:relative;margin:0 1px;border:1px solid #23262a;border-top:0;border-radius:0 0 8px 8px;
+.wk{flex:1 1 0;min-width:28px;position:relative;margin:0 1px;border:1px solid #23262a;border-top:0;border-radius:0 0 8px 8px;
   background:linear-gradient(#fffdf6 0%,#f2ede1 88%,#d9d2c2 100%);color:#2b3440;
   display:flex;flex-direction:column;justify-content:flex-end;align-items:center;padding-bottom:9px;font:700 .8rem/1.1 var(--sans)}
 .wk .nm small{font-size:.68rem;margin-left:1px;color:#4d5763}
@@ -2139,7 +2139,7 @@ function padDown(i, v){
   const notes=vo.concat([bassOf(c)]);
   padUp(i);
   padHeld[i]=notes;
-  notes.forEach((m,j)=>noteOn("p", m, (v||0.72)*(j===notes.length-1?0.85:1)));
+  notes.forEach((m,j)=>noteOn("p", m, (v||0.72)*(j===notes.length-1?0.9:1)));
   queueMicrotask(()=>{
     paintWheelState();
     if(S.own && S.prog.length<8){ S.prog.push({off:c.off, q:c.q}); S.preset=""; save(); paintProg(); paintProgSel(); }

@@ -992,7 +992,7 @@ const SEGS = 8;
    drum machine with the nostalgia of a 1987 SP-1200." Nine kits now, A to I. A to D are the first
    four; E to I are boom bap, 808 trap, lo-fi, Latin percussion and a live room kit. Every sound is
    built on this page, so nothing downloads and nothing needs a licence. */
-const BANKS = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O"];   /* AOG-DRUM-KITS-V3: and J to O */
+const BANKS = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","V","Y"];   /* V = Vocals bank, Y = Classroom / education samples */
 function bankObj(){ const o={}; BANKS.forEach(b=>o[b]={}); return o; }
 /* AOG-DRUM-REAL-V1 (2026-10-04) — the recorded kits (aog-drumkit.js) join the Sounds menu after the kits built here, each with a beat to start from */
 /* AOG-DRUM-PERC-V1: the retired machine keeps its own kits; the hand drums and the tabla live in the Drum Machine and the Drum Kit */
@@ -1231,7 +1231,8 @@ const KIT_LABEL={A:["Kit A · the classic","Kit A · el clásico"],B:["Kit B · 
   E:["Kit E · boom bap","Kit E · boom bap"],F:["Kit F · 808 trap","Kit F · trap 808"],G:["Kit G · lo-fi","Kit G · lo-fi"],
   H:["Kit H · Latin percussion","Kit H · percusión latina"],I:["Kit I · live drums","Kit I · batería en vivo"],
   J:["Kit J · rock arena","Kit J · rock de estadio"],K:["Kit K · jazz brushes","Kit K · jazz con escobillas"],L:["Kit L · 909 house","Kit L · house 909"],
-  M:["Kit M · reggae and dub","Kit M · reggae y dub"],N:["Kit N · afrobeat","Kit N · afrobeat"],O:["Kit O · marching band","Kit O · banda de marcha"]};
+  M:["Kit M · reggae and dub","Kit M · reggae y dub"],N:["Kit N · afrobeat","Kit N · afrobeat"],O:["Kit O · marching band","Kit O · banda de marcha"],
+  V:["Kit V · Vocals","Kit V · Voces"],Y:["Kit Y · Classroom","Kit Y · Aula"]};
 /* AOG-SP-KITBACK-V1 — Jimmy: "something is up with sound A, it is a bell." A sample he had loaded
    onto pad 1 of bank A was playing in place of the kick. The Simple bench now says which pads hold
    your own samples and offers one tap to put the kit sounds back on that bank. */
@@ -1314,7 +1315,23 @@ function renderVoiceL(id, t0, dest, ac){      /* 909 HOUSE — the kick that dri
 function renderVoiceM(id, t0, dest, ac){      /* AOG-DRUM-REAL-V2: kit M is recorded now; only its synth tom is drawn here, as a synth drum is electronic on the real instrument too */
   if(id==="clap"){ tone(ac, dest, t0, "sine", 700, 140, 0.5, 0.3); noiseHit(ac, dest, t0, "bandpass", 1800, 0.7, 0.08, 0.02); }   /* the falling "pew" of a synth drum */
 }
-const KIT_RENDER = {C:renderVoiceC, F:renderVoiceF, L:renderVoiceL, M:renderVoiceM};   /* AOG-DRUM-REAL-V2: D, E, G to K and N, O are recordings now (aog-drumkit.js) */
+function renderVoiceV(id, t0, dest, ac){      /* Vocals bank — simple formant-ish syllables / choir stabs */
+  const notes = {kick:130.8, snare:196, hat:261.6, open:329.6, clap:392, tom:174.6, ride:220, bell:293.7};
+  const f = notes[id] || 220;
+  tone(ac, dest, t0, "sawtooth", f, f*0.92, 0.35, 0.18);
+  tone(ac, dest, t0, "sine", f*2.5, f*2.4, 0.12, 0.08);
+}
+function renderVoiceY(id, t0, dest, ac){      /* Classroom / education samples — growth, correct, funny */
+  if(id==="kick"){ tone(ac, dest, t0, "sine", 523, 392, 0.25, 0.12); }          /* rising "got it" */
+  else if(id==="snare"){ noiseHit(ac, dest, t0, "highpass", 3000, 0.4, 0.08, 0.02); } /* soft clap */
+  else if(id==="hat"){ tone(ac, dest, t0, "square", 880, 660, 0.08, 0.04); }     /* ding */
+  else if(id==="open"){ tone(ac, dest, t0, "triangle", 440, 880, 0.4, 0.2); }    /* whoosh up */
+  else if(id==="clap"){ noiseHit(ac, dest, t0, "bandpass", 1200, 0.5, 0.15, 0.04); } /* applause-ish */
+  else if(id==="tom"){ tone(ac, dest, t0, "sine", 200, 80, 0.3, 0.15); }         /* boing */
+  else if(id==="ride"){ tone(ac, dest, t0, "sine", 660, 660, 0.1, 0.06); }       /* mind grow ping */
+  else { tone(ac, dest, t0, "sine", 349, 349, 0.2, 0.1); }
+}
+const KIT_RENDER = {C:renderVoiceC, F:renderVoiceF, L:renderVoiceL, M:renderVoiceM, V:renderVoiceV, Y:renderVoiceY};
 const KIT_TAIL = {F:1.55, L:1.0};      /* seconds of memory each kit's longest sound needs */
 function renderVoice(id, t0, dest, ac, bank){
   const r=KIT_RENDER[bank];
@@ -1753,7 +1770,7 @@ function metroClick(when){
 }
 function scheduler(){
   const c=ctx();
-  const look=0.12;
+  const look=0.045;
   while(nextNote < c.currentTime + look){
     const step=currentStep;
     const sixteenth=(60/S.bpm)/4;
