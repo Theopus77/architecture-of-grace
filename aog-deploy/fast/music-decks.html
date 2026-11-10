@@ -833,53 +833,49 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
 </script>
 <script src="/front/89e4815a9a4c.js"></script>
 <script>
-/* Safari: turn touches into the clicks and pointer events the decks expect */
+/* Safari: buttons answer a finger, vinyl turns under it */
 (function(){
-  var st=document.createElement("style");
-  st.textContent="button,.pill,.go,a,label{touch-action:manipulation!important;cursor:pointer} .platter{touch-action:none;cursor:grab}";
-  document.head.appendChild(st);
+  var css=document.createElement("style");
+  css.textContent="button,.pill,.go,a,label{touch-action:manipulation!important} button:active,.pill:active{filter:brightness(1.3)}";
+  document.head.appendChild(css);
 
   document.addEventListener("touchend", function(e){
-    var t=e.target;
-    var b=t.closest ? t.closest("button,a,.pill,.go,[role=button]") : null;
+    var el=e.target;
+    var b=el.closest?el.closest("button,a,.pill,.go,[data-play],[data-slip],[data-chop],[data-rev]"):null;
     if(!b) return;
     e.preventDefault();
-    b.click();
-  }, {capture:true, passive:false});
+    e.stopPropagation();
+    b.style.outline="2px solid #f0c26e";
+    setTimeout(function(){ b.style.outline=""; }, 200);
+    if(typeof b.onclick==="function"){ try{ b.onclick(e); }catch(x){} }
+    else b.click();
+  }, true);
 
   function arm(p){
-    if(p._sf) return; p._sf=1;
-    var id=null, la=0;
+    if(p._a) return; p._a=1;
+    var id=null, ang=0;
     p.addEventListener("touchstart", function(e){
-      if(!e.touches[0]) return;
-      var t=e.touches[0], r=p.getBoundingClientRect();
+      var t=e.touches[0]; if(!t) return;
+      var r=p.getBoundingClientRect();
       id=t.identifier;
-      la=Math.atan2(t.clientY-r.top-r.height/2, t.clientX-r.left-r.width/2);
-      try{ p.dispatchEvent(new PointerEvent("pointerdown",{bubbles:true,clientX:t.clientX,clientY:t.clientY,pointerId:1})); }catch(x){}
+      ang=Math.atan2(t.clientY-r.top-r.height/2, t.clientX-r.left-r.width/2);
     }, {passive:false});
     p.addEventListener("touchmove", function(e){
-      var t=Array.prototype.find.call(e.touches, function(x){return x.identifier===id});
+      var t; for(var i=0;i<e.touches.length;i++) if(e.touches[i].identifier===id) t=e.touches[i];
       if(!t) return;
       e.preventDefault();
       var r=p.getBoundingClientRect();
       var a=Math.atan2(t.clientY-r.top-r.height/2, t.clientX-r.left-r.width/2);
-      var da=a-la; if(da>Math.PI)da-=2*Math.PI; if(da<-Math.PI)da+=2*Math.PI; la=a;
-      var rot=(parseFloat(p.dataset.r||"0")+da*57.3);
-      p.dataset.r=rot;
+      var d=a-ang; if(d>Math.PI) d-=2*Math.PI; if(d<-Math.PI) d+=2*Math.PI; ang=a;
+      var rot=(parseFloat(p.getAttribute("data-rot")||"0")+d*57.3);
+      p.setAttribute("data-rot", rot);
       p.style.transform="rotate("+rot+"deg)";
-      try{ p.dispatchEvent(new PointerEvent("pointermove",{bubbles:true,clientX:t.clientX,clientY:t.clientY,pointerId:1})); }catch(x){}
     }, {passive:false});
-    p.addEventListener("touchend", function(e){
-      id=null;
-      try{ p.dispatchEvent(new PointerEvent("pointerup",{bubbles:true,pointerId:1})); }catch(x){}
-    }, {passive:true});
+    p.addEventListener("touchend", function(){ id=null; }, {passive:true});
   }
-  function scan(){ document.querySelectorAll(".platter").forEach(arm); }
-  if(document.body) scan();
+  function scan(){ var ps=document.querySelectorAll(".platter"); for(var i=0;i<ps.length;i++) arm(ps[i]); }
+  scan();
   new MutationObserver(scan).observe(document.documentElement,{childList:true,subtree:true});
-  document.addEventListener("touchstart", function(){
-    try{ var AC=window.AudioContext||window.webkitAudioContext; if(AC && !window._ac){ window._ac=new AC(); window._ac.resume(); } }catch(e){}
-  }, {once:true, passive:true});
 })();
 </script>
 </body>
