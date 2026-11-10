@@ -3109,8 +3109,9 @@ async function takeSample(file){
     const id=S.sel||"kick";
     const old=USER[S.bank]&&USER[S.bank][id];
     const oldSec=old?old.length/26040:0;
-    const free=Math.max(0, 10-(memUsed()-oldSec));
-    const maxSec=Math.min(2.5, free);
+    const free=Math.max(0, 30-(memUsed()-oldSec));   /* voice / long samples: up to ~30 s total, matching longer chops */
+    const isVoice = file && /voice/i.test(file.name||"");
+    const maxSec=Math.min(isVoice ? 28 : 8, free);   /* 8–28 s for voice; 8 s for other samples */
     if(maxSec<0.08){ S.lcdNote="MEM FULL"; refreshLcd(); return; }
     const arr=await file.arrayBuffer();
     const decoded=await actx.decodeAudioData(arr.slice(0));
@@ -3647,9 +3648,9 @@ function bind(){
         };
         voiceRec.start();
         recVoiceBtn.textContent="STOP";
-        S.lcdNote="RECORDING…";
+        S.lcdNote="RECORDING… (tap STOP, up to 28s)";
         refreshLcd();
-        setTimeout(()=>{ if(voiceRec && voiceRec.state==="recording") voiceRec.stop(); }, 2500); /* max ~2.5 s to match sample memory */
+        setTimeout(()=>{ if(voiceRec && voiceRec.state==="recording") voiceRec.stop(); }, 28000); /* up to 28 s, matching chop length */
       }catch(err){
         S.lcdNote="MIC DENIED";
         refreshLcd();
