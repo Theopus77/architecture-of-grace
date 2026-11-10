@@ -1090,7 +1090,13 @@ function ctx(){
   if(actx && actx.state!=="running"){ try{ actx.resume(); }catch(e){} }
   if(!actx){
     const AC = window.AudioContext||window.webkitAudioContext;
-    actx = new AC({ latencyHint:0.003, sampleRate:48000 }); /* AOG-DECKS-HIFI-OUT-V1: 48 kHz, 3 ms */
+    /* Safari (especially iOS) can reject forced sampleRate or very low latencyHint.
+       Try the hi-fi options first, then fall back to defaults so the context always starts. */
+    try{ actx = new AC({ latencyHint:"interactive", sampleRate:48000 }); }
+    catch(e1){
+      try{ actx = new AC({ latencyHint:"interactive" }); }
+      catch(e2){ actx = new AC(); }
+    }
     try{ if(navigator.audioSession) navigator.audioSession.type = "playback"; }catch(e){}
     try{ if(window.AOGVU && AOGVU.own) AOGVU.own(actx); }catch(e){}   /* AOG-SILENT-V1: the Studio's hush pauses it too */
     /* AOG-DECKS-LOUDNESS-V1 — the same treatment the drum machine got: a normal
@@ -4001,9 +4007,19 @@ window.addEventListener("focus", checkBench);
   var t; window.addEventListener("resize", function(){ clearTimeout(t); t=setTimeout(fit,150); });
 })();
 </script>
-<script>/* AOG-MUSIC-TOUCH-V1 — wake Safari's audio on the first touch, every time it sleeps */
-(function(){ function wake(){ try{ if(typeof actx!=="undefined"&&actx&&actx.state!=="running") actx.resume(); }catch(e){} }
-  ["touchstart","pointerdown","keydown"].forEach(function(t){ document.addEventListener(t, wake, {capture:true, passive:true}); }); })();
+<script>/* AOG-MUSIC-TOUCH-V1 — wake Safari's audio on the first touch, every time it sleeps.
+   Safari requires the AudioContext to be created and resumed inside a user gesture. */
+(function(){
+  function wake(){
+    try{
+      if(typeof ctx==="function") ctx();
+      else if(typeof actx!=="undefined" && actx && actx.state!=="running") actx.resume();
+    }catch(e){}
+  }
+  ["touchstart","pointerdown","mousedown","keydown"].forEach(function(t){
+    document.addEventListener(t, wake, {capture:true, passive:true});
+  });
+})();
 /* ══ AOG-DECKS-ALBUM-V1 (2026-10-28) — Jimmy: "play multiple songs on a record … upload whole albums to play on vinyl, just for
    a nostalgia / cool factor". + A whole album takes many songs at once, reads each one's name, album and number from the file
    (MP3 and iTunes AAC tags; the file names otherwise), keeps them in the library with the album, and puts it on as a record:
