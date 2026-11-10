@@ -3683,6 +3683,52 @@ function bind(){
       send(deck, { t:"hand", on:false, rate:0 });               /* let go: the throw carries, the motor takes over */
     };
     p.onpointerup = up; p.onpointercancel = up; p.onlostpointercapture = up;
+
+    /* Safari / iOS fallback: pointer events can fail to track on the platter.
+       Touch events drive the same scratch path so the vinyl moves under a finger. */
+    let touchId = null;
+    p.addEventListener("touchstart", (e)=>{
+      if(e.touches.length !== 1) return;
+      const tch = e.touches[0];
+      const deck = d(); if(!deck || !deck.buf) return;
+      e.preventDefault();
+      touchId = tch.identifier;
+      ctx();
+      const fake = { clientX:tch.clientX, clientY:tch.clientY, timeStamp:e.timeStamp||performance.now(), pointerId:1 };
+      lastAng = angleOf(fake); lastT = performance.now();
+      spun = 0; trail = [{ t:lastT, a:0 }];
+      deck.held = true; deck.lastMove = lastT; deck.handRate = deck.rate; deck.handX = 0;
+      send(deck, { t:"hand", on:true, rate:deck.handRate, x:0, v:deck.rate, ts:lastT });
+    }, { passive:false });
+    p.addEventListener("touchmove", (e)=>{
+      if(touchId == null) return;
+      const tch = Array.from(e.touches).find(t=>t.identifier===touchId);
+      if(!tch) return;
+      e.preventDefault();
+      const deck = d(); if(!deck || !deck.held) return;
+      const fake = { clientX:tch.clientX, clientY:tch.clientY, timeStamp:e.timeStamp||performance.now() };
+      const now = performance.now();
+      let a = angleOf(fake), da = a - lastAng;
+      while(da > 180) da -= 360; while(da < -180) da += 360;
+      lastAng = a; lastT = now; spun += da;
+      trail.push({ t:now, a:spun });
+      while(trail.length > 2 && now - trail[0].t > 12) trail.shift();
+      const first = trail[0], last = trail[trail.length-1];
+      const dt = Math.max(0.008, (last.t - first.t)/1000);
+      let inst = ((last.a - first.a)/dt) / DEG_PER_SEC;
+      deck.handRate = deck.handRate*0.4 + inst*0.6;
+      if(deck.handRate > 16) deck.handRate = 16;
+      if(deck.handRate < -16) deck.handRate = -16;
+      deck.handX = spun / DEG_PER_SEC;
+      send(deck, { t:"hand", on:true, rate:deck.handRate, x:deck.handX, v:inst, ts:now });
+    }, { passive:false });
+    const touchEnd = (e)=>{
+      if(touchId == null) return;
+      touchId = null;
+      const deck = d(); if(deck){ deck.held = false; send(deck, { t:"hand", on:false }); }
+    };
+    p.addEventListener("touchend", touchEnd, { passive:false });
+    p.addEventListener("touchcancel", touchEnd, { passive:false });
     /* the same deck from a keyboard: space starts and stops it, the arrows walk
        the needle a tenth of a second at a time. */
     p.onkeydown = async (e)=>{
