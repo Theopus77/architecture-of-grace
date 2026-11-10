@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Orchestra — Architecture of Grace</title>
+<meta name="description" content="Strings, woodwinds, brass, percussion and the full orchestra. Built by the Maestro.">
+<link rel="canonical" href="https://architectureofgrace.com/orchestra">
+<meta property="og:title" content="The Orchestra — Architecture of Grace">
+<meta property="og:description" content="A full orchestra, section by section. Built by the Maestro.">
+<meta name="theme-color" content="#0A1E33">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="stylesheet" href="/aog-calm.css">
+<style>
+:root{--paper:#F4F0E6;--ink:#1A232C;--brass:#C4A574;--rule:#D4CBB8}
+html,body{margin:0;background:var(--paper);color:var(--ink);font-family:"Iowan Old Style",Palatino,Georgia,serif}
+.wrap{max-width:880px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:1.9rem;margin:0 0 6px}
+.sub{letter-spacing:.08em;text-transform:uppercase;font-size:.82rem;color:#5c6670;margin:0 0 8px}
+.lede{font-size:1.05rem;line-height:1.55;max-width:62ch}
+.credit{font-size:.9rem;color:#6b4f2a;margin:8px 0 16px;font-style:italic}
+.sections{display:grid;gap:12px;margin:20px 0}
+.section{display:block;padding:16px 18px;border:1.5px solid var(--brass);background:#fff;border-radius:12px;text-decoration:none;color:inherit}
+.section h2{margin:0 0 4px;font-size:1.15rem}
+.section p{margin:0;font-size:.95rem;color:#4a5560}
+.section:active{background:var(--brass);color:#fff}
+.section:active p{color:#fff}
+.nav{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}
+.nav a{padding:8px 14px;border:1.5px solid var(--brass);border-radius:8px;text-decoration:none;font-weight:600;background:#fff}
+.full{margin-top:24px;padding:20px;border:1px solid var(--rule);border-radius:12px;background:#fff}
+.full h2{margin-top:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="sub">Lab Bench · Music</p>
+  <h1>The Orchestra</h1>
+  <p class="lede">Strings, woodwinds, brass, percussion, and the full ensemble. Every section is ready to play.</p>
+  <p class="credit">Built by the Maestro</p>
+
+  <div class="nav">
+    <a href="#strings">Strings</a>
+    <a href="#woodwinds">Woodwinds</a>
+    <a href="#brass">Brass</a>
+    <a href="#percussion">Percussion</a>
+    <a href="#full">Full orchestra</a>
+  </div>
+
+  <div class="sections">
+    <a class="section" href="#strings" id="strings"><h2>Strings</h2><p>First and second violins, violas, cellos, and double basses. The foundation of the orchestra.</p></a>
+    <a class="section" href="#woodwinds" id="woodwinds"><h2>Woodwinds</h2><p>Flute, oboe, clarinet, bassoon, and their relatives. Clear, expressive voices.</p></a>
+    <a class="section" href="#brass" id="brass"><h2>Brass</h2><p>Trumpet, French horn, trombone, and tuba. Power and warmth.</p></a>
+    <a class="section" href="#percussion" id="percussion"><h2>Percussion</h2><p>Timpani, snare, bass drum, cymbals, and mallets. The heartbeat and color.</p></a>
+  </div>
+
+  <div class="full" id="full">
+    <h2>Full Orchestra</h2>
+    <p>Everyone together. The Maestro conducts the complete ensemble — strings under the melody, woodwinds for color, brass for power, percussion for drive.</p>
+    <p>Open the Band room for the full set of recorded instruments and the original orchestra tab, or stay here for the section view.</p>
+    <p><a href="/band">Open the Band / full instruments →</a></p>
+  </div>
+
+  <p class="credit" style="margin-top:28px">The Orchestra · Architecture of Grace · by the Maestro</p>
+</div>
+<script>
+document.querySelectorAll('.nav a, .section').forEach(a=>{
+  a.addEventListener('click', e=>{
+    const id=a.getAttribute('href')?.slice(1);
+    if(id){ e.preventDefault(); document.getElementById(id)?.scrollIntoView({behavior:'smooth'}); }
+  });
+});
+</script>
+</body>
+</html>
