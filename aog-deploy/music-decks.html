@@ -49,7 +49,7 @@ header{display:flex;justify-content:space-between;align-items:center;gap:.75rem;
 .brand{font-size:.75rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);text-decoration:none}
 .tools{display:flex;gap:.5rem}
 .pill{min-height:44px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:0 .9rem;font-weight:600;display:inline-flex;align-items:center}
-button,label.file{font:inherit;cursor:pointer;touch-action:manipulation}
+button,label.file{font:inherit;cursor:pointer;touch-action:none}
 .kicker{font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--steel)}
 .lead{max-width:66ch;color:var(--muted)}
 /* AOG-DECKS-FIT-V1 (2026-09-26): Jimmy's iPhone showed Deck B wider than the
@@ -691,7 +691,7 @@ input:not([type=range]):not([type=file]):not([type=checkbox]):not([type=radio]),
    no double-tap wait, and the audio engine is woken on the very first touch. */
 body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
 input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
-button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipulation}
 .platter,.wave,.zoom,.pad{touch-action:none}
 
 /* AOG-BENCH-TOP-V1: the masthead, nav row, bench switch and Lessons card live in /aog-bench.css */
@@ -1090,12 +1090,12 @@ function ctx(){
   if(actx && actx.state!=="running"){ try{ actx.resume(); }catch(e){} }
   if(!actx){
     const AC = window.AudioContext||window.webkitAudioContext;
-    /* Safari (especially iOS) can reject forced sampleRate or very low latencyHint.
-       Try the hi-fi options first, then fall back to defaults so the context always starts. */
-    try{ actx = new AC({ latencyHint:"interactive", sampleRate:48000 }); }
-    catch(e1){
-      try{ actx = new AC({ latencyHint:"interactive" }); }
-      catch(e2){ actx = new AC(); }
+    /* Safari can reject a forced sampleRate or a numeric latencyHint.
+       Try preferred settings, then fall back so the engine always starts. */
+    try { actx = new AC({ latencyHint:"interactive", sampleRate:48000 }); }
+    catch(e1) {
+      try { actx = new AC({ latencyHint:"interactive" }); }
+      catch(e2) { actx = new AC(); }
     }
     try{ if(navigator.audioSession) navigator.audioSession.type = "playback"; }catch(e){}
     try{ if(window.AOGVU && AOGVU.own) AOGVU.own(actx); }catch(e){}   /* AOG-SILENT-V1: the Studio's hush pauses it too */
@@ -3353,13 +3353,11 @@ function bind(){
     };
   });
   document.querySelectorAll("[data-play]").forEach(btn=>{
-    const go = async ()=>{
+    btn.onclick = async ()=>{
       const d = deckOf(btn, "data-play");
-      if(!d || !d.buf) return;
+      if(!d.buf) return;
       if(d.motor) stopDeck(d); else await startDeck(d);
     };
-    btn.onclick = go;
-    btn.addEventListener("touchend", (e)=>{ e.preventDefault(); go(); }, { passive:false });
   });
   /* CUE the way a deck does it: hold to hear it from the mark, let go and the
      record is back at the mark, stopped, ready to go again. */
@@ -3386,11 +3384,7 @@ function bind(){
                   ()=>{ const d = deckOf(btn, "data-hot"); if(d) padRelease(d, i); });
     btn.addEventListener("keydown", (e)=>{ if(e.key==="Delete"||e.key==="Backspace"){ const d = deckOf(btn, "data-hot"); if(d && d.cues[i]!=null){ e.preventDefault(); d.cues[i] = null; marksSave(d); d._sig = ""; d.waveDirty = true; paintDeck(d); drawWave(d); } } });
   });
-  document.querySelectorAll("[data-chop]").forEach(btn=>{
-    const go = ()=>{ const d = deckOf(btn, "data-chop"); if(d) chop8(d); };
-    btn.onclick = go;
-    btn.addEventListener("touchend", (e)=>{ e.preventDefault(); go(); }, { passive:false });
-  });
+  document.querySelectorAll("[data-chop]").forEach(btn=>{ btn.onclick = ()=>{ const d = deckOf(btn, "data-chop"); if(d) chop8(d); }; });
   document.querySelectorAll("[data-chopsend]").forEach(btn=>{ btn.onclick = ()=>{ const d = deckOf(btn, "data-chopsend"); if(d) chopsToPads(d, btn); }; });
   document.querySelectorAll("[data-erase]").forEach(btn=>{ btn.onclick = ()=>{ const d = deckOf(btn, "data-erase"); if(d){ d.erase = !d.erase; d._sig = ""; paintDeck(d); } }; });
   document.querySelectorAll("[data-snap]").forEach(sel=>{ sel.onchange = ()=>{ const d = deckOf(sel, "data-snap"); if(d) d.snap = +sel.value; }; });
@@ -3426,14 +3420,11 @@ function bind(){
   /* SLIP — the record keeps turning under the scratch. Let go, and you are
      where the track would have been if you had never touched it. */
   document.querySelectorAll("[data-slip]").forEach(btn=>{
-    const go = async ()=>{
+    btn.onclick = async ()=>{
       const d = deckOf(btn, "data-slip");
-      if(!d) return;
       d.slipOn = !d.slipOn; ctx(); await ensureNode(d);
-      send(d, { t:"slip", on:d.slipOn }); btn.classList.toggle("on", d.slipOn); btn.setAttribute("aria-pressed", String(d.slipOn));
+      send(d, { t:"slip", on:d.slipOn }); btn.classList.toggle("on", d.slipOn); btn.setAttribute("aria-pressed", d.slipOn);
     };
-    btn.onclick = go;
-    btn.addEventListener("touchend", (e)=>{ e.preventDefault(); go(); }, { passive:false });
   });
   /* REV — backwards while you hold it; with SLIP on, letting go puts you back
      on the beat, which is the whole trick (a DJ calls it a censor). */
@@ -3692,52 +3683,6 @@ function bind(){
       send(deck, { t:"hand", on:false, rate:0 });               /* let go: the throw carries, the motor takes over */
     };
     p.onpointerup = up; p.onpointercancel = up; p.onlostpointercapture = up;
-
-    /* Safari / iOS fallback: pointer events can fail to track on the platter.
-       Touch events drive the same scratch path so the vinyl moves under a finger. */
-    let touchId = null;
-    p.addEventListener("touchstart", (e)=>{
-      if(e.touches.length !== 1) return;
-      const tch = e.touches[0];
-      const deck = d(); if(!deck || !deck.buf) return;
-      e.preventDefault();
-      touchId = tch.identifier;
-      ctx();
-      const fake = { clientX:tch.clientX, clientY:tch.clientY, timeStamp:e.timeStamp||performance.now(), pointerId:1 };
-      lastAng = angleOf(fake); lastT = performance.now();
-      spun = 0; trail = [{ t:lastT, a:0 }];
-      deck.held = true; deck.lastMove = lastT; deck.handRate = deck.rate; deck.handX = 0;
-      send(deck, { t:"hand", on:true, rate:deck.handRate, x:0, v:deck.rate, ts:lastT });
-    }, { passive:false });
-    p.addEventListener("touchmove", (e)=>{
-      if(touchId == null) return;
-      const tch = Array.from(e.touches).find(t=>t.identifier===touchId);
-      if(!tch) return;
-      e.preventDefault();
-      const deck = d(); if(!deck || !deck.held) return;
-      const fake = { clientX:tch.clientX, clientY:tch.clientY, timeStamp:e.timeStamp||performance.now() };
-      const now = performance.now();
-      let a = angleOf(fake), da = a - lastAng;
-      while(da > 180) da -= 360; while(da < -180) da += 360;
-      lastAng = a; lastT = now; spun += da;
-      trail.push({ t:now, a:spun });
-      while(trail.length > 2 && now - trail[0].t > 12) trail.shift();
-      const first = trail[0], last = trail[trail.length-1];
-      const dt = Math.max(0.008, (last.t - first.t)/1000);
-      let inst = ((last.a - first.a)/dt) / DEG_PER_SEC;
-      deck.handRate = deck.handRate*0.4 + inst*0.6;
-      if(deck.handRate > 16) deck.handRate = 16;
-      if(deck.handRate < -16) deck.handRate = -16;
-      deck.handX = spun / DEG_PER_SEC;
-      send(deck, { t:"hand", on:true, rate:deck.handRate, x:deck.handX, v:inst, ts:now });
-    }, { passive:false });
-    const touchEnd = (e)=>{
-      if(touchId == null) return;
-      touchId = null;
-      const deck = d(); if(deck){ deck.held = false; send(deck, { t:"hand", on:false }); }
-    };
-    p.addEventListener("touchend", touchEnd, { passive:false });
-    p.addEventListener("touchcancel", touchEnd, { passive:false });
     /* the same deck from a keyboard: space starts and stops it, the arrows walk
        the needle a tenth of a second at a time. */
     p.onkeydown = async (e)=>{
@@ -4062,19 +4007,9 @@ window.addEventListener("focus", checkBench);
   var t; window.addEventListener("resize", function(){ clearTimeout(t); t=setTimeout(fit,150); });
 })();
 </script>
-<script>/* AOG-MUSIC-TOUCH-V1 — wake Safari's audio on the first touch, every time it sleeps.
-   Safari requires the AudioContext to be created and resumed inside a user gesture. */
-(function(){
-  function wake(){
-    try{
-      if(typeof ctx==="function") ctx();
-      else if(typeof actx!=="undefined" && actx && actx.state!=="running") actx.resume();
-    }catch(e){}
-  }
-  ["touchstart","pointerdown","mousedown","keydown"].forEach(function(t){
-    document.addEventListener(t, wake, {capture:true, passive:true});
-  });
-})();
+<script>/* AOG-MUSIC-TOUCH-V1 — wake Safari's audio on the first touch, every time it sleeps */
+(function(){ function wake(){ try{ if(typeof actx!=="undefined"&&actx&&actx.state!=="running") actx.resume(); }catch(e){} }
+  ["touchstart","pointerdown","keydown"].forEach(function(t){ document.addEventListener(t, wake, {capture:true, passive:true}); }); })();
 /* ══ AOG-DECKS-ALBUM-V1 (2026-10-28) — Jimmy: "play multiple songs on a record … upload whole albums to play on vinyl, just for
    a nostalgia / cool factor". + A whole album takes many songs at once, reads each one's name, album and number from the file
    (MP3 and iTunes AAC tags; the file names otherwise), keeps them in the library with the album, and puts it on as a record:
