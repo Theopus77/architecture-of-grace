@@ -2282,6 +2282,7 @@ function machineHtml(){
     </div>
     <div class="sp-banks">${banks}${kitBackKeys("sp-key", true)}<span style="margin-left:.4rem">TUNE / MIX / DECAY / TRIM</span>${modes}
       <label class="sp-key file-sample">SAMPLE<input id="sampleIn" type="file" accept="audio/*"></label>
+      <button type="button" class="sp-key" id="recVoiceBtn" style="border-color:#c96a6a;color:#ffd0d0">REC VOICE</button>
       <button type="button" class="sp-key${trimOf(S.sel).rev?" on":""}" id="revBtn">REV</button>
       <button type="button" class="sp-key${S.erase?" on":""}" id="eraseBtn">ERASE</button>
       <button type="button" class="sp-key${S.padMode==="mute"?" on":""}" id="muteBtn">MUTE</button>
@@ -3614,6 +3615,49 @@ function bind(){
   if(window.AOGDrumKit) AOGDrumKit.decorate(document, S.lang);   /* AOG-DRUM-REAL-V1: the recorded kits under their own heading in the Sounds menu */
   const sampleIn=document.getElementById("sampleIn");
   if(sampleIn) sampleIn.onchange=()=>{ const f=sampleIn.files&&sampleIn.files[0]; if(f) takeSample(f); };
+
+  /* AOG-VOICE-REC-V1 — record mic straight onto the selected pad (best on Vocal bank V) */
+  const recVoiceBtn=document.getElementById("recVoiceBtn");
+  let voiceRec=null, voiceChunks=[], voiceStream=null;
+  if(recVoiceBtn){
+    recVoiceBtn.onclick=async ()=>{
+      if(voiceRec && voiceRec.state==="recording"){
+        voiceRec.stop();
+        return;
+      }
+      try{
+        ctx(); await bootSampler();
+        if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){ S.lcdNote="NO MIC"; refreshLcd(); return; }
+        voiceStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
+        voiceChunks=[];
+        voiceRec=new MediaRecorder(voiceStream, {mimeType: MediaRecorder.isTypeSupported("audio/webm;codecs=opus")?"audio/webm;codecs=opus":"audio/webm"});
+        voiceRec.ondataavailable=e=>{ if(e.data && e.data.size) voiceChunks.push(e.data); };
+        voiceRec.onstop=async ()=>{
+          try{
+            const blob=new Blob(voiceChunks, {type:voiceRec.mimeType||"audio/webm"});
+            const file=new File([blob], "voice.webm", {type:blob.type});
+            if(S.bank!=="V") useBank("V");
+            await takeSample(file);
+            S.lcdNote="VOICE ON PAD";
+            refreshLcd();
+          }catch(err){ S.lcdNote="REC FAIL"; refreshLcd(); }
+          if(voiceStream){ voiceStream.getTracks().forEach(t=>t.stop()); voiceStream=null; }
+          voiceRec=null; voiceChunks=[];
+          if(recVoiceBtn) recVoiceBtn.textContent="REC VOICE";
+        };
+        voiceRec.start();
+        recVoiceBtn.textContent="STOP";
+        S.lcdNote="RECORDING…";
+        refreshLcd();
+        setTimeout(()=>{ if(voiceRec && voiceRec.state==="recording") voiceRec.stop(); }, 2500); /* max ~2.5 s to match sample memory */
+      }catch(err){
+        S.lcdNote="MIC DENIED";
+        refreshLcd();
+        if(voiceStream){ voiceStream.getTracks().forEach(t=>t.stop()); voiceStream=null; }
+      }
+    };
+  }
+
   const saveWork=document.getElementById("saveWork");
   if(saveWork) saveWork.onclick=exportSession;
   const openWork=document.getElementById("openWork");
