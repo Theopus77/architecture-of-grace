@@ -85,15 +85,18 @@ body.bench-simple .deck .row .ghost{min-height:48px}
 .decks{display:grid;gap:1rem;margin-top:1rem;grid-template-columns:minmax(0,1fr)}
 .deck{min-width:0}
 @media (max-width:700px){
-  .viewpick{display:block}
+  .viewpick{display:block;position:sticky;top:0;z-index:5;background:var(--bg,#17110c);padding:.4rem 0}
+  #decks{display:block!important}
+  #deckA{display:block!important}
   body[data-decktab="A"] #deckB,body[data-decktab="A"] #deckC,
   body[data-decktab="B"] #deckA,body[data-decktab="B"] #deckC,
-  body[data-decktab="C"] #deckA,body[data-decktab="C"] #deckB{display:none}
-  body[data-decktab="mix"] .decks{display:none}
-  body[data-decktab="mix"] #mixer{display:block;margin-top:.8rem}
-  body:not([data-decktab="mix"]) #mixer{display:none}
-  .deck .platter-wrap{width:min(280px,90vw);margin:.4rem auto}
-  .deck .platter{width:100%}
+  body[data-decktab="C"] #deckA,body[data-decktab="C"] #deckB{display:none!important}
+  body[data-decktab="mix"] .decks{display:none!important}
+  #mixer{display:none!important}
+  body[data-decktab="mix"] #mixer{display:block!important;margin-top:.8rem}
+  .deck .platter-wrap{width:min(300px,92vw)!important;margin:.3rem auto!important;display:flex!important}
+  .deck .platter{width:100%!important;min-height:200px}
+  .deck{display:block}
 }
 /* ══ AOG-DJ-DESK-V1 (2026-10-08) — Jimmy: "There is a LOT of stuff going on." "I like the option of have the fader in
    the middle and the different options for the two records but using three." An iPad or a computer now shows TWO decks,
@@ -703,7 +706,7 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
 </style>
 <link rel="stylesheet" href="/aog-bench.css">
 </head>
-<body>
+<body data-decktab="A">
 <script src="/aog-sound-handoff.js"></script>
 <script src="/aog-grace.js" defer></script>
 <script>
