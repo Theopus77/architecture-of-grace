@@ -86,11 +86,14 @@ body.bench-simple .deck .row .ghost{min-height:48px}
 .deck{min-width:0}
 @media (max-width:700px){
   .viewpick{display:block}
-  body[data-decktab="A"] #deckB,body[data-decktab="A"] #deckC,body[data-decktab="A"] #mixer,
-  body[data-decktab="B"] #deckA,body[data-decktab="B"] #deckC,body[data-decktab="B"] #mixer,
-  body[data-decktab="C"] #deckA,body[data-decktab="C"] #deckB,body[data-decktab="C"] #mixer,
+  body[data-decktab="A"] #deckB,body[data-decktab="A"] #deckC,
+  body[data-decktab="B"] #deckA,body[data-decktab="B"] #deckC,
+  body[data-decktab="C"] #deckA,body[data-decktab="C"] #deckB{display:none}
   body[data-decktab="mix"] .decks{display:none}
-  body[data-decktab="mix"] #mixer{margin-top:.8rem}
+  body[data-decktab="mix"] #mixer{display:block;margin-top:.8rem}
+  body:not([data-decktab="mix"]) #mixer{display:none}
+  .deck .platter-wrap{width:min(280px,90vw);margin:.4rem auto}
+  .deck .platter{width:100%}
 }
 /* ══ AOG-DJ-DESK-V1 (2026-10-08) — Jimmy: "There is a LOT of stuff going on." "I like the option of have the fader in
    the middle and the different options for the two records but using three." An iPad or a computer now shows TWO decks,
