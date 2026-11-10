@@ -502,6 +502,10 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
             <button type="button" class="pm-b" id="undoBtn"></button>
             <button type="button" class="pm-b" id="clearBtn"></button>
           </div>
+          <div class="pm-row" style="margin-top:6px">
+            <button type="button" class="pm-b" id="recVoiceBtn" style="border-color:#c96a6a;color:#ffd0d0;min-height:48px">REC VOICE</button>
+            <button type="button" class="pm-b" id="classBtn" style="border-color:#6ea56a;color:#c6f7b0;min-height:48px">CLASSROOM</button>
+          </div>
           <div class="pm-beat"><!-- AOG-PADS-BEATPICK-V1: a style, then its beats; ◀ ▶ step through every beat -->
             <p class="pm-h" id="startLab"></p>
             <div class="pm-beatrow">
@@ -885,7 +889,7 @@ function ctx(){
   if(!ac){
     const AC=window.AudioContext||window.webkitAudioContext;
     try{ if(navigator.audioSession) navigator.audioSession.type="playback"; }catch(e){}
-    ac=new AC({latencyHint:0});
+    ac=new AC({latencyHint:"interactive"}); ac.resume&&ac.resume();
     LIVE_M=master(ac); lim=LIVE_M.lim; bus=LIVE_M.bus; clip=LIVE_M.clip; bus.gain.value=0.9*mvol();   /* AOG-PADS-KNOBS-V1: the Volume knob */
   }
   if(ac.state==="suspended") ac.resume();
@@ -1404,7 +1408,7 @@ function flash(bi, pi, when, vel){
     if(st.getPropertyValue("--v")!==v) st.setProperty("--v", v);
     if(!el.classList.contains("down") && st.getPropertyValue("--px")!=="50%"){ st.setProperty("--px", "50%"); st.setProperty("--py", "50%"); }
     el.classList.add("hit"); setTimeout(()=>el.classList.remove("hit"), 110); };
-  const ms=ac ? (when-ac.currentTime)*1000 : 0; if(ms>8) setTimeout(go, ms); else go();
+  const ms=ac ? (when-ac.currentTime)*1000 : 0; if(ms>2) setTimeout(go, ms); else go();
 }
 
 /* ══ the loop ══ */
@@ -1904,7 +1908,7 @@ function chordNow(d, when){
     NOWCH={pcs:new Set(d.notes.map(m=>m%12)), name:d.name||"chord", notes:d.notes.map(m=>keyName(m)).join(" ")};
     paintFit();
   };
-  const ms=ac ? (when-ac.currentTime)*1000 : 0; if(ms>8) setTimeout(go, ms); else go();
+  const ms=ac ? (when-ac.currentTime)*1000 : 0; if(ms>2) setTimeout(go, ms); else go();
 }
 function paintFit(){
   /* Always light the notes-bank pads that belong to the chord that is playing now, whatever bank is on screen. */
@@ -2616,6 +2620,70 @@ async function takeIn(){
   knobPaint();
 })();
 init();
+
+/* AOG-VOICE-ON-PADS-V1 — record mic onto a buffer; tap REC VOICE again or CLASSROOM to hear */
+(function(){
+  let voiceBuf=null, voiceRec=null, voiceChunks=[], voiceStream=null, classMode=false;
+  const classSounds = [
+    {n:"Got it", f:523}, {n:"Ding", f:880}, {n:"Whoosh", f:330}, {n:"Boing", f:200},
+    {n:"Ping", f:660}, {n:"Clap", f:1200}, {n:"Grow", f:440}, {n:"Yes", f:392}
+  ];
+  function playTone(f, dur){
+    const c=ctx(); if(c.state==="suspended") c.resume();
+    const o=c.createOscillator(), g=c.createGain();
+    o.type="sine"; o.frequency.setValueAtTime(f, c.currentTime);
+    g.gain.setValueAtTime(0.4, c.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, c.currentTime+(dur||0.4));
+    o.connect(g); g.connect(bus||c.destination);
+    o.start(); o.stop(c.currentTime+(dur||0.45));
+  }
+  function playVoice(){
+    if(!voiceBuf) return;
+    const c=ctx(); if(c.state==="suspended") c.resume();
+    const s=c.createBufferSource(), g=c.createGain();
+    s.buffer=voiceBuf; g.gain.value=0.8;
+    s.connect(g); g.connect(bus||c.destination);
+    s.start();
+  }
+  const rv=document.getElementById("recVoiceBtn");
+  const cb=document.getElementById("classBtn");
+  if(rv) rv.onclick=async ()=>{
+    if(voiceRec && voiceRec.state==="recording"){ voiceRec.stop(); return; }
+    if(voiceBuf && !voiceRec){ playVoice(); return; }
+    try{
+      ctx();
+      voiceStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}});
+      voiceChunks=[];
+      voiceRec=new MediaRecorder(voiceStream);
+      voiceRec.ondataavailable=e=>{ if(e.data&&e.data.size) voiceChunks.push(e.data); };
+      voiceRec.onstop=async ()=>{
+        try{
+          const blob=new Blob(voiceChunks,{type:voiceRec.mimeType||"audio/webm"});
+          const arr=await blob.arrayBuffer();
+          voiceBuf=await ctx().decodeAudioData(arr.slice(0));
+          if(rv) rv.textContent="PLAY VOICE";
+        }catch(err){ if(rv) rv.textContent="REC VOICE"; }
+        if(voiceStream){ voiceStream.getTracks().forEach(t=>t.stop()); voiceStream=null; }
+        voiceRec=null;
+      };
+      voiceRec.start();
+      if(rv) rv.textContent="STOP";
+      setTimeout(()=>{ if(voiceRec&&voiceRec.state==="recording") voiceRec.stop(); }, 28000);
+    }catch(err){ if(rv) rv.textContent="MIC?"; }
+  };
+  if(cb) cb.onclick=()=>{
+    classMode=!classMode;
+    cb.style.background=classMode?"#6ea56a":"";
+    cb.style.color=classMode?"#1a2a18":"#c6f7b0";
+    if(classMode) playTone(523, 0.3);
+  };
+  document.querySelectorAll(".pad").forEach((p,i)=>{
+    p.addEventListener("click", ()=>{
+      if(classMode) playTone(classSounds[i%classSounds.length].f, 0.35);
+      else if(voiceBuf && document.getElementById("recVoiceBtn")?.textContent==="PLAY VOICE") playVoice();
+    }, true);
+  });
+})();
 
 </script>
 
