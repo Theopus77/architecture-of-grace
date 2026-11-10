@@ -2249,14 +2249,16 @@ function machineHtml(){
   const simple=S.bench!=="full";
   const strip=simple?`<div class="simple-strip">
       <button type="button" class="s-play${S.playing?" go":""}" data-simple="play">${S.playing?t("sStop"):t("sPlay")}</button>
+      <button type="button" id="testSoundBtn" class="sp-key" style="border-color:#e0a640;color:#ffe08a;min-height:56px">TEST SOUND</button>
+    </div>
+    <div class="simple-strip" style="grid-template-columns:1fr 1fr;margin-top:.3rem">
+      <button type="button" class="sp-key${S.bank==="V"?" on":""}" data-simple-bank="V" style="border-color:#c96a6a;color:#ffd0d0;min-height:52px">VOCALS</button>
+      <button type="button" class="sp-key${S.bank==="Y"?" on":""}" data-simple-bank="Y" style="border-color:#6ea56a;color:#c6f7b0;min-height:52px">CLASSROOM</button>
+    </div>
+    <div class="simple-strip" style="grid-template-columns:1fr 1fr;margin-top:.3rem">
       <button type="button" class="s-clear" data-simple="clear">${t("sClear")}</button>
       <button type="button" class="s-decks" data-simple="decks">${t("sDecks")}</button>
     </div>
-    <div class="simple-strip" style="grid-template-columns:1fr 1fr;margin-top:.4rem">
-      <button type="button" class="sp-key${S.bank==="V"?" on":""}" data-simple-bank="V" style="border-color:#c96a6a;color:#ffd0d0">VOCALS (V)</button>
-      <button type="button" class="sp-key${S.bank==="Y"?" on":""}" data-simple-bank="Y" style="border-color:#6ea56a;color:#c6f7b0">CLASSROOM (Y)</button>
-    </div>
-    <button type="button" id="testSoundBtn" class="sp-key" style="width:100%;margin:.4rem 0;border-color:#e0a640;color:#ffe08a;min-height:48px">TEST SOUND</button>
     <div class="pick-row">${starterRow()}
     <div class="simple-row"><div class="kit-src" data-aog-dropdown="${STR.kitMenu.en}|${STR.kitMenu.es}">${kitMenu().map(b=>`<button type="button" class="${S.bank===b?"on":""}" data-simple-bank="${b}">${kitName(b)}</button>`).join("")}</div>${kitBackKeys("sp-key s-reset")}</div></div>
     ${chordRow()}${sampleRow()}
@@ -2962,7 +2964,7 @@ function paint(){
   if(!["home","meet","words","print","lessons"].includes(S.view)) S.view="home";
   try{ tickLessons(); }catch(e){}
   document.getElementById("brand").textContent=t("app");
-  { const k=document.getElementById("mastK"), h=document.getElementById("mastH"), l=document.getElementById("mastL"), kv=false; if(k) k.textContent=t("eyebrow"); if(h) h.textContent=kv?t("kitH"):t("app"); if(l) l.textContent=kv?t("kitLead"):t("tag"); const ra=document.getElementById("mastRa"); if(ra) ra.textContent=t("retired"); }
+  { const k=document.getElementById("mastK"), h=document.getElementById("mastH"), l=document.getElementById("mastL"), kv=false; if(k) k.textContent=t("eyebrow"); if(h) h.textContent=kv?t("kitH"):t("app"); if(l) l.textContent=kv?t("kitLead"):t("tag"); const ra=document.getElementById("mastRa"); if(ra) ra.textContent=""; }
   document.getElementById("nav").innerHTML=navHtml();
   { const top=S.view==="home"||S.view==="lessons";                 /* AOG-BENCH-TOP-V1 */
     document.getElementById("benchSwitch").hidden=!top; document.getElementById("lessons").hidden=!top;
@@ -3420,15 +3422,17 @@ function bind(){
   const testBtn=document.getElementById("testSoundBtn");
   if(testBtn) testBtn.onclick=()=>{
     const c=ctx();
+    if(c.state==="suspended") c.resume();
     const o=c.createOscillator(); const g=c.createGain();
-    o.type="sine"; o.frequency.value=440;
-    g.gain.setValueAtTime(0.3, c.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.001, c.currentTime+0.4);
-    o.connect(g); g.connect(c.destination);
-    o.start(); o.stop(c.currentTime+0.45);
-    S.lcdNote="TEST TONE";
+    o.type="sine"; o.frequency.setValueAtTime(523, c.currentTime);
+    g.gain.setValueAtTime(0.5, c.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, c.currentTime+0.6);
+    o.connect(g); g.connect(master||c.destination);
+    o.start(c.currentTime); o.stop(c.currentTime+0.65);
+    S.lcdNote="HEAR THIS";
     refreshLcd();
   };
+  document.addEventListener("touchstart", ()=>{ try{ const c=ctx(); if(c.state==="suspended") c.resume(); }catch(e){} }, {once:true, passive:true});
   document.querySelectorAll("[data-simple-seg]").forEach(b=>b.onclick=()=>{ const r=document.querySelector('[data-seg="'+b.getAttribute("data-simple-seg")+'"]'); if(r) r.click(); document.querySelectorAll("[data-simple-seg]").forEach(x=>x.classList.toggle("on", x===b)); });
   document.querySelectorAll("[data-simple]").forEach(b=>b.onclick=()=>{ const id={play:"playBtn",clear:"clearBtn",decks:"toDecks"}[b.getAttribute("data-simple")]; const r=document.getElementById(id); if(r) r.click(); });
   const play=document.getElementById("playBtn");
