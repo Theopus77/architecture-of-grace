@@ -85,18 +85,12 @@ body.bench-simple .deck .row .ghost{min-height:48px}
 .decks{display:grid;gap:1rem;margin-top:1rem;grid-template-columns:minmax(0,1fr)}
 .deck{min-width:0}
 @media (max-width:700px){
-  .viewpick{display:block;position:sticky;top:0;z-index:5;background:var(--bg,#17110c);padding:.4rem 0}
-  #decks{display:block!important}
-  #deckA{display:block!important}
-  body[data-decktab="A"] #deckB,body[data-decktab="A"] #deckC,
-  body[data-decktab="B"] #deckA,body[data-decktab="B"] #deckC,
-  body[data-decktab="C"] #deckA,body[data-decktab="C"] #deckB{display:none!important}
-  body[data-decktab="mix"] .decks{display:none!important}
-  #mixer{display:none!important}
-  body[data-decktab="mix"] #mixer{display:block!important;margin-top:.8rem}
-  .deck .platter-wrap{width:min(300px,92vw)!important;margin:.3rem auto!important;display:flex!important}
-  .deck .platter{width:100%!important;min-height:200px}
-  .deck{display:block}
+  .viewpick{display:block}
+  body[data-decktab="A"] #deckB,body[data-decktab="A"] #deckC,body[data-decktab="A"] #mixer,
+  body[data-decktab="B"] #deckA,body[data-decktab="B"] #deckC,body[data-decktab="B"] #mixer,
+  body[data-decktab="C"] #deckA,body[data-decktab="C"] #deckB,body[data-decktab="C"] #mixer,
+  body[data-decktab="mix"] .decks{display:none}
+  body[data-decktab="mix"] #mixer{margin-top:.8rem}
 }
 /* ══ AOG-DJ-DESK-V1 (2026-10-08) — Jimmy: "There is a LOT of stuff going on." "I like the option of have the fader in
    the middle and the different options for the two records but using three." An iPad or a computer now shows TWO decks,
@@ -366,12 +360,7 @@ footer a{color:inherit}
   background:repeating-conic-gradient(from 0deg,#f0dfae 0deg 2.2deg,transparent 2.2deg 9deg);
   -webkit-mask:radial-gradient(circle closest-side, transparent 0 95%, #000 95.6% 99%, transparent 99.6%);
   mask:radial-gradient(circle closest-side, transparent 0 95%, #000 95.6% 99%, transparent 99.6%);opacity:.8}
-@keyframes vinylSpin{ from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
-.deck.spinning .platter,.deck.spinning .vinyl,.platter.spin{
-  animation:vinylSpin 1.8s linear infinite;
-}
-.deck.spinning .platter .label,.platter.spin .label{ animation:vinylSpin 1.8s linear infinite; }
-@media (prefers-reduced-motion:reduce){ .deck.spinning .platter,.deck.spinning .vinyl,.platter.spin{ animation:none } }
+.deck.spinning .platter{box-shadow:0 16px 18px rgba(0,0,0,.55),0 4px 0 #120e0a,0 0 0 2px rgba(244,226,176,.18)}
 .rpm{display:inline-flex;gap:.25rem}
 /* AOG-DECKS-1210-V1 — the top plate of a Technics SL-1210 MK7: satin black, the platter, the strobe lamp and the needle light,
    the long pitch fader, and the front row (Start·Stop, 33 / 45, REV, Start and Brake). Drawn by CSS, nothing to fetch. */
@@ -711,7 +700,7 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
 </style>
 <link rel="stylesheet" href="/aog-bench.css">
 </head>
-<body data-decktab="A">
+<body>
 <script src="/aog-sound-handoff.js"></script>
 <script src="/aog-grace.js" defer></script>
 <script>
@@ -772,28 +761,7 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
     </span>
     <p class="waiting" id="waiting" aria-live="polite"></p>
   </div>
-  <div class="decks stage" id="decks">
-    <section class="deck" id="deckA" style="display:block">
-      <div class="dhead"><h2>Deck A</h2></div>
-      <p class="song">No song yet.</p>
-      <div class="platter-wrap t12" style="width:min(280px,90vw);margin:.5rem auto">
-        <div class="platter" data-deck="A" id="staticPlatter" style="width:100%;aspect-ratio:1;border-radius:50%;background:repeating-radial-gradient(circle,#2a2a2a 0,#2a2a2a 2px,#1a1a1a 3px,#1a1a1a 5px);border:10px solid #c9a227;position:relative;box-shadow:0 8px 24px rgba(0,0,0,.6)">
-          <div class="label" style="position:absolute;inset:32%;border-radius:50%;background:radial-gradient(circle,#e8c56b,#a07830);box-shadow:inset 0 0 0 4px #6a4a1a"></div>
-          <div style="position:absolute;inset:46%;border-radius:50%;background:#1a1a1a"></div>
-        </div>
-      </div>
-      <div style="display:flex;gap:.5rem;justify-content:center;margin:.5rem 0">
-        <button type="button" class="go" id="staticStart" style="min-height:48px;padding:0 1.2rem;font-weight:800">START</button>
-        <label class="pill" style="min-height:48px;display:flex;align-items:center;padding:0 1rem;cursor:pointer">Load a song<input type="file" accept="audio/*" data-file="A" hidden></label>
-      </div>
-      <script>
-        (function(){
-          var btn=document.getElementById("staticStart"), plat=document.getElementById("staticPlatter"), on=false;
-          if(btn&&plat) btn.onclick=function(){ on=!on; plat.classList.toggle("spin",on); btn.textContent=on?"STOP":"START"; };
-        })();
-      </script>
-    </section>
-  </div>
+  <div class="decks stage" id="decks"></div>
   <p class="drophint no-print" id="padHint"></p>
   <p class="drophint dk-keys no-print" id="keysHint"></p><!-- AOG-DECKS-KEYS-V1 -->
   <section class="mixer no-print" id="mixer" aria-labelledby="mixH">
@@ -1122,13 +1090,7 @@ function ctx(){
   if(actx && actx.state!=="running"){ try{ actx.resume(); }catch(e){} }
   if(!actx){
     const AC = window.AudioContext||window.webkitAudioContext;
-    /* Safari can reject a forced sampleRate or a numeric latencyHint.
-       Try preferred settings, then fall back so the engine always starts. */
-    try { actx = new AC({ latencyHint:"interactive", sampleRate:48000 }); }
-    catch(e1) {
-      try { actx = new AC({ latencyHint:"interactive" }); }
-      catch(e2) { actx = new AC(); }
-    }
+    actx = new AC({ latencyHint:0.003, sampleRate:48000 }); /* AOG-DECKS-HIFI-OUT-V1: 48 kHz, 3 ms */
     try{ if(navigator.audioSession) navigator.audioSession.type = "playback"; }catch(e){}
     try{ if(window.AOGVU && AOGVU.own) AOGVU.own(actx); }catch(e){}   /* AOG-SILENT-V1: the Studio's hush pauses it too */
     /* AOG-DECKS-LOUDNESS-V1 — the same treatment the drum machine got: a normal
@@ -4016,8 +3978,7 @@ function paintLessons(){
      ${done ? `<p class="lok">${all ? lessonsT("All seventeen done. You can run a set.", "Las diecisiete hechas. Ya puedes tocar un set.") : lessonsT("Lesson done.", "Lección hecha.")} ${next}</p>` : ""}`;
   const nb = document.getElementById("lNext"); if(nb) nb.onclick = ()=>{ S.lessonSel = cur+1; lessonsSave(); paintLessons(); };
 }
-try{ setPair(PAIR, true); if(ONE) setOne(ONE); paintChrome(); shell(); paintLessons(); requestAnimationFrame(loop); }
-catch(err){ console.error("decks init:", err); const d=document.getElementById("decks"); if(d && !d.querySelector(".platter")) d.innerHTML='<p style="color:#f0c26e;padding:1rem">Turntables failed to start. Reload the page.</p>'; }
+setPair(PAIR, true); if(ONE) setOne(ONE); paintChrome(); shell(); paintLessons(); requestAnimationFrame(loop);
 checkBench();
 crateOpen();
 try{ AOGHandoff.listen(function(key){ if(SHELF.some(s=>s.key===key)) checkBench(); }); }catch(e){}
