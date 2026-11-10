@@ -49,7 +49,7 @@ header{display:flex;justify-content:space-between;align-items:center;gap:.75rem;
 .brand{font-size:.75rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);text-decoration:none}
 .tools{display:flex;gap:.5rem}
 .pill{min-height:44px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:0 .9rem;font-weight:600;display:inline-flex;align-items:center}
-button,label.file{font:inherit;cursor:pointer;touch-action:none}
+button,label.file{font:inherit;cursor:pointer;touch-action:manipulation}
 .kicker{font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--steel)}
 .lead{max-width:66ch;color:var(--muted)}
 /* AOG-DECKS-FIT-V1 (2026-09-26): Jimmy's iPhone showed Deck B wider than the
@@ -691,7 +691,7 @@ input:not([type=range]):not([type=file]):not([type=checkbox]):not([type=radio]),
    no double-tap wait, and the audio engine is woken on the very first touch. */
 body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
 input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
-button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipulation}
+button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 .platter,.wave,.zoom,.pad{touch-action:none}
 
 /* AOG-BENCH-TOP-V1: the masthead, nav row, bench switch and Lessons card live in /aog-bench.css */
@@ -3353,11 +3353,13 @@ function bind(){
     };
   });
   document.querySelectorAll("[data-play]").forEach(btn=>{
-    btn.onclick = async ()=>{
+    const go = async ()=>{
       const d = deckOf(btn, "data-play");
-      if(!d.buf) return;
+      if(!d || !d.buf) return;
       if(d.motor) stopDeck(d); else await startDeck(d);
     };
+    btn.onclick = go;
+    btn.addEventListener("touchend", (e)=>{ e.preventDefault(); go(); }, { passive:false });
   });
   /* CUE the way a deck does it: hold to hear it from the mark, let go and the
      record is back at the mark, stopped, ready to go again. */
@@ -3384,7 +3386,11 @@ function bind(){
                   ()=>{ const d = deckOf(btn, "data-hot"); if(d) padRelease(d, i); });
     btn.addEventListener("keydown", (e)=>{ if(e.key==="Delete"||e.key==="Backspace"){ const d = deckOf(btn, "data-hot"); if(d && d.cues[i]!=null){ e.preventDefault(); d.cues[i] = null; marksSave(d); d._sig = ""; d.waveDirty = true; paintDeck(d); drawWave(d); } } });
   });
-  document.querySelectorAll("[data-chop]").forEach(btn=>{ btn.onclick = ()=>{ const d = deckOf(btn, "data-chop"); if(d) chop8(d); }; });
+  document.querySelectorAll("[data-chop]").forEach(btn=>{
+    const go = ()=>{ const d = deckOf(btn, "data-chop"); if(d) chop8(d); };
+    btn.onclick = go;
+    btn.addEventListener("touchend", (e)=>{ e.preventDefault(); go(); }, { passive:false });
+  });
   document.querySelectorAll("[data-chopsend]").forEach(btn=>{ btn.onclick = ()=>{ const d = deckOf(btn, "data-chopsend"); if(d) chopsToPads(d, btn); }; });
   document.querySelectorAll("[data-erase]").forEach(btn=>{ btn.onclick = ()=>{ const d = deckOf(btn, "data-erase"); if(d){ d.erase = !d.erase; d._sig = ""; paintDeck(d); } }; });
   document.querySelectorAll("[data-snap]").forEach(sel=>{ sel.onchange = ()=>{ const d = deckOf(sel, "data-snap"); if(d) d.snap = +sel.value; }; });
@@ -3420,11 +3426,14 @@ function bind(){
   /* SLIP — the record keeps turning under the scratch. Let go, and you are
      where the track would have been if you had never touched it. */
   document.querySelectorAll("[data-slip]").forEach(btn=>{
-    btn.onclick = async ()=>{
+    const go = async ()=>{
       const d = deckOf(btn, "data-slip");
+      if(!d) return;
       d.slipOn = !d.slipOn; ctx(); await ensureNode(d);
-      send(d, { t:"slip", on:d.slipOn }); btn.classList.toggle("on", d.slipOn); btn.setAttribute("aria-pressed", d.slipOn);
+      send(d, { t:"slip", on:d.slipOn }); btn.classList.toggle("on", d.slipOn); btn.setAttribute("aria-pressed", String(d.slipOn));
     };
+    btn.onclick = go;
+    btn.addEventListener("touchend", (e)=>{ e.preventDefault(); go(); }, { passive:false });
   });
   /* REV — backwards while you hold it; with SLIP on, letting go puts you back
      on the beat, which is the whole trick (a DJ calls it a censor). */
