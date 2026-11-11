@@ -1435,7 +1435,7 @@ function markStep(i, when){
 }
 function pump(){
   if(!ac) return;
-  const now=ac.currentTime, horizon=now+0.12; /* schedule ahead so a live tap never waits behind the loop */
+  const now=ac.currentTime, horizon=now+0.001; /* 1 ms — the loop stays on the beat */
   let guard=0;
   if(SEQ.on){
     const L=loopLen(), m=evMap(), sp=spt();

@@ -811,7 +811,7 @@ function trigger(bi, pi, vel, when, T){
 }
 const RING=[], MAXV=24;
 const IOS=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
-const CAP=()=> (IOS ? (SEQ.on ? 6 : 10) : (SEQ.on ? 16 : 48)); /* tighter when a loop is running so live notes never stall */
+const CAP=()=> (IOS ? 16 : 64); /* enough for drums + notes together; steal keeps it from piling up */
 function letGo(v, c){
   if(!v || v.done) return;
   v.done=true;
@@ -859,7 +859,7 @@ function markStep(i, when){
 }
 function pump(){
   if(!ac) return;
-  const now=ac.currentTime, horizon=now+0.02; /* tight; voices are instant */
+  const now=ac.currentTime, horizon=now+0.001; /* 1 ms — the loop stays on the beat */
   let guard=0;
   if(SEQ.on){
     const L=loopLen(), m=evMap(), sp=spt();
@@ -916,8 +916,9 @@ function recordHit(bi, pi, vel, when){
 const RPT=new Map();   /* pads held while Repeat is on */
 function hitPad(bi, pi, vel, when, fromRepeat){
   if(SEQ.on && SEQ.rec){ if(++LT.recN>=4) LES.mark("rechit"); if(fromRepeat) LES.mark("rptrec"); }
-  const v=trigger(bi, pi, vel, when); flash(bi, pi, when, vel);
-  let e=null; if(SEQ.on && SEQ.rec) e=recordHit(bi, pi, vel, fromRepeat ? when : when-outLat());   /* AOG-PADS-QUICK-V1 */
+  const v=trigger(bi, pi, vel, when);
+  if(!fromRepeat) requestAnimationFrame(()=>flash(bi, pi, when, vel));
+  let e=null; if(SEQ.on && SEQ.rec) e=recordHit(bi, pi, vel, fromRepeat ? when : when-outLat());
   if(fromRepeat && v && gated(bi)){ const len=Math.max(6, Math.round(S.rate*0.8)); v.stop(when+len*spt()); if(e) e.len=len; }
   return {v:v, e:e};
 }
@@ -949,9 +950,10 @@ function press(id, pi, vel){
     lessonTap(bi, pi, vel);
     selectSoon(pi); return;
   }
+  /* sound first, everything else after — a live tap with other banks running stays instant */
   const h=hitPad(bi, pi, vel, c.currentTime, false);
   DOWN.set(id, {bi:bi, pi:pi, v:h.v, e:h.e, at:c.currentTime});
-  selectSoon(pi); lessonTap(bi, pi, vel);
+  if(!press._t) press._t=requestAnimationFrame(()=>{ press._t=0; selectSoon(pi); lessonTap(bi, pi, vel); });
 }
 function release(id){
   RPT.delete(id);
