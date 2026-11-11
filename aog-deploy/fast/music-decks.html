@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- AOG-FAST-BUILD-V1 source:3713c7040071a54f · MADE BY tools/build-fast.py from music-decks.html: edit music-decks.html, then run it. -->
+<!-- AOG-FAST-BUILD-V1 source:e689c0d6a85cdffa · MADE BY tools/build-fast.py from music-decks.html: edit music-decks.html, then run it. -->
 <html lang="en">
 <head>
 <script>/* AOG-STUDIO-ONLY-V1 (Jimmy, 2026-10-10: "one location for all the instruments … and that is the studio"): opened on its own address, this room opens inside the Studio instead, at this exact address (its lesson, take or link). Inside the Studio's frame, and for the site's own checks, it stays. */(function(){try{if(window.top!==window||navigator.webdriver)return;var M={"music-pads":"pads","drum-machine":"pads","beat-lab":"pads","music-kit":"kit","drum-kit":"kit","music-piano":"piano","piano":"piano","keys":"piano","music-guitar":"guitar","guitar":"guitar","music-bass":"bass","bass":"bass","music-band":"band","band":"band","music-decks":"decks","decks":"decks","turntables":"decks","music-vocal":"vocal","vocal-booth":"vocal","vocal":"vocal","booth":"vocal","music-studio":"studio","studio":"studio","mixing-desk":"studio"},f=(location.pathname.split("/").pop()||"").replace(/\.html$/,""),r=M[f];if(!r)return;var F={pads:"music-pads",kit:"music-kit",piano:"music-piano",guitar:"music-guitar",bass:"music-bass",band:"music-band",decks:"music-decks",vocal:"music-vocal",studio:"music-studio"};location.replace("/the-studio.html?at="+encodeURIComponent("/"+F[r]+".html"+location.search+location.hash)+"#"+r);}catch(e){}})();</script>
@@ -813,7 +813,7 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
 <script src="aog-eq.js"></script>
 <script src="aog-vinyl-worklet.js"></script>
 <script src="aog-dj.js"></script>
-<script src="/front/3e6d0549720e.js"></script>
+<script src="/front/9aa680a20c3a.js"></script>
 <script>
 /* AOG-PGPANEL-V1 - the guide loads only when the bar is opened, and the frame is
    grown to its content so the panel scrolls with the page instead of inside itself. */
@@ -832,54 +832,5 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
 })();
 </script>
 <script src="/front/89e4815a9a4c.js"></script>
-<!-- AOG-SAFARI-TAP-V3 -->
-<script>
-/* Safari tap bridge v3: every control in the red circle answers a finger */
-(function(){
-  var css=document.createElement("style");
-  css.textContent="button,.pill,.go,.pad,.ghost,a,label{touch-action:manipulation!important;-webkit-tap-highlight-color:rgba(240,194,110,.4)} button:active,.pad:active,.ghost:active{filter:brightness(1.35);transform:scale(0.97)}";
-  document.head.appendChild(css);
-
-  function fire(b){
-    b.style.boxShadow="inset 0 0 0 2px #f0c26e";
-    setTimeout(function(){ b.style.boxShadow=""; }, 180);
-    if(typeof b.onclick==="function"){ try{ b.onclick(); return; }catch(x){} }
-    b.click();
-  }
-  document.addEventListener("touchend", function(e){
-    var el=e.target;
-    var b=el.closest?el.closest("button,.pad,.ghost,.pill,.go,[data-play],[data-slip],[data-chop],[data-chopsend],[data-cue],[data-hot],[data-erase],[data-sync],[data-key],[data-rev]"):null;
-    if(!b) return;
-    e.preventDefault();
-    fire(b);
-  }, true);
-
-  function arm(p){
-    if(p._v3) return; p._v3=1;
-    var id=null, ang=0;
-    p.addEventListener("touchstart", function(e){
-      var t=e.touches[0]; if(!t) return;
-      var r=p.getBoundingClientRect();
-      id=t.identifier;
-      ang=Math.atan2(t.clientY-r.top-r.height/2, t.clientX-r.left-r.width/2);
-    }, {passive:false});
-    p.addEventListener("touchmove", function(e){
-      var t=null; for(var i=0;i<e.touches.length;i++) if(e.touches[i].identifier===id) t=e.touches[i];
-      if(!t) return;
-      e.preventDefault();
-      var r=p.getBoundingClientRect();
-      var a=Math.atan2(t.clientY-r.top-r.height/2, t.clientX-r.left-r.width/2);
-      var d=a-ang; if(d>Math.PI) d-=2*Math.PI; if(d<-Math.PI) d+=2*Math.PI; ang=a;
-      var rot=parseFloat(p.getAttribute("data-rot")||"0")+d*57.3;
-      p.setAttribute("data-rot", rot);
-      p.style.transform="rotate("+rot+"deg)";
-    }, {passive:false});
-    p.addEventListener("touchend", function(){ id=null; }, {passive:true});
-  }
-  function scan(){ var q=document.querySelectorAll(".platter"); for(var i=0;i<q.length;i++) arm(q[i]); }
-  scan();
-  new MutationObserver(scan).observe(document.documentElement,{childList:true,subtree:true});
-})();
-</script>
 </body>
 </html>

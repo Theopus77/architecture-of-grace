@@ -276,7 +276,8 @@ function ctx(){
   if(actx && actx.state!=="running"){ try{ actx.resume(); }catch(e){} }
   if(!actx){
     const AC = window.AudioContext||window.webkitAudioContext;
-    actx = new AC({ latencyHint:0.003, sampleRate:48000 }); /* AOG-DECKS-HIFI-OUT-V1: 48 kHz, 3 ms */
+    try{ actx = new AC({ latencyHint:0.003, sampleRate:48000 }); }
+    catch(e1){ try{ actx = new AC({ latencyHint:0.003 }); }catch(e2){ actx = new AC(); } }
     try{ if(navigator.audioSession) navigator.audioSession.type = "playback"; }catch(e){}
     try{ if(window.AOGVU && AOGVU.own) AOGVU.own(actx); }catch(e){}   /* AOG-SILENT-V1: the Studio's hush pauses it too */
     /* AOG-DECKS-LOUDNESS-V1 — the same treatment the drum machine got: a normal
@@ -2863,6 +2864,20 @@ function bind(){
       send(deck, { t:"hand", on:false, rate:0 });               /* let go: the throw carries, the motor takes over */
     };
     p.onpointerup = up; p.onpointercancel = up; p.onlostpointercapture = up;
+    /* Safari: touch events drive the same scratch when pointer events do not arrive */
+    p.addEventListener("touchstart", function(e){
+      if(!e.touches[0]) return;
+      const t = e.touches[0];
+      p.onpointerdown({ preventDefault:function(){}, pointerId:1, clientX:t.clientX, clientY:t.clientY, timeStamp:e.timeStamp||performance.now(), getCoalescedEvents:function(){ return []; } });
+    }, {passive:false});
+    p.addEventListener("touchmove", function(e){
+      if(!e.touches[0]) return;
+      e.preventDefault();
+      const t = e.touches[0];
+      p.onpointermove({ clientX:t.clientX, clientY:t.clientY, timeStamp:e.timeStamp||performance.now(), getCoalescedEvents:function(){ return []; } });
+    }, {passive:false});
+    p.addEventListener("touchend", function(){ up(); }, {passive:true});
+    p.addEventListener("touchcancel", function(){ up(); }, {passive:true});
     /* the same deck from a keyboard: space starts and stops it, the arrows walk
        the needle a tenth of a second at a time. */
     p.onkeydown = async (e)=>{
@@ -2879,6 +2894,12 @@ function bind(){
       }
     };
   });
+  /* Safari: a finger-up on a button runs its handler. File inputs stay real buttons. */
+  document.addEventListener("touchend", function(e){
+    const b = e.target.closest && e.target.closest("button,.pill,.go,.ghost,.pad");
+    if(!b || b.tagName === "LABEL" || b.querySelector("input[type=file]")) return;
+    if(typeof b.onclick === "function"){ try{ b.onclick(e); }catch(x){} }
+  }, true);
 }
 function paintChrome(){
   document.getElementById("brand").textContent = t("app");
