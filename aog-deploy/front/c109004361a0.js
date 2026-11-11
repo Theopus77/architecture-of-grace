@@ -706,7 +706,7 @@ function trigger(bi, pi, vel, when, T){
   function keep(v){ if(v){ const H=T.held||(T.held={}); H[bi+":"+pi]=v; } return v; }
   /* AOG-DRUM-SHELF-V1: a pad borrowed from another kit (eight kicks, eight cymbals …) plays at its own kit's level */
   const B=S.banks[bi], kt=d.kind==="drum" ? kitFor(bi, pi, d.kit)||d.kit : "", trim=d.kind==="drum" ? trimOf("kit", (AOGDrumKit.from && AOGDrumKit.from(kt, d.id))||kt) : d.kind==="chop" ? trimOf("rec", (B.rec||"").replace(/^c:/,"")) : trimOf("inst", B.inst);
-  stealTo(CAP-1); /* never drop a hit; oldest voice is already gone */
+  stealTo(CAP()-1); /* never drop a hit; oldest voice is already gone */
   const out=c.createGain(); out.gain.value=P.vol/100*trim;
   /* AOG-SHAPE-V2: musical tone and gentle drive */
   const extras=[]; /* AOG-PERMANENT: shape/send nodes disabled by default to prevent freezes; enable only if needed */
@@ -773,7 +773,7 @@ function trigger(bi, pi, vel, when, T){
     if(o){ try{ o.src.playbackRate.value=rate; }catch(e){} if(n==="OPEN") OPEN[bi].push(o); out.gain.value*=mono(o.src.buffer);
       if(live){
         const dv={s:o.src, g:o.gain, done:false};
-        RING.push(dv); stealTo(CAP);
+        RING.push(dv); stealTo(CAP());
         o.src.onended=()=>{ try{ o.src.disconnect(); o.gain.disconnect(); }catch(e){} dv.done=true; const k=RING.indexOf(dv); if(k>=0) RING.splice(k,1); unplug(); const j=OPEN[bi].indexOf(o); if(j>=0) OPEN[bi].splice(j,1); };
       } }
     else if(live) unplug();
@@ -790,12 +790,14 @@ function trigger(bi, pi, vel, when, T){
     const v={s:s, g:g}; CHOP[bi]=v; s.onended=()=>{ if(CHOP[bi]===v) CHOP[bi]=null; if(live){ try{ s.disconnect(); g.disconnect(); }catch(e){} unplug(); } };
     return keep({stop(at){ const t0=Math.max(at||0, c.currentTime); try{ g.gain.cancelScheduledValues(t0); g.gain.setTargetAtTime(0, t0, 0.006); s.stop(t0+0.05); }catch(e){} }});
   }
-  /* a note or a chord: it rings while the pad is held */
-  const zs=R.zones||[], vs=[], lv=0.62*(0.3+0.7*vel)/Math.sqrt(d.notes.length);
-  ((INST[B.inst]||{}).one ? d.notes.slice(0,1) : d.notes).map(m=>foldIn(B.inst, m)).forEach(m=>{   /* AOG-PADS-WORLD-V1 */
+  /* a note or a chord: it rings while the pad is held. With a loop running, one layer only so drums + notes never stall. */
+  const zs=R.zones||[], vs=[], notes=((INST[B.inst]||{}).one ? d.notes.slice(0,1) : d.notes).slice(0, SEQ.on ? 3 : 6);
+  const lv=0.62*(0.3+0.7*vel)/Math.sqrt(notes.length||1);
+  notes.map(m=>foldIn(B.inst, m)).forEach(m=>{
     const z=nearest(zs, m);
-    layerPick(z, vel).forEach(Y=>{   /* AOG-PADS-LAYERS-V1: the strength (or the two blended) this hit picks */
-    const tb=BUFV.get(Y.url); if(!tb) return;   /* a note not here yet stays quiet; the others play */
+    const layers=layerPick(z, vel); const use=SEQ.on ? layers.slice(0,1) : layers;
+    use.forEach(Y=>{
+    const tb=BUFV.get(Y.url); if(!tb) return;
     const s=c.createBufferSource(), g=c.createGain();
     s.buffer=tb.b; s.playbackRate.value=Math.pow(2, (m-z.m)/12-(Y.c||0)/1200)*rate;
     g.gain.setValueAtTime(0, when); g.gain.linearRampToValueAtTime(lv*tb.g*Y.g*mono(tb.b)*padEven(B.inst, Y.url, m-z.m), when+Math.max(0.005, tb.fade));
@@ -803,13 +805,13 @@ function trigger(bi, pi, vel, when, T){
     if(live){ RING.push(v); s.onended=()=>{ try{ s.disconnect(); g.disconnect(); }catch(e){} const k=RING.indexOf(v); if(k>=0) RING.splice(k,1); v.done=true; if(vs.every(x=>x.done)) unplug(); }; }
     });
   });
-  if(live){ if(!vs.length) unplug(); if(ac && ac.state==="suspended") ac.resume(); stealTo(CAP-1); }
+  if(live){ if(!vs.length) unplug(); if(ac && ac.state==="suspended") ac.resume(); stealTo(CAP()-1); }
   return keep({parts:vs.map(v=>v.url), stop(at, force){ if(!force && (INST[B.inst]||{}).ring) return; const t0=Math.max(at||0, c.currentTime);   /* AOG-PADS-CLASSROOM-V1: a pluck rings out. AOG-PADS-FEEL-V1: a paired pad cuts it anyway */
     vs.forEach(v=>{ try{ v.g.gain.cancelScheduledValues(t0); v.g.gain.setTargetAtTime(0, t0, 0.07); v.s.stop(t0+0.6); }catch(e){} }); }});
 }
 const RING=[], MAXV=24;
 const IOS=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
-const CAP=IOS ? 10 : 48; /* phones stall when too many voices pile up; 10 keeps every hit instant */
+const CAP=()=> (IOS ? 16 : 64); /* enough for drums + notes together; steal keeps it from piling up */
 function letGo(v, c){
   if(!v || v.done) return;
   v.done=true;
@@ -857,7 +859,7 @@ function markStep(i, when){
 }
 function pump(){
   if(!ac) return;
-  const now=ac.currentTime, horizon=now+0.02; /* tight; voices are instant */
+  const now=ac.currentTime, horizon=now+0.12; /* schedule ahead so a live tap never waits behind the loop */
   let guard=0;
   if(SEQ.on){
     const L=loopLen(), m=evMap(), sp=spt();
@@ -906,15 +908,17 @@ function recordHit(bi, pi, vel, when){
   const e={b:bi, p:pi, t:tk, v:Math.round(vel*100)/100, len:0};
   const sw=Math.round((S.swing/100-0.5)*48), playAt=a+(sw && tk%48===24 ? sw : 0);
   if(playAt>=SEQ.abs) e._skip=Math.floor(a/L);
-  S.ev.push(e); SEQ.map=null; save(); if(bi===S.bank && pi===S.sel) paintSteps(); lessonSongs(); if(bi===0) paintBeatPick();
-  if(BOUNCE.out && !BOUNCE.busy){ BOUNCE.out=null; BOUNCE.msg=""; paintBounce(); }
+  S.ev.push(e); SEQ.map=null;
+  /* defer the heavy paint/save so the hit itself never waits */
+  if(!recordHit._t) recordHit._t=requestAnimationFrame(()=>{ recordHit._t=0; save(); if(bi===S.bank) paintSteps(); });
   return e;
 }
 const RPT=new Map();   /* pads held while Repeat is on */
 function hitPad(bi, pi, vel, when, fromRepeat){
   if(SEQ.on && SEQ.rec){ if(++LT.recN>=4) LES.mark("rechit"); if(fromRepeat) LES.mark("rptrec"); }
-  const v=trigger(bi, pi, vel, when); flash(bi, pi, when, vel);
-  let e=null; if(SEQ.on && SEQ.rec) e=recordHit(bi, pi, vel, fromRepeat ? when : when-outLat());   /* AOG-PADS-QUICK-V1 */
+  const v=trigger(bi, pi, vel, when);
+  if(!fromRepeat) requestAnimationFrame(()=>flash(bi, pi, when, vel));
+  let e=null; if(SEQ.on && SEQ.rec) e=recordHit(bi, pi, vel, fromRepeat ? when : when-outLat());
   if(fromRepeat && v && gated(bi)){ const len=Math.max(6, Math.round(S.rate*0.8)); v.stop(when+len*spt()); if(e) e.len=len; }
   return {v:v, e:e};
 }
@@ -946,9 +950,10 @@ function press(id, pi, vel){
     lessonTap(bi, pi, vel);
     selectSoon(pi); return;
   }
+  /* sound first, everything else after — a live tap with other banks running stays instant */
   const h=hitPad(bi, pi, vel, c.currentTime, false);
   DOWN.set(id, {bi:bi, pi:pi, v:h.v, e:h.e, at:c.currentTime});
-  selectSoon(pi); lessonTap(bi, pi, vel);
+  if(!press._t) press._t=requestAnimationFrame(()=>{ press._t=0; selectSoon(pi); lessonTap(bi, pi, vel); });
 }
 function release(id){
   RPT.delete(id);
