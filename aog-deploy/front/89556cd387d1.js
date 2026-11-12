@@ -272,7 +272,7 @@ function ctx(){
   if(actx && actx.state!=="running"){ try{ actx.resume(); }catch(e){} }
   if(!actx){
     const AC = window.AudioContext||window.webkitAudioContext;
-    actx = new AC({ latencyHint:"interactive" });
+    actx = new AC({ latencyHint:0.005 }); /* AOG-DECKS-INSTANT-V1: same 5 ms as the Drum Machine */
     try{ if(window.AOGVU && AOGVU.own) AOGVU.own(actx); }catch(e){}   /* AOG-SILENT-V1: the Studio's hush pauses it too */
     /* AOG-DECKS-LOUDNESS-V1 — the same treatment the drum machine got: a normal
        level with a real limiter behind it, so three loud songs at once still
@@ -341,7 +341,7 @@ async function ensureNode(d){
     if(!d.node){
       /* no AudioWorklet (old Safari): the same core, on the old processor */
       d.core = new self.AOGVinylCore(actx.sampleRate);
-      const n = actx.createScriptProcessor(512, 0, 2);
+      const n = actx.createScriptProcessor(128, 0, 2); /* smaller quantum = tighter scratch */
       n.onaudioprocess = (e)=>{
         const o = e.outputBuffer, c = d.core;
         c.frame = Math.round((e.playbackTime || actx.currentTime) * actx.sampleRate);
@@ -2450,11 +2450,14 @@ function bind(){
     };
   });
   document.querySelectorAll("[data-play]").forEach(btn=>{
-    btn.onclick = async ()=>{
+    const go = async ()=>{
       const d = deckOf(btn, "data-play");
-      if(!d.buf) return;
+      if(!d || !d.buf) return;
+      ctx();
       if(d.motor) stopDeck(d); else await startDeck(d);
     };
+    btn.onclick = go;
+    btn.addEventListener("touchend", (e)=>{ e.preventDefault(); go(); }, { passive:false });
   });
   /* CUE the way a deck does it: hold to hear it from the mark, let go and the
      record is back at the mark, stopped, ready to go again. */
@@ -2481,7 +2484,11 @@ function bind(){
                   ()=>{ const d = deckOf(btn, "data-hot"); if(d) padRelease(d, i); });
     btn.addEventListener("keydown", (e)=>{ if(e.key==="Delete"||e.key==="Backspace"){ const d = deckOf(btn, "data-hot"); if(d && d.cues[i]!=null){ e.preventDefault(); d.cues[i] = null; marksSave(d); d._sig = ""; d.waveDirty = true; paintDeck(d); drawWave(d); } } });
   });
-  document.querySelectorAll("[data-chop]").forEach(btn=>{ btn.onclick = ()=>{ const d = deckOf(btn, "data-chop"); if(d) chop8(d); }; });
+  document.querySelectorAll("[data-chop]").forEach(btn=>{
+    const go = ()=>{ const d = deckOf(btn, "data-chop"); if(d) chop8(d); };
+    btn.onclick = go;
+    btn.addEventListener("touchend", (e)=>{ e.preventDefault(); go(); }, { passive:false });
+  });
   document.querySelectorAll("[data-chopsend]").forEach(btn=>{ btn.onclick = ()=>{ const d = deckOf(btn, "data-chopsend"); if(d) chopsToPads(d, btn); }; });
   document.querySelectorAll("[data-erase]").forEach(btn=>{ btn.onclick = ()=>{ const d = deckOf(btn, "data-erase"); if(d){ d.erase = !d.erase; d._sig = ""; paintDeck(d); } }; });
   document.querySelectorAll("[data-snap]").forEach(sel=>{ sel.onchange = ()=>{ const d = deckOf(sel, "data-snap"); if(d) d.snap = +sel.value; }; });
@@ -2517,11 +2524,14 @@ function bind(){
   /* SLIP — the record keeps turning under the scratch. Let go, and you are
      where the track would have been if you had never touched it. */
   document.querySelectorAll("[data-slip]").forEach(btn=>{
-    btn.onclick = async ()=>{
+    const go = async ()=>{
       const d = deckOf(btn, "data-slip");
+      if(!d) return;
       d.slipOn = !d.slipOn; ctx(); await ensureNode(d);
-      send(d, { t:"slip", on:d.slipOn }); btn.classList.toggle("on", d.slipOn); btn.setAttribute("aria-pressed", d.slipOn);
+      send(d, { t:"slip", on:d.slipOn }); btn.classList.toggle("on", d.slipOn); btn.setAttribute("aria-pressed", String(d.slipOn));
     };
+    btn.onclick = go;
+    btn.addEventListener("touchend", (e)=>{ e.preventDefault(); go(); }, { passive:false });
   });
   /* REV — backwards while you hold it; with SLIP on, letting go puts you back
      on the beat, which is the whole trick (a DJ calls it a censor). */
@@ -2744,7 +2754,7 @@ function bind(){
          keep their sharp edges instead of smearing. */
       const now = performance.now();
       const absInst = Math.abs(deck.handRate);
-      const win = absInst > 1.2 ? 28 : absInst > 0.4 ? 45 : 70;
+      const win = absInst > 1.2 ? 8 : absInst > 0.4 ? 12 : 20; /* AOG-DECKS-INSTANT-V1: near-zero lag */
       while(trail.length > 2 && now - trail[0].t > win) trail.shift();
       const first = trail[0], last = trail[trail.length-1];
       const dt = Math.max(0.008, (last.t - first.t)/1000);
