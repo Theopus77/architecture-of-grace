@@ -49,7 +49,7 @@ header{display:flex;justify-content:space-between;align-items:center;gap:.75rem;
 .brand{font-size:.75rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);text-decoration:none}
 .tools{display:flex;gap:.5rem}
 .pill{min-height:44px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:0 .9rem;font-weight:600;display:inline-flex;align-items:center}
-button,label.file{font:inherit;cursor:pointer;touch-action:none}
+button,label.file{font:inherit;cursor:pointer;touch-action:manipulation}
 .kicker{font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--steel)}
 .lead{max-width:66ch;color:var(--muted)}
 /* AOG-DECKS-FIT-V1 (2026-09-26): Jimmy's iPhone showed Deck B wider than the
@@ -3587,6 +3587,17 @@ function bind(){
       send(deck, { t:"hand", on:false, rate:0 });               /* let go: the throw carries, the motor takes over */
     };
     p.onpointerup = up; p.onpointercancel = up; p.onlostpointercapture = up;
+    /* Safari sends touch, not pointer, inside the Studio frame. Same scratch path. */
+    p.addEventListener("touchstart", function(e){
+      var t=e.touches&&e.touches[0]; if(!t) return;
+      p.onpointerdown({preventDefault:function(){},pointerId:1,clientX:t.clientX,clientY:t.clientY,timeStamp:e.timeStamp||performance.now(),getCoalescedEvents:function(){return[];}});
+    }, {passive:false});
+    p.addEventListener("touchmove", function(e){
+      var t=e.touches&&e.touches[0]; if(!t) return; e.preventDefault();
+      p.onpointermove({clientX:t.clientX,clientY:t.clientY,timeStamp:e.timeStamp||performance.now(),getCoalescedEvents:function(){return[];}});
+    }, {passive:false});
+    p.addEventListener("touchend", function(){ up(); }, {passive:true});
+    p.addEventListener("touchcancel", function(){ up(); }, {passive:true});
     /* the same deck from a keyboard: space starts and stops it, the arrows walk
        the needle a tenth of a second at a time. */
     p.onkeydown = async (e)=>{
@@ -3603,6 +3614,12 @@ function bind(){
       }
     };
   });
+  /* Safari: a finger-up on a button runs its handler. File buttons stay real. */
+  document.addEventListener("touchend", function(e){
+    var b=e.target.closest&&e.target.closest("button,.pill,.go,.ghost,.pad");
+    if(!b||b.tagName==="LABEL"||b.querySelector("input[type=file]")) return;
+    if(typeof b.onclick==="function"){ try{ b.onclick(e); }catch(x){} }
+  }, true);
 }
 function paintChrome(){
   document.getElementById("brand").textContent = t("app");

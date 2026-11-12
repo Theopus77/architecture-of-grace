@@ -292,11 +292,15 @@ function ceiling(c){
 function mvol(){ const v=S.mvol==null ? 100 : +S.mvol; return Math.max(0, Math.min(150, v))/100; }   /* AOG-PADS-KNOBS-V1: how loud the unit plays (not what a bounce writes) */
 function master(c){
   const m={c:c};
-  m.lim=c.createDynamicsCompressor(); m.lim.threshold.value=-3; m.lim.knee.value=2; m.lim.ratio.value=20; m.lim.attack.value=0.002; m.lim.release.value=0.12;
-  m.bus=c.createGain(); m.bus.gain.value=0.9; m.clip=ceiling(c);
+  /* AOG-STUDIO-V1: clean high-pass, gentle glue, then the existing limiter and ceiling */
+  m.hp=c.createBiquadFilter(); m.hp.type="highpass"; m.hp.frequency.value=28; m.hp.Q.value=0.7;
+  m.glue=c.createDynamicsCompressor(); m.glue.threshold.value=-12; m.glue.knee.value=8; m.glue.ratio.value=2.2; m.glue.attack.value=0.01; m.glue.release.value=0.18;
+  m.lim=c.createDynamicsCompressor(); m.lim.threshold.value=-2; m.lim.knee.value=1; m.lim.ratio.value=12; m.lim.attack.value=0.003; m.lim.release.value=0.1;
+  m.bus=c.createGain(); m.bus.gain.value=0.85; m.clip=ceiling(c);
   m.rig=window.AOGAmp ? AOGAmp.create(c, {kind:"drums", state:fxState()}) : null;
-  if(m.rig){ m.bus.connect(m.rig.input); m.rig.output.connect(m.lim); } else m.bus.connect(m.lim);
-  m.lim.connect(m.clip); m.clip.connect(c.destination);
+  m.bus.connect(m.hp);
+  if(m.rig){ m.hp.connect(m.rig.input); m.rig.output.connect(m.glue); } else m.hp.connect(m.glue);
+  m.glue.connect(m.lim); m.lim.connect(m.clip); m.clip.connect(c.destination);
   return m;
 }
 const FXKEY="aog.pads.fx.v1";
@@ -569,7 +573,7 @@ function canPlay(bi){
 }
 
 /* ══ playing one pad ══ */
-function padSet(bi, pi){ const o=S.pads[bi+":"+pi]||{}; return {vol:o.vol==null?100:o.vol, tune:o.tune||0, pan:o.pan||0, nudge:+o.nudge||0, cut:o.cut==null?-1:+o.cut}; } /* AOG-PADS-FEEL-V1 */
+function padSet(bi, pi){ const o=S.pads[bi+":"+pi]||{}; return {vol:o.vol==null?100:o.vol, tune:o.tune||0, pan:o.pan||0, nudge:+o.nudge||0, cut:o.cut==null?-1:+o.cut, decay:o.decay==null?100:o.decay, tone:o.tone==null?100:o.tone, drive:o.drive==null?0:o.drive, echo:o.echo||0, verb:o.verb||0, chance:o.chance==null?100:o.chance, micro:o.micro||0, alt:o.alt||0}; } /* AOG-PADS-FEEL-V1 + shape */
 function feelWhen(bi, pi, when){ const n=padSet(bi, pi).nudge; return n ? when+n/1000 : when; }
 /* AOG-PADS-LEVEL-V1 (2026-10-05) — Jimmy: "all the instruments don't start at the same volume." Each sound is brought to the
    grand piano's level on the piano page (the level every music tool is set to), measured as the ear hears it (K-weighted,
@@ -694,7 +698,9 @@ function padEven(inst, url, d){
 function trigger(bi, pi, vel, when, T){
   if(T ? !isReady(bi) : !canPlay(bi)) return null;   /* a file of the loop waits for every sound; live playing does not */
   const d=padDefs(bi)[pi]; if(!d) return null;
-  if(!T){ T=LIVE; T.c=ctx(); T.dest=bus; if(S.banks[bi].type==="chords") chordNow(d, when); }
+  if(!T){ T=LIVE; T.c=ctx(); T.dest=bus; }
+  /* AOG-BANKC-FIT-V1: any chord from Bank B (live or from the pattern) updates the notes Bank C lights */
+  if(S.banks[bi].type==="chords") chordNow(d, when);
   const c=T.c, P=padSet(bi, pi), R=READY[bi], OPEN=T.open, CHOP=T.chop;
   when=Math.max(when||0, c.currentTime);
   if(P.cut>=0 && P.cut!==pi && T.held){ const prev=T.held[bi+":"+P.cut]; if(prev && prev.stop) prev.stop(when, true); } /* AOG-PADS-FEEL-V1 */
@@ -702,12 +708,50 @@ function trigger(bi, pi, vel, when, T){
   /* AOG-DRUM-SHELF-V1: a pad borrowed from another kit (eight kicks, eight cymbals …) plays at its own kit's level */
   const B=S.banks[bi], kt=d.kind==="drum" ? kitFor(bi, pi, d.kit)||d.kit : "", trim=d.kind==="drum" ? trimOf("kit", (AOGDrumKit.from && AOGDrumKit.from(kt, d.id))||kt) : d.kind==="chop" ? trimOf("rec", (B.rec||"").replace(/^c:/,"")) : trimOf("inst", B.inst);
   const out=c.createGain(); out.gain.value=P.vol/100*trim;
+  /* AOG-SHAPE-V2: musical tone and gentle drive */
+  const extras=[]; /* AOG-PERMANENT: shape/send nodes disabled by default to prevent freezes; enable only if needed */
+  const SHAPE_ON = false;
+  let shaped=out;
+  if(SHAPE_ON && P.tone!==100){
+    const flt=c.createBiquadFilter(); flt.type="lowpass";
+    flt.frequency.value=400+Math.pow(P.tone/100,1.6)*12000; flt.Q.value=0.5;
+    out.connect(flt); shaped=flt; extras.push(flt);
+  }
+  if(SHAPE_ON && P.drive>0){
+    const drv=c.createWaveShaper(); const k=1+P.drive/40, n=128, crv=new Float32Array(n);
+    for(let i=0;i<n;i++){ const x=i/(n-1)*2-1; crv[i]=Math.tanh(k*x)/Math.tanh(k); }
+    drv.curve=crv; shaped.connect(drv); shaped=drv; extras.push(drv);
+  }
+  if(P.decay<100){ const t1=when+0.06+0.7*(P.decay/100); out.gain.setTargetAtTime(0, t1, 0.12); }
+  /* AOG-SEND-V2: soft echo and filtered space, not noise */
+  if(SHAPE_ON && (P.echo>0 || P.verb>0)){
+    if(P.echo>0){
+      const send=c.createGain(); send.gain.value=P.echo/100*0.22;
+      const dly=c.createDelay(0.4); dly.delayTime.value=0.16;
+      const fb=c.createGain(); fb.gain.value=0.18;
+      const fbFlt=c.createBiquadFilter(); fbFlt.type="lowpass"; fbFlt.frequency.value=2800;
+      shaped.connect(send); send.connect(dly); dly.connect(fbFlt); fbFlt.connect(fb); fb.connect(dly); dly.connect(T.dest);
+      extras.push(send, dly, fb, fbFlt);
+    }
+    if(P.verb>0){
+      /* short filtered delays instead of a noise convolver */
+      const vg=c.createGain(); vg.gain.value=P.verb/100*0.18;
+      const d1=c.createDelay(0.08); d1.delayTime.value=0.023;
+      const d2=c.createDelay(0.08); d2.delayTime.value=0.037;
+      const f1=c.createBiquadFilter(); f1.type="lowpass"; f1.frequency.value=4200;
+      const f2=c.createBiquadFilter(); f2.type="lowpass"; f2.frequency.value=3200;
+      shaped.connect(vg);
+      vg.connect(d1); d1.connect(f1); f1.connect(T.dest);
+      vg.connect(d2); d2.connect(f2); f2.connect(T.dest);
+      extras.push(vg, d1, d2, f1, f2);
+    }
+  }
   /* AOG-PADS-VOICES-V1 (2026-10-11) — Jimmy, on his iPad: "after like 5-6 chords it froze up, same with the bank c the
      notes". A pad in the middle needs no panner (most pads); every part of a sound is unplugged the moment it ends, so
      the sound engine never carries old chords; and no more than MAXV notes ring at once, the oldest let go quickly. */
   let pn=null;
-  if(P.pan && c.createStereoPanner){ pn=c.createStereoPanner(); pn.pan.value=P.pan/100; out.connect(pn); pn.connect(T.dest); } else out.connect(T.dest);
-  const live=T===LIVE, unplug=()=>{ try{ out.disconnect(); }catch(e){} if(pn) try{ pn.disconnect(); }catch(e){} };
+  if(P.pan && c.createStereoPanner){ pn=c.createStereoPanner(); pn.pan.value=P.pan/100; shaped.connect(pn); pn.connect(T.dest); } else shaped.connect(T.dest);
+  const live=T===LIVE, unplug=()=>{ try{ out.disconnect(); }catch(e){} if(pn) try{ pn.disconnect(); }catch(e){} extras.forEach(n=>{ try{ n.disconnect(); }catch(e){} }); extras.length=0; };
   /* AOG-PADS-MONO-V1 (2026-10-11): a panner in the middle sends a one-microphone recording to each speaker at 0.71 (equal
      power), and LEVEL was measured so; with the panner skipped for a centred pad (AOG-PADS-VOICES-V1) such a recording
      reached both speakers at full, 3 dB over its level (pads/level.js found 78 sounds off). Without a panner it is
@@ -757,7 +801,7 @@ function trigger(bi, pi, vel, when, T){
   });
   if(live){ if(!vs.length) unplug(); while(RING.length>MAXV) letGo(RING.shift(), c); }
   return keep({parts:vs.map(v=>v.url), stop(at, force){ if(!force && (INST[B.inst]||{}).ring) return; const t0=Math.max(at||0, c.currentTime);   /* AOG-PADS-CLASSROOM-V1: a pluck rings out. AOG-PADS-FEEL-V1: a paired pad cuts it anyway */
-    vs.forEach(v=>{ try{ v.g.gain.cancelScheduledValues(t0); v.g.gain.setTargetAtTime(0, t0, 0.07); v.s.stop(t0+0.6); }catch(e){} }); }});
+    const fast=gated(bi); vs.forEach(v=>{ try{ v.g.gain.cancelScheduledValues(t0); v.g.gain.setTargetAtTime(0, t0, fast?0.02:0.07); v.s.stop(t0+(fast?0.12:0.6)); }catch(e){} }); }});
 }
 const RING=[], MAXV=32;   /* AOG-PADS-VOICES-V1: the notes ringing now, the oldest first */
 function letGo(v, c){ if(!v) return; try{ const t0=c.currentTime; v.g.gain.cancelScheduledValues(t0); v.g.gain.setTargetAtTime(0, t0, 0.012); v.s.stop(t0+0.06); }catch(e){} }
@@ -807,7 +851,8 @@ function pump(){
       if(list) list.forEach(e=>{
         if(e._skip===pass){ delete e._skip; return; }
         if(STAGE.mute[e.b]) return;   /* AOG-PADS-STAGE-V1: a muted layer sits out */
-        const hw=feelWhen(e.b, e.p, when); const v=trigger(e.b, e.p, e.v, hw); flash(e.b, e.p, hw, e.v);
+        const P=padSet(e.b, e.p); if(P.chance<100 && Math.random()*100 > P.chance) return; /* AOG-PERMANENT: return, never continue, inside forEach */
+        const hw=feelWhen(e.b, e.p, when)+(P.micro||0)/1000; const v=trigger(e.b, e.p, e.v, hw); flash(e.b, e.p, hw, e.v);
         if(v && gated(e.b)) v.stop(hw+Math.max(12, e.len||48)*sp); /* AOG-PADS-FEEL-V1 */
       });
       if(S.click && tk%PPQ===0) blip(when, tk===0);
@@ -822,7 +867,7 @@ function startTimer(){ if(!SEQ.timer) SEQ.timer=setInterval(pump, 25); pump(); }
 function stopTimer(){ clearInterval(SEQ.timer); SEQ.timer=0; }
 function prepUsed(){ new Set(S.ev.map(e=>e.b)).forEach(b=>{ if(b>=0 && b<4) prep(b); }); }
 function play(){ LES.mark("play1"); if(S.swing>50) LES.mark("playsw"); prepUsed(); const c=ctx(); SEQ.on=true; SEQ.t0=c.currentTime+0.08; SEQ.abs=0; SEQ.map=null; SV.follow=true; startTimer(); paintTransport(); }
-function stop(){ if(SEQ.on) LES.mark("stop1"); SEQ.on=false; if(SEQ.rec){ SEQ.rec=false; say(t("recOff")); } S.ev.forEach(e=>{ delete e._skip; }); stepNow=-1; const o=$("steps").querySelector(".st.now"); if(o) o.classList.remove("now"); barPlaying(-1); paintTransport(); }
+function stop(){ if(SEQ.on) LES.mark("stop1"); SEQ.on=false; stopTimer(); if(SEQ.rec){ SEQ.rec=false; say(t("recOff")); } S.ev.forEach(e=>{ delete e._skip; }); stepNow=-1; const o=$("steps").querySelector(".st.now"); if(o) o.classList.remove("now"); barPlaying(-1); paintTransport(); }
 function retime(bpm){
   bpm=clamp(Math.round(+bpm||90), 60, 180); if(bpm===S.bpm) return;
   LES.mark("tempo1"); if(bpm>=120) LES.mark("tfast"); if(bpm<=80) LES.mark("tslow");
@@ -859,6 +904,9 @@ function velAt(el, x, y){
   const dx=(x-(r.left+r.width/2))/(r.width/2), dy=(y-(r.top+r.height/2))/(r.height/2), d=Math.min(1, Math.sqrt(dx*dx+dy*dy)/1.2);
   return Math.round((1-0.55*d)*100)/100;
 }
+/* AOG-PAD-RESPONSIVE-V1 (2026-10-31): same rule for every bank, including C (Notes) and D (Chops).
+   Sound and the down class must run on the pointerdown path; lesson, save, and paint work stay deferred.
+   Future agents: never put heavy DOM or lesson work before noteOn/trigger on any bank. */
 /* AOG-PADS-QUICK-V1 (2026-10-05) — Jimmy: "When the drum kits are playing in the beat pad, when I hit the pads they are
    delayed." A tap sounds first and the page redraws after (the picked pad's steps on the next frame); with Repeat on, the
    first hit sounds at once even while the loop plays, and the repeats then fall on the beat. A phone's own delay to the
@@ -880,7 +928,9 @@ function press(id, pi, vel){
   }
   const h=hitPad(bi, pi, vel, c.currentTime, false);
   DOWN.set(id, {bi:bi, pi:pi, v:h.v, e:h.e, at:c.currentTime});
-  selectSoon(pi); lessonTap(bi, pi, vel);
+  selectSoon(pi);
+  /* AOG-PAD-RESPONSIVE-V1: lesson work deferred so banks C (Notes) and D (Chops) stay instant while a loop plays */
+  queueMicrotask(()=>lessonTap(bi, pi, vel));
 }
 function release(id){
   RPT.delete(id);
@@ -1815,7 +1865,7 @@ function init(){
   $("themeBtn").onclick=()=>{ const h=document.documentElement, d=h.getAttribute("data-theme")==="dark"?"light":"dark";
     h.setAttribute("data-theme", d); h.classList.toggle("dark", d==="dark"); try{ localStorage.setItem("aog.interior.ws.v1.theme", d); }catch(e){} paintText(); };
   /* wake Safari's sound on the first touch, every time it sleeps */
-  ["touchstart","touchend","pointerdown","click","keydown"].forEach(ev=>document.addEventListener(ev,()=>{ try{ if(ac && ac.state!=="running") ac.resume(); }catch(e){} },{capture:true,passive:true}));
+  ["touchstart","pointerdown"].forEach(ev=>document.addEventListener(ev,()=>{ try{ if(ac && ac.state!=="running") ac.resume(); }catch(e){} },{capture:true,passive:true}));
   /* a hidden page goes quiet: the loop stops and held pads let go */
   document.addEventListener("visibilitychange",()=>{ if(document.hidden){ if(SEQ.on) stop(); [...DOWN.keys()].forEach(release); RPT.clear(); } });
   window.addEventListener("blur",()=>{ [...DOWN.keys()].forEach(release); RPT.clear(); });

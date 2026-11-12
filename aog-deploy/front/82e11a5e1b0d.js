@@ -1560,7 +1560,7 @@ function padDown(i, v){
   const notes=vo.concat([bassOf(c)]);
   padUp(i);
   padHeld[i]=notes;
-  notes.forEach((m,j)=>noteOn("p", m, (v||0.72)*(j===notes.length-1?0.9:1)));
+  notes.forEach((m,j)=>noteOn("p", m, (v||0.72)*(j===notes.length-1?0.85:1)));
   queueMicrotask(()=>{
     paintWheelState();
     if(S.own && S.prog.length<8){ S.prog.push({off:c.off, q:c.q}); S.preset=""; save(); paintProg(); paintProgSel(); }
