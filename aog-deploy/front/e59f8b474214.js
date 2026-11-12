@@ -47,7 +47,7 @@ const STR = {
   barsOf:{en:"%i of %n",es:"%i de %n"},
   dockDone:{en:"Done",es:"Listo"},
   none:{en:"No song yet.",es:"Aún no hay canción."},
-  play:{en:"Start",es:"Arrancar"},pause:{en:"Pause",es:"Pausa"},resume:{en:"Resume",es:"Seguir"},
+  play:{en:"Start",es:"Arrancar"},
   stop:{en:"Stop",es:"Parar"},
   cue:{en:"Return to cue",es:"Volver al cue"},
   setCue:{en:"Set cue",es:"Marcar cue"},
@@ -102,7 +102,11 @@ const STR = {
   padsT:{en:"From the drum machine",es:"De la caja de ritmos"}, padsGo:{en:"Open the drum machine",es:"Abrir la caja de ritmos"},   /* AOG-PADS-STUDIO-V1 */
   crateNext:{en:"Up next",es:"Lo que sigue"},
   crateNextNone:{en:"Your songs wait here.",es:"Tus canciones esperan aquí."},
-  crateAdd:{en:"Add songs",es:"Agregar canciones"},importVinyl:{en:"Load a track",es:"Cargar una pista"},full:{en:"Full screen",es:"Pantalla completa"},fullOff:{en:"Leave full screen",es:"Salir de pantalla completa"},importVinylTip:{en:"Put a song from this iPad on this deck. Nothing is uploaded.",es:"Carga un archivo de vinilo real desde este equipo. Nada se sube."},
+  crateAdd:{en:"Add songs",es:"Agregar canciones"},
+  importVinyl:{en:"Import vinyl",es:"Importar vinilo"},
+  full:{en:"Full screen",es:"Pantalla completa"},
+  fullOff:{en:"Leave full screen",es:"Salir de pantalla completa"},
+  importVinylTip:{en:"Load a real vinyl sound file from this computer. Nothing is uploaded.",es:"Carga un archivo de vinilo real desde este equipo. Nada se sube."},
   starterH:{en:"Starter crate",es:"Caja inicial"},
   starterLead:{en:"Eleven practice tracks, 80 to 128 BPM.",es:"Once pistas para practicar, de 80 a 128 BPM."},
   starterGo:{en:"Load the starter crate",es:"Cargar la caja inicial"},
@@ -272,8 +276,8 @@ function ctx(){
   if(actx && actx.state!=="running"){ try{ actx.resume(); }catch(e){} }
   if(!actx){
     const AC = window.AudioContext||window.webkitAudioContext;
-    try{ actx = new AC({ latencyHint:"interactive" }); }
-    catch(e1){ try{ actx = new AC(); }catch(e2){ return null; } }
+    try{ actx = new AC({ latencyHint:0.003, sampleRate:48000 }); }
+    catch(e1){ try{ actx = new AC({ latencyHint:0.003 }); }catch(e2){ actx = new AC(); } }
     try{ if(navigator.audioSession) navigator.audioSession.type = "playback"; }catch(e){}
     try{ if(window.AOGVU && AOGVU.own) AOGVU.own(actx); }catch(e){}   /* AOG-SILENT-V1: the Studio's hush pauses it too */
     /* AOG-DECKS-LOUDNESS-V1 — the same treatment the drum machine got: a normal
@@ -293,6 +297,7 @@ function ctx(){
     /* AOG-DJ-LIMIT-V1 — OUT is the very end: what the speakers, the tape and the curve all hear.
        Once the worklet is in, a look-ahead wall sits just before it, so nothing leaves above -1 dBFS. */
     OUT = actx.createGain(); master.connect(OUT); OUT.connect(actx.destination);
+    /* AOG-DECKS-KEEP-V1: keep playing when the browser is minimized, where the OS allows it */
     /* AOG-DECKS-IPAD-V1: keep playing on iPad when the app is backgrounded or Stage Manager hides the window.
        audioSession playback is what iPadOS uses for music. Locking the screen or closing Safari still stops it; that is the iPad. */
     try{
@@ -762,7 +767,7 @@ function paintBench(){
      with the same records on, parked where you left them;
    · the last eight records you played, one tap to put any back on a deck;
    · UP NEXT — songs you line up before the set, played in order. ══════════ */
-const CRATE = { db:"aog-crate", store:"crate", prev:[], next:[], lib:[], albums:[], max:8 };
+const CRATE = { db:"aog-crate", store:"crate", prev:[], next:[], lib:[], max:8 };
 /* AOG-DJ-AUDIO-ONLY-V1 (Jimmy, 2026-10-10: "The photo and video is suppose to be gone … I am uploading music"): on an
    iPhone or iPad, .m4a, .m4b, .aac and .amr count as MPEG-4 video, so Safari offered Photo Library and Take Video.
    There the song boxes ask for audio only; audio/* still takes .m4a, .mp3, .wav and the rest from Files. */
@@ -809,8 +814,7 @@ async function crateCopy(file, arr){
   return new Blob([buf.slice ? buf.slice(0) : buf], { type:file.type||"" });
 }
 async function crateInstall(file, arr){
-  let id = crateId(file); if(CRATE.lib.some(x=>x.id===id)) id = id+"·"+Date.now().toString(36);
-  const rec = { id:id, name:file.name, blob:await crateCopy(file, arr), at:Date.now() };
+  const rec = { id:crateId(file), name:file.name, blob:await crateCopy(file, arr), at:Date.now() };
   CRATE.lib = [rec].concat(CRATE.lib.filter(x=>x.id!==rec.id)).slice(0, 60);
   cratePut("lib", CRATE.lib); paintDocks();
   return rec;
@@ -830,7 +834,6 @@ async function crateOpen(){
   CRATE.prev = (await crateGet("prev")) || [];
   CRATE.next = (await crateGet("next")) || [];
   CRATE.lib = (await crateGet("lib")) || [];
-  CRATE.albums = (await crateGet("albums")) || [];
   /* songs saved before the library existed join it */
   CRATE.next.concat(CRATE.prev).forEach(r=>{ if(r && r.blob && !CRATE.lib.some(x=>x.id===r.id)) CRATE.lib.push(r); });
   paintCrate(); paintDocks();
@@ -1825,128 +1828,35 @@ function paintBay(){
   });
 }
 
-async function ensureLame(){
-  if(window.lamejs) return window.lamejs;
-  await new Promise((ok, no)=>{
-    const s = document.createElement("script");
-    s.src = "/lame.min.js"; s.onload = ok; s.onerror = no;
-    document.head.appendChild(s);
-  });
-  return window.lamejs;
-}
-function mkEncode(buf, kind){
-  return new Promise(async (ok, no)=>{
-    try{
-      if(kind==="wav"){
-        const sr = buf.sampleRate, n = buf.length;
-        const L = buf.getChannelData(0), R = buf.numberOfChannels>1?buf.getChannelData(1):L;
-        const bytes = n*4, ab = new ArrayBuffer(44+bytes), dv = new DataView(ab);
-        const w=(o,s)=>{ for(let i=0;i<s.length;i++) dv.setUint8(o+i,s.charCodeAt(i)); };
-        w(0,"RIFF"); dv.setUint32(4,36+bytes,true); w(8,"WAVE"); w(12,"fmt ");
-        dv.setUint32(16,16,true); dv.setUint16(20,1,true); dv.setUint16(22,2,true);
-        dv.setUint32(24,sr,true); dv.setUint32(28,sr*4,true); dv.setUint16(32,4,true); dv.setUint16(34,16,true);
-        w(36,"data"); dv.setUint32(40,bytes,true);
-        let p=44;
-        for(let i=0;i<n;i++){
-          const l=Math.max(-1,Math.min(1,L[i])), r=Math.max(-1,Math.min(1,R[i]));
-          dv.setInt16(p, l<0?l*0x8000:l*0x7FFF, true); p+=2;
-          dv.setInt16(p, r<0?r*0x8000:r*0x7FFF, true); p+=2;
-        }
-        ok(new Blob([ab],{type:"audio/wav"})); return;
-      }
-      if(kind==="mp3"){
-        const lame = await ensureLame();
-        const sr = buf.sampleRate, n = buf.length;
-        const L = buf.getChannelData(0), R = buf.numberOfChannels>1?buf.getChannelData(1):L;
-        const enc = new lame.Mp3Encoder(2, sr, 192);
-        const block = 1152, parts = [];
-        const l16 = new Int16Array(block), r16 = new Int16Array(block);
-        for(let i=0;i<n;i+=block){
-          const len = Math.min(block, n-i);
-          for(let j=0;j<len;j++){
-            const a = Math.max(-1, Math.min(1, L[i+j])), b = Math.max(-1, Math.min(1, R[i+j]));
-            l16[j] = a<0 ? a*0x8000 : a*0x7FFF;
-            r16[j] = b<0 ? b*0x8000 : b*0x7FFF;
-          }
-          const chunk = enc.encodeBuffer(l16.subarray(0,len), r16.subarray(0,len));
-          if(chunk.length) parts.push(chunk);
-        }
-        const end = enc.flush(); if(end.length) parts.push(end);
-        ok(new Blob(parts,{type:"audio/mpeg"})); return;
-      }
-      /* mp4: the browser records it. Safari and iPad give a real audio/mp4. */
-      const mime = MediaRecorder.isTypeSupported("audio/mp4") ? "audio/mp4" : "";
-      const dest = actx.createMediaStreamDestination();
-      const src = actx.createBufferSource(); src.buffer = buf; src.connect(dest);
-      const rec = new MediaRecorder(dest.stream, mime?{mimeType:mime}:{});
-      const parts = [];
-      rec.ondataavailable = e=>{ if(e.data&&e.data.size) parts.push(e.data); };
-      rec.onstop = ()=>ok(new Blob(parts,{type:"audio/mp4"}));
-      rec.onerror = no;
-      rec.start(); src.start();
-      src.onended = ()=>{ setTimeout(()=>{ try{ rec.stop(); }catch(e){} }, 250); };
-    }catch(e){ no(e); }
-  });
-}
-async function mkFile(pick, box, kind){
-  const recs = pick.map(pid=>CRATE.lib.find(r=>r.id===pid)).filter(r=>r&&r.blob);
-  if(recs.length<2) throw new Error("songs not in the crate");
-  ctx();
-  const bufs = [];
-  for(const r of recs){
-    const f = crateFile(r); const arr = await f.arrayBuffer();
-    const buf = await new Promise((ok,no)=>{ const p = actx.decodeAudioData(arr.slice(0), ok, no); if(p&&p.then) p.then(ok,no); });
-    bufs.push(buf);
-  }
-  const sr = actx.sampleRate, gap = Math.floor(sr*0.35);
-  const total = bufs.reduce((n,b)=>n+Math.floor(b.duration*sr),0) + gap*Math.max(0,bufs.length-1);
-  const out = actx.createBuffer(2, total, sr);
-  const L = out.getChannelData(0), R = out.getChannelData(1);
-  let at = 0;
-  for(const b of bufs){
-    const bl = b.getChannelData(0), br = b.numberOfChannels>1?b.getChannelData(1):bl;
-    for(let i=0;i<bl.length && at+i<total;i++){ L[at+i]=bl[i]; R[at+i]=br[i]; }
-    at += bl.length + gap;
-  }
-  const ext = kind==="mp3"?"mp3":kind==="mp4"?"m4a":"wav";
-  const name = ((box._mkName||"My record").replace(/[^\w .-]/g,"")||"My record")+"."+ext;
-  const blob = await mkEncode(out, kind);
-  return new File([blob], name, {type:blob.type||"audio/"+ext});
-}
-let _scratching = false;
+
 function bindFull(){
-  if(!document.getElementById("deckFill")){ const st=document.createElement("style"); st.id="deckFill"; st.textContent="body.deck-fill{position:fixed;inset:0;z-index:80;width:100vw;height:100vh;background:#12141a;overflow:auto}body.deck-fill .decks{height:100%;align-content:center}body.deck-fill .platter,body.deck-fill .deck .t12 .platter{width:min(70vh,86vw)!important;max-width:none}"; document.head.appendChild(st); }
-  document.querySelectorAll("[data-fulldeck]").forEach(b=>{
+  const b = document.getElementById("fullBtn"); if(!b || b._wired) return; b._wired = true;
+  const on = ()=> document.fullscreenElement || document.webkitFullscreenElement;
+  const paint = ()=>{ b.textContent = on() ? t("fullOff") : t("full"); b.setAttribute("aria-pressed", on()?"true":"false"); };
+  b.onclick = ()=>{
+    const root = document.querySelector("main") || document.documentElement;
+    if(on()){ (document.exitFullscreen||document.webkitExitFullscreen).call(document); }
+    else { const go = root.requestFullscreen || root.webkitRequestFullscreen; if(go) go.call(root); }
+  };
+  document.addEventListener("fullscreenchange", paint);
+  document.addEventListener("webkitfullscreenchange", paint);
+  paint();
+}
+function bindImport(){
+  document.querySelectorAll("[data-import]").forEach(b=>{
     if(b._wired) return; b._wired = true;
-    b.onclick = (e)=>{
-      e.stopPropagation();
-      const on = document.body.classList.toggle("deck-fill");
-      b.textContent = on ? "Leave" : "Full screen";
-      if(window.parent && window.parent!==window) window.parent.postMessage({t: on?"aog-fill":"aog-fill-off"}, "*");
+    b.onclick = ()=>{
+      const id = b.getAttribute("data-import");
+      const d = DECKS.find(x=>x.id===id); if(!d) return;
+      const inp = document.createElement("input");
+      inp.type = "file";
+      inp.accept = "audio/*,.mp3,.m4a,.aac,.wav,.aif,.aiff,.ogg,.opus,.flac";
+      inp.onchange = ()=>{ const f = inp.files && inp.files[0]; if(f) loadFile(d, f); };
+      inp.click();
     };
   });
-  const b=document.getElementById("fullBtn");if(!b||b._wired)return;b._wired=true;const on=()=>document.fullscreenElement||document.webkitFullscreenElement;const paint=()=>{b.textContent=on()?t("fullOff"):t("full");b.setAttribute("aria-pressed",on()?"true":"false");};b.onclick=()=>{const root=document.querySelector("main")||document.documentElement;if(on()){(document.exitFullscreen||document.webkitExitFullscreen).call(document);}else{const go=root.requestFullscreen||root.webkitRequestFullscreen;if(go)go.call(root);}};document.addEventListener("fullscreenchange",paint);document.addEventListener("webkitfullscreenchange",paint);paint();}
-window.addEventListener("message",(e)=>{
-  if(!e.data || e.data.t!=="aog-full-in") return;
-  const root = document.documentElement;
-  const on = document.fullscreenElement || document.webkitFullscreenElement;
-  if(on){ window._wantFull=false; (document.exitFullscreen||document.webkitExitFullscreen).call(document); }
-  else { window._wantFull=true; const go = root.requestFullscreen || root.webkitRequestFullscreen; if(go) go.call(root); }
-});
-document.addEventListener("pointerup", ()=>setTimeout(()=>{ _scratching = false; }, 500), true);
-document.addEventListener("fullscreenchange", ()=>{
-  if(_scratching && !(document.fullscreenElement||document.webkitFullscreenElement)){
-    const go = document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen;
-    if(go) go.call(document.documentElement);
-  }
-});
-document.addEventListener("webkitfullscreenchange", ()=>{
-  if(_scratching && !(document.fullscreenElement||document.webkitFullscreenElement)){
-    const go = document.documentElement.webkitRequestFullscreen;
-    if(go) go.call(document.documentElement);
-  }
-});
-function bindImport(){document.querySelectorAll("[data-load]").forEach(inp=>{if(inp._wired)return;inp._wired=true;inp.addEventListener("change",()=>{const deck=DECKS.find(x=>x.id===inp.getAttribute("data-load"));const f=inp.files&&inp.files[0];if(!f)return;if(!deck)return;loadFile(deck,f).then(()=>paintDeck(deck));inp.value="";});});}function bindBay(){
+}
+function bindBay(){
   document.querySelectorAll("#bay [data-bfader]").forEach(f=>{
     const d = deckOf(f, "data-bfader"), inp = f.querySelector("input");
     const at = (ev)=>{ const r = f.getBoundingClientRect(); setVol(d, 1 - (ev.clientY - r.top - 9)/Math.max(1, r.height - 18)); };
@@ -1981,7 +1891,8 @@ function deckHTML(d){
     <section class="deck" id="deck${id}" aria-label="${t("deck")} ${id}">
       <div class="dhead">
         <h2>${t("deck")} ${id}</h2>
-        <button type="button" class="tiny mst" data-master="${id}" aria-pressed="false" title="${t("masterTip")}">${t("master")}</button><label class="tiny" title="${t("importVinylTip")}" style="position:relative;overflow:hidden">${t("importVinyl")}<input type="file" accept=".mp3,.m4a,.wav,.aiff,.aac,.caf,.flac,.ogg,audio/mpeg,audio/mp4,audio/wav,audio/aac,audio/flac" data-load="${id}" style="position:absolute;inset:0;opacity:0;font-size:40px"></label><button type="button" class="tiny" data-fulldeck="1">Full screen</button>
+        <button type="button" class="tiny mst" data-master="${id}" aria-pressed="false" title="${t("masterTip")}">${t("master")}</button>
+        <button type="button" class="tiny" data-import="${id}" title="${t("importVinylTip")}">${t("importVinyl")}</button>
         <span class="bpm" data-bpm="${id}"></span>
       </div>
       <p class="song">${esc(d.note||d.name||t("none"))}</p>
@@ -2016,7 +1927,7 @@ function deckHTML(d){
         </div>
        </div>
        <div class="t12-foot">
-        <button type="button" class="go t12-ss" data-play="${id}">${t("play")}</button><button type="button" class="tiny" data-pause="${id}">${t("pause")}</button>
+        <button type="button" class="go t12-ss" data-play="${id}">${t("play")}</button>
         <span class="rpm t12-rpm" role="group" aria-label="${t("rpm")}">
           <button type="button" class="ghost rpmb${d.rpm===1?" on":""}" data-rpm="${id}" data-v="1">33</button>
           <button type="button" class="ghost rpmb${d.rpm!==1?" on":""}" data-rpm="${id}" data-v="1.35">45</button>
@@ -2157,7 +2068,6 @@ document.addEventListener("keydown", ev=>{
   if(ev.key !== "Escape") return;
   document.querySelectorAll(".dock:not([hidden])").forEach(box=>dockShut(box.id.slice(4), true));
 });
-window._mkPick = window._mkPick || {};
 function paintDocks(){
   document.querySelectorAll(".dock").forEach(box=>{
     const id = box.id.slice(4), editing = box.classList.contains("editing");
@@ -2171,226 +2081,6 @@ function paintDocks(){
         loadFile(decks.find(x=>x.id===id), crateFile(r));
       };
     });
-    box.querySelectorAll("[data-dalb]").forEach(b=>{
-      b.onclick = async ()=>{
-        const a = (CRATE.albums||[])[+b.getAttribute("data-dalb")]; if(!a) return;
-        const d = decks.find(x=>x.id===id); if(!d) return;
-        const recs = [], miss = [];
-        a.tracks.forEach(tr=>{ const r = CRATE.lib.find(x=>x.id===tr.id); if(r&&r.blob) recs.push(r); else miss.push(tr.name||tr.id); });
-        if(miss.length){ alert("Not in the crate: " + miss.join(", ")); if(recs.length<1) return; }
-        ctx(); await ensureNode(d);
-        const bufs = [];
-        for(const r of recs){
-          const f = crateFile(r);
-          const arr = await f.arrayBuffer();
-          const buf = await new Promise((ok,no)=>{ const p = actx.decodeAudioData(arr.slice(0), ok, no); if(p&&p.then) p.then(ok,no); });
-          bufs.push(buf);
-        }
-        const sr = actx.sampleRate, gap = Math.floor(sr*0.35);
-        const total = bufs.reduce((n,b)=>n + Math.floor(b.duration*sr), 0) + gap*Math.max(0,bufs.length-1);
-        const out = actx.createBuffer(2, total, sr);
-        const L = out.getChannelData(0), R = out.getChannelData(1);
-        let at = 0;
-        for(const b of bufs){
-          const bl = b.getChannelData(0), br = b.numberOfChannels>1 ? b.getChannelData(1) : bl;
-          const n = bl.length;
-          for(let i=0;i<n && at+i<total;i++){ L[at+i]=bl[i]; R[at+i]=br[i]; }
-          at += n + gap;
-        }
-        putOn(d, out, Float32Array.from(L), Float32Array.from(R), { name:a.name });
-        box.hidden = true;
-        const tg=document.querySelector(`[data-dock="${id}"]`); if(tg) tg.setAttribute("aria-expanded","false");
-      };
-    });
-    /* AOG-MAKE-RECORD-V1: pick 2 to 10 songs, stitch them into one record on this deck */
-    if(!box.querySelector("[data-mkrec]")){
-      const row = box.querySelector(".dockrow") || box;
-      const b = document.createElement("button");
-      b.type = "button"; b.className = "ghost"; b.setAttribute("data-mkrec","1");
-      b.textContent = (typeof t==="function" && t("mkRec")) || "+ Make a record";
-      b.onclick = ()=>{ box.classList.add("picking"); box._pick = window._mkPick[id] || box._pick || []; window._mkPick[id]=box._pick; paintDocks(); };
-      row.appendChild(b);
-    }
-    if(box.classList.contains("picking")){
-      const pick = window._mkPick[id] || box._pick || (window._mkPick[id] = box._pick = []); box._pick = pick; window._mkPick[id] = pick;
-      box.querySelectorAll("[data-dsong]").forEach(b=>{
-        const r = CRATE.lib[+b.getAttribute("data-dsong")]; if(!r) return;
-        const k = pick.indexOf(r.id);
-        b.classList.toggle("pk", k>=0);
-        if(k>=0) b.setAttribute("data-n", String(k+1)); else b.removeAttribute("data-n");
-        b.onclick = ()=>{ const j = pick.indexOf(r.id); if(j>=0) pick.splice(j,1); else if(pick.length<10) pick.push(r.id); paintDocks(); };
-      });
-      const list = box.querySelector(".docklist") || box;
-      const bar = document.createElement("div"); bar.className = "mkbar";
-      bar.innerHTML = `<p>Tap 2 to 10 songs, in order. <b>${pick.length} chosen</b></p>`
-        + `<button type="button" class="go" data-mkgo ${pick.length<2?"disabled":""}>Put it on</button>`
-        + `<button type="button" class="ghost" data-mksend ${pick.length<2?"disabled":""}>Share WAV</button>`
-        + `<button type="button" class="ghost" data-mkshare3 ${pick.length<2?"disabled":""}>Share MP3</button>`
-        + `<button type="button" class="ghost" data-mkshare4 ${pick.length<2?"disabled":""}>Share M4A</button>`
-        + `<button type="button" class="ghost" data-mkdl ${pick.length<2?"disabled":""}>Download WAV</button>`
-        + `<button type="button" class="ghost" data-mkmp3 ${pick.length<2?"disabled":""}>Download MP3</button>`
-        + `<button type="button" class="ghost" data-mkmp4 ${pick.length<2?"disabled":""}>Download M4A</button>`
-        + `<button type="button" class="ghost" data-mkx>Cancel</button>`;
-      list.before(bar);
-      bar.querySelector("[data-mkx]").onclick = ()=>{ box.classList.remove("picking"); box._pick=[]; paintDocks(); };
-      bar.querySelector("[data-mkgo]").onclick = async ()=>{
-        if(pick.length<2) return;
-        const d = decks.find(x=>x.id===id); if(!d) return;
-        const recs = [], missing = [];
-        pick.forEach(pid=>{ const r = CRATE.lib.find(x=>x.id===pid); if(r && r.blob) recs.push(r); else missing.push(pid); });
-        if(missing.length){ bar.querySelector("p").textContent = "Not in the crate: " + missing.length + " song" + (missing.length>1?"s":"") + ". They may have been replaced. Pick them again."; return; }
-        if(recs.length<2){ bar.querySelector("p").textContent = "Need at least 2 songs still in the crate."; return; }
-        ctx(); await ensureNode(d);
-        const bufs = [];
-        for(const r of recs){
-          const f = crateFile(r);
-          const arr = await f.arrayBuffer();
-          const buf = await new Promise((ok,no)=>{ const p = actx.decodeAudioData(arr.slice(0), ok, no); if(p&&p.then) p.then(ok,no); });
-          bufs.push(buf);
-        }
-        const sr = actx.sampleRate, gap = Math.floor(sr*0.35);
-        const total = bufs.reduce((n,b)=>n + Math.floor(b.duration*sr), 0) + gap*(bufs.length-1);
-        const out = actx.createBuffer(2, total, sr);
-        const L = out.getChannelData(0), R = out.getChannelData(1);
-        let at = 0;
-        for(const b of bufs){
-          const bl = b.getChannelData(0), br = b.numberOfChannels>1 ? b.getChannelData(1) : bl;
-          const n = bl.length;
-          for(let i=0;i<n && at+i<total;i++){ L[at+i]=bl[i]; R[at+i]=br[i]; }
-          at += n + gap;
-        }
-        putOn(d, out, Float32Array.from(L), Float32Array.from(R), { name:(box._mkName||"My record") });
-        const al = { id:"mx"+Date.now().toString(36), name:(box._mkName||"My record"), tracks:recs.map(r=>({id:r.id, name:r.name})) };
-        CRATE.albums = [al].concat(CRATE.albums||[]).slice(0, 24);
-        cratePut("albums", CRATE.albums);
-        box.classList.remove("picking"); box._pick=[]; box.hidden=true;
-        const tg=document.querySelector(`[data-dock="${id}"]`); if(tg) tg.setAttribute("aria-expanded","false");
-        paintDocks();
-      };
-      bar.querySelector("[data-mksend]").onclick = async ()=>{
-        if(pick.length<2) return;
-        const recs0 = pick.map(pid=>CRATE.lib.find(r=>r.id===pid)).filter(Boolean);
-        const al = { id:"mx"+Date.now().toString(36), name:(box._mkName||"My record"), tracks:recs0.map(r=>({id:r.id, name:r.name})) };
-        CRATE.albums = [al].concat(CRATE.albums||[]).slice(0, 24);
-        cratePut("albums", CRATE.albums);
-        const recs = pick.map(pid=>CRATE.lib.find(r=>r.id===pid)).filter(r=>r&&r.blob);
-  if(recs.length<2) throw new Error("songs not in the crate");
-        ctx();
-        const bufs = [];
-        for(const r of recs){
-          const f = crateFile(r);
-          const arr = await f.arrayBuffer();
-          const buf = await new Promise((ok,no)=>{ const p = actx.decodeAudioData(arr.slice(0), ok, no); if(p&&p.then) p.then(ok,no); });
-          bufs.push(buf);
-        }
-        const sr = actx.sampleRate, gap = Math.floor(sr*0.35);
-        const total = bufs.reduce((n,b)=>n + Math.floor(b.duration*sr), 0) + gap*(bufs.length-1);
-        const out = actx.createBuffer(2, total, sr);
-        const Lch = out.getChannelData(0), Rch = out.getChannelData(1);
-        let at = 0;
-        for(const b of bufs){
-          const bl = b.getChannelData(0), br = b.numberOfChannels>1 ? b.getChannelData(1) : bl;
-          const n = bl.length;
-          for(let i=0;i<n && at+i<total;i++){ Lch[at+i]=bl[i]; Rch[at+i]=br[i]; }
-          at += n + gap;
-        }
-        /* 16-bit stereo wav. Nothing is uploaded; the share sheet or a download sends it. */
-        const bytes = total * 4;
-        const ab = new ArrayBuffer(44 + bytes);
-        const dv = new DataView(ab);
-        const w = (o,s)=>{ for(let i=0;i<s.length;i++) dv.setUint8(o+i, s.charCodeAt(i)); };
-        w(0,"RIFF"); dv.setUint32(4, 36+bytes, true); w(8,"WAVE"); w(12,"fmt ");
-        dv.setUint32(16, 16, true); dv.setUint16(20, 1, true); dv.setUint16(22, 2, true);
-        dv.setUint32(24, sr, true); dv.setUint32(28, sr*4, true); dv.setUint16(32, 4, true); dv.setUint16(34, 16, true);
-        w(36,"data"); dv.setUint32(40, bytes, true);
-        let p = 44;
-        for(let i=0;i<total;i++){
-          const l = Math.max(-1, Math.min(1, Lch[i])), r = Math.max(-1, Math.min(1, Rch[i]));
-          dv.setInt16(p, l<0 ? l*0x8000 : l*0x7FFF, true); p+=2;
-          dv.setInt16(p, r<0 ? r*0x8000 : r*0x7FFF, true); p+=2;
-        }
-        const name = ((box._mkName||"My record").replace(/[^\w .-]/g,"") || "My record") + ".wav";
-        const file = new File([ab], name, { type:"audio/wav" });
-        if(navigator.share && navigator.canShare && navigator.canShare({ files:[file] })){
-          try{ await navigator.share({ files:[file], title:name }); return; }catch(e){}
-        }
-        const a = document.createElement("a");
-        a.href = URL.createObjectURL(file); a.download = name; a.click();
-        setTimeout(()=>URL.revokeObjectURL(a.href), 4000);
-      };
-      bar.querySelector("[data-mkdl]").onclick = async ()=>{
-        if(pick.length<2) return;
-        const recs = pick.map(pid=>CRATE.lib.find(r=>r.id===pid)).filter(r=>r&&r.blob);
-  if(recs.length<2) throw new Error("songs not in the crate");
-        ctx();
-        const bufs = [];
-        for(const r of recs){
-          const f = crateFile(r);
-          const arr = await f.arrayBuffer();
-          const buf = await new Promise((ok,no)=>{ const p = actx.decodeAudioData(arr.slice(0), ok, no); if(p&&p.then) p.then(ok,no); });
-          bufs.push(buf);
-        }
-        const sr = actx.sampleRate, gap = Math.floor(sr*0.35);
-        const total = bufs.reduce((n,b)=>n + Math.floor(b.duration*sr), 0) + gap*(bufs.length-1);
-        const Lch = new Float32Array(total), Rch = new Float32Array(total);
-        let at = 0;
-        for(const b of bufs){
-          const bl = b.getChannelData(0), br = b.numberOfChannels>1 ? b.getChannelData(1) : bl;
-          const n = bl.length;
-          for(let i=0;i<n && at+i<total;i++){ Lch[at+i]=bl[i]; Rch[at+i]=br[i]; }
-          at += n + gap;
-        }
-        const bytes = total * 4;
-        const ab = new ArrayBuffer(44 + bytes);
-        const dv = new DataView(ab);
-        const w = (o,s)=>{ for(let i=0;i<s.length;i++) dv.setUint8(o+i, s.charCodeAt(i)); };
-        w(0,"RIFF"); dv.setUint32(4, 36+bytes, true); w(8,"WAVE"); w(12,"fmt ");
-        dv.setUint32(16, 16, true); dv.setUint16(20, 1, true); dv.setUint16(22, 2, true);
-        dv.setUint32(24, sr, true); dv.setUint32(28, sr*4, true); dv.setUint16(32, 4, true); dv.setUint16(34, 16, true);
-        w(36,"data"); dv.setUint32(40, bytes, true);
-        let p = 44;
-        for(let i=0;i<total;i++){
-          const l = Math.max(-1, Math.min(1, Lch[i])), r = Math.max(-1, Math.min(1, Rch[i]));
-          dv.setInt16(p, l<0 ? l*0x8000 : l*0x7FFF, true); p+=2;
-          dv.setInt16(p, r<0 ? r*0x8000 : r*0x7FFF, true); p+=2;
-        }
-        const name = ((box._mkName||"My record").replace(/[^\w .-]/g,"") || "My record") + ".wav";
-        const a = document.createElement("a");
-        a.href = URL.createObjectURL(new Blob([ab], { type:"audio/wav" })); a.download = name; a.click();
-        setTimeout(()=>URL.revokeObjectURL(a.href), 4000);
-      };
-      const saveAs = async (kind)=>{
-        if(pick.length<2) return;
-        const file = await mkFile(pick, box, kind);
-        const al = { id:"mx"+Date.now().toString(36), name:(box._mkName||"My record"), tracks:pick.map(pid=>{const r=CRATE.lib.find(x=>x.id===pid); return r?{id:r.id,name:r.name}:null;}).filter(Boolean) };
-        CRATE.albums = [al].concat(CRATE.albums||[]).slice(0,24); cratePut("albums", CRATE.albums);
-        const url = URL.createObjectURL(file);
-        const a = document.createElement("a"); a.href = url; a.download = file.name;
-        document.body.appendChild(a); a.click(); a.remove();
-        setTimeout(()=>URL.revokeObjectURL(url), 8000);
-        if(/iPad|iPhone/.test(navigator.userAgent) && navigator.share && navigator.canShare && navigator.canShare({files:[file]})){
-          try{ await navigator.share({files:[file], title:file.name}); }catch(e){}
-        }
-      };
-      const mp3 = bar.querySelector("[data-mkmp3]"); if(mp3) mp3.onclick = ()=>saveAs("mp3");
-      const mp4 = bar.querySelector("[data-mkmp4]"); if(mp4) mp4.onclick = ()=>saveAs("mp4");
-      const shareAs = async (kind)=>{
-        if(pick.length<2) return;
-        const file = await mkFile(pick, box, kind);
-        if(navigator.share && navigator.canShare && navigator.canShare({files:[file]})){
-          try{ await navigator.share({files:[file], title:file.name}); return; }catch(e){}
-        }
-        const url = URL.createObjectURL(file);
-        const a = document.createElement("a"); a.href = url; a.download = file.name;
-        document.body.appendChild(a); a.click(); a.remove();
-        setTimeout(()=>URL.revokeObjectURL(url), 8000);
-        if(/iPad|iPhone/.test(navigator.userAgent) && navigator.share && navigator.canShare && navigator.canShare({files:[file]})){
-          try{ await navigator.share({files:[file], title:file.name}); }catch(e){}
-        }
-      };
-      const s3 = bar.querySelector("[data-mkshare3]"); if(s3) s3.onclick = ()=>shareAs("mp3");
-      const s4 = bar.querySelector("[data-mkshare4]"); if(s4) s4.onclick = ()=>shareAs("mp4");
-    }
     const cl = box.querySelector("[data-dockclose]");
     if(cl) cl.onclick = ()=>dockShut(id, true);
     const ed = box.querySelector("[data-dockedit]");
@@ -2416,8 +2106,38 @@ function holdable(btn, down, up){
 }
 /* Start, or Stop. A deck synced to a playing MASTER does not spin up from still: it
    starts at full speed on the master's next beat, booked to the exact frame. */
-let NEEDLE=null;function needleBuf(){if(NEEDLE||!actx)return NEEDLE;const n=Math.floor(actx.sampleRate*0.18);const b=actx.createBuffer(1,n,actx.sampleRate);const d=b.getChannelData(0);for(let i=0;i<n;i++){const t=i/actx.sampleRate;const env=Math.exp(-t*28);d[i]=(Math.sin(2*Math.PI*55*t)*0.35+(Math.random()*2-1)*0.08)*env;}NEEDLE=b;return b;}function needleDrop(deck){if(!actx||!deck)return;try{const src=actx.createBufferSource();src.buffer=needleBuf();const g=actx.createGain();g.gain.value=0.22;src.connect(g);g.connect(deck.gain||bus||actx.destination);src.start();src.onended=()=>{try{src.disconnect();g.disconnect();}catch(e){}};}catch(e){}}async function startDeck(d, from){const wasOff=!d.motor;
+async 
+/* AOG-NEEDLE-V1: a short low thump and a tiny burst of noise when the needle drops. Quiet enough for a room. */
+let NEEDLE = null;
+function needleBuf(){
+  if(NEEDLE || !actx) return NEEDLE;
+  const n = Math.floor(actx.sampleRate * 0.18);
+  const b = actx.createBuffer(1, n, actx.sampleRate);
+  const d = b.getChannelData(0);
+  for(let i=0;i<n;i++){
+    const t = i / actx.sampleRate;
+    const env = Math.exp(-t * 28);
+    d[i] = (Math.sin(2*Math.PI*55*t) * 0.35 + (Math.random()*2-1) * 0.08) * env;
+  }
+  NEEDLE = b;
+  return b;
+}
+function needleDrop(deck){
+  if(!actx || !deck) return;
+  try{
+    const src = actx.createBufferSource();
+    src.buffer = needleBuf();
+    const g = actx.createGain();
+    g.gain.value = 0.22;
+    src.connect(g);
+    g.connect(deck.gain || bus || actx.destination);
+    src.start();
+    src.onended = ()=>{ try{ src.disconnect(); g.disconnect(); }catch(e){} };
+  }catch(e){}
+}
+async function startDeck(d, from){
   if(!d.buf) return;
+  const wasOff = !d.motor;
   ctx(); await ensureNode(d);
   const m = masterDeck();
   if(from != null){ d.pos = from; }
@@ -2820,15 +2540,6 @@ function bind(){
       if(d.motor) stopDeck(d); else await startDeck(d);
     };
   });
-  root.querySelectorAll("[data-pause]").forEach(btn=>{
-    btn.onclick = async ()=>{
-      const d = deckOf(btn, "data-pause");
-      if(!d || !d.buf) return;
-      if(d.motor){ d.paused = true; stopDeck(d); }
-      else { d.paused = false; await startDeck(d); }
-      btn.textContent = d.motor ? t("pause") : t("resume");
-    };
-  });
   /* CUE the way a deck does it: hold to hear it from the mark, let go and the
      record is back at the mark, stopped, ready to go again. */
   document.querySelectorAll("[data-cue]").forEach(btn=>{
@@ -3083,16 +2794,12 @@ function bind(){
     }
     p.onpointerdown = async (e)=>{
       const deck = d(); if(!deck || !deck.buf) return;
-      e.preventDefault(); e.stopPropagation();
-      _scratching = true;
-      if(window._wantFull && !(document.fullscreenElement||document.webkitFullscreenElement)){
-        const go = document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen;
-        if(go) go.call(document.documentElement);
-      }
+      e.preventDefault();
       try{ p.setPointerCapture(e.pointerId); }catch(err){}
       ctx(); await ensureNode(deck);
       lastAng = angleOf(e); lastT = performance.now();
       spun = 0; trail = [{ t:lastT, a:0 }];
+      /* AOG-DECKS-ZONES-V1: outer rim is a sharp scratch, center label is a heavy drag */
       const rr = p.getBoundingClientRect();
       const dx = e.clientX - (rr.left + rr.width/2), dy = e.clientY - (rr.top + rr.height/2);
       const rad = Math.sqrt(dx*dx + dy*dy) / (Math.min(rr.width, rr.height)/2);
@@ -3157,6 +2864,20 @@ function bind(){
       send(deck, { t:"hand", on:false, rate:0 });               /* let go: the throw carries, the motor takes over */
     };
     p.onpointerup = up; p.onpointercancel = up; p.onlostpointercapture = up;
+    /* Safari: touch events drive the same scratch when pointer events do not arrive */
+    p.addEventListener("touchstart", function(e){
+      if(!e.touches[0]) return;
+      const t = e.touches[0];
+      p.onpointerdown({ preventDefault:function(){}, pointerId:1, clientX:t.clientX, clientY:t.clientY, timeStamp:e.timeStamp||performance.now(), getCoalescedEvents:function(){ return []; } });
+    }, {passive:false});
+    p.addEventListener("touchmove", function(e){
+      if(!e.touches[0]) return;
+      e.preventDefault();
+      const t = e.touches[0];
+      p.onpointermove({ clientX:t.clientX, clientY:t.clientY, timeStamp:e.timeStamp||performance.now(), getCoalescedEvents:function(){ return []; } });
+    }, {passive:false});
+    p.addEventListener("touchend", function(){ up(); }, {passive:true});
+    p.addEventListener("touchcancel", function(){ up(); }, {passive:true});
     /* the same deck from a keyboard: space starts and stops it, the arrows walk
        the needle a tenth of a second at a time. */
     p.onkeydown = async (e)=>{
@@ -3173,6 +2894,12 @@ function bind(){
       }
     };
   });
+  /* Safari: a finger-up on a button runs its handler. File inputs stay real buttons. */
+  document.addEventListener("touchend", function(e){
+    const b = e.target.closest && e.target.closest("button,.pill,.go,.ghost,.pad");
+    if(!b || b.tagName === "LABEL" || b.querySelector("input[type=file]")) return;
+    if(typeof b.onclick === "function"){ try{ b.onclick(e); }catch(x){} }
+  }, true);
 }
 function paintChrome(){
   document.getElementById("brand").textContent = t("app");
@@ -3192,7 +2919,8 @@ function paintChrome(){
   document.getElementById("recHint").textContent = t("recHint");
   paintTape();
   document.getElementById("langBtn").textContent = S.lang==="es"?"EN":"ES";
-  document.getElementById("themeBtn").textContent = S.theme==="dark"?t("light"):t("dark");const fb=document.getElementById("fullBtn");if(fb)fb.textContent=(document.fullscreenElement||document.webkitFullscreenElement)?t("fullOff"):t("full");
+  document.getElementById("themeBtn").textContent = S.theme==="dark"?t("light"):t("dark");
+  const fb = document.getElementById("fullBtn"); if(fb) fb.textContent = (document.fullscreenElement||document.webkitFullscreenElement) ? t("fullOff") : t("full");
   document.getElementById("foot").innerHTML = `<p>${t("foot")}</p><p><a href="music-pads.html">${t("drums")}</a> · <a href="music-piano.html">Piano</a> · <a href="/science">${t("sci")}</a></p>`;
   document.documentElement.setAttribute("data-theme", S.theme);
   document.documentElement.classList.toggle("dark", S.theme==="dark");
@@ -3457,7 +3185,8 @@ function paintLessons(){
      ${done ? `<p class="lok">${all ? lessonsT("All seventeen done. You can run a set.", "Las diecisiete hechas. Ya puedes tocar un set.") : lessonsT("Lesson done.", "Lección hecha.")} ${next}</p>` : ""}`;
   const nb = document.getElementById("lNext"); if(nb) nb.onclick = ()=>{ S.lessonSel = cur+1; lessonsSave(); paintLessons(); };
 }
-setPair(PAIR, true); if(ONE) setOne(ONE); paintChrome(); shell(); paintLessons(); requestAnimationFrame(loop);
+try{ setPair(PAIR, true); if(ONE) setOne(ONE); paintChrome(); shell(); paintLessons(); requestAnimationFrame(loop); }
+catch(err){ console.error("decks:", err); }
 checkBench();
 crateOpen();
 try{ AOGHandoff.listen(function(key){ if(SHELF.some(s=>s.key===key)) checkBench(); }); }catch(e){}

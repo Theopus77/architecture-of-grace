@@ -761,7 +761,34 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
     </span>
     <p class="waiting" id="waiting" aria-live="polite"></p>
   </div>
-  <div class="decks stage" id="decks"></div>
+  <div class="decks stage" id="decks">
+    <section class="deck" id="deckA">
+      <div class="dhead"><h2>Deck A</h2></div>
+      <p class="song">No song yet.</p>
+      <div class="platter-wrap t12" style="width:min(220px,90%);margin:.5rem auto">
+        <div class="platter" data-deck="A" style="width:100%;aspect-ratio:1;border-radius:50%;background:repeating-radial-gradient(circle,#2a2a2a 0 2px,#1a1a1a 3px 5px);border:8px solid #c9a227">
+          <div class="label" style="position:absolute;inset:32%;border-radius:50%;background:radial-gradient(circle,#e8c56b,#a07830)"></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;margin:.4rem 0">
+        <button type="button" class="go" data-play="A">START</button>
+        <label class="pill">Load a song<input type="file" accept="audio/*" data-file="A" hidden></label>
+      </div>
+    </section>
+    <section class="deck" id="deckB">
+      <div class="dhead"><h2>Deck B</h2></div>
+      <p class="song">No song yet.</p>
+      <div class="platter-wrap t12" style="width:min(220px,90%);margin:.5rem auto">
+        <div class="platter" data-deck="B" style="width:100%;aspect-ratio:1;border-radius:50%;background:repeating-radial-gradient(circle,#2a2a2a 0 2px,#1a1a1a 3px 5px);border:8px solid #c9a227">
+          <div class="label" style="position:absolute;inset:32%;border-radius:50%;background:radial-gradient(circle,#e8c56b,#a07830)"></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;margin:.4rem 0">
+        <button type="button" class="go" data-play="B">START</button>
+        <label class="pill">Load a song<input type="file" accept="audio/*" data-file="B" hidden></label>
+      </div>
+    </section>
+  </div>
   <p class="drophint no-print" id="padHint"></p>
   <p class="drophint dk-keys no-print" id="keysHint"></p><!-- AOG-DECKS-KEYS-V1 -->
   <section class="mixer no-print" id="mixer" aria-labelledby="mixH">
@@ -3999,7 +4026,8 @@ function paintLessons(){
      ${done ? `<p class="lok">${all ? lessonsT("All seventeen done. You can run a set.", "Las diecisiete hechas. Ya puedes tocar un set.") : lessonsT("Lesson done.", "Lección hecha.")} ${next}</p>` : ""}`;
   const nb = document.getElementById("lNext"); if(nb) nb.onclick = ()=>{ S.lessonSel = cur+1; lessonsSave(); paintLessons(); };
 }
-setPair(PAIR, true); if(ONE) setOne(ONE); paintChrome(); shell(); paintLessons(); requestAnimationFrame(loop);
+try{ setPair(PAIR, true); if(ONE) setOne(ONE); paintChrome(); shell(); paintLessons(); requestAnimationFrame(loop); }
+catch(err){ console.error("decks:", err); }
 checkBench();
 crateOpen();
 try{ AOGHandoff.listen(function(key){ if(SHELF.some(s=>s.key===key)) checkBench(); }); }catch(e){}
