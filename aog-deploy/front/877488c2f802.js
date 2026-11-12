@@ -312,7 +312,7 @@ function ctx(){
   if(!ac){
     const AC=window.AudioContext||window.webkitAudioContext;
     try{ if(navigator.audioSession) navigator.audioSession.type="playback"; }catch(e){}
-    ac=new AC({latencyHint:"interactive"});
+    ac=new AC({latencyHint:0});
     LIVE_M=master(ac); lim=LIVE_M.lim; bus=LIVE_M.bus; clip=LIVE_M.clip; bus.gain.value=0.9*mvol();   /* AOG-PADS-KNOBS-V1: the Volume knob */
   }
   if(ac.state==="suspended") ac.resume();
@@ -707,6 +707,7 @@ function trigger(bi, pi, vel, when, T){
   function keep(v){ if(v){ const H=T.held||(T.held={}); H[bi+":"+pi]=v; } return v; }
   /* AOG-DRUM-SHELF-V1: a pad borrowed from another kit (eight kicks, eight cymbals …) plays at its own kit's level */
   const B=S.banks[bi], kt=d.kind==="drum" ? kitFor(bi, pi, d.kit)||d.kit : "", trim=d.kind==="drum" ? trimOf("kit", (AOGDrumKit.from && AOGDrumKit.from(kt, d.id))||kt) : d.kind==="chop" ? trimOf("rec", (B.rec||"").replace(/^c:/,"")) : trimOf("inst", B.inst);
+  stealTo(room()-1); /* never drop a hit; oldest is already gone */
   const out=c.createGain(); out.gain.value=P.vol/100*trim;
   /* AOG-SHAPE-V2: musical tone and gentle drive */
   const extras=[]; /* AOG-PERMANENT: shape/send nodes disabled by default to prevent freezes; enable only if needed */
@@ -771,7 +772,11 @@ function trigger(bi, pi, vel, when, T){
       if(was && was!==o){ try{ was.gain.gain.setTargetAtTime(0, Math.max(when, was.at||0), 0.015); was.src.stop(Math.max(when, was.at||0)+0.12); }catch(e){} }
       o.at=when; RG[key]=o; }
     if(o){ try{ o.src.playbackRate.value=rate; }catch(e){} if(n==="OPEN") OPEN[bi].push(o); out.gain.value*=mono(o.src.buffer);
-      if(live) o.src.onended=()=>{ try{ o.src.disconnect(); o.gain.disconnect(); }catch(e){} unplug(); const k=OPEN[bi].indexOf(o); if(k>=0) OPEN[bi].splice(k,1); }; }
+      if(live){
+        const dv={s:o.src, g:o.gain, done:false};
+        RING.push(dv); stealTo(room());
+        o.src.onended=()=>{ try{ o.src.disconnect(); o.gain.disconnect(); }catch(e){} dv.done=true; const k=RING.indexOf(dv); if(k>=0) RING.splice(k,1); unplug(); const j=OPEN[bi].indexOf(o); if(j>=0) OPEN[bi].splice(j,1); };
+      } }
     else if(live) unplug();
     return keep({stop(at){ if(!o) return; const t0=Math.max(at||0, c.currentTime); try{ o.gain.gain.setTargetAtTime(0, t0, 0.01); o.src.stop(t0+0.06); }catch(e){} }});
   }
@@ -799,20 +804,31 @@ function trigger(bi, pi, vel, when, T){
     if(live){ RING.push(v); s.onended=()=>{ try{ s.disconnect(); g.disconnect(); }catch(e){} const k=RING.indexOf(v); if(k>=0) RING.splice(k,1); v.done=true; if(vs.every(x=>x.done)) unplug(); }; }
     });
   });
-  if(live){ if(!vs.length) unplug(); while(RING.length>MAXV) letGo(RING.shift(), c); }
+  if(live){ if(!vs.length) unplug(); if(ac && ac.state==="suspended") ac.resume(); stealTo(room()-1); }
   return keep({parts:vs.map(v=>v.url), stop(at, force){ if(!force && (INST[B.inst]||{}).ring) return; const t0=Math.max(at||0, c.currentTime);   /* AOG-PADS-CLASSROOM-V1: a pluck rings out. AOG-PADS-FEEL-V1: a paired pad cuts it anyway */
     const fast=gated(bi); vs.forEach(v=>{ try{ v.g.gain.cancelScheduledValues(t0); v.g.gain.setTargetAtTime(0, t0, fast?0.02:0.07); v.s.stop(t0+(fast?0.12:0.6)); }catch(e){} }); }});
 }
-const RING=[], MAXV=256;   /* AOG-PADS-VOICES-V1: soft safety only; taps stay instant no matter how many */
-function letGo(v, c){ if(!v) return; try{ const t0=c.currentTime; v.g.gain.cancelScheduledValues(t0); v.g.gain.setTargetAtTime(0, t0, 0.012); v.s.stop(t0+0.06); }catch(e){} }
+const RING=[];
+const CAP=256; /* soft safety only */
+const WORK=16; /* iOS stays under this; steal is free so taps are never dropped */
+function letGo(v, c){
+  if(!v || v.done) return;
+  v.done=true;
+  try{
+    if(v.s){ try{ v.s.stop(); }catch(e){} try{ v.s.disconnect(); }catch(e){} }
+    if(v.g){ try{ v.g.disconnect(); }catch(e){} }
+  }catch(e){}
+}
+function stealTo(limit){
+  const n=RING.length-limit; if(n<=0) return;
+  for(let i=0;i<n;i++){ const v=RING[i]; if(v) letGo(v, ac); }
+  RING.splice(0, n);
+}
+function room(){ return /iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1) ? WORK : CAP; }
 function flash(bi, pi, when, vel){
-  if(bi!==S.bank) return;
-  /* AOG-PADS-STAGE-V1: the light is as bright as the hit; a finger lights the pad from where it landed (bindPads) */
+  if(bi!==S.bank || SEQ.on) return; /* no DOM on the hit path while a loop runs */
   const go=()=>{ const el=$("pads").querySelector(`.pad[data-p="${pi}"]`); if(!el) return;
-    const v=(vel==null ? 0.8 : Math.max(0.3, Math.min(1, vel))).toFixed(2), st=el.style;   /* each written only when it changes */
-    if(st.getPropertyValue("--v")!==v) st.setProperty("--v", v);
-    if(!el.classList.contains("down") && st.getPropertyValue("--px")!=="50%"){ st.setProperty("--px", "50%"); st.setProperty("--py", "50%"); }
-    el.classList.add("hit"); setTimeout(()=>el.classList.remove("hit"), 110); };
+    el.classList.add("hit"); setTimeout(()=>el.classList.remove("hit"), 90); };
   const ms=ac ? (when-ac.currentTime)*1000 : 0; if(ms>8) setTimeout(go, ms); else go();
 }
 
@@ -843,7 +859,7 @@ function markStep(i, when){
 }
 function pump(){
   if(!ac) return;
-  const now=ac.currentTime, horizon=now+0.12;
+  const now=ac.currentTime, horizon=now+0.02; /* tight; voices are instant */
   if(SEQ.on){
     const L=loopLen(), m=evMap(), sp=spt();
     while(SEQ.t0+SEQ.abs*sp < horizon){
@@ -1296,7 +1312,7 @@ function patToLoop(B){
 }
 let NOWCH=null;   /* the chord heard last: its pitch classes and its name */
 function chordNow(d, when){
-  const go=()=>{ NOWCH={pcs:new Set(d.notes.map(m=>m%12)), name:d.name, notes:d.notes.map(m=>keyName(m)).join(" ")}; paintFit(); };
+  const go=()=>{ NOWCH={pcs:new Set(d.notes.map(m=>m%12)), name:d.name, notes:d.notes.map(m=>keyName(m)).join(" ")}; if(!SEQ.on) paintFit(); };
   const ms=ac ? (when-ac.currentTime)*1000 : 0; if(ms>8) setTimeout(go, ms); else go();
 }
 function paintFit(){
