@@ -992,14 +992,14 @@ const SEGS = 8;
    drum machine with the nostalgia of a 1987 SP-1200." Nine kits now, A to I. A to D are the first
    four; E to I are boom bap, 808 trap, lo-fi, Latin percussion and a live room kit. Every sound is
    built on this page, so nothing downloads and nothing needs a licence. */
-const BANKS = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","V","Y"];   /* V = Vocals bank, Y = Classroom / education samples */
+const BANKS = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O"];   /* AOG-DRUM-KITS-V3: and J to O */
 function bankObj(){ const o={}; BANKS.forEach(b=>o[b]={}); return o; }
 /* AOG-DRUM-REAL-V1 (2026-10-04) — the recorded kits (aog-drumkit.js) join the Sounds menu after the kits built here, each with a beat to start from */
 /* AOG-DRUM-PERC-V1: the retired machine keeps its own kits; the hand drums and the tabla live in the Drum Machine and the Drum Kit */
 if(window.AOGDrumKit){ const own=b=>!(AOGDrumKit.hand && AOGDrumKit.hand(b)); AOGDrumKit.ids.filter(own).forEach(b=>{ if(BANKS.indexOf(b)<0) BANKS.push(b); }); AOGDrumKit.starters.filter(p=>!p.hand).forEach(p=>{ if(!STARTERS.some(x=>x.id===p.id)) STARTERS.push(p); }); }
 BEATS.forEach(p=>{ if(!STARTERS.some(x=>x.id===p.id)) STARTERS.push(p); });   /* AOG-DRUM-BEATS-V1: after the kits' beats */
 const S = { bench:(function(){ try{ return localStorage.getItem("aog.drums.bench")||"simple"; }catch(e){ return "simple"; } })(), lang: localStorage.getItem("aog.lang")==="es"?"es":"en", theme: document.documentElement.getAttribute("data-theme")||"light",
-  view:"home", bpm:96, swing:0.50, vol:1.0, outF:0.85, bit:true, sliderMode:"mix",
+  view:"home", bpm:96, swing:0.50, vol:0.8, outF:0.78, bit:true, sliderMode:"mix",
   playing:false, rec:false, metro:false, bank:"A", sel:"kick", step:0, grid: emptyGrid(), met:{}, chan: freshChans(),
   seg:0, segs:null, track:[], trackOn:false, trkI:0, tc:"1/16", trim:bankObj(), clip:null, era:1, roll:"off", starter:null, undo:null, kitUndo:null,
   stepTime:0, sixteenth:0.15625, mute:{}, solo:{}, padMode:null, erase:false,
@@ -1113,7 +1113,7 @@ let engine=null, kitReady=false, engineFailed=false, booting=null;
 const noiseCache=new WeakMap();
 /* the last 6% is left on the table on purpose: eight voices on every
    sixteenth peaked over full scale without it, which is a crackle, not volume. */
-function volGain(v){ return Math.max(0.4, Math.min(1, v)) * 1.2; }
+function volGain(v){ return Math.max(0, Math.min(1, v)) * 0.94; }
 /* a bench saved before this change kept a number on the old 0.08–0.55 knob;
    the same loudness on the new knob is a little under twice that. */
 function fixVol(v){
@@ -1157,7 +1157,7 @@ function ctx(){
     makeup.connect(limiter); limiter.connect(master);
     master.connect(actx.destination);
   }
-  if(actx.state==="suspended"){ actx.resume(); setTimeout(()=>{ if(actx && actx.state==="suspended") actx.resume(); }, 50); }
+  if(actx.state==="suspended") actx.resume();
   return actx;
 }
 function noiseBuf(ac){
@@ -1231,8 +1231,7 @@ const KIT_LABEL={A:["Kit A · the classic","Kit A · el clásico"],B:["Kit B · 
   E:["Kit E · boom bap","Kit E · boom bap"],F:["Kit F · 808 trap","Kit F · trap 808"],G:["Kit G · lo-fi","Kit G · lo-fi"],
   H:["Kit H · Latin percussion","Kit H · percusión latina"],I:["Kit I · live drums","Kit I · batería en vivo"],
   J:["Kit J · rock arena","Kit J · rock de estadio"],K:["Kit K · jazz brushes","Kit K · jazz con escobillas"],L:["Kit L · 909 house","Kit L · house 909"],
-  M:["Kit M · reggae and dub","Kit M · reggae y dub"],N:["Kit N · afrobeat","Kit N · afrobeat"],O:["Kit O · marching band","Kit O · banda de marcha"],
-  V:["Kit V · Vocals","Kit V · Voces"],Y:["Kit Y · Classroom","Kit Y · Aula"]};
+  M:["Kit M · reggae and dub","Kit M · reggae y dub"],N:["Kit N · afrobeat","Kit N · afrobeat"],O:["Kit O · marching band","Kit O · banda de marcha"]};
 /* AOG-SP-KITBACK-V1 — Jimmy: "something is up with sound A, it is a bell." A sample he had loaded
    onto pad 1 of bank A was playing in place of the kick. The Simple bench now says which pads hold
    your own samples and offers one tap to put the kit sounds back on that bank. */
@@ -1315,23 +1314,7 @@ function renderVoiceL(id, t0, dest, ac){      /* 909 HOUSE — the kick that dri
 function renderVoiceM(id, t0, dest, ac){      /* AOG-DRUM-REAL-V2: kit M is recorded now; only its synth tom is drawn here, as a synth drum is electronic on the real instrument too */
   if(id==="clap"){ tone(ac, dest, t0, "sine", 700, 140, 0.5, 0.3); noiseHit(ac, dest, t0, "bandpass", 1800, 0.7, 0.08, 0.02); }   /* the falling "pew" of a synth drum */
 }
-function renderVoiceV(id, t0, dest, ac){      /* Vocals bank — simple formant-ish syllables / choir stabs */
-  const notes = {kick:130.8, snare:196, hat:261.6, open:329.6, clap:392, tom:174.6, ride:220, bell:293.7};
-  const f = notes[id] || 220;
-  tone(ac, dest, t0, "sawtooth", f, f*0.92, 0.35, 0.18);
-  tone(ac, dest, t0, "sine", f*2.5, f*2.4, 0.12, 0.08);
-}
-function renderVoiceY(id, t0, dest, ac){      /* Classroom / education samples — growth, correct, funny */
-  if(id==="kick"){ tone(ac, dest, t0, "sine", 523, 392, 0.25, 0.12); }          /* rising "got it" */
-  else if(id==="snare"){ noiseHit(ac, dest, t0, "highpass", 3000, 0.4, 0.08, 0.02); } /* soft clap */
-  else if(id==="hat"){ tone(ac, dest, t0, "square", 880, 660, 0.08, 0.04); }     /* ding */
-  else if(id==="open"){ tone(ac, dest, t0, "triangle", 440, 880, 0.4, 0.2); }    /* whoosh up */
-  else if(id==="clap"){ noiseHit(ac, dest, t0, "bandpass", 1200, 0.5, 0.15, 0.04); } /* applause-ish */
-  else if(id==="tom"){ tone(ac, dest, t0, "sine", 200, 80, 0.3, 0.15); }         /* boing */
-  else if(id==="ride"){ tone(ac, dest, t0, "sine", 660, 660, 0.1, 0.06); }       /* mind grow ping */
-  else { tone(ac, dest, t0, "sine", 349, 349, 0.2, 0.1); }
-}
-const KIT_RENDER = {C:renderVoiceC, F:renderVoiceF, L:renderVoiceL, M:renderVoiceM, V:renderVoiceV, Y:renderVoiceY};
+const KIT_RENDER = {C:renderVoiceC, F:renderVoiceF, L:renderVoiceL, M:renderVoiceM};   /* AOG-DRUM-REAL-V2: D, E, G to K and N, O are recordings now (aog-drumkit.js) */
 const KIT_TAIL = {F:1.55, L:1.0};      /* seconds of memory each kit's longest sound needs */
 function renderVoice(id, t0, dest, ac, bank){
   const r=KIT_RENDER[bank];
@@ -1747,12 +1730,11 @@ function hit(id, time, fromSeq, accent){
     save();
   }
   if(!padHasSound(id)) return;
-  const useProc = (S.bank==="V" || S.bank==="Y");
-  if(engine && kitReady && !useProc){
+  if(engine && kitReady){
     engine.port.postMessage(chanMsg(id, t0, accent));
   } else {
-    if(realKit(S.bank) && !madePad(S.bank, id)) AOGDrumKit.playDirect(c, bus, S.bank, id, t0, accent); else renderVoice(id, t0, bus, c, S.bank);
-    if(!useProc) bootSampler();
+    if(realKit(S.bank) && !madePad(S.bank, id)) AOGDrumKit.playDirect(c, bus, S.bank, id, t0, accent); else renderVoice(id, t0, bus, c, S.bank);   /* AOG-DRUM-REAL-V1 */
+    bootSampler();
   }
 }
 let gridSoon=0;
@@ -1771,7 +1753,7 @@ function metroClick(when){
 }
 function scheduler(){
   const c=ctx();
-  const look=0.045;
+  const look=0.12;
   while(nextNote < c.currentTime + look){
     const step=currentStep;
     const sixteenth=(60/S.bpm)/4;
@@ -2249,13 +2231,6 @@ function machineHtml(){
   const simple=S.bench!=="full";
   const strip=simple?`<div class="simple-strip">
       <button type="button" class="s-play${S.playing?" go":""}" data-simple="play">${S.playing?t("sStop"):t("sPlay")}</button>
-      <button type="button" id="testSoundBtn" class="sp-key" style="border-color:#e0a640;color:#ffe08a;min-height:56px">TEST SOUND</button>
-    </div>
-    <div class="simple-strip" style="grid-template-columns:1fr 1fr;margin-top:.3rem">
-      <button type="button" class="sp-key${S.bank==="V"?" on":""}" data-simple-bank="V" style="border-color:#c96a6a;color:#ffd0d0;min-height:52px">VOCALS</button>
-      <button type="button" class="sp-key${S.bank==="Y"?" on":""}" data-simple-bank="Y" style="border-color:#6ea56a;color:#c6f7b0;min-height:52px">CLASSROOM</button>
-    </div>
-    <div class="simple-strip" style="grid-template-columns:1fr 1fr;margin-top:.3rem">
       <button type="button" class="s-clear" data-simple="clear">${t("sClear")}</button>
       <button type="button" class="s-decks" data-simple="decks">${t("sDecks")}</button>
     </div>
@@ -2290,7 +2265,6 @@ function machineHtml(){
     </div>
     <div class="sp-banks">${banks}${kitBackKeys("sp-key", true)}<span style="margin-left:.4rem">TUNE / MIX / DECAY / TRIM</span>${modes}
       <label class="sp-key file-sample">SAMPLE<input id="sampleIn" type="file" accept="audio/*"></label>
-      <button type="button" class="sp-key" id="recVoiceBtn" style="border-color:#c96a6a;color:#ffd0d0">REC VOICE</button>
       <button type="button" class="sp-key${trimOf(S.sel).rev?" on":""}" id="revBtn">REV</button>
       <button type="button" class="sp-key${S.erase?" on":""}" id="eraseBtn">ERASE</button>
       <button type="button" class="sp-key${S.padMode==="mute"?" on":""}" id="muteBtn">MUTE</button>
@@ -2964,7 +2938,7 @@ function paint(){
   if(!["home","meet","words","print","lessons"].includes(S.view)) S.view="home";
   try{ tickLessons(); }catch(e){}
   document.getElementById("brand").textContent=t("app");
-  { const k=document.getElementById("mastK"), h=document.getElementById("mastH"), l=document.getElementById("mastL"), kv=false; if(k) k.textContent=t("eyebrow"); if(h) h.textContent=kv?t("kitH"):t("app"); if(l) l.textContent=kv?t("kitLead"):t("tag"); const ra=document.getElementById("mastRa"); if(ra) ra.textContent=""; }
+  { const k=document.getElementById("mastK"), h=document.getElementById("mastH"), l=document.getElementById("mastL"), kv=false; if(k) k.textContent=t("eyebrow"); if(h) h.textContent=kv?t("kitH"):t("app"); if(l) l.textContent=kv?t("kitLead"):t("tag"); const ra=document.getElementById("mastRa"); if(ra) ra.textContent=t("retired"); }
   document.getElementById("nav").innerHTML=navHtml();
   { const top=S.view==="home"||S.view==="lessons";                 /* AOG-BENCH-TOP-V1 */
     document.getElementById("benchSwitch").hidden=!top; document.getElementById("lessons").hidden=!top;
@@ -3117,9 +3091,8 @@ async function takeSample(file){
     const id=S.sel||"kick";
     const old=USER[S.bank]&&USER[S.bank][id];
     const oldSec=old?old.length/26040:0;
-    const free=Math.max(0, 30-(memUsed()-oldSec));   /* voice / long samples: up to ~30 s total, matching longer chops */
-    const isVoice = file && /voice/i.test(file.name||"");
-    const maxSec=Math.min(isVoice ? 28 : 8, free);   /* 8–28 s for voice; 8 s for other samples */
+    const free=Math.max(0, 10-(memUsed()-oldSec));
+    const maxSec=Math.min(2.5, free);
     if(maxSec<0.08){ S.lcdNote="MEM FULL"; refreshLcd(); return; }
     const arr=await file.arrayBuffer();
     const decoded=await actx.decodeAudioData(arr.slice(0));
@@ -3419,20 +3392,6 @@ function bind(){
   document.querySelectorAll("[data-drumsample]").forEach(b=>b.onclick=putSample);  /* AOG-TAKE-TO-PADS-V1 */
   { const sm=document.getElementById("smPad"); if(sm) sm.onchange=()=>{ SMP.pad=sm.value; }; }
   document.querySelectorAll("[data-simple-bank]").forEach(b=>b.onclick=()=>{ const r=document.querySelector('[data-bank="'+b.getAttribute("data-simple-bank")+'"]'); if(r) r.click(); });
-  const testBtn=document.getElementById("testSoundBtn");
-  if(testBtn) testBtn.onclick=()=>{
-    const c=ctx();
-    if(c.state==="suspended") c.resume();
-    const o=c.createOscillator(); const g=c.createGain();
-    o.type="sine"; o.frequency.setValueAtTime(523, c.currentTime);
-    g.gain.setValueAtTime(0.5, c.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.001, c.currentTime+0.6);
-    o.connect(g); g.connect(master||c.destination);
-    o.start(c.currentTime); o.stop(c.currentTime+0.65);
-    S.lcdNote="HEAR THIS";
-    refreshLcd();
-  };
-  document.addEventListener("touchstart", ()=>{ try{ const c=ctx(); if(c.state==="suspended") c.resume(); }catch(e){} }, {once:true, passive:true});
   document.querySelectorAll("[data-simple-seg]").forEach(b=>b.onclick=()=>{ const r=document.querySelector('[data-seg="'+b.getAttribute("data-simple-seg")+'"]'); if(r) r.click(); document.querySelectorAll("[data-simple-seg]").forEach(x=>x.classList.toggle("on", x===b)); });
   document.querySelectorAll("[data-simple]").forEach(b=>b.onclick=()=>{ const id={play:"playBtn",clear:"clearBtn",decks:"toDecks"}[b.getAttribute("data-simple")]; const r=document.getElementById(id); if(r) r.click(); });
   const play=document.getElementById("playBtn");
@@ -3638,49 +3597,6 @@ function bind(){
   if(window.AOGDrumKit) AOGDrumKit.decorate(document, S.lang);   /* AOG-DRUM-REAL-V1: the recorded kits under their own heading in the Sounds menu */
   const sampleIn=document.getElementById("sampleIn");
   if(sampleIn) sampleIn.onchange=()=>{ const f=sampleIn.files&&sampleIn.files[0]; if(f) takeSample(f); };
-
-  /* AOG-VOICE-REC-V1 — record mic straight onto the selected pad (best on Vocal bank V) */
-  const recVoiceBtn=document.getElementById("recVoiceBtn");
-  let voiceRec=null, voiceChunks=[], voiceStream=null;
-  if(recVoiceBtn){
-    recVoiceBtn.onclick=async ()=>{
-      if(voiceRec && voiceRec.state==="recording"){
-        voiceRec.stop();
-        return;
-      }
-      try{
-        ctx(); await bootSampler();
-        if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){ S.lcdNote="NO MIC"; refreshLcd(); return; }
-        voiceStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
-        voiceChunks=[];
-        voiceRec=new MediaRecorder(voiceStream, {mimeType: MediaRecorder.isTypeSupported("audio/webm;codecs=opus")?"audio/webm;codecs=opus":"audio/webm"});
-        voiceRec.ondataavailable=e=>{ if(e.data && e.data.size) voiceChunks.push(e.data); };
-        voiceRec.onstop=async ()=>{
-          try{
-            const blob=new Blob(voiceChunks, {type:voiceRec.mimeType||"audio/webm"});
-            const file=new File([blob], "voice.webm", {type:blob.type});
-            if(S.bank!=="V") useBank("V");
-            await takeSample(file);
-            S.lcdNote="VOICE ON PAD";
-            refreshLcd();
-          }catch(err){ S.lcdNote="REC FAIL"; refreshLcd(); }
-          if(voiceStream){ voiceStream.getTracks().forEach(t=>t.stop()); voiceStream=null; }
-          voiceRec=null; voiceChunks=[];
-          if(recVoiceBtn) recVoiceBtn.textContent="REC VOICE";
-        };
-        voiceRec.start();
-        recVoiceBtn.textContent="STOP";
-        S.lcdNote="RECORDING… (tap STOP, up to 28s)";
-        refreshLcd();
-        setTimeout(()=>{ if(voiceRec && voiceRec.state==="recording") voiceRec.stop(); }, 28000); /* up to 28 s, matching chop length */
-      }catch(err){
-        S.lcdNote="MIC DENIED";
-        refreshLcd();
-        if(voiceStream){ voiceStream.getTracks().forEach(t=>t.stop()); voiceStream=null; }
-      }
-    };
-  }
-
   const saveWork=document.getElementById("saveWork");
   if(saveWork) saveWork.onclick=exportSession;
   const openWork=document.getElementById("openWork");

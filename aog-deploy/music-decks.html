@@ -719,7 +719,6 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
     <a class="brand" href="music-pads.html" id="brand">The Turntables</a>
     <div class="tools">
       <a class="pill" href="/decks-guide" style="text-decoration:none">Picture guide</a>
-      <button type="button" class="pill" id="fullBtn">Full screen</button>
       <button type="button" class="pill" id="langBtn">ES</button>
       <button type="button" class="pill" id="themeBtn">Dark</button>
     </div>
@@ -805,13 +804,13 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
   </details>
   <footer class="no-print" id="foot"></footer>
 </div>
-<script src="/aog-handoff.js"></script>
+<script src="aog-handoff.js"></script>
 <script src="/aog-dropdowns.js" defer></script>
 <script src="/aog-labdoors.js" defer></script><!-- AOG-LABDOORS-V1: the nine music labs, as doors -->
 <script src="/aog-vu.js"></script><!-- AOG-ROOM-VU-V1: before any sound, so the small VU meters hear it -->
-<script src="/aog-eq.js"></script>
-<script src="/aog-vinyl-worklet.js"></script>
-<script src="/aog-dj.js"></script>
+<script src="aog-eq.js"></script>
+<script src="aog-vinyl-worklet.js"></script>
+<script src="aog-dj.js"></script>
 <script>
 /* AOG-DECKS-V2 · AOG-VINYL-ENGINE-V1 (2026-09-22) — decks with weight.
    The platter is dragged by ANGLE, not by sideways pixels, and the hand sets a
@@ -917,10 +916,6 @@ const STR = {
   crateNext:{en:"Up next",es:"Lo que sigue"},
   crateNextNone:{en:"Your songs wait here.",es:"Tus canciones esperan aquí."},
   crateAdd:{en:"Add songs",es:"Agregar canciones"},
-  importVinyl:{en:"Import vinyl",es:"Importar vinilo"},
-  full:{en:"Full screen",es:"Pantalla completa"},
-  fullOff:{en:"Leave full screen",es:"Salir de pantalla completa"},
-  importVinylTip:{en:"Load a real vinyl sound file from this computer. Nothing is uploaded.",es:"Carga un archivo de vinilo real desde este equipo. Nada se sube."},
   starterH:{en:"Starter crate",es:"Caja inicial"},
   starterLead:{en:"Eleven practice tracks, 80 to 128 BPM.",es:"Once pistas para practicar, de 80 a 128 BPM."},
   starterGo:{en:"Load the starter crate",es:"Cargar la caja inicial"},
@@ -1090,8 +1085,7 @@ function ctx(){
   if(actx && actx.state!=="running"){ try{ actx.resume(); }catch(e){} }
   if(!actx){
     const AC = window.AudioContext||window.webkitAudioContext;
-    actx = new AC({ latencyHint:0.003, sampleRate:48000 }); /* AOG-DECKS-HIFI-OUT-V1: 48 kHz, 3 ms */
-    try{ if(navigator.audioSession) navigator.audioSession.type = "playback"; }catch(e){}
+    actx = new AC({ latencyHint:"interactive" });
     try{ if(window.AOGVU && AOGVU.own) AOGVU.own(actx); }catch(e){}   /* AOG-SILENT-V1: the Studio's hush pauses it too */
     /* AOG-DECKS-LOUDNESS-V1 — the same treatment the drum machine got: a normal
        level with a real limiter behind it, so three loud songs at once still
@@ -1110,24 +1104,6 @@ function ctx(){
     /* AOG-DJ-LIMIT-V1 — OUT is the very end: what the speakers, the tape and the curve all hear.
        Once the worklet is in, a look-ahead wall sits just before it, so nothing leaves above -1 dBFS. */
     OUT = actx.createGain(); master.connect(OUT); OUT.connect(actx.destination);
-    /* AOG-DECKS-KEEP-V1: keep playing when the browser is minimized, where the OS allows it */
-    /* AOG-DECKS-IPAD-V1: keep playing on iPad when the app is backgrounded or Stage Manager hides the window.
-       audioSession playback is what iPadOS uses for music. Locking the screen or closing Safari still stops it; that is the iPad. */
-    try{
-      if("mediaSession" in navigator){
-        navigator.mediaSession.playbackState = "playing";
-        navigator.mediaSession.metadata = new MediaMetadata({ title:"The Turntables", artist:"Architecture of Grace" });
-        const wake = ()=>{ if(actx && actx.state!=="running") actx.resume(); };
-        try{ navigator.mediaSession.setActionHandler("play", wake); }catch(e){}
-        try{ navigator.mediaSession.setActionHandler("pause", ()=>{}); }catch(e){}
-      }
-    }catch(e){}
-    const wake = ()=>{ if(actx && actx.state==="suspended") actx.resume(); };
-    document.addEventListener("visibilitychange", wake);
-    window.addEventListener("pageshow", wake);
-    window.addEventListener("focus", wake);
-    document.addEventListener("resume", wake);
-
     if(actx.audioWorklet){
       workletReady = actx.audioWorklet
         .addModule(new URL("aog-vinyl-worklet.js", document.baseURI).href)
@@ -1178,7 +1154,7 @@ async function ensureNode(d){
     if(!d.node){
       /* no AudioWorklet (old Safari): the same core, on the old processor */
       d.core = new self.AOGVinylCore(actx.sampleRate);
-      const n = actx.createScriptProcessor(64, 0, 2); /* AOG-DECKS-RESPONSIVE-V1 */
+      const n = actx.createScriptProcessor(512, 0, 2);
       n.onaudioprocess = (e)=>{
         const o = e.outputBuffer, c = d.core;
         c.frame = Math.round((e.playbackTime || actx.currentTime) * actx.sampleRate);
@@ -2640,35 +2616,6 @@ function paintBay(){
     const i = f.querySelector("input"); if(i && +i.value !== d.vol) i.value = d.vol;
   });
 }
-
-
-function bindFull(){
-  const b = document.getElementById("fullBtn"); if(!b || b._wired) return; b._wired = true;
-  const on = ()=> document.fullscreenElement || document.webkitFullscreenElement;
-  const paint = ()=>{ b.textContent = on() ? t("fullOff") : t("full"); b.setAttribute("aria-pressed", on()?"true":"false"); };
-  b.onclick = ()=>{
-    const root = document.querySelector("main") || document.documentElement;
-    if(on()){ (document.exitFullscreen||document.webkitExitFullscreen).call(document); }
-    else { const go = root.requestFullscreen || root.webkitRequestFullscreen; if(go) go.call(root); }
-  };
-  document.addEventListener("fullscreenchange", paint);
-  document.addEventListener("webkitfullscreenchange", paint);
-  paint();
-}
-function bindImport(){
-  document.querySelectorAll("[data-import]").forEach(b=>{
-    if(b._wired) return; b._wired = true;
-    b.onclick = ()=>{
-      const id = b.getAttribute("data-import");
-      const d = DECKS.find(x=>x.id===id); if(!d) return;
-      const inp = document.createElement("input");
-      inp.type = "file";
-      inp.accept = "audio/*,.mp3,.m4a,.aac,.wav,.aif,.aiff,.ogg,.opus,.flac";
-      inp.onchange = ()=>{ const f = inp.files && inp.files[0]; if(f) loadFile(d, f); };
-      inp.click();
-    };
-  });
-}
 function bindBay(){
   document.querySelectorAll("#bay [data-bfader]").forEach(f=>{
     const d = deckOf(f, "data-bfader"), inp = f.querySelector("input");
@@ -2687,7 +2634,7 @@ function shell(){
   { const xf = document.getElementById("xf"), home = document.querySelector("div.xfade"); if(xf && home && xf.parentNode !== home) home.appendChild(xf); }   /* keep the crossfader out of the rebuild */
   document.getElementById("decks").innerHTML = decks.map(deckHTML).join("") + bayHTML();
   document.getElementById("strips").innerHTML = decks.map(stripHTML).join("");
-  placeXf(); bindBay(); bindImport(); bindFull(); paintPair();
+  placeXf(); bindBay(); paintPair();
   decks.forEach(d=>{ d._sig = ""; d.waveDirty = true; d.$ = deckParts(d);
     if(RO && d.$){ RO.observe(d.$.wave); RO.observe(d.$.zoom); } });
   if(RO){ const eqc = document.getElementById("eqCurve"); if(eqc) RO.observe(eqc); }
@@ -2705,7 +2652,6 @@ function deckHTML(d){
       <div class="dhead">
         <h2>${t("deck")} ${id}</h2>
         <button type="button" class="tiny mst" data-master="${id}" aria-pressed="false" title="${t("masterTip")}">${t("master")}</button>
-        <button type="button" class="tiny" data-import="${id}" title="${t("importVinylTip")}">${t("importVinyl")}</button>
         <span class="bpm" data-bpm="${id}"></span>
       </div>
       <p class="song">${esc(d.note||d.name||t("none"))}</p>
@@ -2919,38 +2865,8 @@ function holdable(btn, down, up){
 }
 /* Start, or Stop. A deck synced to a playing MASTER does not spin up from still: it
    starts at full speed on the master's next beat, booked to the exact frame. */
-async 
-/* AOG-NEEDLE-V1: a short low thump and a tiny burst of noise when the needle drops. Quiet enough for a room. */
-let NEEDLE = null;
-function needleBuf(){
-  if(NEEDLE || !actx) return NEEDLE;
-  const n = Math.floor(actx.sampleRate * 0.18);
-  const b = actx.createBuffer(1, n, actx.sampleRate);
-  const d = b.getChannelData(0);
-  for(let i=0;i<n;i++){
-    const t = i / actx.sampleRate;
-    const env = Math.exp(-t * 28);
-    d[i] = (Math.sin(2*Math.PI*55*t) * 0.35 + (Math.random()*2-1) * 0.08) * env;
-  }
-  NEEDLE = b;
-  return b;
-}
-function needleDrop(deck){
-  if(!actx || !deck) return;
-  try{
-    const src = actx.createBufferSource();
-    src.buffer = needleBuf();
-    const g = actx.createGain();
-    g.gain.value = 0.22;
-    src.connect(g);
-    g.connect(deck.gain || bus || actx.destination);
-    src.start();
-    src.onended = ()=>{ try{ src.disconnect(); g.disconnect(); }catch(e){} };
-  }catch(e){}
-}
 async function startDeck(d, from){
   if(!d.buf) return;
-  const wasOff = !d.motor;
   ctx(); await ensureNode(d);
   const m = masterDeck();
   if(from != null){ d.pos = from; }
@@ -2965,7 +2881,7 @@ async function startDeck(d, from){
     const P = Math.max(1, grid0(d) + is*beatLen(d));
     send(d, { t:"sched", frame:Math.round(Fb), m:{ t:"start", pos:P } });
     d._startAt = Math.round(Fb); d._aligned = performance.now() + Math.max(0, (Fb - nowFrame())/sr*1000);
-    d.motor = true; LX.startPos[d.id] = P; if(wasOff) needleDrop(d);
+    d.motor = true; LX.startPos[d.id] = P;
   } else {
     if(from != null) send(d, { t:"seek", v:from, park:true });
     d.motor = true; LX.startPos[d.id] = d.pos;
@@ -3612,11 +3528,6 @@ function bind(){
       ctx(); await ensureNode(deck);
       lastAng = angleOf(e); lastT = performance.now();
       spun = 0; trail = [{ t:lastT, a:0 }];
-      /* AOG-DECKS-ZONES-V1: outer rim is a sharp scratch, center label is a heavy drag */
-      const rr = p.getBoundingClientRect();
-      const dx = e.clientX - (rr.left + rr.width/2), dy = e.clientY - (rr.top + rr.height/2);
-      const rad = Math.sqrt(dx*dx + dy*dy) / (Math.min(rr.width, rr.height)/2);
-      deck._zone = rad > 0.62 ? "rim" : "label";
       LX.flips[deck.id] = 0; deck._sgn = 0;
       deck.held = true; deck.lastMove = lastT;
       deck.handRate = deck.rate;                    /* you catch it at the speed it is turning */
@@ -3646,12 +3557,11 @@ function bind(){
          keep their sharp edges instead of smearing. */
       const now = performance.now();
       const absInst = Math.abs(deck.handRate);
-      const rim = deck._zone === "rim";
-      const win = rim ? 4 : 12; /* AOG-DECKS-RESPONSIVE-V1: follow the finger */
+      const win = absInst > 1.2 ? 28 : absInst > 0.4 ? 45 : 70;
       while(trail.length > 2 && now - trail[0].t > win) trail.shift();
       const first = trail[0], last = trail[trail.length-1];
       const dt = Math.max(0.008, (last.t - first.t)/1000);
-      let inst = ((last.a - first.a)/dt) / DEG_PER_SEC * TOUCH[touch] * (deck._zone === "rim" ? 1.15 : 0.55);
+      let inst = ((last.a - first.a)/dt) / DEG_PER_SEC * TOUCH[touch];
       /* non-linear: small motions stay fine, larger motions get more authority */
       const sign = inst < 0 ? -1 : 1;
       const mag = Math.abs(inst);
@@ -3713,7 +3623,6 @@ function paintChrome(){
   paintTape();
   document.getElementById("langBtn").textContent = S.lang==="es"?"EN":"ES";
   document.getElementById("themeBtn").textContent = S.theme==="dark"?t("light"):t("dark");
-  const fb = document.getElementById("fullBtn"); if(fb) fb.textContent = (document.fullscreenElement||document.webkitFullscreenElement) ? t("fullOff") : t("full");
   document.getElementById("foot").innerHTML = `<p>${t("foot")}</p><p><a href="music-pads.html">${t("drums")}</a> · <a href="music-piano.html">Piano</a> · <a href="/science">${t("sci")}</a></p>`;
   document.documentElement.setAttribute("data-theme", S.theme);
   document.documentElement.classList.toggle("dark", S.theme==="dark");

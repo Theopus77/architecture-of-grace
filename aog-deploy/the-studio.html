@@ -489,7 +489,6 @@ html.room-whole body { overflow:hidden; }
   <button type="button" class="sh-ms" id="msTop" aria-haspopup="dialog" aria-expanded="false"></button>
   <p class="sh-tag"><span data-en="Play · Record · Listen · Mix · Send it out" data-es="Toca · Graba · Escucha · Mezcla · Compártela">Play · Record · Listen · Mix · Send it out</span></p>
   <div class="sh-bridge"><span class="tp-vu" id="tpVu"></span></div>
-  <button type="button" class="sh-qs" id="fullBtn" style="min-height:44px">Full screen</button>
   <div class="sh-lang" role="group" aria-label="Language · Idioma"><button type="button" data-lang="en" lang="en">EN</button><button type="button" data-lang="es" lang="es">ES</button></div>
 </div>
 <nav class="sh-doors" aria-label="Rooms · Salas"><ul>
@@ -1296,28 +1295,5 @@ if ("serviceWorker" in navigator) window.addEventListener("load", function () {
   navigator.serviceWorker.register("/sw.js").catch(function () {});
 });
 </script>
-<script>
-(function(){
-  const b = document.getElementById("fullBtn"); if(!b) return;
-  const on = ()=> document.fullscreenElement || document.webkitFullscreenElement;
-  const paint = ()=>{ b.textContent = on() ? "Leave" : "Full screen"; };
-  function fill(on){
-    document.body.classList.toggle("studio-fill", !!on);
-    b.textContent = on ? "Leave" : "Full screen";
-  }
-  b.onclick = (e)=>{ e.stopPropagation(); fill(!document.body.classList.contains("studio-fill")); };
-  window.addEventListener("message", (e)=>{
-    if(!e.data) return;
-    if(e.data.t==="aog-fill") fill(true);
-    if(e.data.t==="aog-fill-off") fill(false);
-  });
-  if(!document.getElementById("studioFill")){
-    const st=document.createElement("style"); st.id="studioFill";
-    st.textContent="body.studio-fill .sh-top,body.studio-fill .sh-doors{display:none}body.studio-fill #room,body.studio-fill main{position:fixed;inset:0;width:100vw;height:100vh;z-index:90}";
-    document.head.appendChild(st);
-  }
-  document.addEventListener("fullscreenchange", paint);
-  document.addEventListener("webkitfullscreenchange", paint);
-})();
-</script></body>
+</body>
 </html>

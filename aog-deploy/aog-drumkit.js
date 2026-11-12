@@ -56,7 +56,7 @@
   function P(name, n, extra) { var o = { name: name, n: n || [0, 0, 0] }; if (extra) for (var k in extra) o[k] = extra[k]; return o; }
   /* the recorded kits. P to T and U to Y follow the drummers Jimmy named; on screen they go by style, never by player */
   var KITS = {
-    /* AOG-ONESOUND-V1: one real hit per kit, grouped at the top */
+    /* AOG-DRUM-REAL-V2: the kits that used to be made on the page, now recorded (same letter, name and character) */
     D: { dir: "dusty2", en: "Dusty Breaks", es: "Kit D · breaks polvorientos",
       pads: { kick: P("THUMP", [1, 2, 2]), snare: P("CRACK", [1, 2, 2]), ch: P("SHAKER", [1, 2, 1]), oh: P("TAMB", [1, 1, 1]),
               clap: P("CLAP", [1, 1, 1]), tom: P("TIMBAL", [1, 2, 1]), rim: P("BLOCK", [1, 2, 1]), bell: P("TRIANG", [1, 1, 1]) } },
@@ -127,7 +127,7 @@
       pads: { kick: P("KICK", [1, 2, 2]), snare: P("SNARE", [1, 2, 2]), ch: P("HAT", [1, 2, 1]), oh: P("OPEN", [1, 1, 1]),
               clap: P("XSTICK", [1, 2, 1]), tom: P("TOM", [1, 1, 1]), rim: P("FLOOR", [1, 1, 1]), bell: P("CRASH", [1, 1, 1]) } }
   };
-  var IDS = ["C1", "R1", "T1", "D", "E", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "LS", "DB", "WD", "IN", "CB", "BR", "ME2"];
+  var IDS = ["D", "E", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "LS", "DB", "WD", "IN", "CB", "BR", "ME2"];
   /* ══ AOG-DRUM-PERC-V1 (2026-10-13) — HAND PERCUSSION, HAND DRUMS AND THE TABLA ══════════════════════════════════════
      Jimmy: "DO them all." Four recorded kits, eight pads each (music-handoff/tools/drumkits/kits_perc.py): the school's
      hand percussion; the djembe and cajón (with maracas, hand claps and the bell of a djembe group); the congas and
@@ -377,11 +377,7 @@
   /* db: how much it is lifted or lowered so the eight pads of a kit are as loud as each other (each brought to the kit's
      middle pad, measured through the Drum Machine: a hit at normal strength, K-weighted, the loudest 400 ms) */
   function SH(from, id, en, es, db) {
-    var kit = KITS[from];
-    if (kit && !kit.dir) kit = null;
-    var src = kit && kit.pads && kit.pads[id];
-    if (!src) { kit = KITS.P; src = kit && kit.pads && (kit.pads[id] || kit.pads.kick); from = "P"; }
-    var o = {}; for (var k in src) if (k !== "en" && k !== "es") o[k] = src[k];
+    var src = KITS[from].pads[id], o = {}; for (var k in src) if (k !== "en" && k !== "es") o[k] = src[k];
     o.from = from; o.en = en; o.es = es; if (db) o.db = db; return o; }
   function SK(dir, en, es, pads) { return { dir: dir, en: en, es: es, hand: 1, grp: "shelf", pads: pads }; }
   GROUPS.splice(1, 0, { id: "shelf", en: "One sound, many kinds", es: "Un sonido, muchos tipos" });
@@ -412,40 +408,15 @@
     rim: SH("Q", "oh", "Open hat · big room", "Abierto · sala grande", 0.8), bell: SH("K", "oh", "Swish · brushes", "Barrido · escobillas", -12.2) });
   KITS.CY = SK("", "Cymbals · 8 kinds", "Platillos · 8 tipos", {
     kick: SH("P", "bell", "Crash · studio", "Crash · estudio", -8.6), snare: SH("J", "bell", "Crash · arena", "Crash · estadio", -2.7),
-    ch: SH("P", "rim", "Ride · jazz", "Ride · jazz", 6.3), oh: SH("GR", "rim", "Ride · 1970s", "Ride · años 70", 9.4),
+    ch: SH("U", "rim", "Ride · jazz", "Ride · jazz", 6.3), oh: SH("GR", "rim", "Ride · 1970s", "Ride · años 70", 9.4),
     clap: SH("T", "clap", "China", "China", 1.0), tom: SH("R", "bell", "Sizzle", "Sizzle", -6.7),
-    rim: SH("PP", "clap", "Stack", "Stack", 3.4), bell: SH("P", "bell", "Gong", "Gong", -1.0) });
+    rim: SH("PP", "clap", "Stack", "Stack", 3.4), bell: SH("OR", "bell", "Gong", "Gong", -1.0) });
   KITS.CL = SK("", "Claps and snaps · 8 kinds", "Palmas y chasquidos · 8 tipos", {
     kick: SH("RG", "clap", "Claps · reggaeton", "Palmas · reguetón", -0.6), snare: SH("TR", "clap", "Claps · trap", "Palmas · trap", -4.0),
     ch: SH("GS", "clap", "Claps · church", "Palmas · iglesia", 2.0), oh: SH("PO", "clap", "Claps · 1980s", "Palmas · años 80", -2.0),
     clap: SH("DS", "clap", "Claps · disco", "Palmas · disco", 0.6), tom: SH("MT", "clap", "Claps · soul", "Palmas · soul", 5.6),
     rim: SH("TR", "tom", "Finger snap", "Chasquido de dedos", 0.6), bell: SH("P", "clap", "Cross-stick", "Aro cruzado", -5.2) });
-  KITS.K3 = SK("", "Bass drums · 8 more", "Bombos · 8 más", {
-    kick: SH("E", "kick", "Kick · boom bap", "Bombo · boom bap", 0), snare: SH("S1", "kick", "Kick · 909", "Bombo · 909", 0),
-    ch: SH("H1", "kick", "Kick · arena", "Bombo · estadio", 0), oh: SH("C1", "kick", "Kick · trap", "Bombo · trap", 0),
-    clap: SH("R1", "kick", "Kick · live", "Bombo · en vivo", 0), tom: SH("T1", "kick", "Kick · gospel", "Bombo · gospel", 0),
-    rim: SH("J", "kick", "Kick · arena rock", "Bombo · rock de estadio", 0), bell: SH("L", "kick", "Kick · live room", "Bombo · sala en vivo", 0) });
-  KITS.S2 = SK("", "Snares · 8 more", "Cajas · 8 más", {
-    kick: SH("E", "snare", "Snare · boom bap", "Caja · boom bap", 0), snare: SH("S1", "snare", "Snare · 909", "Caja · 909", 0),
-    ch: SH("H1", "snare", "Snare · arena", "Caja · estadio", 0), oh: SH("C1", "snare", "Snare · trap", "Caja · trap", 0),
-    clap: SH("R1", "snare", "Snare · live", "Caja · en vivo", 0), tom: SH("T1", "snare", "Snare · gospel", "Caja · gospel", 0),
-    rim: SH("I", "snare", "Snare · indie", "Caja · indie", 0), bell: SH("N", "snare", "Snare · tight", "Caja · precisa", 0) });
-  KITS.TM = SK("", "Toms · 8 kinds", "Toms · 8 tipos", {
-    kick: SH("P", "tom", "Tom · boom bap", "Tom · boom bap", 0), snare: SH("S1", "tom", "Tom · 909", "Tom · 909", 0),
-    ch: SH("H1", "tom", "Tom · arena", "Tom · estadio", 0), oh: SH("R1", "tom", "Floor · live", "Floor · en vivo", 0),
-    clap: SH("T1", "tom", "Tom · gospel", "Tom · gospel", 0), tom: SH("P", "tom", "Tom · studio", "Tom · estudio", 0),
-    rim: SH("P", "tom", "Tom · jazz", "Tom · jazz", 0), bell: SH("O", "tom", "Tom · marching", "Tom · marcha", 0) });
-  KITS.RM = SK("", "Rims and sticks · 8 kinds", "Aros y baquetas · 8 tipos", {
-    kick: SH("E", "rim", "Stick · boom bap", "Baquetas · boom bap", 0), snare: SH("H1", "rim", "Stomp · arena", "Pisada · estadio", 0),
-    ch: SH("C1", "rim", "Snap · trap", "Chasquido · trap", 0), oh: SH("R1", "rim", "Cross-stick · live", "Aro cruzado · en vivo", 0),
-    clap: SH("T1", "rim", "Tambourine · gospel", "Pandereta · gospel", 0), tom: SH("P", "rim", "Rim · studio", "Aro · estudio", 0),
-    rim: SH("E", "rim", "Rim · boom bap", "Aro · boom bap", 0), bell: SH("P", "rim", "Rim · jazz", "Aro · jazz", 0) });
-  KITS.RD = SK("", "Rides · 8 kinds", "Rides · 8 tipos", {
-    kick: SH("S1", "rim", "Ride · 909", "Ride · 909", 0), snare: SH("R1", "bell", "Ride · live", "Ride · en vivo", 0),
-    ch: SH("H1", "bell", "Crash · arena", "Crash · estadio", 0), oh: SH("T1", "bell", "Crash · gospel", "Crash · gospel", 0),
-    clap: SH("P", "bell", "Crash · studio", "Crash · estudio", 0), tom: SH("P", "rim", "Ride · jazz", "Ride · jazz", 0),
-    rim: SH("Q", "bell", "Crash · big room", "Crash · sala grande", 0), bell: SH("P", "bell", "Gong", "Gong", 0) });
-  IDS.push("KK", "BD", "SN", "CH", "OH", "CY", "CL", "K3", "S2", "TM", "RM", "RD");
+  IDS.push("KK", "BD", "SN", "CH", "OH", "CY", "CL");
   /* the kit whose level a pad plays at in each room: its own kit for a borrowed pad, else none ("") */
   function from(b, id) { var k = KITS[b], p = k && k.pads[id]; return (p && p.from) || ""; }
   var LAYERS = ["s", "m", "h"];
@@ -809,18 +780,11 @@
     var at = ORDER.indexOf(b); if (at >= 0) ORDER.splice(at, 1); ORDER.push(b);
     if (JOBS[b]) return JOBS[b];
     var kit = KITS[b], jobs = [];
-    var seen = {};
     Object.keys(kit.pads).forEach(function (id) {
       var f = files(b, id);
-      var dir = kit.pads[id].from ? KITS[kit.pads[id].from].dir : kit.dir;
-      LAYERS.forEach(function (lay) { f[lay].forEach(function (name, j) {
-        var key = dir+"/"+name;
-        if(seen[key]){ seen[key].also.push({id:id, lay:lay, j:j}); return; }
-        var jb = { id: id, lay: lay, j: j, name: name, dir: dir, also: [] };
-        seen[key] = jb; jobs.push(jb);
-      }); });
+      var dir = kit.pads[id].from ? KITS[kit.pads[id].from].dir : kit.dir;   /* AOG-DRUM-SHELF-V1: a borrowed pad, from its own kit's folder */
+      LAYERS.forEach(function (lay) { f[lay].forEach(function (name, j) { jobs.push({ id: id, lay: lay, j: j, name: name, dir: dir }); }); });
     });
-    jobs.sort(function(a,b){ return (a.lay==="h"?0:1)-(b.lay==="h"?0:1); });
     var OC = root.OfflineAudioContext || root.webkitOfflineAudioContext;
     if (!OC || !root.fetch) { setState(b, { state: "failed", got: 0, total: jobs.length }); return Promise.resolve(); }
     var decHi = new OC(1, 1, HI), decLo = hiOnly ? null : new OC(1, 1, LO);
@@ -841,23 +805,12 @@
           var db = kit.pads[jb.id].db;
           if (db) { var g = Math.pow(10, db / 20); ["h", "l", "h2", "l2"].forEach(function (c) { var a = o[c]; if (a) for (var i = 0; i < a.length; i++) a[i] *= g; }); }
           got[jb.id + "/" + jb.lay + "/" + jb.j] = o;
-          (jb.also||[]).forEach(function(a){ got[a.id + "/" + a.lay + "/" + a.j] = o; });
-          if (jb.lay === "h") {
-            var early = DATA[b] || {};
-            var ids = [jb.id].concat((jb.also||[]).map(function(a){ return a.id; }));
-            ids.forEach(function(id){
-              var g = got[id + "/h/0"]; if (!g) return;
-              early[id] = { h: [{ hi: g.h, hi2: g.h2 || null, lo: null }] };
-            });
-            DATA[b] = early;
-            setState(b, { state: "ready", got: n, total: jobs.length });
-          }
         })
         .catch(function () { bad++; })
         .then(function () { n++; if (STATE[b]) STATE[b].got = n; return worker(); });
     }
     var job = Promise.all([worker(), worker(), worker(), worker(), worker(), worker()]).then(function () {
-      /* AOG-KIT-INSTANT-V1: a missing file does not throw the kit away */
+      if (bad) { forget(b); setState(b, { state: "failed", got: n - bad, total: jobs.length }); return; }
       /* AOG-DRUM-REAL-V2: the pads the page draws itself, before the kit counts as ready */
       var mine = Object.keys(kit.pads).filter(function (id) { return kit.pads[id].made; });
       return Promise.all(mine.map(function (id) {
@@ -920,10 +873,8 @@
   var RR = {};
   function layerOf(accent) { return (accent === 2 || accent === true) ? "h" : accent === 3 ? "s" : "m"; }
   function pick(b, id, accent) {
-    var lay = layerOf(accent), p = KITS[b].pads[id], d = DATA[b] && DATA[b][id];
-    if (d && !d[lay]) lay = d.h ? "h" : (d.m ? "m" : "s");
-    var n = (d && d[lay]) ? d[lay].length : (p ? p.n[LAYERS.indexOf(lay)] : 1);
-    if (!n) { lay = "h"; n = (d && d.h) ? d.h.length : 1; }
+    var lay = layerOf(accent), p = KITS[b].pads[id], n = p ? p.n[LAYERS.indexOf(lay)] : 0;
+    if (!n) { lay = "m"; n = p ? p.n[1] : 1; }
     var key = b + id + lay, j = (RR[key] || 0) % n; RR[key] = j + 1;
     return { lay: lay, j: j };
   }
