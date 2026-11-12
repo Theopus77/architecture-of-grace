@@ -9,7 +9,7 @@ const STR={
   kitA:{en:"Pads 1 to 8",es:"Pads 1 a 8"}, kitB:{en:"Pads 9 to 16",es:"Pads 9 a 16"}, kitC:{en:"Pads 17 to 24",es:"Pads 17 a 24"},
   inst:{en:"Instrument",es:"Instrumento"}, key:{en:"Key",es:"Tono"}, scale:{en:"Scale",es:"Escala"}, oct:{en:"Range",es:"Registro"},
   lowest:{en:"Lowest",es:"Muy grave"}, low:{en:"Low",es:"Grave"}, mid:{en:"Middle",es:"Medio"}, high:{en:"High",es:"Agudo"},
-  record:{en:"Record to chop",es:"Disco para cortar"}, fromBar:{en:"Start at",es:"Empieza en"}, clen:{en:"Each pad plays",es:"Cada pad suena"}, clen1:{en:"1 beat",es:"1 tiempo"}, clen2:{en:"2 beats",es:"2 tiempos"}, clen4:{en:"1 bar",es:"1 compás"}, about:{en:"about {s} s",es:"unos {s} s"}, barN:{en:"Bar {n}",es:"Compás {n}"}, whole:{en:"The whole take",es:"Toda la toma"},
+  record:{en:"Record to chop",es:"Disco para cortar"}, fromBar:{en:"Start at",es:"Empieza en"}, clen:{en:"Each pad plays",es:"Cada pad suena"}, clen1:{en:"1 beat",es:"1 tiempo"}, clen2:{en:"2 beats",es:"2 tiempos"}, clen4:{en:"1 bar",es:"1 compás"}, clen8:{en:"2 bars",es:"2 compases"}, clen16:{en:"4 bars",es:"4 compases"}, clen32:{en:"8 bars",es:"8 compases"}, about:{en:"about {s} s",es:"unos {s} s"}, barN:{en:"Bar {n}",es:"Compás {n}"}, whole:{en:"The whole take",es:"Toda la toma"},
   matchT:{en:"Use its tempo",es:"Usar su tempo"},
   g_keys:{en:"Keys",es:"Teclados"}, g_guitar:{en:"Guitar",es:"Guitarra"}, g_bass:{en:"Bass",es:"Bajo"}, g_band:{en:"The band",es:"La banda"}, g_voices:{en:"Voices",es:"Voces"}, g_world:{en:"World",es:"Del mundo"},
   g_crate:{en:"Records from the turntables",es:"Discos de los tocadiscos"}, g_inbox:{en:"Your takes at the Mixing Desk",es:"Tus tomas en la mesa de mezclas"},
@@ -312,7 +312,7 @@ function ctx(){
   if(!ac){
     const AC=window.AudioContext||window.webkitAudioContext;
     try{ if(navigator.audioSession) navigator.audioSession.type="playback"; }catch(e){}
-    ac=new AC({latencyHint:"interactive"});
+    ac=new AC({latencyHint:0});
     LIVE_M=master(ac); lim=LIVE_M.lim; bus=LIVE_M.bus; clip=LIVE_M.clip; bus.gain.value=0.9*mvol();   /* AOG-PADS-KNOBS-V1: the Volume knob */
   }
   if(ac.state==="suspended") ac.resume();
@@ -465,7 +465,7 @@ function chopsOf(B, buf){
   else { const d=buf.duration/16; for(let i=0;i<16;i++) add(i*d, d); for(let i=0;i<8;i++) add(2*i*d, 2*d); }
   return out;
 }
-function chopLen(B){ return B.clen===1 || B.clen===4 ? B.clen : 2; }
+function chopLen(B){ const n=+B.clen; return [1,2,4,8,16,32].indexOf(n)>=0 ? n : 2; }
 
 /* ══ the four kinds of bank ══ */
 function KITS(){ return (window.AOGDrumKit ? AOGDrumKit.ids : []).filter(b=>Object.keys(AOGDrumKit.padNames(b)).every(id=>!AOGDrumKit.made(b,id))); }
@@ -707,6 +707,7 @@ function trigger(bi, pi, vel, when, T){
   function keep(v){ if(v){ const H=T.held||(T.held={}); H[bi+":"+pi]=v; } return v; }
   /* AOG-DRUM-SHELF-V1: a pad borrowed from another kit (eight kicks, eight cymbals …) plays at its own kit's level */
   const B=S.banks[bi], kt=d.kind==="drum" ? kitFor(bi, pi, d.kit)||d.kit : "", trim=d.kind==="drum" ? trimOf("kit", (AOGDrumKit.from && AOGDrumKit.from(kt, d.id))||kt) : d.kind==="chop" ? trimOf("rec", (B.rec||"").replace(/^c:/,"")) : trimOf("inst", B.inst);
+  stealTo(CAP-1); /* never drop a hit; oldest voice is already gone */
   const out=c.createGain(); out.gain.value=P.vol/100*trim;
   /* AOG-SHAPE-V2: musical tone and gentle drive */
   const extras=[]; /* AOG-PERMANENT: shape/send nodes disabled by default to prevent freezes; enable only if needed */
@@ -771,7 +772,11 @@ function trigger(bi, pi, vel, when, T){
       if(was && was!==o){ try{ was.gain.gain.setTargetAtTime(0, Math.max(when, was.at||0), 0.015); was.src.stop(Math.max(when, was.at||0)+0.12); }catch(e){} }
       o.at=when; RG[key]=o; }
     if(o){ try{ o.src.playbackRate.value=rate; }catch(e){} if(n==="OPEN") OPEN[bi].push(o); out.gain.value*=mono(o.src.buffer);
-      if(live) o.src.onended=()=>{ try{ o.src.disconnect(); o.gain.disconnect(); }catch(e){} unplug(); const k=OPEN[bi].indexOf(o); if(k>=0) OPEN[bi].splice(k,1); }; }
+      if(live){
+        const dv={s:o.src, g:o.gain, done:false};
+        RING.push(dv); stealTo(CAP);
+        o.src.onended=()=>{ try{ o.src.disconnect(); o.gain.disconnect(); }catch(e){} dv.done=true; const k=RING.indexOf(dv); if(k>=0) RING.splice(k,1); unplug(); const j=OPEN[bi].indexOf(o); if(j>=0) OPEN[bi].splice(j,1); };
+      } }
     else if(live) unplug();
     return keep({stop(at){ if(!o) return; const t0=Math.max(at||0, c.currentTime); try{ o.gain.gain.setTargetAtTime(0, t0, 0.01); o.src.stop(t0+0.06); }catch(e){} }});
   }
@@ -799,12 +804,25 @@ function trigger(bi, pi, vel, when, T){
     if(live){ RING.push(v); s.onended=()=>{ try{ s.disconnect(); g.disconnect(); }catch(e){} const k=RING.indexOf(v); if(k>=0) RING.splice(k,1); v.done=true; if(vs.every(x=>x.done)) unplug(); }; }
     });
   });
-  if(live){ if(!vs.length) unplug(); while(RING.length>MAXV) letGo(RING.shift(), c); }
+  if(live){ if(!vs.length) unplug(); if(ac && ac.state==="suspended") ac.resume(); stealTo(CAP-1); }
   return keep({parts:vs.map(v=>v.url), stop(at, force){ if(!force && (INST[B.inst]||{}).ring) return; const t0=Math.max(at||0, c.currentTime);   /* AOG-PADS-CLASSROOM-V1: a pluck rings out. AOG-PADS-FEEL-V1: a paired pad cuts it anyway */
     const fast=gated(bi); vs.forEach(v=>{ try{ v.g.gain.cancelScheduledValues(t0); v.g.gain.setTargetAtTime(0, t0, fast?0.02:0.07); v.s.stop(t0+(fast?0.12:0.6)); }catch(e){} }); }});
 }
-const RING=[], MAXV=32;   /* AOG-PADS-VOICES-V1: the notes ringing now, the oldest first */
-function letGo(v, c){ if(!v) return; try{ const t0=c.currentTime; v.g.gain.cancelScheduledValues(t0); v.g.gain.setTargetAtTime(0, t0, 0.012); v.s.stop(t0+0.06); }catch(e){} }
+const RING=[];
+const CAP=256; /* AOG-VOICES-INFINITY-V1: unlimited in practice; steal is free so the phone never piles up */
+function letGo(v, c){
+  if(!v || v.done) return;
+  v.done=true;
+  try{
+    if(v.s){ try{ v.s.stop(); }catch(e){} try{ v.s.disconnect(); }catch(e){} }
+    if(v.g){ try{ v.g.disconnect(); }catch(e){} }
+  }catch(e){}
+}
+function stealTo(limit){
+  const n=RING.length-limit; if(n<=0) return;
+  for(let i=0;i<n;i++){ const v=RING[i]; if(v) letGo(v, ac); }
+  RING.splice(0, n);
+}
 function flash(bi, pi, when, vel){
   if(bi!==S.bank) return;
   /* AOG-PADS-STAGE-V1: the light is as bright as the hit; a finger lights the pad from where it landed (bindPads) */
@@ -843,7 +861,7 @@ function markStep(i, when){
 }
 function pump(){
   if(!ac) return;
-  const now=ac.currentTime, horizon=now+0.12;
+  const now=ac.currentTime, horizon=now+0.02; /* tight; voices are instant */
   if(SEQ.on){
     const L=loopLen(), m=evMap(), sp=spt();
     while(SEQ.t0+SEQ.abs*sp < horizon){
@@ -1337,7 +1355,7 @@ function paintSetRow(){
     if(!(R && R.phrases)) h+=field("fBar", t("fromBar"), starts.length ? starts.map(b=>opt(b, esc(t("barN",{n:b})), B.bar)).join("") : opt(1, esc(t("whole")), 1));
     /* AOG-CHOPS-SECONDS-V1 (2026-10-12) — Jimmy: "What is a beat?" Each length also says about how long it lasts on this record */
     const secs=n=>{ if(!(R && R.bpm>0)) return ""; const v=n*60/R.bpm; return " · "+t("about").replace("{s}", (v<10 ? (Math.round(v*10)/10) : Math.round(v)).toLocaleString(S0.lang==="es"?"es":"en")); };
-    if(!(R && R.phrases)) h+=field("fClen", t("clen"), [1,2,4].map(n=>opt(n, esc(t("clen"+n)+secs(n)), chopLen(B))).join(""));
+    if(!(R && R.phrases)) h+=field("fClen", t("clen"), [1,2,4,8,16,32].map(n=>opt(n, esc(t("clen"+n)+secs(n)), chopLen(B))).join(""));
     if(R && R.bpm>0) h+=`<button type="button" class="pm-b" id="fMatch">${esc(t("matchT"))} (${Math.round(R.bpm)})</button>`;
   } else {
     h=field("fInst", t("inst"), instOptions(B.inst), true);
