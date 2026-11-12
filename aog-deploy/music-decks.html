@@ -2856,12 +2856,14 @@ const deckOf = (el, attr)=>decks.find(x=>x.id===el.getAttribute(attr));
 /* a button you HOLD (CUE, REV, nudge, a pad) answers a finger, a mouse, or the space and enter keys */
 function holdable(btn, down, up){
   let on = false;
-  btn.addEventListener("pointerdown", (e)=>{ if(e.button > 0) return; e.preventDefault(); try{ btn.setPointerCapture(e.pointerId); }catch(err){} on = true; down(e); });
   const rel = (e)=>{ if(!on) return; on = false; up(e); };
+  btn.addEventListener("pointerdown", (e)=>{ if(e.button > 0) return; e.preventDefault(); try{ btn.setPointerCapture(e.pointerId); }catch(err){} on = true; down(e); });
   btn.addEventListener("pointerup", rel); btn.addEventListener("pointercancel", rel); btn.addEventListener("lostpointercapture", rel);
+  btn.addEventListener("touchend", rel, {passive:true});
+  btn.addEventListener("touchcancel", rel, {passive:true});
   btn.addEventListener("keydown", (e)=>{ if((e.key===" "||e.key==="Enter") && !e.repeat && !on){ e.preventDefault(); on = true; down(e); } });
   btn.addEventListener("keyup", (e)=>{ if((e.key===" "||e.key==="Enter") && on){ e.preventDefault(); rel(e); } });
-  btn.addEventListener("click", (e)=>{ if(e.detail === 0 && !on){ down(e); up(e); } });   /* a screen reader's click */
+  btn.addEventListener("click", (e)=>{ if(e.detail === 0 && !on){ down(e); up(e); } });
 }
 /* Start, or Stop. A deck synced to a playing MASTER does not spin up from still: it
    starts at full speed on the master's next beat, booked to the exact frame. */
@@ -3269,8 +3271,10 @@ function bind(){
       ctx();
       if(d.motor) stopDeck(d); else await startDeck(d);
     };
-    btn.onclick = go;
-    btn.addEventListener("touchend", (e)=>{ e.preventDefault(); go(); }, { passive:false });
+    let last = 0;
+    const once = (e)=>{ const n=performance.now(); if(n-last<300) return; last=n; if(e) e.preventDefault(); go(); };
+    btn.onclick = once;
+    btn.addEventListener("touchend", once, { passive:false });
   });
   /* CUE the way a deck does it: hold to hear it from the mark, let go and the
      record is back at the mark, stopped, ready to go again. */
@@ -3624,11 +3628,9 @@ function bind(){
       }
     };
   });
-  /* Safari: a finger-up on a button runs its handler. File buttons stay real. */
-  document.addEventListener("touchend", function(e){
-    var b=e.target.closest&&e.target.closest("button,.pill,.go,.ghost,.pad");
-    if(!b||b.tagName==="LABEL"||b.querySelector("input[type=file]")) return;
-    if(typeof b.onclick==="function"){ try{ b.onclick(e); }catch(x){} }
+  /* a finger-up lets every button go, so none stay stuck pressed */
+  document.addEventListener("touchend", function(){
+    if(document.activeElement && document.activeElement.blur) document.activeElement.blur();
   }, true);
 }
 function paintChrome(){

@@ -272,7 +272,7 @@ function ctx(){
   if(actx && actx.state!=="running"){ try{ actx.resume(); }catch(e){} }
   if(!actx){
     const AC = window.AudioContext||window.webkitAudioContext;
-    actx = new AC({ latencyHint:"interactive" });
+    actx = new AC({ latencyHint:0.005 }); /* AOG-DECKS-INSTANT-V1: same 5 ms as the Drum Machine */
     try{ if(window.AOGVU && AOGVU.own) AOGVU.own(actx); }catch(e){}   /* AOG-SILENT-V1: the Studio's hush pauses it too */
     /* AOG-DECKS-LOUDNESS-V1 — the same treatment the drum machine got: a normal
        level with a real limiter behind it, so three loud songs at once still
@@ -341,7 +341,7 @@ async function ensureNode(d){
     if(!d.node){
       /* no AudioWorklet (old Safari): the same core, on the old processor */
       d.core = new self.AOGVinylCore(actx.sampleRate);
-      const n = actx.createScriptProcessor(512, 0, 2);
+      const n = actx.createScriptProcessor(128, 0, 2); /* smaller quantum = tighter scratch */
       n.onaudioprocess = (e)=>{
         const o = e.outputBuffer, c = d.core;
         c.frame = Math.round((e.playbackTime || actx.currentTime) * actx.sampleRate);
@@ -2043,12 +2043,14 @@ const deckOf = (el, attr)=>decks.find(x=>x.id===el.getAttribute(attr));
 /* a button you HOLD (CUE, REV, nudge, a pad) answers a finger, a mouse, or the space and enter keys */
 function holdable(btn, down, up){
   let on = false;
-  btn.addEventListener("pointerdown", (e)=>{ if(e.button > 0) return; e.preventDefault(); try{ btn.setPointerCapture(e.pointerId); }catch(err){} on = true; down(e); });
   const rel = (e)=>{ if(!on) return; on = false; up(e); };
+  btn.addEventListener("pointerdown", (e)=>{ if(e.button > 0) return; e.preventDefault(); try{ btn.setPointerCapture(e.pointerId); }catch(err){} on = true; down(e); });
   btn.addEventListener("pointerup", rel); btn.addEventListener("pointercancel", rel); btn.addEventListener("lostpointercapture", rel);
+  btn.addEventListener("touchend", rel, {passive:true});
+  btn.addEventListener("touchcancel", rel, {passive:true});
   btn.addEventListener("keydown", (e)=>{ if((e.key===" "||e.key==="Enter") && !e.repeat && !on){ e.preventDefault(); on = true; down(e); } });
   btn.addEventListener("keyup", (e)=>{ if((e.key===" "||e.key==="Enter") && on){ e.preventDefault(); rel(e); } });
-  btn.addEventListener("click", (e)=>{ if(e.detail === 0 && !on){ down(e); up(e); } });   /* a screen reader's click */
+  btn.addEventListener("click", (e)=>{ if(e.detail === 0 && !on){ down(e); up(e); } });
 }
 /* Start, or Stop. A deck synced to a playing MASTER does not spin up from still: it
    starts at full speed on the master's next beat, booked to the exact frame. */
@@ -2452,11 +2454,14 @@ function bind(){
   document.querySelectorAll("[data-play]").forEach(btn=>{
     const go = async ()=>{
       const d = deckOf(btn, "data-play");
-      if(!d.buf) return;
+      if(!d || !d.buf) return;
+      ctx();
       if(d.motor) stopDeck(d); else await startDeck(d);
     };
-    btn.onclick = go;
-    btn.addEventListener("touchend", (e)=>{ e.preventDefault(); go(); }, { passive:false });
+    let last = 0;
+    const once = (e)=>{ const n=performance.now(); if(n-last<300) return; last=n; if(e) e.preventDefault(); go(); };
+    btn.onclick = once;
+    btn.addEventListener("touchend", once, { passive:false });
   });
   /* CUE the way a deck does it: hold to hear it from the mark, let go and the
      record is back at the mark, stopped, ready to go again. */
@@ -2753,7 +2758,7 @@ function bind(){
          keep their sharp edges instead of smearing. */
       const now = performance.now();
       const absInst = Math.abs(deck.handRate);
-      const win = absInst > 1.2 ? 28 : absInst > 0.4 ? 45 : 70;
+      const win = absInst > 1.2 ? 8 : absInst > 0.4 ? 12 : 20; /* AOG-DECKS-INSTANT-V1: near-zero lag */
       while(trail.length > 2 && now - trail[0].t > win) trail.shift();
       const first = trail[0], last = trail[trail.length-1];
       const dt = Math.max(0.008, (last.t - first.t)/1000);
@@ -2810,11 +2815,9 @@ function bind(){
       }
     };
   });
-  /* Safari: a finger-up on a button runs its handler. File buttons stay real. */
-  document.addEventListener("touchend", function(e){
-    var b=e.target.closest&&e.target.closest("button,.pill,.go,.ghost,.pad");
-    if(!b||b.tagName==="LABEL"||b.querySelector("input[type=file]")) return;
-    if(typeof b.onclick==="function"){ try{ b.onclick(e); }catch(x){} }
+  /* a finger-up lets every button go, so none stay stuck pressed */
+  document.addEventListener("touchend", function(){
+    if(document.activeElement && document.activeElement.blur) document.activeElement.blur();
   }, true);
 }
 function paintChrome(){
