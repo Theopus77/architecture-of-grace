@@ -2450,11 +2450,13 @@ function bind(){
     };
   });
   document.querySelectorAll("[data-play]").forEach(btn=>{
-    btn.onclick = async ()=>{
+    const go = async ()=>{
       const d = deckOf(btn, "data-play");
       if(!d.buf) return;
       if(d.motor) stopDeck(d); else await startDeck(d);
     };
+    btn.onclick = go;
+    btn.addEventListener("touchend", (e)=>{ e.preventDefault(); go(); }, { passive:false });
   });
   /* CUE the way a deck does it: hold to hear it from the mark, let go and the
      record is back at the mark, stopped, ready to go again. */
@@ -2481,7 +2483,11 @@ function bind(){
                   ()=>{ const d = deckOf(btn, "data-hot"); if(d) padRelease(d, i); });
     btn.addEventListener("keydown", (e)=>{ if(e.key==="Delete"||e.key==="Backspace"){ const d = deckOf(btn, "data-hot"); if(d && d.cues[i]!=null){ e.preventDefault(); d.cues[i] = null; marksSave(d); d._sig = ""; d.waveDirty = true; paintDeck(d); drawWave(d); } } });
   });
-  document.querySelectorAll("[data-chop]").forEach(btn=>{ btn.onclick = ()=>{ const d = deckOf(btn, "data-chop"); if(d) chop8(d); }; });
+  document.querySelectorAll("[data-chop]").forEach(btn=>{
+    const go = ()=>{ const d = deckOf(btn, "data-chop"); if(d) chop8(d); };
+    btn.onclick = go;
+    btn.addEventListener("touchend", (e)=>{ e.preventDefault(); go(); }, { passive:false });
+  });
   document.querySelectorAll("[data-chopsend]").forEach(btn=>{ btn.onclick = ()=>{ const d = deckOf(btn, "data-chopsend"); if(d) chopsToPads(d, btn); }; });
   document.querySelectorAll("[data-erase]").forEach(btn=>{ btn.onclick = ()=>{ const d = deckOf(btn, "data-erase"); if(d){ d.erase = !d.erase; d._sig = ""; paintDeck(d); } }; });
   document.querySelectorAll("[data-snap]").forEach(sel=>{ sel.onchange = ()=>{ const d = deckOf(sel, "data-snap"); if(d) d.snap = +sel.value; }; });
@@ -2517,11 +2523,14 @@ function bind(){
   /* SLIP — the record keeps turning under the scratch. Let go, and you are
      where the track would have been if you had never touched it. */
   document.querySelectorAll("[data-slip]").forEach(btn=>{
-    btn.onclick = async ()=>{
+    const go = async ()=>{
       const d = deckOf(btn, "data-slip");
+      if(!d) return;
       d.slipOn = !d.slipOn; ctx(); await ensureNode(d);
-      send(d, { t:"slip", on:d.slipOn }); btn.classList.toggle("on", d.slipOn); btn.setAttribute("aria-pressed", d.slipOn);
+      send(d, { t:"slip", on:d.slipOn }); btn.classList.toggle("on", d.slipOn); btn.setAttribute("aria-pressed", String(d.slipOn));
     };
+    btn.onclick = go;
+    btn.addEventListener("touchend", (e)=>{ e.preventDefault(); go(); }, { passive:false });
   });
   /* REV — backwards while you hold it; with SLIP on, letting go puts you back
      on the beat, which is the whole trick (a DJ calls it a censor). */
@@ -2774,6 +2783,17 @@ function bind(){
       send(deck, { t:"hand", on:false, rate:0 });               /* let go: the throw carries, the motor takes over */
     };
     p.onpointerup = up; p.onpointercancel = up; p.onlostpointercapture = up;
+    /* Safari sends touch, not pointer, inside the Studio frame. Same scratch path. */
+    p.addEventListener("touchstart", function(e){
+      var t=e.touches&&e.touches[0]; if(!t) return;
+      p.onpointerdown({preventDefault:function(){},pointerId:1,clientX:t.clientX,clientY:t.clientY,timeStamp:e.timeStamp||performance.now(),getCoalescedEvents:function(){return[];}});
+    }, {passive:false});
+    p.addEventListener("touchmove", function(e){
+      var t=e.touches&&e.touches[0]; if(!t) return; e.preventDefault();
+      p.onpointermove({clientX:t.clientX,clientY:t.clientY,timeStamp:e.timeStamp||performance.now(),getCoalescedEvents:function(){return[];}});
+    }, {passive:false});
+    p.addEventListener("touchend", function(){ up(); }, {passive:true});
+    p.addEventListener("touchcancel", function(){ up(); }, {passive:true});
     /* the same deck from a keyboard: space starts and stops it, the arrows walk
        the needle a tenth of a second at a time. */
     p.onkeydown = async (e)=>{
@@ -2790,6 +2810,12 @@ function bind(){
       }
     };
   });
+  /* Safari: a finger-up on a button runs its handler. File buttons stay real. */
+  document.addEventListener("touchend", function(e){
+    var b=e.target.closest&&e.target.closest("button,.pill,.go,.ghost,.pad");
+    if(!b||b.tagName==="LABEL"||b.querySelector("input[type=file]")) return;
+    if(typeof b.onclick==="function"){ try{ b.onclick(e); }catch(x){} }
+  }, true);
 }
 function paintChrome(){
   document.getElementById("brand").textContent = t("app");
