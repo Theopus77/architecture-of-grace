@@ -552,7 +552,7 @@ const STR={
   kitA:{en:"Pads 1 to 8",es:"Pads 1 a 8"}, kitB:{en:"Pads 9 to 16",es:"Pads 9 a 16"}, kitC:{en:"Pads 17 to 24",es:"Pads 17 a 24"},
   inst:{en:"Instrument",es:"Instrumento"}, key:{en:"Key",es:"Tono"}, scale:{en:"Scale",es:"Escala"}, oct:{en:"Range",es:"Registro"},
   lowest:{en:"Lowest",es:"Muy grave"}, low:{en:"Low",es:"Grave"}, mid:{en:"Middle",es:"Medio"}, high:{en:"High",es:"Agudo"},
-  record:{en:"Record to chop",es:"Disco para cortar"}, fromBar:{en:"Start at",es:"Empieza en"}, clen:{en:"Each pad plays",es:"Cada pad suena"}, clen1:{en:"1 beat",es:"1 tiempo"}, clen2:{en:"2 beats",es:"2 tiempos"}, clen4:{en:"1 bar",es:"1 compás"}, about:{en:"about {s} s",es:"unos {s} s"}, barN:{en:"Bar {n}",es:"Compás {n}"}, whole:{en:"The whole take",es:"Toda la toma"},
+  record:{en:"Record to chop",es:"Disco para cortar"}, fromBar:{en:"Start at",es:"Empieza en"}, clen:{en:"Each pad plays",es:"Cada pad suena"}, clen1:{en:"1 beat",es:"1 tiempo"}, clen2:{en:"2 beats",es:"2 tiempos"}, clen4:{en:"1 bar",es:"1 compás"}, clen8:{en:"2 bars",es:"2 compases"}, clen16:{en:"4 bars",es:"4 compases"}, clen32:{en:"8 bars",es:"8 compases"}, about:{en:"about {s} s",es:"unos {s} s"}, barN:{en:"Bar {n}",es:"Compás {n}"}, whole:{en:"The whole take",es:"Toda la toma"},
   matchT:{en:"Use its tempo",es:"Usar su tempo"},
   g_keys:{en:"Keys",es:"Teclados"}, g_guitar:{en:"Guitar",es:"Guitarra"}, g_bass:{en:"Bass",es:"Bajo"}, g_band:{en:"The band",es:"La banda"}, g_voices:{en:"Voices",es:"Voces"}, g_world:{en:"World",es:"Del mundo"},
   g_crate:{en:"Records from the turntables",es:"Discos de los tocadiscos"}, g_inbox:{en:"Your takes at the Mixing Desk",es:"Tus tomas en la mesa de mezclas"},
@@ -1008,7 +1008,7 @@ function chopsOf(B, buf){
   else { const d=buf.duration/16; for(let i=0;i<16;i++) add(i*d, d); for(let i=0;i<8;i++) add(2*i*d, 2*d); }
   return out;
 }
-function chopLen(B){ return B.clen===1 || B.clen===4 ? B.clen : 2; }
+function chopLen(B){ const n=+B.clen; return [1,2,4,8,16,32].indexOf(n)>=0 ? n : 2; }
 
 /* ══ the four kinds of bank ══ */
 function KITS(){ return (window.AOGDrumKit ? AOGDrumKit.ids : []).filter(b=>Object.keys(AOGDrumKit.padNames(b)).every(id=>!AOGDrumKit.made(b,id))); }
@@ -1346,7 +1346,7 @@ function trigger(bi, pi, vel, when, T){
   return keep({parts:vs.map(v=>v.url), stop(at, force){ if(!force && (INST[B.inst]||{}).ring) return; const t0=Math.max(at||0, c.currentTime);   /* AOG-PADS-CLASSROOM-V1: a pluck rings out. AOG-PADS-FEEL-V1: a paired pad cuts it anyway */
     const fast=gated(bi); vs.forEach(v=>{ try{ v.g.gain.cancelScheduledValues(t0); v.g.gain.setTargetAtTime(0, t0, fast?0.02:0.07); v.s.stop(t0+(fast?0.12:0.6)); }catch(e){} }); }});
 }
-const RING=[], MAXV=32;   /* AOG-PADS-VOICES-V1: the notes ringing now, the oldest first */
+const RING=[], MAXV=256;   /* AOG-PADS-VOICES-V1: soft safety only; taps stay instant no matter how many */
 function letGo(v, c){ if(!v) return; try{ const t0=c.currentTime; v.g.gain.cancelScheduledValues(t0); v.g.gain.setTargetAtTime(0, t0, 0.012); v.s.stop(t0+0.06); }catch(e){} }
 function flash(bi, pi, when, vel){
   if(bi!==S.bank) return;
@@ -1880,7 +1880,7 @@ function paintSetRow(){
     if(!(R && R.phrases)) h+=field("fBar", t("fromBar"), starts.length ? starts.map(b=>opt(b, esc(t("barN",{n:b})), B.bar)).join("") : opt(1, esc(t("whole")), 1));
     /* AOG-CHOPS-SECONDS-V1 (2026-10-12) — Jimmy: "What is a beat?" Each length also says about how long it lasts on this record */
     const secs=n=>{ if(!(R && R.bpm>0)) return ""; const v=n*60/R.bpm; return " · "+t("about").replace("{s}", (v<10 ? (Math.round(v*10)/10) : Math.round(v)).toLocaleString(S0.lang==="es"?"es":"en")); };
-    if(!(R && R.phrases)) h+=field("fClen", t("clen"), [1,2,4].map(n=>opt(n, esc(t("clen"+n)+secs(n)), chopLen(B))).join(""));
+    if(!(R && R.phrases)) h+=field("fClen", t("clen"), [1,2,4,8,16,32].map(n=>opt(n, esc(t("clen"+n)+secs(n)), chopLen(B))).join(""));
     if(R && R.bpm>0) h+=`<button type="button" class="pm-b" id="fMatch">${esc(t("matchT"))} (${Math.round(R.bpm)})</button>`;
   } else {
     h=field("fInst", t("inst"), instOptions(B.inst), true);
@@ -2542,7 +2542,7 @@ async function takeIn(){
 init();
 </script>
 
-<script src="aog-wow-drum.js"></script>
+<!-- morph script removed: the bar is gone -->
 </body>
 </html>
 
