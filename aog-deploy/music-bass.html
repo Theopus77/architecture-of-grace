@@ -1591,7 +1591,7 @@ function evenOf(R, id, z, m){
   return (z.i!=null ? a.z[z.i] : 1)*(a.n && j>=0 && j<a.n.length ? a.n[j] : 1);
 }
 function recLayer(R, v){ const vel=R.meta.vel||[0]; let lay=1; vel.forEach((b,i)=>{ if(v>=b) lay=i+1; }); return lay; }
-function recPick(R, kind, m, v, s){
+function recPick(R, kind, m, v, s, o){
   const all=R.by[kind]; if(!all || !all.length) return null;
   const want=recLayer(R, v), lays=[...new Set(all.map(z=>z.v||1))];
   const lay=lays.reduce((a,b)=>{ const da=Math.abs(a-want), dbb=Math.abs(b-want); return dbb<da || (dbb===da && b<a) ? b : a; });
@@ -1630,8 +1630,8 @@ function recVoice(c, ch, id, m, v, when, s, o, R){
   const slapS=!!(snd.rslap && R.slap && R.slap.length && !soft && !(o && o.plain)), pop=slapS && ((o && o.pop) || (s!=null && s>=2));
   /* rstac: a sound whose every note is short (a muted, thumpy bass) plays the short recordings */
   let kind=((o && o.art==="mute") || (snd.rstac && !soft)) ? (R.by.mute?"mute":R.by.stac?"stac":"sus") : (soft && R.by.hammer) ? "hammer" : "sus";
-  let pk=recPick(R, kind, m, slapS ? 1 : vv, s);
-  if(!pk && kind!=="sus"){ kind="sus"; pk=recPick(R, kind, m, slapS ? 1 : vv, s); }
+  let pk=recPick(R, kind, m, slapS ? 1 : vv, s, o);
+  if(!pk && kind!=="sus"){ kind="sus"; pk=recPick(R, kind, m, slapS ? 1 : vv, s, o); }
   if(!pk) return null;
   const z=pk.z, buf=R.buf[z.f], base=0.2*velAmp(vv)*lift*(z.g||1)*evenOf(R, id, z, m);
   /* the made string sits at 0.2 × the loudness curve over its first quarter second; a recording is brought there too
