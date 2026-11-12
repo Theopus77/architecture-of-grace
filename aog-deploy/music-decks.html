@@ -49,7 +49,7 @@ header{display:flex;justify-content:space-between;align-items:center;gap:.75rem;
 .brand{font-size:.75rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);text-decoration:none}
 .tools{display:flex;gap:.5rem}
 .pill{min-height:44px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:0 .9rem;font-weight:600;display:inline-flex;align-items:center}
-button,label.file{font:inherit;cursor:pointer;touch-action:manipulation}
+button,label.file{font:inherit;cursor:pointer;touch-action:none}
 .kicker{font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--steel)}
 .lead{max-width:66ch;color:var(--muted)}
 /* AOG-DECKS-FIT-V1 (2026-09-26): Jimmy's iPhone showed Deck B wider than the
@@ -761,34 +761,7 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
     </span>
     <p class="waiting" id="waiting" aria-live="polite"></p>
   </div>
-  <div class="decks stage" id="decks">
-    <section class="deck" id="deckA">
-      <div class="dhead"><h2>Deck A</h2></div>
-      <p class="song">No song yet.</p>
-      <div class="platter-wrap t12" style="width:min(220px,90%);margin:.5rem auto">
-        <div class="platter" data-deck="A" style="width:100%;aspect-ratio:1;border-radius:50%;background:repeating-radial-gradient(circle,#2a2a2a 0 2px,#1a1a1a 3px 5px);border:8px solid #c9a227">
-          <div class="label" style="position:absolute;inset:32%;border-radius:50%;background:radial-gradient(circle,#e8c56b,#a07830)"></div>
-        </div>
-      </div>
-      <div style="display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;margin:.4rem 0">
-        <button type="button" class="go" data-play="A">START</button>
-        <label class="pill">Load a song<input type="file" accept="audio/*" data-file="A" hidden></label>
-      </div>
-    </section>
-    <section class="deck" id="deckB">
-      <div class="dhead"><h2>Deck B</h2></div>
-      <p class="song">No song yet.</p>
-      <div class="platter-wrap t12" style="width:min(220px,90%);margin:.5rem auto">
-        <div class="platter" data-deck="B" style="width:100%;aspect-ratio:1;border-radius:50%;background:repeating-radial-gradient(circle,#2a2a2a 0 2px,#1a1a1a 3px 5px);border:8px solid #c9a227">
-          <div class="label" style="position:absolute;inset:32%;border-radius:50%;background:radial-gradient(circle,#e8c56b,#a07830)"></div>
-        </div>
-      </div>
-      <div style="display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;margin:.4rem 0">
-        <button type="button" class="go" data-play="B">START</button>
-        <label class="pill">Load a song<input type="file" accept="audio/*" data-file="B" hidden></label>
-      </div>
-    </section>
-  </div>
+  <div class="decks stage" id="decks"></div>
   <p class="drophint no-print" id="padHint"></p>
   <p class="drophint dk-keys no-print" id="keysHint"></p><!-- AOG-DECKS-KEYS-V1 -->
   <section class="mixer no-print" id="mixer" aria-labelledby="mixH">
@@ -1117,8 +1090,7 @@ function ctx(){
   if(actx && actx.state!=="running"){ try{ actx.resume(); }catch(e){} }
   if(!actx){
     const AC = window.AudioContext||window.webkitAudioContext;
-    try{ actx = new AC({ latencyHint:0.003, sampleRate:48000 }); }
-    catch(e1){ try{ actx = new AC({ latencyHint:0.003 }); }catch(e2){ actx = new AC(); } }
+    actx = new AC({ latencyHint:0.003, sampleRate:48000 }); /* AOG-DECKS-HIFI-OUT-V1: 48 kHz, 3 ms */
     try{ if(navigator.audioSession) navigator.audioSession.type = "playback"; }catch(e){}
     try{ if(window.AOGVU && AOGVU.own) AOGVU.own(actx); }catch(e){}   /* AOG-SILENT-V1: the Studio's hush pauses it too */
     /* AOG-DECKS-LOUDNESS-V1 — the same treatment the drum machine got: a normal
@@ -3705,20 +3677,6 @@ function bind(){
       send(deck, { t:"hand", on:false, rate:0 });               /* let go: the throw carries, the motor takes over */
     };
     p.onpointerup = up; p.onpointercancel = up; p.onlostpointercapture = up;
-    /* Safari: touch events drive the same scratch when pointer events do not arrive */
-    p.addEventListener("touchstart", function(e){
-      if(!e.touches[0]) return;
-      const t = e.touches[0];
-      p.onpointerdown({ preventDefault:function(){}, pointerId:1, clientX:t.clientX, clientY:t.clientY, timeStamp:e.timeStamp||performance.now(), getCoalescedEvents:function(){ return []; } });
-    }, {passive:false});
-    p.addEventListener("touchmove", function(e){
-      if(!e.touches[0]) return;
-      e.preventDefault();
-      const t = e.touches[0];
-      p.onpointermove({ clientX:t.clientX, clientY:t.clientY, timeStamp:e.timeStamp||performance.now(), getCoalescedEvents:function(){ return []; } });
-    }, {passive:false});
-    p.addEventListener("touchend", function(){ up(); }, {passive:true});
-    p.addEventListener("touchcancel", function(){ up(); }, {passive:true});
     /* the same deck from a keyboard: space starts and stops it, the arrows walk
        the needle a tenth of a second at a time. */
     p.onkeydown = async (e)=>{
@@ -3735,12 +3693,6 @@ function bind(){
       }
     };
   });
-  /* Safari: a finger-up on a button runs its handler. File inputs stay real buttons. */
-  document.addEventListener("touchend", function(e){
-    const b = e.target.closest && e.target.closest("button,.pill,.go,.ghost,.pad");
-    if(!b || b.tagName === "LABEL" || b.querySelector("input[type=file]")) return;
-    if(typeof b.onclick === "function"){ try{ b.onclick(e); }catch(x){} }
-  }, true);
 }
 function paintChrome(){
   document.getElementById("brand").textContent = t("app");
@@ -4026,8 +3978,7 @@ function paintLessons(){
      ${done ? `<p class="lok">${all ? lessonsT("All seventeen done. You can run a set.", "Las diecisiete hechas. Ya puedes tocar un set.") : lessonsT("Lesson done.", "Lección hecha.")} ${next}</p>` : ""}`;
   const nb = document.getElementById("lNext"); if(nb) nb.onclick = ()=>{ S.lessonSel = cur+1; lessonsSave(); paintLessons(); };
 }
-try{ setPair(PAIR, true); if(ONE) setOne(ONE); paintChrome(); shell(); paintLessons(); requestAnimationFrame(loop); }
-catch(err){ console.error("decks:", err); }
+setPair(PAIR, true); if(ONE) setOne(ONE); paintChrome(); shell(); paintLessons(); requestAnimationFrame(loop);
 checkBench();
 crateOpen();
 try{ AOGHandoff.listen(function(key){ if(SHELF.some(s=>s.key===key)) checkBench(); }); }catch(e){}
