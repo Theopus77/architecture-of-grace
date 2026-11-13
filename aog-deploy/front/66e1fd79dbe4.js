@@ -6,7 +6,7 @@ const STR={
   lead:{en:"Drums, keys, guitar, bass, the band and records to chop. Tap a pad.",es:"Batería, teclados, guitarra, bajo, banda y discos para cortar. Toca un pad."},
   bankLab:{en:"Bank",es:"Banco"},
   t_drums:{en:"Drums",es:"Batería"}, t_notes:{en:"Notes",es:"Notas"}, t_chords:{en:"Chords",es:"Acordes"}, t_chops:{en:"Chops of a record",es:"Cortes de un disco"},
-  kitA:{en:"Pads 1 to 8",es:"Pads 1 a 8"}, kitB:{en:"Pads 9 to 16",es:"Pads 9 a 16"}, kitC:{en:"Pads 17 to 24",es:"Pads 17 a 24"},
+  layer:{en:"Layer",es:"Capa"}, layerOff:{en:"None",es:"Ninguna"},
   shelfCym:{en:"Cymbals",es:"Platillos"}, shelfClap:{en:"Claps",es:"Palmas"}, shelfKick:{en:"Kicks",es:"Bombos"}, shelfOrch:{en:"Orchestra hits",es:"Golpes de orquesta"},
   inst:{en:"Instrument",es:"Instrumento"}, key:{en:"Key",es:"Tono"}, scale:{en:"Scale",es:"Escala"}, oct:{en:"Range",es:"Registro"},
   lowest:{en:"Lowest",es:"Muy grave"}, low:{en:"Low",es:"Grave"}, mid:{en:"Middle",es:"Medio"}, high:{en:"High",es:"Agudo"},
@@ -259,10 +259,10 @@ const PAD_WORD={KICK:["Kick","Bombo"],SNARE:["Snare","Caja"],HAT:["Hi-hat","Char
 
 /* ══ what is kept on this device ══ */
 const DEF={v:1, bank:0, sel:0, banks:[
-  {type:"drums", kitA:"P", kitB:"H", kitC:"D", inst:"k:grand", key:0, scale:"major", oct:3, rec:"", bar:1},
-  {type:"chords", kitA:"P", kitB:"H", kitC:"D", inst:"k:epwarm", key:0, scale:"major", oct:3, rec:"", bar:1},
-  {type:"notes", kitA:"P", kitB:"H", kitC:"D", inst:"a:growly", key:9, scale:"pmin", oct:2, rec:"", bar:1},
-  {type:"chops", kitA:"P", kitB:"H", kitC:"D", inst:"b:sax", key:0, scale:"major", oct:3, rec:"c:01-paper-kites.mp3", bar:1}],
+  {type:"drums", kitA:"P", kitB:"H", kitC:"D", inst:"k:grand", layers:[], key:0, scale:"major", oct:3, rec:"", bar:1},
+  {type:"chords", kitA:"P", kitB:"H", kitC:"D", inst:"k:epwarm", layers:[], key:0, scale:"major", oct:3, rec:"", bar:1},
+  {type:"notes", kitA:"P", kitB:"H", kitC:"D", inst:"a:growly", layers:[], key:9, scale:"pmin", oct:2, rec:"", bar:1},
+  {type:"chops", kitA:"P", kitB:"H", kitC:"D", inst:"b:sax", layers:[], key:0, scale:"major", oct:3, rec:"c:01-paper-kites.mp3", bar:1}],
   pads:{}, ev:[], bpm:90, swing:50, bars:2, q:24, click:false, rpt:false, rate:24, full:false};
 let S=JSON.parse(JSON.stringify(DEF));
 try{ S0.lang=localStorage.getItem("aog.lang")==="es"?"es":"en"; }catch(e){}
@@ -293,21 +293,20 @@ function ceiling(c){
 function mvol(){ const v=S.mvol==null ? 100 : +S.mvol; return Math.max(0, Math.min(150, v))/100; }   /* AOG-PADS-KNOBS-V1: how loud the unit plays (not what a bounce writes) */
 function master(c){
   const m={c:c};
-  /* AOG-STUDIO-V1: clean high-pass, gentle glue, then the existing limiter and ceiling */
   m.hp=c.createBiquadFilter(); m.hp.type="highpass"; m.hp.frequency.value=28; m.hp.Q.value=0.7;
   m.glue=c.createDynamicsCompressor(); m.glue.threshold.value=-12; m.glue.knee.value=8; m.glue.ratio.value=2.2; m.glue.attack.value=0.01; m.glue.release.value=0.18;
   m.lim=c.createDynamicsCompressor(); m.lim.threshold.value=-2; m.lim.knee.value=1; m.lim.ratio.value=12; m.lim.attack.value=0.003; m.lim.release.value=0.1;
   m.bus=c.createGain(); m.bus.gain.value=0.85; m.clip=ceiling(c);
-  m.rig=window.AOGAmp ? AOGAmp.create(c, {kind:"drums", state:fxState()}) : null;
-  m.bus.connect(m.hp);
-  if(m.rig){ m.hp.connect(m.rig.input); m.rig.output.connect(m.glue); } else m.hp.connect(m.glue);
-  m.glue.connect(m.lim); m.lim.connect(m.clip); m.clip.connect(c.destination);
+  /* one bus per bank, so a pedal on bank B does not touch bank A */
+  m.banks=[0,1,2,3].map(()=>{ const g=c.createGain(); g.gain.value=1; g.connect(m.bus); return g; });
+  m.rigs=[0,1,2,3].map(i=>{ const r=window.AOGAmp ? AOGAmp.create(c, {kind:"drums", state:fxState(i)}) : null; if(r){ m.banks[i].disconnect(); m.banks[i].connect(r.input); r.output.connect(m.bus); } return r; });
+  m.bus.connect(m.hp); m.hp.connect(m.glue); m.glue.connect(m.lim); m.lim.connect(m.clip); m.clip.connect(c.destination);
   return m;
 }
 const FXKEY="aog.pads.fx.v1";
-let FXST=null; try{ const r=JSON.parse(localStorage.getItem(FXKEY)||"null"); if(r && typeof r==="object" && !Array.isArray(r)) FXST=r.machine||null; }catch(e){ FXST=null; }
-function fxState(){ return window.AOGAmp ? AOGAmp.normalize(FXST||{}, "drums") : null; }
-function saveFx(){ try{ if(FXST) localStorage.setItem(FXKEY, JSON.stringify({machine:FXST})); else localStorage.removeItem(FXKEY); }catch(e){} }
+let FXST=[null,null,null,null]; try{ const r=JSON.parse(localStorage.getItem(FXKEY)||"null"); if(Array.isArray(r)) FXST=r; else if(r && r.machine) FXST=[r.machine,null,null,null]; }catch(e){}
+function fxState(bi){ return window.AOGAmp ? AOGAmp.normalize(FXST[bi]||{}, "drums") : null; }
+function saveFx(){ try{ localStorage.setItem(FXKEY, JSON.stringify(FXST)); }catch(e){} }
 let LIVE_M=null;
 function ctx(){
   if(!ac){
@@ -537,7 +536,7 @@ function padDefs(bi){
 }
 /* getting a bank ready: only what its sixteen pads play is fetched */
 const READY=[{},{},{},{}];
-function sigOf(B){ return [B.type, B.type==="drums"?B.kitA+B.kitB+B.kitC : B.type==="chops"?B.rec+"|"+B.bar+"|"+chopLen(B) : B.inst+"|"+B.key+"|"+B.scale+"|"+B.oct+"|"+(B.type==="chords"?B.pat||"":"")].join("|"); }
+function sigOf(B){ return [B.type, B.type==="drums"?B.kitA+B.kitB+B.kitC : B.type==="chops"?B.rec+"|"+B.bar+"|"+chopLen(B) : B.inst+"|"+(B.layers||[]).join(",")+"|"+B.key+"|"+B.scale+"|"+B.oct+"|"+(B.type==="chords"?B.pat||"":"")].join("|"); }
 function prep(bi){
   const B=S.banks[bi], sig=sigOf(B), R=READY[bi];
   if(R.sig===sig && R.p) return R.p;
@@ -550,9 +549,14 @@ function prep(bi){
     st.total=1; p=recBuf(B.rec).then(b=>{ st.got=1; st.buf=b; st.chops=chopsOf(B, b); });
   } else {
     /* AOG-PADS-LAYERS-V1: the strength each note plays first comes first, then its other strengths and takes */
-    p=zonesOf(B.inst).then(zs=>{ st.zones=zs; const first=new Set(), more=new Set(); padDefs(bi).forEach(d=>d.notes.forEach(m=>{ const z=nearest(zs,foldIn(B.inst,m)); first.add(z.url); zoneUrls(z).forEach(u=>more.add(u)); }));
+    p=Promise.all([B.inst].concat(B.layers||[]).map(iid=>zonesOf(iid))).then(allZs=>{
+      st.zones=allZs[0]; st.zones2={}; const first=new Set(), more=new Set();
+      [B.inst].concat(B.layers||[]).forEach((iid,i)=>{ if(i>0) st.zones2[iid]=allZs[i];
+        padDefs(bi).forEach(d=>d.notes.forEach(m=>{ const z=nearest(allZs[i],foldIn(iid,m)); first.add(z.url); zoneUrls(z).forEach(u=>more.add(u)); }));
+      });
       const need=[...first].concat([...more].filter(u=>!first.has(u)));
-      st.total=need.length; paintLine(); return Promise.all(need.map(u=>getBuf(u).then(()=>{ st.got++; paintLine(); }))); });
+      st.total=need.length; paintLine(); return Promise.all(need.map(u=>getBuf(u).then(()=>{ st.got++; paintLine(); })));
+    });
   }
   st.p=p.then(()=>{ if(READY[bi]===st){ st.state="ready"; if(B.type==="drums") KIT_WAS[bi]=[B.kitA, B.kitB]; paintAll(); } }).catch(()=>{ if(READY[bi]===st){ st.state="failed"; st.p=null; paintAll(); } });
   return st.p;
@@ -699,7 +703,7 @@ function padEven(inst, url, d){
 function trigger(bi, pi, vel, when, T){
   if(T ? !isReady(bi) : !canPlay(bi)) return null;   /* a file of the loop waits for every sound; live playing does not */
   const d=padDefs(bi)[pi]; if(!d) return null;
-  if(!T){ T=LIVE; T.c=ctx(); T.dest=bus; }
+  if(!T){ T=LIVE; T.c=ctx(); T.dest=LIVE_M && LIVE_M.banks ? LIVE_M.banks[bi] : bus; }
   /* AOG-BANKC-FIT-V1: any chord from Bank B (live or from the pattern) updates the notes Bank C lights */
   if(S.banks[bi].type==="chords") chordNow(d, when);
   const c=T.c, P=padSet(bi, pi), R=READY[bi], OPEN=T.open, CHOP=T.chop;
@@ -791,16 +795,20 @@ function trigger(bi, pi, vel, when, T){
     return keep({stop(at){ const t0=Math.max(at||0, c.currentTime); try{ g.gain.cancelScheduledValues(t0); g.gain.setTargetAtTime(0, t0, 0.006); s.stop(t0+0.05); }catch(e){} }});
   }
   /* a note or a chord: it rings while the pad is held */
+  const allInst=[B.inst].concat(B.layers||[]).filter(Boolean);
   const zs=R.zones||[], vs=[], lv=0.62*(0.3+0.7*vel)/Math.sqrt(d.notes.length);
-  ((INST[B.inst]||{}).one ? d.notes.slice(0,1) : d.notes).map(m=>foldIn(B.inst, m)).forEach(m=>{   /* AOG-PADS-WORLD-V1 */
-    const z=nearest(zs, m);
-    layerPick(z, vel).forEach(Y=>{   /* AOG-PADS-LAYERS-V1: the strength (or the two blended) this hit picks */
-    const tb=BUFV.get(Y.url); if(!tb) return;   /* a note not here yet stays quiet; the others play */
-    const s=c.createBufferSource(), g=c.createGain();
-    s.buffer=tb.b; s.playbackRate.value=Math.pow(2, (m-z.m)/12-(Y.c||0)/1200)*rate;
-    g.gain.setValueAtTime(0, when); g.gain.linearRampToValueAtTime(lv*tb.g*Y.g*mono(tb.b)*padEven(B.inst, Y.url, m-z.m), when+Math.max(0.005, tb.fade));
-    s.connect(g); g.connect(out); s.start(when, tb.off); const v={s:s, g:g, url:Y.url}; vs.push(v);
-    if(live){ RING.push(v); s.onended=()=>{ try{ s.disconnect(); g.disconnect(); }catch(e){} const k=RING.indexOf(v); if(k>=0) RING.splice(k,1); v.done=true; if(vs.every(x=>x.done)) unplug(); }; }
+  allInst.forEach(iid=>{
+    const zs2=iid===B.inst ? zs : (READY[bi].zones2||{})[iid]||[];
+    ((INST[iid]||{}).one ? d.notes.slice(0,1) : d.notes).map(m=>foldIn(iid, m)).forEach(m=>{
+      const z=nearest(zs2, m);
+      layerPick(z, vel).forEach(Y=>{
+        const tb=BUFV.get(Y.url); if(!tb) return;
+        const s=c.createBufferSource(), g=c.createGain();
+        s.buffer=tb.b; s.playbackRate.value=Math.pow(2, (m-z.m)/12-(Y.c||0)/1200)*rate;
+        g.gain.setValueAtTime(0, when); g.gain.linearRampToValueAtTime(lv*tb.g*Y.g*mono(tb.b)*padEven(iid, Y.url, m-z.m), when+Math.max(0.005, tb.fade));
+        s.connect(g); g.connect(out); s.start(when, tb.off); const v={s:s, g:g, url:Y.url}; vs.push(v);
+        if(live){ RING.push(v); s.onended=()=>{ try{ s.disconnect(); g.disconnect(); }catch(e){} const k=RING.indexOf(v); if(k>=0) RING.splice(k,1); v.done=true; if(vs.every(x=>x.done)) unplug(); }; }
+      });
     });
   });
   if(live){ if(!vs.length) unplug(); if(ac && ac.state==="suspended") ac.resume(); stealTo(room()-1); }
@@ -1397,6 +1405,10 @@ function paintSetRow(){
     if(R && R.bpm>0) h+=`<button type="button" class="pm-b" id="fMatch">${esc(t("matchT"))} (${Math.round(R.bpm)})</button>`;
   } else {
     h=field("fInst", t("inst"), instOptions(B.inst), true);
+    const ly=B.layers||[];
+    h+=`<div class="pm-row" style="flex-wrap:wrap;gap:6px;margin-top:6px"><span class="pm-lab">${t("layer")}</span>`+
+      ly.map((id,i)=>`<span class="pm-chip">${esc(L(INST[id]||{}))}<button type="button" data-lyrm="${i}" aria-label="remove">×</button></span>`).join("")+
+      `<select class="pm-sel" id="fLayerAdd"><option value="">${t("layerAdd")}</option>`+instOptions("")+`</select></div>`;
     h+=field("fKey", t("key"), KEYS_EN.map((k,i)=>opt(i, esc(keyName(i)), B.key)).join(""));
     /* AOG-PADS-ALLSCALES-V1: every scale (the Chords bank: every seven-note scale) */
     const cur=B.type==="chords" && scaleIv(B.scale).length!==7 ? (patMinor(B)?"minor":"major") : B.scale;
@@ -1408,6 +1420,8 @@ function paintSetRow(){
   on("fKitA", v=>{ B.kitA=v; LES.mark("kitA"); }); on("fKitB", v=>{ B.kitB=v; LES.mark("kitB"); }); on("fKitC", v=>{ B.kitC=v; });
   const bk=S.bank;   /* AOG-LESSONS-V1 */
   on("fInst", v=>{ B.inst=v; LES.mark(bk===1?"cinst":"ninst"); }); on("fKey", v=>{ B.key=+v; if(bk===1) LES.mark("ckey"); });
+  const la=$("fLayerAdd"); if(la) la.onchange=()=>{ if(!la.value) return; if(!B.layers) B.layers=[]; if(B.layers.length<6 && !B.layers.includes(la.value)) B.layers.push(la.value); la.value=""; save(); paintAll(); prep(S.bank); };
+  document.querySelectorAll("[data-lyrm]").forEach(btn=>{ btn.onclick=()=>{ const i=+btn.getAttribute("data-lyrm"); if(B.layers) B.layers.splice(i,1); save(); paintAll(); prep(S.bank); }; });
   on("fScale", v=>{ B.scale=v; if(bk===1 && v==="minor") LES.mark("cminor"); if(bk===2) LES.mark("nscale"); lessonSongs(); }); on("fOct", v=>{ B.oct=+v; LES.mark("nrange"); });
   on("fRec", v=>{ B.rec=v; B.bar=1; LES.mark("crec"); }); on("fBar", v=>{ B.bar=+v; LES.mark("cbar"); }); on("fClen", v=>{ B.clen=+v; });
   const m=$("fMatch"); if(m) m.onclick=()=>{ const R=recInfo(B.rec); if(R && R.bpm>0) retime(R.bpm); LES.mark("cmatch"); };
@@ -1617,17 +1631,18 @@ function paintText(){
    effects that are on and a menu of the rest. Drawn again only when the language changes (or an effect is turned on or
    off), so a knob in your hand is never redrawn while the beat plays. */
 let FXUI=null, FXLANG="";
-function applyFx(){ if(LIVE_M && LIVE_M.rig) LIVE_M.rig.set(fxState()); }
+function applyFx(){ if(!LIVE_M || !LIVE_M.rigs) return; LIVE_M.rigs.forEach((r,i)=>{ if(r) r.set(fxState(i)); }); }
 function paintFx(){
   if(!window.AOGAmp || !$("ampBox")) return;
   $("fxH").textContent=t("fxH"); $("fxLine").textContent=t("fxLine");
-  if(FXUI && FXLANG===S0.lang) return; FXLANG=S0.lang;
+  const bi=S.bank;
+  if(FXUI && FXLANG===S0.lang && FXUI._bi===bi) return; FXLANG=S0.lang;
   const W=k=>STR[k];
-  if(!FXUI) FXUI=AOGAmp.ui($("ampBox"), {kind:"drums", near:$("pedalsNear"), lang:()=>S0.lang, get:fxState,
+  if(!FXUI) FXUI=AOGAmp.ui($("ampBox"), {kind:"drums", near:$("pedalsNear"), lang:()=>S0.lang, get:()=>fxState(bi),
     words:{kept:W("fxKept"), back:W("fxBack"), backDone:W("fxBackDone")},
-    set:st=>{ FXST=AOGAmp.normalize(st, "drums"); clearTimeout(paintFx.t); paintFx.t=setTimeout(saveFx, 300); applyFx(); },
-    reset:()=>{ FXST=null; saveFx(); applyFx(); }});
-  else FXUI.paint();
+    set:st=>{ FXST[bi]=AOGAmp.normalize(st, "drums"); clearTimeout(paintFx.t); paintFx.t=setTimeout(saveFx, 300); applyFx(); },
+    reset:()=>{ FXST[bi]=null; saveFx(); applyFx(); }});
+  FXUI._bi=bi; FXUI.paint();
 }
 window.addEventListener("pagehide", ()=>{ if(paintFx.t){ clearTimeout(paintFx.t); saveFx(); } });
 /* ══ AOG-PADS-BIG-V1 (2026-10-11) — Jimmy: "Can the drum pad be expanded" — bigger, and (AOG-PADS-24-V1) more. ⤢ puts the
@@ -1867,7 +1882,7 @@ function init(){
   bindMidi();   /* AOG-MIDI-V1 */
   $("guideLink").addEventListener("click",()=>LES.mark("guide1"));
   $("takeBtn").addEventListener("click",()=>{ LES.mark($("takeBtn").getAttribute("aria-pressed")==="true" ? "take2" : "take1"); }, true);   /* before the recorder: pressed = it is about to stop */
-  $("bankSel").onchange=()=>{ S.bank=+$("bankSel").value; LES.mark(["","bankB","bankC","bankD"][S.bank]); save(); paintAll(); prep(S.bank); };
+  $("bankSel").onchange=()=>{ S.bank=+$("bankSel").value; LES.mark(["","bankB","bankC","bankD"][S.bank]); save(); paintAll(); paintFx(); prep(S.bank); };
   $("playBtn").onclick=()=>{ SEQ.on ? stop() : play(); };
   $("loopRec").onclick=()=>{ if(SEQ.rec){ SEQ.rec=false; say(t("recOff")); paintTransport(); return; } snapshot(); SEQ.rec=true; LES.mark("rec1"); LT.recN=0; if(!SEQ.on) play(); LINE_HOLD=0; paintTransport(); };
   $("undoBtn").onclick=()=>{ const u=SEQ.undo.pop(); if(u==null){ say(t("nothingUndo")); return; } S.ev=JSON.parse(u); changed(); LES.mark("undo1"); say(t("undone")); };
