@@ -838,21 +838,20 @@ function ceiling(c){
 function mvol(){ const v=S.mvol==null ? 100 : +S.mvol; return Math.max(0, Math.min(150, v))/100; }   /* AOG-PADS-KNOBS-V1: how loud the unit plays (not what a bounce writes) */
 function master(c){
   const m={c:c};
-  /* AOG-STUDIO-V1: clean high-pass, gentle glue, then the existing limiter and ceiling */
   m.hp=c.createBiquadFilter(); m.hp.type="highpass"; m.hp.frequency.value=28; m.hp.Q.value=0.7;
   m.glue=c.createDynamicsCompressor(); m.glue.threshold.value=-12; m.glue.knee.value=8; m.glue.ratio.value=2.2; m.glue.attack.value=0.01; m.glue.release.value=0.18;
   m.lim=c.createDynamicsCompressor(); m.lim.threshold.value=-2; m.lim.knee.value=1; m.lim.ratio.value=12; m.lim.attack.value=0.003; m.lim.release.value=0.1;
   m.bus=c.createGain(); m.bus.gain.value=0.85; m.clip=ceiling(c);
-  m.rig=window.AOGAmp ? AOGAmp.create(c, {kind:"drums", state:fxState()}) : null;
-  m.bus.connect(m.hp);
-  if(m.rig){ m.hp.connect(m.rig.input); m.rig.output.connect(m.glue); } else m.hp.connect(m.glue);
-  m.glue.connect(m.lim); m.lim.connect(m.clip); m.clip.connect(c.destination);
+  /* one bus per bank, so a pedal on bank B does not touch bank A */
+  m.banks=[0,1,2,3].map(()=>{ const g=c.createGain(); g.gain.value=1; g.connect(m.bus); return g; });
+  m.rigs=[0,1,2,3].map(i=>{ const r=window.AOGAmp ? AOGAmp.create(c, {kind:"drums", state:fxState(i)}) : null; if(r){ m.banks[i].disconnect(); m.banks[i].connect(r.input); r.output.connect(m.bus); } return r; });
+  m.bus.connect(m.hp); m.hp.connect(m.glue); m.glue.connect(m.lim); m.lim.connect(m.clip); m.clip.connect(c.destination);
   return m;
 }
 const FXKEY="aog.pads.fx.v1";
-let FXST=null; try{ const r=JSON.parse(localStorage.getItem(FXKEY)||"null"); if(r && typeof r==="object" && !Array.isArray(r)) FXST=r.machine||null; }catch(e){ FXST=null; }
-function fxState(){ return window.AOGAmp ? AOGAmp.normalize(FXST||{}, "drums") : null; }
-function saveFx(){ try{ if(FXST) localStorage.setItem(FXKEY, JSON.stringify({machine:FXST})); else localStorage.removeItem(FXKEY); }catch(e){} }
+let FXST=[null,null,null,null]; try{ const r=JSON.parse(localStorage.getItem(FXKEY)||"null"); if(Array.isArray(r)) FXST=r; else if(r && r.machine) FXST=[r.machine,null,null,null]; }catch(e){}
+function fxState(bi){ return window.AOGAmp ? AOGAmp.normalize(FXST[bi]||{}, "drums") : null; }
+function saveFx(){ try{ localStorage.setItem(FXKEY, JSON.stringify(FXST)); }catch(e){} }
 let LIVE_M=null;
 function ctx(){
   if(!ac){
@@ -1244,7 +1243,7 @@ function padEven(inst, url, d){
 function trigger(bi, pi, vel, when, T){
   if(T ? !isReady(bi) : !canPlay(bi)) return null;   /* a file of the loop waits for every sound; live playing does not */
   const d=padDefs(bi)[pi]; if(!d) return null;
-  if(!T){ T=LIVE; T.c=ctx(); T.dest=bus; }
+  if(!T){ T=LIVE; T.c=ctx(); T.dest=LIVE_M && LIVE_M.banks ? LIVE_M.banks[bi] : bus; }
   /* AOG-BANKC-FIT-V1: any chord from Bank B (live or from the pattern) updates the notes Bank C lights */
   if(S.banks[bi].type==="chords") chordNow(d, when);
   const c=T.c, P=padSet(bi, pi), R=READY[bi], OPEN=T.open, CHOP=T.chop;
@@ -2162,17 +2161,18 @@ function paintText(){
    effects that are on and a menu of the rest. Drawn again only when the language changes (or an effect is turned on or
    off), so a knob in your hand is never redrawn while the beat plays. */
 let FXUI=null, FXLANG="";
-function applyFx(){ if(LIVE_M && LIVE_M.rig) LIVE_M.rig.set(fxState()); }
+function applyFx(){ if(!LIVE_M || !LIVE_M.rigs) return; LIVE_M.rigs.forEach((r,i)=>{ if(r) r.set(fxState(i)); }); }
 function paintFx(){
   if(!window.AOGAmp || !$("ampBox")) return;
   $("fxH").textContent=t("fxH"); $("fxLine").textContent=t("fxLine");
-  if(FXUI && FXLANG===S0.lang) return; FXLANG=S0.lang;
+  const bi=S.bank;
+  if(FXUI && FXLANG===S0.lang && FXUI._bi===bi) return; FXLANG=S0.lang;
   const W=k=>STR[k];
-  if(!FXUI) FXUI=AOGAmp.ui($("ampBox"), {kind:"drums", near:$("pedalsNear"), lang:()=>S0.lang, get:fxState,
+  if(!FXUI) FXUI=AOGAmp.ui($("ampBox"), {kind:"drums", near:$("pedalsNear"), lang:()=>S0.lang, get:()=>fxState(bi),
     words:{kept:W("fxKept"), back:W("fxBack"), backDone:W("fxBackDone")},
-    set:st=>{ FXST=AOGAmp.normalize(st, "drums"); clearTimeout(paintFx.t); paintFx.t=setTimeout(saveFx, 300); applyFx(); },
-    reset:()=>{ FXST=null; saveFx(); applyFx(); }});
-  else FXUI.paint();
+    set:st=>{ FXST[bi]=AOGAmp.normalize(st, "drums"); clearTimeout(paintFx.t); paintFx.t=setTimeout(saveFx, 300); applyFx(); },
+    reset:()=>{ FXST[bi]=null; saveFx(); applyFx(); }});
+  FXUI._bi=bi; FXUI.paint();
 }
 window.addEventListener("pagehide", ()=>{ if(paintFx.t){ clearTimeout(paintFx.t); saveFx(); } });
 /* ══ AOG-PADS-BIG-V1 (2026-10-11) — Jimmy: "Can the drum pad be expanded" — bigger, and (AOG-PADS-24-V1) more. ⤢ puts the
@@ -2412,7 +2412,7 @@ function init(){
   bindMidi();   /* AOG-MIDI-V1 */
   $("guideLink").addEventListener("click",()=>LES.mark("guide1"));
   $("takeBtn").addEventListener("click",()=>{ LES.mark($("takeBtn").getAttribute("aria-pressed")==="true" ? "take2" : "take1"); }, true);   /* before the recorder: pressed = it is about to stop */
-  $("bankSel").onchange=()=>{ S.bank=+$("bankSel").value; LES.mark(["","bankB","bankC","bankD"][S.bank]); save(); paintAll(); prep(S.bank); };
+  $("bankSel").onchange=()=>{ S.bank=+$("bankSel").value; LES.mark(["","bankB","bankC","bankD"][S.bank]); save(); paintAll(); paintFx(); prep(S.bank); };
   $("playBtn").onclick=()=>{ SEQ.on ? stop() : play(); };
   $("loopRec").onclick=()=>{ if(SEQ.rec){ SEQ.rec=false; say(t("recOff")); paintTransport(); return; } snapshot(); SEQ.rec=true; LES.mark("rec1"); LT.recN=0; if(!SEQ.on) play(); LINE_HOLD=0; paintTransport(); };
   $("undoBtn").onclick=()=>{ const u=SEQ.undo.pop(); if(u==null){ say(t("nothingUndo")); return; } S.ev=JSON.parse(u); changed(); LES.mark("undo1"); say(t("undone")); };
