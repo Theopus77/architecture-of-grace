@@ -7,6 +7,7 @@ const STR={
   bankLab:{en:"Bank",es:"Banco"},
   t_drums:{en:"Drums",es:"Batería"}, t_notes:{en:"Notes",es:"Notas"}, t_chords:{en:"Chords",es:"Acordes"}, t_chops:{en:"Chops of a record",es:"Cortes de un disco"},
   kitA:{en:"Pads 1 to 8",es:"Pads 1 a 8"}, kitB:{en:"Pads 9 to 16",es:"Pads 9 a 16"}, kitC:{en:"Pads 17 to 24",es:"Pads 17 a 24"},
+  shelfCym:{en:"Cymbals",es:"Platillos"}, shelfClap:{en:"Claps",es:"Palmas"}, shelfKick:{en:"Kicks",es:"Bombos"}, shelfOrch:{en:"Orchestra hits",es:"Golpes de orquesta"},
   inst:{en:"Instrument",es:"Instrumento"}, key:{en:"Key",es:"Tono"}, scale:{en:"Scale",es:"Escala"}, oct:{en:"Range",es:"Registro"},
   lowest:{en:"Lowest",es:"Muy grave"}, low:{en:"Low",es:"Grave"}, mid:{en:"Middle",es:"Medio"}, high:{en:"High",es:"Agudo"},
   record:{en:"Record to chop",es:"Disco para cortar"}, fromBar:{en:"Start at",es:"Empieza en"}, clen:{en:"Each pad plays",es:"Cada pad suena"}, clen1:{en:"1 beat",es:"1 tiempo"}, clen2:{en:"2 beats",es:"2 tiempos"}, clen4:{en:"1 bar",es:"1 compás"}, clen8:{en:"2 bars",es:"2 compases"}, clen16:{en:"4 bars",es:"4 compases"}, clen32:{en:"8 bars",es:"8 compases"}, about:{en:"about {s} s",es:"unos {s} s"}, barN:{en:"Bar {n}",es:"Compás {n}"}, whole:{en:"The whole take",es:"Toda la toma"},
@@ -1381,7 +1382,8 @@ function instOptions(cur){
 function field(id, lab, html, wide){ return `<label class="pm-f${wide?" wide":""}"><span>${esc(lab)}</span><select class="pm-sel" id="${id}">${html}</select></label>`; }
 function paintSetRow(){
   const B=S.banks[S.bank]; let h="";
-  if(B.type==="drums"){ h=field("fKitA", t("kitA"), kitOpts(B.kitA))+field("fKitB", t("kitB"), kitOpts(B.kitB))+field("fKitC", t("kitC"), kitOpts(B.kitC)); }
+  if(B.type==="drums"){ h=field("fKitA", t("kitA"), kitOpts(B.kitA))+field("fKitB", t("kitB"), kitOpts(B.kitB))+field("fKitC", t("kitC"), kitOpts(B.kitC));
+    h+=`<div class="pm-row" style="gap:6px;flex-wrap:wrap;margin-top:6px"><button type="button" class="pm-b" data-shelf="CY">${t("shelfCym")}</button><button type="button" class="pm-b" data-shelf="CL">${t("shelfClap")}</button><button type="button" class="pm-b" data-shelf="KK">${t("shelfKick")}</button><button type="button" class="pm-b" data-shelf="OR">${t("shelfOrch")}</button></div>`; }
   else if(B.type==="chops"){
     const R=recInfo(B.rec);
     let o=`<optgroup label="${esc(t("g_crate"))}">`+CRATE.map(c=>opt("c:"+c.file, esc(S0.lang==="es"?(c.title_es||c.title):c.title)+" · "+(c.phrases ? (c.version||"KJV") : c.bpm), B.rec)).join("")+`</optgroup>`;
@@ -1404,6 +1406,11 @@ function paintSetRow(){
   $("setRow").innerHTML=h;
   const on=(id, fn)=>{ const el=$(id); if(el) el.onchange=()=>{ fn(el.value); save(); paintAll(); prep(S.bank); }; };
   on("fKitA", v=>{ B.kitA=v; LES.mark("kitA"); }); on("fKitB", v=>{ B.kitB=v; LES.mark("kitB"); }); on("fKitC", v=>{ B.kitC=v; });
+  document.querySelectorAll("[data-shelf]").forEach(btn=>{
+    btn.onclick=()=>{ const k=btn.getAttribute("data-shelf"); if(!AOGDrumKit.has(k)) return;
+      B.kitC=k; LES.mark("kitC"); changed(); paintAll(); prep(S.bank);
+      say(t("shelfCym").replace("Cymbals", AOGDrumKit.label?AOGDrumKit.label(k):k)); };
+  });
   const bk=S.bank;   /* AOG-LESSONS-V1 */
   on("fInst", v=>{ B.inst=v; LES.mark(bk===1?"cinst":"ninst"); }); on("fKey", v=>{ B.key=+v; if(bk===1) LES.mark("ckey"); });
   on("fScale", v=>{ B.scale=v; if(bk===1 && v==="minor") LES.mark("cminor"); if(bk===2) LES.mark("nscale"); lessonSongs(); }); on("fOct", v=>{ B.oct=+v; LES.mark("nrange"); });
@@ -2006,7 +2013,7 @@ async function takeIn(){
    pad), turned by a drag up or down (or the arrow keys). The menus stay where they were. The knobs are written only when what
    they show changes; nothing runs while nobody touches them. ══ */
 (function(){
-  const lcdEl=$("pmLcd"); if(!lcdEl) return;
+  return; /* knobs removed: tempo lives in the menu, one place */
   const WD={en:{tempo:"Tempo",swing:"Swing",vol:"Volume",pad:"Pad",off:"Off",knobs:"Knobs"},
             es:{tempo:"Tempo",swing:"Swing",vol:"Volumen",pad:"Pad",off:"No",knobs:"Perillas"}};
   const w=k=>(WD[S0.lang]||WD.en)[k];
