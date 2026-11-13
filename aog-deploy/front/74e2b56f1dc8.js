@@ -1142,7 +1142,8 @@ function bindBounce(){
       for(const b of used){
         const layer=await renderBank(b);
         if(!layer) continue;
-        await AOGHandoff.add(AOGHandoff.INBOX, {from:"pads", n:b, name:{en:"Beat Station · "+names[b], es:"Estación · "+names[b]}, sec:Math.round(layer.sec*1000)/1000, bpm:layer.bpm, bars:layer.bars, at:layer.at,
+        const nm="Beat Station · "+names[b];
+        await AOGHandoff.add(AOGHandoff.INBOX, {from:"pads", n:b+1, name:{en:nm, es:"Estación · "+names[b]}, sec:Math.round(layer.sec*1000)/1000, bpm:layer.bpm, bars:layer.bars, at:layer.at,
           passSec:layer.sec, loops:1, offset:0, loop:true, wav:layer.blob}, {key:"pads|bank"+b+"|"+layer.at});
       }
       BOUNCE.msg="studio"; LES.mark("bstudio"); if(LES.count("sends")>=3) LES.mark("sparts3");
@@ -1382,8 +1383,7 @@ function instOptions(cur){
 function field(id, lab, html, wide){ return `<label class="pm-f${wide?" wide":""}"><span>${esc(lab)}</span><select class="pm-sel" id="${id}">${html}</select></label>`; }
 function paintSetRow(){
   const B=S.banks[S.bank]; let h="";
-  if(B.type==="drums"){ h=field("fKitA", t("kitA"), kitOpts(B.kitA))+field("fKitB", t("kitB"), kitOpts(B.kitB))+field("fKitC", t("kitC"), kitOpts(B.kitC));
-    h+=`<div class="pm-row" style="gap:6px;flex-wrap:wrap;margin-top:6px"><button type="button" class="pm-b" data-shelf="CY">${t("shelfCym")}</button><button type="button" class="pm-b" data-shelf="CL">${t("shelfClap")}</button><button type="button" class="pm-b" data-shelf="KK">${t("shelfKick")}</button><button type="button" class="pm-b" data-shelf="OR">${t("shelfOrch")}</button></div>`; }
+  if(B.type==="drums"){ h=field("fKitA", t("kitA"), kitOpts(B.kitA))+field("fKitB", t("kitB"), kitOpts(B.kitB))+field("fKitC", t("kitC"), kitOpts(B.kitC)); }
   else if(B.type==="chops"){
     const R=recInfo(B.rec);
     let o=`<optgroup label="${esc(t("g_crate"))}">`+CRATE.map(c=>opt("c:"+c.file, esc(S0.lang==="es"?(c.title_es||c.title):c.title)+" · "+(c.phrases ? (c.version||"KJV") : c.bpm), B.rec)).join("")+`</optgroup>`;
@@ -1406,11 +1406,6 @@ function paintSetRow(){
   $("setRow").innerHTML=h;
   const on=(id, fn)=>{ const el=$(id); if(el) el.onchange=()=>{ fn(el.value); save(); paintAll(); prep(S.bank); }; };
   on("fKitA", v=>{ B.kitA=v; LES.mark("kitA"); }); on("fKitB", v=>{ B.kitB=v; LES.mark("kitB"); }); on("fKitC", v=>{ B.kitC=v; });
-  document.querySelectorAll("[data-shelf]").forEach(btn=>{
-    btn.onclick=()=>{ const k=btn.getAttribute("data-shelf"); if(!AOGDrumKit.has(k)) return;
-      B.kitC=k; LES.mark("kitC"); changed(); paintAll(); prep(S.bank);
-      say(t("shelfCym").replace("Cymbals", AOGDrumKit.label?AOGDrumKit.label(k):k)); };
-  });
   const bk=S.bank;   /* AOG-LESSONS-V1 */
   on("fInst", v=>{ B.inst=v; LES.mark(bk===1?"cinst":"ninst"); }); on("fKey", v=>{ B.key=+v; if(bk===1) LES.mark("ckey"); });
   on("fScale", v=>{ B.scale=v; if(bk===1 && v==="minor") LES.mark("cminor"); if(bk===2) LES.mark("nscale"); lessonSongs(); }); on("fOct", v=>{ B.oct=+v; LES.mark("nrange"); });

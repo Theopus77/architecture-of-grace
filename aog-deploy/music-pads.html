@@ -1687,7 +1687,8 @@ function bindBounce(){
       for(const b of used){
         const layer=await renderBank(b);
         if(!layer) continue;
-        await AOGHandoff.add(AOGHandoff.INBOX, {from:"pads", n:b, name:{en:"Beat Station · "+names[b], es:"Estación · "+names[b]}, sec:Math.round(layer.sec*1000)/1000, bpm:layer.bpm, bars:layer.bars, at:layer.at,
+        const nm="Beat Station · "+names[b];
+        await AOGHandoff.add(AOGHandoff.INBOX, {from:"pads", n:b+1, name:{en:nm, es:"Estación · "+names[b]}, sec:Math.round(layer.sec*1000)/1000, bpm:layer.bpm, bars:layer.bars, at:layer.at,
           passSec:layer.sec, loops:1, offset:0, loop:true, wav:layer.blob}, {key:"pads|bank"+b+"|"+layer.at});
       }
       BOUNCE.msg="studio"; LES.mark("bstudio"); if(LES.count("sends")>=3) LES.mark("sparts3");
