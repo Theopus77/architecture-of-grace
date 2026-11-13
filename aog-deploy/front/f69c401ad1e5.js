@@ -2,11 +2,12 @@
 "use strict";
 const $=id=>document.getElementById(id);
 const STR={
-  app:{en:"The Drum Machine",es:"La caja de ritmos"}, kicker:{en:"Every sound on twenty-four pads",es:"Todos los sonidos en veinticuatro pads"},
+  app:{en:"The Beat Station",es:"La estación de ritmos"}, kicker:{en:"Every sound on twenty-four pads",es:"Todos los sonidos en veinticuatro pads"},
   lead:{en:"Drums, keys, guitar, bass, the band and records to chop. Tap a pad.",es:"Batería, teclados, guitarra, bajo, banda y discos para cortar. Toca un pad."},
   bankLab:{en:"Bank",es:"Banco"},
   t_drums:{en:"Drums",es:"Batería"}, t_notes:{en:"Notes",es:"Notas"}, t_chords:{en:"Chords",es:"Acordes"}, t_chops:{en:"Chops of a record",es:"Cortes de un disco"},
   kitA:{en:"Pads 1 to 8",es:"Pads 1 a 8"}, kitB:{en:"Pads 9 to 16",es:"Pads 9 a 16"}, kitC:{en:"Pads 17 to 24",es:"Pads 17 a 24"},
+  shelfCym:{en:"Cymbals",es:"Platillos"}, shelfClap:{en:"Claps",es:"Palmas"}, shelfKick:{en:"Kicks",es:"Bombos"}, shelfOrch:{en:"Orchestra hits",es:"Golpes de orquesta"},
   inst:{en:"Instrument",es:"Instrumento"}, key:{en:"Key",es:"Tono"}, scale:{en:"Scale",es:"Escala"}, oct:{en:"Range",es:"Registro"},
   lowest:{en:"Lowest",es:"Muy grave"}, low:{en:"Low",es:"Grave"}, mid:{en:"Middle",es:"Medio"}, high:{en:"High",es:"Agudo"},
   record:{en:"Record to chop",es:"Disco para cortar"}, fromBar:{en:"Start at",es:"Empieza en"}, clen:{en:"Each pad plays",es:"Cada pad suena"}, clen1:{en:"1 beat",es:"1 tiempo"}, clen2:{en:"2 beats",es:"2 tiempos"}, clen4:{en:"1 bar",es:"1 compás"}, clen8:{en:"2 bars",es:"2 compases"}, clen16:{en:"4 bars",es:"4 compases"}, clen32:{en:"8 bars",es:"8 compases"}, about:{en:"about {s} s",es:"unos {s} s"}, barN:{en:"Bar {n}",es:"Compás {n}"}, whole:{en:"The whole take",es:"Toda la toma"},
@@ -90,8 +91,8 @@ const STR={
   lfSave:{en:"Save the loop as .wav",es:"Guardar el bucle como .wav"}, lfDecks:{en:"Send the loop to the turntables",es:"Enviar el bucle a los tocadiscos"}, bMaking:{en:"Making the loop…",es:"Haciendo el bucle…"},
   bNone:{en:"The loop is empty. Turn on Record the loop and tap some pads first.",es:"El bucle está vacío. Activa Grabar el bucle y toca algunos pads primero."},
   bReady:{en:"Your loop is ready: {bars}, {sec} seconds, at {bpm} beats a minute. It repeats with no gap.",es:"Tu bucle está listo: {bars}, {sec} segundos, a {bpm} pulsos por minuto. Se repite sin pausa."},
-  bSave:{en:"Save as .wav",es:"Guardar como .wav"}, bStudio:{en:"Send to the Mixing Desk",es:"Enviar a la mesa de mezclas"}, bDecks:{en:"Send to the turntables",es:"Enviar a los tocadiscos"},
-  bStudioSent:{en:"Sent. On the Mixing Desk it starts right on the bar and is exactly one loop long.",es:"Enviado. En la mesa de mezclas empieza justo en el compás y dura exactamente un bucle."},
+  bSave:{en:"Save as .wav",es:"Guardar como .wav"}, bStudio:{en:"Send each layer to the Mixing Desk",es:"Enviar cada capa a la mesa de mezclas"}, bDecks:{en:"Send to the turntables",es:"Enviar a los tocadiscos"},
+  bStudioSent:{en:"Sent. Each bank is its own take on the Mixing Desk, lined up on the bar.",es:"Enviado. Cada banco es su propia toma en la mesa de mezclas, alineada en el compás."},
   bStudioGo:{en:"Open the Mixing Desk",es:"Abrir la mesa de mezclas"}, bDecksSent:{en:"Sent. Open the turntables to play it.",es:"Enviado. Abre los tocadiscos para tocarlo."}, bDecksGo:{en:"The turntables",es:"Los tocadiscos"},
   bFail:{en:"That did not work. Try again.",es:"No funcionó. Inténtalo otra vez."},
   bNoRoom:{en:"This device has no room left. At the Mixing Desk, remove a take you do not need, then try again.",es:"Este dispositivo no tiene más espacio. En la mesa de mezclas, quita una toma que no necesites y vuelve a intentarlo."},
@@ -1046,6 +1047,26 @@ function fileOf(head, pcm){
     try{ w.postMessage({h:head, p:pcm}, [pcm]); }catch(e){ done(null); }
   });
 }
+async function renderBank(bank){
+  const L=loopLen(), sp=spt(), sec=L*sp, sr=44100, bars=S.bars, bpm=S.bpm;
+  const evs=S.ev.filter(e=>e.t<L && e.b===bank); if(!evs.length) return null;
+  await prep(bank); if(!isReady(bank)) throw new Error("not ready");
+  const O=window.OfflineAudioContext||window.webkitOfflineAudioContext;
+  const m=new Map(); evs.forEach(e=>{ if(!m.has(e.t)) m.set(e.t,[]); m.get(e.t).push(e); });
+  const ticks=[...m.keys()].sort((a,b)=>a-b);
+  const off=new O(2, Math.ceil(sec*sr)+16, sr);
+  const M=master(off), g=M.bus;
+  const T={c:off, dest:g, open:[[],[],[],[]], chop:[null,null,null,null]};
+  for(const tk of ticks) m.get(tk).forEach(e=>{
+    const when=tk*sp, hw=feelWhen(e.b, e.p, when); if(hw<0) return;
+    const v=trigger(e.b, e.p, e.v, hw, T);
+    if(v && gated(e.b)) v.stop(hw+Math.max(12, e.len||48)*sp);
+  });
+  const buf=await new Promise((ok, no)=>{ off.oncomplete=ev=>ok(ev.renderedBuffer); const p=off.startRendering(); if(p && p.then) p.then(ok, no); });
+  const n=Math.round(sec*sr);
+  const cut=ch=>{ const d=buf.getChannelData(ch), a=d.subarray(0, Math.min(d.length, n)); if(a.length===n) return a; const o=new Float32Array(n); o.set(a); return o; };
+  return {blob:await wavBlob(cut(0), cut(1), sr), sec:n/sr, bpm:bpm, bars:bars, at:Date.now()};
+}
 async function renderLoop(){
   const L=loopLen(), sp=spt(), sec=L*sp, sr=44100, bars=S.bars, bpm=S.bpm;   /* as they are when Make is pressed */
   const evs=S.ev.filter(e=>e.t<L && e.b>=0 && e.b<4); if(!evs.length) return null;
@@ -1115,8 +1136,17 @@ function bindBounce(){
     document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(u), 4000); };
   /* the Mixing Desk is told the loop's exact length (passSec), so it lines it up on the bar and loops whole bars */
   $("bStudio").onclick=async()=>{ const o=BOUNCE.out; if(!o) return; $("bStudio").disabled=true;
-    try{ await AOGHandoff.add(AOGHandoff.INBOX, {from:"pads", n:0, name:bounceName(o), sec:Math.round(o.sec*1000)/1000, bpm:o.bpm, bars:o.bars, at:o.at,
-        passSec:o.sec, loops:1, offset:0, loop:true, wav:o.blob}, {key:"pads|loop|"+o.at}); BOUNCE.msg="studio"; LES.mark("bstudio"); if(LES.count("sends")>=3) LES.mark("sparts3"); }
+    try{
+      const used=[...new Set(S.ev.filter(e=>e.b>=0&&e.b<4).map(e=>e.b))].sort();
+      const names=["A · Drums","B · Chords","C · Notes","D · Chops"];
+      for(const b of used){
+        const layer=await renderBank(b);
+        if(!layer) continue;
+        await AOGHandoff.add(AOGHandoff.INBOX, {from:"pads", n:b, name:{en:"Beat Station · "+names[b], es:"Estación · "+names[b]}, sec:Math.round(layer.sec*1000)/1000, bpm:layer.bpm, bars:layer.bars, at:layer.at,
+          passSec:layer.sec, loops:1, offset:0, loop:true, wav:layer.blob}, {key:"pads|bank"+b+"|"+layer.at});
+      }
+      BOUNCE.msg="studio"; LES.mark("bstudio"); if(LES.count("sends")>=3) LES.mark("sparts3");
+    }
     catch(e){ BOUNCE.msg=e && e.name==="QuotaExceededError" ? "bNoRoom" : "bFail"; }
     $("bStudio").disabled=false; paintBounce(); };
   $("bDecks").onclick=async()=>{ const o=BOUNCE.out; if(!o) return; $("bDecks").disabled=true;
@@ -1352,7 +1382,8 @@ function instOptions(cur){
 function field(id, lab, html, wide){ return `<label class="pm-f${wide?" wide":""}"><span>${esc(lab)}</span><select class="pm-sel" id="${id}">${html}</select></label>`; }
 function paintSetRow(){
   const B=S.banks[S.bank]; let h="";
-  if(B.type==="drums"){ h=field("fKitA", t("kitA"), kitOpts(B.kitA))+field("fKitB", t("kitB"), kitOpts(B.kitB))+field("fKitC", t("kitC"), kitOpts(B.kitC)); }
+  if(B.type==="drums"){ h=field("fKitA", t("kitA"), kitOpts(B.kitA))+field("fKitB", t("kitB"), kitOpts(B.kitB))+field("fKitC", t("kitC"), kitOpts(B.kitC));
+    h+=`<div class="pm-row" style="gap:6px;flex-wrap:wrap;margin-top:6px"><button type="button" class="pm-b" data-shelf="CY">${t("shelfCym")}</button><button type="button" class="pm-b" data-shelf="CL">${t("shelfClap")}</button><button type="button" class="pm-b" data-shelf="KK">${t("shelfKick")}</button><button type="button" class="pm-b" data-shelf="OR">${t("shelfOrch")}</button></div>`; }
   else if(B.type==="chops"){
     const R=recInfo(B.rec);
     let o=`<optgroup label="${esc(t("g_crate"))}">`+CRATE.map(c=>opt("c:"+c.file, esc(S0.lang==="es"?(c.title_es||c.title):c.title)+" · "+(c.phrases ? (c.version||"KJV") : c.bpm), B.rec)).join("")+`</optgroup>`;
@@ -1375,6 +1406,11 @@ function paintSetRow(){
   $("setRow").innerHTML=h;
   const on=(id, fn)=>{ const el=$(id); if(el) el.onchange=()=>{ fn(el.value); save(); paintAll(); prep(S.bank); }; };
   on("fKitA", v=>{ B.kitA=v; LES.mark("kitA"); }); on("fKitB", v=>{ B.kitB=v; LES.mark("kitB"); }); on("fKitC", v=>{ B.kitC=v; });
+  document.querySelectorAll("[data-shelf]").forEach(btn=>{
+    btn.onclick=()=>{ const k=btn.getAttribute("data-shelf"); if(!AOGDrumKit.has(k)) return;
+      B.kitC=k; LES.mark("kitC"); changed(); paintAll(); prep(S.bank);
+      say(t("shelfCym").replace("Cymbals", AOGDrumKit.label?AOGDrumKit.label(k):k)); };
+  });
   const bk=S.bank;   /* AOG-LESSONS-V1 */
   on("fInst", v=>{ B.inst=v; LES.mark(bk===1?"cinst":"ninst"); }); on("fKey", v=>{ B.key=+v; if(bk===1) LES.mark("ckey"); });
   on("fScale", v=>{ B.scale=v; if(bk===1 && v==="minor") LES.mark("cminor"); if(bk===2) LES.mark("nscale"); lessonSongs(); }); on("fOct", v=>{ B.oct=+v; LES.mark("nrange"); });
