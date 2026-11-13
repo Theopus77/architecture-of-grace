@@ -1292,7 +1292,7 @@ const STR={
   tempoNone:{en:"The tempo comes from your first recording.",es:"El tempo viene de tu primera grabación."},
   readying:{en:"Getting your tracks ready…",es:"Preparando tus pistas…"},
   startAt:{en:"Start at bar",es:"Empezar en el compás"},
-  loopBars:{en:"Loop bars",es:"Repetir compases"}, loop:{en:"Loop",es:"Repetir"}, to:{en:"to",es:"a"},
+  trackLoop:{en:"Loop this track",es:"Repetir esta pista"}, trackLoopFrom:{en:"from",es:"desde"}, trackLoopTo:{en:"to",es:"hasta"}, trackLoopOff:{en:"Off",es:"No"},
   loopFromAria:{en:"Loop from bar",es:"Repetir desde el compás"}, loopToAria:{en:"Loop to bar",es:"Repetir hasta el compás"},
   loopOn:{en:"Bars {a} to {b} play again and again until you press Stop.",es:"Los compases {a} a {b} suenan una y otra vez hasta que pulses Parar."},
   count:{en:"4 clicks before it starts",es:"4 clics antes de empezar"},
@@ -1598,7 +1598,7 @@ function bareName(n){ return String(n||"").replace(/\s*·\s*\d+:\d\d$/, ""); }
 function num(v, lo, hi, d){ v=+v; return isFinite(v) ? Math.max(lo, Math.min(hi, v)) : d; }
 
 /* ══ the song: what is on each track and how the mixer is set (localStorage aog.studio.v1) ══ */
-function blankTrack(){ return {clip:null, vol:80, pan:0, mute:false, solo:false, low:0, mid:0, high:0, punch:0, room:0, echo:0}; }
+function blankTrack(){ return {clip:null, vol:80, pan:0, mute:false, solo:false, low:0, mid:0, high:0, punch:0, room:0, echo:0, loopFrom:0, loopTo:0}; }
 const DESK_ROOMS=["made","small","studio","hall","church"];   /* AOG-REAL-ROOMS-V1: the Room return's choices */
 function blankSong(){ return {v:1, tracks:Array.from({length:NT}, blankTrack), master:{low:0, mid:0, high:0, glue:30, vol:80, room:"hall"},
   sel:0, startBar:1, loopOn:false, loopFrom:1, loopTo:4, countIn:false, name:"", sid:newSid()}; }
@@ -2209,12 +2209,17 @@ function schedule(E, from, to, at, lo, hi){
   if(first) autoSched(E, from, to, at+lag);   /* AOG-DESK-AUTO-V1: the drawn lines, on the same clock as the pieces */
   SONG.tracks.forEach((x,i)=>{
     if(!x.clip) return;
-    /* AOG-DESK-FX-V1: a track with fewer compressors in its slots starts that much later, so every track still lines up */
-    const sh=at+(lag-(E.fxLat ? E.fxLat[i]||0 : 0));
+    /* per-track loop: this track repeats its own bars while others follow the song */
+    let tFrom=from, tTo=to, tAt=at;
+    if(x.loopFrom>0 && x.loopTo>=x.loopFrom){
+      const bs=songBeat()*4, la=(x.loopFrom-1)*bs, lb=x.loopTo*bs, span=lb-la;
+      if(span>0.01){ const cyc=Math.floor((from-la)/span); tFrom=la+(from-la)%span; tTo=Math.min(tFrom+(to-from), lb); tAt=at; }
+    }
+    const sh=tAt+(lag-(E.fxLat ? E.fxLat[i]||0 : 0));
     /* AOG-DESK-TAKES-V1: a track with takes plays each take where it is chosen (dmGates); without takes, as always */
     const G=dmGates(x);
-    if(!G) schedClip(E, i, x.clip, from, to, sh, null, out, lo, hi);
-    else G.forEach(g=>schedClip(E, i, g.cl, from, to, sh, g, out, lo, hi));
+    if(!G) schedClip(E, i, x.clip, tFrom, tTo, sh, null, out, lo, hi);
+    else G.forEach(g=>schedClip(E, i, g.cl, tFrom, tTo, sh, g, out, lo, hi));
     if(first) dmFxSched(E, i, from, to, sh, out);   /* AOG-DESK-FX-V1: the Chorus and the Doubler sway in time with the song */
   });
   return out;
@@ -4416,7 +4421,11 @@ function paintTrack(){
     <div class="st-wave"><div class="st-wwin"><canvas id="waveC" role="img" aria-label="${esc(t("waveAria",{n:i+1}))}"></canvas>
       <button type="button" class="st-cutnow" id="cutNow" data-act="cutnow" hidden>${esc(t("cutBtn"))}</button><span class="st-edgetip" id="edgeTip" aria-hidden="true" hidden></span></div>
       <p class="st-line">${esc(t("waveHint"))}${many ? " "+esc(t("pieceTap")) : ""}</p></div>
-    <div class="st-steps">
+    <div class="st-row"><span class="st-lab">${esc(t("trackLoop"))}</span>
+      <label class="st-field"><select id="tLoopFrom" aria-label="${esc(t("trackLoopFrom"))}">${[0].concat([...Array(16)].map((_,k)=>k+1)).map(n=>`<option value="${n}"${n===(SONG.tracks[i].loopFrom||0)?" selected":""}>${n===0?esc(t("trackLoopOff")):n}</option>`).join("")}</select></label>
+      <span>${esc(t("trackLoopTo"))}</span>
+      <label class="st-field"><select id="tLoopTo" aria-label="${esc(t("trackLoopTo"))}">${[0].concat([...Array(16)].map((_,k)=>k+1)).map(n=>`<option value="${n}"${n===(SONG.tracks[i].loopTo||0)?" selected":""}>${n===0?esc(t("trackLoopOff")):n}</option>`).join("")}</select></label>
+    </div>
       <div class="st-stp"><span class="st-lab" id="atLab">${esc(t("startsAt"))}</span><label class="st-field st-vf"><select id="atSel" aria-labelledby="atLab">${atOpts(p)}</select></label>
         <div class="st-sg two"><button type="button" class="st-btn" data-act="start-" aria-label="${esc(t("startsAt")+": "+t("earlier"))}"${p.at<1e-6?" disabled":""}>${esc(t("earlier"))}</button><button type="button" class="st-btn" data-act="start+" aria-label="${esc(t("startsAt")+": "+t("later"))}"${p.at>=(MAX_BARS-1)*4?" disabled":""}>${esc(t("later"))}</button></div>
         <div class="st-sg two st-ndg"><button type="button" class="st-btn" data-act="nudge-"${p.at<1e-6?" disabled":""}>${esc(t("nudgeE"))}</button><button type="button" class="st-btn" data-act="nudge+"${p.at>=(MAX_BARS-1)*4?" disabled":""}>${esc(t("nudgeL"))}</button></div></div>
@@ -5183,7 +5192,7 @@ function bind(){
   $("clipBox").addEventListener("change", e=>{ const el=e.target;
     if(el.id==="spdR") speedChange(el);
     else if(el.id==="pvR") pvolChange(el);   /* AOG-DESK-CLIPVOL-V1 */
-    else if(el.id==="xfSel") xfChange(el);   /* AOG-DESK-XFADE-V1 */
+    else if(el.id==="tLoopFrom"||el.id==="tLoopTo"){ const tr=SONG.tracks[SONG.sel]; tr.loopFrom=+$("tLoopFrom").value||0; tr.loopTo=+$("tLoopTo").value||0; if(tr.loopTo && tr.loopTo<tr.loopFrom) tr.loopTo=tr.loopFrom; save(); }
     else if(el.id==="fiSel" || el.id==="foSel") fadeChange(el);
     else if(el.id==="atSel"){ if(el.value!=="") clipAct("at:"+el.value); }
     else if(el.id==="untilSel") clipAct("n:"+el.value);
