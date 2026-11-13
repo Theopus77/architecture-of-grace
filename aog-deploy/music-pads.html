@@ -1318,9 +1318,7 @@ function trigger(bi, pi, vel, when, T){
       o.at=when; RG[key]=o; }
     if(o){ try{ o.src.playbackRate.value=rate; }catch(e){} if(n==="OPEN") OPEN[bi].push(o); out.gain.value*=mono(o.src.buffer);
       if(live){
-        const dv={s:o.src, g:o.gain, done:false};
-        RING.push(dv); stealTo(room());
-        o.src.onended=()=>{ try{ o.src.disconnect(); o.gain.disconnect(); }catch(e){} dv.done=true; const k=RING.indexOf(dv); if(k>=0) RING.splice(k,1); unplug(); const j=OPEN[bi].indexOf(o); if(j>=0) OPEN[bi].splice(j,1); };
+        o.src.onended=()=>{ try{ o.src.disconnect(); o.gain.disconnect(); }catch(e){} unplug(); const j=OPEN[bi].indexOf(o); if(j>=0) OPEN[bi].splice(j,1); };
       } }
     else if(live) unplug();
     return keep({stop(at){ if(!o) return; const t0=Math.max(at||0, c.currentTime); try{ o.gain.gain.setTargetAtTime(0, t0, 0.01); o.src.stop(t0+0.06); }catch(e){} }});

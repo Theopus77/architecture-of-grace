@@ -773,9 +773,7 @@ function trigger(bi, pi, vel, when, T){
       o.at=when; RG[key]=o; }
     if(o){ try{ o.src.playbackRate.value=rate; }catch(e){} if(n==="OPEN") OPEN[bi].push(o); out.gain.value*=mono(o.src.buffer);
       if(live){
-        const dv={s:o.src, g:o.gain, done:false};
-        RING.push(dv); stealTo(room());
-        o.src.onended=()=>{ try{ o.src.disconnect(); o.gain.disconnect(); }catch(e){} dv.done=true; const k=RING.indexOf(dv); if(k>=0) RING.splice(k,1); unplug(); const j=OPEN[bi].indexOf(o); if(j>=0) OPEN[bi].splice(j,1); };
+        o.src.onended=()=>{ try{ o.src.disconnect(); o.gain.disconnect(); }catch(e){} unplug(); const j=OPEN[bi].indexOf(o); if(j>=0) OPEN[bi].splice(j,1); };
       } }
     else if(live) unplug();
     return keep({stop(at){ if(!o) return; const t0=Math.max(at||0, c.currentTime); try{ o.gain.gain.setTargetAtTime(0, t0, 0.01); o.src.stop(t0+0.06); }catch(e){} }});
@@ -1312,14 +1310,25 @@ function patToLoop(B){
 }
 let NOWCH=null;   /* the chord heard last: its pitch classes and its name */
 function chordNow(d, when){
-  const go=()=>{ NOWCH={pcs:new Set(d.notes.map(m=>m%12)), name:d.name, notes:d.notes.map(m=>keyName(m)).join(" ")}; if(!SEQ.on) paintFit(); };
+  const go=()=>{ NOWCH={pcs:new Set(d.notes.map(m=>m%12)), name:d.name, notes:d.notes.map(m=>keyName(m)).join(" ")}; paintFit(); };
   const ms=ac ? (when-ac.currentTime)*1000 : 0; if(ms>8) setTimeout(go, ms); else go();
 }
 function paintFit(){
-  const B=S.banks[S.bank]; if(B.type!=="notes") return;
-  const defs=padDefs(S.bank);
-  document.querySelectorAll("#pads .pad").forEach(el=>{ const d=defs[+el.dataset.p]; el.classList.toggle("fit", !!(NOWCH && d && d.notes && NOWCH.pcs.has(d.notes[0]%12))); });
-  $("guideNow").innerHTML=NOWCH ? t("fitNow",{name:esc(NOWCH.name), notes:esc(NOWCH.notes)}) : esc(t("fitWait"));
+  /* Always light the notes-bank pads that belong to the chord that is playing now, whatever bank is on screen. */
+  const notesBi=S.banks.findIndex(b=>b.type==="notes");
+  if(notesBi<0) return;
+  const defs=padDefs(notesBi);
+  const boxes=[document.querySelector("#pads"), document.querySelector("#padView .pads"), document.querySelector("#padView .pv-grids")].filter(Boolean);
+  boxes.forEach(box=>{
+    box.querySelectorAll(".pad").forEach(el=>{
+      const d=defs[+el.dataset.p];
+      const on=!!(NOWCH && d && d.notes && d.notes.length && NOWCH.pcs.has(d.notes[0]%12));
+      el.classList.toggle("fit", on);
+    });
+  });
+  if(S.banks[S.bank].type==="notes"){
+    $("guideNow").innerHTML=NOWCH ? t("fitNow",{name:esc(NOWCH.name), notes:esc(NOWCH.notes)}) : esc(t("fitWait"));
+  }
 }
 
 /* ══ the page ══ */
