@@ -490,7 +490,9 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
           <span id="recTime" hidden>0:00</span>
           <button type="button" class="pbtn pv-big" id="bpBig"></button><!-- AOG-PLAY-TABLET-V1 -->
         </div>
-        <canvas id="staff" width="600" height="120" style="width:100%;max-width:600px;height:auto;background:#1a1a1a;border-radius:8px;margin:8px 0"></canvas>
+        <div id="staffWrap" style="background:linear-gradient(180deg,#1c1916 0%,#141210 100%);border:1px solid #3a342c;border-radius:10px;padding:12px 16px;margin:10px 0 6px">
+          <canvas id="staff" width="800" height="100" style="width:100%;height:auto;display:block"></canvas>
+        </div>
         <div class="kbd" id="kbd" role="group"></div>
         <!-- AOG-PIANO-LICKS-V1 (Jimmy, 2026-10-19: piano licks "that follow the same style of the guitar and bass licks"):
              Licks to try, right under the keys, closed; opening it loads aog-piano-licks.js, which fills it -->
@@ -2064,24 +2066,24 @@ function drawStaff(){
   const cv=$("staff"); if(!cv) return;
   const ctx=cv.getContext("2d"), W=cv.width, H=cv.height;
   ctx.clearRect(0,0,W,H);
-  ctx.fillStyle="#1a1a1a"; ctx.fillRect(0,0,W,H);
   const notes=[]; LIVE.forEach((vc,key)=>{ if(vc.down) notes.push(+key.slice(1)); });
   notes.sort((a,b)=>a-b);
-  /* treble staff: lines at E4=64, G4=67, B4=71, D5=74, F5=77 */
   const treble=[64,67,71,74,77], bass=[43,47,50,53,57];
-  const yOf=(m,lines)=>{ const mid=lines[2], step=8; return 30+(mid-m)*step/2; };
-  ctx.strokeStyle="#d4c5a9"; ctx.lineWidth=1;
-  treble.forEach(m=>{ const y=yOf(m,treble); ctx.beginPath(); ctx.moveTo(40,y); ctx.lineTo(280,y); ctx.stroke(); });
-  bass.forEach(m=>{ const y=yOf(m,bass); ctx.beginPath(); ctx.moveTo(320,y); ctx.lineTo(560,y); ctx.stroke(); });
-  ctx.fillStyle="#d4c5a9"; ctx.font="bold 28px serif";
-  ctx.fillText("𝄞", 8, yOf(71,treble)+8);
-  ctx.fillText("𝄢", 288, yOf(50,bass)+8);
-  ctx.fillStyle="#f4c430";
-  notes.forEach(m=>{
-    const useBass=m<60, lines=useBass?bass:treble, x=useBass?340:60;
-    const y=yOf(m,lines);
-    ctx.beginPath(); ctx.ellipse(x, y, 7, 5, -0.3, 0, Math.PI*2); ctx.fill();
-    if(m<lines[0]||m>lines[4]){ ctx.strokeStyle="#f4c430"; ctx.beginPath(); ctx.moveTo(x-12,y); ctx.lineTo(x+12,y); ctx.stroke(); }
+  const yOf=(m,lines,base)=>base+(lines[2]-m)*5;
+  ctx.strokeStyle="#8a7d6b"; ctx.lineWidth=1.2;
+  const tBase=28, bBase=28;
+  treble.forEach(m=>{ const y=yOf(m,treble,tBase); ctx.beginPath(); ctx.moveTo(50,y); ctx.lineTo(370,y); ctx.stroke(); });
+  bass.forEach(m=>{ const y=yOf(m,bass,bBase); ctx.beginPath(); ctx.moveTo(430,y); ctx.lineTo(750,y); ctx.stroke(); });
+  ctx.fillStyle="#c4b5a0"; ctx.font="32px 'Times New Roman',serif";
+  ctx.fillText("𝄞", 12, yOf(71,treble,tBase)+10);
+  ctx.fillText("𝄢", 392, yOf(50,bass,bBase)+10);
+  ctx.fillStyle="#e8c547";
+  notes.forEach((m,i)=>{
+    const useBass=m<60, lines=useBass?bass:treble, base=useBass?bBase:tBase;
+    const x=(useBass?480:90)+i*22;
+    const y=yOf(m,lines,base);
+    ctx.beginPath(); ctx.ellipse(x, y, 8, 5.5, -0.4, 0, Math.PI*2); ctx.fill();
+    if(m<lines[0]||m>lines[4]){ ctx.strokeStyle="#e8c547"; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(x-14,y); ctx.lineTo(x+14,y); ctx.stroke(); }
   });
 }
 /* AOG-PIANO-CHORD-MOVE-V1 (2026-10-05) — Jimmy: "It would be awesome if while holding a chord down on the keyboard you could
