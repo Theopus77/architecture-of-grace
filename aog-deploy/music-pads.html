@@ -1887,9 +1887,10 @@ function paintGuide(){
 function patToLoop(B){
   const P=patOf(B); if(!P) return; const pp=patPads(P), bi=S.banks.indexOf(B);
   snapshot();
-  const pb=patBeats(pp.length); S.bars=pb.bars;   /* AOG-PADS-ALLPATS-V1: 4 bars, or 3 for the 12-bar blues */
+  const pb=patBeats(pp.length); S.bars=pb.bars;
   let at=0; const ev=pb.idx.map((ci,j)=>{ const len=pb.beats[j]*PPQ, e={b:bi, p:pp[ci], t:at, v:0.8, len:len-12}; at+=len; return e; });
   S.ev=S.ev.filter(e=>e.b!==bi).concat(ev);
+  STAGE.mute[bi]=false;   /* putting it in the loop turns that bank on */
   prep(bi); changed(); paintAll(); say(t("patDone",{n:pb.bars}), 6000);
 }
 let NOWCH=null;   /* the chord heard last: its pitch classes and its name */

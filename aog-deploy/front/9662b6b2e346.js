@@ -842,7 +842,7 @@ function flash(bi, pi, when, vel){
 /* ══ the loop ══ */
 const PPQ=96;
 const SEQ={on:false, rec:false, t0:0, abs:0, timer:0, map:null, undo:[]};
-const STAGE={mute:[false,false,false,false], lock:false, arm:false, wl:null, hold:0};   /* AOG-PADS-STAGE-V1 */
+const STAGE={mute:[false,true,true,true], lock:false, arm:false, wl:null, hold:0};   /* A plays; B, C, D stay quiet until unmuted */
 function spt(){ return 60/S.bpm/PPQ; }
 function loopLen(){ return S.bars*4*PPQ; }
 function evMap(){
@@ -1342,9 +1342,10 @@ function paintGuide(){
 function patToLoop(B){
   const P=patOf(B); if(!P) return; const pp=patPads(P), bi=S.banks.indexOf(B);
   snapshot();
-  const pb=patBeats(pp.length); S.bars=pb.bars;   /* AOG-PADS-ALLPATS-V1: 4 bars, or 3 for the 12-bar blues */
+  const pb=patBeats(pp.length); S.bars=pb.bars;
   let at=0; const ev=pb.idx.map((ci,j)=>{ const len=pb.beats[j]*PPQ, e={b:bi, p:pp[ci], t:at, v:0.8, len:len-12}; at+=len; return e; });
   S.ev=S.ev.filter(e=>e.b!==bi).concat(ev);
+  STAGE.mute[bi]=false;   /* putting it in the loop turns that bank on */
   prep(bi); changed(); paintAll(); say(t("patDone",{n:pb.bars}), 6000);
 }
 let NOWCH=null;   /* the chord heard last: its pitch classes and its name */
@@ -1682,7 +1683,7 @@ function pvOpen(on){
     pvWhole(true);
   } else {
     PV.on=false; document.body.classList.remove("aog-play"); pvZoom(false);
-    STAGE.mute=[false,false,false,false]; STAGE.lock=false; STAGE.arm=false; stWake(false);   /* the page outside always plays every layer */
+    STAGE.mute=[false,true,true,true]; STAGE.lock=false; STAGE.arm=false; stWake(false);   /* A plays; the rest stay quiet */
     pvWhole(false);
     if(window.pvKnobsPlace) pvKnobsPlace();
     if(PV.back && PV.back.parentNode) PV.back.parentNode.replaceChild(pads, PV.back); PV.back=null;
