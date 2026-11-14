@@ -2069,7 +2069,6 @@ function drawStaff(){
   const cv=$("staff"); if(!cv) return;
   const ctx=cv.getContext("2d"), W=cv.width, H=cv.height;
   ctx.clearRect(0,0,W,H);
-  ctx.fillStyle="#1a1612"; ctx.fillRect(0,0,W,H);
   const notes=[]; LIVE.forEach((vc,key)=>{ if(vc.down) notes.push({m:+key.slice(1), dur:performance.now()-(vc.start||0)}); });
   notes.sort((a,b)=>a.m-b.m);
   const treble=[64,67,71,74,77], bass=[43,47,50,53,57];
