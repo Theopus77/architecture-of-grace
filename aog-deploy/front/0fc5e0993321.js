@@ -1462,6 +1462,11 @@ function pluckCell(s, f, v, when, o){
 function handNow(){
   const out=new Set(); if(!ac) return out; const t=ac.currentTime;
   STR_LIVE.forEach((L,s)=>{ if(!L || !L.vc || L.vc.stopped || (L.at||0)>t+0.01) return;
+    const on=typeof L.vc.alive==="function" ? L.vc.alive(t) : t<Math.min(L.vc.natural||Infinity, (L.at||0)+2.5);
+    if(on && L.m) out.add(L.m);
+  });
+  if(window.drawStaffG) drawStaffG([...out]);
+  return out;
     /* Solo mode's lead note rings as long as it is alive (a held note can sing on); a strummed note at most 2.5 s */
     const on=typeof L.vc.alive==="function" ? L.vc.alive(t) : t<Math.min(L.vc.natural||Infinity, (L.at||0)+2.5);
     if(on) out.add(s+":"+(L.f!=null?L.f:0)); });
@@ -3030,3 +3035,16 @@ window.addEventListener("load",()=>{ prepare(S.sound); });
 checkDrums();
 try{ AOGHandoff.listen(function(key){ if(key==="drumbench" || key==="padbench") checkDrums(); }); }catch(e){}
 window.addEventListener("focus", checkDrums);
+(function(){
+  const cv=document.getElementById("staff"); if(!cv) return;
+  const ctx=cv.getContext("2d"), lines=[64,67,71,74,77];
+  const yOf=m=>20+(71-m)*4;
+  window.drawStaffG=function(notes){
+    ctx.clearRect(0,0,cv.width,cv.height);
+    ctx.strokeStyle="#5a5045"; ctx.lineWidth=0.8;
+    lines.forEach(m=>{ ctx.beginPath(); ctx.moveTo(30,yOf(m)); ctx.lineTo(cv.width-10,yOf(m)); ctx.stroke(); });
+    ctx.fillStyle="#b8a890"; ctx.font="18px Georgia,serif"; ctx.fillText("𝄞", 8, yOf(67)+3);
+    (notes||[]).forEach((m,i)=>{ ctx.fillStyle="#e8c547"; ctx.beginPath(); ctx.ellipse(50+i*16, yOf(m), 6, 4, -0.2, 0, Math.PI*2); ctx.fill(); });
+  };
+  drawStaffG([]);
+})();

@@ -76,7 +76,7 @@ input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text;-webk
 .plate{text-align:center;margin:-2px 0 12px}
 .plate b{display:block;letter-spacing:.3em;font-size:.78rem;color:#ddd6c9;font-weight:700}
 .plate small{display:block;letter-spacing:.2em;font-size:.6rem;color:#bdb5a7;margin-top:.15rem}
-.blk{border-top:1px solid #2f3339;padding:14px 0 4px}
+#staffWrap{order:-1;background:#1a1612;border:1px solid #4a4035;border-radius:8px;padding:8px 12px;margin:8px 0}
 .blk:first-of-type{border-top:0;padding-top:4px}
 /* an ID, so the site's serif heading rule (aog-grace.css) does not turn these small labels into squashed titles */
 #rig .blk>h2{font:800 .74rem/1.2 var(--sans)!important;letter-spacing:.16em!important;text-transform:uppercase;color:#e3dac9;margin:0 0 .6rem}
@@ -1996,6 +1996,11 @@ function pluckCell(s, f, v, when, o){
 function handNow(){
   const out=new Set(); if(!ac) return out; const t=ac.currentTime;
   STR_LIVE.forEach((L,s)=>{ if(!L || !L.vc || L.vc.stopped || (L.at||0)>t+0.01) return;
+    const on=typeof L.vc.alive==="function" ? L.vc.alive(t) : t<Math.min(L.vc.natural||Infinity, (L.at||0)+2.5);
+    if(on && L.m) out.add(L.m);
+  });
+  if(window.drawStaffG) drawStaffG([...out]);
+  return out;
     /* Solo mode's lead note rings as long as it is alive (a held note can sing on); a strummed note at most 2.5 s */
     const on=typeof L.vc.alive==="function" ? L.vc.alive(t) : t<Math.min(L.vc.natural||Infinity, (L.at||0)+2.5);
     if(on) out.add(s+":"+(L.f!=null?L.f:0)); });
