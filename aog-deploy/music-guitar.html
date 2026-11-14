@@ -448,6 +448,9 @@ body.pv-left .pv-drawer{left:auto;right:0}
           <button type="button" class="pbtn pv-big" id="pvBig"></button><!-- AOG-PLAY-V1: the neck on the whole screen (a computer) -->
         </div>
         <p class="line" id="midiLine" aria-live="polite"></p><!-- AOG-MIDI-V1: the MIDI keyboard's one-line answer -->
+        <div id="staffWrap" style="background:#141210;border:1px solid #3a342c;border-radius:8px;padding:6px 10px;margin:6px 0">
+          <canvas id="staff" width="600" height="90" style="width:100%;height:auto;display:block"></canvas>
+        </div>
         <div class="neckbox" id="neckBox"><svg class="neck" id="neck" viewBox="0 0 330 300" role="group"></svg></div>
         <div id="pedalsNear" hidden></div><!-- AOG-AMP-NEAR-V1: the pedals that are on, with their knobs, by the neck (aog-amp.js) -->
         <div id="soloBottom" hidden></div><!-- AOG-SOLO-V1: the lead tricks, the band, the licks (aog-solo.js) -->
@@ -3561,6 +3564,19 @@ window.addEventListener("load",()=>{ prepare(S.sound); });
 checkDrums();
 try{ AOGHandoff.listen(function(key){ if(key==="drumbench" || key==="padbench") checkDrums(); }); }catch(e){}
 window.addEventListener("focus", checkDrums);
+(function(){
+  const cv=document.getElementById("staff"); if(!cv) return;
+  const ctx=cv.getContext("2d"), lines=[64,67,71,74,77];
+  const yOf=m=>20+(71-m)*4;
+  window.drawStaffG=function(notes){
+    ctx.clearRect(0,0,cv.width,cv.height);
+    ctx.strokeStyle="#5a5045"; ctx.lineWidth=0.8;
+    lines.forEach(m=>{ ctx.beginPath(); ctx.moveTo(30,yOf(m)); ctx.lineTo(cv.width-10,yOf(m)); ctx.stroke(); });
+    ctx.fillStyle="#b8a890"; ctx.font="18px Georgia,serif"; ctx.fillText("𝄞", 8, yOf(67)+3);
+    (notes||[]).forEach((m,i)=>{ ctx.fillStyle="#e8c547"; ctx.beginPath(); ctx.ellipse(50+i*16, yOf(m), 6, 4, -0.2, 0, Math.PI*2); ctx.fill(); });
+  };
+  drawStaffG([]);
+})();
 </script>
 </body>
 </html>
