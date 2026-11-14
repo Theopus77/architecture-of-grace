@@ -472,7 +472,7 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
         <p class="line" id="midiLine" aria-live="polite"></p>
         <div class="cstrip" id="chordStrip" role="group"></div>
         <div id="staffWrap" style="background:linear-gradient(180deg,#1c1916 0%,#141210 100%);border:1px solid #3a342c;border-radius:10px;padding:8px 12px;margin:6px 0">
-          <canvas id="staff" width="800" height="80" style="width:100%;height:auto;display:block"></canvas>
+          <canvas id="staff" width="800" height="130" style="width:100%;height:auto;display:block"></canvas>
         </div>
         <div class="any" id="anyRow"><!-- AOG-ANY-ROOTS-V1: Any chord, right under the chord strip: a root with one tap -->
           <span class="plab" data-t="anyRootLab"></span>
@@ -2071,43 +2071,42 @@ function drawStaff(){
   ctx.clearRect(0,0,W,H);
   const notes=[]; LIVE.forEach((vc,key)=>{ if(vc.down) notes.push({m:+key.slice(1), dur:performance.now()-(vc.start||0)}); });
   notes.sort((a,b)=>a.m-b.m);
-  const treble=[64,67,71,74,77], bass=[43,47,50,53,57];
-  const yT=m=>26+(71-m)*4.2, yB=m=>74+(50-m)*4.2;
-  const sig=keySig(S.key, S.minor), sigW=Math.max(24, sig.length*13);
-  ctx.strokeStyle="#d4c5a9"; ctx.lineWidth=1.2;
-  treble.forEach(m=>{ ctx.beginPath(); ctx.moveTo(52+sigW,yT(m)); ctx.lineTo(W-24,yT(m)); ctx.stroke(); });
-  bass.forEach(m=>{ ctx.beginPath(); ctx.moveTo(52+sigW,yB(m)); ctx.lineTo(W-24,yB(m)); ctx.stroke(); });
-  ctx.strokeStyle="#c4b5a0"; ctx.lineWidth=2.5;
-  const mid=(yT(77)+yB(43))/2;
-  ctx.beginPath(); ctx.moveTo(14,yT(77)); ctx.quadraticCurveTo(2,mid,14,yB(43)); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(18,yT(77)); ctx.lineTo(18,yB(43)); ctx.stroke();
-  ctx.fillStyle="#f0e6d4"; ctx.font="bold 24px Georgia,serif";
-  ctx.fillText("𝄞", 22, yT(67)+6);
-  ctx.fillText("𝄢", 22, yB(47)+6);
-  ctx.font="bold 15px Georgia,serif"; ctx.fillStyle="#e8dcc8";
-  sig.forEach((s,i)=>{ ctx.fillText(s.sym, 50+i*13, yT(s.m)+4); ctx.fillText(s.sym, 50+i*13, yB(s.m-12)+4); });
-  const startX=64+sigW, maxNotes=Math.floor((W-startX-40)/20);
-  const show=notes.slice(0, maxNotes);
-  show.forEach((n,i)=>{
-    const m=n.m, pc=m%12, useBass=m<60, y=useBass?yB(m):yT(m), x=startX+i*20;
+  const lineGap=6, tTop=28, bTop=tTop+lineGap*4+18;
+  const yT=m=>tTop+(77-m)*lineGap/2, yB=m=>bTop+(57-m)*lineGap/2;
+  const sig=keySig(S.key, S.minor), sigW=sig.length*14+8;
+  const left=48, right=W-20;
+  ctx.strokeStyle="#e8dcc8"; ctx.lineWidth=1;
+  for(let i=0;i<5;i++){ ctx.beginPath(); ctx.moveTo(left+sigW, tTop+i*lineGap); ctx.lineTo(right, tTop+i*lineGap); ctx.stroke(); }
+  for(let i=0;i<5;i++){ ctx.beginPath(); ctx.moveTo(left+sigW, bTop+i*lineGap); ctx.lineTo(right, bTop+i*lineGap); ctx.stroke(); }
+  ctx.strokeStyle="#d4c5a9"; ctx.lineWidth=3;
+  const braceTop=tTop-2, braceBot=bTop+lineGap*4+2, braceMid=(braceTop+braceBot)/2;
+  ctx.beginPath(); ctx.moveTo(12, braceTop); ctx.bezierCurveTo(0, braceTop+10, 0, braceMid-10, 8, braceMid); ctx.bezierCurveTo(0, braceMid+10, 0, braceBot-10, 12, braceBot); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(16, braceTop); ctx.lineTo(16, braceBot); ctx.stroke();
+  ctx.fillStyle="#f5ead8"; ctx.font="bold 28px Georgia, 'Times New Roman', serif";
+  ctx.fillText("𝄞", 20, tTop+lineGap*2+8);
+  ctx.fillText("𝄢", 20, bTop+lineGap*2+8);
+  ctx.font="bold 16px Georgia, serif"; ctx.fillStyle="#e0d4c0";
+  sig.forEach((s,i)=>{ ctx.fillText(s.sym, left+i*14, yT(s.m)+5); ctx.fillText(s.sym, left+i*14, yB(s.m-12)+5); });
+  const noteX=left+sigW+16, spacing=Math.min(28, (right-noteX-20)/Math.max(1, notes.length));
+  notes.slice(0, 12).forEach((n,i)=>{
+    const m=n.m, pc=m%12, useBass=m<60, y=useBass?yB(m):yT(m), x=noteX+i*spacing;
     const acc=accidental(pc, sig);
-    const kind=n.dur<200?"8":n.dur<500?"4":n.dur<1000?"2":"1";
-    ctx.fillStyle="#ffe566";
-    if(acc){ ctx.font="bold 13px Georgia,serif"; ctx.fillText(acc, x-15, y+4); }
+    const kind=n.dur<180?"8":n.dur<450?"4":n.dur<900?"2":"1";
+    ctx.fillStyle="#ffd54f"; ctx.strokeStyle="#ffd54f";
+    if(acc){ ctx.font="bold 14px Georgia, serif"; ctx.fillText(acc, x-16, y+5); }
     const filled=kind==="4"||kind==="8";
-    ctx.beginPath(); ctx.ellipse(x, y, 7.5, 5.5, -0.2, 0, Math.PI*2);
-    if(filled) ctx.fill(); else { ctx.strokeStyle="#ffe566"; ctx.lineWidth=1.5; ctx.stroke(); }
+    ctx.lineWidth=1.8; ctx.beginPath(); ctx.ellipse(x, y, 8, 5.5, -0.3, 0, Math.PI*2);
+    if(filled) ctx.fill(); else ctx.stroke();
     if(kind!=="1"){
-      const lines=useBass?bass:treble, stemUp=m<(useBass?50:71);
-      ctx.strokeStyle="#ffe566"; ctx.lineWidth=1.8;
-      ctx.beginPath(); ctx.moveTo(x+(stemUp?7:-7), y); ctx.lineTo(x+(stemUp?7:-7), y+(stemUp?-22:22)); ctx.stroke();
-      if(kind==="8"){ ctx.beginPath(); ctx.moveTo(x+(stemUp?7:-7), y+(stemUp?-22:22)); ctx.quadraticCurveTo(x+(stemUp?14:-14), y+(stemUp?-16:16), x+(stemUp?12:-12), y+(stemUp?-10:10)); ctx.stroke(); }
+      const stemUp=m<(useBass?50:71), stemX=x+(stemUp?7.5:-7.5), stemLen=24;
+      ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(stemX, y); ctx.lineTo(stemX, y+(stemUp?-stemLen:stemLen)); ctx.stroke();
+      if(kind==="8"){ ctx.lineWidth=1.5; ctx.beginPath(); ctx.moveTo(stemX, y+(stemUp?-stemLen:stemLen)); ctx.quadraticCurveTo(stemX+(stemUp?10:-10), y+(stemUp?-stemLen+8:stemLen-8), stemX+(stemUp?8:-8), y+(stemUp?-stemLen+14:stemLen-14)); ctx.stroke(); }
     }
-    const lines=useBass?bass:treble;
-    if(m<lines[0]||m>lines[4]){ ctx.strokeStyle="#ffe566"; ctx.beginPath(); ctx.moveTo(x-12,y); ctx.lineTo(x+12,y); ctx.stroke(); }
-    ctx.fillStyle="#f0e6d4"; ctx.font="bold 10px sans-serif"; ctx.fillText(pcName(pc), x-4, y+15);
+    const lines=useBass?[43,47,50,53,57]:[64,67,71,74,77];
+    if(m<lines[0]||m>lines[4]){ ctx.lineWidth=1.2; ctx.beginPath(); ctx.moveTo(x-12, y); ctx.lineTo(x+12, y); ctx.stroke(); }
+    ctx.fillStyle="#f5ead8"; ctx.font="bold 11px sans-serif"; ctx.fillText(pcName(pc), x-5, y+18);
   });
-  if(notes.length>=2){ const name=chordGuess(notes.map(n=>n.m)); if(name){ ctx.fillStyle="#ffe566"; ctx.font="bold 14px sans-serif"; ctx.fillText(name, startX, 18); } }
+  if(notes.length>=2){ const name=chordGuess(notes.map(n=>n.m)); if(name){ ctx.fillStyle="#ffd54f"; ctx.font="bold 15px sans-serif"; ctx.fillText(name, noteX, tTop-8); } }
 }
 function keySig(k, minor){
   const major=minor?(k+3)%12:k;
