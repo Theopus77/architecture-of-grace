@@ -480,6 +480,9 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
           </div>
           <p class="line" id="anyLine" aria-live="polite"></p>
         </div>
+        <div id="staffWrap" style="background:linear-gradient(180deg,#1c1916 0%,#141210 100%);border:1px solid #3a342c;border-radius:10px;padding:8px 12px;margin:0 0 8px">
+          <canvas id="staff" width="800" height="80" style="width:100%;height:auto;display:block"></canvas>
+        </div>
         <div class="krow"><!-- AOG-KROW-NEAR-V1 (Jimmy, 2026-10-05: "The lower or higher fret board needs to sit nearer the instruments"): right above the instrument -->
           <button type="button" class="pbtn" id="downBtn"></button>
           <span class="range" id="rangeOut" aria-live="polite"></span>
@@ -490,13 +493,12 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
           <span id="recTime" hidden>0:00</span>
           <button type="button" class="pbtn pv-big" id="bpBig"></button><!-- AOG-PLAY-TABLET-V1 -->
         </div>
-        <div id="staffWrap" style="background:linear-gradient(180deg,#1c1916 0%,#141210 100%);border:1px solid #3a342c;border-radius:10px;padding:12px 16px;margin:10px 0 6px">
-          <canvas id="staff" width="800" height="100" style="width:100%;height:auto;display:block"></canvas>
-        </div>
         <div class="kbd" id="kbd" role="group"></div>
         <!-- AOG-PIANO-LICKS-V1 (Jimmy, 2026-10-19: piano licks "that follow the same style of the guitar and bass licks"):
              Licks to try, right under the keys, closed; opening it loads aog-piano-licks.js, which fills it -->
-        <details class="pk-licks aog-licks-near no-print" id="pkLicks"><summary data-t="lickH"></summary><div id="pkLicksIn"><p class="line" data-t="lickWait"></p></div></details>
+        <details class="pk-licks" style="margin-top:6px"><summary>Keyboard shortcuts</summary>
+          <p class="line" style="font-size:13px;color:#a89880">A W S E D F T G Y H U J K O L P — white and black keys from C. Z lowers an octave. X raises an octave. Space holds the pedal.</p>
+        </details>
         <div id="pedalsNear" hidden></div><!-- AOG-ROOM-PEDALS-V1: the pedals that are on, with their knobs, and the menu of the rest, right under the keys (aog-amp.js) -->
         <p class="line lit-line" id="litLine" data-t="litLine" hidden></p>
         <!-- AOG-PIANO-SCALES-V1 (2026-10-05) — Jimmy: more scales, modes and chords on every instrument. A scale shows on
