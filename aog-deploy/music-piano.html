@@ -472,7 +472,7 @@ body.aog-play #playView{display:flex;flex-direction:column;position:fixed;inset:
         <p class="line" id="midiLine" aria-live="polite"></p>
         <div class="cstrip" id="chordStrip" role="group"></div>
         <div id="staffWrap" style="background:linear-gradient(180deg,#1c1916 0%,#141210 100%);border:1px solid #3a342c;border-radius:10px;padding:8px 12px;margin:6px 0">
-          <canvas id="staff" width="800" height="130" style="width:100%;height:auto;display:block"></canvas>
+          <canvas id="staff" width="800" height="200" style="width:100%;height:auto;display:block"></canvas>
         </div>
         <div class="any" id="anyRow"><!-- AOG-ANY-ROOTS-V1: Any chord, right under the chord strip: a root with one tap -->
           <span class="plab" data-t="anyRootLab"></span>
@@ -2071,8 +2071,8 @@ function drawStaff(){
   ctx.clearRect(0,0,W,H);
   const notes=[]; LIVE.forEach((vc,key)=>{ if(vc.down) notes.push({m:+key.slice(1), dur:performance.now()-(vc.start||0)}); });
   notes.sort((a,b)=>a.m-b.m);
-  const lineGap=6, tTop=28, bTop=tTop+lineGap*4+18;
-  const yT=m=>tTop+(77-m)*lineGap/2, yB=m=>bTop+(57-m)*lineGap/2;
+  const lineGap=10, tTop=36, bTop=tTop+lineGap*4+24;
+  const yT=m=>Math.max(12, tTop+(77-m)*lineGap/2), yB=m=>Math.max(bTop-10, bTop+(57-m)*lineGap/2);
   const sig=keySig(S.key, S.minor), sigW=sig.length*14+8;
   const left=48, right=W-20;
   ctx.strokeStyle="#e8dcc8"; ctx.lineWidth=1;
@@ -2095,7 +2095,7 @@ function drawStaff(){
     ctx.fillStyle="#ffd54f"; ctx.strokeStyle="#ffd54f";
     if(acc){ ctx.font="bold 14px Georgia, serif"; ctx.fillText(acc, x-16, y+5); }
     const filled=kind==="4"||kind==="8";
-    ctx.lineWidth=1.8; ctx.beginPath(); ctx.ellipse(x, y, 10, 7, -0.3, 0, Math.PI*2);
+    ctx.lineWidth=1.5; ctx.beginPath(); ctx.ellipse(x, y, 8, 5.5, -0.25, 0, Math.PI*2);
     if(filled) ctx.fill(); else ctx.stroke();
     if(kind!=="1"){
       const stemUp=m<(useBass?50:71), stemX=x+(stemUp?9:-9), stemLen=28;

@@ -1486,8 +1486,8 @@ function drawStaff(){
   ctx.clearRect(0,0,W,H);
   const notes=[]; LIVE.forEach((vc,key)=>{ if(vc.down) notes.push({m:+key.slice(1), dur:performance.now()-(vc.start||0)}); });
   notes.sort((a,b)=>a.m-b.m);
-  const lineGap=6, tTop=28, bTop=tTop+lineGap*4+18;
-  const yT=m=>tTop+(77-m)*lineGap/2, yB=m=>bTop+(57-m)*lineGap/2;
+  const lineGap=10, tTop=36, bTop=tTop+lineGap*4+24;
+  const yT=m=>Math.max(12, tTop+(77-m)*lineGap/2), yB=m=>Math.max(bTop-10, bTop+(57-m)*lineGap/2);
   const sig=keySig(S.key, S.minor), sigW=sig.length*14+8;
   const left=48, right=W-20;
   ctx.strokeStyle="#e8dcc8"; ctx.lineWidth=1;
@@ -1510,10 +1510,10 @@ function drawStaff(){
     ctx.fillStyle="#ffd54f"; ctx.strokeStyle="#ffd54f";
     if(acc){ ctx.font="bold 14px Georgia, serif"; ctx.fillText(acc, x-16, y+5); }
     const filled=kind==="4"||kind==="8";
-    ctx.lineWidth=1.8; ctx.beginPath(); ctx.ellipse(x, y, 8, 5.5, -0.3, 0, Math.PI*2);
+    ctx.lineWidth=1.5; ctx.beginPath(); ctx.ellipse(x, y, 8, 5.5, -0.25, 0, Math.PI*2);
     if(filled) ctx.fill(); else ctx.stroke();
     if(kind!=="1"){
-      const stemUp=m<(useBass?50:71), stemX=x+(stemUp?7.5:-7.5), stemLen=24;
+      const stemUp=m<(useBass?50:71), stemX=x+(stemUp?9:-9), stemLen=28;
       ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(stemX, y); ctx.lineTo(stemX, y+(stemUp?-stemLen:stemLen)); ctx.stroke();
       if(kind==="8"){ ctx.lineWidth=1.5; ctx.beginPath(); ctx.moveTo(stemX, y+(stemUp?-stemLen:stemLen)); ctx.quadraticCurveTo(stemX+(stemUp?10:-10), y+(stemUp?-stemLen+8:stemLen-8), stemX+(stemUp?8:-8), y+(stemUp?-stemLen+14:stemLen-14)); ctx.stroke(); }
     }
