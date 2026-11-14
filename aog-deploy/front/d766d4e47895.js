@@ -1484,26 +1484,44 @@ function drawStaff(){
   const cv=$("staff"); if(!cv) return;
   const ctx=cv.getContext("2d"), W=cv.width, H=cv.height;
   ctx.clearRect(0,0,W,H);
-  ctx.fillStyle="#1a1a1a"; ctx.fillRect(0,0,W,H);
   const notes=[]; LIVE.forEach((vc,key)=>{ if(vc.down) notes.push(+key.slice(1)); });
   notes.sort((a,b)=>a-b);
-  /* treble staff: lines at E4=64, G4=67, B4=71, D5=74, F5=77 */
   const treble=[64,67,71,74,77], bass=[43,47,50,53,57];
-  const yOf=(m,lines)=>{ const mid=lines[2], step=8; return 30+(mid-m)*step/2; };
-  ctx.strokeStyle="#d4c5a9"; ctx.lineWidth=1;
-  treble.forEach(m=>{ const y=yOf(m,treble); ctx.beginPath(); ctx.moveTo(40,y); ctx.lineTo(280,y); ctx.stroke(); });
-  bass.forEach(m=>{ const y=yOf(m,bass); ctx.beginPath(); ctx.moveTo(320,y); ctx.lineTo(560,y); ctx.stroke(); });
-  ctx.fillStyle="#d4c5a9"; ctx.font="bold 28px serif";
-  ctx.fillText("𝄞", 8, yOf(71,treble)+8);
-  ctx.fillText("𝄢", 288, yOf(50,bass)+8);
-  ctx.fillStyle="#f4c430";
-  notes.forEach(m=>{
-    const useBass=m<60, lines=useBass?bass:treble, x=useBass?340:60;
-    const y=yOf(m,lines);
-    ctx.beginPath(); ctx.ellipse(x, y, 7, 5, -0.3, 0, Math.PI*2); ctx.fill();
-    if(m<lines[0]||m>lines[4]){ ctx.strokeStyle="#f4c430"; ctx.beginPath(); ctx.moveTo(x-12,y); ctx.lineTo(x+12,y); ctx.stroke(); }
+  const yOf=(m,lines,base)=>base+(lines[2]-m)*5;
+  const sig=keySig(S.key, S.minor);
+  ctx.strokeStyle="#8a7d6b"; ctx.lineWidth=1.2;
+  const tBase=32, bBase=32;
+  treble.forEach(m=>{ const y=yOf(m,treble,tBase); ctx.beginPath(); ctx.moveTo(50+sig.length*12,y); ctx.lineTo(370,y); ctx.stroke(); });
+  bass.forEach(m=>{ const y=yOf(m,bass,bBase); ctx.beginPath(); ctx.moveTo(430+sig.length*12,y); ctx.lineTo(750,y); ctx.stroke(); });
+  ctx.fillStyle="#c4b5a0"; ctx.font="28px 'Times New Roman',serif";
+  ctx.fillText("𝄞", 8, yOf(71,treble,tBase)+8);
+  ctx.fillText("𝄢", 388, yOf(50,bass,bBase)+8);
+  ctx.font="16px 'Times New Roman',serif"; ctx.fillStyle="#a89880";
+  sig.forEach((s,i)=>{ ctx.fillText(s.sym, 38+i*12, yOf(s.m, treble, tBase)+4); ctx.fillText(s.sym, 418+i*12, yOf(s.m-12, bass, bBase)+4); });
+  ctx.fillStyle="#e8c547"; ctx.font="11px sans-serif";
+  notes.forEach((m,i)=>{
+    const pc=m%12, useBass=m<60, lines=useBass?bass:treble, base=useBass?bBase:tBase;
+    const x=(useBass?480:90)+sig.length*12+i*24;
+    const y=yOf(m,lines,base);
+    const acc=accidental(pc, sig);
+    if(acc){ ctx.fillStyle="#e8c547"; ctx.font="14px serif"; ctx.fillText(acc, x-16, y+4); }
+    ctx.fillStyle="#e8c547"; ctx.beginPath(); ctx.ellipse(x, y, 8, 5.5, -0.4, 0, Math.PI*2); ctx.fill();
+    if(m<lines[0]||m>lines[4]){ ctx.strokeStyle="#e8c547"; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(x-14,y); ctx.lineTo(x+14,y); ctx.stroke(); }
+    ctx.fillStyle="#c4b5a0"; ctx.font="10px sans-serif"; ctx.fillText(pcName(pc), x-4, y+16);
   });
+  if(notes.length>=2){ const name=chordGuess(notes); if(name){ ctx.fillStyle="#e8c547"; ctx.font="bold 13px sans-serif"; ctx.fillText(name, 90, 14); } }
 }
+function keySig(k, minor){
+  const major=minor?(k+3)%12:k;
+  const sharps=[[],[6],[6,1],[6,1,8],[6,1,8,3],[6,1,8,3,10],[6,1,8,3,10,5],[6,1,8,3,10,5,0]];
+  const flats=[[],[10],[10,3],[10,3,8],[10,3,8,1],[10,3,8,1,6],[10,3,8,1,6,11],[10,3,8,1,6,11,4]];
+  const useFlat=[5,10,3,8,1].indexOf(major)>=0;
+  const arr=useFlat?flats[Math.min(7,major===5?1:major===10?2:major===3?3:major===8?4:5)]:sharps[Math.min(7,major)];
+  const pos={0:77,1:71,3:74,5:70,6:64,8:67,10:73};
+  return arr.map(pc=>({pc:pc, sym:useFlat?"♭":"♯", m:pos[pc]||67}));
+}
+function accidental(pc, sig){ const inSig=sig.some(s=>s.pc===pc); if(inSig) return ""; const sharp=[1,3,6,8,10]; return sharp.indexOf(pc)>=0?"♯":""; }
+function chordGuess(notes){ const pcs=[...new Set(notes.map(m=>m%12))].sort(); if(pcs.length<2) return ""; return pcs.map(pc=>pcName(pc)).join(""); }
 /* AOG-PIANO-CHORD-MOVE-V1 (2026-10-05) — Jimmy: "It would be awesome if while holding a chord down on the keyboard you could
    move up or down the board" (he chose: the chord jumps with ◀ ▶). While a chord is held (fingers on the keys, the
    computer's keys, or a chord pad), ◀ Lower and Higher ▶ (and Z, X) move the board an octave and the held notes with it:
