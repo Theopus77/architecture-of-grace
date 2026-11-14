@@ -1387,7 +1387,7 @@ function flash(bi, pi, when, vel){
 /* ══ the loop ══ */
 const PPQ=96;
 const SEQ={on:false, rec:false, t0:0, abs:0, timer:0, map:null, undo:[]};
-const STAGE={mute:[false,false,false,false], lock:false, arm:false, wl:null, hold:0};   /* AOG-PADS-STAGE-V1 */
+const STAGE={mute:[false,true,true,true], lock:false, arm:false, wl:null, hold:0};   /* A plays; B, C, D stay quiet until unmuted */
 function spt(){ return 60/S.bpm/PPQ; }
 function loopLen(){ return S.bars*4*PPQ; }
 function evMap(){
@@ -2227,7 +2227,7 @@ function pvOpen(on){
     pvWhole(true);
   } else {
     PV.on=false; document.body.classList.remove("aog-play"); pvZoom(false);
-    STAGE.mute=[false,false,false,false]; STAGE.lock=false; STAGE.arm=false; stWake(false);   /* the page outside always plays every layer */
+    STAGE.mute=[false,true,true,true]; STAGE.lock=false; STAGE.arm=false; stWake(false);   /* A plays; the rest stay quiet */
     pvWhole(false);
     if(window.pvKnobsPlace) pvKnobsPlace();
     if(PV.back && PV.back.parentNode) PV.back.parentNode.replaceChild(pads, PV.back); PV.back=null;
