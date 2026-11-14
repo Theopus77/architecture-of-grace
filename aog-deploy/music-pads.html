@@ -2166,14 +2166,13 @@ function applyFx(){ if(!LIVE_M || !LIVE_M.rigs) return; LIVE_M.rigs.forEach((r,i
 function paintFx(){
   if(!window.AOGAmp || !$("ampBox")) return;
   $("fxH").textContent=t("fxH"); $("fxLine").textContent=t("fxLine");
-  const bi=S.bank;
-  if(FXUI && FXLANG===S0.lang && FXUI._bi===bi) return; FXLANG=S0.lang;
+  if(FXUI && FXLANG===S0.lang){ FXUI.paint(); return; } FXLANG=S0.lang;
   const W=k=>STR[k];
-  if(!FXUI) FXUI=AOGAmp.ui($("ampBox"), {kind:"drums", near:$("pedalsNear"), lang:()=>S0.lang, get:()=>fxState(bi),
+  if(!FXUI) FXUI=AOGAmp.ui($("ampBox"), {kind:"drums", near:$("pedalsNear"), lang:()=>S0.lang, get:()=>fxState(S.bank),
     words:{kept:W("fxKept"), back:W("fxBack"), backDone:W("fxBackDone")},
-    set:st=>{ FXST[bi]=AOGAmp.normalize(st, "drums"); clearTimeout(paintFx.t); paintFx.t=setTimeout(saveFx, 300); applyFx(); },
-    reset:()=>{ FXST[bi]=null; saveFx(); applyFx(); }});
-  FXUI._bi=bi; FXUI.paint();
+    set:st=>{ FXST[S.bank]=AOGAmp.normalize(st, "drums"); clearTimeout(paintFx.t); paintFx.t=setTimeout(saveFx, 300); applyFx(); },
+    reset:()=>{ FXST[S.bank]=null; saveFx(); applyFx(); }});
+  FXUI.paint();
 }
 window.addEventListener("pagehide", ()=>{ if(paintFx.t){ clearTimeout(paintFx.t); saveFx(); } });
 /* ══ AOG-PADS-BIG-V1 (2026-10-11) — Jimmy: "Can the drum pad be expanded" — bigger, and (AOG-PADS-24-V1) more. ⤢ puts the
