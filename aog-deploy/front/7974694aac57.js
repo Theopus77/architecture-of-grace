@@ -1475,7 +1475,7 @@ function noteOn(tag, m, v){
   const old=LIVE.get(key); if(old){ old.stop(now, 0.05); LIVE.delete(key); }
   const vc=makeVoice(c, LIVE_CH, S.sound, m, v, now);
   if(!vc) return;
-  vc.down=true; vc.vel=v; LIVE.set(key, vc); track(vc); prune();
+  vc.down=true; vc.vel=v; vc.start=performance.now(); LIVE.set(key, vc); track(vc); prune();
   litKeys();
   if(tag!=="p") onNote(m, v);
   drawStaff();
@@ -1484,37 +1484,46 @@ function drawStaff(){
   const cv=$("staff"); if(!cv) return;
   const ctx=cv.getContext("2d"), W=cv.width, H=cv.height;
   ctx.clearRect(0,0,W,H);
-  const notes=[]; LIVE.forEach((vc,key)=>{ if(vc.down) notes.push(+key.slice(1)); });
-  notes.sort((a,b)=>a-b);
+  ctx.fillStyle="#1a1612"; ctx.fillRect(0,0,W,H);
+  const notes=[]; LIVE.forEach((vc,key)=>{ if(vc.down) notes.push({m:+key.slice(1), dur:performance.now()-(vc.start||0)}); });
+  notes.sort((a,b)=>a.m-b.m);
   const treble=[64,67,71,74,77], bass=[43,47,50,53,57];
-  const yT=m=>22+(71-m)*3.6, yB=m=>68+(50-m)*3.6;
-  const sig=keySig(S.key, S.minor), sigW=sig.length*11;
-  ctx.strokeStyle="#5a5045"; ctx.lineWidth=0.8;
-  treble.forEach(m=>{ ctx.beginPath(); ctx.moveTo(42+sigW,yT(m)); ctx.lineTo(W-16,yT(m)); ctx.stroke(); });
-  bass.forEach(m=>{ ctx.beginPath(); ctx.moveTo(42+sigW,yB(m)); ctx.lineTo(W-16,yB(m)); ctx.stroke(); });
-  ctx.strokeStyle="#4a4035"; ctx.lineWidth=1.5;
-  const braceY=(yT(77)+yB(43))/2;
-  ctx.beginPath(); ctx.moveTo(18,yT(77)-2); ctx.quadraticCurveTo(8,braceY,18,yB(43)+2); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(22,yT(77)-2); ctx.lineTo(22,yB(43)+2); ctx.stroke();
-  ctx.fillStyle="#b8a890"; ctx.font="20px Georgia,serif";
-  ctx.fillText("𝄞", 26, yT(67)+4);
-  ctx.fillText("𝄢", 26, yB(47)+4);
-  ctx.font="12px Georgia,serif"; ctx.fillStyle="#8a7d6b";
-  sig.forEach((s,i)=>{ ctx.fillText(s.sym, 46+i*11, yT(s.m)+2); ctx.fillText(s.sym, 46+i*11, yB(s.m-12)+2); });
-  notes.forEach((m,i)=>{
-    const pc=m%12, useBass=m<60, y=useBass?yB(m):yT(m);
-    const x=70+sigW+i*18;
+  const yT=m=>26+(71-m)*4.2, yB=m=>74+(50-m)*4.2;
+  const sig=keySig(S.key, S.minor), sigW=Math.max(24, sig.length*13);
+  ctx.strokeStyle="#d4c5a9"; ctx.lineWidth=1.2;
+  treble.forEach(m=>{ ctx.beginPath(); ctx.moveTo(52+sigW,yT(m)); ctx.lineTo(W-24,yT(m)); ctx.stroke(); });
+  bass.forEach(m=>{ ctx.beginPath(); ctx.moveTo(52+sigW,yB(m)); ctx.lineTo(W-24,yB(m)); ctx.stroke(); });
+  ctx.strokeStyle="#c4b5a0"; ctx.lineWidth=2.5;
+  const mid=(yT(77)+yB(43))/2;
+  ctx.beginPath(); ctx.moveTo(14,yT(77)); ctx.quadraticCurveTo(2,mid,14,yB(43)); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(18,yT(77)); ctx.lineTo(18,yB(43)); ctx.stroke();
+  ctx.fillStyle="#f0e6d4"; ctx.font="bold 24px Georgia,serif";
+  ctx.fillText("𝄞", 22, yT(67)+6);
+  ctx.fillText("𝄢", 22, yB(47)+6);
+  ctx.font="bold 15px Georgia,serif"; ctx.fillStyle="#e8dcc8";
+  sig.forEach((s,i)=>{ ctx.fillText(s.sym, 50+i*13, yT(s.m)+4); ctx.fillText(s.sym, 50+i*13, yB(s.m-12)+4); });
+  const startX=64+sigW, maxNotes=Math.floor((W-startX-40)/20);
+  const show=notes.slice(0, maxNotes);
+  show.forEach((n,i)=>{
+    const m=n.m, pc=m%12, useBass=m<60, y=useBass?yB(m):yT(m), x=startX+i*20;
     const acc=accidental(pc, sig);
-    ctx.fillStyle="#e8c547";
-    if(acc){ ctx.font="11px Georgia,serif"; ctx.fillText(acc, x-13, y+3); }
-    ctx.beginPath(); ctx.ellipse(x, y, 6.5, 4.5, -0.25, 0, Math.PI*2); ctx.fill();
-    const lines=useBass?bass:treble, stemUp=m<lines[2];
-    ctx.strokeStyle="#e8c547"; ctx.lineWidth=1.2;
-    ctx.beginPath(); ctx.moveTo(x+(stemUp?6:-6), y); ctx.lineTo(x+(stemUp?6:-6), y+(stemUp?-18:18)); ctx.stroke();
-    if(m<lines[0]||m>lines[4]){ ctx.beginPath(); ctx.moveTo(x-10,y); ctx.lineTo(x+10,y); ctx.stroke(); }
-    ctx.fillStyle="#9a8d7b"; ctx.font="8px sans-serif"; ctx.fillText(pcName(pc), x-3, y+12);
+    const kind=n.dur<200?"8":n.dur<500?"4":n.dur<1000?"2":"1";
+    ctx.fillStyle="#ffe566";
+    if(acc){ ctx.font="bold 13px Georgia,serif"; ctx.fillText(acc, x-15, y+4); }
+    const filled=kind==="4"||kind==="8";
+    ctx.beginPath(); ctx.ellipse(x, y, 7.5, 5.5, -0.2, 0, Math.PI*2);
+    if(filled) ctx.fill(); else { ctx.strokeStyle="#ffe566"; ctx.lineWidth=1.5; ctx.stroke(); }
+    if(kind!=="1"){
+      const lines=useBass?bass:treble, stemUp=m<(useBass?50:71);
+      ctx.strokeStyle="#ffe566"; ctx.lineWidth=1.8;
+      ctx.beginPath(); ctx.moveTo(x+(stemUp?7:-7), y); ctx.lineTo(x+(stemUp?7:-7), y+(stemUp?-22:22)); ctx.stroke();
+      if(kind==="8"){ ctx.beginPath(); ctx.moveTo(x+(stemUp?7:-7), y+(stemUp?-22:22)); ctx.quadraticCurveTo(x+(stemUp?14:-14), y+(stemUp?-16:16), x+(stemUp?12:-12), y+(stemUp?-10:10)); ctx.stroke(); }
+    }
+    const lines=useBass?bass:treble;
+    if(m<lines[0]||m>lines[4]){ ctx.strokeStyle="#ffe566"; ctx.beginPath(); ctx.moveTo(x-12,y); ctx.lineTo(x+12,y); ctx.stroke(); }
+    ctx.fillStyle="#f0e6d4"; ctx.font="bold 10px sans-serif"; ctx.fillText(pcName(pc), x-4, y+15);
   });
-  if(notes.length>=2){ const name=chordGuess(notes); if(name){ ctx.fillStyle="#d4c090"; ctx.font="bold 11px sans-serif"; ctx.fillText(name, 70+sigW, 14); } }
+  if(notes.length>=2){ const name=chordGuess(notes.map(n=>n.m)); if(name){ ctx.fillStyle="#ffe566"; ctx.font="bold 14px sans-serif"; ctx.fillText(name, startX, 18); } }
 }
 function keySig(k, minor){
   const major=minor?(k+3)%12:k;
