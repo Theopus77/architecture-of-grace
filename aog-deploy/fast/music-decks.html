@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- AOG-FAST-BUILD-V1 source:eaed71cf5be899ef · MADE BY tools/build-fast.py from music-decks.html: edit music-decks.html, then run it. -->
+<!-- AOG-FAST-BUILD-V1 source:c3af1655fb68e300 · MADE BY tools/build-fast.py from music-decks.html: edit music-decks.html, then run it. -->
 <html lang="en">
 <head>
 <script>/* AOG-STUDIO-ONLY-V1 (Jimmy, 2026-10-10: "one location for all the instruments … and that is the studio"): opened on its own address, this room opens inside the Studio instead, at this exact address (its lesson, take or link). Inside the Studio's frame, and for the site's own checks, it stays. */(function(){try{if(window.top!==window||navigator.webdriver)return;var M={"music-pads":"pads","drum-machine":"pads","beat-lab":"pads","music-kit":"kit","drum-kit":"kit","music-piano":"piano","piano":"piano","keys":"piano","music-guitar":"guitar","guitar":"guitar","music-bass":"bass","bass":"bass","music-band":"band","band":"band","music-decks":"decks","decks":"decks","turntables":"decks","music-vocal":"vocal","vocal-booth":"vocal","vocal":"vocal","booth":"vocal","music-studio":"studio","studio":"studio","mixing-desk":"studio"},f=(location.pathname.split("/").pop()||"").replace(/\.html$/,""),r=M[f];if(!r)return;var F={pads:"music-pads",kit:"music-kit",piano:"music-piano",guitar:"music-guitar",bass:"music-bass",band:"music-band",decks:"music-decks",vocal:"music-vocal",studio:"music-studio"};location.replace("/the-studio.html?at="+encodeURIComponent("/"+F[r]+".html"+location.search+location.hash)+"#"+r);}catch(e){}})();</script>
@@ -8,10 +8,12 @@
 @media (hover:hover) and (pointer:fine){ .dk-keys{display:block} }
 html.aog-keys .dk-keys{display:block}
 
-/* AOG-DECKS-COUNT-V1: show one or two decks */
+/* AOG-DECKS-COUNT-V1: show one, two or three decks */
 body.decks-1 .decks{grid-template-columns:minmax(0,1fr) !important}
 body.decks-1 .deck:nth-child(n+2){display:none}
 body.decks-2 .decks{grid-template-columns:repeat(2,minmax(0,1fr))}
+body.decks-2 .deck:nth-child(n+3){display:none}
+body.decks-3 .decks{grid-template-columns:repeat(3,minmax(0,1fr))}
 .deck-count{display:flex;gap:.5rem;justify-content:center;margin:.6rem 0}
 .deck-count button{min-height:40px;padding:0 .9rem;border-radius:999px;border:1px solid #c4a574;background:#1a140e;color:#f3ead7;font:700 .85rem/1 var(--sans)}
 .deck-count button[aria-pressed="true"]{background:#c4a574;color:#1a140e}
@@ -772,7 +774,8 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
   
 <div class="deck-count" role="group" aria-label="How many decks">
   <button type="button" data-decks="1" aria-pressed="false">1 deck</button>
-  <button type="button" data-decks="2" aria-pressed="true">2 decks</button>
+  <button type="button" data-decks="2" aria-pressed="false">2 decks</button>
+  <button type="button" data-decks="3" aria-pressed="true">3 decks</button>
 </div>
 <div class="decks stage" id="decks"></div>
   <p class="drophint no-print" id="padHint"></p>
@@ -860,8 +863,8 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
     const b = e.target.closest && e.target.closest("button[data-decks]");
     if(b) set(+b.dataset.decks);
   });
-  const saved = +(localStorage.getItem("aog.decks.count")||2);
-  set(saved===1?1:2);
+  const saved = +(localStorage.getItem("aog.decks.count")||3);
+  set(saved===1||saved===2?saved:3);
 })();
 </script>
 </body>

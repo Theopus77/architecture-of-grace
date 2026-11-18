@@ -7,10 +7,12 @@
 @media (hover:hover) and (pointer:fine){ .dk-keys{display:block} }
 html.aog-keys .dk-keys{display:block}
 
-/* AOG-DECKS-COUNT-V1: show one or two decks */
+/* AOG-DECKS-COUNT-V1: show one, two or three decks */
 body.decks-1 .decks{grid-template-columns:minmax(0,1fr) !important}
 body.decks-1 .deck:nth-child(n+2){display:none}
 body.decks-2 .decks{grid-template-columns:repeat(2,minmax(0,1fr))}
+body.decks-2 .deck:nth-child(n+3){display:none}
+body.decks-3 .decks{grid-template-columns:repeat(3,minmax(0,1fr))}
 .deck-count{display:flex;gap:.5rem;justify-content:center;margin:.6rem 0}
 .deck-count button{min-height:40px;padding:0 .9rem;border-radius:999px;border:1px solid #c4a574;background:#1a140e;color:#f3ead7;font:700 .85rem/1 var(--sans)}
 .deck-count button[aria-pressed="true"]{background:#c4a574;color:#1a140e}
@@ -771,7 +773,8 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
   
 <div class="deck-count" role="group" aria-label="How many decks">
   <button type="button" data-decks="1" aria-pressed="false">1 deck</button>
-  <button type="button" data-decks="2" aria-pressed="true">2 decks</button>
+  <button type="button" data-decks="2" aria-pressed="false">2 decks</button>
+  <button type="button" data-decks="3" aria-pressed="true">3 decks</button>
 </div>
 <div class="decks stage" id="decks"></div>
   <p class="drophint no-print" id="padHint"></p>
@@ -4224,8 +4227,8 @@ window.addEventListener("focus", checkBench);
     const b = e.target.closest && e.target.closest("button[data-decks]");
     if(b) set(+b.dataset.decks);
   });
-  const saved = +(localStorage.getItem("aog.decks.count")||2);
-  set(saved===1?1:2);
+  const saved = +(localStorage.getItem("aog.decks.count")||3);
+  set(saved===1||saved===2?saved:3);
 })();
 </script>
 </body>
