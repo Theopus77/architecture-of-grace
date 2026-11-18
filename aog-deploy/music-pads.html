@@ -416,7 +416,7 @@ body.aog-play #padView{display:flex;flex-direction:column;position:fixed;inset:0
 <script src="aog-handoff.js"></script>
 <script src="/aog-recorder.js"></script>
 <script src="/aog-song.js"></script><!-- AOG-SONG-V1: one tempo and key for the whole song -->
-<script src="/aog-amp.js?v=20261117-pedals"></script><!-- AOG-ROOM-PEDALS-V1: the pedalboard, the same panel as the guitar has -->
+<script src="/aog-amp.js"></script><!-- AOG-ROOM-PEDALS-V1: the pedalboard, the same panel as the guitar has -->
 <script src="aog-drumkit.js"></script>
 <script src="aog-beats.js"></script>
 <script src="aog-beats-pro.js" defer></script><!-- AOG-BEATS-ELITE-V1: the newer beats, after the page is read -->
@@ -810,12 +810,10 @@ const TUBES={0:["#d7262e","#ffffff","Red","Rojo","red","rojo"], 1:["#e85d4c","#f
   8:["#4a9b8c","#ffffff","Teal","Verde azulado","teal","verde azulado"], 9:["#6a2c91","#ffffff","Purple","Morado","purple","morado"],
   10:["#9b59b6","#ffffff","Purple","Morado","purple","morado"], 11:["#c2185b","#ffffff","Pink","Rosa","pink","rosa"]};
 function paintTubes(box, bk, defs){
-  /* AOG-PADS-ALLBANKS-V1: color every pad that has notes, in every bank (chords by root) */
-  box.querySelectorAll(".pad").forEach(el=>{
-    const d=defs[+el.dataset.p];
-    if(!d || !d.notes || !d.notes.length) return;
-    const pc=((d.notes[0]%12)+12)%12;
-    const T=TUBES[pc]; if(!T) return;
+  const B=S.banks[bk]; if(B.type!=="notes") return;
+  const es=S0.lang==="es";
+  box.querySelectorAll(".pad").forEach(el=>{ const d=defs[+el.dataset.p]; if(!d || !d.notes || d.notes.length!==1) return;
+    const T=TUBES[((d.notes[0]%12)+12)%12]; if(!T) return;
     el.classList.add("tube"); el.style.setProperty("--tube", T[0]); el.style.setProperty("--tink", T[1]);
   });
 }
@@ -1376,7 +1374,7 @@ function trigger(bi, pi, vel, when, T){
     const fast=gated(bi); vs.forEach(v=>{ try{ v.g.gain.cancelScheduledValues(t0); v.g.gain.setTargetAtTime(0, t0, fast?0.02:0.07); v.s.stop(t0+(fast?0.12:0.6)); }catch(e){} }); }});
 }
 const RING=[];
-const CAP=320; /* soft safety — higher for fuller chords and multi-bank use */
+const CAP=256; /* soft safety only */
 const WORK=16; /* iOS stays under this; steal is free so taps are never dropped */
 function letGo(v, c){
   if(!v || v.done) return;
@@ -2646,6 +2644,6 @@ init();
 
 <!-- morph script removed: the bar is gone -->
 </body>
-<!-- AOG-PADS-FORCE-RESTORE 2026-11-17 -->
+<!-- AOG-PADS-WORKING 2026-11-17 -->
 </html>
 
