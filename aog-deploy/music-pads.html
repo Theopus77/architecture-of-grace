@@ -1374,7 +1374,7 @@ function trigger(bi, pi, vel, when, T){
     const fast=gated(bi); vs.forEach(v=>{ try{ v.g.gain.cancelScheduledValues(t0); v.g.gain.setTargetAtTime(0, t0, fast?0.02:0.07); v.s.stop(t0+(fast?0.12:0.6)); }catch(e){} }); }});
 }
 const RING=[];
-const CAP=256; /* soft safety only */
+const CAP=320; /* soft safety — higher for multi-bank */
 const WORK=16; /* iOS stays under this; steal is free so taps are never dropped */
 function letGo(v, c){
   if(!v || v.done) return;
@@ -1409,6 +1409,13 @@ function preloadAllKits(){
   }
   setTimeout(next, 400); /* after first paint */
 }
+/* AOG-PADS-PRELOAD-CALL — standing rule: every kit preloads so a tap never waits */
+if(document.readyState === "loading"){
+  document.addEventListener("DOMContentLoaded", preloadAllKits);
+} else {
+  preloadAllKits();
+}
+
 
 function flash(bi, pi, when, vel){
   if(bi!==S.bank || SEQ.on) return; /* no DOM on the hit path while a loop runs */
@@ -2645,5 +2652,6 @@ init();
 <!-- morph script removed: the bar is gone -->
 </body>
 <!-- AOG-PADS-CLEAN-WORKING 2026-11-17 -->
+<!-- AOG-PADS-PRELOAD-FIX 2026-11-17 -->
 </html>
 
