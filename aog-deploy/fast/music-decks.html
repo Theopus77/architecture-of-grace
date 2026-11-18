@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- AOG-FAST-BUILD-V1 source:dc05c2223ef0884c · MADE BY tools/build-fast.py from music-decks.html: edit music-decks.html, then run it. -->
+<!-- AOG-FAST-BUILD-V1 source:eaed71cf5be899ef · MADE BY tools/build-fast.py from music-decks.html: edit music-decks.html, then run it. -->
 <html lang="en">
 <head>
 <script>/* AOG-STUDIO-ONLY-V1 (Jimmy, 2026-10-10: "one location for all the instruments … and that is the studio"): opened on its own address, this room opens inside the Studio instead, at this exact address (its lesson, take or link). Inside the Studio's frame, and for the site's own checks, it stays. */(function(){try{if(window.top!==window||navigator.webdriver)return;var M={"music-pads":"pads","drum-machine":"pads","beat-lab":"pads","music-kit":"kit","drum-kit":"kit","music-piano":"piano","piano":"piano","keys":"piano","music-guitar":"guitar","guitar":"guitar","music-bass":"bass","bass":"bass","music-band":"band","band":"band","music-decks":"decks","decks":"decks","turntables":"decks","music-vocal":"vocal","vocal-booth":"vocal","vocal":"vocal","booth":"vocal","music-studio":"studio","studio":"studio","mixing-desk":"studio"},f=(location.pathname.split("/").pop()||"").replace(/\.html$/,""),r=M[f];if(!r)return;var F={pads:"music-pads",kit:"music-kit",piano:"music-piano",guitar:"music-guitar",bass:"music-bass",band:"music-band",decks:"music-decks",vocal:"music-vocal",studio:"music-studio"};location.replace("/the-studio.html?at="+encodeURIComponent("/"+F[r]+".html"+location.search+location.hash)+"#"+r);}catch(e){}})();</script>
@@ -7,6 +7,14 @@
 .dk-keys{display:none}
 @media (hover:hover) and (pointer:fine){ .dk-keys{display:block} }
 html.aog-keys .dk-keys{display:block}
+
+/* AOG-DECKS-COUNT-V1: show one or two decks */
+body.decks-1 .decks{grid-template-columns:minmax(0,1fr) !important}
+body.decks-1 .deck:nth-child(n+2){display:none}
+body.decks-2 .decks{grid-template-columns:repeat(2,minmax(0,1fr))}
+.deck-count{display:flex;gap:.5rem;justify-content:center;margin:.6rem 0}
+.deck-count button{min-height:40px;padding:0 .9rem;border-radius:999px;border:1px solid #c4a574;background:#1a140e;color:#f3ead7;font:700 .85rem/1 var(--sans)}
+.deck-count button[aria-pressed="true"]{background:#c4a574;color:#1a140e}
 </style><script>/* AOG-LIGHT-START-V1 — Jimmy: "All pages should start in light mode." Light unless this site was switched to dark. */(function(){var h=document.documentElement;if(!h.getAttribute("data-theme"))h.setAttribute("data-theme","light");})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <script>
@@ -213,10 +221,10 @@ body[data-pair="AB"] [data-bch="C"],body[data-pair="AC"] [data-bch="B"],body[dat
 .deck .platter-wrap{margin-bottom:1.1rem}
 .deck .platter-wrap .revc{position:absolute;right:0;bottom:-16px;z-index:2;min-height:44px;min-width:58px}
 .platter{
-  width:min(240px,52vw);aspect-ratio:1;border-radius:50%;position:relative;
-  /* AOG-DJ-DESK-V1 §6: the gold ring stays at 63–66%; past it the platter's own dark sidewall, so the disc has an edge */
-  background:radial-gradient(circle at 50% 50%, #2a241c 62%, #c4a574 63%, #c4a574 66%, #1a140e 67%, #2e261d 69.2%, #0a0806 70.6%);
-  box-shadow:0 16px 18px rgba(0,0,0,.55),0 4px 0 #120e0a;
+  width:min(280px,58vw);aspect-ratio:1;border-radius:50%;position:relative;
+  /* AOG-DECKS-FACE-V1: thicker gold ring + deeper sidewall, matching the mockup */
+  background:radial-gradient(circle at 50% 50%, #2a241c 58%, #c4a574 59%, #e8d4a8 62%, #c4a574 66%, #1a140e 67.5%, #2e261d 70%, #0a0806 72%);
+  box-shadow:0 18px 22px rgba(0,0,0,.6),0 5px 0 #120e0a, inset 0 0 0 1px rgba(196,165,116,.4);
   cursor:grab;touch-action:none;
 }
 /* the lamp on the metal ring: masked to the gold ring only, outside the vinyl, so it never turns */
@@ -761,7 +769,12 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
     </span>
     <p class="waiting" id="waiting" aria-live="polite"></p>
   </div>
-  <div class="decks stage" id="decks"></div>
+  
+<div class="deck-count" role="group" aria-label="How many decks">
+  <button type="button" data-decks="1" aria-pressed="false">1 deck</button>
+  <button type="button" data-decks="2" aria-pressed="true">2 decks</button>
+</div>
+<div class="decks stage" id="decks"></div>
   <p class="drophint no-print" id="padHint"></p>
   <p class="drophint dk-keys no-print" id="keysHint"></p><!-- AOG-DECKS-KEYS-V1 -->
   <section class="mixer no-print" id="mixer" aria-labelledby="mixH">
@@ -831,6 +844,26 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
 })();
 </script>
 <script src="/front/89e4815a9a4c.js"></script>
+
+<script>
+/* AOG-DECKS-COUNT-V1 */
+(function(){
+  const box = document.querySelector(".deck-count");
+  if(!box) return;
+  function set(n){
+    document.body.classList.toggle("decks-1", n===1);
+    document.body.classList.toggle("decks-2", n===2);
+    box.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed", String(b.dataset.decks)==String(n)?"true":"false"));
+    try{ localStorage.setItem("aog.decks.count", String(n)); }catch(e){}
+  }
+  box.addEventListener("click", e=>{
+    const b = e.target.closest && e.target.closest("button[data-decks]");
+    if(b) set(+b.dataset.decks);
+  });
+  const saved = +(localStorage.getItem("aog.decks.count")||2);
+  set(saved===1?1:2);
+})();
+</script>
 </body>
 <!-- AOG-DECKS-RESTORE-FORCE 2026-11-17 -->
 </html>
