@@ -6,24 +6,6 @@
 .dk-keys{display:none}
 @media (hover:hover) and (pointer:fine){ .dk-keys{display:block} }
 html.aog-keys .dk-keys{display:block}
-
-/* AOG-DECKS-COUNT-V1: show one, two or three decks */
-body.decks-1 .decks{grid-template-columns:minmax(0,1fr) !important}
-body.decks-1 .deck:nth-child(n+2){display:none}
-body.decks-2 .decks{grid-template-columns:repeat(2,minmax(0,1fr))}
-body.decks-2 .deck:nth-child(n+3){display:none}
-body.decks-3 .decks{grid-template-columns:repeat(3,minmax(0,1fr))}
-.deck-count{display:flex;gap:.5rem;justify-content:center;margin:.6rem 0}
-.deck-count button{min-height:40px;padding:0 .9rem;border-radius:999px;border:1px solid #c4a574;background:#1a140e;color:#f3ead7;font:700 .85rem/1 var(--sans)}
-.deck-count button[aria-pressed="true"]{background:#c4a574;color:#1a140e}
-
-/* AOG-DECKS-COUNT-V2: the 1/2/3 toggle wins over the phone deck tabs */
-body.decks-1 .decks{display:grid !important;grid-template-columns:minmax(0,1fr) !important}
-body.decks-1 .deck:nth-child(n+2){display:none !important}
-body.decks-2 .decks{display:grid !important;grid-template-columns:repeat(2,minmax(0,1fr)) !important}
-body.decks-2 .deck:nth-child(n+3){display:none !important}
-body.decks-3 .decks{display:grid !important;grid-template-columns:repeat(3,minmax(0,1fr)) !important}
-body.decks-2 .deck,body.decks-3 .deck{display:block !important}
 </style><script>/* AOG-LIGHT-START-V1 — Jimmy: "All pages should start in light mode." Light unless this site was switched to dark. */(function(){var h=document.documentElement;if(!h.getAttribute("data-theme"))h.setAttribute("data-theme","light");})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <script>
@@ -230,10 +212,10 @@ body[data-pair="AB"] [data-bch="C"],body[data-pair="AC"] [data-bch="B"],body[dat
 .deck .platter-wrap{margin-bottom:1.1rem}
 .deck .platter-wrap .revc{position:absolute;right:0;bottom:-16px;z-index:2;min-height:44px;min-width:58px}
 .platter{
-  width:min(300px,62vw);aspect-ratio:1;border-radius:50%;position:relative;
-  /* AOG-DECKS-FACE-V2: bold gold ring like the mockup */
-  background:radial-gradient(circle at 50% 50%, #1a140e 54%, #c4a574 55.5%, #f0e0b0 59%, #c4a574 64%, #8a7040 66.5%, #1a140e 68%, #0a0806 72%);
-  box-shadow:0 20px 28px rgba(0,0,0,.65),0 6px 0 #0a0806, inset 0 0 0 2px rgba(240,224,176,.35);
+  width:min(240px,52vw);aspect-ratio:1;border-radius:50%;position:relative;
+  /* AOG-DJ-DESK-V1 §6: the gold ring stays at 63–66%; past it the platter's own dark sidewall, so the disc has an edge */
+  background:radial-gradient(circle at 50% 50%, #2a241c 62%, #c4a574 63%, #c4a574 66%, #1a140e 67%, #2e261d 69.2%, #0a0806 70.6%);
+  box-shadow:0 16px 18px rgba(0,0,0,.55),0 4px 0 #120e0a;
   cursor:grab;touch-action:none;
 }
 /* the lamp on the metal ring: masked to the gold ring only, outside the vinyl, so it never turns */
@@ -778,13 +760,7 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
     </span>
     <p class="waiting" id="waiting" aria-live="polite"></p>
   </div>
-  
-<div class="deck-count" role="group" aria-label="How many decks">
-  <button type="button" data-decks="1" aria-pressed="false">1 deck</button>
-  <button type="button" data-decks="2" aria-pressed="false">2 decks</button>
-  <button type="button" data-decks="3" aria-pressed="true">3 decks</button>
-</div>
-<div class="decks stage" id="decks"></div>
+  <div class="decks stage" id="decks"></div>
   <p class="drophint no-print" id="padHint"></p>
   <p class="drophint dk-keys no-print" id="keysHint"></p><!-- AOG-DECKS-KEYS-V1 -->
   <section class="mixer no-print" id="mixer" aria-labelledby="mixH">
@@ -4218,27 +4194,6 @@ window.addEventListener("focus", checkBench);
 (function(){ if(!/[?&]take=1/.test(location.search)||!window.aogHandoffTake) return;
   setTimeout(function(){ window.aogHandoffTake().then(function(v){ if(!v||!v.blob) return; const f=new File([v.blob], v.name||"scope.wav", {type:"audio/wav"});
     CRATE.next.push({ id:crateId(f), name:f.name, blob:f, at:Date.now() }); cratePut("next", CRATE.next); paintCrate(); }); }, 1200); })();
-</script>
-
-<script>
-/* AOG-DECKS-COUNT-V1 */
-(function(){
-  const box = document.querySelector(".deck-count");
-  if(!box) return;
-  function set(n){
-    document.body.classList.toggle("decks-1", n===1);
-    document.body.classList.toggle("decks-2", n===2);
-    document.body.classList.toggle("decks-3", n===3);
-    box.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed", String(b.dataset.decks)==String(n)?"true":"false"));
-    try{ localStorage.setItem("aog.decks.count", String(n)); }catch(e){}
-  }
-  box.addEventListener("click", e=>{
-    const b = e.target.closest && e.target.closest("button[data-decks]");
-    if(b) set(+b.dataset.decks);
-  });
-  const saved = +(localStorage.getItem("aog.decks.count")||3);
-  set(saved===1||saved===2?saved:3);
-})();
 </script>
 </body>
 <!-- AOG-DECKS-RESTORE-FORCE 2026-11-17 -->
