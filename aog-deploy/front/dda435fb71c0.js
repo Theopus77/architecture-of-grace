@@ -237,18 +237,19 @@ function foldIn(id, m){ const r=(INST[id]||{}).r; if(!r) return m; while(m<r[0])
 /* the standard Boomwhackers colours of the C major scale (C red, D orange, E yellow, F light green, G dark green, A purple,
    B pink): [tube, ink, short word en, es, full word en, es]. The ink is the one that reads on it (4.5:1 or more). The
    sharps and flats are left plain: their tubes' colours could not be checked. */
-const TUBES={0:["#d7262e","#ffffff","Red","Rojo","red","rojo"], 2:["#f47b20","#1a1206","Orange","Naranja","orange","naranja"],
+const TUBES={0:["#d7262e","#ffffff","Red","Rojo","red","rojo"], 1:["#e85d4c","#ffffff","Red","Rojo","red","rojo"],
+  2:["#f47b20","#1a1206","Orange","Naranja","orange","naranja"], 3:["#f5a742","#1a1206","Orange","Naranja","orange","naranja"],
   4:["#ffdd00","#1a1206","Yellow","Amarillo","yellow","amarillo"], 5:["#8dc63f","#1a1206","Lime","Lima","light green","verde claro"],
-  7:["#0e7a3e","#ffffff","Green","Verde","dark green","verde oscuro"], 9:["#6a2c91","#ffffff","Purple","Morado","purple","morado"],
-  11:["#c2185b","#ffffff","Pink","Rosa","pink","rosa"]};
+  6:["#5cb85c","#1a1206","Green","Verde","green","verde"], 7:["#0e7a3e","#ffffff","Green","Verde","dark green","verde oscuro"],
+  8:["#4a9b8c","#ffffff","Teal","Verde azulado","teal","verde azulado"], 9:["#6a2c91","#ffffff","Purple","Morado","purple","morado"],
+  10:["#9b59b6","#ffffff","Purple","Morado","purple","morado"], 11:["#c2185b","#ffffff","Pink","Rosa","pink","rosa"]};
 function paintTubes(box, bk, defs){
-  const B=S.banks[bk], I=INST[B.inst]; if(B.type!=="notes" || !I || !I.tubes) return;
+  const B=S.banks[bk]; if(B.type!=="notes") return;
   const es=S0.lang==="es";
   box.querySelectorAll(".pad").forEach(el=>{ const d=defs[+el.dataset.p]; if(!d || !d.notes || d.notes.length!==1) return;
     const T=TUBES[((d.notes[0]%12)+12)%12]; if(!T) return;
     el.classList.add("tube"); el.style.setProperty("--tube", T[0]); el.style.setProperty("--tink", T[1]);
-    const w=document.createElement("span"); w.className="pc"; w.textContent=es?T[3]:T[2]; el.querySelector(".pn").after(w);
-    el.setAttribute("aria-label", el.getAttribute("aria-label")+(es?" · tubo ":" · ")+(es?T[5]:T[4]+" tube")); });
+  });
 }
 const NP=24;
 const PAD_WORD={KICK:["Kick","Bombo"],SNARE:["Snare","Caja"],HAT:["Hi-hat","Charles"],OPEN:["Open hat","Charles abierto"],CRASH:["Crash","Crash"],RIDE:["Ride","Ride"],
@@ -822,7 +823,27 @@ function stealTo(limit){
   for(let i=0;i<n;i++){ const v=RING[i]; if(v) letGo(v, ac); }
   RING.splice(0, n);
 }
-function room(){ return /iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1) ? WORK : CAP; }
+function room(){
+  const base = /iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1) ? WORK : CAP;
+  /* denser activity: steal earlier so the page never freezes while jamming */
+  return RING.length > base * 0.6 ? Math.max(8, Math.floor(base * 0.55)) : base;
+}
+
+/* AOG-PADS-PRELOAD-ALL-V1 — standing rule: every kit preloads so a tap never waits.
+   Quiet background load of all recorded kits after first paint. */
+function preloadAllKits(){
+  if(!window.AOGDrumKit || !AOGDrumKit.ids) return;
+  const ids = AOGDrumKit.ids.filter(k => typeof k === "string");
+  let i = 0;
+  function next(){
+    if(i >= ids.length) return;
+    const k = ids[i++];
+    if(AOGDrumKit.state && AOGDrumKit.state(k) && AOGDrumKit.state(k).state === "ready"){ next(); return; }
+    AOGDrumKit.load(k, {}, {}, x=>x, null, {hiOnly:true}).then(next).catch(next);
+  }
+  setTimeout(next, 400); /* after first paint */
+}
+
 function flash(bi, pi, when, vel){
   if(bi!==S.bank || SEQ.on) return; /* no DOM on the hit path while a loop runs */
   const go=()=>{ const el=$("pads").querySelector(`.pad[data-p="${pi}"]`); if(!el) return;
