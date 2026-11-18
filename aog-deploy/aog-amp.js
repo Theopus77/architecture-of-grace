@@ -428,11 +428,11 @@ function coreParams(st, kind){
   const g=fx.gate; P.gate={on:g.on, thr:dbl(-70+5*clamp(+g.thr,0,10)), rel:0.02+0.03*clamp(+g.rel,0,10)};
   const c=fx.comp, cthr=-8-3.2*clamp(+c.sus,0,10), crat=2+0.6*clamp(+c.sus,0,10);
   P.comp={on:c.on, thr:cthr, ratio:crat, att:0.0005+0.0035*clamp(+c.att,0,10), rel:0.18, knee:6, makeup:(-cthr-12)*(1-1/crat)*0.6+(n10(c.lvl)-0.5)*12};
-  const w=fx.wah; P.wah={on:w.on, mode:w.mode==="fixed"?"fixed":"touch", pos:n10(w.pos), sens:2+1.6*clamp(+w.sens,0,10), q:2+0.8*clamp(+w.q,0,10), f0:bass?180:350, f1:bass?1400:2300, mix:1};
+  const w=fx.wah; P.wah={on:w.on, mode:w.mode==="fixed"?"fixed":"touch", pos:n10(w.pos), sens:2.4+1.8*clamp(+w.sens,0,10), q:4.2+2.8*clamp(+w.q,0,10), f0:bass?200:420, f1:bass?1600:2100, mix:1};
   const o=fx.oct; P.oct={on:o.on, sub:n10(o.sub)*1.5, dry:n10(o.dry), f:bass?170:260};
   const od=fx.od; P.od={on:od.on, gain:3+110*lg(n10(od.drive)), tone:700*Math.pow(8.5, n10(od.tone)), level:0.2+1.6*n10(od.lvl)};
-  const ds=fx.ds; P.ds={on:ds.on, gain:2+900*lg(n10(ds.dist)), filter:600*Math.pow(28, n10(ds.tone)), level:0.12+1.2*n10(ds.lvl)};
-  const fz=fx.fz; P.fz={on:fz.on, gain:2+70*lg(n10(fz.sus)), gain2:8, tone:n10(fz.tone), level:0.15+1.4*n10(fz.lvl)};
+  const ds=fx.ds; P.ds={on:ds.on, gain:3+1400*lg(n10(ds.dist)), filter:500*Math.pow(32, n10(ds.tone)), level:0.18+1.5*n10(ds.lvl)};
+  const fz=fx.fz; P.fz={on:fz.on, gain:3+110*lg(n10(fz.sus)), gain2:12, tone:n10(fz.tone), level:0.2+1.6*n10(fz.lvl)};
   /* AOG-AMP-TONES-V1: the new pedals (levels measured so a pedal at its own settings is about as loud as without it) */
   P.fz.type=fz.type==="vintage"?"vintage":"thick"; P.fz.gainV=1.2+24*lg(n10(fz.sus)); P.fz.levelV=(0.15+1.4*n10(fz.lvl))*1.0;
   const ef=fx.env, eq=2+1.2*clamp(+ef.q,0,10);
