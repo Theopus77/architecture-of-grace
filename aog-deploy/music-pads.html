@@ -810,12 +810,10 @@ const TUBES={0:["#d7262e","#ffffff","Red","Rojo","red","rojo"], 1:["#e85d4c","#f
   8:["#4a9b8c","#ffffff","Teal","Verde azulado","teal","verde azulado"], 9:["#6a2c91","#ffffff","Purple","Morado","purple","morado"],
   10:["#9b59b6","#ffffff","Purple","Morado","purple","morado"], 11:["#c2185b","#ffffff","Pink","Rosa","pink","rosa"]};
 function paintTubes(box, bk, defs){
-  /* AOG-PADS-ALLBANKS-V1: color every pad that has notes, in every bank (chords by root) */
-  box.querySelectorAll(".pad").forEach(el=>{
-    const d=defs[+el.dataset.p];
-    if(!d || !d.notes || !d.notes.length) return;
-    const pc=((d.notes[0]%12)+12)%12;
-    const T=TUBES[pc]; if(!T) return;
+  const B=S.banks[bk]; if(B.type!=="notes") return;
+  const es=S0.lang==="es";
+  box.querySelectorAll(".pad").forEach(el=>{ const d=defs[+el.dataset.p]; if(!d || !d.notes || d.notes.length!==1) return;
+    const T=TUBES[((d.notes[0]%12)+12)%12]; if(!T) return;
     el.classList.add("tube"); el.style.setProperty("--tube", T[0]); el.style.setProperty("--tink", T[1]);
   });
 }
@@ -2646,6 +2644,6 @@ init();
 
 <!-- morph script removed: the bar is gone -->
 </body>
-<!-- AOG-PADS-COLORS-WORKING 2026-11-17 -->
+<!-- AOG-PADS-CLEAN-WORKING 2026-11-17 -->
 </html>
 
