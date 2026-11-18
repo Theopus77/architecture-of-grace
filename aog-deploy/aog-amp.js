@@ -466,7 +466,7 @@ const TRIM={
 };
 function roomCore(st, kind){
   const s={model:st.model, cab:st.cab, k:st.k, bright:st.bright, tight:st.tight, eq:st.eq, fx:{}};
-  PEDALS.forEach(p=>{ s.fx[p.id]=Object.assign({}, st.fx[p.id]); if(p.id!=="od") s.fx[p.id].on=false; });
+  PEDALS.forEach(p=>{ s.fx[p.id]=Object.assign({}, st.fx[p.id]); });
   const P=coreParams(s, "guitar");
   /* in a room the drive keeps more of the highs (a keyboard or a horn is not going into a speaker cabinet that cuts them) */
   if(P.od.on){ P.od.gain=1+40*lg(n10(st.fx.od.drive)); P.od.tone=1500*Math.pow(8, n10(st.fx.od.tone)); P.od.level*=TRIM.od[kind]||1; }
