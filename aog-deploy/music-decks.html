@@ -4207,9 +4207,14 @@ window.addEventListener("focus", checkBench);
   setTimeout(function(){ window.aogHandoffTake().then(function(v){ if(!v||!v.blob) return; const f=new File([v.blob], v.name||"scope.wav", {type:"audio/wav"});
     CRATE.next.push({ id:crateId(f), name:f.name, blob:f, at:Date.now() }); cratePut("next", CRATE.next); paintCrate(); }); }, 1200); })();
 </script>
-</body>
 
-/* AOG-DECKS-PEDALS-V1: the same pedalboard the other rooms use, on the master */
+<!-- AOG-DECKS-PEDALS-V1: full pedalboard on the master bus -->
+<section class="blk" id="decksPedalsBlk" style="margin:1rem auto;max-width:920px;padding:0 1rem">
+  <div id="decksPedalsNear"></div>
+  <div id="decksPedals"></div>
+</section>
+<script>
+/* AOG-DECKS-PEDALS-V1 */
 function initDecksPedals(){
   if(!window.AOGAmp || !document.getElementById("decksPedals")) return;
   const host = document.getElementById("decksPedals");
@@ -4228,5 +4233,7 @@ function initDecksPedals(){
 }
 if(document.readyState==="loading") document.addEventListener("DOMContentLoaded", initDecksPedals);
 else initDecksPedals();
+</script>
 
+</body>
 </html>
