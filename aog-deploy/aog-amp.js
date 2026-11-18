@@ -529,12 +529,12 @@ FXMAKE.chorus=(c)=>{ const i=gainNode(c,1), o=gainNode(c,1), dry=gainNode(c,1), 
     lfo.start(); lfo2.start();
     return {in:i, out:o, set(p){ const r=0.1*Math.pow(30,n10(p.rate)), d=0.0005+0.0045*n10(p.depth), w=0.9*n10(p.mix);
       lfo.frequency.value=r; lfo2.frequency.value=r; dg.gain.value=d; dg2.gain.value=d; wet.gain.value=w; wr.gain.value=w; dry.gain.value=1-0.3*n10(p.mix); }}; };
-FXMAKE.phaser=(c)=>{ const i=gainNode(c,1), o=gainNode(c,1), dry=gainNode(c,1), wet=gainNode(c,0.7), lfo=c.createOscillator(), dg=gainNode(c,500), aps=[];
-    let prev=i; for(let k=0;k<6;k++){ const ap=biq(c,"allpass",700,0.55); dg.connect(ap.frequency); prev.connect(ap); prev=ap; aps.push(ap); }
+FXMAKE.phaser=(c)=>{ const i=gainNode(c,1), o=gainNode(c,1), dry=gainNode(c,1), wet=gainNode(c,0.85), lfo=c.createOscillator(), dg=gainNode(c,700), aps=[];
+    let prev=i; for(let k=0;k<8;k++){ const ap=biq(c,"allpass",600,0.7); dg.connect(ap.frequency); prev.connect(ap); prev=ap; aps.push(ap); }
     prev.connect(wet); wet.connect(o); i.connect(dry); dry.connect(o); lfo.connect(dg); lfo.start();
     return {in:i, out:o, set(p){ const r=0.05*Math.pow(60,n10(p.rate)), d=n10(p.depth); lfo.frequency.value=r; aps.forEach(a=>a.frequency.value=380+620*d); dg.gain.value=300+520*d;
       const w=n10(p.mix); wet.gain.value=w; dry.gain.value=1-0.35*w; }}; };
-FXMAKE.flanger=(c)=>{ const i=gainNode(c,1), o=gainNode(c,1), dry=gainNode(c,1), wet=gainNode(c,0.7), dl=c.createDelay(0.03), fb=gainNode(c,0.5), lfo=c.createOscillator(), dg=gainNode(c,0.001);
+FXMAKE.flanger=(c)=>{ const i=gainNode(c,1), o=gainNode(c,1), dry=gainNode(c,1), wet=gainNode(c,0.85), dl=c.createDelay(0.04), fb=gainNode(c,0.65), lfo=c.createOscillator(), dg=gainNode(c,0.0015);
     dl.delayTime.value=0.003; lfo.connect(dg); dg.connect(dl.delayTime); i.connect(dl); dl.connect(fb); fb.connect(dl); dl.connect(wet); wet.connect(o); i.connect(dry); dry.connect(o); lfo.start();
     return {in:i, out:o, set(p){ const r=0.05*Math.pow(40,n10(p.rate)), d=0.0002+0.0026*n10(p.depth); lfo.frequency.value=r; dl.delayTime.value=0.0006+d; dg.gain.value=d*0.9;
       fb.gain.value=0.85*n10(p.fb); const w=n10(p.mix); wet.gain.value=w*0.85; dry.gain.value=1-0.3*w; }}; };
@@ -959,6 +959,16 @@ function ui(host, opt){
     qa("input[data-k]").forEach(inp=>{
       const show=()=>{ const kn=inp.closest(".aa-knob"); kn.querySelector(".aa-dial").style.setProperty("--r", dialDeg(inp.value)+"deg");
         kn.querySelector("output").textContent=inp.hasAttribute("data-ms")?delayMs(inp.value)+" ms":(+inp.value).toFixed(1); };
+      /* drag the dial itself to rotate (vertical: up = higher) */
+      const dial=inp.closest(".aa-knob").querySelector(".aa-dial");
+      if(dial && !dial.__drag){ dial.__drag=1; dial.style.touchAction="none"; dial.style.cursor="ns-resize";
+        dial.onpointerdown=e=>{ e.preventDefault(); dial.setPointerCapture(e.pointerId);
+          const startY=e.clientY, startV=+inp.value;
+          const move=ev=>{ const dy=startY-ev.clientY, nv=Math.max(0,Math.min(10, startV+dy*0.08));
+            inp.value=nv.toFixed(1); inp.oninput(); };
+          const up=()=>{ dial.onpointermove=null; dial.onpointerup=null; };
+          dial.onpointermove=move; dial.onpointerup=up; };
+      }
       inp.oninput=()=>{ show();
         qa('input[data-scope="'+inp.dataset.scope+'"][data-k="'+inp.dataset.k+'"]').forEach(tw=>{ if(tw===inp) return; tw.value=inp.value;
           const kn=tw.closest(".aa-knob"); kn.querySelector(".aa-dial").style.setProperty("--r", dialDeg(tw.value)+"deg");
