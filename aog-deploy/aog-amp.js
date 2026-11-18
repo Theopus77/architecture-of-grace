@@ -658,7 +658,7 @@ function createRoom(c, opt, kind){
   let wiring="";
   function plan(st){
     const fxo=st.fx, amped=st.model!=="none" && !!MODELS[st.model] && !!MODELS[st.model].make, P=[];
-    if(amped || fxo.od.on || fxo.ds.on || fxo.fz.on || fxo.gate.on || fxo.comp.on) P.push("core");
+    if(amped || ["od","ds","fz","gate","comp","wah","env","oct","pitch","tb","ofz","vibe"].some(id=>fxo[id]&&fxo[id].on)) P.push("core");
     if(amped && st.cab!=="off" && CABS[st.cab] && CABS[st.cab].hp) P.push("cab");
     if(fxo.comp.on || fxo.punch.on || fxo.tape.on || fxo.crush.on) P.push("bus");
     if(fxo.filter.on) P.push("filt");
