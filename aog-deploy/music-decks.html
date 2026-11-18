@@ -1115,6 +1115,18 @@ function ctx(){
     eqScope = actx.createAnalyser(); eqScope.fftSize = 2048; eqScope.smoothingTimeConstant = 0.72;
     OUT.connect(eqScope);
     buildTape();   /* ⚠ AFTER workletReady exists, or the tape quietly falls back */
+    /* AOG-DECKS-PEDALS-V1: full pedalboard on the master (after the decks meet, before the final out) */
+    if(window.AOGAmp && !window.DECKS_RIG){
+      try{
+        const rig = AOGAmp.create(actx, {kind:"drums", state:null});
+        if(rig){
+          master.disconnect();
+          master.connect(rig.input);
+          rig.output.connect(OUT);
+          window.DECKS_RIG = rig;
+        }
+      }catch(e){ console.warn("decks pedals", e); }
+    }
   }
   if(actx.state==="suspended") actx.resume();
   return actx;
@@ -4196,4 +4208,25 @@ window.addEventListener("focus", checkBench);
     CRATE.next.push({ id:crateId(f), name:f.name, blob:f, at:Date.now() }); cratePut("next", CRATE.next); paintCrate(); }); }, 1200); })();
 </script>
 </body>
+
+/* AOG-DECKS-PEDALS-V1: the same pedalboard the other rooms use, on the master */
+function initDecksPedals(){
+  if(!window.AOGAmp || !document.getElementById("decksPedals")) return;
+  const host = document.getElementById("decksPedals");
+  const near = document.getElementById("decksPedalsNear");
+  let st = null;
+  try{ st = JSON.parse(localStorage.getItem("aog.decks.pedals")||"null"); }catch(e){}
+  AOGAmp.ui(host, {
+    kind:"drums",
+    near: near,
+    lang: ()=> (document.documentElement.lang==="es"?"es":"en"),
+    get: ()=> st || AOGAmp.defaults("drums"),
+    set: s=>{ st=s; try{ localStorage.setItem("aog.decks.pedals", JSON.stringify(s)); }catch(e){}
+             if(window.DECKS_RIG && DECKS_RIG.set) DECKS_RIG.set(s); },
+    reset: ()=>{ st=null; try{ localStorage.removeItem("aog.decks.pedals"); }catch(e){} }
+  });
+}
+if(document.readyState==="loading") document.addEventListener("DOMContentLoaded", initDecksPedals);
+else initDecksPedals();
+
 </html>
