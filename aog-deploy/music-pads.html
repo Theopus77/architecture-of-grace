@@ -810,16 +810,10 @@ const TUBES={0:["#d7262e","#ffffff","Red","Rojo","red","rojo"], 1:["#e85d4c","#f
   8:["#4a9b8c","#ffffff","Teal","Verde azulado","teal","verde azulado"], 9:["#6a2c91","#ffffff","Purple","Morado","purple","morado"],
   10:["#9b59b6","#ffffff","Purple","Morado","purple","morado"], 11:["#c2185b","#ffffff","Pink","Rosa","pink","rosa"]};
 function paintTubes(box, bk, defs){
-  /* AOG-PADS-COLORS-ALL: every bank gets tube colors (notes/chords by pitch, drums by type, chops by index) */
-  const DRUM_PC = {kick:0, snare:2, ch:4, oh:5, clap:7, tom:8, rim:9, bell:11};
-  box.querySelectorAll(".pad").forEach(el=>{
-    const d=defs[+el.dataset.p]; if(!d) return;
-    let pc = -1;
-    if(d.notes && d.notes.length) pc = ((d.notes[0]%12)+12)%12;
-    else if(d.kind==="drum" && DRUM_PC[d.id]!=null) pc = DRUM_PC[d.id];
-    else if(d.kind==="chop") pc = (+el.dataset.p) % 12;
-    if(pc<0) return;
-    const T=TUBES[pc]; if(!T) return;
+  const B=S.banks[bk]; if(B.type!=="notes") return;
+  const es=S0.lang==="es";
+  box.querySelectorAll(".pad").forEach(el=>{ const d=defs[+el.dataset.p]; if(!d || !d.notes || d.notes.length!==1) return;
+    const T=TUBES[((d.notes[0]%12)+12)%12]; if(!T) return;
     el.classList.add("tube"); el.style.setProperty("--tube", T[0]); el.style.setProperty("--tink", T[1]);
   });
 }
@@ -2645,7 +2639,6 @@ async function takeIn(){
   pvKnobsPlace();
   knobPaint();
 })();
-preloadAllKits();
 init();
 </script>
 
@@ -2653,5 +2646,6 @@ init();
 </body>
 <!-- AOG-PADS-STABLE 2026-11-17 -->
 <!-- AOG-PADS-FINAL-STABLE 2026-11-17 -->
+<!-- AOG-PADS-STABLE-AGAIN 2026-11-17 -->
 </html>
 
