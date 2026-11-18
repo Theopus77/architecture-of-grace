@@ -702,6 +702,7 @@ const INST={
   "k:harp":{g:"keys",en:"Harp",es:"Arpa",d:"/audio/piano/harp2/",x:"m",n:[28,35,38,41,45,48,52,55,59,62,65,69,72,76,79,83,86,89,93,98,101]},
   "k:strings":{g:"keys",en:"Soft strings",es:"Cuerdas suaves",d:"/audio/piano/strings2/",x:"m",n:[36,40,43,47,50,53,57,59,62,65,69,72,76,79,83,86]},
   "k:choir":{g:"voices",en:"Choir · one singer",es:"Coro · un cantante",d:"/audio/piano/choir/",x:"m",n:[24,27,30,33,36,39,42,45,48,51,54,57,60,63,66,69,72,75,78,81,84,87,90,93,96]},
+  "v:beatbox":{g:"voices",en:"Beat box",es:"Beat box",synth:1},
   "k:flute":{g:"keys",en:"Flute",es:"Flauta",d:"/audio/piano/flute2/",x:"m",n:[60,64,69,72,76,81,84,88,93,96]},
   "k:strsynth":{g:"keys",en:"'70s string synth",es:"Sintetizador de cuerdas de los 70",d:"/audio/piano/synthstr/",x:"m",n:[24,27,30,33,36,39,42,45,48,51,54,57,60,63,66,69,72,75,78,81,84,87,90,93,96]},
   "k:pad":{g:"keys",en:"Warm synth",es:"Sintetizador cálido",d:"/audio/piano/synthpad/",x:"m",n:[24,27,30,33,36,39,42,45,48,51,54,57,60,63,66,69,72,75,78,81,84,87,90,93,96]},
@@ -1359,6 +1360,10 @@ function trigger(bi, pi, vel, when, T){
     return keep({stop(at){ const t0=Math.max(at||0, c.currentTime); try{ g.gain.cancelScheduledValues(t0); g.gain.setTargetAtTime(0, t0, 0.006); s.stop(t0+0.05); }catch(e){} }});
   }
   /* a note or a chord: it rings while the pad is held */
+  if(B.inst === "v:beatbox"){
+    const hits = (d.notes||[]).map(m => beatboxHit(c, out, when, m, vel, rate));
+    return keep({ stop(at){ hits.forEach(h => h && h.stop && h.stop(at)); } });
+  }
   const zs=R.zones||[], vs=[], lv=0.62*(0.3+0.7*vel)/Math.sqrt(d.notes.length);
   ((INST[B.inst]||{}).one ? d.notes.slice(0,1) : d.notes).map(m=>foldIn(B.inst, m)).forEach(m=>{
     const z=nearest(zs, m);
@@ -1375,6 +1380,39 @@ function trigger(bi, pi, vel, when, T){
   return keep({parts:vs.map(v=>v.url), stop(at, force){ if(!force && (INST[B.inst]||{}).ring) return; const t0=Math.max(at||0, c.currentTime);   /* AOG-PADS-CLASSROOM-V1: a pluck rings out. AOG-PADS-FEEL-V1: a paired pad cuts it anyway */
     const fast=gated(bi); vs.forEach(v=>{ try{ v.g.gain.cancelScheduledValues(t0); v.g.gain.setTargetAtTime(0, t0, fast?0.02:0.07); v.s.stop(t0+(fast?0.12:0.6)); }catch(e){} }); }});
 }
+
+/* AOG-BEATBOX-V1: mouth-drum sounds by pitch class */
+function beatboxHit(c, out, when, m, vel, rate){
+  const pc = ((m % 12) + 12) % 12;
+  const g = c.createGain(), lv = 0.7 * (0.4 + 0.6 * vel);
+  g.connect(out);
+  g.gain.setValueAtTime(lv, when);
+  const stop = (node, t) => { try{ node.stop(t); }catch(e){} };
+  if(pc === 0 || pc === 1){ // kick
+    const o = c.createOscillator(); o.type = "sine"; o.frequency.setValueAtTime(150, when); o.frequency.exponentialRampToValueAtTime(50, when + 0.08);
+    o.connect(g); o.start(when); stop(o, when + 0.15);
+    g.gain.exponentialRampToValueAtTime(0.001, when + 0.18);
+  } else if(pc === 2 || pc === 3){ // snare
+    const n = c.createBufferSource(), buf = c.createBuffer(1, c.sampleRate * 0.2, c.sampleRate), d = buf.getChannelData(0);
+    for(let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.exp(-i / (c.sampleRate * 0.04));
+    n.buffer = buf; const f = c.createBiquadFilter(); f.type = "highpass"; f.frequency.value = 800;
+    n.connect(f); f.connect(g); n.start(when); stop(n, when + 0.2);
+    g.gain.exponentialRampToValueAtTime(0.001, when + 0.22);
+  } else if(pc === 4 || pc === 5){ // closed / open hat
+    const n = c.createBufferSource(), dur = pc === 4 ? 0.06 : 0.25, buf = c.createBuffer(1, c.sampleRate * dur, c.sampleRate), d = buf.getChannelData(0);
+    for(let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.exp(-i / (c.sampleRate * (pc === 4 ? 0.01 : 0.06)));
+    n.buffer = buf; const f = c.createBiquadFilter(); f.type = "highpass"; f.frequency.value = 5000;
+    n.connect(f); f.connect(g); n.start(when); stop(n, when + dur);
+    g.gain.exponentialRampToValueAtTime(0.001, when + dur + 0.02);
+  } else { // rim / clap / other
+    const n = c.createBufferSource(), buf = c.createBuffer(1, c.sampleRate * 0.08, c.sampleRate), d = buf.getChannelData(0);
+    for(let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.exp(-i / (c.sampleRate * 0.015));
+    n.buffer = buf; n.connect(g); n.start(when); stop(n, when + 0.1);
+    g.gain.exponentialRampToValueAtTime(0.001, when + 0.12);
+  }
+  return { stop(at){ const t0 = Math.max(at || 0, c.currentTime); try{ g.gain.cancelScheduledValues(t0); g.gain.setTargetAtTime(0, t0, 0.01); }catch(e){} } };
+}
+
 const RING=[];
 const CAP=320; /* soft safety — higher for fuller chords and multi-bank use */
 const WORK=16; /* iOS stays under this; steal is free so taps are never dropped */
