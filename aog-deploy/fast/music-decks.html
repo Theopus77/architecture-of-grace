@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- AOG-FAST-BUILD-V1 source:7bf3a96bc4256410 · MADE BY tools/build-fast.py from music-decks.html: edit music-decks.html, then run it. -->
+<!-- AOG-FAST-BUILD-V1 source:b3351f9a5fd838fc · MADE BY tools/build-fast.py from music-decks.html: edit music-decks.html, then run it. -->
 <html lang="en">
 <head>
 <script>/* AOG-STUDIO-ONLY-V1 (Jimmy, 2026-10-10: "one location for all the instruments … and that is the studio"): opened on its own address, this room opens inside the Studio instead, at this exact address (its lesson, take or link). Inside the Studio's frame, and for the site's own checks, it stays. */(function(){try{if(window.top!==window||navigator.webdriver)return;var M={"music-pads":"pads","drum-machine":"pads","beat-lab":"pads","music-kit":"kit","drum-kit":"kit","music-piano":"piano","piano":"piano","keys":"piano","music-guitar":"guitar","guitar":"guitar","music-bass":"bass","bass":"bass","music-band":"band","band":"band","music-decks":"decks","decks":"decks","turntables":"decks","music-vocal":"vocal","vocal-booth":"vocal","vocal":"vocal","booth":"vocal","music-studio":"studio","studio":"studio","mixing-desk":"studio"},f=(location.pathname.split("/").pop()||"").replace(/\.html$/,""),r=M[f];if(!r)return;var F={pads:"music-pads",kit:"music-kit",piano:"music-piano",guitar:"music-guitar",bass:"music-bass",band:"music-band",decks:"music-decks",vocal:"music-vocal",studio:"music-studio"};location.replace("/the-studio.html?at="+encodeURIComponent("/"+F[r]+".html"+location.search+location.hash)+"#"+r);}catch(e){}})();</script>
@@ -811,9 +811,8 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
 <script src="/aog-vu.js"></script><!-- AOG-ROOM-VU-V1: before any sound, so the small VU meters hear it -->
 <script src="aog-eq.js"></script>
 <script src="aog-vinyl-worklet.js"></script>
-<script src="/aog-amp.js?v=20261117-pedals"></script>
 <script src="aog-dj.js"></script>
-<script src="/front/f3ff8d6d9dd1.js"></script>
+<script src="/front/acdbfc188227.js"></script>
 <script>
 /* AOG-PGPANEL-V1 - the guide loads only when the bar is opened, and the frame is
    grown to its content so the panel scrolls with the page instead of inside itself. */
@@ -832,35 +831,5 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
 })();
 </script>
 <script src="/front/89e4815a9a4c.js"></script>
-
-<!-- AOG-DECKS-PEDALS-V1: full pedalboard on the master bus -->
-<section class="blk" id="decksPedalsBlk" style="margin:1rem auto;max-width:920px;padding:0 1rem">
-  <div id="decksPedalsNear"></div>
-  <div id="decksPedals"></div>
-</section>
-
-<script>
-/* AOG-DECKS-PEDALS-V1: the same pedalboard the other rooms use, on the master */
-(function(){
-  function init(){
-    if(!window.AOGAmp || !document.getElementById("decksPedals")) return;
-    const host = document.getElementById("decksPedals");
-    const near = document.getElementById("decksPedalsNear");
-    let st = null;
-    try{ st = JSON.parse(localStorage.getItem("aog.decks.pedals")||"null"); }catch(e){}
-    AOGAmp.ui(host, {
-      kind:"drums",
-      near: near,
-      lang: ()=> (document.documentElement.lang==="es"?"es":"en"),
-      get: ()=> st || AOGAmp.defaults("drums"),
-      set: s=>{ st=s; try{ localStorage.setItem("aog.decks.pedals", JSON.stringify(s)); }catch(e){}
-               if(window.DECKS_RIG && DECKS_RIG.set) DECKS_RIG.set(s); },
-      reset: ()=>{ st=null; try{ localStorage.removeItem("aog.decks.pedals"); }catch(e){} }
-    });
-  }
-  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded", init);
-  else init();
-})();
-</script>
 </body>
 </html>
