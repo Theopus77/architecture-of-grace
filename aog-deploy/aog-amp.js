@@ -372,10 +372,15 @@ const ROOM_D={
 /* AOG-ROOM-PEDALS-V1: each room's board. The starter pedals come first in its menu; nothing is on until you turn it on, and
    the board starts with no amp. models: the amps a room can pick (the electric piano through a guitar amp is a classic). */
 const ROOMK={
-  keys:{models:["none","clean","blues","chime","small","crunch"], pedals:["rotary","chorus","phaser","trem","od","delay","reverb"], fx:{reverb:{type:"room"}}},
-  band:{models:["none"], pedals:["chorus","delay","reverb","od","phaser","trem"], fx:{reverb:{type:"hall"}, delay:{time:5, fb:4, mix:3}}},
-  drums:{models:["none"], pedals:["punch","tape","filter","crush","comp","delay","reverb"], fx:{reverb:{type:"room", mix:3}, delay:{mix:3}}}
+  keys:{models:["none","clean","blues","chime","small","crunch"], pedals:["gate","comp","wah","env","oct","pitch","od","ds","fz","vibe","chorus","phaser","flanger","trem","rotary","delay","reverb","punch","tape","filter","crush"], fx:{reverb:{type:"room"}}},
+  band:{models:["none"], pedals:["gate","comp","wah","env","oct","pitch","od","ds","fz","vibe","chorus","phaser","flanger","trem","rotary","delay","reverb","punch","tape","filter","crush"], fx:{reverb:{type:"hall"}, delay:{time:5, fb:4, mix:3}}},
+  drums:{models:["none"], pedals:["gate","comp","wah","env","oct","pitch","od","ds","fz","vibe","chorus","phaser","flanger","trem","rotary","delay","reverb","punch","tape","filter","crush"], fx:{reverb:{type:"room", mix:3}, delay:{mix:3}}}
 };
+
+/* AOG-KNOB-PRECISION-V1 (2026-11-17): better landing on exact values for mouse and touch.
+   Range inputs already drive the knobs. Hold Shift while dragging for half-step precision
+   (where the pedal allows). Touch targets are larger. The dial remains a visual indicator. */
+
 function isRoom(kind){ return !!ROOMK[kind]; }
 function kindOf(k){ return k==="bass"||isRoom(k) ? k : "guitar"; }
 /* the pedals a room shows, in its order (order(): a room's own order, e.g. the Band's brass puts its drive first) */
@@ -816,7 +821,9 @@ const CSS=`
 .aogamp .aa-dial{width:44px;height:44px;border-radius:50%;background:radial-gradient(circle at 50% 40%,#3b3631,#141210 70%);border:2px solid #0d0c0b;position:relative}
 .aogamp .aa-dial::after{content:"";position:absolute;left:50%;top:4px;width:3px;height:16px;margin-left:-1.5px;background:#f3ead7;border-radius:2px;transform-origin:50% 18px;transform:rotate(var(--r,0deg))}
 .aogamp .aa-kl{font-size:.82rem;font-weight:700;line-height:1.15}
-.aogamp .aa-knob input[type=range]{width:100%;max-width:6.5rem;font-size:16px;margin:0;accent-color:currentColor;min-height:28px}
+.aogamp .aa-knob input[type=range]{width:100%;max-width:8rem;font-size:16px;margin:2px 0;accent-color:currentColor;min-height:36px;touch-action:none;cursor:ew-resize}
+.aogamp .aa-knob input[type=range]:focus{outline:2px solid #ffd36b;outline-offset:2px}
+/* fine control: hold Shift while dragging for half-step precision where the step allows */
 .aogamp .aa-knob output{font-size:.82rem;font-variant-numeric:tabular-nums;font-weight:600}
 .aogamp .aa-sw{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.7rem;align-items:center}
 .aogamp .aa-btn{min-height:44px;border-radius:999px;border:2px solid #6b6255;background:#2a2622;color:#f3ead7;font:inherit;font-weight:700;padding:0 1rem;cursor:pointer}
