@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- AOG-FAST-BUILD-V1 source:d3db5dc771cdac8a · MADE BY tools/build-fast.py from music-decks.html: edit music-decks.html, then run it. -->
+<!-- AOG-FAST-BUILD-V1 source:2f60653791b3fafa · MADE BY tools/build-fast.py from music-decks.html: edit music-decks.html, then run it. -->
 <html lang="en">
 <head>
 <script>/* AOG-STUDIO-ONLY-V1 (Jimmy, 2026-10-10: "one location for all the instruments … and that is the studio"): opened on its own address, this room opens inside the Studio instead, at this exact address (its lesson, take or link). Inside the Studio's frame, and for the site's own checks, it stays. */(function(){try{if(window.top!==window||navigator.webdriver)return;var M={"music-pads":"pads","drum-machine":"pads","beat-lab":"pads","music-kit":"kit","drum-kit":"kit","music-piano":"piano","piano":"piano","keys":"piano","music-guitar":"guitar","guitar":"guitar","music-bass":"bass","bass":"bass","music-band":"band","band":"band","music-decks":"decks","decks":"decks","turntables":"decks","music-vocal":"vocal","vocal-booth":"vocal","vocal":"vocal","booth":"vocal","music-studio":"studio","studio":"studio","mixing-desk":"studio"},f=(location.pathname.split("/").pop()||"").replace(/\.html$/,""),r=M[f];if(!r)return;var F={pads:"music-pads",kit:"music-kit",piano:"music-piano",guitar:"music-guitar",bass:"music-bass",band:"music-band",decks:"music-decks",vocal:"music-vocal",studio:"music-studio"};location.replace("/the-studio.html?at="+encodeURIComponent("/"+F[r]+".html"+location.search+location.hash)+"#"+r);}catch(e){}})();</script>
@@ -17,6 +17,14 @@ body.decks-3 .decks{grid-template-columns:repeat(3,minmax(0,1fr))}
 .deck-count{display:flex;gap:.5rem;justify-content:center;margin:.6rem 0}
 .deck-count button{min-height:40px;padding:0 .9rem;border-radius:999px;border:1px solid #c4a574;background:#1a140e;color:#f3ead7;font:700 .85rem/1 var(--sans)}
 .deck-count button[aria-pressed="true"]{background:#c4a574;color:#1a140e}
+
+/* AOG-DECKS-COUNT-V2: the 1/2/3 toggle wins over the phone deck tabs */
+body.decks-1 .decks{display:grid !important;grid-template-columns:minmax(0,1fr) !important}
+body.decks-1 .deck:nth-child(n+2){display:none !important}
+body.decks-2 .decks{display:grid !important;grid-template-columns:repeat(2,minmax(0,1fr)) !important}
+body.decks-2 .deck:nth-child(n+3){display:none !important}
+body.decks-3 .decks{display:grid !important;grid-template-columns:repeat(3,minmax(0,1fr)) !important}
+body.decks-2 .deck,body.decks-3 .deck{display:block !important}
 </style><script>/* AOG-LIGHT-START-V1 — Jimmy: "All pages should start in light mode." Light unless this site was switched to dark. */(function(){var h=document.documentElement;if(!h.getAttribute("data-theme"))h.setAttribute("data-theme","light");})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <script>
@@ -856,6 +864,7 @@ button,a,label,input[type=range],.pill,.pad,.platter,canvas{touch-action:manipul
   function set(n){
     document.body.classList.toggle("decks-1", n===1);
     document.body.classList.toggle("decks-2", n===2);
+    document.body.classList.toggle("decks-3", n===3);
     box.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed", String(b.dataset.decks)==String(n)?"true":"false"));
     try{ localStorage.setItem("aog.decks.count", String(n)); }catch(e){}
   }

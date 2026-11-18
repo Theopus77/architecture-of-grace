@@ -16,6 +16,14 @@ body.decks-3 .decks{grid-template-columns:repeat(3,minmax(0,1fr))}
 .deck-count{display:flex;gap:.5rem;justify-content:center;margin:.6rem 0}
 .deck-count button{min-height:40px;padding:0 .9rem;border-radius:999px;border:1px solid #c4a574;background:#1a140e;color:#f3ead7;font:700 .85rem/1 var(--sans)}
 .deck-count button[aria-pressed="true"]{background:#c4a574;color:#1a140e}
+
+/* AOG-DECKS-COUNT-V2: the 1/2/3 toggle wins over the phone deck tabs */
+body.decks-1 .decks{display:grid !important;grid-template-columns:minmax(0,1fr) !important}
+body.decks-1 .deck:nth-child(n+2){display:none !important}
+body.decks-2 .decks{display:grid !important;grid-template-columns:repeat(2,minmax(0,1fr)) !important}
+body.decks-2 .deck:nth-child(n+3){display:none !important}
+body.decks-3 .decks{display:grid !important;grid-template-columns:repeat(3,minmax(0,1fr)) !important}
+body.decks-2 .deck,body.decks-3 .deck{display:block !important}
 </style><script>/* AOG-LIGHT-START-V1 — Jimmy: "All pages should start in light mode." Light unless this site was switched to dark. */(function(){var h=document.documentElement;if(!h.getAttribute("data-theme"))h.setAttribute("data-theme","light");})();</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <script>
@@ -4220,6 +4228,7 @@ window.addEventListener("focus", checkBench);
   function set(n){
     document.body.classList.toggle("decks-1", n===1);
     document.body.classList.toggle("decks-2", n===2);
+    document.body.classList.toggle("decks-3", n===3);
     box.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed", String(b.dataset.decks)==String(n)?"true":"false"));
     try{ localStorage.setItem("aog.decks.count", String(n)); }catch(e){}
   }
